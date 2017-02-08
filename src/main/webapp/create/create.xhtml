@@ -60,6 +60,10 @@
 													<td><h:outputText value="#######" /></td>
 												</tr>
 												<tr>
+													<td><p:outputLabel value="Drug Program" /></td>
+													<td><h:outputText value="#######" /></td>
+												</tr>
+												<tr>
 													<td><p:outputLabel value="Release Groups" /></td>
 													<td><h:outputText value="#######" /></td>
 												</tr>
@@ -164,14 +168,14 @@
 								<p:outputLabel value="Workflow" />
 							</f:facet>
 							<f:facet name="right">
-								<p:commandButton value="Submit to MQM" />
+								<!-- <p:commandButton value="Submit to MQM" /> -->
 								<p:commandButton value="Reactivate" />
 								<p:commandButton value="Retire" />
 								<p:commandButton value="Demote to Draft" />
 								<p:commandButton value="Reviewed" />
 								<p:commandButton value="Approved" />
 								<p:commandButton value="Delete" />
-								<p:commandButton value="Publish" />
+								<!-- <p:commandButton value="Publish" /> -->
 
 							</f:facet>
 						</p:toolbar>
@@ -395,7 +399,7 @@
 					id="aot6" />
 
 			</p:dialog>
-			<p:dialog widgetVar="submitToMQM" header="Submit to MQM">
+			<!-- <p:dialog widgetVar="submitToMQM" header="Submit to MQM">
 				<p:commandLink
 					value="Are you sure you want to submit this MedDRA Query to the MQM?"
 					id="aot7" />
@@ -404,7 +408,7 @@
 				<p:commandLink
 					value="Are you sure you want to publish the selected MedDRA Query?"
 					id="aot8" />
-			</p:dialog>
+			</p:dialog> -->
 
 			<p:spacer width="10" height="10" id="s6" />
 			<h:panelGrid id="pgl2" columns="5"

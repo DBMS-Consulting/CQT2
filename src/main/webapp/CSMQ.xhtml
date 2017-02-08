@@ -124,9 +124,7 @@
 				<p:menuitem value="Copy" id="pt_cmi5" action="COPY_NMQ"
 					style="font-weight:#{userBean.currentMenu eq 'COPY_NMQ' ? 'bold' : 'normal'};"
 					rendered="true" />
-				<p:menuitem value="Update SMQs" id="pt_cmi6" action="UPDATE_SMQ"
-					rendered="true"
-					style="font-weight:#{userBean.currentMenu eq 'UPDATE_SMQ' ? 'bold' : 'normal'};" />
+				 
 				<p:menuitem value="Browse &amp; Search" id="pt_cmi17"
 					action="BROWSE_SEARCH" rendered="true"
 					style="font-weight:#{userBean.currentMenu eq 'BROWSE_SEARCH' ? 'bold' : 'normal'};"
@@ -155,6 +153,8 @@
 					action="MEDDRA_IMPACT_ASSESSMENT"
 					rendered='true' url="/impactAssessment/impactAssessment.xhtml"
 					style="font-weight:#{userBean.currentMenu eq 'MEDDRA_IMPACT_ASSESSMENT' ? 'bold' : 'normal'};" />
+
+
 				<p:submenu label="View Version Impacts" icon="ui-icon-document"
 					id="pt_m3"
 					style="font-weight:#{userBean.currentMenu eq 'VIEW_CURRENT_VERSION_IMPACT' or userBean.currentMenu eq 'VIEW_PREVIOUS_VERSION_IMPACT' ? 'bold' : 'normal'};">

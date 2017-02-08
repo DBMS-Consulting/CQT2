@@ -7,15 +7,17 @@
 	xmlns:p="http://primefaces.org/ui">
 
 	<p:panel header="Search">
+
 		<h:panelGrid columns="4" cellpadding="10">
 			<h:panelGrid columns="2">
 				<p:outputLabel value="Dictionary" />
-				<p:selectOneMenu value="#{null}">
+				<p:selectOneMenu value="#{dummyView.value}">
 					<f:selectItem itemValue="CMQ SMQ Dictionary"
 						itemLabel="CMQ SMQ Dictionary" />
 					<f:selectItem itemValue="MedDRA Dictionary"
 						itemLabel="MedDRA Dictionary" />
 				</p:selectOneMenu>
+
 				<p:outputLabel value="Extension" />
 				<p:selectOneMenu value="#{dummyView.value}">
 					<f:selectItem itemValue="SMQ" itemLabel="SMQ" />
@@ -24,7 +26,12 @@
 					<f:selectItem itemValue="ALL" itemLabel="ALL" />
 				</p:selectOneMenu>
 
-				<p:spacer />
+				<p:outputLabel value="Drug Program" />
+				<p:selectOneMenu value="#{dummyView.value}">
+					<f:selectItem itemValue="Val 1" itemLabel="Val 1" />
+					<f:selectItem itemValue="Val 2" itemLabel="Val 2" />
+ 				</p:selectOneMenu>
+
 			</h:panelGrid>
 
 			<h:panelGrid columns="2">
