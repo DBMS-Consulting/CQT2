@@ -1,0 +1,65 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" 
+	template="/ui/layout.xhtml">
+
+
+	<ui:define name="content">
+
+		<div>
+			<span style="font-weight: bold; padding: 10px;">›› Browse
+				&amp; Search</span>
+		</div>
+
+
+
+		<h:form>
+
+			<p:growl id="growl" sticky="true" showDetail="true" />
+
+			<p:wizard flowListener="#{userWizard.onFlowProcess}">
+				<p:tab id="search" title="Search">
+					<ui:insert name="search">
+						<ui:include src="/ui/search/search.xhtml" />
+					</ui:insert>
+				</p:tab>
+
+				<p:tab id="details" title="Details">
+					<ui:insert name="details">
+						<ui:include src="/ui/search/details.xhtml" />
+					</ui:insert>
+				</p:tab>
+
+				<p:tab id="contact" title="Informative Notes">
+					<p:panel header="Informative Notes">
+						<p:messages />
+
+						<h:panelGrid columns="2" columnClasses="label, value">
+							<p:outputLabel value="Email: *" />
+							<p:inputText value="#{userWizard.user.email}" />
+
+							<p:outputLabel value="Phone: " />
+							<p:inputText value="#{userWizard.user.phone}" />
+
+							<p:outputLabel value="Additional Info: " />
+							<p:inputText value="#{userWizard.user.info}" />
+						</h:panelGrid>
+
+					</p:panel>
+				</p:tab>
+
+				<p:tab id="relations" title="Relations">
+					<ui:insert name="relations">
+						<ui:include src="/ui/search/relations.xhtml" />
+					</ui:insert>
+				</p:tab>
+			</p:wizard>
+
+		</h:form>
+
+
+	</ui:define>
+
+</ui:composition>

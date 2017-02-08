@@ -1,41 +1,24 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>com.dbms</groupId>
-  <artifactId>CQT2</artifactId>
-  <version>1.0</version>
-  <packaging>war</packaging>
-  <build>
-    <sourceDirectory>src</sourceDirectory>
-    <plugins>
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.1</version>
-        <configuration>
-          <source>1.8</source>
-          <target>1.8</target>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
-  
-  <properties>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.dbms.cqt</groupId>
+	<artifactId>CQT2</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>war</packaging>
+
+
+	<properties>
 		<java.version>1.8</java.version>
 		<junit.version>4.12</junit.version>
 		<servlet.version>3.1.0</servlet.version>
-		<mojarra.version>2.2.12</mojarra.version>
-		<primefaces.version>5.3</primefaces.version>
+		<mojarra.version>2.2.14</mojarra.version>
+		<jetty.version>9.4.0.v20161208</jetty.version>
+		<primefaces.version>6.0</primefaces.version>
 		<maven.compiler.plugin.version>3.5.1</maven.compiler.plugin.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
-
-	<repositories>
-		<repository>
-			<id>prime-repo</id>
-			<name>PrimeFaces Maven Repository</name>
-			<url>http://repository.primefaces.org</url>
-			<layout>default</layout>
-		</repository>
-	</repositories>
 
 	<dependencies>
 		<dependency>
@@ -50,6 +33,7 @@
 			<version>${servlet.version}</version>
 			<scope>provided</scope>
 		</dependency>
+
 		<!-- Mojarra JSF -->
 		<dependency>
 			<groupId>com.sun.faces</groupId>
@@ -61,22 +45,54 @@
 			<artifactId>jsf-impl</artifactId>
 			<version>${mojarra.version}</version>
 		</dependency>
-		<!-- PrimeFaces -->
-		<!-- <dependency> <groupId>org.primefaces</groupId> <artifactId>primefaces</artifactId> 
-			<version>${primefaces.version}</version> </dependency> -->
 
+		<!-- PrimeFaces -->
 		<dependency>
 			<groupId>org.primefaces</groupId>
 			<artifactId>primefaces</artifactId>
-			<version>6.0</version>
+			<version>${primefaces.version}</version>
 		</dependency>
-
 		<dependency>
 			<groupId>org.primefaces.themes</groupId>
 			<artifactId>all-themes</artifactId>
 			<version>1.0.10</version>
 		</dependency>
 
-
 	</dependencies>
+
+	<build>
+
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven.compiler.plugin.version}</version>
+				<configuration>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>3.0.0</version>
+				<configuration>
+				</configuration>
+			</plugin>
+
+
+			<!-- Run the application using "mvn jetty:run" -->
+			<plugin>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-maven-plugin</artifactId>
+				<version>${jetty.version}</version>
+				<configuration>
+					<scanIntervalSeconds>10</scanIntervalSeconds>
+					<webApp>
+						<contextPath>/CQT</contextPath>
+					</webApp>
+				</configuration>
+			</plugin>
+				
+		</plugins>
+	</build>
+
 </project>

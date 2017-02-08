@@ -4,7 +4,7 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
-	xmlns:p="http://primefaces.org/ui" template="../CSMQ.xhtml">
+	xmlns:p="http://primefaces.org/ui" template="/CSMQ.xhtml">
 
 	<ui:define name="page-content">
 		<h:form id="fCreate">
@@ -33,7 +33,7 @@
 						<h:panelGrid columns="4" cellpadding="10">
 							<h:panelGrid columns="2">
 								<p:outputLabel value="Dictionary" />
-								<p:selectOneMenu value="#{null}">
+								<p:selectOneMenu value="#{dummyView.value}">
 									<f:selectItem itemValue="CMQ SMQ Dictionary"
 										itemLabel="CMQ SMQ Dictionary" />
 									<f:selectItem itemValue="MedDRA Dictionary"
@@ -41,7 +41,7 @@
 								</p:selectOneMenu>
 
 								<p:outputLabel value="Extension" />
-								<p:selectOneMenu value="#{null}">
+								<p:selectOneMenu value="#{dummyView.value}">
 									<f:selectItem itemValue="SMQ" itemLabel="SMQ" />
 									<f:selectItem itemValue="CMQ" itemLabel="CMQ" />
 									<f:selectItem itemValue="NMQ" itemLabel="NMQ" />
@@ -53,17 +53,17 @@
 
 							<h:panelGrid columns="2">
 								<p:outputLabel value="Release Status" />
-								<p:inputText value="#{null}" />
+								<p:inputText value="#{dummyView.value}" />
 
 								<p:outputLabel value="Approved" />
-								<p:selectOneMenu value="#{null}">
+								<p:selectOneMenu value="#{dummyView.value}">
 									<f:selectItem itemValue="ALL" itemLabel="ALL" />
 									<f:selectItem itemValue="Yes" itemLabel="Yes" />
 									<f:selectItem itemValue="No" itemLabel="No" />
 								</p:selectOneMenu>
 
 								<p:outputLabel value="Level" />
-								<p:selectOneMenu value="#{null}">
+								<p:selectOneMenu value="#{dummyView.value}">
 									<f:selectItem itemValue="1" itemLabel="1" />
 									<f:selectItem itemValue="2" itemLabel="2" />
 									<f:selectItem itemValue="3" itemLabel="3" />
@@ -76,7 +76,7 @@
 
 							<h:panelGrid columns="2">
 								<p:outputLabel value="Critical event" />
-								<p:selectOneMenu value="#{null}">
+								<p:selectOneMenu value="#{dummyView.value}">
 									<f:selectItem itemValue="All" itemLabel="All" />
 									<f:selectItem itemValue="No" itemLabel="No" />
 									<f:selectItem itemValue="Yes - Narrow" itemLabel="Yes - Narrow" />
@@ -84,10 +84,10 @@
 								</p:selectOneMenu>
 
 								<p:outputLabel value="Product" />
-								<p:inputText value="#{null}" />
+								<p:inputText value="#{dummyView.value}" />
 
 								<p:outputLabel value="Status" />
-								<p:selectOneMenu value="#{null}">
+								<p:selectOneMenu value="#{dummyView.value}">
 									<f:selectItem itemValue="All" itemLabel="All" />
 									<f:selectItem itemValue="Active" itemLabel="Active" />
 									<f:selectItem itemValue="Inactive" itemLabel="Inactive" />
@@ -97,10 +97,10 @@
 
 							<h:panelGrid columns="2">
 								<p:outputLabel value="Group" />
-								<p:inputText value="#{null}" />
+								<p:inputText value="#{dummyView.value}" />
 
 								<p:outputLabel value="Scope" />
-								<p:selectOneMenu value="#{null}">
+								<p:selectOneMenu value="#{dummyView.value}">
 									<f:selectItem itemValue="All" itemLabel="All" />
 									<f:selectItem itemValue="Y" itemLabel="Y" />
 									<f:selectItem itemValue="N" itemLabel="N" />
@@ -115,16 +115,16 @@
 
 						<h:panelGrid columns="5">
 							<p:outputLabel value="Term" />
-							<p:inputText value="#{null}" />
+							<p:inputText value="#{dummyView.value}" />
 							<p:outputLabel value="Code" />
-							<p:inputText value="#{null}" />
+							<p:inputText value="#{dummyView.value}" />
 							<p:commandButton value="Search" />
 						</h:panelGrid>
 
 						<p:spacer />
 
 						<p:outputPanel deferred="true" deferredMode="visible">
-							<p:dataTable var="car" value="#{null}">
+							<p:dataTable var="car" value="#{dummyView.value}">
 								<p:column headerText="Term">
 									<h:outputText value="#{car.id}" />
 								</p:column>
@@ -192,8 +192,8 @@
 
 							<h:panelGrid columns="2" columnClasses="label, value">
 								<p:outputLabel value="Extension" />
-								<p:selectOneMenu value="#{null}" rendered="true"
-									disabled="false" required="true">
+								<p:selectOneMenu value="#{dummyView.value}" rendered="true"
+									disabled="false" required="false">
 									<f:selectItem itemLabel="SMQ" itemValue="SMQ"></f:selectItem>
 									<f:selectItem itemLabel="CMQ" itemValue="CMQ"></f:selectItem>
 								</p:selectOneMenu>
@@ -205,8 +205,8 @@
 								<h:outputText value="NMATSMQ" />
 
 								<p:outputLabel value="Release group" />
-								<p:selectOneMenu value="#{null}" rendered="true"
-									disabled="false" required="true">
+								<p:selectOneMenu value="#{dummyView.value}" rendered="true"
+									disabled="false" required="false">
 									<f:selectItem itemLabel="group 1" itemValue=""></f:selectItem>
 									<f:selectItem itemLabel="group 2" itemValue=""></f:selectItem>
 								</p:selectOneMenu>
@@ -220,8 +220,8 @@
 								<h:outputText value="CURRENT" />
 
 								<p:outputLabel value="Product" rendered="true" />
-								<p:selectOneMenu value="#{null}" rendered="true"
-									disabled="false" required="true">
+								<p:selectOneMenu value="#{dummyView.value}" rendered="true"
+									disabled="false" required="false">
 									<f:selectItem itemLabel="Standard" itemValue="STANDARD"></f:selectItem>
 								</p:selectOneMenu>
 
@@ -229,8 +229,8 @@
 								<h:outputText value="STANDARD" rendered="false" />
 
 								<p:outputLabel value="Designee" />
-								<p:selectOneMenu value="#{null}" rendered="true"
-									disabled="false" required="true">
+								<p:selectOneMenu value="#{dummyView.value}" rendered="true"
+									disabled="false" required="false">
 									<f:selectItem itemLabel="Jane Doe" itemValue="jane"></f:selectItem>
 									<f:selectItem itemLabel="John Doe" itemValue="john"></f:selectItem>
 								</p:selectOneMenu>
@@ -241,8 +241,8 @@
 								<p:inputText value="MQ Algorithm" />
 
 								<p:outputLabel value="Status" />
-								<p:selectOneMenu value="#{null}" rendered="true"
-									disabled="false" required="true">
+								<p:selectOneMenu value="#{dummyView.value}" rendered="true"
+									disabled="false" required="false">
 									<f:selectItem itemLabel="Active" itemValue="A"></f:selectItem>
 									<f:selectItem itemLabel="Inactive" itemValue="I"></f:selectItem>
 									<f:selectItem itemLabel="Pending" itemValue="P"></f:selectItem>
@@ -252,16 +252,16 @@
 								<h:outputText value="state" />
 
 								<p:outputLabel value="Critical event" />
-								<p:selectOneMenu value="#{null}" rendered="true"
-									disabled="false" required="true">
+								<p:selectOneMenu value="#{dummyView.value}" rendered="true"
+									disabled="false" required="false">
 									<f:selectItem itemLabel="No" itemValue="N"></f:selectItem>
 									<f:selectItem itemLabel="Yes - Narrow" itemValue="Y_NARROW"></f:selectItem>
 									<f:selectItem itemLabel="Yes - Broad" itemValue="Y_BROAD"></f:selectItem>
 								</p:selectOneMenu>
 
 								<p:outputLabel value="Level" />
-								<p:selectOneMenu value="#{null}" rendered="true"
-									disabled="false" required="true">
+								<p:selectOneMenu value="#{dummyView.value}" rendered="true"
+									disabled="false" required="false">
 									<f:selectItem itemLabel="1" itemValue="NMQ1"
 										itemDisabled="false"></f:selectItem>
 									<f:selectItem itemLabel="2" itemValue="NMQ2"
@@ -276,15 +276,15 @@
 								</p:selectOneMenu>
 
 								<p:outputLabel value="Scope" />
-								<p:selectOneMenu value="#{null}" rendered="true"
-									disabled="false" required="true">
+								<p:selectOneMenu value="#{dummyView.value}" rendered="true"
+									disabled="false" required="false">
 									<f:selectItem itemLabel="Yes" itemValue="Y"></f:selectItem>
 									<f:selectItem itemLabel="No" itemValue="N"></f:selectItem>
 								</p:selectOneMenu>
 
 								<p:outputLabel value="Group" />
-								<p:selectOneMenu value="#{null}" rendered="true"
-									disabled="false" required="true">
+								<p:selectOneMenu value="#{dummyView.value}" rendered="true"
+									disabled="false" required="false">
 									<f:selectItem itemLabel="1" itemValue="1"></f:selectItem>
 								</p:selectOneMenu>
 
@@ -372,13 +372,13 @@
 								<p:spacer width="10" />
 								<p:commandButton value="Export" id="ctb11a" disabled="false"
 									icon="fa fa-file-excel-o">
-									<p:fileDownload value="#{null}"></p:fileDownload>
+									<p:fileDownload value="#{dummyView.value}"></p:fileDownload>
 								</p:commandButton>
 
 								<p:spacer width="10" />
 								<p:commandButton value="MQ Detailed Report" id="ctb1"
 									icon="fa fa-file-excel-o">
-									<p:fileDownload value="#{null}"></p:fileDownload>
+									<p:fileDownload value="#{dummyView.value}"></p:fileDownload>
 								</p:commandButton>
 
 								<p:spacer width="10" />
@@ -595,7 +595,7 @@
 								</tr>
 								<tr>
 									<td><p:outputLabel value="Due Date" /></td>
-									<td><p:calendar value="#{null}" mode="popup" /></td>
+									<td><p:calendar value="#{dummyView.value}" mode="popup" /></td>
 								</tr>
 								<tr>
 									<td><p:outputLabel value="Reason for Approval" /></td>
