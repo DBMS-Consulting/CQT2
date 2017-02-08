@@ -1,0 +1,2 @@
+AdfUIComponents.createComponentClass("AdfRichPanelBorderLayout",{componentType:"oracle.adf.RichPanelBorderLayout",propertyKeys:[{name:"inlineStyle",type:"String"},{name:"styleClass",type:"String"},{name:"shortDesc",type:"String"},{name:"unsecure",type:"Object",secured:!0},{name:"visible",type:"Boolean","default":!0}],superclass:AdfUIPanel});
+AdfRichUIPeer.createPeerClass(AdfRichUIPeer,"AdfDhtmlPanelBorderLayoutPeer");

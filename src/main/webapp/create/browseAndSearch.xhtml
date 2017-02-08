@@ -1,0 +1,638 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" template="../CSMQ.xhtml">
+
+	<ui:define name="page-content">
+		<h:form id="fBrowse">
+			<p:growl id="m1" />
+
+			<h:panelGrid columns="2" style="width: 100% !important">
+				<h:panelGrid>
+					<p:breadCrumb>
+						<p:menuitem value="Relations" url="#" />
+						<p:menuitem value="Add details" url="#" />
+					</p:breadCrumb>
+
+				</h:panelGrid>
+				<h:panelGrid columns="1" style="text-align: center">
+					<p:outputLabel value="Historic View as of 05-Feb 2017"
+						style="text-align: center" />
+				</h:panelGrid>
+			</h:panelGrid>
+
+			<p:wizard flowListener="#{wizard.onFlowProcess}">
+
+				<!-- DETAILS -->
+				<p:tab id="search" title="Search">
+					<p:panel header="Search">
+
+						<h:panelGrid columns="4" cellpadding="10">
+							<h:panelGrid columns="2">
+								<p:outputLabel value="Dictionary" />
+								<p:selectOneMenu value="#{null}" disabled="true">
+									<f:selectItem itemValue="CMQ SMQ Dictionary"
+										itemLabel="CMQ SMQ Dictionary" />
+									<f:selectItem itemValue="MedDRA Dictionary"
+										itemLabel="MedDRA Dictionary" />
+								</p:selectOneMenu>
+
+								<p:outputLabel value="Extension" />
+								<h:outputText value="#######" />
+
+								<p:spacer />
+							</h:panelGrid>
+
+							<h:panelGrid columns="2">
+								<p:outputLabel value="Release Status" />
+								<h:outputText value="#######" />
+
+								<p:outputLabel value="Approved" />
+								<h:outputText value="#######" />
+
+								<p:outputLabel value="Level" />
+								<h:outputText value="#######" />
+
+							</h:panelGrid>
+
+							<h:panelGrid columns="2">
+								<p:outputLabel value="Critical event" />
+								<h:outputText value="#######" />
+
+								<p:outputLabel value="Product" />
+								<h:outputText value="#######" />
+
+								<p:outputLabel value="Status" />
+								<h:outputText value="#######" />
+							</h:panelGrid>
+
+							<h:panelGrid columns="2">
+								<p:outputLabel value="Group" />
+								<h:outputText value="#######" />
+
+								<p:outputLabel value="Scope" />
+								<h:outputText value="#######" />
+
+								<p:spacer />
+							</h:panelGrid>
+
+						</h:panelGrid>
+
+						<p:separator />
+
+						<h:panelGrid columns="6">
+							<p:outputLabel value="Term" />
+							<p:inputText value="#######" />
+							<p:outputLabel value="Code" />
+							<p:inputText value="#######" />
+							<p:commandButton value="Search" />
+							<p:commandButton value="Maintain Designees" />
+						</h:panelGrid>
+
+						<p:spacer />
+
+						<p:outputPanel deferred="true" deferredMode="visible">
+							<p:dataTable var="car" value="#{null}">
+								<p:column headerText="Term">
+									<h:outputText value="#{car.id}" />
+								</p:column>
+
+								<p:column headerText="Approved">
+									<h:outputText value="#{car.year}" />
+								</p:column>
+
+								<p:column headerText="Status">
+									<h:outputText value="#{car.brand}" />
+								</p:column>
+
+								<p:column headerText="Release Status">
+									<h:outputText value="#{car.color}" />
+								</p:column>
+								<p:column headerText="Release Group">
+									<h:outputText value="#{car.brand}" />
+								</p:column>
+
+								<p:column headerText="Group">
+									<h:outputText value="#{car.brand}" />
+								</p:column>
+
+								<p:column headerText="Level">
+									<h:outputText value="#{car.brand}" />
+								</p:column>
+
+								<p:column headerText="Critical Event">
+									<h:outputText value="#{car.brand}" />
+								</p:column>
+
+								<p:column headerText="Code">
+									<h:outputText value="#{car.brand}" />
+								</p:column>
+
+								<p:column headerText="Scope">
+									<h:outputText value="#{car.brand}" />
+								</p:column>
+
+								<p:column headerText="State">
+									<h:outputText value="#{car.brand}" />
+								</p:column>
+								<p:column headerText="Product">
+									<h:outputText value="#{car.brand}" />
+								</p:column>
+								<p:column headerText="Created By">
+									<h:outputText value="#{car.brand}" />
+								</p:column>
+								<p:column headerText="Extention">
+									<h:outputText value="#{car.brand}" />
+								</p:column>
+								<p:column headerText="History">
+									<h:outputText value="#{car.brand}" />
+								</p:column>
+							</p:dataTable>
+						</p:outputPanel>
+					</p:panel>
+				</p:tab>
+
+				<p:tab id="details" title="Details">
+					<p:panel header="Details">
+
+
+						<h:panelGrid columns="3" cellpadding="10">
+
+							<h:panelGrid columns="2" columnClasses="label, value">
+								<p:outputLabel value="Extension" />
+								<p:selectOneMenu value="#{null}" rendered="true"
+									disabled="false" required="true">
+									<f:selectItem itemLabel="SMQ" itemValue="SMQ"></f:selectItem>
+									<f:selectItem itemLabel="CMQ" itemValue="CMQ"></f:selectItem>
+								</p:selectOneMenu>
+
+								<p:outputLabel value="Name" />
+								<p:inputText value="12JUN2015 CQT [STANDARD] (NMQ)" />
+
+								<p:outputLabel value="Filter Dictionary" />
+								<h:outputText value="NMATSMQ" />
+
+								<p:outputLabel value="Release group" />
+								<p:selectOneMenu value="#{null}" rendered="true"
+									disabled="false" required="true">
+									<f:selectItem itemLabel="group 1" itemValue=""></f:selectItem>
+									<f:selectItem itemLabel="group 2" itemValue=""></f:selectItem>
+								</p:selectOneMenu>
+
+								<p:outputLabel value="Approved" />
+								<span class="xjz"><img
+									src="../details_files/checkMark_readonly.png" class="xuf"
+									title="Checked" alt="Checked" height="13" width="13" border="0" /></span>
+
+								<p:outputLabel value="Release Status" />
+								<h:outputText value="CURRENT" />
+
+								<p:outputLabel value="Product" rendered="true" />
+								<p:selectOneMenu value="#{null}" rendered="true"
+									disabled="false" required="true">
+									<f:selectItem itemLabel="Standard" itemValue="STANDARD"></f:selectItem>
+								</p:selectOneMenu>
+
+								<p:outputLabel value="Product" rendered="false" />
+								<h:outputText value="STANDARD" rendered="false" />
+
+								<p:outputLabel value="Designee" />
+								<p:selectOneMenu value="#{null}" rendered="true"
+									disabled="false" required="true">
+									<f:selectItem itemLabel="Jane Doe" itemValue="jane"></f:selectItem>
+									<f:selectItem itemLabel="John Doe" itemValue="john"></f:selectItem>
+								</p:selectOneMenu>
+							</h:panelGrid>
+
+							<h:panelGrid columns="2" columnClasses="label, value">
+								<p:outputLabel value="Algorithm" />
+								<p:inputText value="MQ Algorithm" />
+
+								<p:outputLabel value="Status" />
+								<p:selectOneMenu value="#{null}" rendered="true"
+									disabled="false" required="true">
+									<f:selectItem itemLabel="Active" itemValue="A"></f:selectItem>
+									<f:selectItem itemLabel="Inactive" itemValue="I"></f:selectItem>
+									<f:selectItem itemLabel="Pending" itemValue="P"></f:selectItem>
+								</p:selectOneMenu>
+
+								<p:outputLabel value="State" />
+								<h:outputText value="state" />
+
+								<p:outputLabel value="Critical event" />
+								<p:selectOneMenu value="#{null}" rendered="true"
+									disabled="false" required="true">
+									<f:selectItem itemLabel="No" itemValue="N"></f:selectItem>
+									<f:selectItem itemLabel="Yes - Narrow" itemValue="Y_NARROW"></f:selectItem>
+									<f:selectItem itemLabel="Yes - Broad" itemValue="Y_BROAD"></f:selectItem>
+								</p:selectOneMenu>
+
+								<p:outputLabel value="Level" />
+								<p:selectOneMenu value="#{null}" rendered="true"
+									disabled="false" required="true">
+									<f:selectItem itemLabel="1" itemValue="NMQ1"
+										itemDisabled="false"></f:selectItem>
+									<f:selectItem itemLabel="2" itemValue="NMQ2"
+										itemDisabled="false"></f:selectItem>
+									<f:selectItem itemLabel="3" itemValue="NMQ3"
+										itemDisabled="false"></f:selectItem>
+									<f:selectItem itemLabel="4" itemValue="NMQ4"
+										itemDisabled="false"></f:selectItem>
+									<f:selectItem itemLabel="5" itemValue="NMQ5"
+										itemDisabled="false"></f:selectItem>
+
+								</p:selectOneMenu>
+
+								<p:outputLabel value="Scope" />
+								<p:selectOneMenu value="#{null}" rendered="true"
+									disabled="false" required="true">
+									<f:selectItem itemLabel="Yes" itemValue="Y"></f:selectItem>
+									<f:selectItem itemLabel="No" itemValue="N"></f:selectItem>
+								</p:selectOneMenu>
+
+								<p:outputLabel value="Group" />
+								<p:selectOneMenu value="#{null}" rendered="true"
+									disabled="false" required="true">
+									<f:selectItem itemLabel="1" itemValue="1"></f:selectItem>
+								</p:selectOneMenu>
+
+								<p:outputLabel value="Code" />
+								<h:outputText value="ABC" />
+
+							</h:panelGrid>
+
+							<h:panelGrid columns="2" columnClasses="label, value">
+								<p:outputLabel value="Initial Creation By  " />
+								<h:outputText value="NMAT" />
+
+								<p:outputLabel value="Initial Creation Date  " />
+								<h:outputText value="2015-06-12 12:33:13" />
+
+								<p:outputLabel value="Last Activation By  " />
+								<h:outputText value="NMAT" />
+
+								<p:outputLabel value="Last Activation Date  " />
+								<h:outputText value="2015-06-12 12:33:13" />
+							</h:panelGrid>
+						</h:panelGrid>
+					</p:panel>
+				</p:tab>
+
+				<!-- CONTACT -->
+				<p:tab id="contact" title="Informative Notes">
+					<p:panel header="Informative Notes for ###">
+						<p:tabView>
+							<p:tab title="Description">
+								<h:inputTextarea value="****** Description *******" />
+
+							</p:tab>
+							<p:tab title="Notes">
+								<h:inputTextarea value="****** Notes *******" />
+							</p:tab>
+							<p:tab title="Source">
+								<h:inputTextarea value="****** Sources *******" />
+							</p:tab>
+						</p:tabView>
+
+
+						<p:commandButton value="Save" action="SAVE"></p:commandButton>
+					</p:panel>
+
+				</p:tab>
+
+				<!-- RELATIONS -->
+				<p:tab id="relations" title="Relations">
+					<p:panel header="Relations">
+
+						<p:toolbar>
+							<f:facet name="left">
+								<p:selectOneMenu value="#">
+									<f:selectItem itemValue="0" itemLabel="Filter and Sort"></f:selectItem>
+									<f:selectItem itemValue="TERM" itemLabel="Term name"></f:selectItem>
+									<f:selectItem itemValue="DEF_LEVEL_REF_SHORT_NAME"
+										itemLabel="Level"></f:selectItem>
+									<f:selectItem itemValue="SCOPE" itemLabel="Scope"></f:selectItem>
+								</p:selectOneMenu>
+								<p:spacer width="10" />
+
+
+								<p:selectBooleanCheckbox id="show" label="Show Primary Only"></p:selectBooleanCheckbox>
+								<p:outputLabel for="show" value="Show Primary Only" />
+								<p:spacer width="10" />
+								<p:selectOneMenu value="#">
+									<f:selectItem itemValue="0" itemLabel="Scope"></f:selectItem>
+									<f:selectItem itemValue="1" itemLabel="1"></f:selectItem>
+								</p:selectOneMenu>
+
+								<p:spacer width="10" />
+								<p:commandButton value="Refresh" id="cb7" icon="ui-icon-refresh"
+									rendered="true" />
+								<p:spacer width="10" />
+								<p:commandButton value="Delete selected" icon="ui-icon-close"
+									id="ctb2" onclick="PF('confirm').show();" rendered="true"
+									disabled="false">
+								</p:commandButton>
+
+								<p:spacer width="10" />
+								<p:commandButton value="Save" id="cb3" disabled="false"
+									rendered="true" icon="ui-icon-disk" />
+
+								<p:spacer width="10" />
+								<p:commandButton value="Export" id="ctb11a" disabled="false"
+									icon="fa fa-file-excel-o">
+									<p:fileDownload value="#{null}"></p:fileDownload>
+								</p:commandButton>
+
+								<p:spacer width="10" />
+								<p:commandButton value="MQ Detailed Report" id="ctb1"
+									icon="fa fa-file-excel-o">
+									<p:fileDownload value="#{null}"></p:fileDownload>
+								</p:commandButton>
+
+								<p:spacer width="10" />
+								<p:commandButton value="Hierarchy Search" id="cb6"
+									icon="fa fa-link" onclick="PF('search').show();"
+									rendered="true">
+								</p:commandButton>
+							</f:facet>
+						</p:toolbar>
+
+						<br />
+						<p:treeTable value="#{userBean.root}" var="document">
+
+							<p:columnGroup type="header">
+								<p:row>
+									<p:column rowspan="2" headerText="##" />
+									<p:column colspan="6" headerText="Hierarchy Details" />
+								</p:row>
+
+								<p:row>
+									<p:column headerText="Code" />
+									<p:column headerText="Level" />
+									<p:column headerText="Scope" />
+									<p:column headerText="Category" />
+									<p:column headerText="Weight" />
+									<p:column headerText="Delete" />
+								</p:row>
+							</p:columnGroup>
+
+							<p:column>
+								<h:panelGrid columns="1">
+									<h:outputText value="ABC" id="ot5" rendered="true"
+										shortDesc="#{node.path}" style="white-space:pre-wrap"
+										noWrap="false" />
+									<h:commandLink value="abc" id="cl1" rendered="true" />
+								</h:panelGrid>
+							</p:column>
+
+							<p:column>
+								<h:outputText value="#" rendered="true" />
+							</p:column>
+							<p:column headerText="Level" style="width: 50px !important">
+								<h:outputText value="#" rendered="true" />
+							</p:column>
+
+							<p:column>
+								<p:selectOneMenu id="soc3" value="Narrow">
+
+									<f:selectItem itemLabel="Broad" itemValue="1" id="si13s" />
+									<f:selectItem itemLabel="Narrow" itemValue="2" id="si13d" />
+									<f:selectItem itemLabel="Child Narrow" itemValue="3" id="si4" />
+								</p:selectOneMenu>
+							</p:column>
+
+							<p:column>
+								<p:selectOneMenu id="soc2" value="S" rendered="true">
+									<f:selectItem itemLabel="A" itemValue="A" id="si3" />
+									<f:selectItem itemLabel="S" itemValue="S" id="si33" />
+									<f:selectItem itemLabel="B" itemValue="B" id="si8" />
+									<f:selectItem itemLabel="C" itemValue="C" id="si9" />
+									<f:selectItem itemLabel="D" itemValue="D" id="si10" />
+									<f:selectItem itemLabel="E" itemValue="E" id="si11" />
+									<f:selectItem itemLabel="F" itemValue="F" id="si19" />
+									<f:selectItem itemLabel="G" itemValue="G" id="si12" />
+									<f:selectItem itemLabel="H" itemValue="H" id="si17" />
+									<f:selectItem itemLabel="I" itemValue="I" id="si18" />
+								</p:selectOneMenu>
+							</p:column>
+
+							<p:column>
+								<p:spinner value="2" id="ot6" />
+							</p:column>
+
+							<p:column>
+								<p:selectBooleanCheckbox />
+							</p:column>
+						</p:treeTable>
+					</p:panel>
+				</p:tab>
+			</p:wizard>
+
+			<!-- Popups - dialogs   -->
+			<p:dialog widgetVar="confirm" header="Confirm">
+				<h:commandButton value="Delete all selected terms?" />
+			</p:dialog>
+
+			<p:dialog widgetVar="search" modal="false" header="Hierarchy search">
+				<p:panel header="Relations" style="width:700px; height:623px;">
+					<table>
+						<tbody>
+							<tr>
+								<td><p:outputLabel value="Dictionary" /></td>
+								<td><p:selectOneMenu label="Dictionary" id="soc9"
+										autoSubmit="true" value="BASE">
+										<f:selectItem itemLabel="MedDRA" itemValue="BASE" id="si40" />
+										<f:selectItem itemLabel="MQ" itemValue="FILTER" id="si41" />
+									</p:selectOneMenu></td>
+								<td><p:inputText placeholder="Term" id="it2" /></td>
+							</tr>
+
+							<tr>
+								<td><p:outputLabel value="Level" /></td>
+								<p:spacer width="10" />
+								<td><p:selectOneMenu id="soc10" label="Level"
+										partialTriggers="soc9" value="SOC">
+										<f:selectItem itemLabel="SMQ 1" itemValue="MQ1" id="si42"
+											rendered="true" />
+										<f:selectItem itemLabel="SMQ 2" itemValue="MQ2" id="si48"
+											rendered="true" />
+										<f:selectItem itemLabel="SMQ 3" itemValue="MQ3" id="si43"
+											rendered="true" />
+										<f:selectItem itemLabel="SMQ 4" itemValue="MQ4" id="si44"
+											rendered="true" />
+										<f:selectItem itemLabel="SMQ 5" itemValue="MQ5" id="si45"
+											rendered="true" />
+										<f:selectItem itemLabel="All SMQs" itemValue="MQ%" id="si1"
+											rendered="true" />
+										<f:selectItem itemLabel="NMQ/CMQ 1" itemValue="NMQ1" id="si46"
+											rendered="true" />
+										<f:selectItem itemLabel="NMQ 2" itemValue="NMQ2" id="si49"
+											rendered="true" />
+										<f:selectItem itemLabel="NMQ 3" itemValue="NMQ3" id="si47"
+											rendered="true" />
+										<f:selectItem itemLabel="NMQ 4" itemValue="NMQ4" id="si52"
+											rendered="true" />
+										<f:selectItem itemLabel="NMQ 5" itemValue="NMQ5" id="si50"
+											rendered="true" />
+										<f:selectItem itemLabel="All NMQ/CMQs" itemValue="NMQ%"
+											id="si2" rendered="true" />
+										<f:selectItem itemLabel="SOC" itemValue="SOC" id="si51"
+											rendered="true" />
+										<f:selectItem itemLabel="HLGT" itemValue="HLGT" id="si53"
+											rendered="true" />
+										<f:selectItem itemLabel="HLT" itemValue="HLT" id="si54"
+											rendered="true" />
+										<f:selectItem itemLabel="PT" itemValue="PT" id="si55"
+											rendered="true" />
+									</p:selectOneMenu></td>
+								<td><p:commandButton value="Search" id="cb1"
+										partialSubmit="true" style="height:auto;" /></td>
+							</tr>
+						</tbody>
+					</table>
+					<!-- <h:panelGrid columns="2">
+
+						<h:panelGrid id="pfl1" styleClass="AFStretchWidth" columns="1">
+							<h:panelGrid columns="2">
+								
+								
+							</h:panelGrid>
+							<h:panelGrid columns="2">
+								
+								
+							</h:panelGrid>
+						</h:panelGrid>
+						<h:panelGrid id="pfl4" columns="1">
+							
+							
+						</h:panelGrid>
+					</h:panelGrid> -->
+					<br />
+					<p:treeTable value="#{userBean.root}" var="row"
+						style="height:200px;" styleClass="AFStretchWidth" width="521">
+						<p:column headerText="Term" id="c10" width="1" minimumWidth="1"
+							rendered="true 	">
+							<p:inputText value="#####" id="it4">
+								<!-- <f:convertNumber groupingUsed="false"
+									pattern="#{bindings.HierarchySourceTermSearchVO1.hints.Rnum.format}" /> -->
+							</p:inputText>
+						</p:column>
+						<p:column headerText="Content Code" id="c11" width="75">
+							<h:outputText value="#{row.dictContentCode}" id="ot8" />
+						</p:column>
+						<p:column id="c28" width="20" minimumWidth="15">
+							<p:commandButton id="cb2" style="height:10px; width:20px;"
+								partialSubmit="true" />
+						</p:column>
+						<!-- 	<af:dragSource actions="MOVE" discriminant="rowmove" /> -->
+						<f:facet name="nodeStamp">
+							<p:column id="c14" headerText="Term" width="200">
+								<h:outputText value="#{row.term}" id="ot11" />
+							</p:column>
+						</f:facet>
+						<!-- <f:facet name="pathStamp">
+							<af:group id="g4">
+								<h:outputText value="#{row}" id="ot12" />
+							</af:group>
+						</f:facet> -->
+
+					</p:treeTable>
+
+					<br />
+					<h:panelGrid id="pc3" styleClass="AFStretchWidth">
+						<p:toolbar id="t4">
+							<f:facet name="left">
+								<h:panelGrid columns="4">
+									<h:panelGrid columns="1">
+										<p:selectOneMenu label="Sort" value="#" id="soc11">
+											<f:selectItem itemLabel="Filter and Sort" itemValue="TERM"
+												id="si57" />
+											<f:selectItem itemLabel="Term Name" itemValue="#" />
+											<f:selectItem itemLabel="Level"
+												itemValue="DEF_LEVEL_REF_SHORT_NAME" id="si59" />
+											<f:selectItem itemLabel="Scope" itemValue="SCOPE" />
+										</p:selectOneMenu>
+									</h:panelGrid>
+									<h:panelGrid columns="2">
+										<p:outputLabel value="Show Primary Only"></p:outputLabel>
+										<p:selectBooleanCheckbox id="sbc5" value="false"
+											autoSubmit="true" />
+									</h:panelGrid>
+									<p:selectOneMenu label="Scope" id="soc12" value="0">
+										<f:selectItem
+											itemLabel="Full #{applicationScope.CSMQBean.customMQName}/SMQ"
+											itemValue="0" id="si60" />
+										<f:selectItem itemLabel="Child Narrow" itemValue="3" id="si61" />
+									</p:selectOneMenu>
+									<p:commandButton value="Refresh" id="ctb4"
+										icon="ui-icon-refresh" disabled="false" />
+								</h:panelGrid>
+							</f:facet>
+						</p:toolbar>
+
+						<p:treeTable value="#{userBean.root}" var="node"
+							rowSelection="multiple" id="hierSrc">
+
+							<p:columnGroup type="header">
+								<p:row>
+									<p:column rowspan="2" headerText="ABC" />
+									<p:column colspan="3" headerText="Hierarchy Details" />
+								</p:row>
+
+								<p:row>
+									<p:column headerText="Code" />
+									<p:column headerText="Level" />
+									<p:column headerText="Scope" />
+								</p:row>
+							</p:columnGroup>
+
+							<p:column id="c8" width="200" noWrap="false">
+								<h:panelGrid id="pgl5" halign="left">
+									<h:outputText value="#{node.term}" id="ot1"
+										styleClass="#{node.style}"
+										rendered="#{!node.showHasChildrenButton}" />
+									<p:commandLink value="#####" id="cl2" rendered="true"
+										partialSubmit="true" />
+								</h:panelGrid>
+							</p:column>
+
+							<p:column id="c26" width="50" sortable="true" filterable="true">
+								<h:outputText value="#{node.dictContentCode}" id="ot7" />
+							</p:column>
+							<p:column id="c18" width="50" sortable="true" filterable="true">
+								<h:outputText value="#{node.levelName}" id="ot14" />
+							</p:column>
+							<p:column id="c17" width="50" sortable="true" filterable="true">
+								<h:outputText value="#{node.scopeName}" id="ot13" />
+							</p:column>
+						</p:treeTable>
+					</h:panelGrid>
+				</p:panel>
+			</p:dialog>
+
+			<p:spacer width="10" height="10" id="s6" />
+			<h:panelGrid id="pgl2" columns="5"
+				style="padding:3px; font-size: 10px !important">
+
+				<!-- <af:trainButtonBar
+								value="#{controllerContext.currentViewPort.taskFlowContext.trainModel}"
+								id="tbb1" /> -->
+				<p:commandButton value="Cancel" id="cb1can" action="CANCEL"
+					immediate="true" />
+
+				<p:outputLabel for="it1aw" value="Dictionary Version:"></p:outputLabel>
+				<h:inputText id="it1aw" value="########" disabled="true"
+					columns="200" />
+
+				<p:outputLabel for="it3" value="Name: "></p:outputLabel>
+				<h:inputText id="it3" value="#########" readOnly="true"
+					disabled="true" />
+			</h:panelGrid>
+			<f:attribute name="currentPage"
+				value="Create New #{applicationScope.CSMQBean.customMQName} Wizard" />
+		</h:form>
+	</ui:define>
+</ui:composition>

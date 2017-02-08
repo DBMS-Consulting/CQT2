@@ -1,0 +1,145 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" template="../CSMQ.xhtml">
+
+	<ui:define name="page-content">
+		<h:form id="f1">
+			<p:growl id="m1" />
+
+			<h:panelGrid columns="2" style="width: 100% !important">
+				<h:panelGrid>
+					<p:breadCrumb>
+						<p:menuitem value="" url="#" />
+					</p:breadCrumb>
+
+				</h:panelGrid>
+
+			</h:panelGrid>
+
+			<p:wizard flowListener="#{wizard.onFlowProcess}">
+				<!-- DETAILS -->
+				<p:tab id="promote" title="Promote to Published from Impact Analysis">
+					<p:panel header="Promote to Published">
+						<h:panelGrid columns="2">
+							<p:pickList id="pickList" value="#{userBean.pickList}" var="pick"
+								itemLabel="#{pick}" itemValue="#{pick}" />
+
+							<p:commandButton value="Promote" onclick="PF('confirmDemote').show();" />
+						</h:panelGrid>
+
+					</p:panel>
+				</p:tab>
+
+				<p:tab id="demote" title="Demote to Draft from Impact Analysis">
+					<p:panel header="Demote to Draft">
+						<h:panelGrid columns="2">
+							<p:pickList id="pickList2" value="#{userBean.pickList}"
+								var="pick" itemLabel="#{pick}" itemValue="#{pick}" />
+
+							<p:commandButton value="Demote" onclick="PF('confirm2').show();" />
+						</h:panelGrid>
+					</p:panel>
+				</p:tab>
+
+				<p:tab id="activate" title="Activate">
+					<p:panel header="Demote to Draft from Impact Analysis">
+						<h:panelGrid id="pgl3">
+							<p:toolbar id="t4">
+								<f:facet name="left">
+									<p:commandButton value="Demote Selected"
+										onclick="PF('confirm2').show();" id="ctb1">
+									</p:commandButton>
+									<p:commandButton value="Validate Group" id="ctb2"
+										onclick="PF('confirmActivate').show();" />
+									<p:commandButton value="Activate Group" id="ctb3"
+										onclick="PF('confirmActivate').show();" disabled="true"
+										partialTriggers="ctb2" rendered="false">
+
+									</p:commandButton>
+								</f:facet>
+							</p:toolbar>
+							<h:panelGrid columns="2">
+								<p:dataTable value="#{null}">
+									<p:column headerText="Term" id="c1" width="240">
+										<p:inputText value="#####">
+											<!-- <f:validator binding="#{row.bindings.Term.validator}" /> -->
+										</p:inputText>
+									</p:column>
+
+									<p:column width="330" headerText="Error">
+										<p:inputText value="######" id="it2">
+											<!-- <f:validator binding="#{row.bindings.ErrorMsg.validator}" /> -->
+										</p:inputText>
+									</p:column>
+
+									<p:column headerText="####" id="c3" width="0" rendered="true">
+										<p:inputText value="#######" id="it3">
+											<!-- <f:validator
+												binding="#{row.bindings.PredictContentId.validator}" /> -->
+											<f:convertNumber />
+										</p:inputText>
+									</p:column>
+
+								</p:dataTable>
+
+
+								
+								<p:dataTable value="#{null}" style="">
+									<p:column sortable="false" headerText="Term" id="c6"
+										width="240">
+										<p:inputText value="#######" required="true" id="it5">
+											<!-- <f:validator binding="#{row.bindings.Term.validator}" /> -->
+										</p:inputText>
+									</p:column>
+									<p:column filterable="false" sortable="true"
+										headerText="Relation Errors" id="c4" width="330">
+										<p:inputText value="######" required="true" id="it4">
+											<!-- <f:validator binding="#{row.bindings.ErrorMsg.validator}" /> -->
+										</p:inputText>
+									</p:column>
+								</p:dataTable>
+							</h:panelGrid>
+
+							<table>
+								<tbody>
+									<tr>
+										
+									</tr>
+								</tbody>
+							</table>
+						</h:panelGrid>
+					</p:panel>
+				</p:tab>
+
+
+			</p:wizard>
+
+			<p:dialog header="Confirm Promotion" widgetVar="confirm1"
+				closable="true" closeOnEscape="true">
+				<p:commandLink
+					value="Are you sure you want to promote the selected MQ(s)?"
+					id="aot1" />
+			</p:dialog>
+
+			<p:dialog header="Confirm Demotion" widgetVar="confirm2"
+				closable="true" closeOnEscape="true">
+				<p:commandLink
+					value="Are you sure you want to demote the selected MQ(s)?"
+					id="aot2" />
+			</p:dialog>
+
+			<p:dialog widgetVar="confirmDemote" header="Confirm Demotion">
+				<p:commandLink value="Demote all selected terms to draft?" />
+			</p:dialog>
+			<p:dialog widgetVar="confirmActivate" header="Confirm Activation">
+				<p:commandLink
+					value="You are about to activate this group.  Prior to activation, validation will be performed and if there are any errors the group will not be activated." />
+			</p:dialog>
+
+		</h:form>
+	</ui:define>
+</ui:composition>
