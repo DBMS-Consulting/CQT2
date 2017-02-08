@@ -11,7 +11,7 @@
 		<h:panelGrid columns="4" cellpadding="10">
 			<h:panelGrid columns="2">
 				<p:outputLabel value="Dictionary" />
-				<p:selectOneMenu value="#{null}" disabled="true">
+				<p:selectOneMenu value="#{null}">
 					<f:selectItem itemValue="CMQ SMQ Dictionary"
 						itemLabel="CMQ SMQ Dictionary" />
 					<f:selectItem itemValue="MedDRA Dictionary"
@@ -19,40 +19,70 @@
 				</p:selectOneMenu>
 
 				<p:outputLabel value="Extension" />
-				<h:outputText value="#######" />
+				<p:selectOneMenu value="#{dummyView.value}">
+					<f:selectItem itemValue="SMQ" itemLabel="SMQ" />
+					<f:selectItem itemValue="CMQ" itemLabel="CMQ" />
+					<f:selectItem itemValue="NMQ" itemLabel="NMQ" />
+					<f:selectItem itemValue="ALL" itemLabel="ALL" />
+				</p:selectOneMenu>
 
 				<p:spacer />
 			</h:panelGrid>
 
 			<h:panelGrid columns="2">
 				<p:outputLabel value="Release Status" />
-				<h:outputText value="#######" />
+				<p:inputText />
 
 				<p:outputLabel value="Approved" />
-				<h:outputText value="#######" />
+				<p:selectOneMenu value="#{dummyView.value}">
+					<f:selectItem itemValue="ALL" itemLabel="ALL" />
+					<f:selectItem itemValue="Yes" itemLabel="Yes" />
+					<f:selectItem itemValue="No" itemLabel="No" />
+				</p:selectOneMenu>
 
 				<p:outputLabel value="Level" />
-				<h:outputText value="#######" />
+				<p:selectOneMenu value="#{dummyView.value}">
+					<f:selectItem itemValue="1" itemLabel="1" />
+					<f:selectItem itemValue="2" itemLabel="2" />
+					<f:selectItem itemValue="3" itemLabel="3" />
+					<f:selectItem itemValue="4" itemLabel="4" />
+					<f:selectItem itemValue="5" itemLabel="5" />
+					<f:selectItem itemValue="All Levels" itemLabel="All Levels" />
+				</p:selectOneMenu>
 
 			</h:panelGrid>
 
 			<h:panelGrid columns="2">
 				<p:outputLabel value="Critical event" />
-				<h:outputText value="#######" />
+				<p:selectOneMenu value="#{dummyView.value}">
+					<f:selectItem itemValue="All" itemLabel="All" />
+					<f:selectItem itemValue="No" itemLabel="No" />
+					<f:selectItem itemValue="Yes - Narrow" itemLabel="Yes - Narrow" />
+					<f:selectItem itemValue="Yes - Broad" itemLabel="Yes - Broad" />
+				</p:selectOneMenu>
 
 				<p:outputLabel value="Product" />
-				<h:outputText value="#######" />
+				<p:inputText />
 
 				<p:outputLabel value="Status" />
-				<h:outputText value="#######" />
+				<p:selectOneMenu value="#{dummyView.value}">
+					<f:selectItem itemValue="All" itemLabel="All" />
+					<f:selectItem itemValue="Active" itemLabel="Active" />
+					<f:selectItem itemValue="Inactive" itemLabel="Inactive" />
+					<f:selectItem itemValue="Pending" itemLabel="Pending" />
+				</p:selectOneMenu>
 			</h:panelGrid>
 
 			<h:panelGrid columns="2">
 				<p:outputLabel value="Group" />
-				<h:outputText value="#######" />
+				<p:inputText />
 
 				<p:outputLabel value="Scope" />
-				<h:outputText value="#######" />
+				<p:selectOneMenu value="#{dummyView.value}">
+					<f:selectItem itemValue="All" itemLabel="All" />
+					<f:selectItem itemValue="Y" itemLabel="Y" />
+					<f:selectItem itemValue="N" itemLabel="N" />
+				</p:selectOneMenu>
 
 				<p:spacer />
 			</h:panelGrid>
@@ -63,9 +93,9 @@
 
 		<h:panelGrid columns="6">
 			<p:outputLabel value="Term" />
-			<h:inputText  />
+			<p:inputText />
 			<p:outputLabel value="Code" />
-			<h:inputText  />
+			<p:inputText />
 			<p:commandButton value="Search" />
 			<p:commandButton value="Maintain Designees" />
 		</h:panelGrid>
