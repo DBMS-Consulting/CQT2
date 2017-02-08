@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" template="../CSMQ.xhtml">
+
+	<ui:define name="page-content">
+		<h:form id="f1">
+			<p:growl id="m1" />
+
+			<h:panelGrid columns="2" style="width: 100% !important">
+				<h:panelGrid>
+					<p:breadCrumb>
+						<p:menuitem value="" url="#" />
+					</p:breadCrumb>
+
+				</h:panelGrid>
+
+			</h:panelGrid>
+
+			<p:wizard flowListener="#{userWizard.onFlowProcess}">
+				<!-- DETAILS -->
+				<p:tab id="details" title="Details">
+					<ui:include src="../commonImpact/viewDetails.xhtml"></ui:include>
+				</p:tab>
+
+				<p:tab id="view" title="Version Impact">
+					<p:panel header="Version Impact">
+						<ui:include src="../commonImpact/viewImpactAssessment.xhtml"></ui:include>
+					</p:panel>
+				</p:tab>
+
+				<p:tab id="infos" title="Informative Notes">
+					<ui:include src="../commonImpact/viewInformationNotes.xhtml"></ui:include>
+				</p:tab>
+			</p:wizard>
+		</h:form>
+	</ui:define>
+</ui:composition>
