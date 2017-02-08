@@ -1,0 +1,293 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" template="../CSMQ.xhtml">
+
+	<ui:define name="page-content">
+		<h:form id="impactAssessment">
+			<p:growl id="messages" />
+			<p:toolbar>
+				<f:facet name="left">
+					<h:outputText value="Impact Assessment" style="font-weight: bold;" />
+				</f:facet>
+
+				<f:facet name="right">
+					<p:commandButton value="Save" icon="ui-icon-disk" update="messages"  />
+					<p:commandButton value="Review" actionListener="#" onclick="PF('review').show();"
+						icon="ui-icon-disk" update="messages" />
+					<p:commandButton value="Approve" actionListener="#" onclick="PF('approve').show();"
+						icon="ui-icon-arrowthick-1-n" update="messages" />
+					<p:commandButton value="Demote" actionListener="#" onclick="PF('demote').show();"
+						icon="ui-icon-arrowthick-1-s" update="messages" />
+					<p:commandButton value="Delete" actionListener="#" onclick="PF('delete').show();"
+						icon="ui-icon-trash" update="messages" />
+					<p:commandButton value="Export" actionListener="#"
+						icon="ui-icon-excel" update="messages" />
+					<p:commandButton value="Legend" actionListener="#"
+						icon="ui-icon-bars" update="messages" />
+
+					<p:submenu label="Options" icon="ui-icon-wrench">
+						<p:menuButton value="Options">
+							<p:menuitem value="Action 1" actionListener="#" ajax="false"
+								icon="ui-icon-close" />
+							<p:menuitem value="Action 2" url="#" icon="ui-icon-extlink" />
+						</p:menuButton>
+					</p:submenu>
+				</f:facet>
+			</p:toolbar>
+
+			<!-- PANEL -->
+			<p:panel>
+				<h:panelGrid columns="2">
+					<p:panel style="width: 100%">
+						<p:toolbar>
+							<f:facet name="left">
+								<p:menuButton value="Filter and Sort">
+									<p:menuitem value="Action 1" actionListener="#" ajax="false"
+										icon="ui-icon-close" />
+									<p:menuitem value="Action 2" url="#" icon="ui-icon-extlink" />
+								</p:menuButton>
+
+								<p:menuButton value="View">
+									<p:menuitem value="Action 1" actionListener="#" ajax="false"
+										icon="ui-icon-close" />
+									<p:menuitem value="Action 2" url="#" icon="ui-icon-extlink" />
+								</p:menuButton>
+
+
+								<p:commandButton value="Select MQs" actionListener="#"
+									icon="ui-icon-excel" onclick="PF('select_mq').show();" />
+
+
+
+							</f:facet>
+						</p:toolbar>
+
+						<p:treeTable value="#{userBean.root}" var="node"
+							rowSelection="multiple" id="hierSrc2">
+
+							<p:columnGroup type="header">
+								<p:row>
+									<p:column rowspan="2" headerText="ABC" />
+									<p:column colspan="3" headerText="Hierarchy Details" />
+								</p:row>
+
+								<p:row>
+									<p:column headerText="Code" />
+									<p:column headerText="Level" />
+									<p:column headerText="Scope" />
+								</p:row>
+							</p:columnGroup>
+
+							<p:column id="c8" width="200" noWrap="false">
+								<h:panelGrid id="pgl5" halign="left">
+									<h:outputText value="#{node.term}" id="ot1"
+										styleClass="#{node.style}"
+										rendered="#{!node.showHasChildrenButton}" />
+									<p:commandLink value="#####" id="cl2" rendered="true"
+										partialSubmit="true" />
+								</h:panelGrid>
+							</p:column>
+
+							<p:column id="c26" width="50" sortable="true" filterable="true">
+								<h:outputText value="#{node.dictContentCode}" id="ot7" />
+							</p:column>
+							<p:column id="c18" width="50" sortable="true" filterable="true">
+								<h:outputText value="#{node.levelName}" id="ot14" />
+							</p:column>
+							<p:column id="c17" width="50" sortable="true" filterable="true">
+								<h:outputText value="#{node.scopeName}" id="ot13" />
+							</p:column>
+						</p:treeTable>
+					</p:panel>
+
+					<p:panel style="width: 100%">
+						<p:toolbar>
+							<f:facet name="left">
+								<p:menuButton value="Filter and Sort">
+									<p:menuitem value="Action 1" actionListener="#" ajax="false"
+										icon="ui-icon-close" />
+									<p:menuitem value="Action 2" url="#" icon="ui-icon-extlink" />
+								</p:menuButton>
+
+								<p:menuButton value="View">
+									<p:menuitem value="Action 1" actionListener="#" ajax="false"
+										icon="ui-icon-close" />
+									<p:menuitem value="Action 2" url="#" icon="ui-icon-extlink" />
+								</p:menuButton>
+
+
+								<p:commandButton value="Hierarchy Search" actionListener="#"
+									icon="ui-icon-excel" onclick="PF('search').show();" />
+								<p:commandButton value="New PTs" actionListener="#"
+									onclick="PF('new_pt').show();" icon="ui-icon-excel" />
+								<p:commandButton value="Delete selected" actionListener="#"
+									icon="ui-icon-excel" onclick="PF('delete').show();" />
+								<p:commandButton value="Refresh" actionListener="#"
+									icon="ui-icon-excel" onclick="PF('select_mq').show();" />
+							</f:facet>
+						</p:toolbar>
+
+						<p:treeTable value="#{userBean.root}" var="row">
+							<p:columnGroup type="header">
+								<p:row>
+									<p:column rowspan="2" headerText="##" />
+									<p:column colspan="5" headerText="Hierarchy Details" />
+								</p:row>
+
+								<p:row>
+									<p:column headerText="Code" />
+									<p:column headerText="Level" />
+									<p:column headerText="Scope" />
+									<p:column headerText="Category" />
+									<p:column headerText="Weight" />
+								</p:row>
+							</p:columnGroup>
+
+							<p:column>
+								<h:panelGrid columns="1">
+									<h:outputText value="ABC" id="ot5" rendered="true"
+										shortDesc="#{node.path}" style="white-space:pre-wrap"
+										noWrap="false" />
+									<h:commandLink value="abc" id="cl1" rendered="true" />
+								</h:panelGrid>
+							</p:column>
+
+							<p:column>
+								<h:outputText value="#" rendered="true" />
+							</p:column>
+							<p:column headerText="Level" style="width: 50px !important">
+								<h:outputText value="#" rendered="true" />
+							</p:column>
+
+							<p:column>
+								<p:selectOneMenu id="soc3" value="Narrow">
+
+									<f:selectItem itemLabel="Broad" itemValue="1" id="si13s" />
+									<f:selectItem itemLabel="Narrow" itemValue="2" id="si13d" />
+									<f:selectItem itemLabel="Child Narrow" itemValue="3" id="si4" />
+								</p:selectOneMenu>
+							</p:column>
+
+							<p:column>
+								<p:selectOneMenu id="soc2" value="S" rendered="true">
+									<f:selectItem itemLabel="A" itemValue="A" id="si3" />
+									<f:selectItem itemLabel="S" itemValue="S" id="si33" />
+									<f:selectItem itemLabel="B" itemValue="B" id="si8" />
+									<f:selectItem itemLabel="C" itemValue="C" id="si9" />
+									<f:selectItem itemLabel="D" itemValue="D" id="si10" />
+									<f:selectItem itemLabel="E" itemValue="E" id="si11" />
+									<f:selectItem itemLabel="F" itemValue="F" id="si19" />
+									<f:selectItem itemLabel="G" itemValue="G" id="si12" />
+									<f:selectItem itemLabel="H" itemValue="H" id="si17" />
+									<f:selectItem itemLabel="I" itemValue="I" id="si18" />
+								</p:selectOneMenu>
+							</p:column>
+
+							<p:column>
+								<p:spinner value="2" id="ot6" />
+							</p:column>
+						</p:treeTable>
+					</p:panel>
+
+
+				</h:panelGrid>
+
+
+			</p:panel>
+
+			<p:dialog header="Impact Search" widgetVar="select_mq">
+				<ui:include src="../impactCommon/impactSearch.xhtml"></ui:include>
+				<f:facet name="buttonBar">
+					<p:outputLabel value="Last Updated:" id="plam1" />
+					<h:outputText value="########" id="ot27" />
+				</f:facet>
+			</p:dialog>
+
+			<p:dialog widgetVar="search" modal="false" header="Hierarchy search">
+				<ui:include src="../impactCommon/hierarchySearch.xhtml"></ui:include>
+			</p:dialog>
+
+
+			<p:dialog widgetVar="new_pt" modal="false"
+				header="New Preferred Term">
+				<h:panelGrid style="width: 700px">
+					<h:panelGrid id="pgl1" columns="2">
+						<p:selectManyMenu>
+							<f:selectItem itemValue="###" itemLabel="###" id="si8" />
+						</p:selectManyMenu>
+						<p:commandButton value="Search" id="cb11" partialSubmit="true" />
+					</h:panelGrid>
+					<p:spacer width="10" height="10" id="s7" />
+					<p:dataTable value="#{null}">
+						<p:columnGroup type="header">
+							<p:row>
+								<p:column rowspan="2" headerText="##" />
+								<p:column colspan="3" headerText="###" />
+							</p:row>
+
+							<p:row>
+								<p:column headerText="Code" />
+								<p:column headerText="Level" />
+								<p:column headerText="Scope" />
+							</p:row>
+						</p:columnGroup>
+
+						<p:column>
+							<h:panelGrid columns="1">
+								<h:outputText value="ABC" id="ot5" rendered="true"
+									shortDesc="#{node.path}" style="white-space:pre-wrap"
+									noWrap="false" />
+								<h:commandLink value="abc" id="cl1" rendered="true" />
+							</h:panelGrid>
+						</p:column>
+
+						<p:column>
+							<h:outputText value="#" rendered="true" />
+						</p:column>
+						<p:column headerText="Level" style="width: 50px !important">
+							<h:outputText value="#" rendered="true" />
+						</p:column>
+
+						<p:column>
+							<p:selectOneMenu id="soc3" value="Narrow">
+
+								<f:selectItem itemLabel="Broad" itemValue="1" id="si13s" />
+								<f:selectItem itemLabel="Narrow" itemValue="2" id="si13d" />
+								<f:selectItem itemLabel="Child Narrow" itemValue="3" id="si4" />
+							</p:selectOneMenu>
+						</p:column>
+
+
+					</p:dataTable>
+				</h:panelGrid>
+			</p:dialog>
+			
+			<p:dialog widgetVar="demote" header="Confirm Demote">
+				<h:outputText
+					value="Are you sure you want to demote this MedDRA Query to draft?"
+					id="aot1" />
+			</p:dialog>
+			<p:dialog widgetVar="review" header="Confirm Reviewed">
+				<p:commandLink
+					value="Are you sure you want to confirm this MedDRA Query as reviewed?"
+					id="aot2" />
+			</p:dialog>
+			<p:dialog widgetVar="approve" header="Confirm Approve">
+				<p:commandLink
+					value="Are you sure you want to approve this MedDRA Query?"
+					id="aot3" />
+			</p:dialog>
+			<p:dialog widgetVar="delete"
+				header="Confirm Delete">
+				<p:commandLink
+					value="Are you sure you want to delete this MedDRA Query?"
+					id="aot4" />
+			</p:dialog>
+			
+		</h:form>
+	</ui:define>
+</ui:composition>

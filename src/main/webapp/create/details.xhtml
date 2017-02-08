@@ -1,0 +1,125 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<p:panel header="Details">
+		<h:panelGrid columns="3" cellpadding="10">
+
+			<h:panelGrid columns="2" columnClasses="label, value">
+				<p:outputLabel value="Extension" />
+				<p:selectOneMenu value="SMQ" rendered="true" disabled="false"
+					required="false">
+					<f:selectItem itemLabel="SMQ" itemValue="SMQ"></f:selectItem>
+					<f:selectItem itemLabel="CMQ" itemValue="CMQ"></f:selectItem>
+				</p:selectOneMenu>
+
+				<p:outputLabel value="Name" />
+				<p:inputText value="12JUN2015 CQT [STANDARD] (NMQ)" />
+
+				<p:outputLabel value="Filter Dictionary" />
+				<h:outputText value="NMATSMQ" />
+
+				<p:outputLabel value="Release group" />
+				<p:selectOneMenu value="G" rendered="true" disabled="false"
+					required="false">
+					<f:selectItem itemLabel="group 1" itemValue=""></f:selectItem>
+					<f:selectItem itemLabel="group 2" itemValue=""></f:selectItem>
+				</p:selectOneMenu>
+
+				<p:outputLabel value="Approved" />
+				<span class="xjz"><img
+					src="../details_files/checkMark_readonly.png" class="xuf"
+					title="Checked" alt="Checked" height="13" width="13" border="0" /></span>
+
+				<p:outputLabel value="Release Status" />
+				<h:outputText value="CURRENT" />
+
+				<p:outputLabel value="Product" rendered="true" />
+				<p:selectOneMenu value="STANDARD" rendered="true" disabled="false"
+					required="false">
+					<f:selectItem itemLabel="Standard" itemValue="STANDARD"></f:selectItem>
+				</p:selectOneMenu>
+
+				<p:outputLabel value="Product" rendered="false" />
+				<h:outputText value="STANDARD" rendered="false" />
+
+				<p:outputLabel value="Designee" />
+				<p:selectOneMenu value="DEFAULT" rendered="true" disabled="false"
+					required="false">
+					<f:selectItem itemLabel="Jane Doe" itemValue="jane"></f:selectItem>
+					<f:selectItem itemLabel="John Doe" itemValue="john"></f:selectItem>
+				</p:selectOneMenu>
+			</h:panelGrid>
+
+			<h:panelGrid columns="2" columnClasses="label, value">
+				<p:outputLabel value="Algorithm" />
+				<p:inputText value="MQ Algorithm" />
+
+				<p:outputLabel value="Status" />
+				<p:selectOneMenu value="A" rendered="true" disabled="false"
+					required="false">
+					<f:selectItem itemLabel="Active" itemValue="A"></f:selectItem>
+					<f:selectItem itemLabel="Inactive" itemValue="I"></f:selectItem>
+					<f:selectItem itemLabel="Pending" itemValue="P"></f:selectItem>
+				</p:selectOneMenu>
+
+				<p:outputLabel value="State" />
+				<h:outputText value="state" />
+
+				<p:outputLabel value="Critical event" />
+				<p:selectOneMenu value="N" rendered="true" disabled="false"
+					required="false">
+					<f:selectItem itemLabel="No" itemValue="N"></f:selectItem>
+					<f:selectItem itemLabel="Yes - Narrow" itemValue="Y_NARROW"></f:selectItem>
+					<f:selectItem itemLabel="Yes - Broad" itemValue="Y_BROAD"></f:selectItem>
+				</p:selectOneMenu>
+
+				<p:outputLabel value="Level" />
+				<p:selectOneMenu value="DEFAULT" rendered="true" disabled="false"
+					required="false">
+					<f:selectItem itemLabel="1" itemValue="NMQ1" itemDisabled="false"></f:selectItem>
+					<f:selectItem itemLabel="2" itemValue="NMQ2" itemDisabled="false"></f:selectItem>
+					<f:selectItem itemLabel="3" itemValue="NMQ3" itemDisabled="false"></f:selectItem>
+					<f:selectItem itemLabel="4" itemValue="NMQ4" itemDisabled="false"></f:selectItem>
+					<f:selectItem itemLabel="5" itemValue="NMQ5" itemDisabled="false"></f:selectItem>
+
+				</p:selectOneMenu>
+
+				<p:outputLabel value="Scope" />
+				<p:selectOneMenu value="DEFAULT" rendered="true" disabled="false"
+					required="false">
+					<f:selectItem itemLabel="Yes" itemValue="Y"></f:selectItem>
+					<f:selectItem itemLabel="No" itemValue="N"></f:selectItem>
+				</p:selectOneMenu>
+
+				<p:outputLabel value="Group" />
+				<p:selectOneMenu value="1" rendered="true" disabled="false"
+					required="false">
+					<f:selectItem itemLabel="1" itemValue="1"></f:selectItem>
+				</p:selectOneMenu>
+
+				<p:outputLabel value="Code" />
+				<h:outputText value="ABC" />
+
+			</h:panelGrid>
+
+			<h:panelGrid columns="2" columnClasses="label, value">
+				<p:outputLabel value="Initial Creation By  " />
+				<h:outputText value="NMAT" />
+
+				<p:outputLabel value="Initial Creation Date  " />
+				<h:outputText value="2015-06-12 12:33:13" />
+
+				<p:outputLabel value="Last Activation By  " />
+				<h:outputText value="NMAT" />
+
+				<p:outputLabel value="Last Activation Date  " />
+				<h:outputText value="2015-06-12 12:33:13" />
+			</h:panelGrid>
+		</h:panelGrid>
+	</p:panel>
+</ui:composition>

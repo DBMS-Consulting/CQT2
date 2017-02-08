@@ -23,17 +23,17 @@
 			<p:wizard flowListener="#{userWizard.onFlowProcess}">
 				<!-- DETAILS -->
 				<p:tab id="details" title="Details">
-					<ui:include src="../commonImpact/viewDetails.xhtml"></ui:include>
+					<ui:include src="../impactCommon/viewDetails.xhtml"></ui:include>
 				</p:tab>
 
 				<p:tab id="view" title="Version Impact">
 					<p:panel header="Version Impact">
-						<ui:include src="../commonImpact/viewImpactAssessment.xhtml"></ui:include>
+						<ui:include src="../impactCommon/viewImpactAssessment.xhtml"></ui:include>
 					</p:panel>
 				</p:tab>
 
 				<p:tab id="infos" title="Informative Notes">
-					<ui:include src="../commonImpact/viewInformationNotes.xhtml"></ui:include>
+					<ui:include src="../impactCommon/viewInformationNotes.xhtml"></ui:include>
 				</p:tab>
 			</p:wizard>
 		</h:form>
