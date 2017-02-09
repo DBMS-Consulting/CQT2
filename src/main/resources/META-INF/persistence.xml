@@ -17,9 +17,9 @@
 		<properties>
 			<property name="hibernate.dialect" value="org.hibernate.dialect.OracleDialect" />
 			<property name="hibernate.connection.driver_class" value="oracle.jdbc.driver.OracleDriver" />
-			<property name="hibernate.connection.url" value="jdbc:oracle:thin:@127.0.0.1:1521:XE" />
-			<property name="hibernate.connection.username" value="admin" />
-			<property name="hibernate.connection.password" value="oracle" />
+			<property name="hibernate.connection.url" value="jdbc:oracle:thin:@192.196.245.20:79/ort501" />
+			<property name="hibernate.connection.username" value="opencqt" />
+			<property name="hibernate.connection.password" value="opencqt" />
 			<property name="hibernate.max_fetch_depth" value="3" />
 			<property name="hibernate.hbm2ddl.auto" value="create-drop" />
 			<property name="hibernate.cache.use_second_level_cache"
