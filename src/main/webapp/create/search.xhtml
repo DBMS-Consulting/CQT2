@@ -19,24 +19,19 @@
 				</p:selectOneMenu>
 
 				<p:outputLabel value="Extension" />
-				<p:selectOneMenu value="#{dummyView.value}">
-					<f:selectItem itemValue="SMQ" itemLabel="SMQ" />
-					<f:selectItem itemValue="CMQ" itemLabel="CMQ" />
-					<f:selectItem itemValue="NMQ" itemLabel="NMQ" />
-					<f:selectItem itemValue="ALL" itemLabel="ALL" />
+				<p:selectOneMenu value="#{searchController.extension}">
+					<f:selectItem itemValue="-1" itemLabel="All" />
+					<f:selectItem itemLabel="TME" itemValue="TME"/>
+					<f:selectItem itemLabel="TR1" itemValue="TR1"/>
+					<f:selectItem itemLabel="PRO" itemValue="PRO"/>
+					<f:selectItem itemLabel="DEMO" itemValue="DEMO"/>
 				</p:selectOneMenu>
 
 				<p:outputLabel value="Drug Program" />
-				<p:selectOneMenu value="#{dummyView.value}">
-					<f:selectItem itemValue="Val 1" itemLabel="Val 1" />
-					<f:selectItem itemValue="Val 2" itemLabel="Val 2" />
- 				</p:selectOneMenu>
+				<p:inputText value="#{searchController.drugProgram}" />
  				
  				<p:outputLabel value="Protocol" />
-				<p:selectOneMenu value="#{dummyView.value}">
-					<f:selectItem itemValue="Val 1" itemLabel="Val 1" />
-					<f:selectItem itemValue="Val 2" itemLabel="Val 2" />
- 				</p:selectOneMenu>
+				<p:inputText value="#{searchController.protocol}" />
 
 			</h:panelGrid>
 
@@ -102,72 +97,82 @@
 
 		<p:separator />
 
-		<h:panelGrid columns="6">
+		<h:panelGrid columns="8">
 			<p:outputLabel value="Term" />
 			<p:inputText />
 			<p:outputLabel value="Code" />
 			<p:inputText />
-			<p:commandButton value="Search" />
+			<p:commandButton value="Search"  action="#{searchController.search()}" update="result"/>
 			<p:commandButton value="Maintain Designees" />
+			<h:commandButton value="Reset" type="reset"/>
 		</h:panelGrid>
 
 		<p:spacer />
 
 		<p:outputPanel deferred="true" deferredMode="visible">
-			<p:dataTable var="car" value="#{null}">
-				<p:column headerText="Term">
-					<h:outputText value="#{car.id}" />
+			<p:dataTable var="value" value="#{searchController.values}" id="result">
+				<p:column headerText="Code">
+					<h:outputLink value="#{request.contextPath}/create/create.xhtml" >
+						<f:param value="#{value.code}" name="code"/>
+						<h:outputText value="#{value.code}"/>
+					</h:outputLink>
 				</p:column>
-
-				<p:column headerText="Approved">
-					<h:outputText value="#{car.year}" />
+				<p:column headerText="Name">
+					<h:outputText value="#{value.name}" />
 				</p:column>
-
+				<p:column headerText="Description">
+					<h:outputText value="#{value.description}" />
+				</p:column>
 				<p:column headerText="Status">
-					<h:outputText value="#{car.brand}" />
+					<h:outputText value="#{value.status}" />
 				</p:column>
-
 				<p:column headerText="Release Status">
-					<h:outputText value="#{car.color}" />
+					<h:outputText value="#{value.releaseStatus}" />
 				</p:column>
 				<p:column headerText="Release Group">
-					<h:outputText value="#{car.brand}" />
+					<h:outputText value="#{value.releaseGroup}" />
 				</p:column>
 
 				<p:column headerText="Group">
-					<h:outputText value="#{car.brand}" />
+					<h:outputText value="#{value.group}" />
 				</p:column>
 
 				<p:column headerText="Level">
-					<h:outputText value="#{car.brand}" />
+					<h:outputText value="#{value.level}" />
 				</p:column>
 
 				<p:column headerText="Critical Event">
-					<h:outputText value="#{car.brand}" />
+					<h:outputText value="#{value.criticalEvent}" />
 				</p:column>
 
 				<p:column headerText="Code">
-					<h:outputText value="#{car.brand}" />
+					<h:outputText value="#{value.code}" />
 				</p:column>
 
 				<p:column headerText="Scope">
-					<h:outputText value="#{car.brand}" />
+					<h:outputText value="#{value.scope}" />
 				</p:column>
 
 				<p:column headerText="State">
-					<h:outputText value="#{car.brand}" />
+					<h:outputText value="#{value.state}" />
 				</p:column>
 				<p:column headerText="Product">
-					<h:outputText value="#{car.brand}" />
+					<h:outputText value="#{value.product}" />
+				</p:column>
+				<p:column headerText="Designee">
+					<h:outputText value="#{value.designee}" />
 				</p:column>
 				<p:column headerText="Created By">
-					<h:outputText value="#{car.brand}" />
+					<h:outputText value="#{value.creator.name}" />
 				</p:column>
 				<p:column headerText="Extention">
-					<h:outputText value="#{car.brand}" />
+					<h:outputText value="#{value.extension}" />
 				</p:column>
-				<p:column headerText="History">
-					<h:outputText value="#{car.brand}" />
+				<p:column headerText="Drug Program">
+					<h:outputText value="#{value.drugProgram}" />
+				</p:column>
+				<p:column headerText="Protocol">
+					<h:outputText value="#{value.protocol}" />
 				</p:column>
 			</p:dataTable>
 		</p:outputPanel>

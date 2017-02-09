@@ -1,0 +1,26 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" template="/CSMQ.xhtml">
+
+
+	<ui:define name="page-content">
+		<p:panel header="Import TME csv file">
+			<h:form enctype="multipart/form-data">
+				<p:growl id="m1" />
+				<h:panelGrid columns="1" style="padding:30px 0;">
+					<h:outputText value="Please select a TME csv file"
+						style="margin:30px 0;" />
+					<p:fileUpload value="#{tmeUploadController.file}" mode="simple"
+						skinSimple="true" style="margin" />
+					<p:commandButton value="Submit" ajax="false" style="margin:30px 0;"
+						actionListener="#{tmeUploadController.upload}" update="m1" />
+				</h:panelGrid>
+				<div>Note: This is for CSV file TME_TIER1_LOADFILES_DETAILS.csv only</div>
+
+			</h:form>
+		</p:panel>
+	</ui:define>
+</ui:composition>

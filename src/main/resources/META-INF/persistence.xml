@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+	version="1.0">
+	<persistence-unit name="cqtJPA">
+		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+		<class>com.dbms.entity.cqt.CreateEntity</class>
+		<class>com.dbms.entity.cqt.User</class>
+		<class>com.dbms.entity.medadra.HlgtPrefTerm</class>
+		<class>com.dbms.entity.medadra.HltPrefTerm</class>
+		<class>com.dbms.entity.medadra.LowLevelTerm</class>
+		<class>com.dbms.entity.medadra.MdHierarchy</class>
+		<class>com.dbms.entity.medadra.PrefTerm</class>
+		<class>com.dbms.entity.medadra.SmqContent</class>
+		<class>com.dbms.entity.medadra.MsqList</class>
+		<class>com.dbms.entity.medadra.SocTerm</class>
+		<exclude-unlisted-classes>false</exclude-unlisted-classes>
+		<properties>
+			<property name="hibernate.dialect" value="org.hibernate.dialect.OracleDialect" />
+			<property name="hibernate.connection.driver_class" value="oracle.jdbc.driver.OracleDriver" />
+			<property name="hibernate.connection.url" value="jdbc:oracle:thin:@127.0.0.1:1521:XE" />
+			<property name="hibernate.connection.username" value="admin" />
+			<property name="hibernate.connection.password" value="oracle" />
+			<property name="hibernate.max_fetch_depth" value="3" />
+			<property name="hibernate.hbm2ddl.auto" value="create-drop" />
+			<property name="hibernate.cache.use_second_level_cache"
+				value="false" />
+			<property name="hibernate.cache.use_query_cache" value="false" />
+			<property name="hibernate.show_sql" value="true" />
+			<property name="hibernate.format_sql" value="true" />
+		</properties>
+	</persistence-unit>
+</persistence> 
