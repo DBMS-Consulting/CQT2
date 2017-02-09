@@ -51,6 +51,10 @@
 				<h:commandButton value="Delete all selected terms?" />
 			</p:dialog>
 
+			<p:dialog widgetVar="search" modal="false" header="Hierarchy search">
+				<ui:include src="../impactCommon/hierarchySearch.xhtml"></ui:include>
+			</p:dialog>
+
 			<p:spacer width="10" height="10" id="s6" />
 			<h:panelGrid id="pgl2" columns="5"
 				style="padding:3px; font-size: 10px !important">
