@@ -32,6 +32,12 @@
 			<url>http://repository.primefaces.org</url>
 			<layout>default</layout>
 		</repository>
+
+	    <!-- Repository for ORACLE ojdbc6. -->
+	    <repository>
+	        <id>codelds</id>
+	        <url>https://code.lds.org/nexus/content/groups/main-repo</url>
+	    </repository>
 	</repositories>
 
 
@@ -42,6 +48,12 @@
 			<version>${servlet.version}</version>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.5</version>
+		</dependency>
+
 
 		<!-- Mojarra JSF -->
 		<dependency>
@@ -65,7 +77,7 @@
 			<artifactId>all-themes</artifactId>
 			<version>1.0.10</version>
 		</dependency>
-		
+
 		<!-- hibernate -->
 		<dependency>
 			<groupId>org.hibernate</groupId>
@@ -91,33 +103,22 @@
 		<!-- oracle -->
 		<dependency>
 			<groupId>com.oracle</groupId>
-			<artifactId>ojdbc6</artifactId>
-			<version>11.2.0.4.0</version>
-			<scope>compile</scope>
+			<artifactId>ojdbc7</artifactId>
+			<version>12.1.0.2</version>
 		</dependency>
+		<dependency>
+			<groupId>com.oracle</groupId>
+			<artifactId>ucp</artifactId>
+			<version>12.1.0.2</version>
+		</dependency>
+
 		<!-- hsqldb driver -->
 		<dependency>
 			<groupId>hsqldb</groupId>
 			<artifactId>hsqldb</artifactId>
 			<version>1.8.0.7</version>
 		</dependency>
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
-			<version>${servlet.version}</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>javax.servlet.jsp</groupId>
-			<artifactId>jsp-api</artifactId>
-			<version>2.2</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-lang3</artifactId>
-			<version>3.5</version>
-		</dependency>
+
 
 		<!-- log -->
 		<dependency>
@@ -166,7 +167,7 @@
 					</webApp>
 				</configuration>
 			</plugin>
-				
+
 		</plugins>
 	</build>
 

@@ -21,9 +21,11 @@
 			<property name="hibernate.connection.username" value="opencqt" />
 			<property name="hibernate.connection.password" value="opencqt" />
 			<property name="hibernate.max_fetch_depth" value="3" />
+<!-- 			
 			<property name="hibernate.hbm2ddl.auto" value="create-drop" />
-			<property name="hibernate.cache.use_second_level_cache"
-				value="false" />
+ -->			
+			<property name="hibernate.hbm2ddl.auto" value="update" />
+			<property name="hibernate.cache.use_second_level_cache" value="false" />
 			<property name="hibernate.cache.use_query_cache" value="false" />
 			<property name="hibernate.show_sql" value="true" />
 			<property name="hibernate.format_sql" value="true" />
