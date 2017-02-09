@@ -64,6 +64,10 @@
 													<td><h:outputText value="#######" /></td>
 												</tr>
 												<tr>
+													<td><p:outputLabel value="Protocol" /></td>
+													<td><h:outputText value="#######" /></td>
+												</tr>
+												<tr>
 													<td><p:outputLabel value="Release Groups" /></td>
 													<td><h:outputText value="#######" /></td>
 												</tr>
@@ -211,53 +215,53 @@
 						<tbody>
 							<tr>
 								<td><p:outputLabel value="Dictionary" /></td>
-								<td><p:selectOneMenu label="Dictionary" id="soc9"
+								<td><p:selectOneMenu label="Dictionary" id="soc99"
 										autoSubmit="true" value="BASE">
-										<f:selectItem itemLabel="MedDRA" itemValue="BASE" id="si40" />
-										<f:selectItem itemLabel="MQ" itemValue="FILTER" id="si41" />
+										<f:selectItem itemLabel="MedDRA" itemValue="BASE"  />
+										<f:selectItem itemLabel="MQ" itemValue="FILTER"  />
 									</p:selectOneMenu></td>
-								<td><p:inputText placeholder="Term" id="it2" /></td>
+								<td><p:inputText placeholder="Term" id="iterm" /></td>
 							</tr>
 
 							<tr>
 								<td><p:outputLabel value="Level" /></td>
 								<p:spacer width="10" />
-								<td><p:selectOneMenu id="soc10" label="Level"
+								<td><p:selectOneMenu id="sc10" label="Level"
 										partialTriggers="soc9" value="SOC">
-										<f:selectItem itemLabel="SMQ 1" itemValue="MQ1" id="si42"
+										<f:selectItem itemLabel="SMQ 1" itemValue="MQ1" id="sit42"
 											rendered="true" />
-										<f:selectItem itemLabel="SMQ 2" itemValue="MQ2" id="si48"
+										<f:selectItem itemLabel="SMQ 2" itemValue="MQ2" id="sit48"
 											rendered="true" />
-										<f:selectItem itemLabel="SMQ 3" itemValue="MQ3" id="si43"
+										<f:selectItem itemLabel="SMQ 3" itemValue="MQ3" id="sit43"
 											rendered="true" />
-										<f:selectItem itemLabel="SMQ 4" itemValue="MQ4" id="si44"
+										<f:selectItem itemLabel="SMQ 4" itemValue="MQ4" id="sit44"
 											rendered="true" />
-										<f:selectItem itemLabel="SMQ 5" itemValue="MQ5" id="si45"
+										<f:selectItem itemLabel="SMQ 5" itemValue="MQ5" id="sit45"
 											rendered="true" />
-										<f:selectItem itemLabel="All SMQs" itemValue="MQ%" id="si1"
+										<f:selectItem itemLabel="All SMQs" itemValue="MQ%" id="sit1"
 											rendered="true" />
-										<f:selectItem itemLabel="NMQ/CMQ 1" itemValue="NMQ1" id="si46"
+										<f:selectItem itemLabel="NMQ/CMQ 1" itemValue="NMQ1" id="sit46"
 											rendered="true" />
-										<f:selectItem itemLabel="NMQ 2" itemValue="NMQ2" id="si49"
+										<f:selectItem itemLabel="NMQ 2" itemValue="NMQ2" id="sit49"
 											rendered="true" />
-										<f:selectItem itemLabel="NMQ 3" itemValue="NMQ3" id="si47"
+										<f:selectItem itemLabel="NMQ 3" itemValue="NMQ3" id="sit47"
 											rendered="true" />
-										<f:selectItem itemLabel="NMQ 4" itemValue="NMQ4" id="si52"
+										<f:selectItem itemLabel="NMQ 4" itemValue="NMQ4" id="sit52"
 											rendered="true" />
-										<f:selectItem itemLabel="NMQ 5" itemValue="NMQ5" id="si50"
+										<f:selectItem itemLabel="NMQ 5" itemValue="NMQ5" id="sit50"
 											rendered="true" />
 										<f:selectItem itemLabel="All NMQ/CMQs" itemValue="NMQ%"
-											id="si2" rendered="true" />
-										<f:selectItem itemLabel="SOC" itemValue="SOC" id="si51"
+											id="sit2" rendered="true" />
+										<f:selectItem itemLabel="SOC" itemValue="SOC" id="sit51"
 											rendered="true" />
-										<f:selectItem itemLabel="HLGT" itemValue="HLGT" id="si53"
+										<f:selectItem itemLabel="HLGT" itemValue="HLGT" id="sit53"
 											rendered="true" />
-										<f:selectItem itemLabel="HLT" itemValue="HLT" id="si54"
+										<f:selectItem itemLabel="HLT" itemValue="HLT" id="sit54"
 											rendered="true" />
-										<f:selectItem itemLabel="PT" itemValue="PT" id="si55"
+										<f:selectItem itemLabel="PT" itemValue="PT" id="sit55"
 											rendered="true" />
 									</p:selectOneMenu></td>
-								<td><p:commandButton value="Search" id="cb1"
+								<td><p:commandButton value="Search" id="searchBt"
 										partialSubmit="true" style="height:auto;" /></td>
 							</tr>
 						</tbody>
@@ -295,39 +299,39 @@
 					</p:treeTable>
 
 					<br />
-					<h:panelGrid id="pc3" styleClass="AFStretchWidth">
-						<p:toolbar id="t4">
+					<h:panelGrid id="pg3" styleClass="AFStretchWidth">
+						<p:toolbar id="tb4">
 							<f:facet name="left">
 								<h:panelGrid columns="4">
 									<h:panelGrid columns="1">
-										<p:selectOneMenu label="Sort" value="#" id="soc11">
+										<p:selectOneMenu label="Sort" value="#" id="sc11">
 											<f:selectItem itemLabel="Filter and Sort" itemValue="TERM"
-												id="si57" />
+												  />
 											<f:selectItem itemLabel="Term Name" itemValue="#" />
 											<f:selectItem itemLabel="Level"
-												itemValue="DEF_LEVEL_REF_SHORT_NAME" id="si59" />
+												itemValue="DEF_LEVEL_REF_SHORT_NAME"   />
 											<f:selectItem itemLabel="Scope" itemValue="SCOPE" />
 										</p:selectOneMenu>
 									</h:panelGrid>
 									<h:panelGrid columns="2">
 										<p:outputLabel value="Show Primary Only"></p:outputLabel>
-										<p:selectBooleanCheckbox id="sbc5" value="false"
+										<p:selectBooleanCheckbox id="sbc" value="false"
 											autoSubmit="true" />
 									</h:panelGrid>
-									<p:selectOneMenu label="Scope" id="soc12" value="0">
+									<p:selectOneMenu label="Scope" id="sm12" value="0">
 										<f:selectItem
 											itemLabel="Full #{applicationScope.CSMQBean.customMQName}/SMQ"
-											itemValue="0" id="si60" />
-										<f:selectItem itemLabel="Child Narrow" itemValue="3" id="si61" />
+											itemValue="0"  />
+										<f:selectItem itemLabel="Child Narrow" itemValue="3"  />
 									</p:selectOneMenu>
-									<p:commandButton value="Refresh" id="ctb4"
+									<p:commandButton value="Refresh" id="refresh"
 										icon="ui-icon-refresh" disabled="false" />
 								</h:panelGrid>
 							</f:facet>
 						</p:toolbar>
 
 						<p:treeTable value="#{userBean.root}" var="node"
-							rowSelection="multiple" id="hierSrc">
+							rowSelection="multiple" id="tree">
 
 							<p:columnGroup type="header">
 								<p:row>
