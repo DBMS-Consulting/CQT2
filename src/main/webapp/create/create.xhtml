@@ -19,20 +19,17 @@
 
 				</h:panelGrid>
 				<h:panelGrid columns="1" style="text-align: center">
-					<p:outputLabel value="Historic View as of 05-Feb 2017"
-						style="text-align: center" />
+					<!-- <p:outputLabel value="Historic View as of 05-Feb 2017"
+						style="text-align: center" /> -->
 				</h:panelGrid>
 			</h:panelGrid>
 
 			<p:wizard flowListener="#{wizard.onFlowProcess}">
 				<p:tab id="details" title="Add Details">
 					<p:panel header="Details">
-						<h:panelGrid columns="3" cellpadding="10">
-							<p:commandButton value="Save" action="SAVE"></p:commandButton>
-							<ui:include src="details.xhtml" />
-						</h:panelGrid>
+						<ui:include src="details.xhtml" />
+						<p:commandButton value="Save" action="SAVE"></p:commandButton>
 					</p:panel>
-
 				</p:tab>
 
 				<!-- CONTACT -->
@@ -414,13 +411,7 @@
 			<p:spacer width="10" height="10" id="s6" />
 			<h:panelGrid id="pgl2" columns="5"
 				style="padding:3px; font-size: 10px !important">
-
-				<!-- <af:trainButtonBar
-								value="#{controllerContext.currentViewPort.taskFlowContext.trainModel}"
-								id="tbb1" /> -->
-				<p:commandButton value="Cancel" id="cb1can" action="CANCEL"
-					immediate="true" />
-
+ 
 				<p:outputLabel for="it1aw" value="Dictionary Version:"></p:outputLabel>
 				<h:inputText id="it1aw" value="########" disabled="true"
 					columns="200" />

@@ -21,16 +21,16 @@
 				<p:outputLabel value="Extension" />
 				<p:selectOneMenu value="#{searchController.extension}">
 					<f:selectItem itemValue="-1" itemLabel="All" />
-					<f:selectItem itemLabel="TME" itemValue="TME"/>
-					<f:selectItem itemLabel="TR1" itemValue="TR1"/>
-					<f:selectItem itemLabel="PRO" itemValue="PRO"/>
-					<f:selectItem itemLabel="DEMO" itemValue="DEMO"/>
+					<f:selectItem itemLabel="TME" itemValue="TME" />
+					<f:selectItem itemLabel="TR1" itemValue="TR1" />
+					<f:selectItem itemLabel="PRO" itemValue="PRO" />
+					<f:selectItem itemLabel="DEMO" itemValue="DEMO" />
 				</p:selectOneMenu>
 
 				<p:outputLabel value="Drug Program" />
 				<p:inputText value="#{searchController.drugProgram}" />
- 				
- 				<p:outputLabel value="Protocol" />
+
+				<p:outputLabel value="Protocol" />
 				<p:inputText value="#{searchController.protocol}" />
 
 			</h:panelGrid>
@@ -55,7 +55,16 @@
 					<f:selectItem itemValue="5" itemLabel="5" />
 					<f:selectItem itemValue="All Levels" itemLabel="All Levels" />
 				</p:selectOneMenu>
-
+				
+ 				<p:outputLabel value="State" />
+				<p:selectOneMenu value="#{searchController.state}">
+					<f:selectItem itemLabel="Requested" itemValue="Requested" />
+					<f:selectItem itemLabel="Draft" itemValue="Draft" />
+					<f:selectItem itemLabel="Reviewed" itemValue="Reviewed" />
+					<f:selectItem itemLabel="Approved" itemValue="Approved" />
+					<f:selectItem itemLabel="Published" itemValue="Published" />
+				</p:selectOneMenu>
+ 
 			</h:panelGrid>
 
 			<h:panelGrid columns="2">
@@ -78,6 +87,8 @@
 					<f:selectItem itemValue="Pending" itemLabel="Pending" />
 				</p:selectOneMenu>
 			</h:panelGrid>
+
+			
 
 			<h:panelGrid columns="2">
 				<p:outputLabel value="Group" />
@@ -102,19 +113,21 @@
 			<p:inputText />
 			<p:outputLabel value="Code" />
 			<p:inputText />
-			<p:commandButton value="Search"  action="#{searchController.search()}" update="result"/>
+			<p:commandButton value="Search" action="#{searchController.search()}"
+				update="result" />
 			<p:commandButton value="Maintain Designees" />
-			<h:commandButton value="Reset" type="reset"/>
+			<h:commandButton value="Reset" type="reset" />
 		</h:panelGrid>
 
 		<p:spacer />
 
 		<p:outputPanel deferred="true" deferredMode="visible">
-			<p:dataTable var="value" value="#{searchController.values}" id="result">
+			<p:dataTable var="value" value="#{searchController.values}"
+				id="result">
 				<p:column headerText="Code">
-					<h:outputLink value="#{request.contextPath}/create/create.xhtml" >
-						<f:param value="#{value.code}" name="code"/>
-						<h:outputText value="#{value.code}"/>
+					<h:outputLink value="#{request.contextPath}/create/create.xhtml">
+						<f:param value="#{value.code}" name="code" />
+						<h:outputText value="#{value.code}" />
 					</h:outputLink>
 				</p:column>
 				<p:column headerText="Name">

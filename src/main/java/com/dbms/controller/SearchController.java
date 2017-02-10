@@ -32,6 +32,7 @@ public class SearchController implements Serializable{
 	private String extension;
 	private String drugProgram;
 	private String protocol;
+	private String state;
 	
 	private List<CreateEntity> values;
 
@@ -78,6 +79,14 @@ public class SearchController implements Serializable{
 
 	public void setCreateEntityService(CreateEntityService createEntityService) {
 		this.createEntityService = createEntityService;
+	}
+
+	public String getState() {
+		return state;
+	}
+
+	public void setState(String state) {
+		this.state = state;
 	}
 	
 }

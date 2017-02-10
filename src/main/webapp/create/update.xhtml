@@ -25,16 +25,167 @@
 			</h:panelGrid>
 
 			<p:wizard flowListener="#{wizard.onFlowProcess}">
-
-				 
-
 				<p:tab id="details" title="Update Details">
-					<ui:include src="details.xhtml" />
+					<p:panel header="Details">
+						<ui:include src="details.xhtml" />
+					</p:panel>
 				</p:tab>
 
 				<!-- RELATIONS -->
 				<p:tab id="relations" title="Update Relations">
 					<ui:include src="relations.xhtml"></ui:include>
+				</p:tab>
+				
+				<p:tab id="confirmPanel" title="Confirm">
+					<p:panel header="Search">
+						<table>
+							<tbody>
+								<tr>
+									<td><table>
+											<tbody>
+												<tr>
+													<td><p:outputLabel value="Filter Dictionary" /></td>
+													<td><h:outputText value="#######" /></td>
+												</tr>
+												<tr>
+													<td><p:outputLabel value="Drug Program" /></td>
+													<td><h:outputText value="#######" /></td>
+												</tr>
+												<tr>
+													<td><p:outputLabel value="Protocol" /></td>
+													<td><h:outputText value="#######" /></td>
+												</tr>
+												<tr>
+													<td><p:outputLabel value="Release Groups" /></td>
+													<td><h:outputText value="#######" /></td>
+												</tr>
+												<tr>
+													<td><p:outputLabel value="Name" /></td>
+													<td><h:outputText value="#######" /></td>
+												</tr>
+												<tr>
+													<td><p:outputLabel value="Product" /></td>
+													<td><h:outputText value="#######" /></td>
+												</tr>
+												<tr>
+													<td><p:outputLabel value="Designee" /></td>
+													<td><h:outputText value="#######" /></td>
+												</tr>
+											</tbody>
+										</table></td>
+
+									<td><table style="margin-right: 40px">
+											<tbody>
+												<tr>
+													<td><p:outputLabel value="Level" /></td>
+													<td><h:outputText value="#######" /></td>
+												</tr>
+												<tr>
+													<td><p:outputLabel value="Code" /></td>
+													<td><h:outputText value="#######" /></td>
+												</tr>
+												<tr>
+													<td><p:outputLabel value="Algorithm" /></td>
+													<td><h:outputText value="#######" /></td>
+												</tr>
+												<tr>
+													<td><p:outputLabel value="Extension" /></td>
+													<td><h:outputText value="#######" /></td>
+												</tr>
+												<tr>
+													<td><p:outputLabel value="Critical event" /></td>
+													<td><h:outputText value="#######" /></td>
+												</tr>
+											</tbody>
+										</table></td>
+									<td><table>
+											<tbody>
+												<tr>
+													<td><p:outputLabel value="Group" /></td>
+													<td><h:outputText value="#######" /></td>
+												</tr>
+												<tr>
+													<td><p:outputLabel value="Status" /></td>
+													<td><h:outputText value="#######" /></td>
+												</tr>
+												<tr>
+													<td><p:outputLabel value="Release Status" /></td>
+													<td><h:outputText value="#######" /></td>
+												</tr>
+												<tr>
+													<td><p:outputLabel value="State" /></td>
+													<td><h:outputText value="#######" /></td>
+												</tr>
+												<tr>
+													<td><p:outputLabel value="Scope" /></td>
+													<td><h:outputText value="#######" /></td>
+												</tr>
+											</tbody>
+										</table></td>
+								</tr>
+							</tbody>
+						</table>
+
+
+					</p:panel>
+					<p:spacer height="10"></p:spacer>
+
+					<p:panel header="Informative Notes">
+
+						<table>
+							<tbody>
+								<tr>
+									<td><p:outputLabel value="Description 11" /></td>
+									<td><h:outputText value="#######" /></td>
+								</tr>
+								<tr>
+									<td><p:outputLabel value="Source" /></td>
+									<td><h:outputText value="#######" /></td>
+								</tr>
+								<tr>
+									<td><p:outputLabel value="Notes" /></td>
+									<td><h:outputText value="#######" /></td>
+								</tr>
+
+							</tbody>
+						</table>
+
+					</p:panel>
+					<p:spacer height="10"></p:spacer>
+
+
+					<p:panel>
+						<p:toolbar>
+							<f:facet name="left">
+								<p:outputLabel value="Workflow" />
+							</f:facet>
+							<f:facet name="right">
+								<p:commandButton value="Reactivate" />
+								<p:commandButton value="Retire" />
+								<p:commandButton value="Demote to Draft" />
+								<p:commandButton value="Reviewed" />
+								<p:commandButton value="Approved" />
+								<p:commandButton value="Delete" />
+							</f:facet>
+						</p:toolbar>
+						<table>
+							<tbody>
+								<tr>
+									<td><p:outputLabel value="Reason for Request" /></td>
+									<td><p:inputText value="#####" /></td>
+								</tr>
+								<tr>
+									<td><p:outputLabel value="Due Date" /></td>
+									<td><p:calendar value="#{null}" mode="popup" /></td>
+								</tr>
+								<tr>
+									<td><p:outputLabel value="Reason for Approval" /></td>
+									<td><p:inputText value="#######" /></td>
+								</tr>
+
+							</tbody>
+						</table>
+					</p:panel>
 				</p:tab>
 			</p:wizard>
 
@@ -252,12 +403,7 @@
 			<h:panelGrid id="pgl2" columns="5"
 				style="padding:3px; font-size: 10px !important">
 
-				<!-- <af:trainButtonBar
-								value="#{controllerContext.currentViewPort.taskFlowContext.trainModel}"
-								id="tbb1" /> -->
-				<p:commandButton value="Cancel" id="cb1can" action="CANCEL"
-					immediate="true" />
-
+				 
 				<p:outputLabel for="it1aw" value="Dictionary Version:"></p:outputLabel>
 				<h:inputText id="it1aw" value="########" disabled="true"
 					columns="200" />

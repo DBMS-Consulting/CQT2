@@ -32,7 +32,9 @@
 				</p:tab>
 
 				<p:tab id="details" title="Details">
-					<ui:include src="details.xhtml"></ui:include>
+					<p:panel header="Details">
+						<ui:include src="details.xhtml"></ui:include>
+					</p:panel>
 				</p:tab>
  
 				<!-- CONTACT -->
@@ -54,13 +56,7 @@
 			<p:spacer width="10" height="10" id="s6" />
 			<h:panelGrid id="pgl2" columns="5"
 				style="padding:3px; font-size: 10px !important">
-
-				<!-- <af:trainButtonBar
-								value="#{controllerContext.currentViewPort.taskFlowContext.trainModel}"
-								id="tbb1" /> -->
-				<p:commandButton value="Cancel" id="cb1can" action="CANCEL"
-					immediate="true" />
-
+ 
 				<p:outputLabel for="it1aw" value="Dictionary Version:"></p:outputLabel>
 				<h:inputText id="it1aw" value="########" disabled="true"
 					columns="200" />

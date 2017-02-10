@@ -15,19 +15,40 @@
 				</f:facet>
 
 				<f:facet name="right">
-					<p:commandButton value="Save" icon="ui-icon-disk" update="messages"  />
-					<p:commandButton value="Review" actionListener="#" onclick="PF('review').show();"
-						icon="ui-icon-disk" update="messages" />
-					<p:commandButton value="Approve" actionListener="#" onclick="PF('approve').show();"
-						icon="ui-icon-arrowthick-1-n" update="messages" />
-					<p:commandButton value="Demote" actionListener="#" onclick="PF('demote').show();"
-						icon="ui-icon-arrowthick-1-s" update="messages" />
-					<p:commandButton value="Delete" actionListener="#" onclick="PF('delete').show();"
-						icon="ui-icon-trash" update="messages" />
+					<p:commandButton value="Save" icon="ui-icon-disk" update="messages" />
+					<p:commandButton value="Review" actionListener="#"
+						onclick="PF('review').show();" icon="ui-icon-disk">
+						<p:confirm header="Confirm Reviewed"
+							message="Are you sure you want to confirm this MedDRA Query as reviewed?"
+							icon="ui-icon-alert" />
+
+					</p:commandButton>
+
+					<p:commandButton value="Approve" actionListener="#"
+						onclick="PF('approve').show();" icon="ui-icon-arrowthick-1-n">
+						<p:confirm header="Confirm Approve"
+							message="Are you sure you want to approve this MedDRA Query?"
+							icon="ui-icon-alert" />
+
+					</p:commandButton>
+					<p:commandButton value="Demote" actionListener="#"
+						onclick="PF('demote').show();" icon="ui-icon-arrowthick-1-s">
+						<p:confirm header="Confirm Demote"
+							message="Are you sure you want to demote this MedDRA Query?"
+							icon="ui-icon-alert" />
+					</p:commandButton>
+					<p:commandButton value="Delete" actionListener="#"
+						onclick="PF('delete').show();" icon="ui-icon-trash">
+						<p:confirm header="Confirm Delete"
+							message="Are you sure you want to delete this MedDRA Query?"
+							icon="ui-icon-alert" />
+					</p:commandButton>
+
 					<p:commandButton value="Export" actionListener="#"
 						icon="ui-icon-excel" update="messages" />
 					<p:commandButton value="Legend" actionListener="#"
 						icon="ui-icon-bars" update="messages" />
+
 
 					<p:submenu label="Options" icon="ui-icon-wrench">
 						<p:menuButton value="Options">
@@ -57,12 +78,8 @@
 									<p:menuitem value="Action 2" url="#" icon="ui-icon-extlink" />
 								</p:menuButton>
 
-
 								<p:commandButton value="Select MQs" actionListener="#"
 									icon="ui-icon-excel" onclick="PF('select_mq').show();" />
-
-
-
 							</f:facet>
 						</p:toolbar>
 
@@ -209,6 +226,11 @@
 
 			<p:dialog widgetVar="search" modal="false" header="Hierarchy search">
 				<ui:include src="../impactCommon/hierarchySearch.xhtml"></ui:include>
+
+				<p:spacer height="10"></p:spacer>
+				<h:panelGrid style="float: right">
+					<p:commandButton value="Cancel" onclick="PF('search').hide()" />
+				</h:panelGrid>
 			</p:dialog>
 
 
@@ -265,29 +287,16 @@
 					</p:dataTable>
 				</h:panelGrid>
 			</p:dialog>
-			
-			<p:dialog widgetVar="demote" header="Confirm Demote">
-				<h:outputText
-					value="Are you sure you want to demote this MedDRA Query to draft?"
-					id="aot1" />
-			</p:dialog>
-			<p:dialog widgetVar="review" header="Confirm Reviewed">
-				<p:commandLink
-					value="Are you sure you want to confirm this MedDRA Query as reviewed?"
-					id="aot2" />
-			</p:dialog>
-			<p:dialog widgetVar="approve" header="Confirm Approve">
-				<p:commandLink
-					value="Are you sure you want to approve this MedDRA Query?"
-					id="aot3" />
-			</p:dialog>
-			<p:dialog widgetVar="delete"
-				header="Confirm Delete">
-				<p:commandLink
-					value="Are you sure you want to delete this MedDRA Query?"
-					id="aot4" />
-			</p:dialog>
-			
+
+
+
+			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+				<p:commandButton value="Yes" type="button"
+					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="No" type="button"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+
 		</h:form>
 	</ui:define>
 </ui:composition>

@@ -1,0 +1,17 @@
+*.classpath
+*.project
+*.xml
+*.class
+*.properties
+.settings/org.eclipse.wst.validation.prefs
+*.jsdtscope
+.settings/org.eclipse.core.resources.prefs
+*.component
+.settings/org.eclipse.wst.jsdt.ui.superType.container
+*.prefs
+.settings/org.eclipse.wst.jsdt.ui.superType.name
+pom.xml
+*.xml-hsqldb
+pom.xml
+pom.xml
+*.xml
