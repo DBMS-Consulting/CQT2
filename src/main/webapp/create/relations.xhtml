@@ -33,9 +33,18 @@
 					rendered="true" />
 				<p:spacer width="10" />
 				<p:commandButton value="Delete selected" icon="ui-icon-close"
-					id="ctb2" onclick="PF('confirm').show();" rendered="true"
+					id="ctb2"
 					disabled="false">
+					<p:confirm header="Confirm Delete"
+						message="Delete all selected terms?"
+						icon="ui-icon-alert" />
 				</p:commandButton>
+				<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+					<p:commandButton value="Yes" type="button"
+						styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+					<p:commandButton value="No" type="button"
+						styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+				</p:confirmDialog>
 
 				<p:spacer width="10" />
 				<p:commandButton value="Save" id="cb3" disabled="false"
@@ -53,9 +62,9 @@
 					<p:fileDownload value="#{null}"></p:fileDownload>
 				</p:commandButton>
 				<p:spacer width="10" />
-				<p:commandButton value="Hyerarchy Search" id="ctb13" onclick="PF('search').show();"
-					icon="fa fa-file-excel-o">
- 				</p:commandButton>
+				<p:commandButton value="Hyerarchy Search" id="ctb13"
+					onclick="PF('search').show();" icon="fa fa-file-excel-o">
+				</p:commandButton>
 
 				<p:spacer width="10" />
 				<!-- <p:commandButton value="Hierarchy Search" id="cb6"
@@ -136,6 +145,11 @@
 
 	<p:dialog widgetVar="search" modal="false" header="Hierarchy search">
 		<ui:include src="../impactCommon/hierarchySearch.xhtml"></ui:include>
+
+		<p:spacer height="10"></p:spacer>
+		<h:panelGrid style="float: right">
+			<p:commandButton value="Cancel" onclick="PF('search').hide()" />
+		</h:panelGrid>
 	</p:dialog>
 
 

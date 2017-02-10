@@ -5,24 +5,19 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:p="http://primefaces.org/ui">
-	
-	<p:panel header="Informative Notes for ###">
+
+
+	<p:panel header="Informative Notes for ########">
 		<p:tabView>
 			<p:tab title="Description">
-				<p:inputTextarea required="true" style="width: 100%"   />
-				<!-- <h:inputTextarea required="true" value="###"   /> -->
+				<p:inputTextarea readonly="true" value="****** Description *******" style="width: 100%" />
 			</p:tab>
 			<p:tab title="Notes">
-				<p:inputTextarea value="****** Notes *******" style="width: 100%" />
+				<p:inputTextarea readonly="true" value="****** Notes *******" style="width: 100%" />
 			</p:tab>
 			<p:tab title="Source">
-				<p:inputTextarea value="****** Sources *******" style="width: 100%" />
+				<p:inputTextarea readonly="true" value="****** Sources *******" style="width: 100%" />
 			</p:tab>
 		</p:tabView>
-		
-
-		<p:commandButton style="margin-top: 10px;" value="Save" action="SAVE"></p:commandButton>
 	</p:panel>
-
-
 </ui:composition>

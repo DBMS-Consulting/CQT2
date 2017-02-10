@@ -19,22 +19,17 @@
 
 				</h:panelGrid>
 				<h:panelGrid columns="1" style="text-align: center">
-					<p:outputLabel value="Historic View as of 05-Feb 2017"
-						style="text-align: center" />
+					<!-- <p:outputLabel value="Historic View as of 05-Feb 2017"
+						style="text-align: center" /> -->
 				</h:panelGrid>
 			</h:panelGrid>
 
 			<p:wizard flowListener="#{wizard.onFlowProcess}">
-
-				<!-- DETAILS -->
-				<p:tab id="search" title="Search">
-					<p:panel header="Details">
-						<ui:include src="search.xhtml" />
-					</p:panel>
-				</p:tab>
-
 				<p:tab id="details" title="Add Details">
-					<ui:include src="details.xhtml" />
+					<p:panel header="Details">
+						<ui:include src="details.xhtml" />
+						<p:commandButton value="Save" action="SAVE"></p:commandButton>
+					</p:panel>
 				</p:tab>
 
 				<!-- CONTACT -->
@@ -217,8 +212,8 @@
 								<td><p:outputLabel value="Dictionary" /></td>
 								<td><p:selectOneMenu label="Dictionary" id="soc99"
 										autoSubmit="true" value="BASE">
-										<f:selectItem itemLabel="MedDRA" itemValue="BASE"  />
-										<f:selectItem itemLabel="MQ" itemValue="FILTER"  />
+										<f:selectItem itemLabel="MedDRA" itemValue="BASE" />
+										<f:selectItem itemLabel="MQ" itemValue="FILTER" />
 									</p:selectOneMenu></td>
 								<td><p:inputText placeholder="Term" id="iterm" /></td>
 							</tr>
@@ -240,8 +235,8 @@
 											rendered="true" />
 										<f:selectItem itemLabel="All SMQs" itemValue="MQ%" id="sit1"
 											rendered="true" />
-										<f:selectItem itemLabel="NMQ/CMQ 1" itemValue="NMQ1" id="sit46"
-											rendered="true" />
+										<f:selectItem itemLabel="NMQ/CMQ 1" itemValue="NMQ1"
+											id="sit46" rendered="true" />
 										<f:selectItem itemLabel="NMQ 2" itemValue="NMQ2" id="sit49"
 											rendered="true" />
 										<f:selectItem itemLabel="NMQ 3" itemValue="NMQ3" id="sit47"
@@ -305,11 +300,10 @@
 								<h:panelGrid columns="4">
 									<h:panelGrid columns="1">
 										<p:selectOneMenu label="Sort" value="#" id="sc11">
-											<f:selectItem itemLabel="Filter and Sort" itemValue="TERM"
-												  />
+											<f:selectItem itemLabel="Filter and Sort" itemValue="TERM" />
 											<f:selectItem itemLabel="Term Name" itemValue="#" />
 											<f:selectItem itemLabel="Level"
-												itemValue="DEF_LEVEL_REF_SHORT_NAME"   />
+												itemValue="DEF_LEVEL_REF_SHORT_NAME" />
 											<f:selectItem itemLabel="Scope" itemValue="SCOPE" />
 										</p:selectOneMenu>
 									</h:panelGrid>
@@ -321,8 +315,8 @@
 									<p:selectOneMenu label="Scope" id="sm12" value="0">
 										<f:selectItem
 											itemLabel="Full #{applicationScope.CSMQBean.customMQName}/SMQ"
-											itemValue="0"  />
-										<f:selectItem itemLabel="Child Narrow" itemValue="3"  />
+											itemValue="0" />
+										<f:selectItem itemLabel="Child Narrow" itemValue="3" />
 									</p:selectOneMenu>
 									<p:commandButton value="Refresh" id="refresh"
 										icon="ui-icon-refresh" disabled="false" />
@@ -417,13 +411,7 @@
 			<p:spacer width="10" height="10" id="s6" />
 			<h:panelGrid id="pgl2" columns="5"
 				style="padding:3px; font-size: 10px !important">
-
-				<!-- <af:trainButtonBar
-								value="#{controllerContext.currentViewPort.taskFlowContext.trainModel}"
-								id="tbb1" /> -->
-				<p:commandButton value="Cancel" id="cb1can" action="CANCEL"
-					immediate="true" />
-
+ 
 				<p:outputLabel for="it1aw" value="Dictionary Version:"></p:outputLabel>
 				<h:inputText id="it1aw" value="########" disabled="true"
 					columns="200" />
