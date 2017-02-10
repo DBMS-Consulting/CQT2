@@ -19,16 +19,26 @@
 
 				</h:panelGrid>
 				<h:panelGrid columns="1" style="text-align: center">
-					<p:outputLabel value="Historic View as of 05-Feb 2017"
-						style="text-align: center" />
+					<!-- <p:outputLabel value="Historic View as of 05-Feb 2017"
+						style="text-align: center" /> -->
 				</h:panelGrid>
 			</h:panelGrid>
 
 			<p:wizard flowListener="#{wizard.onFlowProcess}">
+				<!-- Search -->
+				<p:tab id="search" title="Search">
+					<ui:include src="search.xhtml"></ui:include>
+				</p:tab>
 				<p:tab id="details" title="Update Details">
 					<p:panel header="Details">
 						<ui:include src="details.xhtml" />
+						<p:commandButton value="Save" icon="ui-icon-disk" action="SAVE"></p:commandButton>
 					</p:panel>
+				</p:tab>
+				
+				<!-- Notes -->
+				<p:tab id="contact" title="Update Informative Notes">
+					<ui:include src="informativeNotes.xhtml"></ui:include>
 				</p:tab>
 
 				<!-- RELATIONS -->
