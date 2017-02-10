@@ -15,7 +15,7 @@
 				</f:facet>
 
 				<f:facet name="right">
-					<p:commandButton value="Save" icon="ui-icon-disk" update="messages" />
+
 					<p:commandButton value="Review" actionListener="#"
 						onclick="PF('review').show();" icon="ui-icon-disk">
 						<p:confirm header="Confirm Reviewed"
@@ -213,7 +213,8 @@
 
 				</h:panelGrid>
 
-
+				<p:commandButton style="margin-top: 10px;" value="Save"
+					icon="ui-icon-disk" update="messages" />
 			</p:panel>
 
 			<p:dialog header="Impact Search" widgetVar="select_mq">

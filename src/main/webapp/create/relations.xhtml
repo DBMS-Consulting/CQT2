@@ -47,10 +47,6 @@
 				</p:confirmDialog>
 
 				<p:spacer width="10" />
-				<p:commandButton value="Save" id="cb3" disabled="false"
-					rendered="true" icon="ui-icon-disk" />
-
-				<p:spacer width="10" />
 				<p:commandButton value="Export" id="ctb11a" disabled="false"
 					icon="fa fa-file-excel-o">
 					<p:fileDownload value="#{null}"></p:fileDownload>
@@ -141,6 +137,9 @@
 				<p:selectBooleanCheckbox />
 			</p:column>
 		</p:treeTable>
+		
+ 		<p:commandButton style="margin-top: 10px" value="Save"  id="cb3" disabled="false"
+					rendered="true" icon="ui-icon-disk" />
 	</p:panel>
 
 	<p:dialog widgetVar="search" modal="false" header="Hierarchy search">
