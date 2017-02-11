@@ -9,15 +9,21 @@
 	
 		<h:panelGrid columns="3" cellpadding="10">
 
-			<h:panelGrid columns="2" columnClasses="label, value">
+			<h:panelGrid columns="2" columnClasses="label, value" >
 				<p:outputLabel value="Extension" />
-				<p:selectOneMenu value="TME" rendered="true" disabled="false"
+				<p:selectOneMenu value="#{searchController.extension}" rendered="true" disabled="false"
 					required="false">
 					<f:selectItem itemLabel="TME" itemValue="TME"></f:selectItem>
 					<f:selectItem itemLabel="TR1" itemValue="TR1"></f:selectItem>
 					<f:selectItem itemLabel="CPT" itemValue="CPT"></f:selectItem>
 					<f:selectItem itemLabel="DME" itemValue="DME"></f:selectItem>
+					<f:selectItem itemLabel="PRO" itemValue="PRO"></f:selectItem>
+ 					
+					<p:ajax update="level" event="change"  />
 				</p:selectOneMenu>
+				
+				<p:outputLabel value="Name" />
+				<p:inputText value="12JUN2015 CQT [STANDARD] (NMQ)" style="min-width: 300px" />
 
 				<p:outputLabel value="Drug Program" />
 				<p:selectOneMenu value="#{dummyView.value}">
@@ -31,21 +37,10 @@
 					<f:selectItem itemValue="Val 2" itemLabel="Val 2" />
 				</p:selectOneMenu>
 
-				<p:outputLabel value="Name" />
-				<p:inputText value="12JUN2015 CQT [STANDARD] (NMQ)" />
-
-				<p:outputLabel value="Filter Dictionary" />
-				<h:outputText value="NMATSMQ" />
-
 				<p:outputLabel value="Release group" />
-				<p:inputText value="Draft AG" />
-
-				<p:outputLabel value="Approved" />
-				<span class="xjz"><img
-					src="/pages/details_files/checkMark_readonly.png" class="xuf"
-					title="Checked" alt="Checked" height="13" width="13" border="0" /></span>
-
-				<p:outputLabel value="Release Status" />
+				<p:inputText value="Draft AG" style="min-width: 300px" />
+ 
+ 				<p:outputLabel value="Release Status" />
 				<h:outputText value="CURRENT" />
 
 				<p:outputLabel value="Product" rendered="true" />
@@ -65,7 +60,7 @@
 				</p:selectOneMenu>
 			</h:panelGrid>
 
-			<h:panelGrid columns="2" columnClasses="label, value">
+			<h:panelGrid columns="2" columnClasses="label, value" style="min-width: 400px">
 				<p:outputLabel value="Algorithm" />
 				<h:outputText value="N" />
 
@@ -79,13 +74,14 @@
 				<h:outputText value="No" />
 
 				<p:outputLabel value="Level" />
-				<p:selectOneMenu value="NMQ1" rendered="true" disabled="false"
+				<p:selectOneMenu value="#{searchController.extension eq 'PRO' ? '2' : '1'}" rendered="true" disabled="false" id="level"
 					required="false">
-					<f:selectItem itemLabel="1" itemValue="NMQ1" itemDisabled="false"></f:selectItem>
-					<f:selectItem itemLabel="2" itemValue="NMQ2" itemDisabled="false"></f:selectItem>
-					<f:selectItem itemLabel="3" itemValue="NMQ3" itemDisabled="false"></f:selectItem>
-					<f:selectItem itemLabel="4" itemValue="NMQ4" itemDisabled="false"></f:selectItem>
-					<f:selectItem itemLabel="5" itemValue="NMQ5" itemDisabled="false"></f:selectItem>
+					<f:selectItem itemValue="1" itemLabel="1" />
+					<f:selectItem itemValue="2" itemLabel="2" />
+					<f:selectItem itemValue="3" itemLabel="3" />
+					<f:selectItem itemValue="4" itemLabel="4" />
+					<f:selectItem itemValue="5" itemLabel="5" />
+					<f:selectItem itemValue="All Levels" itemLabel="All Levels" />
 
 				</p:selectOneMenu>
 

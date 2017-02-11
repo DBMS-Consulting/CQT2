@@ -3,9 +3,11 @@ package com.dbms.controller;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import javax.faces.event.AjaxBehaviorEvent;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -33,8 +35,16 @@ public class SearchController implements Serializable{
 	private String drugProgram;
 	private String protocol;
 	private String state;
+	private String level;
+	
+	private boolean maintainDesigBtn;
 	
 	private List<CreateEntity> values;
+	
+	@PostConstruct
+	public void init() {
+		maintainDesigBtn = false;
+	}
 
 	public String getExtension() {
 		return extension;
@@ -68,6 +78,25 @@ public class SearchController implements Serializable{
 		values=createEntityService.findByCriterias(extensionStr,drugProgram,protocol);
 		log.debug("found values {}",values==null?0:values.size());
 	}
+	
+	/**
+	 * Method to change Level value on extention selection.
+	 * @param event AjaxBehaviour
+	 */
+	public void changeLevel(AjaxBehaviorEvent event) {
+		if (extension.equals("PRO"))
+			setLevel("2");
+		else
+			setLevel("1");
+	}
+
+	public String getLevel() {
+		return level;
+	}
+
+	public void setLevel(String level) {
+		this.level = level;
+	}
 
 	public List<CreateEntity> getValues() {
 		return values;
@@ -87,6 +116,14 @@ public class SearchController implements Serializable{
 
 	public void setState(String state) {
 		this.state = state;
+	}
+
+	public boolean isMaintainDesigBtn() {
+		return maintainDesigBtn;
+	}
+
+	public void setMaintainDesigBtn(boolean maintainDesigBtn) {
+		this.maintainDesigBtn = maintainDesigBtn;
 	}
 	
 }

@@ -13,14 +13,14 @@
 			<h:panelGrid columns="2" style="width: 100% !important">
 				<h:panelGrid>
 					<p:breadCrumb>
-						<p:menuitem value="Relations" url="#" />
-						<p:menuitem value="Add details" url="#" />
+						<p:menuitem value="Home" url="/index.xhtml" />
+						<p:menuitem value="Browse &amp; Search" />
 					</p:breadCrumb>
 
 				</h:panelGrid>
 				<h:panelGrid columns="1" style="text-align: center">
-					<p:outputLabel value="Historic View as of 05-Feb 2017"
-						style="text-align: center" />
+					<!-- <p:outputLabel value="Historic View as of 05-Feb 2017"
+						style="text-align: center" /> -->
 				</h:panelGrid>
 			</h:panelGrid>
 
@@ -28,7 +28,88 @@
 
 				<!-- Search -->
 				<p:tab id="search" title="Search">
-					<ui:include src="search.xhtml"></ui:include>
+					<p:panel header="Search">
+						<ui:include src="search.xhtml"></ui:include>
+
+						<h:panelGrid columns="8">
+							<p:outputLabel value="Term" />
+							<p:inputText />
+							<p:outputLabel value="Code" />
+							<p:inputText />
+							<p:commandButton value="Search"
+								action="#{searchController.search()}" update="result" />
+							<p:commandButton value="Maintain Designees"
+								rendered="#{searchController.maintainDesigBtn}" />
+							<h:commandButton value="Reset" type="reset" />
+						</h:panelGrid>
+
+						<p:spacer />
+
+						<p:outputPanel deferred="true" deferredMode="visible">
+							<p:dataTable var="value" value="#{searchController.values}"
+								id="result">
+								<p:column headerText="Code">
+									<h:outputLink
+										value="#{request.contextPath}/create/create.xhtml">
+										<f:param value="#{value.code}" name="code" />
+										<h:outputText value="#{value.code}" />
+									</h:outputLink>
+								</p:column>
+								<p:column headerText="Name">
+									<h:outputText value="#{value.name}" />
+								</p:column>
+
+								<p:column headerText="Status">
+									<h:outputText value="#{value.status}" />
+								</p:column>
+								<p:column headerText="Release Status">
+									<h:outputText value="#{value.releaseStatus}" />
+								</p:column>
+								<p:column headerText="Release Group">
+									<h:outputText value="#{value.releaseGroup}" />
+								</p:column>
+
+								<p:column headerText="Group">
+									<h:outputText value="#{value.group}" />
+								</p:column>
+
+								<p:column headerText="Level">
+									<h:outputText value="#{value.level}" />
+								</p:column>
+
+								<p:column headerText="Critical Event">
+									<h:outputText value="#{value.criticalEvent}" />
+								</p:column>
+
+								<p:column headerText="Scope">
+									<h:outputText value="#{value.scope}" />
+								</p:column>
+
+								<p:column headerText="State">
+									<h:outputText value="#{value.state}" />
+								</p:column>
+								<p:column headerText="Product">
+									<h:outputText value="#{value.product}" />
+								</p:column>
+
+								<p:column headerText="Created By">
+									<h:outputText value="#{value.creator.name}" />
+								</p:column>
+								<p:column headerText="Extention">
+									<h:outputText value="#{value.extension}" />
+								</p:column>
+								<p:column headerText="History">
+									<h:outputText value="#{value.history}" />
+								</p:column>
+								<p:column headerText="Drug Program">
+									<h:outputText value="#{value.drugProgram}" />
+								</p:column>
+								<p:column headerText="Protocol">
+									<h:outputText value="#{value.protocol}" />
+								</p:column>
+							</p:dataTable>
+						</p:outputPanel>
+					</p:panel>
 				</p:tab>
 
 				<p:tab id="details" title="Details">
@@ -36,7 +117,7 @@
 						<ui:include src="details.xhtml"></ui:include>
 					</p:panel>
 				</p:tab>
- 
+
 				<!-- CONTACT -->
 				<p:tab id="contact" title="Informative Notes">
 					<ui:include src="viewInformativeNotes.xhtml"></ui:include>
@@ -56,7 +137,7 @@
 			<p:spacer width="10" height="10" id="s6" />
 			<h:panelGrid id="pgl2" columns="5"
 				style="padding:3px; font-size: 10px !important">
- 
+
 				<p:outputLabel for="it1aw" value="Dictionary Version:"></p:outputLabel>
 				<h:inputText id="it1aw" value="########" disabled="true"
 					columns="200" />
