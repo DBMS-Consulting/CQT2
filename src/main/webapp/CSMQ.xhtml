@@ -118,7 +118,7 @@
 				<p:menuitem value="Create" id="pt_cmi1" action="CREATE_NEW_NMQ"
 					style="font-weight:#{userBean.currentMenu eq 'CREATE_NEW_NMQ' ? 'bold' : 'normal'};"
 					url="/create/create.xhtml" rendered="true" />
-				<p:menuitem value="Update" id="pt_cmi3" action="UPDATE_NMQ"
+				<p:menuitem value="Update" id="pt_cmi3" action="UPDATE_NMQ" 
 					style="font-weight:#{userBean.currentMenu eq 'UPDATE_NMQ' ? 'bold' : 'normal'};"
 					url="/create/update.xhtml"
 					rendered="true" />
@@ -126,7 +126,7 @@
 					style="font-weight:#{userBean.currentMenu eq 'COPY_NMQ' ? 'bold' : 'normal'};"
 					rendered="true" />
 				 
-				<p:menuitem value="Browse &amp; Search" id="pt_cmi17"
+				<p:menuitem value="Browse &amp; Search" id="pt_cmi17"  
 					action="BROWSE_SEARCH" rendered="true"
 					style="font-weight:#{userBean.currentMenu eq 'BROWSE_SEARCH' ? 'bold' : 'normal'};"
 					url="/create/browseAndSearch.xhtml" />
@@ -192,7 +192,7 @@
 			</p:menubar>
 		</h:form>
 		<p:spacer width="10" height="5" id="pt_s1" />
-		<div>
+		<div id="panel-content">
 			<p:messages globalOnly="true" id="pt_m2" />
 			<ui:insert name="page-content">
 			</ui:insert>

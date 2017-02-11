@@ -6,10 +6,10 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:p="http://primefaces.org/ui">
 
-	<p:panel header="Search">
+	
 
 		<h:panelGrid columns="4" cellpadding="10">
-			<h:panelGrid columns="2">
+			<h:panelGrid columns="2" style="min-width: 300px">
 				<p:outputLabel value="Dictionary" />
 				<p:selectOneMenu value="#{dummyView.value}">
 					<f:selectItem itemValue="CMQ SMQ Dictionary"
@@ -35,7 +35,7 @@
 
 			</h:panelGrid>
 
-			<h:panelGrid columns="2">
+			<h:panelGrid columns="2" style="min-width: 300px">
 				<p:outputLabel value="Release Status" />
 				<p:inputText />
 
@@ -67,14 +67,9 @@
  
 			</h:panelGrid>
 
-			<h:panelGrid columns="2">
+			<h:panelGrid columns="2" style="min-width: 300px">
 				<p:outputLabel value="Critical event" />
-				<p:selectOneMenu value="#{dummyView.value}">
-					<f:selectItem itemValue="All" itemLabel="All" />
-					<f:selectItem itemValue="No" itemLabel="No" />
-					<f:selectItem itemValue="Yes - Narrow" itemLabel="Yes - Narrow" />
-					<f:selectItem itemValue="Yes - Broad" itemLabel="Yes - Broad" />
-				</p:selectOneMenu>
+				<h:outputText value="No" />
 
 				<p:outputLabel value="Product" />
 				<p:inputText />
@@ -90,16 +85,12 @@
 
 			
 
-			<h:panelGrid columns="2">
+			<h:panelGrid columns="2" style="min-width: 300px">
 				<p:outputLabel value="Group" />
 				<p:inputText />
 
 				<p:outputLabel value="Scope" />
-				<p:selectOneMenu value="#{dummyView.value}">
-					<f:selectItem itemValue="All" itemLabel="All" />
-					<f:selectItem itemValue="Y" itemLabel="Y" />
-					<f:selectItem itemValue="N" itemLabel="N" />
-				</p:selectOneMenu>
+				<h:outputText value="No" />
 
 				<p:spacer />
 			</h:panelGrid>
@@ -108,87 +99,7 @@
 
 		<p:separator />
 
-		<h:panelGrid columns="8">
-			<p:outputLabel value="Term" />
-			<p:inputText />
-			<p:outputLabel value="Code" />
-			<p:inputText />
-			<p:commandButton value="Search" action="#{searchController.search()}"
-				update="result" />
-			<p:commandButton value="Maintain Designees" />
-			<h:commandButton value="Reset" type="reset" />
-		</h:panelGrid>
-
-		<p:spacer />
-
-		<p:outputPanel deferred="true" deferredMode="visible">
-			<p:dataTable var="value" value="#{searchController.values}"
-				id="result">
-				<p:column headerText="Code">
-					<h:outputLink value="#{request.contextPath}/create/create.xhtml">
-						<f:param value="#{value.code}" name="code" />
-						<h:outputText value="#{value.code}" />
-					</h:outputLink>
-				</p:column>
-				<p:column headerText="Name">
-					<h:outputText value="#{value.name}" />
-				</p:column>
-				<p:column headerText="Description">
-					<h:outputText value="#{value.description}" />
-				</p:column>
-				<p:column headerText="Status">
-					<h:outputText value="#{value.status}" />
-				</p:column>
-				<p:column headerText="Release Status">
-					<h:outputText value="#{value.releaseStatus}" />
-				</p:column>
-				<p:column headerText="Release Group">
-					<h:outputText value="#{value.releaseGroup}" />
-				</p:column>
-
-				<p:column headerText="Group">
-					<h:outputText value="#{value.group}" />
-				</p:column>
-
-				<p:column headerText="Level">
-					<h:outputText value="#{value.level}" />
-				</p:column>
-
-				<p:column headerText="Critical Event">
-					<h:outputText value="#{value.criticalEvent}" />
-				</p:column>
-
-				<p:column headerText="Code">
-					<h:outputText value="#{value.code}" />
-				</p:column>
-
-				<p:column headerText="Scope">
-					<h:outputText value="#{value.scope}" />
-				</p:column>
-
-				<p:column headerText="State">
-					<h:outputText value="#{value.state}" />
-				</p:column>
-				<p:column headerText="Product">
-					<h:outputText value="#{value.product}" />
-				</p:column>
-				<p:column headerText="Designee">
-					<h:outputText value="#{value.designee}" />
-				</p:column>
-				<p:column headerText="Created By">
-					<h:outputText value="#{value.creator.name}" />
-				</p:column>
-				<p:column headerText="Extention">
-					<h:outputText value="#{value.extension}" />
-				</p:column>
-				<p:column headerText="Drug Program">
-					<h:outputText value="#{value.drugProgram}" />
-				</p:column>
-				<p:column headerText="Protocol">
-					<h:outputText value="#{value.protocol}" />
-				</p:column>
-			</p:dataTable>
-		</p:outputPanel>
-	</p:panel>
+		
+	
 
 </ui:composition>

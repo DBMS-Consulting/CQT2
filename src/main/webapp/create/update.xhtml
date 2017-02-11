@@ -13,8 +13,8 @@
 			<h:panelGrid columns="2" style="width: 100% !important">
 				<h:panelGrid>
 					<p:breadCrumb>
-						<p:menuitem value="Relations" url="#" />
-						<p:menuitem value="Update details" url="#" />
+						<p:menuitem value="Home" url="/index.xhtml" />
+						<p:menuitem value="Update Details" />
 					</p:breadCrumb>
 
 				</h:panelGrid>
@@ -27,7 +27,85 @@
 			<p:wizard flowListener="#{wizard.onFlowProcess}">
 				<!-- Search -->
 				<p:tab id="search" title="Search">
+				<p:panel header="Search">
 					<ui:include src="search.xhtml"></ui:include>
+
+					<h:panelGrid columns="8">
+						<p:outputLabel value="Term" />
+						<p:inputText />
+						<p:outputLabel value="Code" />
+						<p:inputText />
+						<p:commandButton value="Search"
+							action="#{searchController.search()}" update="result" />
+						<p:commandButton value="Maintain Designees"
+							action="MAINTAIN_DESIGNEE" />
+						<h:commandButton value="Reset" type="reset" />
+					</h:panelGrid>
+
+					<p:spacer />
+
+					<p:outputPanel deferred="true" deferredMode="visible">
+						<p:dataTable var="value" value="#{searchController.values}"
+							id="result">
+							<p:column headerText="Code">
+								<h:outputLink value="#{request.contextPath}/create/create.xhtml">
+									<f:param value="#{value.code}" name="code" />
+									<h:outputText value="#{value.code}" />
+								</h:outputLink>
+							</p:column>
+							<p:column headerText="Name">
+								<h:outputText value="#{value.name}" />
+							</p:column>
+
+							<p:column headerText="Status">
+								<h:outputText value="#{value.status}" />
+							</p:column>
+							<p:column headerText="Release Status">
+								<h:outputText value="#{value.releaseStatus}" />
+							</p:column>
+							<p:column headerText="Release Group">
+								<h:outputText value="#{value.releaseGroup}" />
+							</p:column>
+
+							<p:column headerText="Group">
+								<h:outputText value="#{value.group}" />
+							</p:column>
+
+							<p:column headerText="Level">
+								<h:outputText value="#{value.level}" />
+							</p:column>
+
+							<p:column headerText="Critical Event">
+								<h:outputText value="#{value.criticalEvent}" />
+							</p:column>
+
+							<p:column headerText="Scope">
+								<h:outputText value="#{value.scope}" />
+							</p:column>
+
+							<p:column headerText="State">
+								<h:outputText value="#{value.state}" />
+							</p:column>
+							<p:column headerText="Product">
+								<h:outputText value="#{value.product}" />
+							</p:column>
+
+							<p:column headerText="Created By">
+								<h:outputText value="#{value.creator.name}" />
+							</p:column>
+							<p:column headerText="Extention">
+								<h:outputText value="#{value.extension}" />
+							</p:column>
+
+							<p:column headerText="Drug Program">
+								<h:outputText value="#{value.drugProgram}" />
+							</p:column>
+							<p:column headerText="Protocol">
+								<h:outputText value="#{value.protocol}" />
+							</p:column>
+						</p:dataTable>
+					</p:outputPanel>
+					</p:panel>
 				</p:tab>
 				<p:tab id="details" title="Update Details">
 					<p:panel header="Details">
@@ -35,7 +113,7 @@
 						<p:commandButton value="Save" icon="ui-icon-disk" action="SAVE"></p:commandButton>
 					</p:panel>
 				</p:tab>
-				
+
 				<!-- Notes -->
 				<p:tab id="contact" title="Update Informative Notes">
 					<ui:include src="informativeNotes.xhtml"></ui:include>
@@ -45,7 +123,7 @@
 				<p:tab id="relations" title="Update Relations">
 					<ui:include src="relations.xhtml"></ui:include>
 				</p:tab>
-				
+
 				<p:tab id="confirmPanel" title="Confirm">
 					<p:panel header="Search">
 						<table>
@@ -212,8 +290,8 @@
 								<td><p:outputLabel value="Dictionary" /></td>
 								<td><p:selectOneMenu label="Dictionary" id="soc99"
 										autoSubmit="true" value="BASE">
-										<f:selectItem itemLabel="MedDRA" itemValue="BASE"  />
-										<f:selectItem itemLabel="MQ" itemValue="FILTER"  />
+										<f:selectItem itemLabel="MedDRA" itemValue="BASE" />
+										<f:selectItem itemLabel="MQ" itemValue="FILTER" />
 									</p:selectOneMenu></td>
 								<td><p:inputText placeholder="Term" id="iterm" /></td>
 							</tr>
@@ -235,8 +313,8 @@
 											rendered="true" />
 										<f:selectItem itemLabel="All SMQs" itemValue="MQ%" id="sit1"
 											rendered="true" />
-										<f:selectItem itemLabel="NMQ/CMQ 1" itemValue="NMQ1" id="sit46"
-											rendered="true" />
+										<f:selectItem itemLabel="NMQ/CMQ 1" itemValue="NMQ1"
+											id="sit46" rendered="true" />
 										<f:selectItem itemLabel="NMQ 2" itemValue="NMQ2" id="sit49"
 											rendered="true" />
 										<f:selectItem itemLabel="NMQ 3" itemValue="NMQ3" id="sit47"
@@ -300,11 +378,10 @@
 								<h:panelGrid columns="4">
 									<h:panelGrid columns="1">
 										<p:selectOneMenu label="Sort" value="#" id="sc11">
-											<f:selectItem itemLabel="Filter and Sort" itemValue="TERM"
-												  />
+											<f:selectItem itemLabel="Filter and Sort" itemValue="TERM" />
 											<f:selectItem itemLabel="Term Name" itemValue="#" />
 											<f:selectItem itemLabel="Level"
-												itemValue="DEF_LEVEL_REF_SHORT_NAME"   />
+												itemValue="DEF_LEVEL_REF_SHORT_NAME" />
 											<f:selectItem itemLabel="Scope" itemValue="SCOPE" />
 										</p:selectOneMenu>
 									</h:panelGrid>
@@ -316,8 +393,8 @@
 									<p:selectOneMenu label="Scope" id="sm12" value="0">
 										<f:selectItem
 											itemLabel="Full #{applicationScope.CSMQBean.customMQName}/SMQ"
-											itemValue="0"  />
-										<f:selectItem itemLabel="Child Narrow" itemValue="3"  />
+											itemValue="0" />
+										<f:selectItem itemLabel="Child Narrow" itemValue="3" />
 									</p:selectOneMenu>
 									<p:commandButton value="Refresh" id="refresh"
 										icon="ui-icon-refresh" disabled="false" />
@@ -413,7 +490,7 @@
 			<h:panelGrid id="pgl2" columns="5"
 				style="padding:3px; font-size: 10px !important">
 
-				 
+
 				<p:outputLabel for="it1aw" value="Dictionary Version:"></p:outputLabel>
 				<h:inputText id="it1aw" value="########" disabled="true"
 					columns="200" />
