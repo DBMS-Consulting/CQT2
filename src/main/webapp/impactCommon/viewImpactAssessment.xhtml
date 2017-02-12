@@ -36,18 +36,21 @@
 							</p:selectOneMenu>
 
 							<p:spacer />
-							<p:commandButton value="Refresh" id="cb7" icon="ui-icon-refresh"
+							<p:commandButton value="Refresh" id="cb7" icon="fa fa-refresh"
 								rendered="true" />
 						</h:panelGrid>
 					</p:overlayPanel>
 
-					<p:spacer />
-					<p:selectOneMenu id="soc244" value="S" rendered="true"
-						style="margin-top: 10px !important">
-						<f:selectItem itemLabel="View" itemValue="A" id="si355" />
-
-					</p:selectOneMenu>
-					<p:commandButton value="Select MQ"
+					<p:spacer width="10" />
+					<p:submenu label="View" icon="fa fa-wrench">
+						<p:menuButton value="View">
+							<p:menuitem value="View 1" actionListener="#" ajax="false"
+								icon="ui-icon-close" />
+							<p:menuitem value="View 2" url="#" icon="ui-icon-extlink" />
+						</p:menuButton>
+					</p:submenu>
+					<p:spacer width="10" />
+					<p:commandButton value="Select MQ" icon="fa fa-search"
 						onclick="PF('select_mq').show();" id="ctb111">
 					</p:commandButton>
 					<!-- <p:commandButton value="Detach Group" id="ctb211"
@@ -126,19 +129,18 @@
 							</p:selectOneMenu>
 
 							<p:spacer />
-							<p:commandButton value="Refresh" icon="ui-icon-refresh"
+							<p:commandButton value="Refresh" icon="fa fa-refresh"
 								rendered="true" />
 						</h:panelGrid>
 					</p:overlayPanel>
-					<p:selectOneMenu id="soc23" value="S" rendered="true"
-						style="margin-top: 10px;">
-						<f:selectItem itemLabel="View" itemValue="A" id="si33" />
-
-					</p:selectOneMenu>
-					<!-- <p:commandButton value="Select MQ"
-						onclick="PF('select_mq').show();" id="ctb11">
-					</p:commandButton> -->
-
+					<p:spacer width="10" />
+					<p:submenu label="View" icon="fa fa-wrench">
+						<p:menuButton value="View">
+							<p:menuitem value="View 1" actionListener="#" ajax="false"
+								icon="ui-icon-close" />
+							<p:menuitem value="View 2" url="#" icon="ui-icon-extlink" />
+						</p:menuButton>
+					</p:submenu>
 
 				</f:facet>
 			</p:toolbar>

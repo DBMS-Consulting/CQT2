@@ -7,8 +7,12 @@
 	xmlns:p="http://primefaces.org/ui">
 
 	<h:panelGrid>
+
 		<p:toolbar>
+
+
 			<f:facet name="left">
+
 				<p:commandButton id="filter" value="Filter and Sort" type="button"
 					icon="ui-icon-triangle-1-s" />
 				<p:overlayPanel id="filterPanel" for="filter">
@@ -37,14 +41,8 @@
 							rendered="true" />
 					</h:panelGrid>
 				</p:overlayPanel>
-
 				<p:spacer width="10" />
-				<p:commandButton value="Delete selected" icon="fa fa-trash-o"
-					id="ctb2" disabled="false">
-					<p:confirm header="Confirm Delete"
-						message="Delete all selected terms?" icon="ui-icon-alert" />
-				</p:commandButton>
-
+				 	
 				<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
 					<p:commandButton value="Yes" type="button"
 						styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
@@ -59,15 +57,11 @@
 				</p:commandButton>
 
 				<p:spacer width="10" />
-				<p:commandButton value="MQ Detailed Report" id="ctb1" icon="fa fa-file-excel-o">
+				<p:commandButton value="MQ Detailed Report" id="ctb1">
 					<p:fileDownload value="#{null}"></p:fileDownload>
 				</p:commandButton>
 				<p:spacer width="10" />
-				<p:commandButton value="Hierarchy Search" id="ctb13"
-					onclick="PF('search').show();" icon="fa fa-search">
-				</p:commandButton>
-
-				<p:spacer width="10" />
+				 
 			</f:facet>
 		</p:toolbar>
 

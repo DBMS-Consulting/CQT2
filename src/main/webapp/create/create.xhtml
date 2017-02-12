@@ -49,67 +49,67 @@
 
 				<!-- RELATIONS -->
 				<p:tab id="confirmPanel" title="Confirm">
-					<p:panel header="Search">
+					<p:panel header="Details">
 						<h:panelGrid columns="3" cellpadding="30">
 
 							<h:panelGrid columns="2" columnClasses="label, value">
 								<p:outputLabel styleClass="label-right"
 									value="Filter Dictionary" />
-								<h:outputText value="#######" />
+								<h:outputText value="#{dummyView.value}" />
 
 								<p:outputLabel styleClass="label-right" value="Drug Program" />
-								<h:outputText value="#######" />
+								<h:outputText value="#{dummyView.value}" />
 
 								<p:outputLabel styleClass="label-right" value="Protocol" />
-								<h:outputText value="#######" />
+								<h:outputText value="#{dummyView.value}" />
 
 								<p:outputLabel styleClass="label-right" value="Release Groups" />
-								<h:outputText value="#######" />
+								<h:outputText value="#{dummyView.value}" />
 
 								<p:outputLabel styleClass="label-right" value="Name" />
-								<h:outputText value="#######" />
+								<h:outputText value="#{dummyView.value}" />
 
 								<p:outputLabel styleClass="label-right" value="Product" />
-								<h:outputText value="#######" />
+								<h:outputText value="#{dummyView.value}" />
 
 								<p:outputLabel styleClass="label-right" value="Designee" />
-								<h:outputText value="#######" />
+								<h:outputText value="#{dummyView.value}" />
 							</h:panelGrid>
 
 							<h:panelGrid columns="2" columnClasses="label, value"
 								style="min-width: 300px;">
 								<p:outputLabel styleClass="label-right" value="Level" />
-								<h:outputText value="#######" />
+								<h:outputText value="#{dummyView.value}" />
 
 								<p:outputLabel styleClass="label-right" value="Code" />
-								<h:outputText value="#######" />
+								<h:outputText value="#{dummyView.value}" />
 
 								<p:outputLabel styleClass="label-right" value="Algorithm" />
-								<h:outputText value="#######" />
+								<h:outputText value="#{dummyView.value}" />
 
-								<p:outputLabel styleClass="label-right" value="Extention" />
-								<h:outputText value="#######" />
+								<p:outputLabel styleClass="label-right" value="Extension" />
+								<h:outputText value="#{dummyView.value}" />
 
 								<p:outputLabel styleClass="label-right" value="Critical event" />
-								<h:outputText value="#######" />
+								<h:outputText value="#{dummyView.value}" />
 							</h:panelGrid>
 
 							<h:panelGrid columns="2" columnClasses="label, value"
 								style="min-width: 300px;">
 								<p:outputLabel styleClass="label-right" value="Group" />
-								<h:outputText value="#######" />
+								<h:outputText value="#{dummyView.value}" />
 
 								<p:outputLabel styleClass="label-right" value="Status" />
-								<h:outputText value="#######" />
+								<h:outputText value="#{dummyView.value}" />
 
 								<p:outputLabel styleClass="label-right" value="Release Status" />
-								<h:outputText value="#######" />
+								<h:outputText value="#{dummyView.value}" />
 
 								<p:outputLabel styleClass="label-right" value="State" />
-								<h:outputText value="#######" />
+								<h:outputText value="#{dummyView.value}" />
 
 								<p:outputLabel styleClass="label-right" value="Scope" />
-								<h:outputText value="#######" />
+								<h:outputText value="#{dummyView.value}" />
 							</h:panelGrid>
 
 						</h:panelGrid>
@@ -120,14 +120,14 @@
 					<p:panel header="Informative Notes">
 						<h:panelGrid columns="1" cellpadding="30">
 							<h:panelGrid columns="2" columnClasses="label, value">
-								<p:outputLabel styleClass="label-right" value="Description 11" />
-								<h:outputText value="#######" />
+								<p:outputLabel styleClass="label-right" value="Description" />
+								<h:outputText value="#{dummyView.value}" />
 
 								<p:outputLabel styleClass="label-right" value="Source" />
-								<h:outputText value="#######" />
+								<h:outputText value="#{dummyView.value}" />
 
 								<p:outputLabel styleClass="label-right" value="Notes" />
-								<h:outputText value="#######" />
+								<h:outputText value="#{dummyView.value}" />
 							</h:panelGrid>
 						</h:panelGrid>
 
@@ -322,7 +322,7 @@
 										<f:selectItem itemLabel="Child Narrow" itemValue="3" />
 									</p:selectOneMenu>
 									<p:commandButton value="Refresh" id="refresh"
-										icon="ui-icon-refresh" disabled="false" />
+										icon="fa fa-refresh" disabled="false" />
 								</h:panelGrid>
 							</f:facet>
 						</p:toolbar>

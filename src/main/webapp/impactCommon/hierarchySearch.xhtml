@@ -137,10 +137,19 @@
 							</p:selectOneMenu>
 
 							<p:spacer />
-							<p:commandButton value="Refresh" id="cbH" icon="ui-icon-refresh"
+							<p:commandButton value="Refresh" id="cbH" icon="fa fa-refresh"
 								rendered="true" />
 						</h:panelGrid>
 					</p:overlayPanel>
+					<p:spacer width="5" />
+					
+					<p:submenu label="View" icon="fa fa-wrench">
+											<p:menuButton value="View">
+												<p:menuitem value="View 1" actionListener="#" ajax="false"
+													icon="ui-icon-close" />
+												<p:menuitem value="View 2" url="#" icon="ui-icon-extlink" />
+											</p:menuButton>
+										</p:submenu>
 					 
 				</f:facet>
 			</p:toolbar>

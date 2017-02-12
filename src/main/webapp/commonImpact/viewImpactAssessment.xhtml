@@ -35,16 +35,20 @@
 							</p:selectOneMenu>
 
 							<p:spacer />
-							<p:commandButton value="Refresh" id="cb7" icon="ui-icon-refresh"
+							<p:commandButton value="Refresh" id="cb7" icon="fa fa-refresh"
 								rendered="true" />
 						</h:panelGrid>
 					</p:overlayPanel>
+					<p:spacer width="5" />
 
-
-					<p:selectOneMenu id="soc244" value="S" rendered="true">
-						<f:selectItem itemLabel="View" itemValue="A" id="si355" />
-
-					</p:selectOneMenu>
+					<p:submenu label="View" icon="fa fa-wrench">
+						<p:menuButton value="View">
+							<p:menuitem value="View 1" actionListener="#" ajax="false"
+								icon="ui-icon-close" />
+							<p:menuitem value="View 2" url="#" icon="ui-icon-extlink" />
+						</p:menuButton>
+					</p:submenu>
+					<p:spacer width="5" />
 					<p:commandButton value="Select MQ" onclick="PF('confirm2').show();"
 						id="ctb111">
 					</p:commandButton>
@@ -101,7 +105,8 @@
 				<f:facet name="left">
 					<p:commandButton id="filter2" value="Filter and Sort" type="button"
 						icon="ui-icon-triangle-1-s" />
-					<p:overlayPanel id="filterPanel2" for="filter2" showCloseIcon="true">
+					<p:overlayPanel id="filterPanel2" for="filter2"
+						showCloseIcon="true">
 						<h:panelGrid columns="2">
 							<p:outputLabel value="Sort" />
 							<p:selectOneMenu value="TERM">
@@ -123,7 +128,7 @@
 							</p:selectOneMenu>
 
 							<p:spacer />
-							<p:commandButton value="Refresh" icon="ui-icon-refresh"
+							<p:commandButton value="Refresh" icon="fa fa-refresh"
 								rendered="true" />
 						</h:panelGrid>
 					</p:overlayPanel>

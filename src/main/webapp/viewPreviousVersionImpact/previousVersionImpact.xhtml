@@ -8,18 +8,47 @@
 
 	<ui:define name="page-content">
 		<h:form id="f1">
-			<p:growl id="m1" />
+			<p:growl id="messages" />
 
 			<h:panelGrid columns="1" style="width: 100% !important">
 				<p:breadCrumb styleClass="breadcrumb">
 					<p:menuitem value="Home" url="/index.xhtml" />
 					<p:menuitem value="Previous Version Impact" />
+					<p:menuitem value="MedDRA Version" />
 				</p:breadCrumb>
 			</h:panelGrid>
 
+			<p:toolbar>
+				<f:facet name="left">
+					<h:outputText value="Previous Version Impact"
+						style="font-weight: bold;" />
+				</f:facet>
 
-			<p:wizard flowListener="#{userWizard.onFlowProcess}">
-				<!-- DETAILS -->
+				<f:facet name="right">
+					<p:commandButton value="Export" actionListener="#"
+						icon="fa fa-file-excel-o" update="messages" />
+					<p:spacer width="5" />
+					<p:commandButton value="Legend" actionListener="#"
+						icon="fa fa-bars" update="messages" />
+					<p:spacer width="5" />
+					<p:submenu label="Options" icon="fa fa-wrench">
+						<p:menuButton value="Options">
+							<p:menuitem value="Action 1" actionListener="#" ajax="false"
+								icon="ui-icon-close" />
+							<p:menuitem value="Action 2" url="#" icon="ui-icon-extlink" />
+						</p:menuButton>
+					</p:submenu>
+				</f:facet>
+			</p:toolbar>
+
+			<p:panel>
+
+				<ui:include src="../impactCommon/viewImpactAssessment.xhtml"></ui:include>
+			</p:panel>
+
+
+			<!-- <p:wizard flowListener="#{userWizard.onFlowProcess}">
+				DETAILS
 				<p:tab id="details" title="Details">
 					<ui:include src="../impactCommon/viewDetails.xhtml"></ui:include>
 				</p:tab>
@@ -34,7 +63,7 @@
 				<p:tab id="infos" title="Informative Notes">
 					<ui:include src="../impactCommon/viewInformativeNotes.xhtml"></ui:include>
 				</p:tab>
-			</p:wizard>
+			</p:wizard> -->
 		</h:form>
 	</ui:define>
 </ui:composition>

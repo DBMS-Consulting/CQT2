@@ -46,7 +46,24 @@
 
 						<p:outputPanel deferred="true" deferredMode="visible">
 							<p:dataTable var="value" value="#{searchController.values}"
-								id="result">
+								id="result" rows="10" paginator="true" paginatorPosition="bottom"
+								paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+								rowsPerPageTemplate="5,10,25">
+								<p:column headerText="Term">
+									<h:outputText value="#{value.term}" />
+								</p:column>
+								<p:column headerText="Extension">
+									<h:outputText value="#{value.extension}" />
+								</p:column>
+								<p:column headerText="Level">
+									<h:outputText value="#{value.level}" />
+								</p:column>
+								<p:column headerText="Status">
+									<h:outputText value="#{value.status}" />
+								</p:column>
+								<p:column headerText="State">
+									<h:outputText value="#{value.state}" />
+								</p:column>
 								<p:column headerText="Code">
 									<h:outputLink
 										value="#{request.contextPath}/create/create.xhtml">
@@ -54,55 +71,24 @@
 										<h:outputText value="#{value.code}" />
 									</h:outputLink>
 								</p:column>
-								<p:column headerText="Name">
-									<h:outputText value="#{value.name}" />
-								</p:column>
-
-								<p:column headerText="Status">
-									<h:outputText value="#{value.status}" />
-								</p:column>
-								<p:column headerText="Release Status">
-									<h:outputText value="#{value.releaseStatus}" />
-								</p:column>
-								<p:column headerText="Release Group">
-									<h:outputText value="#{value.releaseGroup}" />
-								</p:column>
-
-								<p:column headerText="Group">
-									<h:outputText value="#{value.group}" />
-								</p:column>
-
-								<p:column headerText="Level">
-									<h:outputText value="#{value.level}" />
-								</p:column>
-
-								<p:column headerText="Critical Event">
-									<h:outputText value="#{value.criticalEvent}" />
-								</p:column>
-
-								<p:column headerText="Scope">
-									<h:outputText value="#{value.scope}" />
-								</p:column>
-
-								<p:column headerText="State">
-									<h:outputText value="#{value.state}" />
-								</p:column>
-								<p:column headerText="Product">
-									<h:outputText value="#{value.product}" />
-								</p:column>
-
-								<p:column headerText="Created By">
-									<h:outputText value="#{value.creator.name}" />
-								</p:column>
-								<p:column headerText="Extention">
-									<h:outputText value="#{value.extension}" />
-								</p:column>
-
 								<p:column headerText="Drug Program">
 									<h:outputText value="#{value.drugProgram}" />
 								</p:column>
 								<p:column headerText="Protocol">
 									<h:outputText value="#{value.protocol}" />
+								</p:column>
+								<p:column headerText="Product">
+									<h:outputText value="#{value.product}" />
+								</p:column>
+								<p:column headerText="Group">
+									<h:outputText value="#{value.group}" />
+								</p:column>
+
+								<p:column headerText="Critical Event">
+									<h:outputText value="#{value.criticalEvent}" />
+								</p:column>
+								<p:column headerText="Created By">
+									<h:outputText value="#{value.creator.name}" />
 								</p:column>
 							</p:dataTable>
 						</p:outputPanel>
@@ -126,73 +112,72 @@
 						<ui:include src="relations.xhtml"></ui:include>
 
 						<p:commandButton style="margin-top: 10px" value="Save" id="cb3"
-							disabled="false" 
-							icon="ui-icon-disk" />
+							disabled="false" icon="ui-icon-disk" />
 					</p:panel>
 				</p:tab>
 
 				<p:tab id="confirmPanel" title="Confirm">
-					<p:panel header="Search">
+					<p:panel header="Details">
 						<h:panelGrid columns="3" cellpadding="30">
 
 							<h:panelGrid columns="2" columnClasses="label, value">
 								<p:outputLabel styleClass="label-right"
 									value="Filter Dictionary" />
-								<h:outputText value="#######" />
+								<h:outputText value="#{dummyView.value}" />
 
 								<p:outputLabel styleClass="label-right" value="Drug Program" />
-								<h:outputText value="#######" />
+								<h:outputText value="#{dummyView.value}" />
 
 								<p:outputLabel styleClass="label-right" value="Protocol" />
-								<h:outputText value="#######" />
+								<h:outputText value="#{dummyView.value}" />
 
 								<p:outputLabel styleClass="label-right" value="Release Groups" />
-								<h:outputText value="#######" />
+								<h:outputText value="#{dummyView.value}" />
 
 								<p:outputLabel styleClass="label-right" value="Name" />
-								<h:outputText value="#######" />
+								<h:outputText value="#{dummyView.value}" />
 
 								<p:outputLabel styleClass="label-right" value="Product" />
-								<h:outputText value="#######" />
+								<h:outputText value="#{dummyView.value}" />
 
 								<p:outputLabel styleClass="label-right" value="Designee" />
-								<h:outputText value="#######" />
+								<h:outputText value="#{dummyView.value}" />
 							</h:panelGrid>
 
 							<h:panelGrid columns="2" columnClasses="label, value"
 								style="min-width: 300px;">
 								<p:outputLabel styleClass="label-right" value="Level" />
-								<h:outputText value="#######" />
+								<h:outputText value="#{dummyView.value}" />
 
 								<p:outputLabel styleClass="label-right" value="Code" />
-								<h:outputText value="#######" />
+								<h:outputText value="#{dummyView.value}" />
 
 								<p:outputLabel styleClass="label-right" value="Algorithm" />
-								<h:outputText value="#######" />
+								<h:outputText value="#{dummyView.value}" />
 
-								<p:outputLabel styleClass="label-right" value="Extention" />
-								<h:outputText value="#######" />
+								<p:outputLabel styleClass="label-right" value="Extension" />
+								<h:outputText value="#{dummyView.value}" />
 
 								<p:outputLabel styleClass="label-right" value="Critical event" />
-								<h:outputText value="#######" />
+								<h:outputText value="#{dummyView.value}" />
 							</h:panelGrid>
 
 							<h:panelGrid columns="2" columnClasses="label, value"
 								style="min-width: 300px;">
 								<p:outputLabel styleClass="label-right" value="Group" />
-								<h:outputText value="#######" />
+								<h:outputText value="#{dummyView.value}" />
 
 								<p:outputLabel styleClass="label-right" value="Status" />
-								<h:outputText value="#######" />
+								<h:outputText value="#{dummyView.value}" />
 
 								<p:outputLabel styleClass="label-right" value="Release Status" />
-								<h:outputText value="#######" />
+								<h:outputText value="#{dummyView.value}" />
 
 								<p:outputLabel styleClass="label-right" value="State" />
-								<h:outputText value="#######" />
+								<h:outputText value="#{dummyView.value}" />
 
 								<p:outputLabel styleClass="label-right" value="Scope" />
-								<h:outputText value="#######" />
+								<h:outputText value="#{dummyView.value}" />
 							</h:panelGrid>
 
 						</h:panelGrid>
@@ -203,14 +188,14 @@
 					<p:panel header="Informative Notes">
 						<h:panelGrid columns="1" cellpadding="30">
 							<h:panelGrid columns="2" columnClasses="label, value">
-								<p:outputLabel styleClass="label-right" value="Description 11" />
-								<h:outputText value="#######" />
+								<p:outputLabel styleClass="label-right" value="Description" />
+								<h:outputText value="#{dummyView.value}" />
 
 								<p:outputLabel styleClass="label-right" value="Source" />
-								<h:outputText value="#######" />
+								<h:outputText value="#{dummyView.value}" />
 
 								<p:outputLabel styleClass="label-right" value="Notes" />
-								<h:outputText value="#######" />
+								<h:outputText value="#{dummyView.value}" />
 							</h:panelGrid>
 						</h:panelGrid>
 
@@ -272,7 +257,7 @@
 								</tr>
 								<tr>
 									<td><p:outputLabel value="Reason for Approval" /></td>
-									<td><p:inputText value="#######" /></td>
+									<td><p:inputText value="#{dummyView.value}" /></td>
 								</tr>
 
 							</tbody>
@@ -281,7 +266,7 @@
 				</p:tab>
 			</p:wizard>
 
-			 
+
 
 			<p:dialog widgetVar="search" modal="false" header="Hierarchy search">
 				<p:panel header="Relations" style="width:700px; height:623px;">
@@ -398,7 +383,7 @@
 										<f:selectItem itemLabel="Child Narrow" itemValue="3" />
 									</p:selectOneMenu>
 									<p:commandButton value="Refresh" id="refresh"
-										icon="ui-icon-refresh" disabled="false" />
+										icon="fa fa-refresh" disabled="false" />
 								</h:panelGrid>
 							</f:facet>
 						</p:toolbar>
@@ -459,5 +444,13 @@
 			<f:attribute name="currentPage"
 				value="Create New #{applicationScope.CSMQBean.customMQName} Wizard" />
 		</h:form>
+
+		<style>
+.label-right {
+	float: right;
+	margin-right: 20px;
+	font-size: 14px !important;
+}
+</style>
 	</ui:define>
 </ui:composition>
