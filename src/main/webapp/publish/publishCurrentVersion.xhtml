@@ -10,14 +10,11 @@
 		<h:form id="f1">
 			<p:growl id="m1" />
 
-			<h:panelGrid columns="2" style="width: 100% !important">
-				<h:panelGrid>
-					<p:breadCrumb>
-						<p:menuitem value="" url="#" />
-					</p:breadCrumb>
-
-				</h:panelGrid>
-
+			<h:panelGrid columns="1" style="width: 100% !important">
+				<p:breadCrumb styleClass="breadcrumb">
+					<p:menuitem value="Home" url="/index.xhtml" />
+					<p:menuitem value="Publish Current Version" />
+				</p:breadCrumb>
 			</h:panelGrid>
 
 			<p:wizard flowListener="#{wizard.onFlowProcess}">
@@ -46,7 +43,7 @@
 				</p:tab>
 
 				<p:tab id="activate" title="Activate">
-					<p:panel header="Demote to Draft">
+					<p:panel header="Activate">
 						<h:panelGrid id="pgl3">
 							<p:toolbar id="t4">
 								<f:facet name="left">

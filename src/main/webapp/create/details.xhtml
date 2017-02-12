@@ -9,7 +9,7 @@
 		<h:panelGrid columns="3" cellpadding="10">
 
 			<h:panelGrid columns="2" columnClasses="label, value" >
-				<p:outputLabel value="* Extension" />
+				<p:outputLabel value="* Extention" styleClass="label-right" />
 				<p:selectOneMenu value="#{searchController.extension}" rendered="true" disabled="false"
 					required="false">
 					<f:selectItem itemLabel="TME" itemValue="TME"></f:selectItem>
@@ -22,59 +22,63 @@
 				</p:selectOneMenu>
 				
 				
-				<p:outputLabel value="* Name" />
-				<p:inputText value="12JUN2015 CQT [STANDARD] (NMQ)" style="min-width: 300px" />
+				<p:outputLabel value="* Name" styleClass="label-right" />
+				<p:inputText value="#{dummyView.value}" style="min-width: 300px" />
 
-				<p:outputLabel value="* Drug Program" />
-				<p:selectOneMenu value="#{dummyView.value}">
+				<p:outputLabel value="* Drug Program" styleClass="label-right" />
+				<p:selectOneMenu value="No program">
+					<f:selectItem itemValue="No program" itemLabel="No program" />
 					<f:selectItem itemValue="Val 1" itemLabel="Val 1" />
 					<f:selectItem itemValue="Val 2" itemLabel="Val 2" />
 				</p:selectOneMenu>
 
-				<p:outputLabel value=" #{searchController.extension eq 'PRO' ? '*' : ''}  Protocol" id="protocolLb" />
-				<p:selectOneMenu value="#{dummyView.value}" required="#{searchController.extension eq 'PRO' ? true : false}" id="protocol">
-					<f:selectItem itemValue="" itemLabel="" />
+				<p:outputLabel value=" #{searchController.extension eq 'PRO' ? '*' : ''}  Protocol" id="protocolLb" styleClass="label-right" />
+				<p:selectOneMenu value="No protocol" required="#{searchController.extension eq 'PRO' ? true : false}" id="protocol">
+ 					<f:selectItem itemValue="No protocol" itemLabel="No protocol" />
 					<f:selectItem itemValue="Val 1" itemLabel="Val 1" />
 					<f:selectItem itemValue="Val 2" itemLabel="Val 2" />
 				</p:selectOneMenu>
 
-				<p:outputLabel value=" Release group" />
-				<p:inputText value="Draft AG" style="min-width: 300px" />
+				<p:outputLabel value=" Release group" styleClass="label-right" />
+				<h:outputText value="Draft AG" style="min-width: 300px" />
  
- 				<p:outputLabel value=" Release Status" />
-				<h:outputText value="CURRENT" />
+ 				<p:outputLabel value=" Release Status" styleClass="label-right" />
+				<h:outputText value="Pending" />
 
-				<p:outputLabel value="* Product" rendered="true" />
-				<p:selectOneMenu value="STANDARD" rendered="true" disabled="false"
+				<p:outputLabel value="* Product" rendered="true" styleClass="label-right" />
+				<p:selectOneMenu value="No Product" rendered="true" disabled="false"
 					required="true">
-					<f:selectItem itemLabel="Standard" itemValue="STANDARD"></f:selectItem>
+					<f:selectItem itemLabel="No Product" itemValue="No Product"></f:selectItem>
+					<f:selectItem itemLabel="Val 1" itemValue="Val 1"></f:selectItem>
+					<f:selectItem itemLabel="Val 2" itemValue="Val 2"></f:selectItem>
 				</p:selectOneMenu>
 
-				<p:outputLabel value="Product" rendered="false" />
+				<p:outputLabel value="Product" rendered="false" styleClass="label-right" />
 				<h:outputText value="STANDARD" rendered="false" />
 
-				<p:outputLabel value="* Designee" />
-				<p:selectOneMenu value="DEFAULT" rendered="true" disabled="false"
+				<p:outputLabel value="* Designee" styleClass="label-right" />
+				<p:selectOneMenu value=" " rendered="true" disabled="false"
 					required="true">
+					<f:selectItem itemLabel=" " itemValue=" "></f:selectItem>
 					<f:selectItem itemLabel="Jane Doe" itemValue="jane"></f:selectItem>
 					<f:selectItem itemLabel="John Doe" itemValue="john"></f:selectItem>
 				</p:selectOneMenu>
 			</h:panelGrid>
 
-			<h:panelGrid columns="2" columnClasses="label, value" style="min-width: 400px">
-				<p:outputLabel value="Algorithm" />
+			<h:panelGrid columns="2" style="min-width: 400px">
+				<p:outputLabel value="Algorithm" styleClass="label-right" />
 				<h:outputText value="N" />
 
-				<p:outputLabel value="Status" />
+				<p:outputLabel value="Status" styleClass="label-right" />
 				<h:outputText value="Pending"></h:outputText>
 
-				<p:outputLabel value="State" />
+				<p:outputLabel value="State" styleClass="label-right" />
 				<h:outputText value="Draft" />
 
-				<p:outputLabel value="Critical event" />
+				<p:outputLabel value="Critical event" styleClass="label-right" />
 				<h:outputText value="No" />
 
-				<p:outputLabel value="* Level" />
+				<p:outputLabel value="* Level" styleClass="label-right" />
 				<p:selectOneMenu value="#{searchController.level}" rendered="true" disabled="false" id="level"
 					required="true">
 					<f:selectItem itemValue="1" itemLabel="1" />
@@ -86,32 +90,40 @@
 
 				</p:selectOneMenu>
 
-				<p:outputLabel value="Scope" />
+				<p:outputLabel value="Scope" styleClass="label-right" />
 				<h:outputText value="No" />
 
-				<p:outputLabel value="* Group" />
+				<p:outputLabel value="* Group" styleClass="label-right" />
 				<p:selectOneMenu value="1" rendered="true" disabled="false"
 					required="true">
 					<f:selectItem itemLabel="1" itemValue="1"></f:selectItem>
 				</p:selectOneMenu>
 
-				<p:outputLabel value="Code" />
+				<p:outputLabel value="Code" styleClass="label-right" />
 				<h:outputText value="ABC" />
 
 			</h:panelGrid>
 
 			<h:panelGrid columns="2" columnClasses="label, value">
-				<p:outputLabel value="Initial Creation By  " />
-				<h:outputText value="NMAT" />
+				<p:outputLabel value="Initial Creation By  "  styleClass="label-right" />
+				<h:outputText value="#{dummyView.value}" />
 
-				<p:outputLabel value="Initial Creation Date  " />
-				<h:outputText value="2015-06-12 12:33:13" />
+				<p:outputLabel value="Initial Creation Date  " styleClass="label-right" />
+				<h:outputText value="#{dummyView.value}" />
 
-				<p:outputLabel value="Last Activation By  " />
-				<h:outputText value="NMAT" />
+				<p:outputLabel value="Last Activation By  " styleClass="label-right" />
+				<h:outputText value="#{dummyView.value}" />
 
-				<p:outputLabel value="Last Activation Date  " />
-				<h:outputText value="2015-06-12 12:33:13" />
+				<p:outputLabel value="Last Activation Date  " styleClass="label-right" />
+				<h:outputText value="#{dummyView.value}" />
 			</h:panelGrid>
 		</h:panelGrid>
- </ui:composition>
+
+	<style>
+.label-right {
+	float: right;
+	margin-right: 20px;
+	font-size: 14px !important;
+}
+</style>
+</ui:composition>

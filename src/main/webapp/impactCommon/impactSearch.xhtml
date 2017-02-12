@@ -7,7 +7,7 @@
 	xmlns:p="http://primefaces.org/ui">
 
 	<p:tabView id="pt2" style="width:800px; height:381px;">
-		<p:tab title="Impacted CMQs" id="sdi5" styleClass="AFStretchWidth">
+		<p:tab title="Impacted SMQs" id="sdi5" styleClass="AFStretchWidth">
 			<p:dataTable var="var" value="#{null}">
 				<p:column sortable="false" headerText="Term" id="c52"
 					filterable="true">
@@ -34,7 +34,7 @@
 				</p:column>
 			</p:dataTable>
 		</p:tab>
-		<p:tab title="Impacted NMQs" styleClass="AFStretchWidth" id="sdi4">
+		<p:tab title="Non-Impacted SMQs" styleClass="AFStretchWidth" id="sdi4">
 			<p:dataTable var="var" value="#{null}">
 				<p:column sortable="false" headerText="Term" id="c52"
 					filterable="true">
@@ -61,7 +61,7 @@
 				</p:column>
 			</p:dataTable>
 		</p:tab>
-		<p:tab title="Impacted SMQs" id="sdi2" inlineStyle="height:335px;">
+		<p:tab title="Impacted Lists" id="sdi2" inlineStyle="height:335px;">
 			<p:dataTable var="var" value="#{null}">
 				<p:column sortable="false" headerText="Term" id="c52"
 					filterable="true">
@@ -88,7 +88,7 @@
 				</p:column>
 			</p:dataTable>
 		</p:tab>
-		<p:tab title="Non-impacted CMQs" id="sdi6" styleClass="AFStretchWidth">
+		<p:tab title="Non-impacted Lists" id="sdi6" styleClass="AFStretchWidth">
 			<p:dataTable var="var" value="#{null}">
 				<p:column sortable="false" headerText="Term" id="c52"
 					filterable="true">
@@ -110,58 +110,6 @@
 				<p:column sortable="false" rendered="false" headerText="ID"
 					width="50" id="c57">
 					<h:outputText value="####" id="ot59">
-
-					</h:outputText>
-				</p:column>
-			</p:dataTable>
-		</p:tab>
-		<p:tab title="Non-impacted NMQs" id="sdi3" styleClass="AFStretchWidth">
-			<p:dataTable value="#{null}" var="var">
-				<p:column sortable="false" headerText="Term" id="c52"
-					filterable="true">
-					<h:outputText value="#{row.Term}" id="ot36" />
-				</p:column>
-				<p:column headerText="MQ Code" id="c35" width="50" filterable="true">
-					<h:outputText value="#{row.DictContentCode}" id="ot37" />
-				</p:column>
-				<p:column headerText="Status" id="c36" width="45" filterable="true">
-					<h:outputText value="#{row.Status}" id="ot38" />
-				</p:column>
-				<p:column id="c37" headerText="State" width="50">
-					<h:outputText value="#{row.WorkflowState}" id="ot39" />
-				</p:column>
-				<p:column sortable="true" headerText="Release Group" id="c38"
-					width="50">
-					<h:outputText value="#{row.ReleaseGroup}" id="ot40" />
-				</p:column>
-				<p:column headerText="ID" id="c39" rendered="false">
-					<h:outputText value="#{row.DictContentId}" id="ot41">
-
-					</h:outputText>
-				</p:column>
-			</p:dataTable>
-		</p:tab>
-		<p:tab title="Non-impacted SMQs" id="sdi1">
-			<p:dataTable var="var" value="#{null}">
-				<p:column sortable="false" headerText="Term" id="c52"
-					filterable="true">
-					<h:outputText value="#{row.Term}" id="ot5" />
-				</p:column>
-				<p:column headerText="MQ Code" id="c10" width="50" filterable="true">
-					<h:outputText value="###" id="ot7" />
-				</p:column>
-				<p:column headerText="Status" id="c11" width="45" filterable="true">
-					<h:outputText value="###" id="ot8" />
-				</p:column>
-				<p:column id="c16" headerText="State" width="50">
-					<h:outputText value="###" id="ot19" />
-				</p:column>
-				<p:column sortable="true" headerText="Release Group" id="c12"
-					width="50">
-					<h:outputText value="###" id="ot9" />
-				</p:column>
-				<p:column headerText="ID" id="c13" rendered="false">
-					<h:outputText value="###" id="ot10">
 
 					</h:outputText>
 				</p:column>

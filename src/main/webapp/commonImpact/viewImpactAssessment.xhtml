@@ -6,153 +6,203 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:p="http://primefaces.org/ui">
 
-	
-		<h:panelGrid columns="2">
-			<h:panelGrid>
-				<p:toolbar id="t44">
-					<f:facet name="left">
-						<p:selectOneMenu id="soc24" value="S" rendered="true">
-							<f:selectItem itemLabel="Filter and Sort" itemValue="A" id="si4" />
 
-						</p:selectOneMenu>
-						<p:selectOneMenu id="soc244" value="S" rendered="true">
-							<f:selectItem itemLabel="View" itemValue="A" id="si355" />
+	<h:panelGrid columns="2">
+		<h:panelGrid>
+			<p:toolbar id="t44">
+				<f:facet name="left">
+					<p:commandButton id="filter" value="Filter and Sort" type="button"
+						icon="ui-icon-triangle-1-s" />
+					<p:overlayPanel id="filterPanel" for="filter" showCloseIcon="true">
+						<h:panelGrid columns="2">
+							<p:outputLabel value="Sort" />
+							<p:selectOneMenu value="TERM">
+								<f:selectItem itemValue="TERM" itemLabel="Term name"></f:selectItem>
+								<f:selectItem itemValue="DEF_LEVEL_REF_SHORT_NAME"
+									itemLabel="Level"></f:selectItem>
+								<f:selectItem itemValue="SCOPE" itemLabel="Scope"></f:selectItem>
+							</p:selectOneMenu>
 
-						</p:selectOneMenu>
-						<p:commandButton value="Select MQ"
-							onclick="PF('confirm2').show();" id="ctb111">
-						</p:commandButton>
-						<p:commandButton value="Detach Group" id="ctb211"
-							onclick="PF('confirmActivate').show();" />
-					</f:facet>
-				</p:toolbar>
-				<p:dataTable value="#{null}">
-					<p:columnGroup type="header">
-						<p:row>
-							<p:column rowspan="2" headerText="##" />
-							<p:column colspan="3" headerText="Hierarchy Details" />
-						</p:row>
+							<p:outputLabel for="show" value="Show Primary Only"
+								style="min-width: 100px !important" />
+							<p:selectBooleanCheckbox value="false" id="show"
+								label="Show Primary Only"></p:selectBooleanCheckbox>
 
-						<p:row>
-							<p:column headerText="Code" />
-							<p:column headerText="Level" />
-							<p:column headerText="Scope" />
-						</p:row>
-					</p:columnGroup>
+							<p:outputLabel value="Scope" />
+							<p:selectOneMenu value="0">
+								<f:selectItem itemValue="0" itemLabel="Full #####/SMQ"></f:selectItem>
+								<f:selectItem itemValue="3" itemLabel="Child Narrow"></f:selectItem>
+							</p:selectOneMenu>
 
-					<p:column>
-						<h:panelGrid columns="1">
-							<h:outputText value="ABC" id="ot5" rendered="true"
-								shortDesc="#{node.path}" style="white-space:pre-wrap"
-								noWrap="false" />
-							<h:commandLink value="abc" id="cl1" rendered="true" />
+							<p:spacer />
+							<p:commandButton value="Refresh" id="cb7" icon="ui-icon-refresh"
+								rendered="true" />
 						</h:panelGrid>
-					</p:column>
-
-					<p:column>
-						<h:outputText value="#" rendered="true" />
-					</p:column>
-					<p:column headerText="Level" style="width: 50px !important">
-						<h:outputText value="#" rendered="true" />
-					</p:column>
-
-					<p:column>
-						<p:selectOneMenu id="soc3" value="Narrow">
-
-							<f:selectItem itemLabel="Broad" itemValue="1" id="si13s" />
-							<f:selectItem itemLabel="Narrow" itemValue="2" id="si13d" />
-							<f:selectItem itemLabel="Child Narrow" itemValue="3" id="si4" />
-						</p:selectOneMenu>
-					</p:column>
+					</p:overlayPanel>
 
 
-				</p:dataTable>
-			</h:panelGrid>
+					<p:selectOneMenu id="soc244" value="S" rendered="true">
+						<f:selectItem itemLabel="View" itemValue="A" id="si355" />
+
+					</p:selectOneMenu>
+					<p:commandButton value="Select MQ" onclick="PF('confirm2').show();"
+						id="ctb111">
+					</p:commandButton>
+					<p:commandButton value="Detach Group" id="ctb211"
+						onclick="PF('confirmActivate').show();" />
+				</f:facet>
+			</p:toolbar>
+			<p:dataTable value="#{null}">
+				<p:columnGroup type="header">
+					<p:row>
+						<p:column rowspan="2" headerText="##" />
+						<p:column colspan="3" headerText="Hierarchy Details" />
+					</p:row>
+
+					<p:row>
+						<p:column headerText="Code" />
+						<p:column headerText="Level" />
+						<p:column headerText="Scope" />
+					</p:row>
+				</p:columnGroup>
+
+				<p:column>
+					<h:panelGrid columns="1">
+						<h:outputText value="ABC" id="ot5" rendered="true"
+							shortDesc="#{node.path}" style="white-space:pre-wrap"
+							noWrap="false" />
+						<h:commandLink value="abc" id="cl1" rendered="true" />
+					</h:panelGrid>
+				</p:column>
+
+				<p:column>
+					<h:outputText value="#" rendered="true" />
+				</p:column>
+				<p:column headerText="Level" style="width: 50px !important">
+					<h:outputText value="#" rendered="true" />
+				</p:column>
+
+				<p:column>
+					<p:selectOneMenu id="soc3" value="Narrow">
+
+						<f:selectItem itemLabel="Broad" itemValue="1" id="si13s" />
+						<f:selectItem itemLabel="Narrow" itemValue="2" id="si13d" />
+						<f:selectItem itemLabel="Child Narrow" itemValue="3" id="si4" />
+					</p:selectOneMenu>
+				</p:column>
 
 
-			<h:panelGrid>
-				<p:toolbar id="t45">
-					<f:facet name="left">
-						<p:selectOneMenu id="soc22" value="S" rendered="true">
-							<f:selectItem itemLabel="Filter and Sort" itemValue="A" id="si3" />
-
-						</p:selectOneMenu>
-						<p:selectOneMenu id="soc23" value="S" rendered="true">
-							<f:selectItem itemLabel="View" itemValue="A" id="si33" />
-
-						</p:selectOneMenu>
-						<p:commandButton value="Select MQ"
-							onclick="PF('confirm2').show();" id="ctb11">
-						</p:commandButton>
-						<p:commandButton value="Detach Group" id="ctb21"
-							onclick="PF('confirmActivate').show();" />
-
-
-					</f:facet>
-				</p:toolbar>
-				<p:dataTable value="#{null}" style="">
-					<p:columnGroup type="header">
-						<p:row>
-							<p:column rowspan="2" headerText="##" />
-							<p:column colspan="5" headerText="Hierarchy Details" />
-						</p:row>
-
-						<p:row>
-							<p:column headerText="Code" />
-							<p:column headerText="Level" />
-							<p:column headerText="Scope" />
-							<p:column headerText="Category" />
-							<p:column headerText="Weight" />
-						</p:row>
-					</p:columnGroup>
-
-					<p:column>
-						<h:panelGrid columns="1">
-							<h:outputText value="ABC" id="ot5" rendered="true"
-								shortDesc="#{node.path}" style="white-space:pre-wrap"
-								noWrap="false" />
-							<h:commandLink value="abc" id="cl1" rendered="true" />
-						</h:panelGrid>
-					</p:column>
-
-					<p:column>
-						<h:outputText value="#" rendered="true" />
-					</p:column>
-					<p:column headerText="Level" style="width: 50px !important">
-						<h:outputText value="#" rendered="true" />
-					</p:column>
-
-					<p:column>
-						<p:selectOneMenu id="soc3" value="Narrow">
-
-							<f:selectItem itemLabel="Broad" itemValue="1" id="si13s" />
-							<f:selectItem itemLabel="Narrow" itemValue="2" id="si13d" />
-							<f:selectItem itemLabel="Child Narrow" itemValue="3" id="si4" />
-						</p:selectOneMenu>
-					</p:column>
-
-					<p:column>
-						<p:selectOneMenu id="soc2" value="S" rendered="true">
-							<f:selectItem itemLabel="A" itemValue="A" id="si3" />
-							<f:selectItem itemLabel="S" itemValue="S" id="si33" />
-							<f:selectItem itemLabel="B" itemValue="B" id="si8" />
-							<f:selectItem itemLabel="C" itemValue="C" id="si9" />
-							<f:selectItem itemLabel="D" itemValue="D" id="si10" />
-							<f:selectItem itemLabel="E" itemValue="E" id="si11" />
-							<f:selectItem itemLabel="F" itemValue="F" id="si19" />
-							<f:selectItem itemLabel="G" itemValue="G" id="si12" />
-							<f:selectItem itemLabel="H" itemValue="H" id="si17" />
-							<f:selectItem itemLabel="I" itemValue="I" id="si18" />
-						</p:selectOneMenu>
-					</p:column>
-
-					<p:column>
-						<p:spinner value="2" id="ot6" />
-					</p:column>
-
-
-				</p:dataTable>
-			</h:panelGrid>
+			</p:dataTable>
 		</h:panelGrid>
- 
+
+
+		<h:panelGrid>
+			<p:toolbar id="t45">
+				<f:facet name="left">
+					<p:commandButton id="filter2" value="Filter and Sort" type="button"
+						icon="ui-icon-triangle-1-s" />
+					<p:overlayPanel id="filterPanel2" for="filter2" showCloseIcon="true">
+						<h:panelGrid columns="2">
+							<p:outputLabel value="Sort" />
+							<p:selectOneMenu value="TERM">
+								<f:selectItem itemValue="TERM" itemLabel="Term name"></f:selectItem>
+								<f:selectItem itemValue="DEF_LEVEL_REF_SHORT_NAME"
+									itemLabel="Level"></f:selectItem>
+								<f:selectItem itemValue="SCOPE" itemLabel="Scope"></f:selectItem>
+							</p:selectOneMenu>
+
+							<p:outputLabel for="show2" value="Show Primary Only"
+								style="min-width: 100px !important" />
+							<p:selectBooleanCheckbox value="false" id="show2"
+								label="Show Primary Only"></p:selectBooleanCheckbox>
+
+							<p:outputLabel value="Scope" />
+							<p:selectOneMenu value="0">
+								<f:selectItem itemValue="0" itemLabel="Full #####/SMQ"></f:selectItem>
+								<f:selectItem itemValue="3" itemLabel="Child Narrow"></f:selectItem>
+							</p:selectOneMenu>
+
+							<p:spacer />
+							<p:commandButton value="Refresh" icon="ui-icon-refresh"
+								rendered="true" />
+						</h:panelGrid>
+					</p:overlayPanel>
+					<p:selectOneMenu id="soc23" value="S" rendered="true">
+						<f:selectItem itemLabel="View" itemValue="A" id="si33" />
+
+					</p:selectOneMenu>
+					<p:commandButton value="Select MQ" onclick="PF('confirm2').show();"
+						id="ctb11">
+					</p:commandButton>
+					<p:commandButton value="Detach Group" id="ctb21"
+						onclick="PF('confirmActivate').show();" />
+
+
+				</f:facet>
+			</p:toolbar>
+			<p:dataTable value="#{null}" style="">
+				<p:columnGroup type="header">
+					<p:row>
+						<p:column rowspan="2" headerText="##" />
+						<p:column colspan="5" headerText="Hierarchy Details" />
+					</p:row>
+
+					<p:row>
+						<p:column headerText="Code" />
+						<p:column headerText="Level" />
+						<p:column headerText="Scope" />
+						<p:column headerText="Category" />
+						<p:column headerText="Weight" />
+					</p:row>
+				</p:columnGroup>
+
+				<p:column>
+					<h:panelGrid columns="1">
+						<h:outputText value="ABC" id="ot5" rendered="true"
+							shortDesc="#{node.path}" style="white-space:pre-wrap"
+							noWrap="false" />
+						<h:commandLink value="abc" id="cl1" rendered="true" />
+					</h:panelGrid>
+				</p:column>
+
+				<p:column>
+					<h:outputText value="#" rendered="true" />
+				</p:column>
+				<p:column headerText="Level" style="width: 50px !important">
+					<h:outputText value="#" rendered="true" />
+				</p:column>
+
+				<p:column>
+					<p:selectOneMenu id="soc3" value="Narrow">
+
+						<f:selectItem itemLabel="Broad" itemValue="1" id="si13s" />
+						<f:selectItem itemLabel="Narrow" itemValue="2" id="si13d" />
+						<f:selectItem itemLabel="Child Narrow" itemValue="3" id="si4" />
+					</p:selectOneMenu>
+				</p:column>
+
+				<p:column>
+					<p:selectOneMenu id="soc2" value="S" rendered="true">
+						<f:selectItem itemLabel="A" itemValue="A" id="si3" />
+						<f:selectItem itemLabel="S" itemValue="S" id="si33" />
+						<f:selectItem itemLabel="B" itemValue="B" id="si8" />
+						<f:selectItem itemLabel="C" itemValue="C" id="si9" />
+						<f:selectItem itemLabel="D" itemValue="D" id="si10" />
+						<f:selectItem itemLabel="E" itemValue="E" id="si11" />
+						<f:selectItem itemLabel="F" itemValue="F" id="si19" />
+						<f:selectItem itemLabel="G" itemValue="G" id="si12" />
+						<f:selectItem itemLabel="H" itemValue="H" id="si17" />
+						<f:selectItem itemLabel="I" itemValue="I" id="si18" />
+					</p:selectOneMenu>
+				</p:column>
+
+				<p:column>
+					<p:spinner value="2" id="ot6" />
+				</p:column>
+
+
+			</p:dataTable>
+		</h:panelGrid>
+	</h:panelGrid>
+
 </ui:composition>

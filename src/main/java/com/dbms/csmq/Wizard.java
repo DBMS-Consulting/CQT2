@@ -27,15 +27,15 @@ public class Wizard implements Serializable {
     }
      
     public String onFlowProcess(FlowEvent event) {
-    	System.out.println("**************  event flow ::" + event.getNewStep());
-    	System.out.println("**************  event old flow ::" + event.getOldStep());
+//    	System.out.println("**************  event flow ::" + event.getNewStep());
+//    	System.out.println("**************  event old flow ::" + event.getOldStep());
 
     	return event.getNewStep();
     }
     
     public String onFlowProcess2(FlowEvent event) {
-    	System.out.println("**************  event flow ::" + event.getNewStep());
-    	System.out.println("**************  event old flow ::" + event.getOldStep());
+//    	System.out.println("**************  event flow ::" + event.getNewStep());
+//    	System.out.println("**************  event old flow ::" + event.getOldStep());
 
     	return event.getNewStep();
     }

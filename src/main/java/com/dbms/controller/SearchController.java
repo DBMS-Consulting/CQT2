@@ -37,13 +37,14 @@ public class SearchController implements Serializable{
 	private String state;
 	private String level;
 	
-	private boolean maintainDesigBtn;
+	private boolean maintainDesigBtn, saveBtn;
 	
 	private List<CreateEntity> values;
 	
 	@PostConstruct
 	public void init() {
 		maintainDesigBtn = false;
+		//saveBtn = true;
 	}
 
 	public String getExtension() {
@@ -124,6 +125,14 @@ public class SearchController implements Serializable{
 
 	public void setMaintainDesigBtn(boolean maintainDesigBtn) {
 		this.maintainDesigBtn = maintainDesigBtn;
+	}
+
+	public boolean isSaveBtn() {
+		return saveBtn;
+	}
+
+	public void setSaveBtn(boolean saveBtn) {
+		this.saveBtn = saveBtn;
 	}
 	
 }

@@ -113,31 +113,35 @@
 		<h:panelGrid id="pc3" styleClass="AFStretchWidth">
 			<p:toolbar id="t4">
 				<f:facet name="left">
-					<h:panelGrid columns="4">
-						<h:panelGrid columns="1">
-							<p:selectOneMenu label="Sort" value="#" id="soc11">
-								<f:selectItem itemLabel="Filter and Sort" itemValue="TERM"
-									id="si57" />
-								<f:selectItem itemLabel="Term Name" itemValue="#" />
-								<f:selectItem itemLabel="Level"
-									itemValue="DEF_LEVEL_REF_SHORT_NAME" id="si59" />
-								<f:selectItem itemLabel="Scope" itemValue="SCOPE" />
-							</p:selectOneMenu>
-						</h:panelGrid>
+				<p:commandButton id="filterH" value="Filter and Sort" type="button"
+						icon="ui-icon-triangle-1-s" />
+					<p:overlayPanel id="filterPanelH" for="filterH"  showCloseIcon="true">
 						<h:panelGrid columns="2">
-							<p:outputLabel value="Show Primary Only"></p:outputLabel>
-							<p:selectBooleanCheckbox id="sbc5" value="false"
-								autoSubmit="true" />
+							<p:outputLabel value="Sort" />
+							<p:selectOneMenu value="TERM">
+								<f:selectItem itemValue="TERM" itemLabel="Term name"></f:selectItem>
+								<f:selectItem itemValue="DEF_LEVEL_REF_SHORT_NAME"
+									itemLabel="Level"></f:selectItem>
+								<f:selectItem itemValue="SCOPE" itemLabel="Scope"></f:selectItem>
+							</p:selectOneMenu>
+
+							<p:outputLabel for="showH" value="Show Primary Only"
+								style="min-width: 100px !important" />
+							<p:selectBooleanCheckbox value="false" id="showH"
+								label="Show Primary Only"></p:selectBooleanCheckbox>
+
+							<p:outputLabel value="Scope" />
+							<p:selectOneMenu value="0">
+								<f:selectItem itemValue="0" itemLabel="Full #####/SMQ"></f:selectItem>
+								<f:selectItem itemValue="3" itemLabel="Child Narrow"></f:selectItem>
+							</p:selectOneMenu>
+
+							<p:spacer />
+							<p:commandButton value="Refresh" id="cbH" icon="ui-icon-refresh"
+								rendered="true" />
 						</h:panelGrid>
-						<p:selectOneMenu label="Scope" id="soc12" value="0">
-							<f:selectItem
-								itemLabel="Full #{applicationScope.CSMQBean.customMQName}/SMQ"
-								itemValue="0" id="si60" />
-							<f:selectItem itemLabel="Child Narrow" itemValue="3" id="si61" />
-						</p:selectOneMenu>
-						<p:commandButton value="Refresh" id="ctb4" icon="ui-icon-refresh"
-							disabled="false" />
-					</h:panelGrid>
+					</p:overlayPanel>
+					 
 				</f:facet>
 			</p:toolbar>
 
