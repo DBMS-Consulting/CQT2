@@ -37,6 +37,7 @@
 									icon="ui-icon-alert" />
 
 							</p:commandButton>
+							<p:spacer width="5" />
 
 							<p:commandButton value="Approve" actionListener="#"
 								onclick="PF('approve').show();" icon="ui-icon-arrowthick-1-n">
@@ -45,26 +46,32 @@
 									icon="ui-icon-alert" />
 
 							</p:commandButton>
+							<p:spacer width="5" />
 							<p:commandButton value="Demote" actionListener="#"
 								onclick="PF('demote').show();" icon="ui-icon-arrowthick-1-s">
 								<p:confirm header="Confirm Demote"
 									message="Are you sure you want to demote this MedDRA Query?"
 									icon="ui-icon-alert" />
 							</p:commandButton>
+							<p:spacer width="5" />
 							<p:commandButton value="Delete" actionListener="#"
-								onclick="PF('delete').show();" icon="ui-icon-trash">
+								onclick="PF('delete').show();" icon="fa fa-trash-o">
 								<p:confirm header="Confirm Delete"
 									message="Are you sure you want to delete this MedDRA Query?"
 									icon="ui-icon-alert" />
 							</p:commandButton>
+							<p:spacer width="5" />
 
 							<p:commandButton value="Export" actionListener="#"
-								icon="ui-icon-excel" update="messages" />
+								icon="fa fa-file-excel-o" update="messages" />
+							<p:spacer width="5" />
+
 							<p:commandButton value="Legend" actionListener="#"
-								icon="ui-icon-bars" update="messages" />
+								icon="fa fa-bars" update="messages" />
+							<p:spacer width="5" />
 
 
-							<p:submenu label="Options" icon="ui-icon-wrench">
+							<p:submenu label="Options" icon="fa fa-wrench">
 								<p:menuButton value="Options">
 									<p:menuitem value="Action 1" actionListener="#" ajax="false"
 										icon="ui-icon-close" />
@@ -80,20 +87,50 @@
 							<p:panel style="width: 100%">
 								<p:toolbar>
 									<f:facet name="left">
-										<p:menuButton value="Filter and Sort">
-											<p:menuitem value="Action 1" actionListener="#" ajax="false"
-												icon="ui-icon-close" />
-											<p:menuitem value="Action 2" url="#" icon="ui-icon-extlink" />
-										</p:menuButton>
+										<p:commandButton id="filter" value="Filter and Sort"
+											type="button" icon="ui-icon-triangle-1-s" />
+										<p:overlayPanel id="filterPanel" for="filter"
+											showCloseIcon="true">
+											<h:panelGrid columns="2">
+												<p:outputLabel value="Sort" />
+												<p:selectOneMenu value="TERM">
+													<f:selectItem itemValue="TERM" itemLabel="Term name"></f:selectItem>
+													<f:selectItem itemValue="DEF_LEVEL_REF_SHORT_NAME"
+														itemLabel="Level"></f:selectItem>
+													<f:selectItem itemValue="SCOPE" itemLabel="Scope"></f:selectItem>
+												</p:selectOneMenu>
 
-										<p:menuButton value="View">
-											<p:menuitem value="Action 1" actionListener="#" ajax="false"
-												icon="ui-icon-close" />
-											<p:menuitem value="Action 2" url="#" icon="ui-icon-extlink" />
-										</p:menuButton>
+												<p:outputLabel for="show" value="Show Primary Only"
+													style="min-width: 100px !important" />
+												<p:selectBooleanCheckbox value="false" id="show"
+													label="Show Primary Only"></p:selectBooleanCheckbox>
+
+												<p:outputLabel value="Scope" />
+												<p:selectOneMenu value="0">
+													<f:selectItem itemValue="0" itemLabel="Full #####/SMQ"></f:selectItem>
+													<f:selectItem itemValue="3" itemLabel="Child Narrow"></f:selectItem>
+												</p:selectOneMenu>
+
+												<p:spacer />
+												<p:commandButton value="Refresh" id="cb7"
+													icon="fa fa-refresh" rendered="true" />
+											</h:panelGrid>
+										</p:overlayPanel>
+
+										<p:spacer width="5" />
+
+										<p:submenu label="View" icon="fa fa-wrench">
+											<p:menuButton value="View">
+												<p:menuitem value="View 1" actionListener="#" ajax="false"
+													icon="ui-icon-close" />
+												<p:menuitem value="View 2" url="#" icon="ui-icon-extlink" />
+											</p:menuButton>
+										</p:submenu>
+
+										<p:spacer width="5" />
 
 										<p:commandButton value="Select MQs" actionListener="#"
-											icon="ui-icon-excel" onclick="PF('select_mq').show();" />
+											icon="fa fa-search" onclick="PF('select_mq').show();" />
 									</f:facet>
 								</p:toolbar>
 
@@ -138,27 +175,55 @@
 							<p:panel style="width: 100%">
 								<p:toolbar>
 									<f:facet name="left">
-										<p:menuButton value="Filter and Sort">
-											<p:menuitem value="Action 1" actionListener="#" ajax="false"
-												icon="ui-icon-close" />
-											<p:menuitem value="Action 2" url="#" icon="ui-icon-extlink" />
-										</p:menuButton>
+										<p:commandButton id="filter-b" value="Filter and Sort"
+											type="button" icon="ui-icon-triangle-1-s" />
+										<p:overlayPanel id="filterPanel-b" for="filter-b"
+											showCloseIcon="true">
+											<h:panelGrid columns="2">
+												<p:outputLabel value="Sort" />
+												<p:selectOneMenu value="TERM">
+													<f:selectItem itemValue="TERM" itemLabel="Term name"></f:selectItem>
+													<f:selectItem itemValue="DEF_LEVEL_REF_SHORT_NAME"
+														itemLabel="Level"></f:selectItem>
+													<f:selectItem itemValue="SCOPE" itemLabel="Scope"></f:selectItem>
+												</p:selectOneMenu>
 
-										<p:menuButton value="View">
-											<p:menuitem value="Action 1" actionListener="#" ajax="false"
-												icon="ui-icon-close" />
-											<p:menuitem value="Action 2" url="#" icon="ui-icon-extlink" />
-										</p:menuButton>
+												<p:outputLabel for="show-b" value="Show Primary Only"
+													style="min-width: 100px !important" />
+												<p:selectBooleanCheckbox value="false" id="show-b"
+													label="Show Primary Only"></p:selectBooleanCheckbox>
 
+												<p:outputLabel value="Scope" />
+												<p:selectOneMenu value="0">
+													<f:selectItem itemValue="0" itemLabel="Full #####/SMQ"></f:selectItem>
+													<f:selectItem itemValue="3" itemLabel="Child Narrow"></f:selectItem>
+												</p:selectOneMenu>
+
+												<p:spacer />
+												<p:commandButton value="Refresh" id="cb7-b"
+													icon="fa fa-refresh" rendered="true" />
+											</h:panelGrid>
+										</p:overlayPanel>
+
+										<p:spacer width="5" />
+
+										<p:submenu label="View" icon="fa fa-wrench">
+											<p:menuButton value="View">
+												<p:menuitem value="View 1" actionListener="#" ajax="false"
+													icon="ui-icon-close" />
+												<p:menuitem value="View 2" url="#" icon="ui-icon-extlink" />
+											</p:menuButton>
+										</p:submenu>
+										<p:spacer width="5" />
 
 										<p:commandButton value="Hierarchy Search" actionListener="#"
-											icon="ui-icon-excel" onclick="PF('search').show();" />
+											icon="fa fa-search" onclick="PF('search').show();" />
 										<p:commandButton value="New PTs" actionListener="#"
-											onclick="PF('new_pt').show();" icon="ui-icon-excel" />
+											onclick="PF('new_pt').show();" icon="fa fa-book" />
 										<p:commandButton value="Delete selected" actionListener="#"
-											icon="ui-icon-excel" onclick="PF('delete').show();" />
+											icon="fa fa-trash-o" onclick="PF('delete').show();" />
 										<p:commandButton value="Refresh" actionListener="#"
-											icon="ui-icon-excel" onclick="PF('select_mq').show();" />
+											icon="fa fa-refresh" onclick="PF('select_mq').show();" />
 									</f:facet>
 								</p:toolbar>
 
@@ -253,7 +318,7 @@
 
 			<p:dialog header="Impact Search" widgetVar="select_mq">
 				<ui:include src="../impactCommon/impactSearch.xhtml"></ui:include>
-				
+
 				<p:spacer height="10"></p:spacer>
 				<h:panelGrid style="float: right">
 					<p:commandButton value="Cancel" onclick="PF('select_mq').hide()" />
@@ -326,7 +391,7 @@
 
 					</p:dataTable>
 				</h:panelGrid>
-				
+
 				<p:spacer height="10"></p:spacer>
 				<h:panelGrid style="float: right">
 					<p:commandButton value="Cancel" onclick="PF('new_pt').hide()" />

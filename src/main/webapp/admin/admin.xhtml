@@ -1,0 +1,162 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<ui:composition xmlns:jsp="http://java.sun.com/JSP/Page" version="2.1"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" template="../CSMQ.xhtml">
+
+	<ui:define name="page-content">
+
+		
+		<h:form id="f1">
+		<p:growl id="m1" />
+		<h:panelGrid columns="2" style="width: 100% !important">
+				<h:panelGrid>
+					<p:breadCrumb styleClass="breadcrumb">
+						<p:menuitem value="Home" url="/index.xhtml" />
+						<p:menuitem value="Administrator" />
+					</p:breadCrumb>
+
+				</h:panelGrid>
+				<h:panelGrid columns="1" style="text-align: center">
+					<!-- <p:outputLabel value="Historic View as of 05-Feb 2017"
+						style="text-align: center" /> -->
+				</h:panelGrid>
+			</h:panelGrid>
+
+			<p:tabView id="pb1">
+				<p:tab title="Drug Program CodeList">
+					<p:panel style=" padding:5px;">
+						<h3 style="text-align: center">Drug Program CodeList</h3>
+						<p:spacer height="10" />
+
+						<p:dataTable var="value" value="#{null}" rows="10"
+							paginator="true" paginatorPosition="bottom"
+							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							rowsPerPageTemplate="5,10,25">
+							<p:column headerText="Display Seq">
+								<h:outputText value="#{dummyView.value}" />
+							</p:column>
+							<p:column headerText="Drug Program Name">
+								<h:outputText value="#{dummyView.value}" />
+							</p:column>
+							<p:column headerText="Active">
+								<p:selectBooleanCheckbox value="false" />
+							</p:column>
+						</p:dataTable>
+
+						<h:panelGrid columns="4" cellpadding="5">
+							<p:commandButton value="Edit" icon="fa fa-pencil"></p:commandButton>
+							<p:commandButton value="Add" icon="fa fa-plus"></p:commandButton>
+							<p:commandButton value="Save" icon="fa fa-floppy-o"></p:commandButton>
+							<p:commandButton value="Exit" icon="fa fa-sign-out"
+								action="/index.xhtml"></p:commandButton>
+						</h:panelGrid>
+					</p:panel>
+
+
+
+				</p:tab>
+
+				<p:tab title="Product CodeList">
+					<p:panel style=" padding:5px;">
+						<h3 style="text-align: center">Product CodeList</h3>
+						<p:spacer height="10" />
+
+						<p:dataTable var="value" value="#{null}" rows="10"
+							paginator="true" paginatorPosition="bottom"
+							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							rowsPerPageTemplate="5,10,25">
+							<p:column headerText="Display Seq">
+								<h:outputText value="#{dummyView.value}" />
+							</p:column>
+							<p:column headerText="Product Name">
+								<h:outputText value="#{dummyView.value}" />
+							</p:column>
+							<p:column headerText="Active">
+								<p:selectBooleanCheckbox value="false" />
+							</p:column>
+						</p:dataTable>
+						<h:panelGrid columns="4" cellpadding="5">
+							<p:commandButton value="Edit" icon="fa fa-pencil"></p:commandButton>
+							<p:commandButton value="Add" icon="fa fa-plus"></p:commandButton>
+							<p:commandButton value="Save" icon="fa fa-floppy-o"></p:commandButton>
+							<p:commandButton value="Exit" icon="fa fa-sign-out"
+								action="/index.xhtml"></p:commandButton>
+						</h:panelGrid>
+					</p:panel>
+
+				</p:tab>
+
+				<p:tab title="Protocol CodeList">
+					<p:panel style=" padding:5px;">
+						<h3 style="text-align: center">Protocol CodeList</h3>
+						<p:spacer height="10" />
+
+						<p:dataTable var="value" value="#{null}" rows="10"
+							paginator="true" paginatorPosition="bottom"
+							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							rowsPerPageTemplate="5,10,25">
+							<p:column headerText="Display Seq">
+								<h:outputText value="#{dummyView.value}" />
+							</p:column>
+							<p:column headerText="Protocol Name">
+								<h:outputText value="#{dummyView.value}" />
+							</p:column>
+							<p:column headerText="Active">
+								<p:selectBooleanCheckbox value="false" />
+							</p:column>
+						</p:dataTable>
+						<h:panelGrid columns="4" cellpadding="5">
+							<p:commandButton value="Edit" icon="fa fa-pencil"></p:commandButton>
+							<p:commandButton value="Add" icon="fa fa-plus"></p:commandButton>
+							<p:commandButton value="Save" icon="fa fa-floppy-o"></p:commandButton>
+							<p:commandButton value="Exit" icon="fa fa-sign-out"
+								action="/index.xhtml"></p:commandButton>
+						</h:panelGrid>
+					</p:panel>
+
+				</p:tab>
+
+				<p:tab title="Extension CodeList">
+					<p:panel style=" padding:5px;">
+						<h3 style="text-align: center">Extension CodeList</h3>
+						<p:spacer height="10" />
+						<p:dataTable var="value" value="#{null}" rows="10"
+							paginator="true" paginatorPosition="bottom"
+							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							rowsPerPageTemplate="5,10,25">
+							<p:column headerText="Display Seq">
+								<h:outputText value="#{dummyView.value}" />
+							</p:column>
+							<p:column headerText="Extension Name">
+								<h:outputText value="#{dummyView.value}" />
+							</p:column>
+							<p:column headerText="Active">
+								<p:selectBooleanCheckbox value="false" />
+							</p:column>
+						</p:dataTable>
+						<h:panelGrid columns="4" cellpadding="5">
+							<p:commandButton value="Edit" icon="fa fa-pencil"></p:commandButton>
+							<p:commandButton value="Add" icon="fa fa-plus"></p:commandButton>
+							<p:commandButton value="Save" icon="fa fa-floppy-o"></p:commandButton>
+							<p:commandButton value="Exit" icon="fa fa-sign-out"
+								action="/index.xhtml"></p:commandButton>
+						</h:panelGrid>
+					</p:panel>
+
+				</p:tab>
+
+			</p:tabView>
+		</h:form>
+
+		<style>
+.label-right {
+	float: right;
+	margin-right: 20px;
+	font-size: 14px !important;
+}
+</style>
+	</ui:define>
+</ui:composition>

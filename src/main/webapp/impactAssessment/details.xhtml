@@ -10,24 +10,24 @@
 
 		<h:panelGrid columns="2" columnClasses="label, value" style="min-width: 400px;">
 
-			<p:outputLabel value="Name" />
+			<p:outputLabel value="Name" styleClass="label-right" />
 			<h:outputText value="XX XXXX  XXXXX XXXXXXXXXXXXX"
 				style="min-width: 300px" />
 
-			<p:outputLabel value="Filter Dictionary" />
+			<p:outputLabel value="Filter Dictionary" styleClass="label-right" />
 			<h:outputText value="XX XXXX  XXXXX XXXXXXXXXXXXX"
 				style="min-width: 300px" />
 
-			<p:outputLabel value="Release Group" />
+			<p:outputLabel value="Release Group" styleClass="label-right" />
 			<h:outputText value="XX XXXX  XXXXX XXXXXXXXXXXXX"
 				style="min-width: 300px" />
 
-			<p:outputLabel value="Product" />
+			<p:outputLabel value="Product" styleClass="label-right" />
 			<h:outputText value="Standard" />
 
-			<p:outputLabel value="Designee" />
+			<p:outputLabel value="Designee" styleClass="label-right" />
 			<p:selectOneMenu value="" rendered="true" disabled="false" style="min-width: 300px"
-				required="true">
+				required="true" requiredMessage="A Designee is required">
 				<f:selectItem itemLabel="" itemValue=""></f:selectItem>
 				<f:selectItem itemLabel="Jane Doe" itemValue="jane"></f:selectItem>
 				<f:selectItem itemLabel="John Doe" itemValue="john"></f:selectItem>
@@ -43,41 +43,49 @@
 
 		<h:panelGrid columns="2" columnClasses="label, value"
 			style="min-width: 400px">
-			<p:outputLabel value="Algorithm" />
+			<p:outputLabel value="Algorithm" styleClass="label-right" />
 			<h:outputText value="N" />
 
-			<p:outputLabel value="Status" />
+			<p:outputLabel value="Status" styleClass="label-right" />
 			<h:outputText value="Active"></h:outputText>
 
-			<p:outputLabel value="State" />
+			<p:outputLabel value="State" styleClass="label-right" />
 			<h:outputText value="Pending" />
 
-			<p:outputLabel value="Critical event" />
+			<p:outputLabel value="Critical event" styleClass="label-right" />
 			<p:selectOneMenu value="N" rendered="true" disabled="false"
 				required="true">
 				<f:selectItem itemValue="N" itemLabel="No" />
 				<f:selectItem itemValue="Y" itemLabel="Yes" />
 			</p:selectOneMenu>
 
-			<p:outputLabel value="Level" />
+			<p:outputLabel value="Level" styleClass="label-right" />
 			<h:outputText value="1" />
 
-			<p:outputLabel value="Scope" />
+			<p:outputLabel value="Scope" styleClass="label-right" />
 			<p:selectOneMenu value="Y" rendered="true" disabled="false"
 				required="true">
 				<f:selectItem itemValue="N" itemLabel="No" />
 				<f:selectItem itemValue="Y" itemLabel="Yes" />
 			</p:selectOneMenu>
 
-			<p:outputLabel value="Group" />
+			<p:outputLabel value="Group" styleClass="label-right" />
 			<p:selectOneMenu value="1" rendered="true" disabled="false"
 				required="true">
 				<f:selectItem itemLabel="" itemValue=""></f:selectItem>
 			</p:selectOneMenu>
 
-			<p:outputLabel value="Code" />
+			<p:outputLabel value="Code" styleClass="label-right" />
 			<h:outputText value="0000000" />
 
 		</h:panelGrid>
 	</h:panelGrid>
+	
+	<style>
+.label-right {
+	float: right;
+	margin-right: 20px;
+	font-size: 14px !important;
+}
+</style>
 </ui:composition>

@@ -20,57 +20,50 @@
 				<p:tabView id="pb1"
 					inlineStyle="width:1195px; padding:5px; height:448px;">
 					<p:tab id="sdi1" title="Reports">
-						<p:panel header="Internal" id="ph1"
-							style=" padding:5px;">
+						<p:panel header="Internal" id="ph1" style=" padding:5px;">
+							<h:panelGrid columns="2">
+								<p:outputLabel value="Report" styleClass="label-right" />
+								<p:selectOneMenu id="soc1" value="#{reportBean.reportName}">
+									<!-- binding="#{reportBean.cntrlReportList}"> -->
+									<f:selectItem itemValue="#{null}"
+										itemLabel="--Select a report--" id="si48" />
+									<f:selectItems value="1" id="si2a" />
+									<p:ajax />
+								</p:selectOneMenu>
+
+								<p:outputLabel value="Start Date" styleClass="label-right" />
+								<p:calendar id="id1" navigator="true" mode="popup"
+									value="#{projetMB.projetDTO.dateDebut}">
+									<!-- binding="#{reportBean.cntrlStartDate}" -->
+									<f:convertDateTime pattern="dd-MMM-yyyy" />
+								</p:calendar>
+
+								<p:outputLabel value="End Date" styleClass="label-right" />
+								<p:calendar id="id2" label="End Date" navigator="true"
+									mode="popup" value="#{projetMB.projetDTO.dateDebut}">
+									<!-- binding="#{reportBean.cntrlEndDate}" -->
+
+									<f:convertDateTime pattern="dd-MMM-yyyy" />
+								</p:calendar>
+
+								<p:outputLabel value="Format" styleClass="label-right" />
+								<p:selectOneMenu id="soc3" label="Format" immediate="true"
+									value="XLS">
+									<!-- binding="#{reportBean.cntrlFormatList}"  -->
+									<f:selectItem itemLabel="Excel" itemValue="XLS" id="si5" />
+									<f:selectItem itemLabel="PDF" itemValue="PDF" id="si6" />
+									<p:ajax />
+								</p:selectOneMenu>
+
+							</h:panelGrid>
 							<h:panelGrid columns="1">
-								<h:panelGrid columns="2">
-									<p:outputLabel value="Report" />
-									<p:selectOneMenu id="soc1" value="#{reportBean.reportName}">
-										<!-- binding="#{reportBean.cntrlReportList}"> -->
-										<f:selectItem itemValue="#{null}"
-											itemLabel="--Select a report--" id="si48" />
-										<f:selectItems value="1" id="si2a" />
-										<p:ajax />
-									</p:selectOneMenu>
-								</h:panelGrid>
-								<h:panelGrid columns="2">
-									<p:outputLabel value="Start Date" />
-									<p:calendar id="id1" navigator="true" mode="popup"
-										value="#{projetMB.projetDTO.dateDebut}">
-										<!-- binding="#{reportBean.cntrlStartDate}" -->
-										<f:convertDateTime pattern="dd-MMM-yyyy" />
-									</p:calendar>
-								</h:panelGrid>
+								<p:commandButton value="Generate" id="commandButton1"
+									partialSubmit="true">
+									<!-- binding="#{reportBean.generateReportButton}" -->
+									<p:ajax listener="#{reportBean.printReport}"></p:ajax>
+									<p:fileDownload value="#{reportBean.generatedReport}"></p:fileDownload>
 
-								<h:panelGrid columns="2">
-									<p:outputLabel value="End Date" />
-									<p:calendar id="id2" label="End Date" navigator="true"
-										mode="popup" value="#{projetMB.projetDTO.dateDebut}">
-										<!-- binding="#{reportBean.cntrlEndDate}" -->
-
-										<f:convertDateTime pattern="dd-MMM-yyyy" />
-									</p:calendar>
-								</h:panelGrid>
-
-								<h:panelGrid columns="2">
-									<p:outputLabel value="Format" />
-									<p:selectOneMenu id="soc3" label="Format" immediate="true"
-										value="XLS">
-										<!-- binding="#{reportBean.cntrlFormatList}"  -->
-										<f:selectItem itemLabel="Excel" itemValue="XLS" id="si5" />
-										<f:selectItem itemLabel="PDF" itemValue="PDF" id="si6" />
-										<p:ajax />
-									</p:selectOneMenu>
-								</h:panelGrid>
-								<h:panelGrid columns="1">
-									<p:commandButton value="Generate" id="commandButton1"
-										partialSubmit="true">
-										<!-- binding="#{reportBean.generateReportButton}" -->
-										<p:ajax listener="#{reportBean.printReport}"></p:ajax>
-										<p:fileDownload value="#{reportBean.generatedReport}"></p:fileDownload>
-
-									</p:commandButton>
-								</h:panelGrid>
+								</p:commandButton>
 							</h:panelGrid>
 						</p:panel>
 						<p:spacer height="10"></p:spacer>
@@ -133,7 +126,7 @@
 									<f:selectItems value="#{bindings.ViewObj_ProductList1.items}"
 										id="si4" />
 								</p:selectOneMenu>
-							
+
 								<p:outputLabel value="Groups" id="ot7" style="font-weight:bold;" />
 								<p:selectOneMenu value="#{bindings.MQGroupsVO1.inputValue}"
 									required="#{bindings.MQGroupsVO1.hints.mandatory}"
@@ -147,5 +140,13 @@
 				</p:tabView>
 			</p:panel>
 		</h:form>
+
+		<style>
+.label-right {
+	float: right;
+	margin-right: 20px;
+	font-size: 14px !important;
+}
+</style>
 	</ui:define>
 </ui:composition>

@@ -10,60 +10,60 @@
 	<p:panel header="Details">
 		<h:panelGrid columns="5">
 			<h:panelGrid columns="2" style="min-width: 300px">
-				<p:outputLabel value="Extention" />
+				<p:outputLabel value="Extension" styleClass="label-right" />
 				<h:outputText value="#######" />
-				<p:outputLabel value="Name" />
+				<p:outputLabel value="Name" styleClass="label-right" />
 				<h:outputText value="#######" />
-				<p:outputLabel value="FilterDictionary" />
+				<p:outputLabel value="FilterDictionary" styleClass="label-right" />
 				<h:outputText value="#######" />
-				<p:outputLabel value="Release Group" />
+				<p:outputLabel value="Release Group" styleClass="label-right" />
 				<h:outputText value="#######" />
-				<p:outputLabel value="Approved" />
-				<h:outputText value="#######" />
-
-				<p:outputLabel value="Release Status" />
+				<p:outputLabel value="Approved" styleClass="label-right" />
 				<h:outputText value="#######" />
 
-				<p:outputLabel value="Product" />
+				<p:outputLabel value="Release Status" styleClass="label-right" />
 				<h:outputText value="#######" />
 
-				<p:outputLabel value="Designee" />
+				<p:outputLabel value="Product" styleClass="label-right" />
+				<h:outputText value="#######" />
+
+				<p:outputLabel value="Designee" styleClass="label-right" />
 				<h:outputText value="#######" />
 
 			</h:panelGrid>
 			<p:spacer width="50" />
-			<h:panelGrid columns="2"  style="min-width: 300px">
-				<p:outputLabel value="Algorithm" />
+			<h:panelGrid columns="2" style="min-width: 300px">
+				<p:outputLabel value="Algorithm" styleClass="label-right" />
 				<h:outputText value="#######" />
-				<p:outputLabel value="State" />
+				<p:outputLabel value="State" styleClass="label-right" />
 				<h:outputText value="#######" />
-				<p:outputLabel value="Critical event" />
+				<p:outputLabel value="Critical event" styleClass="label-right" />
 				<h:outputText value="#######" />
-				<p:outputLabel value="Level" />
+				<p:outputLabel value="Level" styleClass="label-right" />
 				<h:outputText value="#######" />
-				<p:outputLabel value="Scope" />
-				<h:outputText value="#######" />
-
-				<p:outputLabel value="Group" />
+				<p:outputLabel value="Scope" styleClass="label-right" />
 				<h:outputText value="#######" />
 
-				<p:outputLabel value="Code" />
+				<p:outputLabel value="Group" styleClass="label-right" />
+				<h:outputText value="#######" />
+
+				<p:outputLabel value="Code" styleClass="label-right" />
 				<h:outputText value="#######" />
 			</h:panelGrid>
 
 			<p:spacer width="50" />
 
-			<h:panelGrid columns="2"  style="min-width: 300px">
-				<p:outputLabel value="Initial Creation By" />
+			<h:panelGrid columns="2" style="min-width: 300px">
+				<p:outputLabel value="Initial Creation By" styleClass="label-right" />
 				<h:outputText value="#######" />
 
-				<p:outputLabel value="Initial Creation Date" />
+				<p:outputLabel value="Initial Creation Date" styleClass="label-right" />
 				<h:outputText value="#######" />
 
-				<p:outputLabel value="Last Activation By" />
+				<p:outputLabel value="Last Activation By" styleClass="label-right" />
 				<h:outputText value="#######" />
 
-				<p:outputLabel value="Last Activation Date" />
+				<p:outputLabel value="Last Activation Date" styleClass="label-right" />
 				<h:outputText value="#######" />
 
 			</h:panelGrid>
@@ -71,4 +71,12 @@
 		</h:panelGrid>
 
 	</p:panel>
+
+	<style>
+.label-right {
+	float: right;
+	margin-right: 20px;
+	font-size: 14px !important;
+}
+</style>
 </ui:composition>

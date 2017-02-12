@@ -128,7 +128,7 @@
 					url="/create/copy.xhtml"
 					rendered="true" />
 				 
-				<p:menuitem value="Browse &amp; Search" id="pt_cmi17"  
+				<p:menuitem value="Browse &amp; Search" id="pt_cmi17"
 					action="BROWSE_SEARCH" rendered="true" styleClass="#{view.viewId == '/create/browseAndSearch.xhtml' ? 'ui-state-active' : ''}"
 					style="font-weight:#{userBean.currentMenu eq 'BROWSE_SEARCH' ? 'bold' : 'normal'};"
 					url="/create/browseAndSearch.xhtml" />	
@@ -169,8 +169,6 @@
 						action="VIEW_PREVIOUS_VERSION_IMPACT" styleClass="#{view.viewId == '/viewPreviousVersionImpact/previousVersionImpact.xhtml' ? 'ui-state-active' : ''}"
 						style="font-weight:#{userBean.currentMenu eq 'VIEW_PREVIOUS_VERSION_IMPACT' ? 'bold' : 'normal'};"
 						url="/viewPreviousVersionImpact/previousVersionImpact.xhtml" />
-
-
 				</p:submenu>
 				
 				<p:submenu label="Import csv" icon="ui-icon-document" id="pt_m4" 
@@ -188,9 +186,13 @@
 					action="HISTORIC"
 					style="font-weight:#{userBean.currentMenu eq 'HISTORIC' ? 'bold' : 'normal'};"
 					rendered="false" />
-				<p:menuitem value="Administration" id="pt_cmi12" action="ADMIN"
+				<!-- <p:menuitem value="Administration" id="pt_cmi12" action="ADMIN"
 					style="font-weight:#{userBean.currentMenu eq 'ADMIN' ? 'bold' : 'normal'};"
-					rendered="false" />
+					rendered="false" /> -->
+					
+				<p:menuitem value="Administration" id="admin_menu" action="ADMIN" styleClass="#{view.viewId == '/admin/admin.xhtml' ? 'ui-state-active' : ''}"
+ 					disabled="false" url="/admin/admin.xhtml" />
+				
 			</p:menubar>
 		</h:form>
 		<p:spacer width="10" height="5" id="pt_s1" />
@@ -200,9 +202,12 @@
 			</ui:insert>
 		</div>
 	</div>
-
-
 	<style>
+	.ui-state-active {
+		font-weight: bold !important;
+		background-color: none !important;
+		border: none !important;
+	}
 /* 
 .ui-widget .ui-widget {
 	font-size: 12px !important;

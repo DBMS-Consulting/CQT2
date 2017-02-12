@@ -4,120 +4,151 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
-	xmlns:p="http://primefaces.org/ui">	
-	
-		<h:panelGrid columns="3" cellpadding="10">
+	xmlns:p="http://primefaces.org/ui">
 
-			<h:panelGrid columns="2" columnClasses="label, value" >
-				<p:outputLabel value="* Extention" styleClass="label-right" />
-				<p:selectOneMenu value="#{searchController.extension}" rendered="true" disabled="false"
-					required="false">
-					<f:selectItem itemLabel="TME" itemValue="TME"></f:selectItem>
-					<f:selectItem itemLabel="TR1" itemValue="TR1"></f:selectItem>
-					<f:selectItem itemLabel="CPT" itemValue="CPT"></f:selectItem>
-					<f:selectItem itemLabel="DME" itemValue="DME"></f:selectItem>
-					<f:selectItem itemLabel="PRO" itemValue="PRO"></f:selectItem>
- 					
-					<p:ajax update="level protocolLb protocol" event="change" listener="#{searchController.changeLevel}"  />
-				</p:selectOneMenu>
-				
-				
-				<p:outputLabel value="* Name" styleClass="label-right" />
-				<p:inputText value="#{dummyView.value}" style="min-width: 300px" />
+	<p:growl id="messages" />
+	<h:panelGrid columns="4" cellpadding="5">
 
-				<p:outputLabel value="* Drug Program" styleClass="label-right" />
-				<p:selectOneMenu value="No program">
-					<f:selectItem itemValue="No program" itemLabel="No program" />
-					<f:selectItem itemValue="Val 1" itemLabel="Val 1" />
-					<f:selectItem itemValue="Val 2" itemLabel="Val 2" />
-				</p:selectOneMenu>
 
-				<p:outputLabel value=" #{searchController.extension eq 'PRO' ? '*' : ''}  Protocol" id="protocolLb" styleClass="label-right" />
-				<p:selectOneMenu value="No protocol" required="#{searchController.extension eq 'PRO' ? true : false}" id="protocol">
- 					<f:selectItem itemValue="No protocol" itemLabel="No protocol" />
-					<f:selectItem itemValue="Val 1" itemLabel="Val 1" />
-					<f:selectItem itemValue="Val 2" itemLabel="Val 2" />
-				</p:selectOneMenu>
+		<h:panelGrid columns="2" columnClasses="label, value">
+			<p:outputLabel value="* Extension" styleClass="label-right" />
+			<p:selectOneMenu value="#{searchController.extension}" requiredMessage="The Extension is required"
+				rendered="true"  required="true">
+				<f:selectItem itemLabel="TME" itemValue="TME"></f:selectItem>
+				<f:selectItem itemLabel="TR1" itemValue="TR1"></f:selectItem>
+				<f:selectItem itemLabel="CPT" itemValue="CPT"></f:selectItem>
+				<f:selectItem itemLabel="DME" itemValue="DME"></f:selectItem>
+				<f:selectItem itemLabel="PRO" itemValue="PRO"></f:selectItem>
 
-				<p:outputLabel value=" Release group" styleClass="label-right" />
-				<h:outputText value="Draft AG" style="min-width: 300px" />
- 
- 				<p:outputLabel value=" Release Status" styleClass="label-right" />
-				<h:outputText value="Pending" />
+				<p:ajax update="level protocolLb protocol drug" event="change"
+					listener="#{searchController.changeLevel}" />
+			</p:selectOneMenu>
 
-				<p:outputLabel value="* Product" rendered="true" styleClass="label-right" />
-				<p:selectOneMenu value="No Product" rendered="true" disabled="false"
-					required="true">
-					<f:selectItem itemLabel="No Product" itemValue="No Product"></f:selectItem>
-					<f:selectItem itemLabel="Val 1" itemValue="Val 1"></f:selectItem>
-					<f:selectItem itemLabel="Val 2" itemValue="Val 2"></f:selectItem>
-				</p:selectOneMenu>
+			<p:outputLabel value="* Name" styleClass="label-right" />
+			<p:inputText value="#{dummyView.value}" maxlength="200"  required="true" requiredMessage="The Name is required"
+				style="min-width: 300px" />
 
-				<p:outputLabel value="Product" rendered="false" styleClass="label-right" />
-				<h:outputText value="STANDARD" rendered="false" />
+			<p:outputLabel value="Drug Program" styleClass="label-right" />
+			<p:selectOneMenu value="No program" id="drug"
+				requiredMessage="The Drug Program is required"
+				required="#{(searchController.extension eq 'CPT') or (searchController.extension eq 'DME') ? false : true}">
+				<f:selectItem itemValue="" itemLabel="No program" />
+				<f:selectItem itemValue="Val 1" itemLabel="Val 1" />
+				<f:selectItem itemValue="Val 2" itemLabel="Val 2" />
+			</p:selectOneMenu>
 
-				<p:outputLabel value="* Designee" styleClass="label-right" />
-				<p:selectOneMenu value=" " rendered="true" disabled="false"
-					required="true">
-					<f:selectItem itemLabel=" " itemValue=" "></f:selectItem>
-					<f:selectItem itemLabel="Jane Doe" itemValue="jane"></f:selectItem>
-					<f:selectItem itemLabel="John Doe" itemValue="john"></f:selectItem>
-				</p:selectOneMenu>
-			</h:panelGrid>
+			<p:outputLabel
+				value=" #{searchController.extension eq 'PRO' ? '*' : ''}  Protocol"
+				id="protocolLb" styleClass="label-right" />
+			<p:selectOneMenu value="No protocol"
+				requiredMessage="The Protocol is required"
+				required="#{searchController.extension eq 'PRO' ? true : false}"
+				id="protocol">
+				<f:selectItem itemValue="" itemLabel="No protocol" />
+				<f:selectItem itemValue="Val 1" itemLabel="Val 1" />
+				<f:selectItem itemValue="Val 2" itemLabel="Val 2" />
+			</p:selectOneMenu>
 
-			<h:panelGrid columns="2" style="min-width: 400px">
-				<p:outputLabel value="Algorithm" styleClass="label-right" />
-				<h:outputText value="N" />
+			<p:outputLabel value="Product" rendered="true"
+				styleClass="label-right" />
+			<p:selectOneMenu value="No Product" rendered="true" disabled="false"
+				requiredMessage="The Product is required"
+				required="#{(searchController.extension eq 'CPT') or (searchController.extension eq 'DME') ? false : true}">
+				<f:selectItem itemLabel="No Product" itemValue=""></f:selectItem>
+				<f:selectItem itemLabel="Val 1" itemValue="Val 1"></f:selectItem>
+				<f:selectItem itemLabel="Val 2" itemValue="Val 2"></f:selectItem>
+			</p:selectOneMenu>
 
-				<p:outputLabel value="Status" styleClass="label-right" />
-				<h:outputText value="Pending"></h:outputText>
+			<p:outputLabel value="Product" rendered="false"
+				styleClass="label-right" />
+			<h:outputText value="STANDARD" rendered="false" />
 
-				<p:outputLabel value="State" styleClass="label-right" />
-				<h:outputText value="Draft" />
-
-				<p:outputLabel value="Critical event" styleClass="label-right" />
-				<h:outputText value="No" />
-
-				<p:outputLabel value="* Level" styleClass="label-right" />
-				<p:selectOneMenu value="#{searchController.level}" rendered="true" disabled="false" id="level"
-					required="true">
-					<f:selectItem itemValue="1" itemLabel="1" />
-					<f:selectItem itemValue="2" itemLabel="2" />
-					<f:selectItem itemValue="3" itemLabel="3" />
-					<f:selectItem itemValue="4" itemLabel="4" />
-					<f:selectItem itemValue="5" itemLabel="5" />
-					<f:selectItem itemValue="All Levels" itemLabel="All Levels" />
-
-				</p:selectOneMenu>
-
-				<p:outputLabel value="Scope" styleClass="label-right" />
-				<h:outputText value="No" />
-
-				<p:outputLabel value="* Group" styleClass="label-right" />
-				<p:selectOneMenu value="1" rendered="true" disabled="false"
-					required="true">
-					<f:selectItem itemLabel="1" itemValue="1"></f:selectItem>
-				</p:selectOneMenu>
-
-				<p:outputLabel value="Code" styleClass="label-right" />
-				<h:outputText value="ABC" />
-
-			</h:panelGrid>
-
-			<h:panelGrid columns="2" columnClasses="label, value">
-				<p:outputLabel value="Initial Creation By  "  styleClass="label-right" />
-				<h:outputText value="#{dummyView.value}" />
-
-				<p:outputLabel value="Initial Creation Date  " styleClass="label-right" />
-				<h:outputText value="#{dummyView.value}" />
-
-				<p:outputLabel value="Last Activation By  " styleClass="label-right" />
-				<h:outputText value="#{dummyView.value}" />
-
-				<p:outputLabel value="Last Activation Date  " styleClass="label-right" />
-				<h:outputText value="#{dummyView.value}" />
-			</h:panelGrid>
+			<p:outputLabel value="* Designee" styleClass="label-right" />
+			<p:selectOneMenu value=" " rendered="true" disabled="false"
+				requiredMessage="The Designee is required" required="true">
+				<f:selectItem itemLabel="" itemValue=""></f:selectItem>
+				<f:selectItem itemLabel="Jane Doe" itemValue="jane"></f:selectItem>
+				<f:selectItem itemLabel="John Doe" itemValue="john"></f:selectItem>
+			</p:selectOneMenu>
 		</h:panelGrid>
+
+		<h:panelGrid columns="2" columnClasses="label, value"
+			style="min-width: 300px">
+			<p:outputLabel value=" Release group" styleClass="label-right" />
+			<h:outputText value="Draft AG" style="min-width: 300px" />
+
+			<p:outputLabel value=" Release Status" styleClass="label-right" />
+			<h:outputText value="Pending" />
+
+			<p:outputLabel value="* Level" styleClass="label-right" />
+			<p:selectOneMenu value="#{searchController.level}" rendered="true"
+				disabled="false" id="level" required="true">
+				<f:selectItem itemValue="1" itemLabel="1" />
+				<f:selectItem itemValue="2" itemLabel="2" />
+				<f:selectItem itemValue="3" itemLabel="3" />
+				<f:selectItem itemValue="4" itemLabel="4" />
+				<f:selectItem itemValue="5" itemLabel="5" />
+			</p:selectOneMenu>
+
+			<p:outputLabel value="* Critical event" styleClass="label-right" />
+			<p:selectOneMenu value="#{searchController.critical}" rendered="true"
+				disabled="false" id="critical" required="true">
+				<f:selectItem itemValue="No" itemLabel="No" />
+				<f:selectItem itemValue="Yes-Narrow" itemLabel="Yes-Narrow" />
+				<f:selectItem itemValue="Yes-Broad" itemLabel="Yes-Broad" />
+			</p:selectOneMenu>
+
+			<p:outputLabel value="Scope" styleClass="label-right" />
+			<p:selectOneMenu value="#{searchController.scope}" rendered="true"
+				disabled="false" id="scope" required="true">
+				<f:selectItem itemValue="No" itemLabel="No" />
+				<f:selectItem itemValue="Yes" itemLabel="Yes" />
+			</p:selectOneMenu>
+
+			<p:outputLabel value="Algorithm" styleClass="label-right" />
+			<h:outputText value="Y" />
+
+		</h:panelGrid>
+
+		<h:panelGrid columns="2" columnClasses="label, value"
+			style="min-width: 300px">
+			<p:outputLabel value="Status" styleClass="label-right" />
+			<h:outputText value="Pending"></h:outputText>
+
+			<p:outputLabel value="State" styleClass="label-right" />
+			<p:selectOneMenu value="#{dummyView.value}" rendered="true"
+				disabled="true" required="true">
+				<f:selectItem itemLabel="Draft" itemValue="Draft"></f:selectItem>
+				<f:selectItem itemLabel="Approved" itemValue="Approved"></f:selectItem>
+			</p:selectOneMenu>
+
+			<p:outputLabel value="* Group" styleClass="label-right" />
+			<p:selectOneMenu value="#{dummyView.value}" rendered="true"
+				disabled="false" required="true">
+				<f:selectItem itemLabel="No Group" itemValue="No Group"></f:selectItem>
+				<f:selectItem itemLabel="" itemValue=""></f:selectItem>
+			</p:selectOneMenu>
+
+			<p:outputLabel value="Code" styleClass="label-right" />
+			<h:outputText value="#{dummyView.value}" />
+		</h:panelGrid>
+
+		<h:panelGrid columns="2" columnClasses="label, value">
+			<p:outputLabel value="Initial Creation By  " styleClass="label-right" />
+			<h:outputText value="#{dummyView.value}" />
+
+			<p:outputLabel value="Initial Creation Date  "
+				styleClass="label-right" />
+			<h:outputText value="#{dummyView.value}" />
+
+			<p:outputLabel value="Last Activation By  " styleClass="label-right" />
+			<h:outputText value="#{dummyView.value}" />
+
+			<p:outputLabel value="Last Activation Date  "
+				styleClass="label-right" />
+			<h:outputText value="#{dummyView.value}" />
+		</h:panelGrid>
+	</h:panelGrid>
 
 	<style>
 .label-right {

@@ -6,8 +6,28 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:p="http://primefaces.org/ui">
 
+	<h:panelGrid columns="2" cellpadding="5">
+		<p:outputLabel value="Term" />
+		<p:selectOneMenu value="All" rendered="true" required="true">
+			<f:selectItem itemLabel="Val 1" itemValue="Val 1"></f:selectItem>
+			<f:selectItem itemLabel="Val 2" itemValue="Val 2"></f:selectItem>
+		</p:selectOneMenu>
+	</h:panelGrid>
+	<h:panelGrid columns="5" cellpadding="5">
+		<p:outputLabel value="Term" />
+		<p:inputText value="#{dummyView.value}" />
+
+		<p:outputLabel value="Code" />
+		<p:inputText value="#{dummyView.value}" />
+
+		<p:commandButton value="Search" action="#{searchController.search()}"
+			 />
+
+	</h:panelGrid>
+
 	<p:tabView id="pt2" style="width:800px; height:381px;">
-		<p:tab title="Impacted SMQs" id="sdi5" styleClass="AFStretchWidth">
+
+		<p:tab title="Impacted SMQssss" id="sdi5" styleClass="AFStretchWidth">
 			<p:dataTable var="var" value="#{null}">
 				<p:column sortable="false" headerText="Term" id="c52"
 					filterable="true">
@@ -88,7 +108,8 @@
 				</p:column>
 			</p:dataTable>
 		</p:tab>
-		<p:tab title="Non-impacted Lists" id="sdi6" styleClass="AFStretchWidth">
+		<p:tab title="Non-impacted Lists" id="sdi6"
+			styleClass="AFStretchWidth">
 			<p:dataTable var="var" value="#{null}">
 				<p:column sortable="false" headerText="Term" id="c52"
 					filterable="true">

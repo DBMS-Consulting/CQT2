@@ -21,13 +21,13 @@ import com.dbms.service.CreateEntityService;
  **/
 @ManagedBean
 @ViewScoped
-public class SearchController implements Serializable{
+public class SearchController implements Serializable {
 
 	private static final long serialVersionUID = 5299394344651669792L;
-	
-	private static final Logger log=LoggerFactory.getLogger(SearchController.class);
-	
-	
+
+	private static final Logger log = LoggerFactory
+			.getLogger(SearchController.class);
+
 	@ManagedProperty("#{createEntityService}")
 	private CreateEntityService createEntityService;
 
@@ -36,15 +36,24 @@ public class SearchController implements Serializable{
 	private String protocol;
 	private String state;
 	private String level;
-	
-	private boolean maintainDesigBtn, saveBtn;
-	
+	private String status;
+	private String critical;
+	private String scope;
+	private String product;
+	private String group;
+
+	private boolean maintainDesigBtn;
+
 	private List<CreateEntity> values;
-	
+
 	@PostConstruct
 	public void init() {
 		maintainDesigBtn = false;
-		//saveBtn = true;
+		status = "Active";
+		state = "Published";
+		level= "1";
+		critical = "No";
+		group = "No Group";
 	}
 
 	public String getExtension() {
@@ -54,7 +63,7 @@ public class SearchController implements Serializable{
 	public void setExtension(String extension) {
 		this.extension = extension;
 	}
-	
+
 	public String getDrugProgram() {
 		return drugProgram;
 	}
@@ -71,18 +80,21 @@ public class SearchController implements Serializable{
 		this.protocol = protocol;
 	}
 
-	public void search(){
-		String extensionStr=null;
-		if(!StringUtils.equals(extension, "-1")){
-			extensionStr=extension;
+	public void search() {
+		String extensionStr = null;
+		if (!StringUtils.equals(extension, "-1")) {
+			extensionStr = extension;
 		}
-		values=createEntityService.findByCriterias(extensionStr,drugProgram,protocol);
-		log.debug("found values {}",values==null?0:values.size());
+		values = createEntityService.findByCriterias(extensionStr, drugProgram,
+				protocol);
+		log.debug("found values {}", values == null ? 0 : values.size());
 	}
-	
+
 	/**
 	 * Method to change Level value on extention selection.
-	 * @param event AjaxBehaviour
+	 * 
+	 * @param event
+	 *            AjaxBehaviour
 	 */
 	public void changeLevel(AjaxBehaviorEvent event) {
 		if (extension.equals("PRO"))
@@ -90,7 +102,22 @@ public class SearchController implements Serializable{
 		else
 			setLevel("1");
 	}
-
+	
+	/**
+	 * Method to change State value on status selection.
+	 * 
+	 * @param event
+	 *            AjaxBehaviour
+	 */
+	public void changeState(AjaxBehaviorEvent event) {
+		if (status.equals("Active"))
+			setState("Published");
+		if (status.equals("Inactive"))
+			setState("Draft");
+		if (status.equals("All"))
+			setState("All");
+	}
+	
 	public String getLevel() {
 		return level;
 	}
@@ -127,13 +154,43 @@ public class SearchController implements Serializable{
 		this.maintainDesigBtn = maintainDesigBtn;
 	}
 
-	public boolean isSaveBtn() {
-		return saveBtn;
+	public String getStatus() {
+		return status;
 	}
 
-	public void setSaveBtn(boolean saveBtn) {
-		this.saveBtn = saveBtn;
+	public void setStatus(String status) {
+		this.status = status;
 	}
-	
+
+	public String getCritical() {
+		return critical;
+	}
+
+	public void setCritical(String critical) {
+		this.critical = critical;
+	}
+
+	public String getScope() {
+		return scope;
+	}
+
+	public void setScope(String scope) {
+		this.scope = scope;
+	}
+
+	public String getProduct() {
+		return product;
+	}
+
+	public void setProduct(String product) {
+		this.product = product;
+	}
+
+	public String getGroup() {
+		return group;
+	}
+
+	public void setGroup(String group) {
+		this.group = group;
+	}
 }
-
