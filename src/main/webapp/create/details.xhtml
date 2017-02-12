@@ -64,7 +64,7 @@
 			<h:outputText value="STANDARD" rendered="false" />
 
 			<p:outputLabel value="* Designee" styleClass="label-right" />
-			<p:selectOneMenu value=" " rendered="true" disabled="false"
+			<p:selectOneMenu value="" rendered="true" disabled="false"
 				requiredMessage="The Designee is required" required="true">
 				<f:selectItem itemLabel="" itemValue=""></f:selectItem>
 				<f:selectItem itemLabel="Jane Doe" itemValue="jane"></f:selectItem>
@@ -124,7 +124,7 @@
 
 			<p:outputLabel value="* Group" styleClass="label-right" />
 			<p:selectOneMenu value="#{dummyView.value}" rendered="true"
-				disabled="false" required="true">
+				disabled="false" required="true" requiredMessage="A group is required">
 				<f:selectItem itemLabel="No Group" itemValue="No Group"></f:selectItem>
 				<f:selectItem itemLabel="" itemValue=""></f:selectItem>
 			</p:selectOneMenu>

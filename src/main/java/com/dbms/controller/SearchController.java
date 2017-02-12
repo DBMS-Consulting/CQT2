@@ -10,6 +10,7 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.event.AjaxBehaviorEvent;
 
 import org.apache.commons.lang3.StringUtils;
+import org.primefaces.component.wizard.Wizard;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,6 +46,9 @@ public class SearchController implements Serializable {
 	private boolean maintainDesigBtn;
 
 	private List<CreateEntity> values;
+	
+	private Wizard updateWizard, copyWizard, browseWizard;	
+	
 
 	@PostConstruct
 	public void init() {
@@ -54,6 +58,18 @@ public class SearchController implements Serializable {
 		level= "1";
 		critical = "No";
 		group = "No Group";
+	}
+	
+	public void changeTabUpdate() {
+		updateWizard.setStep("details");
+	}
+	
+	public void changeTabCopy() {
+		copyWizard.setStep("details");
+	}
+	
+	public void changeTabBrowse() {
+		browseWizard.setStep("details");
 	}
 
 	public String getExtension() {
@@ -192,5 +208,29 @@ public class SearchController implements Serializable {
 
 	public void setGroup(String group) {
 		this.group = group;
+	}
+
+	public Wizard getUpdateWizard() {
+		return updateWizard;
+	}
+
+	public void setUpdateWizard(Wizard updateWizard) {
+		this.updateWizard = updateWizard;
+	}
+
+	public Wizard getCopyWizard() {
+		return copyWizard;
+	}
+
+	public void setCopyWizard(Wizard copyWizard) {
+		this.copyWizard = copyWizard;
+	}
+
+	public Wizard getBrowseWizard() {
+		return browseWizard;
+	}
+
+	public void setBrowseWizard(Wizard browseWizard) {
+		this.browseWizard = browseWizard;
 	}
 }
