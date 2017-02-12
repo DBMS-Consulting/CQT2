@@ -24,7 +24,7 @@
 				</h:panelGrid>
 			</h:panelGrid>
 
-			<p:wizard flowListener="#{wizard.onFlowProcess}">
+			<p:wizard flowListener="#{wizard.onFlowProcess}" binding="#{searchController.copyWizard}">
 				<!-- Search -->
 				<p:tab id="search" title="Search">
 					<p:panel header="Search">
@@ -65,12 +65,13 @@
 									<h:outputText value="#{value.state}" />
 								</p:column>
 								<p:column headerText="Code">
-									<h:outputLink
+									<!-- <h:outputLink
 										value="#{request.contextPath}/create/create.xhtml">
 										<f:param value="#{value.code}" name="code" />
 										<h:outputText value="#{value.code}" />
-									</h:outputLink>
-								</p:column>
+									</h:outputLink> -->
+									<p:commandLink action="#{searchController.changeTabCopy}" value="#{value.code}" update="@form"></p:commandLink>
+ 								</p:column>
 								<p:column headerText="Drug Program">
 									<h:outputText value="#{value.drugProgram}" />
 								</p:column>
