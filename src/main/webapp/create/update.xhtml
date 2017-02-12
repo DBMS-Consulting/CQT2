@@ -14,7 +14,7 @@
 				<h:panelGrid>
 					<p:breadCrumb>
 						<p:menuitem value="Home" url="/index.xhtml" />
-						<p:menuitem value="Update Details" />
+						<p:menuitem value="Update" />
 					</p:breadCrumb>
 
 				</h:panelGrid>
@@ -27,84 +27,85 @@
 			<p:wizard flowListener="#{wizard.onFlowProcess}">
 				<!-- Search -->
 				<p:tab id="search" title="Search">
-				<p:panel header="Search">
-					<ui:include src="search.xhtml"></ui:include>
+					<p:panel header="Search">
+						<ui:include src="search.xhtml"></ui:include>
 
-					<h:panelGrid columns="8">
-						<p:outputLabel value="Term" />
-						<p:inputText />
-						<p:outputLabel value="Code" />
-						<p:inputText />
-						<p:commandButton value="Search"
-							action="#{searchController.search()}" update="result" />
-						<p:commandButton value="Maintain Designees"
-							action="MAINTAIN_DESIGNEE" />
-						<h:commandButton value="Reset" type="reset" />
-					</h:panelGrid>
+						<h:panelGrid columns="8">
+							<p:outputLabel value="Term" />
+							<p:inputText />
+							<p:outputLabel value="Code" />
+							<p:inputText />
+							<p:commandButton value="Search"
+								action="#{searchController.search()}" update="result" />
+							<p:commandButton value="Maintain Designees"
+								action="MAINTAIN_DESIGNEE" />
+							<h:commandButton value="Reset" type="reset" />
+						</h:panelGrid>
 
-					<p:spacer />
+						<p:spacer />
 
-					<p:outputPanel deferred="true" deferredMode="visible">
-						<p:dataTable var="value" value="#{searchController.values}"
-							id="result">
-							<p:column headerText="Code">
-								<h:outputLink value="#{request.contextPath}/create/create.xhtml">
-									<f:param value="#{value.code}" name="code" />
-									<h:outputText value="#{value.code}" />
-								</h:outputLink>
-							</p:column>
-							<p:column headerText="Name">
-								<h:outputText value="#{value.name}" />
-							</p:column>
+						<p:outputPanel deferred="true" deferredMode="visible">
+							<p:dataTable var="value" value="#{searchController.values}"
+								id="result">
+								<p:column headerText="Code">
+									<h:outputLink
+										value="#{request.contextPath}/create/create.xhtml">
+										<f:param value="#{value.code}" name="code" />
+										<h:outputText value="#{value.code}" />
+									</h:outputLink>
+								</p:column>
+								<p:column headerText="Name">
+									<h:outputText value="#{value.name}" />
+								</p:column>
 
-							<p:column headerText="Status">
-								<h:outputText value="#{value.status}" />
-							</p:column>
-							<p:column headerText="Release Status">
-								<h:outputText value="#{value.releaseStatus}" />
-							</p:column>
-							<p:column headerText="Release Group">
-								<h:outputText value="#{value.releaseGroup}" />
-							</p:column>
+								<p:column headerText="Status">
+									<h:outputText value="#{value.status}" />
+								</p:column>
+								<p:column headerText="Release Status">
+									<h:outputText value="#{value.releaseStatus}" />
+								</p:column>
+								<p:column headerText="Release Group">
+									<h:outputText value="#{value.releaseGroup}" />
+								</p:column>
 
-							<p:column headerText="Group">
-								<h:outputText value="#{value.group}" />
-							</p:column>
+								<p:column headerText="Group">
+									<h:outputText value="#{value.group}" />
+								</p:column>
 
-							<p:column headerText="Level">
-								<h:outputText value="#{value.level}" />
-							</p:column>
+								<p:column headerText="Level">
+									<h:outputText value="#{value.level}" />
+								</p:column>
 
-							<p:column headerText="Critical Event">
-								<h:outputText value="#{value.criticalEvent}" />
-							</p:column>
+								<p:column headerText="Critical Event">
+									<h:outputText value="#{value.criticalEvent}" />
+								</p:column>
 
-							<p:column headerText="Scope">
-								<h:outputText value="#{value.scope}" />
-							</p:column>
+								<p:column headerText="Scope">
+									<h:outputText value="#{value.scope}" />
+								</p:column>
 
-							<p:column headerText="State">
-								<h:outputText value="#{value.state}" />
-							</p:column>
-							<p:column headerText="Product">
-								<h:outputText value="#{value.product}" />
-							</p:column>
+								<p:column headerText="State">
+									<h:outputText value="#{value.state}" />
+								</p:column>
+								<p:column headerText="Product">
+									<h:outputText value="#{value.product}" />
+								</p:column>
 
-							<p:column headerText="Created By">
-								<h:outputText value="#{value.creator.name}" />
-							</p:column>
-							<p:column headerText="Extention">
-								<h:outputText value="#{value.extension}" />
-							</p:column>
+								<p:column headerText="Created By">
+									<h:outputText value="#{value.creator.name}" />
+								</p:column>
+								<p:column headerText="Extention">
+									<h:outputText value="#{value.extension}" />
+								</p:column>
 
-							<p:column headerText="Drug Program">
-								<h:outputText value="#{value.drugProgram}" />
-							</p:column>
-							<p:column headerText="Protocol">
-								<h:outputText value="#{value.protocol}" />
-							</p:column>
-						</p:dataTable>
-					</p:outputPanel>
+								<p:column headerText="Drug Program">
+									<h:outputText value="#{value.drugProgram}" />
+								</p:column>
+								<p:column headerText="Protocol">
+									<h:outputText value="#{value.protocol}" />
+								</p:column>
+							</p:dataTable>
+						</p:outputPanel>
 					</p:panel>
 				</p:tab>
 				<p:tab id="details" title="Update Details">
@@ -121,122 +122,97 @@
 
 				<!-- RELATIONS -->
 				<p:tab id="relations" title="Update Relations">
-					<ui:include src="relations.xhtml"></ui:include>
+					<p:panel header="Relations">
+						<ui:include src="relations.xhtml"></ui:include>
+
+						<p:commandButton style="margin-top: 10px" value="Save" id="cb3"
+							disabled="false" 
+							icon="ui-icon-disk" />
+					</p:panel>
 				</p:tab>
 
 				<p:tab id="confirmPanel" title="Confirm">
 					<p:panel header="Search">
-						<table>
-							<tbody>
-								<tr>
-									<td><table>
-											<tbody>
-												<tr>
-													<td><p:outputLabel value="Filter Dictionary" /></td>
-													<td><h:outputText value="#######" /></td>
-												</tr>
-												<tr>
-													<td><p:outputLabel value="Drug Program" /></td>
-													<td><h:outputText value="#######" /></td>
-												</tr>
-												<tr>
-													<td><p:outputLabel value="Protocol" /></td>
-													<td><h:outputText value="#######" /></td>
-												</tr>
-												<tr>
-													<td><p:outputLabel value="Release Groups" /></td>
-													<td><h:outputText value="#######" /></td>
-												</tr>
-												<tr>
-													<td><p:outputLabel value="Name" /></td>
-													<td><h:outputText value="#######" /></td>
-												</tr>
-												<tr>
-													<td><p:outputLabel value="Product" /></td>
-													<td><h:outputText value="#######" /></td>
-												</tr>
-												<tr>
-													<td><p:outputLabel value="Designee" /></td>
-													<td><h:outputText value="#######" /></td>
-												</tr>
-											</tbody>
-										</table></td>
+						<h:panelGrid columns="3" cellpadding="30">
 
-									<td><table style="margin-right: 40px">
-											<tbody>
-												<tr>
-													<td><p:outputLabel value="Level" /></td>
-													<td><h:outputText value="#######" /></td>
-												</tr>
-												<tr>
-													<td><p:outputLabel value="Code" /></td>
-													<td><h:outputText value="#######" /></td>
-												</tr>
-												<tr>
-													<td><p:outputLabel value="Algorithm" /></td>
-													<td><h:outputText value="#######" /></td>
-												</tr>
-												<tr>
-													<td><p:outputLabel value="Extension" /></td>
-													<td><h:outputText value="#######" /></td>
-												</tr>
-												<tr>
-													<td><p:outputLabel value="Critical event" /></td>
-													<td><h:outputText value="#######" /></td>
-												</tr>
-											</tbody>
-										</table></td>
-									<td><table>
-											<tbody>
-												<tr>
-													<td><p:outputLabel value="Group" /></td>
-													<td><h:outputText value="#######" /></td>
-												</tr>
-												<tr>
-													<td><p:outputLabel value="Status" /></td>
-													<td><h:outputText value="#######" /></td>
-												</tr>
-												<tr>
-													<td><p:outputLabel value="Release Status" /></td>
-													<td><h:outputText value="#######" /></td>
-												</tr>
-												<tr>
-													<td><p:outputLabel value="State" /></td>
-													<td><h:outputText value="#######" /></td>
-												</tr>
-												<tr>
-													<td><p:outputLabel value="Scope" /></td>
-													<td><h:outputText value="#######" /></td>
-												</tr>
-											</tbody>
-										</table></td>
-								</tr>
-							</tbody>
-						</table>
+							<h:panelGrid columns="2" columnClasses="label, value">
+								<p:outputLabel styleClass="label-right"
+									value="Filter Dictionary" />
+								<h:outputText value="#######" />
 
+								<p:outputLabel styleClass="label-right" value="Drug Program" />
+								<h:outputText value="#######" />
+
+								<p:outputLabel styleClass="label-right" value="Protocol" />
+								<h:outputText value="#######" />
+
+								<p:outputLabel styleClass="label-right" value="Release Groups" />
+								<h:outputText value="#######" />
+
+								<p:outputLabel styleClass="label-right" value="Name" />
+								<h:outputText value="#######" />
+
+								<p:outputLabel styleClass="label-right" value="Product" />
+								<h:outputText value="#######" />
+
+								<p:outputLabel styleClass="label-right" value="Designee" />
+								<h:outputText value="#######" />
+							</h:panelGrid>
+
+							<h:panelGrid columns="2" columnClasses="label, value"
+								style="min-width: 300px;">
+								<p:outputLabel styleClass="label-right" value="Level" />
+								<h:outputText value="#######" />
+
+								<p:outputLabel styleClass="label-right" value="Code" />
+								<h:outputText value="#######" />
+
+								<p:outputLabel styleClass="label-right" value="Algorithm" />
+								<h:outputText value="#######" />
+
+								<p:outputLabel styleClass="label-right" value="Extention" />
+								<h:outputText value="#######" />
+
+								<p:outputLabel styleClass="label-right" value="Critical event" />
+								<h:outputText value="#######" />
+							</h:panelGrid>
+
+							<h:panelGrid columns="2" columnClasses="label, value"
+								style="min-width: 300px;">
+								<p:outputLabel styleClass="label-right" value="Group" />
+								<h:outputText value="#######" />
+
+								<p:outputLabel styleClass="label-right" value="Status" />
+								<h:outputText value="#######" />
+
+								<p:outputLabel styleClass="label-right" value="Release Status" />
+								<h:outputText value="#######" />
+
+								<p:outputLabel styleClass="label-right" value="State" />
+								<h:outputText value="#######" />
+
+								<p:outputLabel styleClass="label-right" value="Scope" />
+								<h:outputText value="#######" />
+							</h:panelGrid>
+
+						</h:panelGrid>
 
 					</p:panel>
 					<p:spacer height="10"></p:spacer>
 
 					<p:panel header="Informative Notes">
+						<h:panelGrid columns="1" cellpadding="30">
+							<h:panelGrid columns="2" columnClasses="label, value">
+								<p:outputLabel styleClass="label-right" value="Description 11" />
+								<h:outputText value="#######" />
 
-						<table>
-							<tbody>
-								<tr>
-									<td><p:outputLabel value="Description 11" /></td>
-									<td><h:outputText value="#######" /></td>
-								</tr>
-								<tr>
-									<td><p:outputLabel value="Source" /></td>
-									<td><h:outputText value="#######" /></td>
-								</tr>
-								<tr>
-									<td><p:outputLabel value="Notes" /></td>
-									<td><h:outputText value="#######" /></td>
-								</tr>
+								<p:outputLabel styleClass="label-right" value="Source" />
+								<h:outputText value="#######" />
 
-							</tbody>
-						</table>
+								<p:outputLabel styleClass="label-right" value="Notes" />
+								<h:outputText value="#######" />
+							</h:panelGrid>
+						</h:panelGrid>
 
 					</p:panel>
 					<p:spacer height="10"></p:spacer>
@@ -248,12 +224,40 @@
 								<p:outputLabel value="Workflow" />
 							</f:facet>
 							<f:facet name="right">
-								<p:commandButton value="Reactivate" />
-								<p:commandButton value="Retire" />
-								<p:commandButton value="Demote to Draft" />
-								<p:commandButton value="Reviewed" />
-								<p:commandButton value="Approved" />
-								<p:commandButton value="Delete" />
+								<p:commandButton value="Reactivate" disabled="false">
+									<p:confirm header="Confirm Reactivate"
+										message="Are you sure you want to reactivate this MedDRA Query?"
+										icon="ui-icon-alert" />
+								</p:commandButton>
+								<p:commandButton value="Retire" disabled="false">
+									<p:confirm header="Confirm Retire"
+										message="Are you sure you want to retire this MedDRA Query?"
+										icon="ui-icon-alert" />
+								</p:commandButton>
+
+								<p:commandButton value="Demote to Draft" disabled="false">
+									<p:confirm header="Confirm Demote to Draft"
+										message="Are you sure you want to demote this MedDRA Query to draft?"
+										icon="ui-icon-alert" />
+								</p:commandButton>
+
+								<p:commandButton value="Reviewed" disabled="false">
+									<p:confirm header="Confirm Review"
+										message="Are you sure you want to confirm this MedDRA Query as reviewed?"
+										icon="ui-icon-alert" />
+								</p:commandButton>
+
+								<p:commandButton value="Approve" disabled="false">
+									<p:confirm header="Confirm Approve"
+										message="Are you sure you want to approve this MedDRA Query?"
+										icon="ui-icon-alert" />
+								</p:commandButton>
+
+								<p:commandButton value="Delete" disabled="false">
+									<p:confirm header="Confirm Delete"
+										message="Are you sure you want to delete this MedDRA Query?"
+										icon="ui-icon-alert" />
+								</p:commandButton>
 							</f:facet>
 						</p:toolbar>
 						<table>
@@ -277,10 +281,7 @@
 				</p:tab>
 			</p:wizard>
 
-			<!-- Popups - dialogs   -->
-			<p:dialog widgetVar="confirm" header="Confirm">
-				<h:commandButton value="Delete all selected terms?" />
-			</p:dialog>
+			 
 
 			<p:dialog widgetVar="search" modal="false" header="Hierarchy search">
 				<p:panel header="Relations" style="width:700px; height:623px;">
@@ -441,50 +442,6 @@
 					</h:panelGrid>
 				</p:panel>
 			</p:dialog>
-
-			<p:dialog widgetVar="confirmDelete" header="Confirm Delete">
-				<h:outputText
-					value="Are you sure you want to delete this MedDRA Query?"
-					id="aot1" />
-			</p:dialog>
-			<p:dialog widgetVar="confirmRetire" header="Confirm Retire">
-				<p:commandLink
-					value="Are you sure you want to retire this MedDRA Query?"
-					id="aot2" />
-			</p:dialog>
-			<p:dialog widgetVar="confirmReactivate" header="Confirm Reactivate">
-				<p:commandLink
-					value="Are you sure you want to reactivate this MedDRA Query?"
-					id="aot3" />
-			</p:dialog>
-			<p:dialog widgetVar="confirmDemoteToDraft"
-				header="Confirm Demote to Draft">
-				<p:commandLink
-					value="Are you sure you want to demote this MedDRA Query to draft?"
-					id="aot4" />
-			</p:dialog>
-			<p:dialog widgetVar="confirmReviewed" header="Confirm Reviewed">
-				<p:commandLink
-					value="Are you sure you want to confirm this MedDRA Query as reviewed?"
-					id="aot5" />
-
-			</p:dialog>
-			<p:dialog widgetVar="confirmApproved" header="Confirm Approve">
-				<p:commandLink
-					value="Are you sure you want to approve this MedDRA Query?"
-					id="aot6" />
-
-			</p:dialog>
-			<!-- <p:dialog widgetVar="submitToMQM" header="Submit to MQM">
-				<p:commandLink
-					value="Are you sure you want to submit this MedDRA Query to the MQM?"
-					id="aot7" />
-			</p:dialog>
-			<p:dialog widgetVar="confirmPublished" header="Confirm Publication">
-				<p:commandLink
-					value="Are you sure you want to publish the selected MedDRA Query?"
-					id="aot8" />
-			</p:dialog> -->
 
 			<p:spacer width="10" height="10" id="s6" />
 			<h:panelGrid id="pgl2" columns="5"

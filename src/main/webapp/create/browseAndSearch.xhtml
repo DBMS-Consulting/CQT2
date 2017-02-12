@@ -58,6 +58,12 @@
 								<p:column headerText="Name">
 									<h:outputText value="#{value.name}" />
 								</p:column>
+								<p:column headerText="Drug Program">
+									<h:outputText value="#{value.drugProgram}" />
+								</p:column>
+								<p:column headerText="Protocol">
+									<h:outputText value="#{value.protocol}" />
+								</p:column>
 
 								<p:column headerText="Status">
 									<h:outputText value="#{value.status}" />
@@ -101,12 +107,7 @@
 								<p:column headerText="History">
 									<h:outputText value="#{value.history}" />
 								</p:column>
-								<p:column headerText="Drug Program">
-									<h:outputText value="#{value.drugProgram}" />
-								</p:column>
-								<p:column headerText="Protocol">
-									<h:outputText value="#{value.protocol}" />
-								</p:column>
+								
 							</p:dataTable>
 						</p:outputPanel>
 					</p:panel>
@@ -114,7 +115,125 @@
 
 				<p:tab id="details" title="Details">
 					<p:panel header="Details">
-						<ui:include src="details.xhtml"></ui:include>
+						<!-- <ui:include src="details.xhtml"></ui:include> -->
+
+						<!-- 
+						***
+						***
+						*** Adding details body directly inside this tab to deal with read-only property 
+						***
+						-->
+						<h:panelGrid columns="3" cellpadding="10">
+
+							<h:panelGrid columns="2" columnClasses="label, value">
+								<p:outputLabel value="Extention" />
+								<p:selectOneMenu value="#{searchController.extension}"
+									rendered="true" disabled="true">
+									<f:selectItem itemLabel="TME" itemValue="TME"></f:selectItem>
+									<f:selectItem itemLabel="TR1" itemValue="TR1"></f:selectItem>
+									<f:selectItem itemLabel="CPT" itemValue="CPT"></f:selectItem>
+									<f:selectItem itemLabel="DME" itemValue="DME"></f:selectItem>
+									<f:selectItem itemLabel="PRO" itemValue="PRO"></f:selectItem>
+								</p:selectOneMenu>
+
+
+								<p:outputLabel value="Name" />
+								<p:inputText value="12JUN2015 CQT [STANDARD] (NMQ)"
+									readonly="true" style="min-width: 300px" />
+
+								<p:outputLabel value="Drug Program" />
+								<p:selectOneMenu value="" disabled="true">
+									<f:selectItem itemValue="Val 1" itemLabel="Val 1" />
+									<f:selectItem itemValue="Val 2" itemLabel="Val 2" />
+								</p:selectOneMenu>
+
+								<p:outputLabel
+									value="Protocol"
+									id="protocolLb" />
+								<p:selectOneMenu value="" disabled="true"
+									id="protocol">
+									<f:selectItem itemValue="" itemLabel="" />
+									<f:selectItem itemValue="Val 1" itemLabel="Val 1" />
+									<f:selectItem itemValue="Val 2" itemLabel="Val 2" />
+								</p:selectOneMenu>
+
+								<p:outputLabel value=" Release group" />
+								<p:inputText value="Draft AG" style="min-width: 300px" readonly="true" />
+
+								<p:outputLabel value=" Release Status" />
+								<h:outputText value="CURRENT" />
+
+								<p:outputLabel value="Product" rendered="true" />
+								<p:selectOneMenu value="STANDARD" rendered="true"
+									disabled="true">
+									<f:selectItem itemLabel="Standard" itemValue="STANDARD"></f:selectItem>
+								</p:selectOneMenu>
+
+								<p:outputLabel value="Product" rendered="false" />
+								<h:outputText value="STANDARD" rendered="false" />
+
+								<p:outputLabel value="Designee" />
+								<p:selectOneMenu value="DEFAULT" rendered="true"
+									disabled="true">
+									<f:selectItem itemLabel="Jane Doe" itemValue="jane"></f:selectItem>
+									<f:selectItem itemLabel="John Doe" itemValue="john"></f:selectItem>
+								</p:selectOneMenu>
+							</h:panelGrid>
+
+							<h:panelGrid columns="2" columnClasses="label, value"
+								style="min-width: 400px">
+								<p:outputLabel value="Algorithm" />
+								<h:outputText value="N" />
+
+								<p:outputLabel value="Status" />
+								<h:outputText value="Pending"></h:outputText>
+
+								<p:outputLabel value="State" />
+								<h:outputText value="Draft" />
+
+								<p:outputLabel value="Critical event" />
+								<h:outputText value="No" />
+
+								<p:outputLabel value="Level" />
+								<p:selectOneMenu value="#{searchController.level}"
+									rendered="true" disabled="true" id="level">
+									<f:selectItem itemValue="1" itemLabel="1" />
+									<f:selectItem itemValue="2" itemLabel="2" />
+									<f:selectItem itemValue="3" itemLabel="3" />
+									<f:selectItem itemValue="4" itemLabel="4" />
+									<f:selectItem itemValue="5" itemLabel="5" />
+									<f:selectItem itemValue="All Levels" itemLabel="All Levels" />
+
+								</p:selectOneMenu>
+
+								<p:outputLabel value="Scope" />
+								<h:outputText value="No" />
+
+								<p:outputLabel value="Group" />
+								<p:selectOneMenu value="1" rendered="true" disabled="true">
+									<f:selectItem itemLabel="1" itemValue="1"></f:selectItem>
+								</p:selectOneMenu>
+
+								<p:outputLabel value="Code" />
+								<h:outputText value="ABC" />
+
+							</h:panelGrid>
+
+							<h:panelGrid columns="2" columnClasses="label, value">
+								<p:outputLabel value="Initial Creation By  " />
+								<h:outputText value="NMAT" />
+
+								<p:outputLabel value="Initial Creation Date  " />
+								<h:outputText value="2015-06-12 12:33:13" />
+
+								<p:outputLabel value="Last Activation By  " />
+								<h:outputText value="NMAT" />
+
+								<p:outputLabel value="Last Activation Date  " />
+								<h:outputText value="2015-06-12 12:33:13" />
+							</h:panelGrid>
+						</h:panelGrid>
+
 					</p:panel>
 				</p:tab>
 
@@ -125,7 +244,9 @@
 
 				<!-- RELATIONS -->
 				<p:tab id="relations" title="Relations">
-					<ui:include src="relations.xhtml" />
+					<p:panel header="Relations">
+						<ui:include src="relations.xhtml" />
+					</p:panel>
 				</p:tab>
 			</p:wizard>
 

@@ -6,38 +6,48 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:p="http://primefaces.org/ui">
 
-	<p:panel header="Relations">
+	<h:panelGrid>
 
 		<p:toolbar>
+
+
 			<f:facet name="left">
-				<p:selectOneMenu value="#">
-					<f:selectItem itemValue="0" itemLabel="Filter and Sort"></f:selectItem>
-					<f:selectItem itemValue="TERM" itemLabel="Term name"></f:selectItem>
-					<f:selectItem itemValue="DEF_LEVEL_REF_SHORT_NAME"
-						itemLabel="Level"></f:selectItem>
-					<f:selectItem itemValue="SCOPE" itemLabel="Scope"></f:selectItem>
-				</p:selectOneMenu>
-				<p:spacer width="10" />
+
+				<p:commandButton id="filter" value="Filter and Sort" type="button"
+					icon="ui-icon-triangle-1-s" />
+				<p:overlayPanel id="filterPanel" for="filter">
+					<h:panelGrid columns="2">
+						<p:outputLabel value="Sort" />
+						<p:selectOneMenu value="TERM">
+							<f:selectItem itemValue="TERM" itemLabel="Term name"></f:selectItem>
+							<f:selectItem itemValue="DEF_LEVEL_REF_SHORT_NAME"
+								itemLabel="Level"></f:selectItem>
+							<f:selectItem itemValue="SCOPE" itemLabel="Scope"></f:selectItem>
+						</p:selectOneMenu>
+
+						<p:outputLabel for="show" value="Show Primary Only"
+							style="min-width: 100px !important" />
+						<p:selectBooleanCheckbox value="false" id="show"
+							label="Show Primary Only"></p:selectBooleanCheckbox>
+
+						<p:outputLabel value="Scope" />
+						<p:selectOneMenu value="0">
+							<f:selectItem itemValue="0" itemLabel="Full #####/SMQ"></f:selectItem>
+							<f:selectItem itemValue="3" itemLabel="Child Narrow"></f:selectItem>
+						</p:selectOneMenu>
+
+						<p:spacer />
+						<p:commandButton value="Refresh" id="cb7" icon="ui-icon-refresh"
+							rendered="true" />
+					</h:panelGrid>
+				</p:overlayPanel>
 
 
-				<p:selectBooleanCheckbox id="show" label="Show Primary Only"></p:selectBooleanCheckbox>
-				<p:outputLabel for="show" value="Show Primary Only" />
-				<p:spacer width="10" />
-				<p:selectOneMenu value="#">
-					<f:selectItem itemValue="0" itemLabel="Scope"></f:selectItem>
-					<f:selectItem itemValue="1" itemLabel="1"></f:selectItem>
-				</p:selectOneMenu>
-
-				<p:spacer width="10" />
-				<p:commandButton value="Refresh" id="cb7" icon="ui-icon-refresh"
-					rendered="true" />
 				<p:spacer width="10" />
 				<p:commandButton value="Delete selected" icon="ui-icon-close"
-					id="ctb2"
-					disabled="false">
+					id="ctb2" disabled="false">
 					<p:confirm header="Confirm Delete"
-						message="Delete all selected terms?"
-						icon="ui-icon-alert" />
+						message="Delete all selected terms?" icon="ui-icon-alert" />
 				</p:commandButton>
 				<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
 					<p:commandButton value="Yes" type="button"
@@ -53,13 +63,12 @@
 				</p:commandButton>
 
 				<p:spacer width="10" />
-				<p:commandButton value="MQ Detailed Report" id="ctb1"
-					icon="fa fa-file-excel-o">
+				<p:commandButton value="MQ Detailed Report" id="ctb1">
 					<p:fileDownload value="#{null}"></p:fileDownload>
 				</p:commandButton>
 				<p:spacer width="10" />
-				<p:commandButton value="Hyerarchy Search" id="ctb13"
-					onclick="PF('search').show();" icon="fa fa-file-excel-o">
+				<p:commandButton value="Hierarchy Search" id="ctb13"
+					onclick="PF('search').show();" icon="fa fa-search">
 				</p:commandButton>
 
 				<p:spacer width="10" />
@@ -137,10 +146,8 @@
 				<p:selectBooleanCheckbox />
 			</p:column>
 		</p:treeTable>
-		
- 		<p:commandButton style="margin-top: 10px" value="Save"  id="cb3" disabled="false"
-					rendered="true" icon="ui-icon-disk" />
-	</p:panel>
+
+	</h:panelGrid>
 
 	<p:dialog widgetVar="search" modal="false" header="Hierarchy search">
 		<ui:include src="../impactCommon/hierarchySearch.xhtml"></ui:include>

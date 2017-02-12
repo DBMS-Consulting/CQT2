@@ -11,14 +11,14 @@
 		<h:panelGrid columns="4" cellpadding="10">
 			<h:panelGrid columns="2" style="min-width: 300px">
 				<p:outputLabel value="Dictionary" />
-				<p:selectOneMenu value="#{dummyView.value}">
+				<p:selectOneMenu value="CMQ SMQ Dictionary">
 					<f:selectItem itemValue="CMQ SMQ Dictionary"
 						itemLabel="CMQ SMQ Dictionary" />
 					<f:selectItem itemValue="MedDRA Dictionary"
 						itemLabel="MedDRA Dictionary" />
 				</p:selectOneMenu>
 
-				<p:outputLabel value="Extension" />
+				<p:outputLabel value="Extention" />
 				<p:selectOneMenu value="#{searchController.extension}">
 					<f:selectItem itemValue="-1" itemLabel="All" />
 					<f:selectItem itemLabel="TME" itemValue="TME" />
@@ -27,27 +27,32 @@
 					<f:selectItem itemLabel="DEMO" itemValue="DEMO" />
 				</p:selectOneMenu>
 
-				<p:outputLabel value="Drug Program" />
-				<p:inputText value="#{searchController.drugProgram}" />
+				<p:outputLabel value="Drug Program" styleClass="label-right" />
+				<p:selectOneMenu value="No program">
+					<f:selectItem itemValue="No program" itemLabel="No program" />
+					<f:selectItem itemValue="Val 1" itemLabel="Val 1" />
+					<f:selectItem itemValue="Val 2" itemLabel="Val 2" />
+				</p:selectOneMenu>
 
-				<p:outputLabel value="Protocol" />
-				<p:inputText value="#{searchController.protocol}" />
+				<p:outputLabel value="Protocol" styleClass="label-right" />
+				<p:selectOneMenu value="No protocol" required="#{searchController.extension eq 'PRO' ? true : false}">
+ 					<f:selectItem itemValue="No protocol" itemLabel="No protocol" />
+					<f:selectItem itemValue="Val 1" itemLabel="Val 1" />
+					<f:selectItem itemValue="Val 2" itemLabel="Val 2" />
+				</p:selectOneMenu>
 
 			</h:panelGrid>
 
 			<h:panelGrid columns="2" style="min-width: 300px">
-				<p:outputLabel value="Release Status" />
-				<p:inputText />
-
 				<p:outputLabel value="Approved" />
-				<p:selectOneMenu value="#{dummyView.value}">
+				<p:selectOneMenu value="ALL">
 					<f:selectItem itemValue="ALL" itemLabel="ALL" />
 					<f:selectItem itemValue="Yes" itemLabel="Yes" />
 					<f:selectItem itemValue="No" itemLabel="No" />
 				</p:selectOneMenu>
 
 				<p:outputLabel value="Level" />
-				<p:selectOneMenu value="#{dummyView.value}">
+				<p:selectOneMenu value="1">
 					<f:selectItem itemValue="1" itemLabel="1" />
 					<f:selectItem itemValue="2" itemLabel="2" />
 					<f:selectItem itemValue="3" itemLabel="3" />
@@ -58,7 +63,7 @@
 				
  				<p:outputLabel value="State" />
 				<p:selectOneMenu value="#{searchController.state}">
-					<f:selectItem itemLabel="Requested" itemValue="Requested" />
+					<f:selectItem itemValue="All" itemLabel="All" />
 					<f:selectItem itemLabel="Draft" itemValue="Draft" />
 					<f:selectItem itemLabel="Reviewed" itemValue="Reviewed" />
 					<f:selectItem itemLabel="Approved" itemValue="Approved" />
@@ -71,11 +76,15 @@
 				<p:outputLabel value="Critical event" />
 				<h:outputText value="No" />
 
-				<p:outputLabel value="Product" />
-				<p:inputText />
-
+				<p:outputLabel value="Product" rendered="true" styleClass="label-right" />
+				<p:selectOneMenu value="No Product" rendered="true" disabled="false"
+					required="true">
+					<f:selectItem itemLabel="No Product" itemValue="No Product"></f:selectItem>
+					<f:selectItem itemLabel="Val 1" itemValue="Val 1"></f:selectItem>
+					<f:selectItem itemLabel="Val 2" itemValue="Val 2"></f:selectItem>
+				</p:selectOneMenu>
 				<p:outputLabel value="Status" />
-				<p:selectOneMenu value="#{dummyView.value}">
+				<p:selectOneMenu value="All">
 					<f:selectItem itemValue="All" itemLabel="All" />
 					<f:selectItem itemValue="Active" itemLabel="Active" />
 					<f:selectItem itemValue="Inactive" itemLabel="Inactive" />
@@ -86,8 +95,11 @@
 			
 
 			<h:panelGrid columns="2" style="min-width: 300px">
-				<p:outputLabel value="Group" />
-				<p:inputText />
+				<p:outputLabel value="Group" styleClass="label-right" />
+				<p:selectOneMenu value="1" rendered="true" disabled="false"
+					required="true">
+					<f:selectItem itemLabel="1" itemValue="1"></f:selectItem>
+				</p:selectOneMenu>
 
 				<p:outputLabel value="Scope" />
 				<h:outputText value="No" />

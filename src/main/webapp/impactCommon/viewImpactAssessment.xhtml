@@ -11,11 +11,39 @@
 		<h:panelGrid>
 			<p:toolbar id="t44">
 				<f:facet name="left">
-					<p:selectOneMenu id="soc24" value="S" rendered="true">
-						<f:selectItem itemLabel="Filter and Sort" itemValue="A" id="si4" />
 
-					</p:selectOneMenu>
-					<p:selectOneMenu id="soc244" value="S" rendered="true">
+					<p:commandButton id="filter" value="Filter and Sort" type="button"
+						icon="ui-icon-triangle-1-s" />
+					<p:overlayPanel id="filterPanel" for="filter" showCloseIcon="true">
+						<h:panelGrid columns="2">
+							<p:outputLabel value="Sort" />
+							<p:selectOneMenu value="TERM">
+								<f:selectItem itemValue="TERM" itemLabel="Term name"></f:selectItem>
+								<f:selectItem itemValue="DEF_LEVEL_REF_SHORT_NAME"
+									itemLabel="Level"></f:selectItem>
+								<f:selectItem itemValue="SCOPE" itemLabel="Scope"></f:selectItem>
+							</p:selectOneMenu>
+
+							<p:outputLabel for="show" value="Show Primary Only"
+								style="min-width: 100px !important" />
+							<p:selectBooleanCheckbox value="false" id="show"
+								label="Show Primary Only"></p:selectBooleanCheckbox>
+
+							<p:outputLabel value="Scope" />
+							<p:selectOneMenu value="0">
+								<f:selectItem itemValue="0" itemLabel="Full #####/SMQ"></f:selectItem>
+								<f:selectItem itemValue="3" itemLabel="Child Narrow"></f:selectItem>
+							</p:selectOneMenu>
+
+							<p:spacer />
+							<p:commandButton value="Refresh" id="cb7" icon="ui-icon-refresh"
+								rendered="true" />
+						</h:panelGrid>
+					</p:overlayPanel>
+
+					<p:spacer />
+					<p:selectOneMenu id="soc244" value="S" rendered="true"
+						style="margin-top: 10px !important">
 						<f:selectItem itemLabel="View" itemValue="A" id="si355" />
 
 					</p:selectOneMenu>
@@ -29,7 +57,7 @@
 			<p:dataTable value="#{null}">
 				<p:columnGroup type="header">
 					<p:row>
-						<p:column rowspan="2" headerText="##" />
+						<p:column rowspan="2" headerText="Previous CMQ / SMQ" />
 						<p:column colspan="3" headerText="Hierarchy Details" />
 					</p:row>
 
@@ -73,19 +101,43 @@
 		<h:panelGrid>
 			<p:toolbar id="t45">
 				<f:facet name="left">
-					<p:selectOneMenu id="soc22" value="S" rendered="true">
-						<f:selectItem itemLabel="Filter and Sort" itemValue="A" id="si3" />
+					<p:commandButton id="filter2" value="Filter and Sort" type="button"
+						icon="ui-icon-triangle-1-s" />
+					<p:overlayPanel id="filterPanel2" for="filter2"
+						showCloseIcon="true">
+						<h:panelGrid columns="2">
+							<p:outputLabel value="Sort" />
+							<p:selectOneMenu value="TERM">
+								<f:selectItem itemValue="TERM" itemLabel="Term name"></f:selectItem>
+								<f:selectItem itemValue="DEF_LEVEL_REF_SHORT_NAME"
+									itemLabel="Level"></f:selectItem>
+								<f:selectItem itemValue="SCOPE" itemLabel="Scope"></f:selectItem>
+							</p:selectOneMenu>
 
-					</p:selectOneMenu>
-					<p:selectOneMenu id="soc23" value="S" rendered="true">
+							<p:outputLabel for="show2" value="Show Primary Only"
+								style="min-width: 100px !important" />
+							<p:selectBooleanCheckbox value="false" id="show2"
+								label="Show Primary Only"></p:selectBooleanCheckbox>
+
+							<p:outputLabel value="Scope" />
+							<p:selectOneMenu value="0">
+								<f:selectItem itemValue="0" itemLabel="Full #####/SMQ"></f:selectItem>
+								<f:selectItem itemValue="3" itemLabel="Child Narrow"></f:selectItem>
+							</p:selectOneMenu>
+
+							<p:spacer />
+							<p:commandButton value="Refresh" icon="ui-icon-refresh"
+								rendered="true" />
+						</h:panelGrid>
+					</p:overlayPanel>
+					<p:selectOneMenu id="soc23" value="S" rendered="true"
+						style="margin-top: 10px;">
 						<f:selectItem itemLabel="View" itemValue="A" id="si33" />
 
 					</p:selectOneMenu>
-					<p:commandButton value="Select MQ" onclick="PF('confirm2').show();"
-						id="ctb11">
-					</p:commandButton>
-					<!-- <p:commandButton value="Detach Group" id="ctb21"
-						onclick="PF('confirmActivate').show();" /> -->
+					<!-- <p:commandButton value="Select MQ"
+						onclick="PF('select_mq').show();" id="ctb11">
+					</p:commandButton> -->
 
 
 				</f:facet>
@@ -93,7 +145,7 @@
 			<p:dataTable value="#{null}" style="">
 				<p:columnGroup type="header">
 					<p:row>
-						<p:column rowspan="2" headerText="##" />
+						<p:column rowspan="2" headerText="Current CMQ / SMQ" />
 						<p:column colspan="5" headerText="Hierarchy Details" />
 					</p:row>
 
@@ -159,5 +211,11 @@
 			<p:outputLabel value="Last Updated:" id="plam1" />
 			<h:outputText value="########" id="ot27" />
 		</f:facet>
+
+		<p:spacer height="10"></p:spacer>
+		<h:panelGrid style="float: right">
+			<p:commandButton value="Cancel" onclick="PF('search').hide()"
+				immediate="true" />
+		</h:panelGrid>
 	</p:dialog>
 </ui:composition>

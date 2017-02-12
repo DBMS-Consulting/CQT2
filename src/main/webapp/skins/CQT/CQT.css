@@ -1,28 +1,23 @@
 /**ADFFaces_Skin_File / DO NOT REMOVE**/
-@namespace af "http://xmlns.oracle.com/adf/faces/rich";
-@namespace dvt "http://xmlns.oracle.com/dss/adf/faces";
+@
+namespace af "http: //xmlns.oracle.com /adf/faces/rich";
+ @namespace dvt "http: //xmlns.oracle.com /dss/adf/faces";
 
 
-af|inputText:disabled::content {
-
-color: #000000 !important;
+af |inputText:disabled::content {
+	color: #000000 !important;
 }
 
-
 .DIFF_LEFT {
-  color: Blue; 
-
-
+	color: Blue;
 }
 
 .DIFF_RIGHT {
-  color: Red; 
-  
+	color: Red;
 }
 
 .DIFF_BOTH {
-    color: Black;
-  
+	color: Black;
 }
 
 /**
@@ -35,207 +30,173 @@ color: #000000 !important;
 1080	Italic
 
 **/
-
-
-
-.Impact_NMQ_0
-{
-  color: Black; 
-
+.Impact_NMQ_0 {
+	color: Black;
 }
 
-.Impact_NMQ_1010
-{
-  color: Navy; 
-  font-weight: bold; 
+.Impact_NMQ_1010 {
+	color: Navy;
+	font-weight: bold;
 }
 
-.Impact_NMQ_1020
-{
-  color: Red;
-  font-weight: bold;
+.Impact_NMQ_1020 {
+	color: Red;
+	font-weight: bold;
 }
 
-.Impact_NMQ_1030
-{
-  color: Gray;
-  font-weight: bold;
+.Impact_NMQ_1030 {
+	color: Gray;
+	font-weight: bold;
 }
 
-.Impact_NMQ_1040
-{
-  color: Orange; 
-  font-weight: bold;; 
+.Impact_NMQ_1040 {
+	color: Orange;
+	font-weight: bold;;
 }
 
-.Impact_NMQ_1070
-{
-  color: Green;
-  font-weight: bold;
+.Impact_NMQ_1070 {
+	color: Green;
+	font-weight: bold;
 }
 
-.Impact_NMQ_1080
-{
-  font-style: italic;
-  font-weight: bold;
-  color: Black; 
+.Impact_NMQ_1080 {
+	font-style: italic;
+	font-weight: bold;
+	color: Black;
 }
 
-.Impact_NMQ_1110
-{
-  font-style: normal; 
-  font-weight: bold; 
-  color: Black; 
+.Impact_NMQ_1110 {
+	font-style: normal;
+	font-weight: bold;
+	color: Black;
 }
 
-.Impact_SMQ_0
-{
-  color: Black; 
+.Impact_SMQ_0 {
+	color: Black;
 }
 
-.Impact_SMQ_1010
-{
-  color: Navy;
-  font-weight: bold;
+.Impact_SMQ_1010 {
+	color: Navy;
+	font-weight: bold;
 }
 
-.Impact_SMQ_1020
-{
-  color: Red;
-  font-weight: bold;
+.Impact_SMQ_1020 {
+	color: Red;
+	font-weight: bold;
 }
 
-.Impact_SMQ_1030
-{
-  color: Gray;
-  font-weight: bold;
+.Impact_SMQ_1030 {
+	color: Gray;
+	font-weight: bold;
 }
 
-.Impact_SMQ_1040
-{
-  color: Orange;
-  font-weight: bold;
+.Impact_SMQ_1040 {
+	color: Orange;
+	font-weight: bold;
 }
 
-.Impact_SMQ_1050
-{
-  color: #FA8072;
-  font-weight: bold;
+.Impact_SMQ_1050 {
+	color: #FA8072;
+	font-weight: bold;
 }
 
-.Impact_SMQ_1080
-{
-  font-style: italic;
-  font-weight: bold;
-  color: Black; 
+.Impact_SMQ_1080 {
+	font-style: italic;
+	font-weight: bold;
+	color: Black;
 }
 
-.Impact_CMQ_0
-{
-  color: Black; 
-
+.Impact_CMQ_0 {
+	color: Black;
 }
 
-.Impact_CMQ_1010
-{
-  color: Navy; 
-  font-weight: bold; 
+.Impact_CMQ_1010 {
+	color: Navy;
+	font-weight: bold;
 }
 
-.Impact_CMQ_1020
-{
-  color: Red;
-  font-weight: bold;
+.Impact_CMQ_1020 {
+	color: Red;
+	font-weight: bold;
 }
 
-.Impact_CMQ_1030
-{
-  color: Gray;
-  font-weight: bold;
+.Impact_CMQ_1030 {
+	color: Gray;
+	font-weight: bold;
 }
 
-.Impact_CMQ_1040
-{
-  color: Orange; 
-  font-weight: bold;; 
+.Impact_CMQ_1040 {
+	color: Orange;
+	font-weight: bold;;
 }
 
-.Impact_CMQ_1070
-{
-  color: Green;
-  font-weight: bold;
+.Impact_CMQ_1070 {
+	color: Green;
+	font-weight: bold;
 }
 
-.Impact_CMQ_1080
-{
-  font-style: italic;
-  font-weight: bold;
-  color: Black; 
+.Impact_CMQ_1080 {
+	font-style: italic;
+	font-weight: bold;
+	color: Black;
 }
 
-.Impact_CMQ_1110
-{
-  font-style: normal; 
-  font-weight: bold; 
-  color: Black; 
+.Impact_CMQ_1110 {
+	font-style: normal;
+	font-weight: bold;
+	color: Black;
 }
 
-.Impact_MQ_0
-{
-  color: Black; 
+.Impact_MQ_0 {
+	color: Black;
 }
 
-.Impact_MQ_1010
-{
-  color: Navy;
-  font-weight: bold;
+.Impact_MQ_1010 {
+	color: Navy;
+	font-weight: bold;
 }
 
-.Impact_MQ_1020
-{
-  color: Red;
-  font-weight: bold;
+.Impact_MQ_1020 {
+	color: Red;
+	font-weight: bold;
 }
 
-.Impact_MQ_1030
-{
-  color: Gray;
-  font-weight: bold;
+.Impact_MQ_1030 {
+	color: Gray;
+	font-weight: bold;
 }
 
-.Impact_MQ_1040
-{
-  color: Orange;
-  font-weight: bold;
+.Impact_MQ_1040 {
+	color: Orange;
+	font-weight: bold;
 }
 
-.Impact_MQ_1050
-{
-  color: #FA8072;
-  font-weight: bold;
+.Impact_MQ_1050 {
+	color: #FA8072;
+	font-weight: bold;
 }
 
-.Impact_MQ_1080
-{
-  font-style: italic;
-  font-weight: bold;
-  color: Black; 
+.Impact_MQ_1080 {
+	font-style: italic;
+	font-weight: bold;
+	color: Black;
 }
 
-.SECONDARY_LINK
-{
-  font-style: italic;
-
+.SECONDARY_LINK {
+	font-style: italic;
 }
 
-
-.TagSearchIconHidden af|inputListOfValues::search-icon-style
-{
-display: none;
-} 
-
-.HistoricView
-{
-  font-style: italic;
-  font-weight: bold;
+.TagSearchIconHidden af |inputListOfValues::search-icon-style {
+	display: none;
 }
+
+.HistoricView {
+	font-style: italic;
+	font-weight: bold;
+}
+
+.breadcrumb {
+	background-color: none !important;
+	border: none !important;
+}
+
