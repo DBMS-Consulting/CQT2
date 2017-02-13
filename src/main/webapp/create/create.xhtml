@@ -24,11 +24,12 @@
 				</h:panelGrid>
 			</h:panelGrid>
 
-			<p:wizard flowListener="#{commonController.onFlowProcessCreate}">
+			<p:wizard flowListener="#{wizard.onFlowProcess}" widgetVar="wizard" showNavBar="false">
 				<p:tab id="details" title="Add Details">
 					<p:panel header="Details">
 						<ui:include src="details.xhtml" />
-						<p:commandButton value="Save" icon="ui-icon-disk" action="#{commonController.saveDetail}"></p:commandButton>
+						<p:commandButton value="Save" icon="ui-icon-disk"
+							action="ACTION"></p:commandButton>
 					</p:panel>
 				</p:tab>
 
@@ -43,7 +44,8 @@
 						<ui:include src="relations.xhtml"></ui:include>
 
 						<p:commandButton style="margin-top: 10px" value="Save" id="cb3"
-							disabled="false" icon="ui-icon-disk" />
+							action="SAVE" disabled="false"
+							icon="ui-icon-disk" />
 					</p:panel>
 				</p:tab>
 
@@ -208,6 +210,10 @@
 
 							</tbody>
 						</table>
+						<p:spacer height="5" />
+						<p:commandButton value="Save" icon="ui-icon-disk"
+							action="SAVE"></p:commandButton>
+						<p:spacer height="5" />
 					</p:panel>
 				</p:tab>
 			</p:wizard>
@@ -376,14 +382,14 @@
 					</h:panelGrid>
 				</p:panel>
 			</p:dialog>
-
-
+			
+			<p:commandButton value="Back" type="button" onclick="back();" icon="fa fa-long-arrow-left" iconPos="left" />
+			<p:commandButton value="Next" type="button" onclick="next();" icon="fa fa-long-arrow-right" iconPos="right" style="float: right" />
 
 			<p:spacer width="10" height="10" id="s6" />
 			<h:panelGrid id="pgl2" columns="6"
 				style="padding:3px; font-size: 10px !important">
-				<p:commandButton value="Save" icon="ui-icon-disk" action="SAVE"></p:commandButton>
-				<p:spacer width="5" />
+
 
 				<p:outputLabel for="it1aw" value="Dictionary Version:"></p:outputLabel>
 				<h:inputText id="it1aw" value="########" disabled="true"
@@ -412,5 +418,15 @@
 	font-size: 14px !important;
 }
 </style>
+
+		<script>
+			function next() {
+				PF('wizard').next();
+			}
+
+			function back() {
+				PF('wizard').back();
+			}
+		</script>
 	</ui:define>
 </ui:composition>

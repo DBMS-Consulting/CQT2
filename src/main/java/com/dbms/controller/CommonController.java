@@ -5,6 +5,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
+import org.primefaces.component.wizard.Wizard;
 import org.primefaces.event.FlowEvent;
 
 /**
@@ -15,31 +16,61 @@ import org.primefaces.event.FlowEvent;
 public class CommonController {
 
 	private boolean detailSave, notesSave, relationSave, confirmSave;
-	
-	
+	private Wizard wizard;
+
 	public String onFlowProcessCreate(FlowEvent event) {
+		System.out.println("\n ****************** event new step : "
+				+ event.getNewStep());
+		System.out.println("\n ****************** event old step : "
+				+ event.getOldStep());
+
 		if (detailSave)
-		return event.getNewStep();
-		
+			return event.getNewStep();
 		else {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "The form is not saved yet. Proceed?", "");
-	        FacesContext.getCurrentInstance().addMessage(null, msg);
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN,
+					"The form is not saved yet. Proceed?", "");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}
-		return "";
+
+		if (notesSave)
+			return event.getNewStep();
+		else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN,
+					"The form is not saved yet. Proceed?", "");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		}
+
+		if (relationSave)
+			return event.getNewStep();
+		else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN,
+					"The form is not saved yet. Proceed?", "");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		}
+
+		if (confirmSave)
+			return event.getNewStep();
+		else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN,
+					"The form is not saved yet. Proceed?", "");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		}
+
+		return event.getOldStep();
 	}
 
 	public void saveDetail() {
 		detailSave = true;
 	}
-	
+
 	public void saveNotes() {
 		notesSave = true;
 	}
-	
+
 	public void saveRelation() {
 		relationSave = true;
 	}
-	
+
 	public void saveConfirm() {
 		confirmSave = true;
 	}
@@ -74,6 +105,14 @@ public class CommonController {
 
 	public void setConfirmSave(boolean confirmSave) {
 		this.confirmSave = confirmSave;
+	}
+
+	public Wizard getWizard() {
+		return wizard;
+	}
+
+	public void setWizard(Wizard wizard) {
+		this.wizard = wizard;
 	}
 
 }

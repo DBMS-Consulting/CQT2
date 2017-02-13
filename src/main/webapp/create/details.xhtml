@@ -11,40 +11,29 @@
 
 
 		<h:panelGrid columns="2" columnClasses="label, value">
-			<p:outputLabel value="* Extension" styleClass="label-right" />
-			<p:selectOneMenu value="#{searchController.extension}" requiredMessage="The Extension is required"
-				rendered="true"  required="true">
+			<p:outputLabel value="Extension" styleClass="label-right" />
+			<p:selectOneMenu value="#{searchController.extension}">
+				<f:selectItem itemLabel="All" itemValue="All"></f:selectItem>
 				<f:selectItem itemLabel="TME" itemValue="TME"></f:selectItem>
 				<f:selectItem itemLabel="TR1" itemValue="TR1"></f:selectItem>
 				<f:selectItem itemLabel="CPT" itemValue="CPT"></f:selectItem>
 				<f:selectItem itemLabel="DME" itemValue="DME"></f:selectItem>
 				<f:selectItem itemLabel="PRO" itemValue="PRO"></f:selectItem>
 
-				<p:ajax update="level protocolLb protocol drug product" event="change"
+				<p:ajax update="level protocol drug product" event="change"
 					listener="#{searchController.changeLevel}" />
 			</p:selectOneMenu>
 
-			<p:outputLabel value="* Name" styleClass="label-right" />
-			<p:inputText value="#{dummyView.value}" maxlength="200"  required="true" requiredMessage="The Name is required"
-				style="min-width: 300px" />
-
 			<p:outputLabel value="Drug Program" styleClass="label-right" />
-			<p:selectOneMenu value="#{searchController.drugProgram}" id="drug"
-				requiredMessage="The Drug Program is required"
-				required="#{(searchController.extension eq 'CPT') or (searchController.extension eq 'DME') ? false : true}">
+			<p:selectOneMenu value="#{searchController.drugProgram}" id="drug">
 				<f:selectItem itemValue="" itemLabel="" />
 				<f:selectItem itemValue="No Program" itemLabel="No Program" />
 				<f:selectItem itemValue="Val 1" itemLabel="Val 1" />
 				<f:selectItem itemValue="Val 2" itemLabel="Val 2" />
 			</p:selectOneMenu>
 
-			<p:outputLabel
-				value=" #{searchController.extension eq 'PRO' ? '*' : ''}  Protocol"
-				id="protocolLb" styleClass="label-right" />
-			<p:selectOneMenu value="#{searchController.protocol}"
-				requiredMessage="The Protocol is required"
-				required="#{searchController.extension eq 'PRO' ? true : false}"
-				id="protocol">
+			<p:outputLabel value="Protocol" styleClass="label-right" />
+			<p:selectOneMenu value="#{searchController.protocol}" id="protocol">
 				<f:selectItem itemValue="" itemLabel="" />
 				<f:selectItem itemValue="No Protocol" itemLabel="No Protocol" />
 				<f:selectItem itemValue="Val 1" itemLabel="Val 1" />
@@ -53,11 +42,9 @@
 
 			<p:outputLabel value="Product" rendered="true"
 				styleClass="label-right" />
-			<p:selectOneMenu value="#{searchController.product}" rendered="true" disabled="false" id="product"
-				requiredMessage="The Product is required"
-				required="#{(searchController.extension eq 'CPT') or (searchController.extension eq 'DME') ? false : true}">
+			<p:selectOneMenu value="#{searchController.product}" disabled="false" id="product">
 				<f:selectItem itemValue="" itemLabel="" />
-				<f:selectItem itemLabel="No Product" itemValue="No Product"></f:selectItem>
+				<f:selectItem itemValue="No Product" itemLabel="No Product" />
 				<f:selectItem itemLabel="Val 1" itemValue="Val 1"></f:selectItem>
 				<f:selectItem itemLabel="Val 2" itemValue="Val 2"></f:selectItem>
 			</p:selectOneMenu>
