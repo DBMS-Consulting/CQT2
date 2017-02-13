@@ -20,7 +20,7 @@
 				<f:selectItem itemLabel="DME" itemValue="DME"></f:selectItem>
 				<f:selectItem itemLabel="PRO" itemValue="PRO"></f:selectItem>
 
-				<p:ajax update="level protocolLb protocol drug" event="change"
+				<p:ajax update="level protocolLb protocol drug product" event="change"
 					listener="#{searchController.changeLevel}" />
 			</p:selectOneMenu>
 
@@ -32,6 +32,7 @@
 			<p:selectOneMenu value="No program" id="drug"
 				requiredMessage="The Drug Program is required"
 				required="#{(searchController.extension eq 'CPT') or (searchController.extension eq 'DME') ? false : true}">
+				<f:selectItem itemValue="" itemLabel="" />
 				<f:selectItem itemValue="No program" itemLabel="No Program" />
 				<f:selectItem itemValue="Val 1" itemLabel="Val 1" />
 				<f:selectItem itemValue="Val 2" itemLabel="Val 2" />
@@ -44,6 +45,7 @@
 				requiredMessage="The Protocol is required"
 				required="#{searchController.extension eq 'PRO' ? true : false}"
 				id="protocol">
+				<f:selectItem itemValue="" itemLabel="" />
 				<f:selectItem itemValue="No Protocol" itemLabel="No Protocol" />
 				<f:selectItem itemValue="Val 1" itemLabel="Val 1" />
 				<f:selectItem itemValue="Val 2" itemLabel="Val 2" />
@@ -51,9 +53,10 @@
 
 			<p:outputLabel value="Product" rendered="true"
 				styleClass="label-right" />
-			<p:selectOneMenu value="No Product" rendered="true" disabled="false"
+			<p:selectOneMenu value="No Product" rendered="true" disabled="false" id="product"
 				requiredMessage="The Product is required"
 				required="#{(searchController.extension eq 'CPT') or (searchController.extension eq 'DME') ? false : true}">
+				<f:selectItem itemValue="" itemLabel="" />
 				<f:selectItem itemLabel="No Product" itemValue="No Product"></f:selectItem>
 				<f:selectItem itemLabel="Val 1" itemValue="Val 1"></f:selectItem>
 				<f:selectItem itemLabel="Val 2" itemValue="Val 2"></f:selectItem>
