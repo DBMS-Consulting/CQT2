@@ -4,7 +4,6 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
-import javax.persistence.Index;
 import javax.persistence.Lob;
 import javax.persistence.Table;
 
@@ -12,8 +11,9 @@ import javax.persistence.Table;
  * @author Jay G.(jayshanchn@hotmail.com)
  * @date Feb 9, 2017 3:13:37 AM
  **/
-@Table(name = "CQT_SMQ_LIST", indexes = {
-		@Index(name = "IX1_SMQ_LIST01", columnList = "SMQ_CODE")})
+@Table(name = "CQT_SMQ_LIST" //, indexes = {
+		//@Index(name = "IX1_SMQ_LIST01", columnList = "SMQ_CODE")}
+)
 public class SmqList implements Serializable {
 
 	/**

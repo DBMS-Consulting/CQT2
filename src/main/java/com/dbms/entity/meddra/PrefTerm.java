@@ -7,7 +7,6 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -18,10 +17,11 @@ import javax.persistence.Table;
  * @date Feb 9, 2017 3:13:37 AM
  **/
 @Entity
-@Table(name = "CQT_PREF_TERM", indexes = {
-		@Index(name = "IX1_PT01", columnList = "PT_CODE"),
-		@Index(name = "IX1_PT02", columnList = "PT_NAME"),
-		@Index(name = "IX1_PT03", columnList = "PT_SOC_CODE") })
+@Table(name = "CQT_PREF_TERM" //, indexes = {
+		//@Index(name = "IX1_PT01", columnList = "PT_CODE"),
+		//@Index(name = "IX1_PT02", columnList = "PT_NAME"),
+		//@Index(name = "IX1_PT03", columnList = "PT_SOC_CODE") }
+)
 public class PrefTerm implements Serializable {
 
 	/**

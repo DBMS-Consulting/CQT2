@@ -8,7 +8,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -22,9 +21,10 @@ import javax.persistence.Table;
  * @date Feb 9, 2017 3:13:37 AM
  **/
 @Entity
-@Table(name = "CQT_SOC_TERM", indexes = {
-		@Index(name = "IX1_SOC01", columnList = "SOC_CODE"),
-		@Index(name = "IX1_SOC02", columnList = "SOC_NAME") })
+@Table(name = "CQT_SOC_TERM" //, indexes = {
+		//@Index(name = "IX1_SOC01", columnList = "SOC_CODE"),
+		//@Index(name = "IX1_SOC02", columnList = "SOC_NAME") }
+)
 public class SocTerm implements Serializable {
 
 	/**

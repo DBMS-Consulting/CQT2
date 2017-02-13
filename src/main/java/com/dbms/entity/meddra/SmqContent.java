@@ -4,16 +4,16 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
-import javax.persistence.Index;
 import javax.persistence.Table;
 
 /**
  * @author Jay G.(jayshanchn@hotmail.com)
  * @date Feb 9, 2017 3:13:37 AM
  **/
-@Table(name = "CQT_SMQ_CONTENT", indexes = {
-		@Index(name = "IX1_SMQ_CONTENT01", columnList = "SMQ_CODE"),
-		@Index(name = "IX1_SMQ_CONTENT02", columnList = "TERM_CODE")})
+@Table(name = "CQT_SMQ_CONTENT" //, indexes = {
+		//@Index(name = "IX1_SMQ_CONTENT01", columnList = "SMQ_CODE"),
+		//@Index(name = "IX1_SMQ_CONTENT02", columnList = "TERM_CODE")}
+)
 public class SmqContent implements Serializable {
 
 	/**

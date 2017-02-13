@@ -5,7 +5,6 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -15,10 +14,11 @@ import javax.persistence.Table;
  * @date Feb 9, 2017 1:30:48 AM
  **/
 @Entity
-@Table(name = "CQT_LOW_LEVEL_TERM", indexes = {
-		@Index(name = "IX1_PT_LLT01", columnList = "LLT_CODE"),
-		@Index(name = "IX1_PT_LLT02", columnList = "LLT_NAME"),
-		@Index(name = "IX1_PT_LLT03", columnList = "PT_CODE") })
+@Table(name = "CQT_LOW_LEVEL_TERM" //, indexes = {
+		//@Index(name = "IX1_PT_LLT01", columnList = "LLT_CODE"),
+		//@Index(name = "IX1_PT_LLT02", columnList = "LLT_NAME"),
+		//@Index(name = "IX1_PT_LLT03", columnList = "PT_CODE") }
+)
 public class LowLevelTerm implements Serializable {
 	/**
 	 * 

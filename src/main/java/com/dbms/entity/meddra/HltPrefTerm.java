@@ -8,7 +8,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -20,9 +19,10 @@ import javax.persistence.Table;
  * @date Feb 9, 2017 3:13:37 AM
  **/
 @Entity
-@Table(name = "CQT_HLT_TERM", indexes = {
-		@Index(name = "IX1_HLT01", columnList = "HLT_CODE"),
-		@Index(name = "IX1_HLT02", columnList = "HLT_NAME") })
+@Table(name = "CQT_HLT_TERM" //, indexes = {
+		//@Index(name = "IX1_HLT01", columnList = "HLT_CODE"),
+		//@Index(name = "IX1_HLT02", columnList = "HLT_NAME") }
+)
 public class HltPrefTerm implements Serializable {
 
 	/**

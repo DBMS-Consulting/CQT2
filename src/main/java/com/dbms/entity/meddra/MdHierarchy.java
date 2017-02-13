@@ -7,7 +7,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
@@ -18,12 +17,13 @@ import javax.persistence.Table;
  * @date Feb 9, 2017 3:13:37 AM
  **/
 @Entity
-@Table(name = "CQT_MD_HIERARCHY", indexes = {
-		@Index(name = "IX1_MD_HIER01", columnList = "PT_CODE"),
-		@Index(name = "IX1_MD_HIER02", columnList = "HLT_CODE"),
-		@Index(name = "IX1_MD_HIER03", columnList = "HLGT_CODE"),
-		@Index(name = "IX1_MD_HIER04", columnList = "SOC_CODE"),
-		@Index(name = "IX1_MD_HIER05", columnList = "PT_SOC_CODE")})
+@Table(name = "CQT_MD_HIERARCHY" //, indexes = {
+		//@Index(name = "IX1_MD_HIER01", columnList = "PT_CODE"),
+		//@Index(name = "IX1_MD_HIER02", columnList = "HLT_CODE"),
+		//@Index(name = "IX1_MD_HIER03", columnList = "HLGT_CODE"),
+		//@Index(name = "IX1_MD_HIER04", columnList = "SOC_CODE"),
+		//@Index(name = "IX1_MD_HIER05", columnList = "PT_SOC_CODE")}
+)
 @SequenceGenerator(name = "ID_GENERATOR", sequenceName = "SEQ_MD_HIERARCHY")
 public class MdHierarchy implements Serializable {
 
