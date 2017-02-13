@@ -106,11 +106,8 @@
 			</p:selectOneMenu>
 
 			<p:outputLabel value="* Algorithm" styleClass="label-right" />
-			<p:selectOneMenu value="#{dummyView.value}" rendered="true"
-				disabled="false" required="true" requiredMessage="A group is required">
-				<f:selectItem itemLabel="N" itemValue="No"></f:selectItem>
-				<f:selectItem itemLabel="Y" itemValue="Yes"></f:selectItem>
-			</p:selectOneMenu>
+			<p:inputText value="N" />
+
 		</h:panelGrid>
 
 		<h:panelGrid columns="2" columnClasses="label, value"
