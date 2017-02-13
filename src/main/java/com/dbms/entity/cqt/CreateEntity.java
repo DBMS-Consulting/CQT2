@@ -83,11 +83,15 @@ public class CreateEntity implements Serializable {
 	
 	@Column(name="TERM")
 	private String term;
-	
+
 	@Column(name="TERM_LEVEL")
 	private String termLevel;
+	
 	@Column(name="PARENT_NAME")
 	private String parentName;
+	
+	@Column(name="HISTORY")
+	private String history;
 	
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "CREATED", nullable = false, updatable = false)
@@ -263,6 +267,12 @@ public class CreateEntity implements Serializable {
 		this.parentName = parentName;
 	}
 
+	public String getHistory() {
+		return history;
+	}
+	public void setHistory(String history) {
+		this.history = history;
+	}
 	public String getProduct() {
 		return product;
 	}

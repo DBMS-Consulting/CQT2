@@ -42,6 +42,7 @@ public class SearchController implements Serializable {
 	private String scope;
 	private String product;
 	private String group;
+	private String history;
 
 	private boolean maintainDesigBtn;
 
@@ -227,6 +228,14 @@ public class SearchController implements Serializable {
 
 	public void setGroup(String group) {
 		this.group = group;
+	}
+
+	public String getHistory() {
+		return history;
+	}
+
+	public void setHistory(String history) {
+		this.history = history;
 	}
 
 	public Wizard getUpdateWizard() {
