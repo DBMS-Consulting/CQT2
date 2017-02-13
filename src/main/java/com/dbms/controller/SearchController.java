@@ -58,6 +58,7 @@ public class SearchController implements Serializable {
 		level= "1";
 		critical = "No";
 		group = "No Group";
+		extension = "TME";
 	}
 	
 	public void changeTabUpdate() {

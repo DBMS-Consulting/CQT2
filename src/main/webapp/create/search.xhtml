@@ -17,12 +17,12 @@
 				<f:selectItem itemLabel="DME" itemValue="DME"></f:selectItem>
 				<f:selectItem itemLabel="PRO" itemValue="PRO"></f:selectItem>
 
-				<p:ajax update="level2 protocol2 drug product" event="change"
+				<p:ajax update="level2 protocol2 drug2 product2" event="change"
 					listener="#{searchController.changeLevel}" />
 			</p:selectOneMenu>
 
 			<p:outputLabel value="Drug Program" styleClass="label-right" />
-			<p:selectOneMenu value="#{searchController.drugProgram}" id="drug">
+			<p:selectOneMenu value="#{searchController.drugProgram}" id="drug2">
 				<f:selectItem itemValue="" itemLabel="" />
 				<f:selectItem itemValue="No Program" itemLabel="No Program" />
 				<f:selectItem itemValue="Val 1" itemLabel="Val 1" />
@@ -39,7 +39,7 @@
 
 			<p:outputLabel value="Product" rendered="true"
 				styleClass="label-right" />
-			<p:selectOneMenu value="#{searchController.product}" disabled="false" id="product">
+			<p:selectOneMenu value="#{searchController.product}" disabled="false" id="product2">
 				<f:selectItem itemValue="" itemLabel="" />
 				<f:selectItem itemValue="No Product" itemLabel="No Product" />
 				<f:selectItem itemLabel="Val 1" itemValue="Val 1"></f:selectItem>
