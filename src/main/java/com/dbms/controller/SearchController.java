@@ -1,16 +1,20 @@
 package com.dbms.controller;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
 
 import org.apache.commons.lang3.StringUtils;
 import org.primefaces.component.wizard.Wizard;
+import org.primefaces.event.RowEditEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,28 +52,48 @@ public class SearchController implements Serializable {
 
 	private List<CreateEntity> values;
 	
-	private Wizard updateWizard, copyWizard, browseWizard;	
-	
+	private List<AdminDTO> admins;
+
+	private Wizard updateWizard, copyWizard, browseWizard;
 
 	@PostConstruct
 	public void init() {
 		maintainDesigBtn = false;
 		status = "Active";
 		state = "Published";
-		level= "1";
+		level = "1";
 		critical = "No";
 		group = "No Group";
 		extension = "TME";
+		
+		admins = new ArrayList<AdminDTO>();
+		AdminDTO c = new AdminDTO();
+		c.setSequence("SEQ 1");
+		c.setName("AZERTY");
+		c.setActive(true);
+		admins.add(c);
+		
+		c = new AdminDTO();
+		c.setSequence("SEQ 2");
+		c.setName("QWERTY");
+		c.setActive(true);
+		admins.add(c);
+		
+		c = new AdminDTO();
+		c.setSequence("SEQ 31");
+		c.setName("ABCDEFG");
+		c.setActive(false);
+		admins.add(c);
 	}
-	
+
 	public void changeTabUpdate() {
 		updateWizard.setStep("details");
 	}
-	
+
 	public void changeTabCopy() {
 		copyWizard.setStep("details");
 	}
-	
+
 	public void changeTabBrowse() {
 		browseWizard.setStep("details");
 	}
@@ -117,26 +141,26 @@ public class SearchController implements Serializable {
 	public void changeLevel(AjaxBehaviorEvent event) {
 		if (extension.equals("PRO")) {
 			setLevel("2");
-		}
-		else
+		} else
 			setLevel("1");
-		
+
 		if (extension.equals("CPT") || extension.equals("DME"))
 			setDrugProgram("No Program");
 		else
 			setDrugProgram("");
-		
-		if (extension.equals("CPT") || extension.equals("DME") || extension.equals("TME") || extension.equals("TR1"))
+
+		if (extension.equals("CPT") || extension.equals("DME")
+				|| extension.equals("TME") || extension.equals("TR1"))
 			setProtocol("No Protocol");
 		else
 			setProtocol("");
-		
+
 		if (extension.equals("CPT") || extension.equals("DME"))
 			setProduct("No Product");
 		else
 			setProduct("");
 	}
-	
+
 	/**
 	 * Method to change State value on status selection.
 	 * 
@@ -153,7 +177,29 @@ public class SearchController implements Serializable {
 		if (status.equals("Pending"))
 			setState("Draft");
 	}
+
+	public void onRowEdit(RowEditEvent event) {
+		FacesMessage msg = new FacesMessage("Edited", "QQ");
+		FacesContext.getCurrentInstance().addMessage(null, msg);
+	}
+
+	public void onRowCancel(RowEditEvent event) {
+		FacesMessage msg = new FacesMessage("Canceled", "ZZ");
+		FacesContext.getCurrentInstance().addMessage(null, msg);
+	}
 	
+	public void addDrugProgram() {
+		admins.add(new AdminDTO());
+	}
+	
+	public void cancelDrugProgram() {
+		for (AdminDTO adminDTO : admins) {
+			if (adminDTO.getName() == null)
+				admins.remove(adminDTO);
+		}
+		
+	}
+
 	public String getLevel() {
 		return level;
 	}
@@ -261,4 +307,14 @@ public class SearchController implements Serializable {
 	public void setBrowseWizard(Wizard browseWizard) {
 		this.browseWizard = browseWizard;
 	}
+
+	public List<AdminDTO> getAdmins() {
+		return admins;
+	}
+
+	public void setAdmins(List<AdminDTO> admins) {
+		this.admins = admins;
+	}
+
+	 
 }
