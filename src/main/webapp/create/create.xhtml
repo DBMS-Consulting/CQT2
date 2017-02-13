@@ -24,11 +24,11 @@
 				</h:panelGrid>
 			</h:panelGrid>
 
-			<p:wizard flowListener="#{wizard.onFlowProcess}">
+			<p:wizard flowListener="#{commonController.onFlowProcessCreate}">
 				<p:tab id="details" title="Add Details">
 					<p:panel header="Details">
 						<ui:include src="details.xhtml" />
-						<p:commandButton value="Save" icon="ui-icon-disk" action="SAVE"></p:commandButton>
+						<p:commandButton value="Save" icon="ui-icon-disk" action="#{commonController.saveDetail}"></p:commandButton>
 					</p:panel>
 				</p:tab>
 
@@ -380,8 +380,10 @@
 
 
 			<p:spacer width="10" height="10" id="s6" />
-			<h:panelGrid id="pgl2" columns="5"
+			<h:panelGrid id="pgl2" columns="6"
 				style="padding:3px; font-size: 10px !important">
+				<p:commandButton value="Save" icon="ui-icon-disk" action="SAVE"></p:commandButton>
+				<p:spacer width="5" />
 
 				<p:outputLabel for="it1aw" value="Dictionary Version:"></p:outputLabel>
 				<h:inputText id="it1aw" value="########" disabled="true"
