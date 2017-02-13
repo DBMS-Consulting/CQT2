@@ -113,10 +113,26 @@ public class SearchController implements Serializable {
 	 *            AjaxBehaviour
 	 */
 	public void changeLevel(AjaxBehaviorEvent event) {
-		if (extension.equals("PRO"))
+		if (extension.equals("PRO")) {
 			setLevel("2");
+		}
 		else
 			setLevel("1");
+		
+		if (extension.equals("CPT") || extension.equals("DME"))
+			setDrugProgram("No Program");
+		else
+			setDrugProgram("");
+		
+		if (extension.equals("CPT") || extension.equals("DME") || extension.equals("TME") || extension.equals("TR1"))
+			setProtocol("No Protocol");
+		else
+			setProtocol("");
+		
+		if (extension.equals("CPT") || extension.equals("DME"))
+			setProduct("No Product");
+		else
+			setProduct("");
 	}
 	
 	/**
@@ -132,6 +148,8 @@ public class SearchController implements Serializable {
 			setState("Draft");
 		if (status.equals("All"))
 			setState("All");
+		if (status.equals("Pending"))
+			setState("Draft");
 	}
 	
 	public String getLevel() {
