@@ -51,7 +51,7 @@ public class SearchController implements Serializable {
 	private boolean maintainDesigBtn;
 
 	private List<CreateEntity> values;
-	
+
 	private List<AdminDTO> admins;
 
 	private Wizard updateWizard, copyWizard, browseWizard;
@@ -65,20 +65,25 @@ public class SearchController implements Serializable {
 		critical = "No";
 		group = "No Group";
 		extension = "TME";
-		
+		if (extension.equals("CPT")) {
+			setDrugProgram("No Program");
+			setProtocol("No Protocol");
+			setProduct("No Product");
+		}
+
 		admins = new ArrayList<AdminDTO>();
 		AdminDTO c = new AdminDTO();
 		c.setSequence("SEQ 1");
 		c.setName("AZERTY");
 		c.setActive(true);
 		admins.add(c);
-		
+
 		c = new AdminDTO();
 		c.setSequence("SEQ 2");
 		c.setName("QWERTY");
 		c.setActive(true);
 		admins.add(c);
-		
+
 		c = new AdminDTO();
 		c.setSequence("SEQ 31");
 		c.setName("ABCDEFG");
@@ -187,17 +192,17 @@ public class SearchController implements Serializable {
 		FacesMessage msg = new FacesMessage("Canceled", "ZZ");
 		FacesContext.getCurrentInstance().addMessage(null, msg);
 	}
-	
+
 	public void addDrugProgram() {
 		admins.add(new AdminDTO());
 	}
-	
+
 	public void cancelDrugProgram() {
 		for (AdminDTO adminDTO : admins) {
 			if (adminDTO.getName() == null)
 				admins.remove(adminDTO);
 		}
-		
+
 	}
 
 	public String getLevel() {
@@ -316,5 +321,4 @@ public class SearchController implements Serializable {
 		this.admins = admins;
 	}
 
-	 
 }
