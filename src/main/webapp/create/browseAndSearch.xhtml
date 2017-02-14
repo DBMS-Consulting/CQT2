@@ -24,7 +24,7 @@
 				</h:panelGrid>
 			</h:panelGrid>
 
-			<p:wizard flowListener="#{wizard.onFlowProcess}">
+			<p:wizard flowListener="#{wizard.onFlowProcess}" binding="#{searchController.browseWizard}">
 				<!-- Search -->
 				<p:tab id="search" title="Search">
 					<p:panel header="Search">
@@ -46,8 +46,7 @@
 
 						<p:outputPanel deferred="true" deferredMode="visible">
 							<p:dataTable var="value" value="#{searchController.values}"
-								id="result" rows="10" paginator="true"
-								paginatorPosition="bottom"
+								id="result" rows="10" paginator="true" paginatorPosition="bottom"
 								paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 								rowsPerPageTemplate="5,10,25">
 								<p:column headerText="Term">
@@ -71,9 +70,8 @@
 										<f:param value="#{value.code}" name="code" />
 										<h:outputText value="#{value.code}" />
 									</h:outputLink> -->
-									<p:commandLink action="#{searchController.changeTabBrowse}"
-										value="#{value.code}" update="@form"></p:commandLink>
-								</p:column>
+									<p:commandLink action="#{searchController.changeTabBrowse}" value="#{value.code}" update="@form"></p:commandLink>
+ 								</p:column>
 								<p:column headerText="Drug Program">
 									<h:outputText value="#{value.drugProgram}" />
 								</p:column>
@@ -95,18 +93,10 @@
 								</p:column>
 
 								<p:column headerText="History">
-									<!-- <h:outputText value="#{value.history}" /> -->
-									<p:commandLink action="#" style="color: red" label="History">
-										<i class="fa fa-power-off"></i>
-									</p:commandLink>
-
-								</p:column>
-								<p:column headerText="Audit">
-									<p:commandButton action="#" onclick="PF('audit-dialog').show()" />
+									<h:outputText value="#{value.history}" />
 								</p:column>
 							</p:dataTable>
 						</p:outputPanel>
-						
 					</p:panel>
 				</p:tab>
 
@@ -223,45 +213,6 @@
 			<!-- Popups - dialogs   -->
 			<p:dialog widgetVar="confirm" header="Confirm">
 				<h:commandButton value="Delete all selected terms?" />
-			</p:dialog>
-
-
-
-			<p:dialog widgetVar="audit-dialog" modal="false" header="Audit">
-				<p:panel header="Audit Trail ####"
-					style="width:900px; height:623px;">
-					<p:dataTable var="value" value="#{searchController.values}"
-						id="auditTable" rows="10" paginator="true" paginatorPosition="bottom"
-						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-						rowsPerPageTemplate="5,10,25">
-						<p:column headerText="Date">
-							<h:outputText value="#{value.term}" />
-						</p:column>
-						<p:column headerText="Field Name">
-							<h:outputText value="#{value.extension}" />
-						</p:column>
-						<p:column headerText="User">
-							<h:outputText value="#{value.level}" />
-						</p:column>
-						<p:column headerText="Old Value">
-							<h:outputText value="#{value.status}" />
-						</p:column>
-						<p:column headerText="New value">
-							<h:outputText value="#{value.state}" />
-						</p:column>
-						<p:column headerText="State">
-							<h:outputText value="#{value.status}" />
-						</p:column>
-						<p:column headerText="Status">
-							<h:outputText value="#{value.state}" />
-						</p:column>
-						 
-					</p:dataTable>
-					<p:spacer height="10"></p:spacer>
-				<h:panelGrid style="float: right">
-					<p:commandButton value="Cancel" onclick="PF('audit-dialog').hide()" immediate="true" />
-				</h:panelGrid>
-				</p:panel>
 			</p:dialog>
 
 			<p:spacer width="10" height="10" id="s6" />

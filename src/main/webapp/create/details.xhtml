@@ -23,9 +23,6 @@
 				<p:ajax update="level protocol drug product" event="change"
 					listener="#{searchController.changeLevel}" />
 			</p:selectOneMenu>
-			
-			<p:outputLabel value="* Name" styleClass="label-right" />
-			<p:inputText value="#{dummyView.value}" required="true" requiredMessage="The name is required" />
 
 			<p:outputLabel value="Drug Program" styleClass="label-right" />
 			<p:selectOneMenu value="#{searchController.drugProgram}" id="drug">
