@@ -153,7 +153,7 @@ public class SearchController implements Serializable {
 				|| extension.equals("TME") || extension.equals("TR1"))
 			setProtocol("No Protocol");
 		else
-			setProtocol("");
+			setProtocol(""); 
 
 		if (extension.equals("CPT") || extension.equals("DME"))
 			setProduct("No Product");
