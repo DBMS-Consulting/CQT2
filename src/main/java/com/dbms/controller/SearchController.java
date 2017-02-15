@@ -50,7 +50,7 @@ public class SearchController implements Serializable {
 
 	private boolean maintainDesigBtn;
 
-	private List<CreateEntity> values;
+	private List<CreateEntity> values, vals;
 	
 	private List<AdminDTO> admins;
 
@@ -84,6 +84,11 @@ public class SearchController implements Serializable {
 		c.setName("ABCDEFG");
 		c.setActive(false);
 		admins.add(c);
+		
+		vals = new ArrayList<CreateEntity>();
+		CreateEntity ce = new CreateEntity();
+		ce.setCode(122);
+		vals.add(ce);
 	}
 
 	public void changeTabUpdate() {
@@ -314,6 +319,14 @@ public class SearchController implements Serializable {
 
 	public void setAdmins(List<AdminDTO> admins) {
 		this.admins = admins;
+	}
+
+	public List<CreateEntity> getVals() {
+		return vals;
+	}
+
+	public void setVals(List<CreateEntity> vals) {
+		this.vals = vals;
 	}
 
 	 
