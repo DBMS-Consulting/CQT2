@@ -127,68 +127,78 @@
 
 				<p:tab id="confirmPanel" title="Confirm">
 					<p:panel header="Details">
-						<h:panelGrid columns="3" cellpadding="30">
+						<h:panelGrid columns="4" cellpadding="30">
 
 							<h:panelGrid columns="2" columnClasses="label, value">
+								<p:outputLabel styleClass="label-right" value="Extension:" />
+								<h:outputText value="#{dummyView.value}" />
+
+								<p:outputLabel styleClass="label-right" value="Name:" />
+								<h:outputText value="#{dummyView.value}" />
+
+								<p:outputLabel styleClass="label-right" value="Drug Program:" />
+								<h:outputText value="#{dummyView.value}" />
+
+								<p:outputLabel styleClass="label-right" value="Protocol:" />
+								<h:outputText value="#{dummyView.value}" />
+
+								<p:outputLabel styleClass="label-right" value="Product:" />
+								<h:outputText value="#{dummyView.value}" />
+
+							</h:panelGrid>
+
+							<h:panelGrid columns="2" columnClasses="label, value"
+								style="min-width: 300px;">
+								<p:outputLabel styleClass="label-right" value="Level:" />
+								<h:outputText value="#{dummyView.value}" />
+
+								<p:outputLabel styleClass="label-right" value="Code:" />
+								<h:outputText value="#{dummyView.value}" />
+
+								<p:outputLabel styleClass="label-right" value="Critical event:" />
+								<h:outputText value="#{dummyView.value}" />
+
+								<p:outputLabel styleClass="label-right" value="Scope:" />
+								<h:outputText value="#{dummyView.value}" />
+
+								<p:outputLabel styleClass="label-right" value="Algorithm:" />
+								<h:outputText value="#{dummyView.value}" />
+							</h:panelGrid>
+
+							<h:panelGrid columns="2" columnClasses="label, value"
+								style="min-width: 300px;">
+
+								<p:outputLabel styleClass="label-right" value="Status:" />
+								<h:outputText value="#{dummyView.value}" />
+
+								<p:outputLabel styleClass="label-right" value="State:" />
+								<h:outputText value="#{dummyView.value}" />
+
+								<p:outputLabel styleClass="label-right" value="Group:" />
+								<h:outputText value="#{dummyView.value}" />
+
+								<p:outputLabel styleClass="label-right" value="Designee:" />
+								<h:outputText value="#{dummyView.value}" />
+							</h:panelGrid>
+
+
+							<h:panelGrid columns="2" columnClasses="label, value"
+								style="min-width: 300px;">
+
+								<p:outputLabel styleClass="label-right" value="Create Date:" />
+								<h:outputText value="#{dummyView.value}" />
+
+								<p:outputLabel styleClass="label-right" value="Created By: " />
+								<h:outputText value="#{dummyView.value}" />
+
 								<p:outputLabel styleClass="label-right"
-									value="Filter Dictionary" />
+									value="Last Activation Date:" />
 								<h:outputText value="#{dummyView.value}" />
 
-								<p:outputLabel styleClass="label-right" value="Drug Program" />
-								<h:outputText value="#{dummyView.value}" />
-
-								<p:outputLabel styleClass="label-right" value="Protocol" />
-								<h:outputText value="#{dummyView.value}" />
-
-								<p:outputLabel styleClass="label-right" value="Release Groups" />
-								<h:outputText value="#{dummyView.value}" />
-
-								<p:outputLabel styleClass="label-right" value="Name" />
-								<h:outputText value="#{dummyView.value}" />
-
-								<p:outputLabel styleClass="label-right" value="Product" />
-								<h:outputText value="#{dummyView.value}" />
-
-								<p:outputLabel styleClass="label-right" value="Designee" />
+								<p:outputLabel styleClass="label-right"
+									value="Last Activation By" />
 								<h:outputText value="#{dummyView.value}" />
 							</h:panelGrid>
-
-							<h:panelGrid columns="2" columnClasses="label, value"
-								style="min-width: 300px;">
-								<p:outputLabel styleClass="label-right" value="Level" />
-								<h:outputText value="#{dummyView.value}" />
-
-								<p:outputLabel styleClass="label-right" value="Code" />
-								<h:outputText value="#{dummyView.value}" />
-
-								<p:outputLabel styleClass="label-right" value="Algorithm" />
-								<h:outputText value="#{dummyView.value}" />
-
-								<p:outputLabel styleClass="label-right" value="Extension" />
-								<h:outputText value="#{dummyView.value}" />
-
-								<p:outputLabel styleClass="label-right" value="Critical event" />
-								<h:outputText value="#{dummyView.value}" />
-							</h:panelGrid>
-
-							<h:panelGrid columns="2" columnClasses="label, value"
-								style="min-width: 300px;">
-								<p:outputLabel styleClass="label-right" value="Group" />
-								<h:outputText value="#{dummyView.value}" />
-
-								<p:outputLabel styleClass="label-right" value="Status" />
-								<h:outputText value="#{dummyView.value}" />
-
-								<p:outputLabel styleClass="label-right" value="Release Status" />
-								<h:outputText value="#{dummyView.value}" />
-
-								<p:outputLabel styleClass="label-right" value="State" />
-								<h:outputText value="#{dummyView.value}" />
-
-								<p:outputLabel styleClass="label-right" value="Scope" />
-								<h:outputText value="#{dummyView.value}" />
-							</h:panelGrid>
-
 						</h:panelGrid>
 
 					</p:panel>

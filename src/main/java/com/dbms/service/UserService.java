@@ -15,29 +15,31 @@ import com.dbms.util.HibernateUtil;
 public class UserService {
 
 	public User findByName(String name) {
-		EntityManager entityManager = HibernateUtil.openEntityManager();
+		/*EntityManager entityManager = HibernateUtil.openEntityManager();
 		User user = null;
 		try {
 			user = (User) entityManager.createQuery("from User g where g.name=:name").setParameter("name", name).getSingleResult();
 		} catch (Exception e) {
 		}
 		entityManager.close();
-		return user;
+		return user;*/
+		return null;
 	}
 
 	public User findById(Long id) {
-		EntityManager entityManager = HibernateUtil.openEntityManager();
+		/*EntityManager entityManager = HibernateUtil.openEntityManager();
 		User user = null;
 		try {
 			user = (User) entityManager.find(User.class, id);
 		} catch (Exception e) {
 		}
 		entityManager.close();
-		return user;
+		return user;*/
+		return null;
 	}
 
 	public void save(User user) {
-		EntityManager entityManager = HibernateUtil.openEntityManager();
+		/*EntityManager entityManager = HibernateUtil.openEntityManager();
 		try {
 			entityManager.getTransaction().begin();
 			entityManager.persist(user);
@@ -45,6 +47,6 @@ public class UserService {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		entityManager.close();
+		entityManager.close();*/
 	}
 }

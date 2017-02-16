@@ -24,7 +24,7 @@ public class CreateEntityService {
 	private static final Logger log = LoggerFactory.getLogger(CreateEntityService.class);
 
 	public void save(CreateEntity entity) {
-		EntityManager entityManager = HibernateUtil.openEntityManager();
+		/*EntityManager entityManager = HibernateUtil.openEntityManager();
 		entityManager.getTransaction().begin();
 		if (entity.isTransient()) {
 			entityManager.persist(entity);
@@ -32,22 +32,24 @@ public class CreateEntityService {
 			entityManager.merge(entity);
 		}
 		entityManager.getTransaction().commit();
-		entityManager.close();
+		entityManager.close();*/
 	}
 
 	public CreateEntity findByCode(Integer code) {
-		EntityManager entityManager = HibernateUtil.openEntityManager();
+		/*EntityManager entityManager = HibernateUtil.openEntityManager();
 		CreateEntity entity = entityManager.find(CreateEntity.class, code);
 		entityManager.close();
-		return entity;
+		return entity;*/
+		return null;
 	}
 
 	@SuppressWarnings("unchecked")
 	public List<CreateEntity> findAll() {
-		EntityManager entityManager = HibernateUtil.openEntityManager();
+		/*EntityManager entityManager = HibernateUtil.openEntityManager();
 		List<CreateEntity> entities = entityManager.createQuery("from CreateEntity c").getResultList();
 		entityManager.close();
-		return entities;
+		return entities;*/
+		return null;
 	}
 
 	private StringBuilder appendClause(StringBuilder sb, boolean first) {
@@ -61,7 +63,7 @@ public class CreateEntityService {
 
 	@SuppressWarnings("unchecked")
 	public List<CreateEntity> findByCriterias(String extension, String drugProgram, String protocol) {
-		StringBuilder sb = new StringBuilder("from CreateEntity c");
+		/*StringBuilder sb = new StringBuilder("from CreateEntity c");
 		boolean first = true;
 		if (StringUtils.isNotEmpty(extension)) {
 			sb.append(" where c.extension=:extension");
@@ -91,6 +93,7 @@ public class CreateEntityService {
 
 		List<CreateEntity> entities = query.getResultList();
 		entityManager.close();
-		return entities;
+		return entities;*/
+		return null;
 	}
 }

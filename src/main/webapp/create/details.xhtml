@@ -12,7 +12,6 @@
 		<h:panelGrid columns="2" columnClasses="label, value"> 
 			<p:outputLabel value="Extension" styleClass="label-right" />
 			<p:selectOneMenu value="#{searchController.extension}">
-				<f:selectItem itemLabel="All" itemValue="All"></f:selectItem>
 				<f:selectItem itemLabel="TME" itemValue="TME"></f:selectItem>
 				<f:selectItem itemLabel="TR1" itemValue="TR1"></f:selectItem>
 				<f:selectItem itemLabel="CPT" itemValue="CPT"></f:selectItem>
@@ -46,9 +45,7 @@
 				<f:selectItem itemValue="No Product" itemLabel="No Product" />
 				<f:selectItem itemLabel="Val 1" itemValue="Val 1"></f:selectItem>
 				<f:selectItem itemLabel="Val 2" itemValue="Val 2"></f:selectItem>
-			</p:selectOneMenu>
-
-			 
+			</p:selectOneMenu>		 
 
 			<p:outputLabel value="* Designee" styleClass="label-right" />
 			<p:selectOneMenu value="#{dummyView.value}" rendered="true" disabled="false"

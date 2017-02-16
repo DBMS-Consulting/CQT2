@@ -32,7 +32,7 @@ public class HlgtPrefTerm implements Serializable {
 
 	@Id
 	@Column(name = "HLGT_CODE", nullable = false)
-	private Integer code;
+	private Long id;
 	@Column(name = "HLGT_NAME", length = 100, nullable = false)
 	private String name;
 	@Column(name = "HLGT_WHOART_CODE", length = 7)
@@ -57,12 +57,12 @@ public class HlgtPrefTerm implements Serializable {
 	@OneToMany(mappedBy="hlgtPrefTerm")
 	private Set<MdHierarchy> mdHierarchys=new HashSet<>();
 	
-	public Integer getCode() {
-		return code;
+	public Long getId() {
+		return id;
 	}
 
-	public void setCode(Integer code) {
-		this.code = code;
+	public void setCode(Long id) {
+		this.id = id;
 	}
 
 	public String getName() {
