@@ -1,6 +1,5 @@
 package com.dbms.controller;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,35 +11,46 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
 
-import org.apache.commons.lang3.StringUtils;
 import org.primefaces.component.wizard.Wizard;
 import org.primefaces.event.RowEditEvent;
+import org.primefaces.model.DefaultTreeNode;
+import org.primefaces.model.TreeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.dbms.entity.cqt.CmqBase190;
+import com.dbms.entity.cqt.CmqRelation190;
 import com.dbms.entity.cqt.CreateEntity;
-import com.dbms.service.CreateEntityService;
+import com.dbms.service.CmqBase190Service;
+import com.dbms.service.CmqRelation190Service;
+import com.dbms.web.dto.AdminDTO;
 
 /**
  * @date Feb 7, 2017 7:39:34 AM
  **/
 @ManagedBean
 @ViewScoped
-public class SearchController implements Serializable {
+public class SearchController extends BaseController<CmqBase190> {
 
 	private static final long serialVersionUID = 5299394344651669792L;
 
-	private static final Logger log = LoggerFactory
-			.getLogger(SearchController.class);
+	private static final Logger log = LoggerFactory.getLogger(SearchController.class);
 
-	@ManagedProperty("#{createEntityService}")
-	private CreateEntityService createEntityService;
+	@ManagedProperty("#{cmqBase190Service}")
+	private CmqBase190Service cmqBaseService;
+	@ManagedProperty("#{cmqRelation190Service}")
+	private CmqRelation190Service cmqRelationService;
+
+	private String releaseStatus;
+	private String criticalEvent;
+	private String termName;
+	private Long code;
 
 	private String extension;
 	private String drugProgram;
 	private String protocol;
 	private String state;
-	private String level;
+	private Integer level;
 	private String status;
 	private String critical;
 	private String scope;
@@ -51,21 +61,31 @@ public class SearchController implements Serializable {
 	private boolean maintainDesigBtn;
 
 	private List<CreateEntity> values, vals;
-	
+
 	private List<AdminDTO> admins;
 
 	private Wizard updateWizard, copyWizard, browseWizard;
+
+	public SearchController() {
+		this.selectedData = new CmqBase190();
+	}
 
 	@PostConstruct
 	public void init() {
 		maintainDesigBtn = false;
 		status = "Active";
 		state = "Published";
-		level = "1";
+		level = 1;
 		critical = "No";
 		group = "No Group";
 		extension = "TME";
 		
+		//TODO To test UI of ADMIN MODULE - Will be removed
+		initValuesForAdmin();
+	}
+	
+	
+	private void initValuesForAdmin() {
 		admins = new ArrayList<AdminDTO>();
 		AdminDTO c = new AdminDTO();
 		c.setSequence("SEQ 1");
@@ -89,6 +109,53 @@ public class SearchController implements Serializable {
 		CreateEntity ce = new CreateEntity();
 		ce.setCode(122);
 		vals.add(ce);
+		
+	}
+
+	/**
+	 * Method to change Level value on extention selection.
+	 * 
+	 * @param event
+	 *            AjaxBehaviour
+	 */
+	public void changeLevel(AjaxBehaviorEvent event) {
+		if (extension.equals("PRO")) {
+			setLevel(1);
+		} else
+			setLevel(2);
+
+		if (extension.equals("CPT") || extension.equals("DME"))
+			setDrugProgram("No Program");
+		else
+			setDrugProgram("");
+
+		if (extension.equals("CPT") || extension.equals("DME")
+				|| extension.equals("TME") || extension.equals("TR1"))
+			setProtocol("No Protocol");
+		else
+			setProtocol(""); 
+
+		if (extension.equals("CPT") || extension.equals("DME"))
+			setProduct("No Product");
+		else
+			setProduct("");
+	}
+
+	/**
+	 * Method to change State value on status selection.
+	 * 
+	 * @param event
+	 *            AjaxBehaviour
+	 */
+	public void changeState(AjaxBehaviorEvent event) {
+		if (status.equals("Active"))
+			setState("Published");
+		if (status.equals("Inactive"))
+			setState("Draft");
+		if (status.equals("All"))
+			setState("All");
+		if (status.equals("Pending"))
+			setState("Draft");
 	}
 
 	public void changeTabUpdate() {
@@ -127,90 +194,49 @@ public class SearchController implements Serializable {
 		this.protocol = protocol;
 	}
 
-	public void search() {
-		String extensionStr = null;
-		if (!StringUtils.equals(extension, "-1")) {
-			extensionStr = extension;
-		}
-		values = createEntityService.findByCriterias(extensionStr, drugProgram,
-				protocol);
-		log.debug("found values {}", values == null ? 0 : values.size());
+	public String getReleaseStatus() {
+		return releaseStatus;
 	}
 
-	/**
-	 * Method to change Level value on extention selection.
-	 * 
-	 * @param event
-	 *            AjaxBehaviour
-	 */
-	public void changeLevel(AjaxBehaviorEvent event) {
-		if (extension.equals("PRO")) {
-			setLevel("2");
-		} else
-			setLevel("1");
-
-		if (extension.equals("CPT") || extension.equals("DME"))
-			setDrugProgram("No Program");
-		else
-			setDrugProgram("");
-
-		if (extension.equals("CPT") || extension.equals("DME")
-				|| extension.equals("TME") || extension.equals("TR1"))
-			setProtocol("No Protocol");
-		else
-			setProtocol(""); 
-
-		if (extension.equals("CPT") || extension.equals("DME"))
-			setProduct("No Product");
-		else
-			setProduct("");
+	public void setReleaseStatus(String releaseStatus) {
+		this.releaseStatus = releaseStatus;
 	}
 
-	/**
-	 * Method to change State value on status selection.
-	 * 
-	 * @param event
-	 *            AjaxBehaviour
-	 */
-	public void changeState(AjaxBehaviorEvent event) {
-		if (status.equals("Active"))
-			setState("Published");
-		if (status.equals("Inactive"))
-			setState("Draft");
-		if (status.equals("All"))
-			setState("All");
-		if (status.equals("Pending"))
-			setState("Draft");
+	public Integer getLevel() {
+		return level;
 	}
 
-	public void onRowEdit(RowEditEvent event) {
-		FacesMessage msg = new FacesMessage("Edited", "QQ");
-		FacesContext.getCurrentInstance().addMessage(null, msg);
+	public void setLevel(Integer level) {
+		this.level = level;
+	}
+
+	public String getCriticalEvent() {
+		return criticalEvent;
+	}
+
+	public void setCriticalEvent(String criticalEvent) {
+		this.criticalEvent = criticalEvent;
+	}
+
+	public String getProduct() {
+		return product;
+	}
+
+	public void setProduct(String product) {
+		this.product = product;
+	}
+
+	public List<CmqBase190> getDatas() {
+		return datas;
+	}
+
+	public void setDatas(List<CmqBase190> datas) {
+		this.datas = datas;
 	}
 
 	public void onRowCancel(RowEditEvent event) {
 		FacesMessage msg = new FacesMessage("Canceled", "ZZ");
 		FacesContext.getCurrentInstance().addMessage(null, msg);
-	}
-	
-	public void addDrugProgram() {
-		admins.add(new AdminDTO());
-	}
-	
-	public void cancelDrugProgram() {
-		for (AdminDTO adminDTO : admins) {
-			if (adminDTO.getName() == null)
-				admins.remove(adminDTO);
-		}
-		
-	}
-
-	public String getLevel() {
-		return level;
-	}
-
-	public void setLevel(String level) {
-		this.level = level;
 	}
 
 	public List<CreateEntity> getValues() {
@@ -221,17 +247,10 @@ public class SearchController implements Serializable {
 		this.values = values;
 	}
 
-	public void setCreateEntityService(CreateEntityService createEntityService) {
-		this.createEntityService = createEntityService;
-	}
-
-	public String getState() {
-		return state;
-	}
-
-	public void setState(String state) {
-		this.state = state;
-	}
+	/*
+	 * public void setCreateEntityService(CreateEntityService
+	 * createEntityService) { this.createEntityService = createEntityService; }
+	 */
 
 	public boolean isMaintainDesigBtn() {
 		return maintainDesigBtn;
@@ -265,20 +284,36 @@ public class SearchController implements Serializable {
 		this.scope = scope;
 	}
 
-	public String getProduct() {
-		return product;
-	}
-
-	public void setProduct(String product) {
-		this.product = product;
-	}
-
 	public String getGroup() {
 		return group;
 	}
 
 	public void setGroup(String group) {
 		this.group = group;
+	}
+
+	public String getTermName() {
+		return termName;
+	}
+
+	public void setTermName(String termName) {
+		this.termName = termName;
+	}
+
+	public Long getCode() {
+		return code;
+	}
+
+	public void setCode(Long code) {
+		this.code = code;
+	}
+
+	public String getState() {
+		return state;
+	}
+
+	public void setState(String state) {
+		this.state = state;
 	}
 
 	public String getHistory() {
@@ -329,5 +364,113 @@ public class SearchController implements Serializable {
 		this.vals = vals;
 	}
 
-	 
+	public CmqBase190Service getCmqBaseService() {
+		return cmqBaseService;
+	}
+
+	public void setCmqBaseService(CmqBase190Service cmqBaseService) {
+		this.cmqBaseService = cmqBaseService;
+	}
+
+	public void setCmqRelationService(CmqRelation190Service cmqRelationService) {
+		this.cmqRelationService = cmqRelationService;
+	}
+	
+	public void search() {
+		log.debug("search by{}", extension);
+		datas = cmqBaseService.findByCriterias(extension, drugProgram, protocol, product, level, status, state,
+				criticalEvent, group, termName, code);
+		log.debug("found values {}", datas == null ? 0 : datas.size());
+	}
+
+	public void saveDetails() {
+		log.debug("save cmq details ... ");
+		try {
+			cmqBaseService.update(selectedData);
+			FacesMessage msg = new FacesMessage("Successful save a CMQ", null);
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		} catch (Exception e) {
+			log.error("Error when sae cmq - {}", e.getMessage(), e);
+			FacesMessage msg = new FacesMessage("Failed - " + e.getMessage(), null);
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		}
+	}
+
+	public void saveInfos() {
+		log.debug("save cmq infos ... ");
+		try {
+			cmqBaseService.update(selectedData);
+			FacesMessage msg = new FacesMessage("Successful save a CMQ", null);
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		} catch (Exception e) {
+			log.error("Error when sae cmq - {}", e.getMessage(), e);
+			FacesMessage msg = new FacesMessage("Failed - " + e.getMessage(), null);
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		}
+	}
+
+	private void addTreeNode(CmqRelation190 relation, TreeNode root) {
+		if (relation.getChildren() != null && !relation.getChildren().isEmpty()) {
+			for (CmqRelation190 r : relation.getChildren()) {
+				TreeNode node = new DefaultTreeNode(new RelationTreeNode(r.getId(), r.getTermName(), r.getCmqLevel(),
+						r.getPtTermScope(), r.getPtTermCategory(), r.getPtTermWeight(), false), root);
+				addTreeNode(r, node);
+			}
+		}
+	}
+
+	public TreeNode getRoot() {
+		TreeNode root = new DefaultTreeNode(new RelationTreeNode(null, "ROOT", null, null, null, null, true), null);
+		TreeNode first = new DefaultTreeNode(new RelationTreeNode(selectedData.getId(), selectedData.getName(),
+				selectedData.getLevel(), selectedData.getScope(), null, null, true), root);
+		first.setExpanded(true);
+		if (selectedData.getRelations() != null) {
+			for (CmqRelation190 relation : selectedData.getRelations()) {
+				addTreeNode(relation, first);
+			}
+		}
+		return root;
+	}
+
+	public void onRowEdit(RowEditEvent event) {
+		TreeNode node = (DefaultTreeNode) event.getObject();
+		RelationTreeNode relationNode = (RelationTreeNode) node.getData();
+		log.debug("update tree node scope#{},category#{},weigth#{}", relationNode.getScope(),
+				relationNode.getCategory(), relationNode.getWeight());
+		try {
+			if (relationNode.getRoot()) {
+				CmqBase190 base = cmqBaseService.findById(relationNode.getCode());
+				base.setScope(relationNode.getScope());
+				cmqBaseService.update(base);
+			} else {
+				CmqRelation190 relation = cmqRelationService.findById(relationNode.getCode());
+				relation.setPtTermScope(relationNode.getScope());
+				relation.setPtTermCategory(relationNode.getCategory());
+				relation.setPtTermWeight(relationNode.getWeight());
+				cmqRelationService.update(relation);
+			}
+		} catch (Exception e) {
+			log.error("Error when update tree!", e);
+		}
+	}
+	
+	/******
+	 * 
+	 * 
+	 * 
+	 * 
+	 * Dummy test on the ADMIN MODULE - To REMOVE if we have a service TODO
+	 * 
+	 * 
+	 */
+	public void addDrugProgram() {
+		admins.add(new AdminDTO());
+	}
+	
+	public void cancelDrugProgram() {
+		for (AdminDTO adminDTO : admins) {
+			if (adminDTO.getName() == null)
+				admins.remove(adminDTO);
+		}
+	}
 }

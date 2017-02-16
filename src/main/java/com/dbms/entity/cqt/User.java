@@ -13,7 +13,7 @@ import com.dbms.entity.AuditableEntity;
 @Entity
 @Table(name = "CQT_USER")
 @SequenceGenerator(name = "ID_GENERATOR", sequenceName = "CQT_USER_SEQ")
-public class User extends AuditableEntity {
+public class User /*extends AuditableEntity*/ {
 
 	private static final long serialVersionUID = 1L;
 

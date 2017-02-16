@@ -20,7 +20,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 		<!-- to be compatible with  JBoss EAP 6.4 -->
-		<hibernate.version>4.2.18.Final</hibernate.version>		
+		<hibernate.version>5.2.7.Final</hibernate.version>		
 
 	</properties>
 
@@ -83,13 +83,26 @@
 		</dependency>
 
 		<!-- hibernate -->
-		<!--  Jboss EAP 6.4 requirements -->  
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>${hibernate.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-entitymanager</artifactId>
 			<version>${hibernate.version}</version>
 		</dependency>
-
+		<dependency>
+			<groupId>javax.validation</groupId>
+			<artifactId>validation-api</artifactId>
+			<version>1.1.0.Final</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate.javax.persistence</groupId>
+			<artifactId>hibernate-jpa-2.1-api</artifactId>
+			<version>1.0.0.Final</version>
+		</dependency>
 
 		<!-- oracle -->
 		<dependency>

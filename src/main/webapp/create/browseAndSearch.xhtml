@@ -44,10 +44,11 @@
 						<p:spacer />
 
 						<p:outputPanel deferred="true" deferredMode="visible">
-							<p:dataTable var="value" value="#{searchController.vals}" 
-								id="result" rows="10" paginator="true" paginatorPosition="bottom"
+							<p:dataTable var="value" value="#{searchController.values}"
+								id="result" rows="10" paginator="true"
+								paginatorPosition="bottom"
 								paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-								rowsPerPageTemplate="5,10,25"> 
+								rowsPerPageTemplate="5,10,25">
 								<p:column headerText="Term">
 									<h:outputText value="#{value.term}" />
 								</p:column>
@@ -69,8 +70,9 @@
 										<f:param value="#{value.code}" name="code" />
 										<h:outputText value="#{value.code}" />
 									</h:outputLink> -->
-									<p:commandLink action="#{searchController.changeTabBrowse}" value="#{value.code}" update="@form"></p:commandLink>
- 								</p:column>
+									<p:commandLink action="#{searchController.changeTabBrowse}"
+										value="#{value.code}" update="@form"></p:commandLink>
+								</p:column>
 								<p:column headerText="Drug Program">
 									<h:outputText value="#{value.drugProgram}" />
 								</p:column>
@@ -218,12 +220,13 @@
 					</p:panel>
 				</p:tab>
 			</p:wizard>
-			
+
 			<p:dialog widgetVar="audit-dialog" modal="false" header="Audit">
 				<p:panel header="Audit Trail ####"
 					style="width:900px; height:623px;">
 					<p:dataTable var="value" value="#{searchController.values}"
-						id="auditTable" rows="10" paginator="true" paginatorPosition="bottom"
+						id="auditTable" rows="10" paginator="true"
+						paginatorPosition="bottom"
 						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 						rowsPerPageTemplate="5,10,25">
 						<p:column headerText="Date">
@@ -247,15 +250,15 @@
 						<p:column headerText="Status">
 							<h:outputText value="#{value.state}" />
 						</p:column>
-						 
+
 					</p:dataTable>
 					<p:spacer height="10"></p:spacer>
-				<h:panelGrid style="float: right">
-					<p:commandButton value="Cancel" onclick="PF('new_pt').hide()" />
-				</h:panelGrid>
+					<h:panelGrid style="float: right">
+						<p:commandButton value="Cancel" onclick="PF('new_pt').hide()" />
+					</h:panelGrid>
 				</p:panel>
 			</p:dialog>
-			
+
 
 			<!-- Popups - dialogs   -->
 			<p:dialog widgetVar="confirm" header="Confirm">

@@ -23,7 +23,7 @@ public class DummyView {
     private String city;  
     private Map<String,String> cities = new HashMap<String, String>();
   
-    private String value, value2;
+    private String value;
     
     //private Theme theme;   
     //private List<Theme> themes;
@@ -95,14 +95,6 @@ public class DummyView {
 
 	public void setValue(String value) {
 		this.value = value;
-	}
-
-	public String getValue2() {
-		return value2;
-	}
-
-	public void setValue2(String value2) {
-		this.value2 = value2;
 	}
  
 }
