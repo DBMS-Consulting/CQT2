@@ -7,10 +7,14 @@
 	xmlns:p="http://primefaces.org/ui">
 
 	<h:panelGrid columns="2" cellpadding="5">
-		<p:outputLabel value="Term" />
-		<p:selectOneMenu value="All" rendered="true" required="true">
-			<f:selectItem itemLabel="Val 1" itemValue="Val 1"></f:selectItem>
-			<f:selectItem itemLabel="Val 2" itemValue="Val 2"></f:selectItem>
+		<p:outputLabel value="Level" />
+		<p:selectOneMenu value="#{dummyView.value}" id="level">
+			<f:selectItem itemValue="All" itemLabel="All" />
+			<f:selectItem itemValue="1" itemLabel="1" />
+			<f:selectItem itemValue="2" itemLabel="2" />
+			<f:selectItem itemValue="3" itemLabel="3" />
+			<f:selectItem itemValue="4" itemLabel="4" />
+			<f:selectItem itemValue="5" itemLabel="5" />
 		</p:selectOneMenu>
 	</h:panelGrid>
 	<h:panelGrid columns="5" cellpadding="5">
@@ -20,62 +24,48 @@
 		<p:outputLabel value="Code" />
 		<p:inputText value="#{dummyView.value}" />
 
-		<p:commandButton value="Search" action="#{searchController.search()}"
-			 />
+		<p:commandButton value="Search" action="#{searchController.search()}" />
 
 	</h:panelGrid>
 
 	<p:tabView id="pt2" style="width:800px; height:381px;">
 
-		<p:tab title="Impacted SMQssss" id="sdi5" styleClass="AFStretchWidth">
+		<p:tab title="Impacted SMQs" id="sdi5" styleClass="AFStretchWidth">
 			<p:dataTable var="var" value="#{null}">
 				<p:column sortable="false" headerText="Term" id="c52"
 					filterable="true">
-					<h:outputText value="###" id="ot54" />
+					<h:outputText value="#{dummyView.value}" id="ot54" />
 				</p:column>
-				<p:column sortable="false" headerText="MQ Code" width="50" id="c53">
-					<h:outputText value="###" id="ot55" />
+				<p:column sortable="false" headerText="Code" width="50" id="c53">
+					<h:outputText value="#{dummyView.value}" id="ot55" />
 				</p:column>
 				<p:column sortable="false" headerText="Status" width="45" id="c54">
-					<h:outputText value="###" id="ot56" />
+					<h:outputText value="#{dummyView.value}" id="ot56" />
 				</p:column>
 				<p:column sortable="false" headerText="State" width="50" id="c55">
-					<h:outputText value="###" id="ot57" />
+					<h:outputText value="#{dummyView.value}" id="ot57" />
 				</p:column>
-				<p:column sortable="false" headerText="Release Group" width="50"
-					id="c56">
-					<h:outputText value="###" id="ot58" />
-				</p:column>
-				<p:column sortable="false" rendered="false" headerText="ID"
-					width="50" id="c57">
-					<h:outputText value="####" id="ot59">
 
-					</h:outputText>
-				</p:column>
 			</p:dataTable>
 		</p:tab>
 		<p:tab title="Non-Impacted SMQs" styleClass="AFStretchWidth" id="sdi4">
 			<p:dataTable var="var" value="#{null}">
 				<p:column sortable="false" headerText="Term" id="c52"
 					filterable="true">
-					<h:outputText value="###" id="ot54" />
+					<h:outputText value="#{dummyView.value}" id="ot54" />
 				</p:column>
-				<p:column sortable="false" headerText="MQ Code" width="50" id="c53">
-					<h:outputText value="###" id="ot55" />
+				<p:column sortable="false" headerText="Code" width="50" id="c53">
+					<h:outputText value="#{dummyView.value}" id="ot55" />
 				</p:column>
 				<p:column sortable="false" headerText="Status" width="45" id="c54">
-					<h:outputText value="###" id="ot56" />
+					<h:outputText value="#{dummyView.value}" id="ot56" />
 				</p:column>
 				<p:column sortable="false" headerText="State" width="50" id="c55">
-					<h:outputText value="###" id="ot57" />
-				</p:column>
-				<p:column sortable="false" headerText="Release Group" width="50"
-					id="c56">
-					<h:outputText value="###" id="ot58" />
+					<h:outputText value="#{dummyView.value}" id="ot57" />
 				</p:column>
 				<p:column sortable="false" rendered="false" headerText="ID"
 					width="50" id="c57">
-					<h:outputText value="####" id="ot59">
+					<h:outputText value="#{dummyView.value}" id="ot59">
 
 					</h:outputText>
 				</p:column>
@@ -85,52 +75,44 @@
 			<p:dataTable var="var" value="#{null}">
 				<p:column sortable="false" headerText="Term" id="c52"
 					filterable="true">
-					<h:outputText value="###" id="ot54" />
+					<h:outputText value="#{dummyView.value}" id="ot54" />
 				</p:column>
-				<p:column sortable="false" headerText="MQ Code" width="50" id="c53">
-					<h:outputText value="###" id="ot55" />
+				<p:column sortable="false" headerText="Code" width="50" id="c53">
+					<h:outputText value="#{dummyView.value}" id="ot55" />
 				</p:column>
 				<p:column sortable="false" headerText="Status" width="45" id="c54">
-					<h:outputText value="###" id="ot56" />
+					<h:outputText value="#{dummyView.value}" id="ot56" />
 				</p:column>
 				<p:column sortable="false" headerText="State" width="50" id="c55">
-					<h:outputText value="###" id="ot57" />
-				</p:column>
-				<p:column sortable="false" headerText="Release Group" width="50"
-					id="c56">
-					<h:outputText value="###" id="ot58" />
+					<h:outputText value="#{dummyView.value}" id="ot57" />
 				</p:column>
 				<p:column sortable="false" rendered="false" headerText="ID"
 					width="50" id="c57">
-					<h:outputText value="####" id="ot59">
+					<h:outputText value="#{dummyView.value}" id="ot59">
 
 					</h:outputText>
 				</p:column>
 			</p:dataTable>
 		</p:tab>
-		<p:tab title="Non-impacted Lists" id="sdi6"
+		<p:tab title="Non-Impacted Lists" id="sdi6"
 			styleClass="AFStretchWidth">
 			<p:dataTable var="var" value="#{null}">
 				<p:column sortable="false" headerText="Term" id="c52"
 					filterable="true">
-					<h:outputText value="###" id="ot54" />
+					<h:outputText value="#{dummyView.value}" id="ot54" />
 				</p:column>
-				<p:column sortable="false" headerText="MQ Code" width="50" id="c53">
-					<h:outputText value="###" id="ot55" />
+				<p:column sortable="false" headerText="Code" width="50" id="c53">
+					<h:outputText value="#{dummyView.value}" id="ot55" />
 				</p:column>
 				<p:column sortable="false" headerText="Status" width="45" id="c54">
-					<h:outputText value="###" id="ot56" />
+					<h:outputText value="#{dummyView.value}" id="ot56" />
 				</p:column>
 				<p:column sortable="false" headerText="State" width="50" id="c55">
-					<h:outputText value="###" id="ot57" />
-				</p:column>
-				<p:column sortable="false" headerText="Release Group" width="50"
-					id="c56">
-					<h:outputText value="###" id="ot58" />
+					<h:outputText value="#{dummyView.value}" id="ot57" />
 				</p:column>
 				<p:column sortable="false" rendered="false" headerText="ID"
 					width="50" id="c57">
-					<h:outputText value="####" id="ot59">
+					<h:outputText value="#{dummyView.value}" id="ot59">
 
 					</h:outputText>
 				</p:column>

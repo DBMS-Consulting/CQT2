@@ -65,6 +65,8 @@ public class SearchController extends BaseController<CmqBase190> {
 	private List<AdminDTO> admins;
 
 	private Wizard updateWizard, copyWizard, browseWizard;
+	
+	 private String[] selectedSOCs; 
 
 	public SearchController() {
 		this.selectedData = new CmqBase190();
@@ -472,5 +474,13 @@ public class SearchController extends BaseController<CmqBase190> {
 			if (adminDTO.getName() == null)
 				admins.remove(adminDTO);
 		}
+	}
+
+	public String[] getSelectedSOCs() {
+		return selectedSOCs;
+	}
+
+	public void setSelectedSOCs(String[] selectedSOCs) {
+		this.selectedSOCs = selectedSOCs;
 	}
 }

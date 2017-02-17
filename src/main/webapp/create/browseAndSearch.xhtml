@@ -23,7 +23,8 @@
 				</h:panelGrid>
 			</h:panelGrid>
 
-			<p:wizard flowListener="#{wizard.onFlowProcess}">
+			<p:wizard flowListener="#{wizard.onFlowProcess}"
+				binding="#{searchController.browseWizard}">
 				<!-- Search -->
 				<p:tab id="search" title="Search">
 					<p:panel header="Search">
@@ -44,7 +45,8 @@
 						<p:spacer />
 
 						<p:outputPanel deferred="true" deferredMode="visible">
-							<p:dataTable var="value" value="#{searchController.values}"
+							<!-- <p:dataTable var="value" value="#{searchController.vals}" -->
+							<p:dataTable var="value" value="#{searchController.vals}"
 								id="result" rows="10" paginator="true"
 								paginatorPosition="bottom"
 								paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
@@ -65,11 +67,7 @@
 									<h:outputText value="#{value.state}" />
 								</p:column>
 								<p:column headerText="Code">
-									<!-- <h:outputLink
-										value="#{request.contextPath}/create/create.xhtml">
-										<f:param value="#{value.code}" name="code" />
-										<h:outputText value="#{value.code}" />
-									</h:outputLink> -->
+
 									<p:commandLink action="#{searchController.changeTabBrowse}"
 										value="#{value.code}" update="@form"></p:commandLink>
 								</p:column>
@@ -95,9 +93,10 @@
 
 								<p:column headerText="History" style="text-align: center">
 									<!-- <h:outputText value="#{value.history}" /> -->
-									<p:commandLink action="#" style="color: red" label="History">
+									<p:commandLink action="#" style="color: red" label="History"
+										onclick="PF('history-dialog').show()">
 										<i class="fa fa-power-off"></i>
-									</p:commandLink> 
+									</p:commandLink>
 
 								</p:column>
 								<p:column headerText="Audit" style="text-align: center">
@@ -125,83 +124,84 @@
 
 							<h:panelGrid columns="2" columnClasses="label, value">
 								<p:outputLabel value="Extension" styleClass="label-right" />
-								<h:outputText value="XXXXXXXXX" />
+								<h:outputText value="#{dummyView.value}" />
 
 								<p:outputLabel value="Name" styleClass="label-right" />
-								<h:outputText value="XXXXXXXXX" />
+								<h:outputText value="#{dummyView.value}" />
 
 								<p:outputLabel value="Drug Program" styleClass="label-right" />
-								<h:outputText value="XXXXXXXXX" />
+								<h:outputText value="#{dummyView.value}" />
 
 								<p:outputLabel styleClass="label-right" value="Protocol"
 									id="protocolLb" />
-								<h:outputText value="XXXXXXXXX" />
+								<h:outputText value="#{dummyView.value}" />
 
 
 
 								<p:outputLabel value="Product" rendered="true"
 									styleClass="label-right" />
-								<h:outputText value="XXXXXXXXX" />
+								<h:outputText value="#{dummyView.value}" />
 
 
 								<p:outputLabel value="Designee" styleClass="label-right" />
-								<h:outputText value="XXXXXXXXX" />
+								<h:outputText value="#{dummyView.value}" />
 							</h:panelGrid>
 
 							<h:panelGrid columns="2" columnClasses="label, value"
 								style="min-width: 400px">
 
 								<p:outputLabel value=" Release group" styleClass="label-right" />
-								<h:outputText value="XXXXXXXXX" />
+								<h:outputText value="#{dummyView.value}" />
 
 								<p:outputLabel value=" Release Status" styleClass="label-right" />
-								<h:outputText value="XXXXXXXXX" />
+								<h:outputText value="#{dummyView.value}" />
 
 								<p:outputLabel value="Level" styleClass="label-right" />
-								<h:outputText value="XXXXXXXXX" />
+								<h:outputText value="#{dummyView.value}" />
 
 								<p:outputLabel value="Critical event" styleClass="label-right" />
-								<h:outputText value="XXXXXXXXX" />
+								<h:outputText value="#{dummyView.value}" />
 
 								<p:outputLabel value="Scope" styleClass="label-right" />
-								<h:outputText value="XXXXXXXXX" />
+								<h:outputText value="#{dummyView.value}" />
 
 								<p:outputLabel value="Algorithm" styleClass="label-right" />
-								<h:outputText value="XXXXXXXXX" />
+								<h:outputText value="#{dummyView.value}" />
 							</h:panelGrid>
 
 							<h:panelGrid columns="2" columnClasses="label, value"
 								style="min-width: 300px">
 								<p:outputLabel value="Status" styleClass="label-right" />
-								<h:outputText value="XXXXXXXXX" />
+								<h:outputText value="#{dummyView.value}" />
 
 								<p:outputLabel value="State" styleClass="label-right" />
-								<h:outputText value="XXXXXXXXX" />
+								<h:outputText value="#{dummyView.value}" />
 
 
 								<p:outputLabel value="Group" styleClass="label-right" />
-								<h:outputText value="XXXXXXXXX" />
+								<h:outputText value="#{dummyView.value}" />
 
 								<p:outputLabel value="Code" styleClass="label-right" />
-								<h:outputText value="XXXXXXXXX" />
+								<h:outputText value="#{dummyView.value}" />
 							</h:panelGrid>
 
-							<h:panelGrid columns="2" columnClasses="label, value">
+							<h:panelGrid columns="2" columnClasses="label, value"
+								style="min-width: 200px">
 								<p:outputLabel value="Initial Creation By  "
 									styleClass="label-right" />
-								<h:outputText value="XXXXXXXXX" />
+								<h:outputText value="#{dummyView.value}" />
 
 								<p:outputLabel value="Initial Creation Date  "
 									styleClass="label-right" />
-								<h:outputText value="XXXXXXXXX" />
+								<h:outputText value="#{dummyView.value}" />
 
 								<p:outputLabel value="Last Activation By  "
 									styleClass="label-right" />
-								<h:outputText value="XXXXXXXXX" />
+								<h:outputText value="#{dummyView.value}" />
 
 								<p:outputLabel value="Last Activation Date  "
 									styleClass="label-right" />
-								<h:outputText value="XXXXXXXXX" />
+								<h:outputText value="#{dummyView.value}" />
 							</h:panelGrid>
 						</h:panelGrid>
 
@@ -222,13 +222,58 @@
 			</p:wizard>
 
 			<p:dialog widgetVar="audit-dialog" modal="false" header="Audit">
-				<p:panel header="Audit Trail ####"
-					style="width:900px; height:623px;">
+				<p:panel header="Audit Trail " style="width:900px; height:623px;">
+					<p:toolbar>
+						<f:facet name="left">
+							<p:commandButton id="filterAT" value="Filter and Sort"
+								type="button" icon="ui-icon-triangle-1-s" />
+							<p:overlayPanel id="filterPanelAT" for="filterAT"
+								showCloseIcon="true">
+								<h:panelGrid columns="2">
+									<p:outputLabel value="Sort" />
+									<p:selectOneMenu value="TERM">
+										<f:selectItem itemValue="TERM" itemLabel="Term name"></f:selectItem>
+										<f:selectItem itemValue="DEF_LEVEL_REF_SHORT_NAME"
+											itemLabel="Level"></f:selectItem>
+										<f:selectItem itemValue="SCOPE" itemLabel="Scope"></f:selectItem>
+									</p:selectOneMenu>
+
+									<p:outputLabel for="showAT" value="Show Primary Only"
+										style="min-width: 100px !important" />
+									<p:selectBooleanCheckbox value="false" id="showAT"
+										label="Show Primary Only"></p:selectBooleanCheckbox>
+
+									<p:outputLabel value="Scope" />
+									<p:selectOneMenu value="0">
+										<f:selectItem itemValue="0" itemLabel="Full /SMQ"></f:selectItem>
+										<f:selectItem itemValue="3" itemLabel="Child Narrow"></f:selectItem>
+									</p:selectOneMenu>
+
+									<p:spacer />
+									<p:commandButton value="Refresh" icon="fa fa-refresh"
+										rendered="true" />
+								</h:panelGrid>
+							</p:overlayPanel>
+							<p:spacer width="5" />
+
+							<p:submenu label="View" icon="fa fa-wrench">
+								<p:menuButton value="View">
+									<p:menuitem value="View 1" actionListener="#" ajax="false"
+										icon="ui-icon-close" />
+									<p:menuitem value="View 2" url="#" icon="ui-icon-extlink" />
+								</p:menuButton>
+							</p:submenu>
+
+						</f:facet>
+					</p:toolbar>
 					<p:dataTable var="value" value="#{searchController.values}"
 						id="auditTable" rows="10" paginator="true"
 						paginatorPosition="bottom"
 						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 						rowsPerPageTemplate="5,10,25">
+						<p:column headerText="Transaction Type">
+							<h:outputText value="#{value.term}" />
+						</p:column>
 						<p:column headerText="Date">
 							<h:outputText value="#{value.term}" />
 						</p:column>
@@ -259,6 +304,22 @@
 				</p:panel>
 			</p:dialog>
 
+			<p:dialog widgetVar="history-dialog" modal="true" id="historyD"
+				closable="true" header="History As of Date (Required for history)">
+
+				<h:panelGrid columns="1">
+					<h:panelGrid>
+						<p:calendar showOn="button" style="margin-left: 50px !important;" />
+					</h:panelGrid>
+
+					<h:panelGrid style="float: right" columns="2">
+						<p:commandButton value="OK" action="OK" />
+						<p:commandButton value="Cancel" onclick="PF('new_pt').hide()"
+							immediate="true" />
+					</h:panelGrid>
+				</h:panelGrid>
+			</p:dialog>
+
 
 			<!-- Popups - dialogs   -->
 			<p:dialog widgetVar="confirm" header="Confirm">
@@ -270,11 +331,11 @@
 				style="padding:3px; font-size: 10px !important">
 
 				<p:outputLabel for="it1aw" value="Dictionary Version:"></p:outputLabel>
-				<h:inputText id="it1aw" value="########" disabled="true"
+				<h:inputText id="it1aw" value="#{dummyView.value}" disabled="true"
 					columns="200" />
 
 				<p:outputLabel for="it3" value="Name: "></p:outputLabel>
-				<h:inputText id="it3" value="#########" readOnly="true"
+				<h:inputText id="it3" value="#{dummyView.value}" readOnly="true"
 					disabled="true" />
 			</h:panelGrid>
 			<f:attribute name="currentPage"

@@ -268,7 +268,7 @@
 							<tbody>
 								<tr>
 									<td><p:outputLabel value="Reason for Request" /></td>
-									<td><p:inputText value="#####" /></td>
+									<td><p:inputText value="#{dummyView.value}" /></td>
 								</tr>
 								<tr>
 									<td><p:outputLabel value="Due Date" /></td>
@@ -350,7 +350,7 @@
 						style="height:200px;" styleClass="AFStretchWidth" width="521">
 						<p:column headerText="Term" id="c10" width="1" minimumWidth="1"
 							rendered="true 	">
-							<p:inputText value="#####" id="it4">
+							<p:inputText value="#{dummyView.value}" id="it4">
 								<!-- <f:convertNumber groupingUsed="false"
 									pattern="#{bindings.HierarchySourceTermSearchVO1.hints.Rnum.format}" /> -->
 							</p:inputText>
@@ -428,7 +428,7 @@
 									<h:outputText value="#{node.term}" id="ot1"
 										styleClass="#{node.style}"
 										rendered="#{!node.showHasChildrenButton}" />
-									<p:commandLink value="#####" id="cl2" rendered="true"
+									<p:commandLink value="#{dummyView.value}" id="cl2" rendered="true"
 										partialSubmit="true" />
 								</h:panelGrid>
 							</p:column>
@@ -453,11 +453,11 @@
 
 
 				<p:outputLabel for="it1aw" value="Dictionary Version:"></p:outputLabel>
-				<h:inputText id="it1aw" value="########" disabled="true"
+				<h:inputText id="it1aw" value="#{dummyView.value}" disabled="true"
 					columns="200" />
 
 				<p:outputLabel for="it3" value="Name: "></p:outputLabel>
-				<h:inputText id="it3" value="#########" readOnly="true"
+				<h:inputText id="it3" value="#{dummyView.value}" readOnly="true"
 					disabled="true" />
 			</h:panelGrid>
 			<f:attribute name="currentPage"
