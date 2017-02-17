@@ -17,7 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.dbms.entity.cqt.CmqBase190;
-import com.dbms.service.CmqBase190Service;
+import com.dbms.service.ICmqBase190Service;
 
 /**
  * @date Feb 8, 2017 8:29:12 AM
@@ -31,8 +31,8 @@ public class CmqUploadController implements Serializable {
 	private static final Logger log = LoggerFactory
 			.getLogger(CmqUploadController.class);
 
-	@ManagedProperty("#{cmqBase190Service}")
-	private CmqBase190Service cmqBaseService;
+	@ManagedProperty("#{CmqBase190Service}")
+	private ICmqBase190Service cmqBaseService;
 
 	private UploadedFile file;
 
@@ -44,7 +44,7 @@ public class CmqUploadController implements Serializable {
 		this.file = file;
 	}
 
-	public void setCmqBaseService(CmqBase190Service cmqBaseService) {
+	public void setCmqBaseService(ICmqBase190Service cmqBaseService) {
 		this.cmqBaseService = cmqBaseService;
 	}
 

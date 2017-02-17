@@ -5,7 +5,7 @@ import javax.faces.bean.ManagedBean;
 import javax.persistence.EntityManager;
 
 import com.dbms.entity.cqt.User;
-import com.dbms.util.HibernateUtil;
+import com.dbms.util.CqtEntityManagerFactory;
 
 /**
  * @date Feb 7, 2017 2:09:15 AM

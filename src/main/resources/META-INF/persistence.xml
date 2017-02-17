@@ -3,8 +3,11 @@
 	version="1.0">
 	<persistence-unit name="cqtJPA">
 		<provider>org.hibernate.ejb.HibernatePersistence</provider>
-		<class>com.dbms.entity.cqt.CreateEntity</class>
-		<class>com.dbms.entity.cqt.User</class>
+		<!-- <class>com.dbms.entity.cqt.CreateEntity</class> -->
+		<!-- <class>com.dbms.entity.cqt.User</class> -->
+		<class>com.dbms.entity.cqt.CmqBase190</class>
+		<class>com.dbms.entity.cqt.CmqRelation190</class>
+		<class>com.dbms.entity.cqt.ExtentionConfigCodeList</class>
 		<class>com.dbms.entity.meddra.HlgtPrefTerm</class>
 		<class>com.dbms.entity.meddra.HltPrefTerm</class>
 		<class>com.dbms.entity.meddra.LowLevelTerm</class>
@@ -13,23 +16,34 @@
 		<class>com.dbms.entity.meddra.SmqContent</class>
 		<class>com.dbms.entity.meddra.SmqList</class>
 		<class>com.dbms.entity.meddra.SocIntlOrder</class>
-		<class>com.dbms.entity.meddra.SocTerm</class>				
+		<class>com.dbms.entity.meddra.SocTerm</class>
 		<exclude-unlisted-classes>false</exclude-unlisted-classes>
 		<properties>
+			<property name="hibernate.archive.autodetection" value="class" />
 			<property name="hibernate.dialect" value="org.hibernate.dialect.OracleDialect" />
 			<property name="hibernate.connection.driver_class" value="oracle.jdbc.driver.OracleDriver" />
 			<property name="hibernate.connection.url" value="jdbc:oracle:thin:@192.196.245.20:79/ort501" />
 			<property name="hibernate.connection.username" value="opencqt" />
 			<property name="hibernate.connection.password" value="opencqt" />
+			<property name="hibernate.connection.autocommit" value="false" />
 			<property name="hibernate.max_fetch_depth" value="3" />
-<!-- 			
-			<property name="hibernate.hbm2ddl.auto" value="create-drop" />
- -->			
-			<property name="hibernate.hbm2ddl.auto" value="update" />
-			<property name="hibernate.cache.use_second_level_cache" value="false" />
+			<!-- <property name="hibernate.hbm2ddl.auto" value="create-drop" /> -->
+			<!-- <property name="hibernate.hbm2ddl.auto" value="update" /> -->
+			<property name="hibernate.cache.use_second_level_cache"
+				value="false" />
 			<property name="hibernate.cache.use_query_cache" value="false" />
 			<property name="hibernate.show_sql" value="true" />
 			<property name="hibernate.format_sql" value="true" />
+
+			<!-- Connection pooling -->
+			<property name="hibernate.connection.provider_class"
+				value="org.hibernate.connection.C3P0ConnectionProvider" />
+			<property name="hibernate.c3p0.max_size" value="10" />
+			<property name="hibernate.c3p0.min_size" value="2" />
+			<property name="hibernate.c3p0.acquire_increment" value="1" />
+			<property name="hibernate.c3p0.idle_test_period" value="300" />
+			<property name="hibernate.c3p0.max_statements" value="30" />
+			<property name="hibernate.c3p0.timeout" value="240" />
 		</properties>
 	</persistence-unit>
 </persistence> 
