@@ -83,7 +83,7 @@
 			styleClass="AFStretchWidth" width="521">
 			<p:column headerText="Term" id="c10" width="1" minimumWidth="1"
 				rendered="true 	">
-				<p:inputText value="#####" id="it4">
+				<p:inputText value="#{dummyView.value}" id="it4">
 					<!-- <f:convertNumber groupingUsed="false"
 									pattern="#{bindings.HierarchySourceTermSearchVO1.hints.Rnum.format}" /> -->
 				</p:inputText>
@@ -113,9 +113,10 @@
 		<h:panelGrid id="pc3" styleClass="AFStretchWidth">
 			<p:toolbar id="t4">
 				<f:facet name="left">
-				<p:commandButton id="filterH" value="Filter and Sort" type="button"
+					<p:commandButton id="filterH" value="Filter and Sort" type="button"
 						icon="ui-icon-triangle-1-s" />
-					<p:overlayPanel id="filterPanelH" for="filterH"  showCloseIcon="true">
+					<p:overlayPanel id="filterPanelH" for="filterH"
+						showCloseIcon="true">
 						<h:panelGrid columns="2">
 							<p:outputLabel value="Sort" />
 							<p:selectOneMenu value="TERM">
@@ -132,7 +133,7 @@
 
 							<p:outputLabel value="Scope" />
 							<p:selectOneMenu value="0">
-								<f:selectItem itemValue="0" itemLabel="Full #####/SMQ"></f:selectItem>
+								<f:selectItem itemValue="0" itemLabel="Full /SMQ"></f:selectItem>
 								<f:selectItem itemValue="3" itemLabel="Child Narrow"></f:selectItem>
 							</p:selectOneMenu>
 
@@ -142,15 +143,15 @@
 						</h:panelGrid>
 					</p:overlayPanel>
 					<p:spacer width="5" />
-					
+
 					<p:submenu label="View" icon="fa fa-wrench">
-											<p:menuButton value="View">
-												<p:menuitem value="View 1" actionListener="#" ajax="false"
-													icon="ui-icon-close" />
-												<p:menuitem value="View 2" url="#" icon="ui-icon-extlink" />
-											</p:menuButton>
-										</p:submenu>
-					 
+						<p:menuButton value="View">
+							<p:menuitem value="View 1" actionListener="#" ajax="false"
+								icon="ui-icon-close" />
+							<p:menuitem value="View 2" url="#" icon="ui-icon-extlink" />
+						</p:menuButton>
+					</p:submenu>
+
 				</f:facet>
 			</p:toolbar>
 
@@ -175,8 +176,7 @@
 						<h:outputText value="#{node.term}" id="ot1"
 							styleClass="#{node.style}"
 							rendered="#{!node.showHasChildrenButton}" />
-						<p:commandLink value="#####" id="cl2" rendered="true"
-							partialSubmit="true" />
+						<p:commandLink id="cl2" rendered="true" partialSubmit="true" />
 					</h:panelGrid>
 				</p:column>
 
