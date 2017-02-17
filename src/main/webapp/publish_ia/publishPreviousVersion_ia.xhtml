@@ -62,19 +62,19 @@
 							<h:panelGrid columns="2">
 								<p:dataTable value="#{null}">
 									<p:column headerText="Term" id="c1" width="240">
-										<p:inputText value="#{dummyView.value}">
+										<p:inputText value="#####">
 											<!-- <f:validator binding="#{row.bindings.Term.validator}" /> -->
 										</p:inputText>
 									</p:column>
 
 									<p:column width="330" headerText="Error">
-										<p:inputText value="#{dummyView.value}" id="it2">
+										<p:inputText value="######" id="it2">
 											<!-- <f:validator binding="#{row.bindings.ErrorMsg.validator}" /> -->
 										</p:inputText>
 									</p:column>
 
-									<p:column headerText="#{dummyView.value}" id="c3" width="0" rendered="true">
-										<p:inputText value="#{dummyView.value}" id="it3">
+									<p:column headerText="####" id="c3" width="0" rendered="true">
+										<p:inputText value="#######" id="it3">
 											<!-- <f:validator
 												binding="#{row.bindings.PredictContentId.validator}" /> -->
 											<f:convertNumber />
@@ -88,13 +88,13 @@
 								<p:dataTable value="#{null}" style="">
 									<p:column sortable="false" headerText="Term" id="c6"
 										width="240">
-										<p:inputText value="#{dummyView.value}" required="true" id="it5">
+										<p:inputText value="#######" required="true" id="it5">
 											<!-- <f:validator binding="#{row.bindings.Term.validator}" /> -->
 										</p:inputText>
 									</p:column>
 									<p:column filterable="false" sortable="true"
 										headerText="Relation Errors" id="c4" width="330">
-										<p:inputText value="#{dummyView.value}" required="true" id="it4">
+										<p:inputText value="######" required="true" id="it4">
 											<!-- <f:validator binding="#{row.bindings.ErrorMsg.validator}" /> -->
 										</p:inputText>
 									</p:column>
