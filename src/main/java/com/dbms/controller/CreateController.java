@@ -7,7 +7,7 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 
 import com.dbms.entity.cqt.CmqBase190;
-import com.dbms.service.CmqBase190Service;
+import com.dbms.service.ICmqBase190Service;
 
 /**
  * @author Jay G.(jayshanchn@hotmail.com)
@@ -22,8 +22,8 @@ public class CreateController implements Serializable{
 	 */
 	private static final long serialVersionUID = -443251941538546278L;
 
-	@ManagedProperty("#{cmqBase190Service}")
-	private CmqBase190Service cmqBaseService;
+	@ManagedProperty("#{CmqBase190Service}")
+	private ICmqBase190Service cmqBaseService;
 	
 	private CmqBase190 selectedData;
 	
@@ -39,7 +39,7 @@ public class CreateController implements Serializable{
 		this.selectedData = selectedData;
 	}
 
-	public void setCmqBaseService(CmqBase190Service cmqBaseService) {
+	public void setCmqBaseService(ICmqBase190Service cmqBaseService) {
 		this.cmqBaseService = cmqBaseService;
 	}
 

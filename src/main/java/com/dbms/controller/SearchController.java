@@ -21,8 +21,8 @@ import org.slf4j.LoggerFactory;
 import com.dbms.entity.cqt.CmqBase190;
 import com.dbms.entity.cqt.CmqRelation190;
 import com.dbms.entity.cqt.CreateEntity;
-import com.dbms.service.CmqBase190Service;
-import com.dbms.service.CmqRelation190Service;
+import com.dbms.service.ICmqBase190Service;
+import com.dbms.service.ICmqRelation190Service;
 import com.dbms.web.dto.AdminDTO;
 
 /**
@@ -37,10 +37,11 @@ public class SearchController extends BaseController<CmqBase190> {
 	private static final Logger log = LoggerFactory
 			.getLogger(SearchController.class);
 
-	@ManagedProperty("#{cmqBase190Service}")
-	private CmqBase190Service cmqBaseService;
-	@ManagedProperty("#{cmqRelation190Service}")
-	private CmqRelation190Service cmqRelationService;
+	@ManagedProperty("#{CmqBase190Service}")
+	private ICmqBase190Service cmqBaseService;
+	
+	@ManagedProperty("#{CmqRelation190Service}")
+	private ICmqRelation190Service cmqRelationService;
 
 	private String releaseStatus;
 	private String criticalEvent;
@@ -366,15 +367,15 @@ public class SearchController extends BaseController<CmqBase190> {
 		this.vals = vals;
 	}
 
-	public CmqBase190Service getCmqBaseService() {
+	public ICmqBase190Service getCmqBaseService() {
 		return cmqBaseService;
 	}
 
-	public void setCmqBaseService(CmqBase190Service cmqBaseService) {
+	public void setCmqBaseService(ICmqBase190Service cmqBaseService) {
 		this.cmqBaseService = cmqBaseService;
 	}
 
-	public void setCmqRelationService(CmqRelation190Service cmqRelationService) {
+	public void setCmqRelationService(ICmqRelation190Service cmqRelationService) {
 		this.cmqRelationService = cmqRelationService;
 	}
 

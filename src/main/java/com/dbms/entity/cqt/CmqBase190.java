@@ -39,69 +39,98 @@ public class CmqBase190 extends BaseEntity{
 	@GenericGenerator(name = "idGenerator", strategy = "assigned") 
 	@Column(name = "CMQ_CODE",length=10,unique=true,nullable=false)
 	private Long id;
+	
 	@Column(name="CMQ_NAME",length=200)
 	private String name;
-	@Column(name="CMQ_TYPE",length=3)
+	
+	@Column(name="CMQ_TYPE_CD",length=3)
 	private String type;
+	
 	@Column(name="CMQ_LEVEL",length=1)
 	private Integer level;
-	@Lob
-	@Column(name="CMQ_DESCRIPTION",columnDefinition="CLOB")
-	private String description;
-	@Lob
-	@Column(name="CMQ_SOURCE",columnDefinition="CLOB")
-	private String source;
-	@Lob
-	@Column(name="CMQ_NOTE",columnDefinition="CLOB")
-	private String note;
-	@Column(name="CMQ_STATUS",length=1)
-	private String status;
-	@Column(name="CMQ_STATE",length=15)
-	private String state;
-	@Column(name="CMQ_CRITICAL_EVENT",length=10)
-	private String criticalEvent;
-	@Column(name="CMQ_ALGORITHM",length=300)
-	private String algorithm;
-	@Column(name="CMQ_SCOPE",length=5)
-	private String scope;
-	@Column(name="CMQ_PROGRAM_NAME",length=200)
-	private String programName;
-	@Column(name="CMQ_PROTOCOL_NAME",length=100)
-	private String protocolName;
-	@Column(name="CMQ_PRODUCT_NAME",length=200)
-	private String productName;
-	@Column(name="DESIGNEE",length=100)
-	private String designee;
-	@Column(name="CMQ_GROUP",length=100)
-	private String group;
-	@Column(name="CMQ_DUE_DATE")
-	private Date dueDate;
-	@Column(name="CMQ_WF_DESC",length=200)
-	private String wfDesc;
-	@Column(name="CREATED_BY",length=30)
-	private String createdBy;
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name="CREATION_DATE")
-	private Date creationDate;
-	@Column(name="LAST_MODIFIED_BY",length=30)
-	private String lastModifiedBy;
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name="LAST_MODIFIED_DATE")
-	private Date lastModifedDate;
-	@Column(name="ACTIVATED_BY",length=30)
-	private String activatedBy;
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name="ACTIVATION_DATE")
-	private Date activationDate;
-	@Column(name="RELEASE_GROUP",length=30)
-	private String releaseGroup;
-	@Column(name="RELEASE_STATUS",length=30)
-	private String releaseStatus;
-	@OneToMany(mappedBy="parent",cascade=CascadeType.ALL)
-	private Set<CmqBase190> children=new HashSet<>();
+	
 	@ManyToOne
 	@JoinColumn(name="CMQ_PARENT_CODE")
 	private CmqBase190 parent;
+	
+	@Lob
+	@Column(name="CMQ_DESCRIPTION",columnDefinition="CLOB")
+	private String description;
+	
+	@Lob
+	@Column(name="CMQ_SOURCE",columnDefinition="CLOB")
+	private String source;
+	
+	@Lob
+	@Column(name="CMQ_NOTE",columnDefinition="CLOB")
+	private String note;
+	
+	@Column(name="CMQ_STATUS",length=1)
+	private String status;
+	
+	@Column(name="CMQ_STATE",length=15)
+	private String state;
+	
+	@Column(name="CMQ_CRITICAL_EVENT",length=10)
+	private String criticalEvent;
+	
+	@Column(name="CMQ_ALGORITHM",length=300)
+	private String algorithm;
+	
+	@Column(name="CMQ_SCOPE",length=5)
+	private String scope;
+	
+	@Column(name="CMQ_PROGRAM_NAME",length=200)
+	private String programName;
+	
+	@Column(name="CMQ_PROTOCOL_NAME",length=100)
+	private String protocolName;
+	
+	@Column(name="CMQ_PRODUCT_NAME",length=200)
+	private String productName;
+	
+	@Column(name="DESIGNEE",length=100)
+	private String designee;
+	
+	@Column(name="CMQ_GROUP",length=100)
+	private String group;
+	
+	@Column(name="CMQ_DUE_DATE")
+	private Date dueDate;
+	
+	@Column(name="CMQ_WF_DESC",length=200)
+	private String wfDesc;
+	
+	@Column(name="CREATED_BY",length=30)
+	private String createdBy;
+	
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name="CREATION_DATE")
+	private Date creationDate;
+	
+	@Column(name="LAST_MODIFIED_BY",length=30)
+	private String lastModifiedBy;
+	
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name="LAST_MODIFIED_DATE")
+	private Date lastModifedDate;
+	
+	@Column(name="ACTIVATED_BY",length=30)
+	private String activatedBy;
+	
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name="ACTIVATION_DATE")
+	private Date activationDate;
+	
+	@Column(name="RELEASE_GROUP",length=30)
+	private String releaseGroup;
+	
+	@Column(name="RELEASE_STATUS",length=30)
+	private String releaseStatus;
+	
+	@OneToMany(mappedBy="parent",cascade=CascadeType.ALL)
+	private Set<CmqBase190> children=new HashSet<>();
+	
 	
 	@OneToMany(mappedBy="base",cascade=CascadeType.ALL,orphanRemoval=true,fetch=FetchType.EAGER)
 	private Set<CmqRelation190> relations=new HashSet<>();

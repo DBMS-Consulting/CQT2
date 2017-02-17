@@ -28,7 +28,8 @@ import com.dbms.entity.BaseEntity;
  **/
 @Entity
 @Table(name="CMQ_RELATION_190")
-@NamedQueries({@NamedQuery(name="CmqRelation190.rootRelations",query="from CmqRelation190 c where size(c.children)>0"),
+@NamedQueries({
+		@NamedQuery(name = "CmqRelation190.rootRelations", query = "from CmqRelation190 c where size(c.children)>0"),
 		@NamedQuery(name="CmqRelation190.findByTermName",query="from CmqRelation190 c where c.termName=:termName")})
 public class CmqRelation190 extends BaseEntity{
 

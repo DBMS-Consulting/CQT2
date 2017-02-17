@@ -12,7 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.dbms.entity.cqt.CreateEntity;
-import com.dbms.util.HibernateUtil;
+import com.dbms.util.CqtEntityManagerFactory;
 
 /**
  * @date Feb 6, 2017 9:53:07 AM
