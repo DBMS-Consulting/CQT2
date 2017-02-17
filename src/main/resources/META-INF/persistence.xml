@@ -22,7 +22,7 @@
 			<property name="hibernate.archive.autodetection" value="class" />
 			<property name="hibernate.dialect" value="org.hibernate.dialect.OracleDialect" />
 			<property name="hibernate.connection.driver_class" value="oracle.jdbc.driver.OracleDriver" />
-			<property name="hibernate.connection.url" value="jdbc:oracle:thin:@192.168.1.92:1521/ort501" />
+			<property name="hibernate.connection.url" value="jdbc:oracle:thin:@192.196.245.20:8079/ort501" />
 			<property name="hibernate.connection.username" value="opencqt" />
 			<property name="hibernate.connection.password" value="opencqt" />
 			<property name="hibernate.connection.autocommit" value="false" />
