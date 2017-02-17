@@ -34,7 +34,8 @@ public class SearchController extends BaseController<CmqBase190> {
 
 	private static final long serialVersionUID = 5299394344651669792L;
 
-	private static final Logger log = LoggerFactory.getLogger(SearchController.class);
+	private static final Logger log = LoggerFactory
+			.getLogger(SearchController.class);
 
 	@ManagedProperty("#{cmqBase190Service}")
 	private CmqBase190Service cmqBaseService;
@@ -66,6 +67,8 @@ public class SearchController extends BaseController<CmqBase190> {
 
 	private Wizard updateWizard, copyWizard, browseWizard;
 
+	private String[] selectedSOCs;
+
 	public SearchController() {
 		this.selectedData = new CmqBase190();
 	}
@@ -79,12 +82,11 @@ public class SearchController extends BaseController<CmqBase190> {
 		critical = "No";
 		group = "No Group";
 		extension = "TME";
-		
-		//TODO To test UI of ADMIN MODULE - Will be removed
+
+		// TODO To test UI of ADMIN MODULE - Will be removed
 		initValuesForAdmin();
 	}
-	
-	
+
 	private void initValuesForAdmin() {
 		admins = new ArrayList<AdminDTO>();
 		AdminDTO c = new AdminDTO();
@@ -92,24 +94,24 @@ public class SearchController extends BaseController<CmqBase190> {
 		c.setName("AZERTY");
 		c.setActive(true);
 		admins.add(c);
-		
+
 		c = new AdminDTO();
 		c.setSequence("SEQ 2");
 		c.setName("QWERTY");
 		c.setActive(true);
 		admins.add(c);
-		
+
 		c = new AdminDTO();
 		c.setSequence("SEQ 31");
 		c.setName("ABCDEFG");
 		c.setActive(false);
 		admins.add(c);
-		
+
 		vals = new ArrayList<CreateEntity>();
 		CreateEntity ce = new CreateEntity();
 		ce.setCode(122);
 		vals.add(ce);
-		
+
 	}
 
 	/**
@@ -133,7 +135,7 @@ public class SearchController extends BaseController<CmqBase190> {
 				|| extension.equals("TME") || extension.equals("TR1"))
 			setProtocol("No Protocol");
 		else
-			setProtocol(""); 
+			setProtocol("");
 
 		if (extension.equals("CPT") || extension.equals("DME"))
 			setProduct("No Product");
@@ -375,11 +377,12 @@ public class SearchController extends BaseController<CmqBase190> {
 	public void setCmqRelationService(CmqRelation190Service cmqRelationService) {
 		this.cmqRelationService = cmqRelationService;
 	}
-	
+
 	public void search() {
 		log.debug("search by{}", extension);
-		datas = cmqBaseService.findByCriterias(extension, drugProgram, protocol, product, level, status, state,
-				criticalEvent, group, termName, code);
+		datas = cmqBaseService.findByCriterias(extension, drugProgram,
+				protocol, product, level, status, state, criticalEvent, group,
+				termName, code);
 		log.debug("found values {}", datas == null ? 0 : datas.size());
 	}
 
@@ -391,7 +394,8 @@ public class SearchController extends BaseController<CmqBase190> {
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		} catch (Exception e) {
 			log.error("Error when sae cmq - {}", e.getMessage(), e);
-			FacesMessage msg = new FacesMessage("Failed - " + e.getMessage(), null);
+			FacesMessage msg = new FacesMessage("Failed - " + e.getMessage(),
+					null);
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}
 	}
@@ -404,7 +408,8 @@ public class SearchController extends BaseController<CmqBase190> {
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		} catch (Exception e) {
 			log.error("Error when sae cmq - {}", e.getMessage(), e);
-			FacesMessage msg = new FacesMessage("Failed - " + e.getMessage(), null);
+			FacesMessage msg = new FacesMessage("Failed - " + e.getMessage(),
+					null);
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}
 	}
@@ -412,17 +417,22 @@ public class SearchController extends BaseController<CmqBase190> {
 	private void addTreeNode(CmqRelation190 relation, TreeNode root) {
 		if (relation.getChildren() != null && !relation.getChildren().isEmpty()) {
 			for (CmqRelation190 r : relation.getChildren()) {
-				TreeNode node = new DefaultTreeNode(new RelationTreeNode(r.getId(), r.getTermName(), r.getCmqLevel(),
-						r.getPtTermScope(), r.getPtTermCategory(), r.getPtTermWeight(), false), root);
+				TreeNode node = new DefaultTreeNode(new RelationTreeNode(
+						r.getId(), r.getTermName(), r.getCmqLevel(),
+						r.getPtTermScope(), r.getPtTermCategory(),
+						r.getPtTermWeight(), false), root);
 				addTreeNode(r, node);
 			}
 		}
 	}
 
 	public TreeNode getRoot() {
-		TreeNode root = new DefaultTreeNode(new RelationTreeNode(null, "ROOT", null, null, null, null, true), null);
-		TreeNode first = new DefaultTreeNode(new RelationTreeNode(selectedData.getId(), selectedData.getName(),
-				selectedData.getLevel(), selectedData.getScope(), null, null, true), root);
+		TreeNode root = new DefaultTreeNode(new RelationTreeNode(null, "ROOT",
+				null, null, null, null, true), null);
+		TreeNode first = new DefaultTreeNode(new RelationTreeNode(
+				selectedData.getId(), selectedData.getName(),
+				selectedData.getLevel(), selectedData.getScope(), null, null,
+				true), root);
 		first.setExpanded(true);
 		if (selectedData.getRelations() != null) {
 			for (CmqRelation190 relation : selectedData.getRelations()) {
@@ -435,15 +445,18 @@ public class SearchController extends BaseController<CmqBase190> {
 	public void onRowEdit(RowEditEvent event) {
 		TreeNode node = (DefaultTreeNode) event.getObject();
 		RelationTreeNode relationNode = (RelationTreeNode) node.getData();
-		log.debug("update tree node scope#{},category#{},weigth#{}", relationNode.getScope(),
-				relationNode.getCategory(), relationNode.getWeight());
+		log.debug("update tree node scope#{},category#{},weigth#{}",
+				relationNode.getScope(), relationNode.getCategory(),
+				relationNode.getWeight());
 		try {
 			if (relationNode.getRoot()) {
-				CmqBase190 base = cmqBaseService.findById(relationNode.getCode());
+				CmqBase190 base = cmqBaseService.findById(relationNode
+						.getCode());
 				base.setScope(relationNode.getScope());
 				cmqBaseService.update(base);
 			} else {
-				CmqRelation190 relation = cmqRelationService.findById(relationNode.getCode());
+				CmqRelation190 relation = cmqRelationService
+						.findById(relationNode.getCode());
 				relation.setPtTermScope(relationNode.getScope());
 				relation.setPtTermCategory(relationNode.getCategory());
 				relation.setPtTermWeight(relationNode.getWeight());
@@ -453,7 +466,7 @@ public class SearchController extends BaseController<CmqBase190> {
 			log.error("Error when update tree!", e);
 		}
 	}
-	
+
 	/******
 	 * 
 	 * 
@@ -466,11 +479,19 @@ public class SearchController extends BaseController<CmqBase190> {
 	public void addDrugProgram() {
 		admins.add(new AdminDTO());
 	}
-	
+
 	public void cancelDrugProgram() {
 		for (AdminDTO adminDTO : admins) {
 			if (adminDTO.getName() == null)
 				admins.remove(adminDTO);
 		}
+	}
+
+	public String[] getSelectedSOCs() {
+		return selectedSOCs;
+	}
+
+	public void setSelectedSOCs(String[] selectedSOCs) {
+		this.selectedSOCs = selectedSOCs;
 	}
 }

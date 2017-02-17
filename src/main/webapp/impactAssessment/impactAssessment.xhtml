@@ -67,15 +67,21 @@
 							<p:spacer width="5" />
 
 							<p:commandButton value="Legend" actionListener="#"
-								icon="fa fa-bars" update="messages" />
+								onclick="PF('legend').show()" icon="fa fa-bars"
+								update="messages" />
 							<p:spacer width="5" />
 
 
 							<p:submenu label="Options" icon="fa fa-wrench">
 								<p:menuButton value="Options">
-									<p:menuitem value="Action 1" actionListener="#" ajax="false"
-										icon="ui-icon-close" />
-									<p:menuitem value="Action 2" url="#" icon="ui-icon-extlink" />
+									<!-- <p:menuitem value="Action 1" actionListener="#" ajax="false"
+										icon="ui-icon-close" /> -->
+									<p:menuitem>
+
+										<p:selectBooleanCheckbox />
+										<p:outputLabel style="margin-left: 5px"
+											value="Include LLTs in Export" />
+									</p:menuitem>
 								</p:menuButton>
 							</p:submenu>
 						</f:facet>
@@ -84,7 +90,7 @@
 					<!-- PANEL -->
 					<p:panel>
 						<h:panelGrid columns="2">
-							<p:panel style="width: 100%">
+							<p:panel style="width: 100%; font-size: 12px !important">
 								<p:toolbar>
 									<f:facet name="left">
 										<p:commandButton id="filter" value="Filter and Sort"
@@ -107,7 +113,7 @@
 
 												<p:outputLabel value="Scope" />
 												<p:selectOneMenu value="0">
-													<f:selectItem itemValue="0" itemLabel="Full #####/SMQ"></f:selectItem>
+													<f:selectItem itemValue="0" itemLabel="Full /SMQ"></f:selectItem>
 													<f:selectItem itemValue="3" itemLabel="Child Narrow"></f:selectItem>
 												</p:selectOneMenu>
 
@@ -139,7 +145,7 @@
 
 									<p:columnGroup type="header">
 										<p:row>
-											<p:column rowspan="2" headerText="ABC" />
+											<p:column rowspan="2" headerText="Existing Lists/SMQ" />
 											<p:column colspan="3" headerText="Hierarchy Details" />
 										</p:row>
 
@@ -172,7 +178,7 @@
 								</p:treeTable>
 							</p:panel>
 
-							<p:panel style="width: 100%">
+							<p:panel style="width: 100%; font-size: 12px !important">
 								<p:toolbar>
 									<f:facet name="left">
 										<p:commandButton id="filter-b" value="Filter and Sort"
@@ -195,7 +201,7 @@
 
 												<p:outputLabel value="Scope" />
 												<p:selectOneMenu value="0">
-													<f:selectItem itemValue="0" itemLabel="Full #####/SMQ"></f:selectItem>
+													<f:selectItem itemValue="0" itemLabel="Full /SMQ"></f:selectItem>
 													<f:selectItem itemValue="3" itemLabel="Child Narrow"></f:selectItem>
 												</p:selectOneMenu>
 
@@ -230,7 +236,8 @@
 								<p:treeTable value="#{userBean.root}" var="row">
 									<p:columnGroup type="header">
 										<p:row>
-											<p:column rowspan="2" headerText="##" />
+											<p:column rowspan="2" headerText="Future Lists/SMQ"
+												width="200" />
 											<p:column colspan="5" headerText="Hierarchy Details" />
 										</p:row>
 
@@ -325,7 +332,7 @@
 				</h:panelGrid>
 				<f:facet name="buttonBar">
 					<p:outputLabel value="Last Updated:" id="plam1" />
-					<h:outputText value="########" id="ot27" />
+					<h:outputText value="#{dummyView.value}" id="ot27" />
 				</f:facet>
 			</p:dialog>
 
@@ -338,57 +345,30 @@
 				</h:panelGrid>
 			</p:dialog>
 
-
 			<p:dialog widgetVar="new_pt" modal="false"
 				header="New Preferred Term">
-				<h:panelGrid style="width: 700px">
-					<h:panelGrid id="pgl1" columns="2">
-						<p:selectManyMenu>
-							<f:selectItem itemValue="###" itemLabel="###" id="si8" />
-						</p:selectManyMenu>
+				<h:panelGrid style="width: 500px">
+					<h:panelGrid id="pgl1" columns="3">
+						<p:outputLabel value="SOC" />
+						<p:selectCheckboxMenu id="select" 
+							value="#{searchController.selectedSOCs}" label="SOC" 
+							filter="true" filterMatchMode="startsWith"
+							style="width:400px">
+							<f:selectItem itemValue="All" itemLabel="All" />
+						</p:selectCheckboxMenu>
+
 						<p:commandButton value="Search" id="cb11" partialSubmit="true" />
 					</h:panelGrid>
 					<p:spacer width="10" height="10" id="s7" />
 					<p:dataTable value="#{null}">
-						<p:columnGroup type="header">
-							<p:row>
-								<p:column rowspan="2" headerText="##" />
-								<p:column colspan="3" headerText="###" />
-							</p:row>
 
-							<p:row>
-								<p:column headerText="Code" />
-								<p:column headerText="Level" />
-								<p:column headerText="Scope" />
-							</p:row>
-						</p:columnGroup>
-
-						<p:column>
-							<h:panelGrid columns="1">
-								<h:outputText value="ABC" id="ot5" rendered="true"
-									shortDesc="#{node.path}" style="white-space:pre-wrap"
-									noWrap="false" />
-								<h:commandLink value="abc" id="cl1" rendered="true" />
-							</h:panelGrid>
+						<p:column headerText="Term">
+							<h:outputText value="#{dummyView.value}" rendered="true" />
 						</p:column>
 
-						<p:column>
-							<h:outputText value="#" rendered="true" />
+						<p:column headerText="Level">
+							<h:outputText value="#{dummyView.value}" rendered="true" />
 						</p:column>
-						<p:column headerText="Level" style="width: 50px !important">
-							<h:outputText value="#" rendered="true" />
-						</p:column>
-
-						<p:column>
-							<p:selectOneMenu id="soc3" value="Narrow">
-
-								<f:selectItem itemLabel="Broad" itemValue="1" id="si13s" />
-								<f:selectItem itemLabel="Narrow" itemValue="2" id="si13d" />
-								<f:selectItem itemLabel="Child Narrow" itemValue="3" id="si4" />
-							</p:selectOneMenu>
-						</p:column>
-
-
 					</p:dataTable>
 				</h:panelGrid>
 
@@ -404,6 +384,70 @@
 				<p:commandButton value="No" type="button"
 					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
 			</p:confirmDialog>
+
+
+			<p:dialog widgetVar="legend" modal="true" id="historyD"
+				closable="true" header="Impact Legend">
+
+				<h:panelGrid columns="1">
+					<h:panelGrid columns="1">
+						<h:panelGrid columns="3">
+							<p:graphicImage url="/image/impact/1010.png" />
+							<p:spacer width="5" />
+							<p:outputLabel value="Impacted"
+								style="font-weight: bold; color: blue" />
+						</h:panelGrid>
+						<h:panelGrid columns="3">
+							<p:graphicImage url="/image/impact/1080.png" />
+							<p:spacer width="5" />
+							<p:outputLabel value="Renamed Terms (Italic= BLACK ball)"
+								style="font-weight: bold; color: #000; font-style: italic" />
+						</h:panelGrid>
+						<h:panelGrid columns="3">
+							<p:graphicImage url="/image/impact/1040.png" />
+							<p:spacer width="5" height="1" />
+							<p:outputLabel value="MedDRA Inserted/Added Term/Relation"
+								style="font-weight: bold; color: orange" />
+						</h:panelGrid>
+						<h:panelGrid columns="3">
+							<p:graphicImage url="/image/impact/1070.png" />
+							<p:spacer width="5" height="1" />
+							<p:outputLabel value="MQM Inserted/Added New PT"
+								style="font-weight: bold; color: green" />
+						</h:panelGrid>
+						<h:panelGrid columns="3">
+							<p:graphicImage url="/image/impact/1110.png" />
+							<p:spacer width="5" height="1" />
+							<p:outputLabel
+								value="Other MQM Manual Additions (Bold= WHITE Ball)"
+								style="font-weight: bold; color: #000" />
+						</h:panelGrid>
+						<h:panelGrid columns="3">
+							<p:graphicImage url="/image/impact/1020.png" />
+							<p:spacer width="5" height="1" />
+							<p:outputLabel value="Deleted/Merged/Moved Term/Relation"
+								style="font-weight: bold; color: red" />
+						</h:panelGrid>
+						<h:panelGrid columns="3">
+							<p:graphicImage url="/image/impact/1030.png" />
+							<p:spacer width="5" height="10" />
+							<p:outputLabel value="Non-Current LLT (Future NMQs/SMQs)"
+								style="font-weight: bold; color: grey" />
+						</h:panelGrid>
+						<h:panelGrid columns="3">
+							<p:graphicImage url="/image/impact/1050.png" />
+							<p:spacer width="5" height="1" />
+							<p:outputLabel value="Change in TERMSCP (SMQs)"
+								style="font-weight: bold; font-weight: bold; color: pink" />
+						</h:panelGrid>
+					</h:panelGrid>
+
+					<h:panelGrid style="float: right" columns="1">
+						<p:commandButton value="OK" onclick="PF('legend').hide()"
+							immediate="true" />
+					</h:panelGrid>
+				</h:panelGrid>
+			</p:dialog>
 		</h:form>
 	</ui:define>
 </ui:composition>
