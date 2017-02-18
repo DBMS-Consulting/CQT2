@@ -11,7 +11,7 @@ import com.dbms.entity.cqt.SmqBase190;
  **/
 @ManagedBean
 @ApplicationScoped
-public class SmqBaseService extends HibernatePersistenceService<SmqBase190> {
+public class SmqBaseService extends CqtPersistenceService<SmqBase190> {
 
 	
 }

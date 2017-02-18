@@ -22,6 +22,8 @@ import com.dbms.entity.BaseEntity;
 @Table(name="EXTENTION_CONFIG_CODELIST")
 public class ExtentionConfigCodeList extends BaseEntity {
 
+	private static final long serialVersionUID = -6991254386386614648L;
+	
 	@Id
 	@GeneratedValue(generator = "idGenerator")    
 	@GenericGenerator(name = "idGenerator", strategy = "assigned") 

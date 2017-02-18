@@ -7,6 +7,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.RequestScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
@@ -21,15 +22,15 @@ import org.slf4j.LoggerFactory;
 import com.dbms.entity.cqt.CmqBase190;
 import com.dbms.entity.cqt.CmqRelation190;
 import com.dbms.entity.cqt.CreateEntity;
-import com.dbms.service.CmqBase190Service;
-import com.dbms.service.CmqRelation190Service;
+import com.dbms.service.ICmqBase190Service;
+import com.dbms.service.ICmqRelation190Service;
 import com.dbms.web.dto.AdminDTO;
 
 /**
  * @date Feb 7, 2017 7:39:34 AM
  **/
 @ManagedBean
-@ViewScoped
+@RequestScoped
 public class SearchController extends BaseController<CmqBase190> {
 
 	private static final long serialVersionUID = 5299394344651669792L;
@@ -37,10 +38,11 @@ public class SearchController extends BaseController<CmqBase190> {
 	private static final Logger log = LoggerFactory
 			.getLogger(SearchController.class);
 
-	@ManagedProperty("#{cmqBase190Service}")
-	private CmqBase190Service cmqBaseService;
-	@ManagedProperty("#{cmqRelation190Service}")
-	private CmqRelation190Service cmqRelationService;
+	@ManagedProperty("#{CmqBase190Service}")
+	private ICmqBase190Service cmqBaseService;
+	
+	@ManagedProperty("#{CmqRelation190Service}")
+	private ICmqRelation190Service cmqRelationService;
 
 	private String releaseStatus;
 	private String criticalEvent;
@@ -369,15 +371,15 @@ public class SearchController extends BaseController<CmqBase190> {
 		this.vals = vals;
 	}
 
-	public CmqBase190Service getCmqBaseService() {
+	public ICmqBase190Service getCmqBaseService() {
 		return cmqBaseService;
 	}
 
-	public void setCmqBaseService(CmqBase190Service cmqBaseService) {
+	public void setCmqBaseService(ICmqBase190Service cmqBaseService) {
 		this.cmqBaseService = cmqBaseService;
 	}
 
-	public void setCmqRelationService(CmqRelation190Service cmqRelationService) {
+	public void setCmqRelationService(ICmqRelation190Service cmqRelationService) {
 		this.cmqRelationService = cmqRelationService;
 	}
 
@@ -418,7 +420,7 @@ public class SearchController extends BaseController<CmqBase190> {
 	}
 
 	private void addTreeNode(CmqRelation190 relation, TreeNode root) {
-		if (relation.getChildren() != null && !relation.getChildren().isEmpty()) {
+		/*if (relation.getChildren() != null && !relation.getChildren().isEmpty()) {
 			for (CmqRelation190 r : relation.getChildren()) {
 				TreeNode node = new DefaultTreeNode(new RelationTreeNode(
 						r.getId(), r.getTermName(), r.getCmqLevel(),
@@ -426,13 +428,13 @@ public class SearchController extends BaseController<CmqBase190> {
 						r.getPtTermWeight(), false), root);
 				addTreeNode(r, node);
 			}
-		}
+		}*/
 	}
 
 	public TreeNode getRoot() {
 		TreeNode root = new DefaultTreeNode(new RelationTreeNode(null, "ROOT",
 				null, null, null, null, true), null);
-		TreeNode first = new DefaultTreeNode(new RelationTreeNode(
+		/*TreeNode first = new DefaultTreeNode(new RelationTreeNode(
 				selectedData.getId(), selectedData.getName(),
 				selectedData.getLevel(), selectedData.getScope(), null, null,
 				true), root);
@@ -441,12 +443,12 @@ public class SearchController extends BaseController<CmqBase190> {
 			for (CmqRelation190 relation : selectedData.getRelations()) {
 				addTreeNode(relation, first);
 			}
-		}
+		}*/
 		return root;
 	}
 
 	public void onRowEdit(RowEditEvent event) {
-		TreeNode node = (DefaultTreeNode) event.getObject();
+		/*TreeNode node = (DefaultTreeNode) event.getObject();
 		RelationTreeNode relationNode = (RelationTreeNode) node.getData();
 		log.debug("update tree node scope#{},category#{},weigth#{}",
 				relationNode.getScope(), relationNode.getCategory(),
@@ -467,7 +469,7 @@ public class SearchController extends BaseController<CmqBase190> {
 			}
 		} catch (Exception e) {
 			log.error("Error when update tree!", e);
-		}
+		}*/
 	}
 
 	/******

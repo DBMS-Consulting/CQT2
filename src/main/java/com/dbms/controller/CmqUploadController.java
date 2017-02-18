@@ -17,7 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.dbms.entity.cqt.CmqBase190;
-import com.dbms.service.CmqBase190Service;
+import com.dbms.service.ICmqBase190Service;
 
 /**
  * @date Feb 8, 2017 8:29:12 AM
@@ -31,8 +31,8 @@ public class CmqUploadController implements Serializable {
 	private static final Logger log = LoggerFactory
 			.getLogger(CmqUploadController.class);
 
-	@ManagedProperty("#{cmqBase190Service}")
-	private CmqBase190Service cmqBaseService;
+	@ManagedProperty("#{CmqBase190Service}")
+	private ICmqBase190Service cmqBaseService;
 
 	private UploadedFile file;
 
@@ -44,7 +44,7 @@ public class CmqUploadController implements Serializable {
 		this.file = file;
 	}
 
-	public void setCmqBaseService(CmqBase190Service cmqBaseService) {
+	public void setCmqBaseService(ICmqBase190Service cmqBaseService) {
 		this.cmqBaseService = cmqBaseService;
 	}
 
@@ -88,41 +88,41 @@ public class CmqUploadController implements Serializable {
 					base=new CmqBase190();
 
 					base.setId(id);
-					base.setName(ss[1]);
-					base.setType(ss[2]);
-					base.setProductName(ss[3]);
-					base.setDrugProgram(ss[4]);
-					base.setProtocolName(ss[5]);
+					base.setCmqName(ss[1]);
+					base.setCmqTypeCd(ss[2]);
+					base.setCmqProductCd(ss[3]);
+					base.setCmqProgramCd(ss[4]);
+					base.setCmqProtocolCd(ss[5]);
 					Integer level=null;
 					try{
 						level=Integer.parseInt(ss[6]);
 					}catch(Exception e){}
-					base.setLevel(level);
-					base.setDesignee(ss[7]);
-					base.setReleaseGroup(ss[8]);
-					base.setReleaseStatus(ss[9]);
+					base.setCmqLevel(level);
+					base.setCmqDesignee(ss[7]);
+					base.setCmqGroup(ss[8]);
+					base.setCmqStatus(ss[9]);
 					if(StringUtils.isNotEmpty(ss[10])&&!ss[10].equalsIgnoreCase("NO GROUP")){
-						base.setGroup(ss[10]);
+						base.setCmqGroup(ss[10]);
 					}
-					base.setAlgorithm(ss[11]);
+					base.setCmqAlgorithm(ss[11]);
 					if(StringUtils.isNotEmpty(ss[12])){
 						if(ss[12].equalsIgnoreCase("pending")){
-							base.setStatus("P");
+							base.setCmqStatus("P");
 						}else if(ss[12].equalsIgnoreCase("active")){
-							base.setStatus("A");
+							base.setCmqStatus("A");
 						}else if(ss[12].equalsIgnoreCase("inactive")){
-							base.setStatus("I");
+							base.setCmqStatus("I");
 						}
 					}
-					base.setCriticalEvent(ss[13]);
+					base.setCmqCriticalEvent(ss[13]);
 					if(StringUtils.isNotEmpty(ss[14])){
 						if(ss[14].equalsIgnoreCase("no")){
-							base.setScope("N");
+							//base.setScope("N"); // missing in schema
 						}else if(ss[14].equals("yes")){
-							base.setScope("Y");
+							//base.setScope("Y");  // missing in schema
 						}
 					}
-					base.setState(ss[15]);
+					base.setCmqState(ss[15]);
 					base.setCreatedBy(ss[16]);
 					Date created = null;
 					if (StringUtils.isNotEmpty(ss[17])

@@ -2,6 +2,7 @@ package com.dbms.entity.cqt;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -15,15 +16,17 @@ import com.dbms.entity.AuditableEntity;
 @SequenceGenerator(name = "ID_GENERATOR", sequenceName = "CQT_USER_SEQ")
 public class User /*extends AuditableEntity*/ {
 
-	private static final long serialVersionUID = 1L;
-
-	public User() {
-		super();
-	}
+	@Id
+	@Column(name = "ID", unique = true, nullable = false)
+	private Long userId;
 
 	@Column(name = "NAME")
 	private String name;
 
+	public User() {
+		super();
+	}
+	
 	public String getName() {
 		return name;
 	}

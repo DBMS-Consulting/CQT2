@@ -1,5 +1,6 @@
 package com.dbms.entity.cqt;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -7,297 +8,392 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import org.hibernate.annotations.GenericGenerator;
-
 import com.dbms.entity.BaseEntity;
 
-/**
- * @author Jay G.(jayshanchn@hotmail.com)
- * @date Feb 11, 2017 6:26:15 AM
- **/
 @Entity
-@Table(name="CMQ_BASE_190")
-public class CmqBase190 extends BaseEntity{
+@Table(name = "CMQ_BASE_190")
+public class CmqBase190 extends BaseEntity {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 6648403063564315829L;
+
 	@Id
-	@GeneratedValue(generator = "idGenerator")    
-	@GenericGenerator(name = "idGenerator", strategy = "assigned") 
-	@Column(name = "CMQ_CODE",length=10,unique=true,nullable=false)
-	private Long id;
-	@Column(name="CMQ_NAME",length=200)
-	private String name;
-	@Column(name="CMQ_TYPE",length=3)
-	private String type;
-	@Column(name="CMQ_LEVEL",length=1)
-	private Integer level;
+	@GeneratedValue(generator = "CMQ_ID_SEQ", strategy = GenerationType.SEQUENCE)
+	@SequenceGenerator(name = "CMQ_ID_SEQ", sequenceName = "CMQ_ID_SEQ", allocationSize = 20)
+	@Column(name = "CMQ_ID", unique = true, nullable = false)
+	private Long cmqId;
+
+	@Column(name = "CMQ_CODE", unique = true, nullable = false, precision = 38)
+	private Long cmqCode;
+
+	@Column(name = "CMQ_NAME", nullable = false, length = 200)
+	private String cmqName;
+
+	@Column(name = "CMQ_TYPE_CD", nullable = false, length = 3)
+	private String cmqTypeCd;
+
+	@Column(name = "CMQ_LEVEL", nullable = false, precision = 1)
+	private Integer cmqLevel;
+
+	/*
+	 * @Column(name = "CMQ_PARENT_CODE", nullable = false, precision = 38, scale
+	 * = 0) private Long cmqParentCode;
+	 */
+
+	/*
+	 * @Column(name = "CMQ_PARENT_ID", nullable = false, precision = 38, scale =
+	 * 0) private Long cmqParentId;
+	 */
+
+	@Column(name = "CMQ_DESCRIPTION", nullable = false, length = 4000)
+	private String cmqDescription;
+
+	@Column(name = "CMQ_STATUS", nullable = false, length = 1)
+	private String cmqStatus;
+
+	@Column(name = "CMQ_STATE", nullable = false, length = 15)
+	private String cmqState;
+
+	@Column(name = "CMQ_CRITICAL_EVENT", length = 5)
+	private String cmqCriticalEvent;
+
+	@Column(name = "CMQ_ALGORITHM", length = 300)
+	private String cmqAlgorithm;
+
+	@Column(name = "CMQ_SOURCE", nullable = false, length = 4000)
+	private String cmqSource;
+
+	@Column(name = "CMQ_NOTE", nullable = false)
 	@Lob
-	@Column(name="CMQ_DESCRIPTION",columnDefinition="CLOB")
-	private String description;
-	@Lob
-	@Column(name="CMQ_SOURCE",columnDefinition="CLOB")
-	private String source;
-	@Lob
-	@Column(name="CMQ_NOTE",columnDefinition="CLOB")
-	private String note;
-	@Column(name="CMQ_STATUS",length=1)
-	private String status;
-	@Column(name="CMQ_STATE",length=15)
-	private String state;
-	@Column(name="CMQ_CRITICAL_EVENT",length=10)
-	private String criticalEvent;
-	@Column(name="CMQ_ALGORITHM",length=300)
-	private String algorithm;
-	@Column(name="CMQ_SCOPE",length=5)
-	private String scope;
-	@Column(name="CMQ_PROGRAM_NAME",length=200)
-	private String programName;
-	@Column(name="CMQ_PROTOCOL_NAME",length=100)
-	private String protocolName;
-	@Column(name="CMQ_PRODUCT_NAME",length=200)
-	private String productName;
-	@Column(name="DESIGNEE",length=100)
-	private String designee;
-	@Column(name="CMQ_GROUP",length=100)
-	private String group;
-	@Column(name="CMQ_DUE_DATE")
-	private Date dueDate;
-	@Column(name="CMQ_WF_DESC",length=200)
-	private String wfDesc;
-	@Column(name="CREATED_BY",length=30)
+	private String cmqNote;
+
+	@Column(name = "CMQ_PROGRAM_CD", nullable = false, length = 200)
+	private String cmqProgramCd;
+
+	@Column(name = "CMQ_PROTOCOL_CD", nullable = false, length = 100)
+	private String cmqProtocolCd;
+
+	@Column(name = "CMQ_PRODUCT_CD", nullable = false, length = 200)
+	private String cmqProductCd;
+
+	@Column(name = "CMQ_DESIGNEE", nullable = false, length = 100)
+	private String cmqDesignee;
+
+	@Column(name = "CMQ_GROUP", length = 100)
+	private String cmqGroup;
+
+	@Temporal(TemporalType.DATE)
+	@Column(name = "CMQ_DUE_DATE", length = 7)
+	private Date cmqDueDate;
+
+	@Column(name = "CMQ_WF_DESC", length = 200)
+	private String cmqWfDesc;
+
+	@Column(name = "IMPACT_TYPE", length = 15)
+	private String impactType;
+
+	@Column(name = "CREATED_BY", nullable = false, length = 30)
 	private String createdBy;
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name="CREATION_DATE")
+
+	@Temporal(TemporalType.DATE)
+	@Column(name = "CREATION_DATE", nullable = false, length = 7)
 	private Date creationDate;
-	@Column(name="LAST_MODIFIED_BY",length=30)
+
+	@Column(name = "LAST_MODIFIED_BY", length = 30)
 	private String lastModifiedBy;
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name="LAST_MODIFIED_DATE")
-	private Date lastModifedDate;
-	@Column(name="ACTIVATED_BY",length=30)
+
+	@Temporal(TemporalType.DATE)
+	@Column(name = "LAST_MODIFIED_DATE", length = 7)
+	private Date lastModifiedDate;
+
+	@Column(name = "ACTIVATED_BY", nullable = false, length = 30)
 	private String activatedBy;
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name="ACTIVATION_DATE")
+
+	@Temporal(TemporalType.DATE)
+	@Column(name = "ACTIVATION_DATE", nullable = false, length = 7)
 	private Date activationDate;
-	@Column(name="RELEASE_GROUP",length=30)
-	private String releaseGroup;
-	@Column(name="RELEASE_STATUS",length=30)
-	private String releaseStatus;
-	@OneToMany(mappedBy="parent",cascade=CascadeType.ALL)
-	private Set<CmqBase190> children=new HashSet<>();
+
+	@Column(name = "DICTIONARY_NAME", nullable = false, length = 10)
+	private String dictionaryName;
+
+	@Column(name = "DICTIONARY_VERSION", nullable = false, length = 5)
+	private String dictionaryVersion;
+
+	@Column(name = "CMQ_SUBVERSION", nullable = false, precision = 10)
+	private BigDecimal cmqSubversion;
+
 	@ManyToOne
-	@JoinColumn(name="CMQ_PARENT_CODE")
-	private CmqBase190 parent;
-	
-	@OneToMany(mappedBy="base",cascade=CascadeType.ALL,orphanRemoval=true,fetch=FetchType.EAGER)
-	private Set<CmqRelation190> relations=new HashSet<>();
-	
-	@Column(name="DRUG_PROGRAM",length=30)
-	private String drugProgram;
-	@Override
+	@JoinColumns({ @JoinColumn(name = "CMQ_PARENT_ID", referencedColumnName = "CMQ_ID"),
+			@JoinColumn(name = "CMQ_PARENT_CODE", referencedColumnName = "CMQ_CODE") })
+	private CmqBase190 parentCmq;
+
+	@OneToMany(mappedBy = "parentCmq", cascade = CascadeType.ALL)
+	private Set<CmqBase190> childCmqs = new HashSet<>();
+
 	public Long getId() {
-		return this.id;
+		return cmqId;
 	}
-	public String getName() {
-		return name;
+
+	public void setId(Long cmqId) {
+		this.cmqId = cmqId;
 	}
-	public void setName(String name) {
-		this.name = name;
+
+	public Long getCmqCode() {
+		return cmqCode;
 	}
-	public String getType() {
-		return type;
+
+	public void setCmqCode(Long cmqCode) {
+		this.cmqCode = cmqCode;
 	}
-	public void setType(String type) {
-		this.type = type;
+
+	public String getCmqName() {
+		return cmqName;
 	}
-	public Integer getLevel() {
-		return level;
+
+	public void setCmqName(String cmqName) {
+		this.cmqName = cmqName;
 	}
-	public void setLevel(Integer level) {
-		this.level = level;
+
+	public String getCmqTypeCd() {
+		return cmqTypeCd;
 	}
-	public String getDescription() {
-		return description;
+
+	public void setCmqTypeCd(String cmqTypeCd) {
+		this.cmqTypeCd = cmqTypeCd;
 	}
-	public void setDescription(String description) {
-		this.description = description;
+
+	public Integer getCmqLevel() {
+		return cmqLevel;
 	}
-	public String getSource() {
-		return source;
+
+	public void setCmqLevel(Integer cmqLevel) {
+		this.cmqLevel = cmqLevel;
 	}
-	public void setSource(String source) {
-		this.source = source;
+
+	/*
+	 * public Long getCmqParentCode() { return cmqParentCode; }
+	 * 
+	 * public void setCmqParentCode(Long cmqParentCode) { this.cmqParentCode =
+	 * cmqParentCode; }
+	 */
+
+	public String getCmqDescription() {
+		return cmqDescription;
 	}
-	public String getNote() {
-		return note;
+
+	public void setCmqDescription(String cmqDescription) {
+		this.cmqDescription = cmqDescription;
 	}
-	public void setNote(String note) {
-		this.note = note;
+
+	public String getCmqStatus() {
+		return cmqStatus;
 	}
-	public String getStatus() {
-		return status;
+
+	public void setCmqStatus(String cmqStatus) {
+		this.cmqStatus = cmqStatus;
 	}
-	public void setStatus(String status) {
-		this.status = status;
+
+	public String getCmqState() {
+		return cmqState;
 	}
-	public String getState() {
-		return state;
+
+	public void setCmqState(String cmqState) {
+		this.cmqState = cmqState;
 	}
-	public void setState(String state) {
-		this.state = state;
+
+	public String getCmqCriticalEvent() {
+		return cmqCriticalEvent;
 	}
-	public String getCriticalEvent() {
-		return criticalEvent;
+
+	public void setCmqCriticalEvent(String cmqCriticalEvent) {
+		this.cmqCriticalEvent = cmqCriticalEvent;
 	}
-	public void setCriticalEvent(String criticalEvent) {
-		this.criticalEvent = criticalEvent;
+
+	public String getCmqAlgorithm() {
+		return cmqAlgorithm;
 	}
-	public String getAlgorithm() {
-		return algorithm;
+
+	public void setCmqAlgorithm(String cmqAlgorithm) {
+		this.cmqAlgorithm = cmqAlgorithm;
 	}
-	public void setAlgorithm(String algorithm) {
-		this.algorithm = algorithm;
+
+	public String getCmqSource() {
+		return cmqSource;
 	}
-	public String getScope() {
-		return scope;
+
+	public void setCmqSource(String cmqSource) {
+		this.cmqSource = cmqSource;
 	}
-	public void setScope(String scope) {
-		this.scope = scope;
+
+	public String getCmqNote() {
+		return cmqNote;
 	}
-	public String getProgramName() {
-		return programName;
+
+	public void setCmqNote(String cmqNote) {
+		this.cmqNote = cmqNote;
 	}
-	public void setProgramName(String programName) {
-		this.programName = programName;
+
+	public String getCmqProgramCd() {
+		return cmqProgramCd;
 	}
-	public String getProtocolName() {
-		return protocolName;
+
+	public void setCmqProgramCd(String cmqProgramCd) {
+		this.cmqProgramCd = cmqProgramCd;
 	}
-	public void setProtocolName(String protocolName) {
-		this.protocolName = protocolName;
+
+	public String getCmqProtocolCd() {
+		return cmqProtocolCd;
 	}
-	public String getDesignee() {
-		return designee;
+
+	public void setCmqProtocolCd(String cmqProtocolCd) {
+		this.cmqProtocolCd = cmqProtocolCd;
 	}
-	public void setDesignee(String designee) {
-		this.designee = designee;
+
+	public String getCmqProductCd() {
+		return cmqProductCd;
 	}
-	public String getGroup() {
-		return group;
+
+	public void setCmqProductCd(String cmqProductCd) {
+		this.cmqProductCd = cmqProductCd;
 	}
-	public void setGroup(String group) {
-		this.group = group;
+
+	public String getCmqDesignee() {
+		return cmqDesignee;
 	}
-	public Date getDueDate() {
-		return dueDate;
+
+	public void setCmqDesignee(String cmqDesignee) {
+		this.cmqDesignee = cmqDesignee;
 	}
-	public void setDueDate(Date dueDate) {
-		this.dueDate = dueDate;
+
+	public String getCmqGroup() {
+		return cmqGroup;
 	}
-	public String getWfDesc() {
-		return wfDesc;
+
+	public void setCmqGroup(String cmqGroup) {
+		this.cmqGroup = cmqGroup;
 	}
-	public void setWfDesc(String wfDesc) {
-		this.wfDesc = wfDesc;
+
+	public Date getCmqDueDate() {
+		return cmqDueDate;
 	}
+
+	public void setCmqDueDate(Date cmqDueDate) {
+		this.cmqDueDate = cmqDueDate;
+	}
+
+	public String getCmqWfDesc() {
+		return cmqWfDesc;
+	}
+
+	public void setCmqWfDesc(String cmqWfDesc) {
+		this.cmqWfDesc = cmqWfDesc;
+	}
+
+	public String getImpactType() {
+		return impactType;
+	}
+
+	public void setImpactType(String impactType) {
+		this.impactType = impactType;
+	}
+
 	public String getCreatedBy() {
 		return createdBy;
 	}
+
 	public void setCreatedBy(String createdBy) {
 		this.createdBy = createdBy;
 	}
+
 	public Date getCreationDate() {
 		return creationDate;
 	}
+
 	public void setCreationDate(Date creationDate) {
 		this.creationDate = creationDate;
 	}
+
 	public String getLastModifiedBy() {
 		return lastModifiedBy;
 	}
+
 	public void setLastModifiedBy(String lastModifiedBy) {
 		this.lastModifiedBy = lastModifiedBy;
 	}
-	public Date getLastModifedDate() {
-		return lastModifedDate;
+
+	public Date getLastModifiedDate() {
+		return lastModifiedDate;
 	}
-	public void setLastModifedDate(Date lastModifedDate) {
-		this.lastModifedDate = lastModifedDate;
+
+	public void setLastModifiedDate(Date lastModifiedDate) {
+		this.lastModifiedDate = lastModifiedDate;
 	}
+
 	public String getActivatedBy() {
 		return activatedBy;
 	}
+
 	public void setActivatedBy(String activatedBy) {
 		this.activatedBy = activatedBy;
 	}
+
 	public Date getActivationDate() {
 		return activationDate;
 	}
+
 	public void setActivationDate(Date activationDate) {
 		this.activationDate = activationDate;
 	}
-	public String getReleaseGroup() {
-		return releaseGroup;
+
+	public String getDictionaryName() {
+		return dictionaryName;
 	}
-	public void setReleaseGroup(String releaseGroup) {
-		this.releaseGroup = releaseGroup;
+
+	public void setDictionaryName(String dictionaryName) {
+		this.dictionaryName = dictionaryName;
 	}
-	public String getReleaseStatus() {
-		return releaseStatus;
+
+	public String getDictionaryVersion() {
+		return dictionaryVersion;
 	}
-	public void setReleaseStatus(String releaseStatus) {
-		this.releaseStatus = releaseStatus;
+
+	public void setDictionaryVersion(String dictionaryVersion) {
+		this.dictionaryVersion = dictionaryVersion;
 	}
-	public Set<CmqBase190> getChildren() {
-		return children;
+
+	public BigDecimal getCmqSubversion() {
+		return cmqSubversion;
 	}
-	public void setChildren(Set<CmqBase190> children) {
-		this.children = children;
+
+	public void setCmqSubversion(BigDecimal cmqSubversion) {
+		this.cmqSubversion = cmqSubversion;
 	}
-	public void setId(Long id) {
-		this.id = id;
+
+	public CmqBase190 getParentCmq() {
+		return parentCmq;
 	}
-	public CmqBase190 getParent() {
-		return parent;
+
+	public void setParentCmq(CmqBase190 parentCmq) {
+		this.parentCmq = parentCmq;
 	}
-	public void setParent(CmqBase190 parent) {
-		this.parent = parent;
+
+	public Set<CmqBase190> getChildCmqs() {
+		return childCmqs;
 	}
-	public String getProductName() {
-		return productName;
-	}
-	public void setProductName(String productName) {
-		this.productName = productName;
-	}
-	public String getDrugProgram() {
-		return drugProgram;
-	}
-	public void setDrugProgram(String drugProgram) {
-		this.drugProgram = drugProgram;
-	}
-	public Set<CmqRelation190> getRelations() {
-		return relations;
-	}
-	public void setRelations(Set<CmqRelation190> relations) {
-		this.relations = relations;
-	}
-	public void addRelation(CmqRelation190 relation){
-		this.relations.add(relation);
-		relation.setBase(this);
+
+	public void setChildCmqs(Set<CmqBase190> childCmqs) {
+		this.childCmqs = childCmqs;
 	}
 }
-
