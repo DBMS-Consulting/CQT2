@@ -83,11 +83,11 @@ public class CmqInfoUploadController implements Serializable {
 						continue;
 					}
 					if (ss.length > 1 && StringUtils.isNotEmpty(ss[1]))
-						base.setDescription(ss[1]);
+						base.setCmqDescription(ss[1]);
 					if (ss.length > 2 && StringUtils.isNotEmpty(ss[2]))
-						base.setNote(ss[2]);
+						base.setCmqNote(ss[2]);
 					if (ss.length > 3 && StringUtils.isNotEmpty(ss[3]))
-						base.setSource(ss[3]);
+						base.setCmqSource(ss[3]);
 					log.debug("save entity {}", base);
 					cmqBaseService.update(base);
 					success++;
