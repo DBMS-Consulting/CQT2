@@ -11,7 +11,7 @@
 
 		<h:panelGrid columns="2" columnClasses="label, value">
 			<p:outputLabel value="Extension" styleClass="label-right" />
-			<p:selectOneMenu value="#{searchController.extension}">
+			<p:selectOneMenu value="#{createController.extension}">
 				<f:selectItem itemLabel="TME" itemValue="TME"></f:selectItem>
 				<f:selectItem itemLabel="TR1" itemValue="TR1"></f:selectItem>
 				<f:selectItem itemLabel="CPT" itemValue="CPT"></f:selectItem>
@@ -19,16 +19,16 @@
 				<f:selectItem itemLabel="PRO" itemValue="PRO"></f:selectItem>
 
 				<p:ajax update="level lProtocol drug lDrug product lProduct" event="change"
-					listener="#{searchController.changeLevel}" />
+					listener="#{createController.changeLevel}" />
 			</p:selectOneMenu>
 
 			<p:outputLabel id="lDrug"
-				value="#{searchController.extension eq 'TME' or 
-			searchController.extension eq 'TR1' or searchController.extension eq 'PRO' ? '* Drug Program' : 'Drug Program'}"
+				value="#{createController.extension eq 'TME' or 
+			createController.extension eq 'TR1' or createController.extension eq 'PRO' ? '* Drug Program' : 'Drug Program'}"
 				styleClass="label-right" />
-			<p:selectOneMenu value="#{searchController.drugProgram}" id="drug"
-				required="#{searchController.extension eq 'TME' or 
-				searchController.extension eq 'TR1' or searchController.extension eq 'PRO'}"
+			<p:selectOneMenu value="#{createController.drugProgram}" id="drug"
+				required="#{createController.extension eq 'TME' or 
+				createController.extension eq 'TR1' or createController.extension eq 'PRO'}"
 				requiredMessage="The Drug Program is required">
 				<f:selectItem itemValue="" itemLabel="" />
 				<f:selectItem itemValue="No Program" itemLabel="No Program" />
@@ -37,11 +37,11 @@
 			</p:selectOneMenu>
 
 			<p:outputLabel id="lProtocol"
-				value="#{searchController.extension eq 'PRO' ? '* Protocol' : 'Protocol'}"
+				value="#{createController.extension eq 'PRO' ? '* Protocol' : 'Protocol'}"
 				styleClass="label-right" />
-			<p:selectOneMenu value="#{searchController.protocol}" id="protocol"
+			<p:selectOneMenu value="#{createController.protocol}" id="protocol"
 				requiredMessage="The Protocol is required"
-				required="#{searchController.extension eq 'PRO'}">
+				required="#{createController.extension eq 'PRO'}">
 				<f:selectItem itemValue="" itemLabel="" />
 				<f:selectItem itemValue="No Protocol" itemLabel="No Protocol" />
 				<f:selectItem itemValue="Val 1" itemLabel="Val 1" />
@@ -49,12 +49,12 @@
 			</p:selectOneMenu>
 
 			<p:outputLabel id="lProduct"
-				value="#{searchController.extension eq 'TME' or 
-			searchController.extension eq 'TR1' or searchController.extension eq 'PRO' ? '* Product' : 'Product'}"
+				value="#{createController.extension eq 'TME' or 
+			createController.extension eq 'TR1' or createController.extension eq 'PRO' ? '* Product' : 'Product'}"
 				rendered="true" styleClass="label-right" />
-			<p:selectOneMenu value="#{searchController.product}" disabled="false"
-				required="#{searchController.extension eq 'TME' or 
-			searchController.extension eq 'TR1' or searchController.extension eq 'PRO'}"
+			<p:selectOneMenu value="#{createController.product}" disabled="false"
+				required="#{createController.extension eq 'TME' or 
+			createController.extension eq 'TR1' or createController.extension eq 'PRO'}"
 				requiredMessage="The Product is required" id="product">
 				<f:selectItem itemValue="" itemLabel="" />
 				<f:selectItem itemValue="No Product" itemLabel="No Product" />
@@ -63,12 +63,12 @@
 			</p:selectOneMenu>
 
 			<p:outputLabel value="* Designee" styleClass="label-right" />
-			<p:selectOneMenu value="#{dummyView.value}" rendered="true"
+			<p:selectOneMenu value="#{createController.selectedData.cmqDesignee}" rendered="true"
 				disabled="false" requiredMessage="The Designee is required"
 				required="true">
 				<f:selectItem itemLabel="" itemValue=""></f:selectItem>
 				<f:selectItem itemLabel="Jane Doe" itemValue="jane"></f:selectItem>
-				<f:selectItem itemLabel="John Doe" itemValue="john"></f:selectItem>
+				<!-- <f:selectItems></f:selectItems> -->				
 			</p:selectOneMenu>
 		</h:panelGrid>
 
@@ -81,7 +81,7 @@
 			<h:outputText value="Pending" />
 
 			<p:outputLabel value="* Level" styleClass="label-right" />
-			<p:selectOneMenu value="#{searchController.level}" rendered="true"
+			<p:selectOneMenu value="#{createController.level}" rendered="true"
 				disabled="false" id="level" required="true">
 				<f:selectItem itemValue="1" itemLabel="1" />
 				<f:selectItem itemValue="2" itemLabel="2" />
@@ -91,7 +91,7 @@
 			</p:selectOneMenu>
 
 			<p:outputLabel value="* Critical event" styleClass="label-right" />
-			<p:selectOneMenu value="#{searchController.critical}" rendered="true"
+			<p:selectOneMenu value="#{createController.critical}" rendered="true"
 				disabled="false" id="critical" required="true">
 				<f:selectItem itemValue="No" itemLabel="No" />
 				<f:selectItem itemValue="Yes-Narrow" itemLabel="Yes-Narrow" />
@@ -99,32 +99,28 @@
 			</p:selectOneMenu>
 
 			<p:outputLabel value="Scope" styleClass="label-right" />
-			<p:selectOneMenu value="#{searchController.scope}" rendered="true"
+			<p:selectOneMenu value="#{createController.scope}" rendered="true"
 				disabled="false" id="scope" required="true">
 				<f:selectItem itemValue="No" itemLabel="No" />
 				<f:selectItem itemValue="Yes" itemLabel="Yes" />
 			</p:selectOneMenu>
 
 			<p:outputLabel value="* Algorithm" styleClass="label-right" />
-			<p:inputText value="N" />
+			<p:inputText value="#{createController.algorithm}" /> 
 
 		</h:panelGrid>
 
 		<h:panelGrid columns="2" columnClasses="label, value"
 			style="min-width: 300px">
 			<p:outputLabel value="* Status" styleClass="label-right" />
-			<h:outputText value="Pending"></h:outputText>
+			<h:outputText value="#{createController.status}"></h:outputText>
 
 			<p:outputLabel value="* State" styleClass="label-right" />
-			<h:outputText value="Draft"></h:outputText>
-			<!-- <p:selectOneMenu value="#{dummyView.value}" rendered="true"
-				disabled="true" required="true">
-				<f:selectItem itemLabel="Draft" itemValue="Draft"></f:selectItem>
-				<f:selectItem itemLabel="Approved" itemValue="Approved"></f:selectItem>
-			</p:selectOneMenu> -->
+			<h:outputText value="#{createController.state}" ></h:outputText>
+			 
 
 			<p:outputLabel value="* Group" styleClass="label-right" />
-			<p:selectOneMenu value="#{dummyView.value}" rendered="true"
+			<p:selectOneMenu value="#{createController.selectedData.cmqGroup}" rendered="true"
 				disabled="false" required="true"
 				requiredMessage="A group is required">
 				<f:selectItem itemLabel="No Group" itemValue="No Group"></f:selectItem>
@@ -132,22 +128,22 @@
 			</p:selectOneMenu>
 
 			<p:outputLabel value="Code" styleClass="label-right" />
-			<h:outputText value="#{dummyView.value}" />
+			<h:outputText value="#{createController.selectedData.cmqCode}" />
 		</h:panelGrid>
 
 		<h:panelGrid columns="2" columnClasses="label, value">
 			<p:outputLabel value="Creation Date  " styleClass="label-right" />
-			<h:outputText value="#{dummyView.value}" />
+			<h:outputText value="#{createController.selectedData.creationDate}" />
 
 			<p:outputLabel value="Created By  " styleClass="label-right" />
-			<h:outputText value="#{dummyView.value}" />
+			<h:outputText value="#{createController.selectedData.createdBy}" />
 
 			<p:outputLabel value="Last Activation Date  "
 				styleClass="label-right" />
-			<h:outputText value="#{dummyView.value}" />
+			<h:outputText value="#{createController.selectedData.activationDate}" />
 
 			<p:outputLabel value="Last Activation By  " styleClass="label-right" />
-			<h:outputText value="#{dummyView.value}" />
+			<h:outputText value="#{createController.selectedData.activatedBy}" />
 		</h:panelGrid>
 	</h:panelGrid>
 

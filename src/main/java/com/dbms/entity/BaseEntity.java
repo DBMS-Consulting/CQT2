@@ -8,14 +8,14 @@ import javax.persistence.MappedSuperclass;
  * Base class for auto-generated ID classes.
  */
 @MappedSuperclass
-public abstract class BaseEntity implements IEntity,Serializable {
+public abstract class BaseEntity implements IEntity, Serializable {
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -5697234342219022128L;
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
-		int result = 1+super.hashCode();
+		int result = 1 + super.hashCode();
 		result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
 		return result;
 	}
@@ -39,7 +39,7 @@ public abstract class BaseEntity implements IEntity,Serializable {
 
 	@Override
 	public String toString() {
-		return "Entity [class=" +this.getClass()+", id="+ getId() + "]";
+		return "Entity [class=" + this.getClass() + ", id=" + getId() + "]";
 	}
 
 }

@@ -104,33 +104,33 @@ public class CmqRelationUploadController implements Serializable {
 						break;
 					}
 					relation=new CmqRelation190();
-					relation.setBase(base);
-					relation.setTermName(ss[1]);
+					relation.setCmqBase(base);
+					//relation.setTermName(ss[1]);	//missing in schema
 					if(ss.length>2&&StringUtils.isNotEmpty(ss[2])&&ss[2].length()>3){
 						failed++;
 						log.error("leve is not formated {}",ss[2]);
 						break;
 					}
-					relation.setTermDictLevel(ss[2]);
+					//relation.setTermDictLevel(ss[2]);	//missing in schema
 					if(ss.length>3&&StringUtils.isNotEmpty(ss[3])){
 						CmqRelation190 parent=cmqRelationService.findByTermName(ss[3]);
 						if(parent==null){
 							log.error("no found parent Relation by {}",ss[3]);
 						}
-						parent.addChild(relation);
+						//parent.addChild(relation); //missing in schema
 					}
 					if(ss.length>5&&!StringUtils.isNotEmpty(ss[5])&&ss[5].length()==1){
-						relation.setPtTermCategory(ss[5]);
+						relation.setTermCategory(ss[5]);
 					}
 					if(ss.length>6)
-						relation.setPtTermScope(ss[6]);
-					Integer weight=null;
+						relation.setTermScope(ss[6]);
+					Long weight=null;
 					if(ss.length>7&&StringUtils.isNotEmpty(ss[7])){
 						try{
-							weight=Integer.parseInt(ss[7]);
+							weight=Long.parseLong(ss[7]);
 						}catch(Exception e){log.error("Error parse weight {}",e.getMessage(),e);}
 					}
-					relation.setPtTermWeight(weight);
+					relation.setTermWeight(weight);
 					cmqRelationService.create(relation);
 					success++;
 				}

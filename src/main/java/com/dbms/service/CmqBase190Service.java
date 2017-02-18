@@ -55,68 +55,68 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190> impleme
 		Map<String, Object> queryParams = new HashMap<>();
 		if (StringUtils.isNotEmpty(extension)) {
 			sb = appendClause(sb, first);
-			sb.append(" c.type=:type");
-			queryParams.put("type", extension);
+			sb.append(" c.cmqTypeCd=:cmqTypeCd");
+			queryParams.put("cmqTypeCd", extension);
 			first = false;
 		}
 		if (StringUtils.isNoneEmpty(drugProgram)) {
 			sb = appendClause(sb, first);
-			sb.append(" lower(c.drugProgram) like lower(:drugProgram)");
-			queryParams.put("drugProgram", "%" + drugProgram + "%");
+			sb.append(" lower(c.cmqProgramCd) like lower(:cmqProgramCd)");
+			queryParams.put("cmqProgramCd", "%" + drugProgram + "%");
 			first = false;
 		}
 		if (StringUtils.isNotEmpty(protocol)) {
 			sb = appendClause(sb, first);
-			sb.append(" lower(c.protocolName) like lower(:protocolName)");
-			queryParams.put("protocolName", "%" + protocol + "%");
+			sb.append(" lower(c.cmqProtocolCd) like lower(:cmqProtocolCd)");
+			queryParams.put("cmqProtocolCd", "%" + protocol + "%");
 			first = false;
 		}
 		if (StringUtils.isNotEmpty(product)) {
 			sb = appendClause(sb, first);
-			sb.append(" lower(c.productName) like lower(:product)");
-			queryParams.put("product", "%" + product + "%");
+			sb.append(" lower(c.cmqProductCd) like lower(:cmqProductCd)");
+			queryParams.put("cmqProductCd", "%" + product + "%");
 			first = false;
 		}
 		if (level != null) {
 			sb = appendClause(sb, first);
-			sb.append(" c.level=:level");
-			queryParams.put("level", level);
+			sb.append(" c.cmqLevel=:cmqLevel");
+			queryParams.put("cmqLevel", level);
 			first = false;
 		}
 		if (StringUtils.isNotEmpty(status)) {
 			sb = appendClause(sb, first);
-			sb.append(" c.status=:status");
-			queryParams.put("status", status);
+			sb.append(" c.cmqStatus=:cmqStatus");
+			queryParams.put("cmqStatus", status);
 			first = false;
 		}
 		if (StringUtils.isNotEmpty(state)) {
 			sb = appendClause(sb, first);
-			sb.append(" lower(c.state)=lower(:state)");
-			queryParams.put("state", state);
+			sb.append(" lower(c.cmqState)=lower(:cmqState)");
+			queryParams.put("cmqState", state);
 			first = false;
 		}
 		if (StringUtils.isNotEmpty(criticalEvent)) {
 			sb = appendClause(sb, first);
-			sb.append(" c.criticalEvent=:criticalEvent");
-			queryParams.put("criticalEvent", criticalEvent);
+			sb.append(" c.cmqCriticalEvent=:cmqCriticalEvent");
+			queryParams.put("cmqCriticalEvent", criticalEvent);
 			first = false;
 		}
 		if (StringUtils.isNotEmpty(group)) {
 			sb = appendClause(sb, first);
-			sb.append(" lower(c.group) like lower(:group)");
-			queryParams.put("group", "%" + group + "%");
+			sb.append(" lower(c.cmqGroup) like lower(:cmqGroup)");
+			queryParams.put("cmqGroup", "%" + group + "%");
 			first = false;
 		}
 		if (StringUtils.isNotEmpty(termName)) {
 			sb = appendClause(sb, first);
-			sb.append(" lower(c.name) like lower(:termName)");
-			queryParams.put("termName", "%" + termName + "%");
+			sb.append(" lower(c.cmqName) like lower(:cmqName)");
+			queryParams.put("cmqName", "%" + termName + "%");
 			first = false;
 		}
 		if (code != null) {
 			sb = appendClause(sb, first);
-			sb.append(" c.id=:code");
-			queryParams.put("code", code);
+			sb.append(" c.cmqCode=:cmqCode");
+			queryParams.put("cmqCode", code);
 			first = false;
 		}
 		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
