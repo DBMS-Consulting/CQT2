@@ -17,21 +17,30 @@
 						<p:menuitem value="Home" url="/index.xhtml" />
 						<p:menuitem value="Administrator" />
 					</p:breadCrumb>
-
-				</h:panelGrid>
-				<h:panelGrid columns="1" style="text-align: center">
-					<!-- <p:outputLabel value="Historic View as of 05-Feb 2017"
-						style="text-align: center" /> -->
 				</h:panelGrid>
 			</h:panelGrid>
 
 			<p:tabView id="pb1">
-				<p:tab title="Drug Program CodeList">
-					<p:panel style=" padding:5px;">
-						<h3 style="text-align: center">Drug Program CodeList</h3>
-						<p:spacer height="10" />
+				<p:tab title="Codelist Configurations">
 
+					<!-- <h3 style="text-align: center">Drug Program CodeList</h3> -->
+					<h:panelGrid columns="2">
+						<p:outputLabel value="Codelist Type" />
+						<p:selectOneMenu label="Codelist Type" autoSubmit="true"
+							value="#{searchController.codelist}">
+							<f:selectItem itemLabel="" itemValue="" />
+							<f:selectItem itemLabel="PROGRAM" itemValue="PROGRAM" />
+							<f:selectItem itemLabel="PROTOCOL" itemValue="PROTOCOL" />
+							<f:selectItem itemLabel="PRODUCT" itemValue="PRODUCT" />
+							<f:selectItem itemLabel="EXTENSION" itemValue="EXTENSION" />
+							
+							<p:ajax update="@form" event="change" />
+						</p:selectOneMenu>
+					</h:panelGrid>
+					<p:spacer height="10" />
+					<p:panel style=" padding:5px;" id="panel" rendered="#{searchController.codelist ne ''}">
 						<p:dataTable id="table1" var="val"
+							
 							value="#{searchController.admins}" editable="true"
 							style="margin-bottom:20px" paginator="true"
 							paginatorPosition="bottom"
@@ -55,7 +64,7 @@
 								</p:cellEditor>
 							</p:column>
 
-							<p:column headerText="Drug Program Name" style="text-align: center">
+							<p:column headerText="??" style="text-align: center">
 								<p:cellEditor>
 									<f:facet name="output">
 										<h:outputText value="#{val.name}" />
@@ -66,10 +75,21 @@
 								</p:cellEditor>
 							</p:column>
 
-							<p:column headerText="Active" style="text-align: center">
+							<p:column headerText="Active?" style="text-align: center">
 								<p:cellEditor>
 									<f:facet name="output">
-										<h:outputText value="#{val.active ? 'Active' : 'Inactive'}" />
+										<h:outputText value="#{val.active ? 'Y' : 'N'}" />
+									</f:facet>
+									<f:facet name="input">
+										<p:selectBooleanCheckbox value="#{val.active}" />
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+
+							<p:column headerText="Default?" style="text-align: center">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{val.active ? 'Y' : 'N'}" />
 									</f:facet>
 									<f:facet name="input">
 										<p:selectBooleanCheckbox value="#{val.active}" />
@@ -93,7 +113,7 @@
 					</p:panel>
 				</p:tab>
 
-				<p:tab title="Product CodeList">
+				<p:tab title="Mappings">
 					<p:panel style=" padding:5px;">
 						<h3 style="text-align: center">Product CodeList</h3>
 						<p:spacer height="10" />
@@ -140,11 +160,10 @@
 										<h:outputText value="#{val.active ? 'Active' : 'Inactive'}" />
 									</f:facet>
 									<f:facet name="input">
-										<p:selectBooleanCheckbox  value="#{val.active}" />
+										<p:selectBooleanCheckbox value="#{val.active}" />
 									</f:facet>
 								</p:cellEditor>
 							</p:column>
-
 
 							<p:column style="width:32px">
 								<p:rowEditor />
@@ -160,148 +179,7 @@
 								update="table2" action="#{searchController.cancelDrugProgram}" />
 						</h:panelGrid>
 					</p:panel>
-
 				</p:tab>
-
-				<p:tab title="Protocol CodeList" >
-					<p:panel style=" padding:5px;">
-						<h3 style="text-align: center">Protocol CodeList</h3>
-						<p:spacer height="10" />
-
-						<p:dataTable id="table3" var="val"
-							value="#{searchController.admins}" editable="true"
-							style="margin-bottom:20px" paginator="true"
-							paginatorPosition="bottom"
-							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-							rowsPerPageTemplate="5,10,25">
-
-							<p:ajax event="rowEdit" listener="#{searchController.onRowEdit}"
-								update="f1:m1" />
-							<p:ajax event="rowEditCancel"
-								listener="#{searchController.onRowCancel}" update="f1:m1" />
-
-							<p:column headerText="Serial #" style="text-align: center">
-								<p:cellEditor>
-									<f:facet name="output">
-										<h:outputText value="#{val.sequence}" />
-									</f:facet>
-									<f:facet name="input">
-										<p:inputText id="seq" value="#{val.sequence}"
-											style="width:100%" />
-									</f:facet>
-								</p:cellEditor>
-							</p:column>
-
-
-							<p:column headerText="Protocol Number" style="text-align: center">
-								<p:cellEditor>
-									<f:facet name="output">
-										<h:outputText value="#{val.name}" />
-									</f:facet>
-									<f:facet name="input">
-										<p:inputText id="name" value="#{val.name}" style="width:100%" />
-									</f:facet>
-								</p:cellEditor>
-							</p:column>
-
-							<p:column headerText="Active" style="text-align: center">
-								<p:cellEditor>
-									<f:facet name="output">
-										<h:outputText value="#{val.active ? 'Active' : 'Inactive'}" />
-									</f:facet>
-									<f:facet name="input">
-										<p:selectBooleanCheckbox value="#{val.active}" />
-									</f:facet>
-								</p:cellEditor>
-							</p:column>
-
-
-							<p:column style="width:32px">
-								<p:rowEditor />
-							</p:column>
-						</p:dataTable>
-
-						<h:panelGrid columns="4" cellpadding="5">
-							<!-- <p:commandButton value="Edit" icon="fa fa-pencil"></p:commandButton> -->
-							<p:commandButton value="Add" icon="fa fa-plus" update="table3"
-								action="#{searchController.addDrugProgram}"></p:commandButton>
-							<!-- <p:commandButton value="Save" icon="fa fa-floppy-o"></p:commandButton> -->
-							<p:commandButton value="Cancel" icon="fa fa-close"
-								update="table3" action="#{searchController.cancelDrugProgram}" />
-						</h:panelGrid>
-					</p:panel>
-
-				</p:tab>
-
-				<p:tab title="Extension CodeList">
-					<p:panel style=" padding:5px;">
-						<h3 style="text-align: center">Extension CodeList</h3>
-						<p:spacer height="10" />
-						<p:dataTable id="table4" var="val"
-							value="#{searchController.admins}" editable="true"
-							style="margin-bottom:20px" paginator="true"
-							paginatorPosition="bottom"
-							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-							rowsPerPageTemplate="5,10,25" >
-
-							<p:ajax event="rowEdit" listener="#{searchController.onRowEdit}"
-								update="f1:m1" />
-							<p:ajax event="rowEditCancel"
-								listener="#{searchController.onRowCancel}" update="f1:m1" />
-
-							<p:column headerText="Serial #" style="text-align: center">
-								<p:cellEditor>
-									<f:facet name="output">
-										<h:outputText value="#{val.sequence}" />
-									</f:facet>
-									<f:facet name="input">
-										<p:inputText id="seq" value="#{val.sequence}"
-											style="width:100%" />
-									</f:facet>
-								</p:cellEditor>
-							</p:column>
-
-
-							<p:column headerText="Extension Name" style="text-align: center">
-								<p:cellEditor>
-									<f:facet name="output">
-										<h:outputText value="#{val.name}" />
-									</f:facet>
-									<f:facet name="input">
-										<p:inputText id="name" value="#{val.name}" style="width:100%" />
-									</f:facet>
-								</p:cellEditor>
-							</p:column>
-
-							<p:column headerText="Active" style="text-align: center">
-								<p:cellEditor>
-									<f:facet name="output">
-										<h:outputText value="#{val.active ? 'Active' : 'Inactive'}" />
-									</f:facet>
-									<f:facet name="input">
-										<p:selectBooleanCheckbox value="#{val.active}" />
-									</f:facet>
-								</p:cellEditor>
-							</p:column>
-
-
-							<p:column style="width:32px">
-								<p:rowEditor />
-							</p:column>
-						</p:dataTable>
-
-						<h:panelGrid columns="4" cellpadding="5">
-							<!-- <p:commandButton value="Edit" icon="fa fa-pencil"></p:commandButton> -->
-							<p:commandButton value="Add" icon="fa fa-plus" update="table4"
-								action="#{searchController.addDrugProgram}"></p:commandButton>
-							<!-- <p:commandButton value="Save" icon="fa fa-floppy-o"></p:commandButton> -->
-							<p:commandButton value="Cancel" icon="fa fa-close"
-								update="table4" action="#{searchController.cancelDrugProgram}" />
-						</h:panelGrid>
-					</p:panel>
-
-				</p:tab>
-
 			</p:tabView>
 		</h:form>
 

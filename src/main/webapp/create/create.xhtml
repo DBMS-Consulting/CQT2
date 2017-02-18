@@ -25,7 +25,7 @@
 			</h:panelGrid>
 
 			<p:wizard flowListener="#{wizard.onFlowProcess}" widgetVar="wizard" showNavBar="false">
-				<p:tab id="details" title="Add Details">
+				<p:tab id="details" title="Add Details" disabled="false" closable="true">
 					<p:panel header="Details">
 						<ui:include src="details.xhtml" />
 						<p:commandButton value="Save" icon="ui-icon-disk"

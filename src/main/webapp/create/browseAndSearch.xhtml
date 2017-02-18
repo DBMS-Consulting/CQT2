@@ -274,11 +274,11 @@
 						<p:column headerText="Transaction Type">
 							<h:outputText value="#{value.term}" />
 						</p:column>
-						<p:column headerText="Date">
+						<p:column headerText="Date" sortBy="#{dummyView.value}">
 							<h:outputText value="#{value.term}" />
 						</p:column>
-						<p:column headerText="Field Name">
-							<h:outputText value="#{value.extension}" />
+						<p:column headerText="Field Name" sortBy="#{dummyView.value}" filterBy="#{dummyView.value}">
+							<h:outputText value="#{dummyView.value}" />
 						</p:column>
 						<p:column headerText="User">
 							<h:outputText value="#{value.level}" />
@@ -297,11 +297,12 @@
 						</p:column>
 
 					</p:dataTable>
-					<p:spacer height="10"></p:spacer>
-					<h:panelGrid style="float: right">
-						<p:commandButton value="Cancel" onclick="PF('new_pt').hide()" />
-					</h:panelGrid>
+					
 				</p:panel>
+				<p:spacer height="10"></p:spacer>
+					<h:panelGrid style="float: right">
+						<p:commandButton value="Cancel" onclick="PF('new_pt').hide()" immediate="true" />
+					</h:panelGrid>
 			</p:dialog>
 
 			<p:dialog widgetVar="history-dialog" modal="true" id="historyD"
@@ -347,6 +348,11 @@
 	float: right;
 	margin-right: 20px;
 	font-size: 14px !important;
+}
+.ui-column-filter {
+	width: 60px !important;
+	height: 10px !important;
+	margin-top: 5px;
 }
 </style>
 	</ui:define>

@@ -58,6 +58,8 @@ public class SearchController extends BaseController<CmqBase190> {
 	private String product;
 	private String group;
 	private String history;
+	private String codelist;
+
 
 	private boolean maintainDesigBtn;
 
@@ -85,6 +87,7 @@ public class SearchController extends BaseController<CmqBase190> {
 
 		// TODO To test UI of ADMIN MODULE - Will be removed
 		initValuesForAdmin();
+		codelist = "";
 	}
 
 	private void initValuesForAdmin() {
@@ -493,5 +496,13 @@ public class SearchController extends BaseController<CmqBase190> {
 
 	public void setSelectedSOCs(String[] selectedSOCs) {
 		this.selectedSOCs = selectedSOCs;
+	}
+
+	public String getCodelist() {
+		return codelist;
+	}
+
+	public void setCodelist(String codelist) {
+		this.codelist = codelist;
 	}
 }
