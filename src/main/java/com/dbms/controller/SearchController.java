@@ -1,6 +1,5 @@
 package com.dbms.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -8,7 +7,6 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
-import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
 
@@ -19,12 +17,13 @@ import org.primefaces.model.TreeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.dbms.csmq.Document;
 import com.dbms.entity.cqt.CmqBase190;
 import com.dbms.entity.cqt.CmqRelation190;
 import com.dbms.entity.cqt.CreateEntity;
 import com.dbms.service.ICmqBase190Service;
 import com.dbms.service.ICmqRelation190Service;
-import com.dbms.web.dto.AdminDTO;
+import com.dbms.web.dto.CodelistDTO;
 
 /**
  * @date Feb 7, 2017 7:39:34 AM
@@ -40,7 +39,7 @@ public class SearchController extends BaseController<CmqBase190> {
 
 	@ManagedProperty("#{CmqBase190Service}")
 	private ICmqBase190Service cmqBaseService;
-	
+
 	@ManagedProperty("#{CmqRelation190Service}")
 	private ICmqRelation190Service cmqRelationService;
 
@@ -61,17 +60,18 @@ public class SearchController extends BaseController<CmqBase190> {
 	private String group;
 	private String history;
 	private String codelist;
-
+	private String levelH;
 
 	private boolean maintainDesigBtn;
 
 	private List<CreateEntity> values, vals;
 
-	private List<AdminDTO> admins;
+	private List<CodelistDTO> admins;
 
 	private Wizard updateWizard, copyWizard, browseWizard;
 
 	private String[] selectedSOCs;
+	private TreeNode hierarchyRoot;
 
 	public SearchController() {
 		this.selectedData = new CmqBase190();
@@ -86,37 +86,12 @@ public class SearchController extends BaseController<CmqBase190> {
 		critical = "No";
 		group = "No Group";
 		extension = "TME";
-
-		// TODO To test UI of ADMIN MODULE - Will be removed
-		initValuesForAdmin();
-		codelist = "";
 	}
 
-	private void initValuesForAdmin() {
-		admins = new ArrayList<AdminDTO>();
-		AdminDTO c = new AdminDTO();
-		c.setSequence("SEQ 1");
-		c.setName("AZERTY");
-		c.setActive(true);
-		admins.add(c);
+	public TreeNode getHierarchyRoot() {
+		hierarchyRoot = new DefaultTreeNode(new Document("SOC", "-", "CODE_1"), null);
 
-		c = new AdminDTO();
-		c.setSequence("SEQ 2");
-		c.setName("QWERTY");
-		c.setActive(true);
-		admins.add(c);
-
-		c = new AdminDTO();
-		c.setSequence("SEQ 31");
-		c.setName("ABCDEFG");
-		c.setActive(false);
-		admins.add(c);
-
-		vals = new ArrayList<CreateEntity>();
-		CreateEntity ce = new CreateEntity();
-		ce.setCode(122);
-		vals.add(ce);
-
+		return hierarchyRoot;
 	}
 
 	/**
@@ -131,21 +106,21 @@ public class SearchController extends BaseController<CmqBase190> {
 		} else
 			setLevel(2);
 
-		if (extension.equals("CPT") || extension.equals("DME"))
+		if (extension.equals("CPT") || extension.equals("DME")) {
 			setDrugProgram("No Program");
-		else
+			setProduct("No Product");
+		}
+		else {
 			setDrugProgram("");
+			setProduct("");
+		}
 
 		if (extension.equals("CPT") || extension.equals("DME")
 				|| extension.equals("TME") || extension.equals("TR1"))
 			setProtocol("No Protocol");
 		else
 			setProtocol("");
-
-		if (extension.equals("CPT") || extension.equals("DME"))
-			setProduct("No Product");
-		else
-			setProduct("");
+			
 	}
 
 	/**
@@ -355,11 +330,11 @@ public class SearchController extends BaseController<CmqBase190> {
 		this.browseWizard = browseWizard;
 	}
 
-	public List<AdminDTO> getAdmins() {
+	public List<CodelistDTO> getAdmins() {
 		return admins;
 	}
 
-	public void setAdmins(List<AdminDTO> admins) {
+	public void setAdmins(List<CodelistDTO> admins) {
 		this.admins = admins;
 	}
 
@@ -391,6 +366,11 @@ public class SearchController extends BaseController<CmqBase190> {
 		log.debug("found values {}", datas == null ? 0 : datas.size());
 	}
 
+	public String hierarchySearch() {
+
+		return "";
+	}
+
 	public void saveDetails() {
 		log.debug("save cmq details ... ");
 		try {
@@ -420,76 +400,34 @@ public class SearchController extends BaseController<CmqBase190> {
 	}
 
 	private void addTreeNode(CmqRelation190 relation, TreeNode root) {
-		/*if (relation.getChildren() != null && !relation.getChildren().isEmpty()) {
-			for (CmqRelation190 r : relation.getChildren()) {
-				TreeNode node = new DefaultTreeNode(new RelationTreeNode(
-						r.getId(), r.getTermName(), r.getCmqLevel(),
-						r.getPtTermScope(), r.getPtTermCategory(),
-						r.getPtTermWeight(), false), root);
-				addTreeNode(r, node);
-			}
-		}*/
+		/*
+		 * if (relation.getChildren() != null &&
+		 * !relation.getChildren().isEmpty()) { for (CmqRelation190 r :
+		 * relation.getChildren()) { TreeNode node = new DefaultTreeNode(new
+		 * RelationTreeNode( r.getId(), r.getTermName(), r.getCmqLevel(),
+		 * r.getPtTermScope(), r.getPtTermCategory(), r.getPtTermWeight(),
+		 * false), root); addTreeNode(r, node); } }
+		 */
 	}
 
-	public TreeNode getRoot() {
-		TreeNode root = new DefaultTreeNode(new RelationTreeNode(null, "ROOT",
-				null, null, null, null, true), null);
-		/*TreeNode first = new DefaultTreeNode(new RelationTreeNode(
-				selectedData.getId(), selectedData.getName(),
-				selectedData.getLevel(), selectedData.getScope(), null, null,
-				true), root);
-		first.setExpanded(true);
-		if (selectedData.getRelations() != null) {
-			for (CmqRelation190 relation : selectedData.getRelations()) {
-				addTreeNode(relation, first);
-			}
-		}*/
-		return root;
-	}
-
+	
 	public void onRowEdit(RowEditEvent event) {
-		/*TreeNode node = (DefaultTreeNode) event.getObject();
-		RelationTreeNode relationNode = (RelationTreeNode) node.getData();
-		log.debug("update tree node scope#{},category#{},weigth#{}",
-				relationNode.getScope(), relationNode.getCategory(),
-				relationNode.getWeight());
-		try {
-			if (relationNode.getRoot()) {
-				CmqBase190 base = cmqBaseService.findById(relationNode
-						.getCode());
-				base.setScope(relationNode.getScope());
-				cmqBaseService.update(base);
-			} else {
-				CmqRelation190 relation = cmqRelationService
-						.findById(relationNode.getCode());
-				relation.setPtTermScope(relationNode.getScope());
-				relation.setPtTermCategory(relationNode.getCategory());
-				relation.setPtTermWeight(relationNode.getWeight());
-				cmqRelationService.update(relation);
-			}
-		} catch (Exception e) {
-			log.error("Error when update tree!", e);
-		}*/
-	}
-
-	/******
-	 * 
-	 * 
-	 * 
-	 * 
-	 * Dummy test on the ADMIN MODULE - To REMOVE if we have a service TODO
-	 * 
-	 * 
-	 */
-	public void addDrugProgram() {
-		admins.add(new AdminDTO());
-	}
-
-	public void cancelDrugProgram() {
-		for (AdminDTO adminDTO : admins) {
-			if (adminDTO.getName() == null)
-				admins.remove(adminDTO);
-		}
+		/*
+		 * TreeNode node = (DefaultTreeNode) event.getObject(); RelationTreeNode
+		 * relationNode = (RelationTreeNode) node.getData();
+		 * log.debug("update tree node scope#{},category#{},weigth#{}",
+		 * relationNode.getScope(), relationNode.getCategory(),
+		 * relationNode.getWeight()); try { if (relationNode.getRoot()) {
+		 * CmqBase190 base = cmqBaseService.findById(relationNode .getCode());
+		 * base.setScope(relationNode.getScope()); cmqBaseService.update(base);
+		 * } else { CmqRelation190 relation = cmqRelationService
+		 * .findById(relationNode.getCode());
+		 * relation.setPtTermScope(relationNode.getScope());
+		 * relation.setPtTermCategory(relationNode.getCategory());
+		 * relation.setPtTermWeight(relationNode.getWeight());
+		 * cmqRelationService.update(relation); } } catch (Exception e) {
+		 * log.error("Error when update tree!", e); }
+		 */
 	}
 
 	public String[] getSelectedSOCs() {
@@ -506,5 +444,18 @@ public class SearchController extends BaseController<CmqBase190> {
 
 	public void setCodelist(String codelist) {
 		this.codelist = codelist;
+	}
+
+	public String getLevelH() {
+		return levelH;
+	}
+
+	public void setLevelH(String levelH) {
+		this.levelH = levelH;
+	}
+ 
+ 
+	public void setHierarchyRoot(TreeNode hierarchyRoot) {
+		this.hierarchyRoot = hierarchyRoot;
 	}
 }

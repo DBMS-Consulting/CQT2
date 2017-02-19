@@ -226,8 +226,15 @@
 											icon="fa fa-search" onclick="PF('search').show();" />
 										<p:commandButton value="New PTs" actionListener="#"
 											onclick="PF('new_pt').show();" icon="fa fa-book" />
-										<p:commandButton value="Delete selected" actionListener="#"
-											icon="fa fa-trash-o" onclick="PF('delete').show();" />
+
+										<p:commandButton value="Deleted selected" actionListener="#"
+											icon="fa fa-trash-o">
+											<p:confirm header="Confirm Delete"
+												message="Are you sure you want to delete the selected items?"
+												icon="ui-icon-alert" />
+										</p:commandButton>
+										<!-- <p:commandButton value="Delete selected" actionListener="#"
+											icon="fa fa-trash-o" onclick="PF('delete').show();" /> -->
 										<p:commandButton value="Refresh" actionListener="#"
 											icon="fa fa-refresh" onclick="PF('select_mq').show();" />
 									</f:facet>
@@ -350,10 +357,9 @@
 				<h:panelGrid style="width: 500px">
 					<h:panelGrid id="pgl1" columns="3">
 						<p:outputLabel value="SOC" />
-						<p:selectCheckboxMenu id="select" 
-							value="#{searchController.selectedSOCs}" label="SOC" 
-							filter="true" filterMatchMode="startsWith"
-							style="width:400px">
+						<p:selectCheckboxMenu id="select"
+							value="#{searchController.selectedSOCs}" label="SOC"
+							filter="true" filterMatchMode="startsWith" style="width:400px">
 							<f:selectItem itemValue="All" itemLabel="All" />
 						</p:selectCheckboxMenu>
 

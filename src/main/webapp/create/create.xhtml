@@ -24,7 +24,7 @@
 				</h:panelGrid>
 			</h:panelGrid>
 
-			<p:wizard flowListener="#{wizard.onFlowProcess}" widgetVar="wizard" showNavBar="false">
+			<p:wizard flowListener="#{wizard.onFlowProcess}" widgetVar="wizard">
 				<p:tab id="details" title="Add Details" disabled="false" closable="true">
 					<p:panel header="Details">
 						<ui:include src="details.xhtml" />
@@ -383,9 +383,9 @@
 				</p:panel>
 			</p:dialog>
 			
-			<p:commandButton value="Back" type="button" onclick="back();" icon="fa fa-long-arrow-left" iconPos="left" />
+			<!-- <p:commandButton value="Back" type="button" onclick="back();" icon="fa fa-long-arrow-left" iconPos="left" />
 			<p:commandButton value="Next" type="button" onclick="next();" icon="fa fa-long-arrow-right" iconPos="right" style="float: right" />
-
+ -->
 			<p:spacer width="10" height="10" id="s6" />
 			<h:panelGrid id="pgl2" columns="6"
 				style="padding:3px; font-size: 10px !important">
@@ -418,7 +418,7 @@
 }
 </style>
 
-		<script>
+		<!-- <script>
 			function next() {
 				PF('wizard').next();
 			}
@@ -426,6 +426,6 @@
 			function back() {
 				PF('wizard').back();
 			}
-		</script>
+		</script> -->
 	</ui:define>
 </ui:composition>

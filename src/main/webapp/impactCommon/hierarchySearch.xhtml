@@ -5,109 +5,33 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:p="http://primefaces.org/ui">
+	
+
 	<p:panel header="Relations" style="width:700px; height:623px;">
-		<table>
-			<tbody>
-				<tr>
-					<td><p:outputLabel value="Dictionary" /></td>
-					<td><p:selectOneMenu label="Dictionary" id="soc9"
-							autoSubmit="true" value="BASE">
-							<f:selectItem itemLabel="MedDRA" itemValue="BASE" id="si40" />
-							<f:selectItem itemLabel="MQ" itemValue="FILTER" id="si41" />
-						</p:selectOneMenu></td>
-					<td><p:inputText placeholder="Term" id="it2" /></td>
-				</tr>
+		<h:panelGrid columns="6">
+			<p:outputLabel value="Level" for="levelH" />
+			<p:selectOneMenu id="levelH" label="Level" partialTriggers="soc9"
+				value="#{searchController.levelH}">
+				<f:selectItem itemValue="PRO" itemLabel="PRO" />
+				<f:selectItem itemValue="SMQ1" itemLabel="SMQ1" />
+				<f:selectItem itemValue="SMQ2" itemLabel="SMQ2" />
+				<f:selectItem itemValue="SMQ3" itemLabel="SMQ3" />
+				<f:selectItem itemValue="SMQ4" itemLabel="SMQ4" />
+				<f:selectItem itemValue="SMQ5" itemLabel="SMQ5" />
+				<f:selectItem itemValue="SOC" itemLabel="SOC" />
+				<f:selectItem itemValue="HLGT" itemLabel="HLGT" />
+				<f:selectItem itemValue="HLT" itemLabel="HLT" />
+				<f:selectItem itemValue="PT" itemLabel="PT" />
+			</p:selectOneMenu>
+			<p:spacer width="10" />
+			<p:outputLabel value="Term" for="termH" />
+			<p:inputText id="termH" value="#{searchController.termName}" />
+			<p:commandButton value="Search"
+				action="#{searchController.hierarchySearch}" />
+		</h:panelGrid>
 
-				<tr>
-					<td><p:outputLabel value="Level" /></td>
-					<p:spacer width="10" />
-					<td><p:selectOneMenu id="soc10" label="Level"
-							partialTriggers="soc9" value="SOC">
-							<f:selectItem itemLabel="SMQ 1" itemValue="MQ1" id="si42"
-								rendered="true" />
-							<f:selectItem itemLabel="SMQ 2" itemValue="MQ2" id="si48"
-								rendered="true" />
-							<f:selectItem itemLabel="SMQ 3" itemValue="MQ3" id="si43"
-								rendered="true" />
-							<f:selectItem itemLabel="SMQ 4" itemValue="MQ4" id="si44"
-								rendered="true" />
-							<f:selectItem itemLabel="SMQ 5" itemValue="MQ5" id="si45"
-								rendered="true" />
-							<f:selectItem itemLabel="All SMQs" itemValue="MQ%" id="si1"
-								rendered="true" />
-							<f:selectItem itemLabel="NMQ/CMQ 1" itemValue="NMQ1" id="si46"
-								rendered="true" />
-							<f:selectItem itemLabel="NMQ 2" itemValue="NMQ2" id="si49"
-								rendered="true" />
-							<f:selectItem itemLabel="NMQ 3" itemValue="NMQ3" id="si47"
-								rendered="true" />
-							<f:selectItem itemLabel="NMQ 4" itemValue="NMQ4" id="si52"
-								rendered="true" />
-							<f:selectItem itemLabel="NMQ 5" itemValue="NMQ5" id="si50"
-								rendered="true" />
-							<f:selectItem itemLabel="All NMQ/CMQs" itemValue="NMQ%" id="si2"
-								rendered="true" />
-							<f:selectItem itemLabel="SOC" itemValue="SOC" id="si51"
-								rendered="true" />
-							<f:selectItem itemLabel="HLGT" itemValue="HLGT" id="si53"
-								rendered="true" />
-							<f:selectItem itemLabel="HLT" itemValue="HLT" id="si54"
-								rendered="true" />
-							<f:selectItem itemLabel="PT" itemValue="PT" id="si55"
-								rendered="true" />
-						</p:selectOneMenu></td>
-					<td><p:commandButton value="Search" id="cb1"
-							partialSubmit="true" style="height:auto;" /></td>
-				</tr>
-			</tbody>
-		</table>
-		<!-- <h:panelGrid columns="2">
 
-						<h:panelGrid id="pfl1" styleClass="AFStretchWidth" columns="1">
-							<h:panelGrid columns="2">
-								
-								
-							</h:panelGrid>
-							<h:panelGrid columns="2">
-								
-								
-							</h:panelGrid>
-						</h:panelGrid>
-						<h:panelGrid id="pfl4" columns="1">
-							
-							
-						</h:panelGrid>
-					</h:panelGrid> -->
-		<br />
-		<p:treeTable value="#{userBean.root}" var="row" style="height:200px;"
-			styleClass="AFStretchWidth" width="521">
-			<p:column headerText="Term" id="c10" width="1" minimumWidth="1"
-				rendered="true 	">
-				<p:inputText value="#{dummyView.value}" id="it4">
-					<!-- <f:convertNumber groupingUsed="false"
-									pattern="#{bindings.HierarchySourceTermSearchVO1.hints.Rnum.format}" /> -->
-				</p:inputText>
-			</p:column>
-			<p:column headerText="Content Code" id="c11" width="75">
-				<h:outputText value="#{row.dictContentCode}" id="ot8" />
-			</p:column>
-			<p:column id="c28" width="20" minimumWidth="15">
-				<p:commandButton id="cb2" style="height:10px; width:20px;"
-					partialSubmit="true" />
-			</p:column>
-			<!-- 	<af:dragSource actions="MOVE" discriminant="rowmove" /> -->
-			<f:facet name="nodeStamp">
-				<p:column id="c14" headerText="Term" width="200">
-					<h:outputText value="#{row.term}" id="ot11" />
-				</p:column>
-			</f:facet>
-			<!-- <f:facet name="pathStamp">
-							<af:group id="g4">
-								<h:outputText value="#{row}" id="ot12" />
-							</af:group>
-						</f:facet> -->
 
-		</p:treeTable>
 
 		<br />
 		<h:panelGrid id="pc3" styleClass="AFStretchWidth">
@@ -155,39 +79,19 @@
 				</f:facet>
 			</p:toolbar>
 
-			<p:treeTable value="#{userBean.root}" var="node"
+			<p:treeTable value="#{searchController.hierarchyRoot}" var="node"  
 				rowSelection="multiple" id="hierSrc">
 
-				<p:columnGroup type="header">
-					<p:row>
-						<p:column rowspan="2" headerText="ABC" />
-						<p:column colspan="3" headerText="Hierarchy Details" />
-					</p:row>
-
-					<p:row>
-						<p:column headerText="Code" />
-						<p:column headerText="Level" />
-						<p:column headerText="Scope" />
-					</p:row>
-				</p:columnGroup>
-
-				<p:column id="c8" width="200" noWrap="false">
-					<h:panelGrid id="pgl5" halign="left">
-						<h:outputText value="#{node.term}" id="ot1"
-							styleClass="#{node.style}"
-							rendered="#{!node.showHasChildrenButton}" />
-						<p:commandLink id="cl2" rendered="true" partialSubmit="true" />
-					</h:panelGrid>
+				<p:column headerText="Level">
+					<h:outputText value="#{node.level}" />
 				</p:column>
-
-				<p:column id="c26" width="50" sortable="true" filterable="true">
-					<h:outputText value="#{node.dictContentCode}" id="ot7" />
+				
+				<p:column headerText="Term">
+					<h:outputText value="#{node.term}" />
 				</p:column>
-				<p:column id="c18" width="50" sortable="true" filterable="true">
-					<h:outputText value="#{node.levelName}" id="ot14" />
-				</p:column>
-				<p:column id="c17" width="50" sortable="true" filterable="true">
-					<h:outputText value="#{node.scopeName}" id="ot13" />
+				
+				<p:column headerText="Code" sortBy="#{node.code}" filterBy="#{node.code}">
+					<h:outputText value="#{node.code}" />
 				</p:column>
 			</p:treeTable>
 		</h:panelGrid>
