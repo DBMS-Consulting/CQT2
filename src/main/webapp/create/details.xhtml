@@ -12,14 +12,18 @@
 		<h:panelGrid columns="2" columnClasses="label, value">
 			<p:outputLabel value="Extension" styleClass="label-right" />
 			<p:selectOneMenu value="#{createController.extension}">
-				<f:selectItem itemLabel="TME" itemValue="TME"></f:selectItem>
+				<!-- <f:selectItem itemLabel="TME" itemValue="TME"></f:selectItem>
 				<f:selectItem itemLabel="TR1" itemValue="TR1"></f:selectItem>
 				<f:selectItem itemLabel="CPT" itemValue="CPT"></f:selectItem>
 				<f:selectItem itemLabel="DME" itemValue="DME"></f:selectItem>
-				<f:selectItem itemLabel="PRO" itemValue="PRO"></f:selectItem>
+				<f:selectItem itemLabel="PRO" itemValue="PRO"></f:selectItem> -->
 
-				<p:ajax update="level lProtocol protocol drug lDrug product lProduct" event="change"
-					listener="#{createController.changeLevel}" />
+				<f:selectItems value="#{configMB.extensions}" var="extension"
+					itemLabel="#{extension.value}" itemValue="#{extension.id}" />
+
+				<p:ajax
+					update="level lProtocol protocol drug lDrug product lProduct"
+					event="change" listener="#{createController.changeLevel}" />
 			</p:selectOneMenu>
 
 			<p:outputLabel id="lDrug"
@@ -63,12 +67,12 @@
 			</p:selectOneMenu>
 
 			<p:outputLabel value="* Designee" styleClass="label-right" />
-			<p:selectOneMenu value="#{createController.selectedData.cmqDesignee}" rendered="true"
-				disabled="false" requiredMessage="The Designee is required"
-				required="true">
+			<p:selectOneMenu value="#{createController.selectedData.cmqDesignee}"
+				rendered="true" disabled="false"
+				requiredMessage="The Designee is required" required="true">
 				<f:selectItem itemLabel="" itemValue=""></f:selectItem>
 				<f:selectItem itemLabel="Jane Doe" itemValue="jane"></f:selectItem>
-				<!-- <f:selectItems></f:selectItems> -->				
+				<!-- <f:selectItems></f:selectItems> -->
 			</p:selectOneMenu>
 		</h:panelGrid>
 
@@ -106,7 +110,7 @@
 			</p:selectOneMenu>
 
 			<p:outputLabel value="* Algorithm" styleClass="label-right" />
-			<p:inputText value="#{createController.algorithm}" /> 
+			<p:inputText value="#{createController.algorithm}" />
 
 		</h:panelGrid>
 
@@ -116,12 +120,12 @@
 			<h:outputText value="#{createController.status}"></h:outputText>
 
 			<p:outputLabel value="* State" styleClass="label-right" />
-			<h:outputText value="#{createController.state}" ></h:outputText>
-			 
+			<h:outputText value="#{createController.state}"></h:outputText>
+
 
 			<p:outputLabel value="* Group" styleClass="label-right" />
-			<p:selectOneMenu value="#{createController.selectedData.cmqGroup}" rendered="true"
-				disabled="false" required="true"
+			<p:selectOneMenu value="#{createController.selectedData.cmqGroup}"
+				rendered="true" disabled="false" required="true"
 				requiredMessage="A group is required">
 				<f:selectItem itemLabel="No Group" itemValue="No Group"></f:selectItem>
 				<f:selectItem itemLabel="" itemValue=""></f:selectItem>
