@@ -3,11 +3,9 @@
 	version="1.0">
 	<persistence-unit name="cqtJPA">
 		<provider>org.hibernate.ejb.HibernatePersistence</provider>
-		<!-- <class>com.dbms.entity.cqt.CreateEntity</class> -->
-		<!-- <class>com.dbms.entity.cqt.User</class> -->
 		<class>com.dbms.entity.cqt.CmqBase190</class>
 		<class>com.dbms.entity.cqt.CmqRelation190</class>
-		<class>com.dbms.entity.cqt.ExtentionConfigCodeList</class>
+		<class>com.dbms.entity.cqt.RefConfigCodeList</class>
 		<class>com.dbms.entity.meddra.HlgtPrefTerm</class>
 		<class>com.dbms.entity.meddra.HltPrefTerm</class>
 		<class>com.dbms.entity.meddra.LowLevelTerm</class>

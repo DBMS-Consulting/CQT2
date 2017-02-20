@@ -22,20 +22,20 @@ public class RefCodeListService extends CqtPersistenceService<RefConfigCodeList>
 	private static final Logger LOG = LoggerFactory.getLogger(RefCodeListService.class);
 
 	@Override
-	@SuppressWarnings("rawtypes")
+	@SuppressWarnings({ "unchecked" })
 	public List<RefConfigCodeList> findByConfigType(String codelistConfigType, OrderBy orderBy) {
 		List<RefConfigCodeList> retVal = null;
 		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
 
-		StringBuilder queryString = new StringBuilder("from RefCodeListService a");
+		StringBuilder queryString = new StringBuilder("from RefConfigCodeList a");
 		queryString.append(" where a.codelistConfigType = :codelistConfigType order by a.serialNum ");
 		queryString.append(orderBy.name());
 		try {
 			Query query = entityManager.createQuery(queryString.toString());
 			query.setParameter("codelistConfigType", codelistConfigType);
 
-			List results = query.getResultList();
-			if (null == results) {
+			retVal = query.getResultList();
+			if (null == retVal) {
 				retVal = new ArrayList<>();
 			}
 		} catch (Exception ex) {

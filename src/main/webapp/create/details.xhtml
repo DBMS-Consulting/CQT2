@@ -13,7 +13,7 @@
 			<p:outputLabel value="Extension" styleClass="label-right" />
 			<p:selectOneMenu value="#{createController.extension}">
 				<f:selectItems value="#{configMB.extensions}" var="extension"
-					itemLabel="#{extension.value}" itemValue="#{extension.value}" />
+					itemLabel="#{extension.value}" itemValue="#{extension.codelistInternalValue}" />
 
 				<p:ajax
 					update="level lProtocol protocol drug lDrug product lProduct"

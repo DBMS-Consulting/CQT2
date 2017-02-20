@@ -1,5 +1,6 @@
 package com.dbms.service;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -194,11 +195,12 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190> impleme
 
 	public Long getNextCodeValue() throws CqtServiceException {
 		Long codeValue = null;
-		String query = "SELECT nextval('CMQ_CODE_SEQ') as code";
+		String query = "SELECT CMQ_CODE_SEQ.nextval as code from dual";
 		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
 		try {
 			Query nativeQuery = entityManager.createNativeQuery(query);
-			codeValue = (Long) (nativeQuery.getSingleResult());
+			BigDecimal retVal = (BigDecimal)nativeQuery.getSingleResult();
+			codeValue = retVal.longValue();
 		} catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
 			msg

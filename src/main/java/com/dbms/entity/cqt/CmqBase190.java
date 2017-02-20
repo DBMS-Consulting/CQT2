@@ -29,7 +29,7 @@ public class CmqBase190 extends BaseEntity {
 	private static final long serialVersionUID = 6648403063564315829L;
 	@Id
 	@GeneratedValue(generator = "CMQ_ID_SEQ", strategy = GenerationType.SEQUENCE)
-	@SequenceGenerator(name = "CMQ_ID_SEQ", sequenceName = "CMQ_ID_SEQ", allocationSize = 20)
+	@SequenceGenerator(name = "CMQ_ID_SEQ", sequenceName = "CMQ_ID_SEQ", allocationSize = 1)
 	@Column(name = "CMQ_ID", unique = true, nullable = false)
 	private Long cmqId;
 
@@ -39,7 +39,7 @@ public class CmqBase190 extends BaseEntity {
 	@Column(name = "CMQ_NAME", nullable = false, length = 200)
 	private String cmqName;
 
-	@Column(name = "CMQ_TYPE_CD", nullable = false, length = 3)
+	@Column(name = "CMQ_TYPE_CD", nullable = false, length = 6)
 	private String cmqTypeCd;
 
 	@Column(name = "CMQ_LEVEL", nullable = false, precision = 1)
