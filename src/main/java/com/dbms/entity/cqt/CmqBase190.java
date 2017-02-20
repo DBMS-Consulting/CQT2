@@ -24,11 +24,10 @@ import javax.persistence.TemporalType;
 import com.dbms.entity.BaseEntity;
 
 @Entity
-@Table(name = "CMQ_BASE_190")
+@Table(name = "CMQ_BASE_CURRENT")
 public class CmqBase190 extends BaseEntity {
 
 	private static final long serialVersionUID = 6648403063564315829L;
-
 	@Id
 	@GeneratedValue(generator = "CMQ_ID_SEQ", strategy = GenerationType.SEQUENCE)
 	@SequenceGenerator(name = "CMQ_ID_SEQ", sequenceName = "CMQ_ID_SEQ", allocationSize = 20)
@@ -72,10 +71,10 @@ public class CmqBase190 extends BaseEntity {
 	@Column(name = "CMQ_ALGORITHM", length = 300)
 	private String cmqAlgorithm;
 
-	@Column(name = "CMQ_SOURCE", nullable = false, length = 4000)
+	@Column(name = "CMQ_SOURCE", length = 4000)
 	private String cmqSource;
 
-	@Column(name = "CMQ_NOTE", nullable = false)
+	@Column(name = "CMQ_NOTE")
 	@Lob
 	private String cmqNote;
 
@@ -118,11 +117,11 @@ public class CmqBase190 extends BaseEntity {
 	@Column(name = "LAST_MODIFIED_DATE", length = 7)
 	private Date lastModifiedDate;
 
-	@Column(name = "ACTIVATED_BY", nullable = false, length = 30)
+	@Column(name = "ACTIVATED_BY", length = 30)
 	private String activatedBy;
 
 	@Temporal(TemporalType.DATE)
-	@Column(name = "ACTIVATION_DATE", nullable = false, length = 7)
+	@Column(name = "ACTIVATION_DATE", length = 7)
 	private Date activationDate;
 
 	@Column(name = "DICTIONARY_NAME", nullable = false, length = 10)
@@ -181,13 +180,6 @@ public class CmqBase190 extends BaseEntity {
 	public void setCmqLevel(Integer cmqLevel) {
 		this.cmqLevel = cmqLevel;
 	}
-
-	/*
-	 * public Long getCmqParentCode() { return cmqParentCode; }
-	 * 
-	 * public void setCmqParentCode(Long cmqParentCode) { this.cmqParentCode =
-	 * cmqParentCode; }
-	 */
 
 	public String getCmqDescription() {
 		return cmqDescription;
@@ -396,4 +388,9 @@ public class CmqBase190 extends BaseEntity {
 	public void setChildCmqs(Set<CmqBase190> childCmqs) {
 		this.childCmqs = childCmqs;
 	}
+
+	public Long getCmqId() {
+		return cmqId;
+	}
+
 }
