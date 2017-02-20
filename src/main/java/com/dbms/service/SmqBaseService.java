@@ -4,6 +4,7 @@ import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
 
 import com.dbms.entity.cqt.SmqBase190;
+import com.dbms.service.base.CqtPersistenceService;
 
 /**
  * @author Jay G.(jayshanchn@hotmail.com)

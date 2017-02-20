@@ -38,9 +38,6 @@ public class SmqBase190 extends BaseEntity {
 	@Column(name = "SMQ_NAME", nullable = false, length = 100)
 	private String smqName;
 
-	@Column(name = "SMQ_PARENT_CODE", precision = 38)
-	private Long smqParentCode;
-
 	@Column(name = "SMQ_PARENT_NAME", length = 100)
 	private String smqParentName;
 
@@ -94,14 +91,6 @@ public class SmqBase190 extends BaseEntity {
 
 	public void setSmqName(String smqName) {
 		this.smqName = smqName;
-	}
-
-	public Long getSmqParentCode() {
-		return smqParentCode;
-	}
-
-	public void setSmqParentCode(Long smqParentCode) {
-		this.smqParentCode = smqParentCode;
 	}
 
 	public String getSmqParentName() {

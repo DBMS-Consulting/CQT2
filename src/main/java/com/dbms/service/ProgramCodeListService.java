@@ -10,23 +10,23 @@ import javax.persistence.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.dbms.entity.cqt.ExtentionConfigCodeList;
+import com.dbms.entity.cqt.ProgramConfigCodeList;
 import com.dbms.service.base.CqtPersistenceService;
 
-@ManagedBean(name = "ExtensionCodeListService")
+@ManagedBean(name = "ProgramCodeListService")
 @ApplicationScoped
-public class ExtensionCodeListService extends CqtPersistenceService<ExtentionConfigCodeList>
-		implements IExtensionCodeListService {
+public class ProgramCodeListService extends CqtPersistenceService<ProgramConfigCodeList>
+		implements IProgramCodeListService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ExtensionCodeListService.class);
 
 	@Override
 	@SuppressWarnings("rawtypes")
-	public ExtentionConfigCodeList findByValue(String value) {
-		ExtentionConfigCodeList retVal = null;
+	public ProgramConfigCodeList findByValue(String value) {
+		ProgramConfigCodeList retVal = null;
 		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
 
-		StringBuilder queryString = new StringBuilder("from ExtentionConfigCodeList a");
+		StringBuilder queryString = new StringBuilder("from ProgramConfigCodeList a");
 		queryString.append(" where a.value = :value");
 		try {
 			Query query = entityManager.createQuery(queryString.toString());
@@ -34,13 +34,13 @@ public class ExtensionCodeListService extends CqtPersistenceService<ExtentionCon
 
 			List results = query.getResultList();
 			if (!results.isEmpty()) {
-				retVal = (ExtentionConfigCodeList) results.get(0);
+				retVal = (ProgramConfigCodeList) results.get(0);
 			}
 		} catch (Exception ex) {
 			StringBuilder msg = new StringBuilder();
 			msg
 					.append("findById with fetchFields, failed for type '")
-					.append("ExtentionConfigCodeList")
+					.append("ProgramConfigCodeList")
 					.append("' and value of ")
 					.append(value)
 					.append(". Query used was->")
@@ -51,5 +51,4 @@ public class ExtensionCodeListService extends CqtPersistenceService<ExtentionCon
 		}
 		return retVal;
 	}
-
 }

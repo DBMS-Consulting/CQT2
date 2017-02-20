@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.dbms.entity.cqt.CmqBase190;
+import com.dbms.service.base.CqtPersistenceService;
 
 /**
  * @author Jay G.(jayshanchn@hotmail.com)

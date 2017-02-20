@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.dbms.entity.IEntity;
+import com.dbms.util.OrderBy;
 import com.dbms.util.exceptions.CqtServiceException;
 
 /**
@@ -28,4 +29,6 @@ public interface ICqtPersistenceService<E extends IEntity> {
 	public Class<E> getEntityClass();
 
 	public List<E> list();
+
+	public List<E> list(String orderByEntityField, OrderBy orderBy);
 }

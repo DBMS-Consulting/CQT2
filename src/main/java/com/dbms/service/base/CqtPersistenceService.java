@@ -1,4 +1,4 @@
-package com.dbms.service;
+package com.dbms.service.base;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.TypeVariable;
@@ -14,8 +14,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.dbms.entity.IEntity;
-import com.dbms.service.base.ICqtPersistenceService;
 import com.dbms.util.ICqtEntityManagerFactory;
+import com.dbms.util.OrderBy;
 import com.dbms.util.exceptions.CqtServiceException;
 
 /**
@@ -49,7 +49,7 @@ public abstract class CqtPersistenceService<E extends IEntity> implements ICqtPe
 	public void setCqtEntityManagerFactory(ICqtEntityManagerFactory cqtEntityManagerFactory) {
 		this.cqtEntityManagerFactory = cqtEntityManagerFactory;
 	}
-	
+
 	@Override
 	public E findById(Long id) {
 		E retVal = null;
@@ -237,7 +237,24 @@ public abstract class CqtPersistenceService<E extends IEntity> implements ICqtPe
 		final Class<? extends E> entityClass = getEntityClass();
 		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
 		try {
-			retVal = entityManager.createQuery("from " + entityClass + " a ").getResultList();
+			retVal = entityManager.createQuery("from " + entityClass.getName() + " a ").getResultList();
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<E> list(String orderByEntityField, OrderBy orderBy) {
+		List<E> retVal = null;
+		final Class<? extends E> entityClass = getEntityClass();
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		try {
+			retVal = entityManager
+					.createQuery("from " + entityClass.getName() + " a order by a." + orderByEntityField + " "
+							+ orderBy.name())
+					.getResultList();
 		} finally {
 			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
 		}
