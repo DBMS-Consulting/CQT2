@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.dbms.entity.cqt.CmqBase190;
 import com.dbms.service.base.ICqtPersistenceService;
+import com.dbms.util.exceptions.CqtServiceException;
 
 public interface ICmqBase190Service extends ICqtPersistenceService<CmqBase190> {
 
@@ -14,4 +15,5 @@ public interface ICmqBase190Service extends ICqtPersistenceService<CmqBase190> {
 
 	List<String> findReleaseStatus();
 
+	Long getNextCodeValue() throws CqtServiceException;
 }

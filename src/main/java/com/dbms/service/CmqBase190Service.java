@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import com.dbms.entity.cqt.CmqBase190;
 import com.dbms.service.base.CqtPersistenceService;
+import com.dbms.util.exceptions.CqtServiceException;
 
 /**
  * @author Jay G.(jayshanchn@hotmail.com)
@@ -189,5 +190,26 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190> impleme
 			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
 		}
 		return retVal;
+	}
+
+	public Long getNextCodeValue() throws CqtServiceException {
+		Long codeValue = null;
+		String query = "SELECT nextval('CMQ_CODE_SEQ') as code";
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		try {
+			Query nativeQuery = entityManager.createNativeQuery(query);
+			codeValue = (Long) (nativeQuery.getSingleResult());
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg
+					.append("An error occured while fetching next code value form sequence CMQ_CODE_SEQ.")
+					.append("Query used was ->")
+					.append(query);
+			LOG.error(msg.toString(), e);
+			throw new CqtServiceException(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return codeValue;
 	}
 }

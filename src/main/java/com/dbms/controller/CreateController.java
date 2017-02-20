@@ -67,36 +67,40 @@ public class CreateController implements Serializable {
 	}
 
 	public String save() {
-		selectedData.setCreationDate(new Date());
-		selectedData.setCmqTypeCd(extension);				
-		selectedData.setCmqState(state);
-		selectedData.setCmqAlgorithm(algorithm);
-		selectedData.setCmqProductCd(product);
-		selectedData.setCmqLevel(level);
-		selectedData.setCmqProtocolCd(protocol);
-		selectedData.setCmqProgramCd(drugProgram);
-		selectedData.setCmqGroup(group);
-		selectedData.setCmqStatus("P");				//length is 1 only
-		//selectedData.setCmqParentCode(90000000L);
-		//selectedData.setCmqScope(scope);						//Missing value
-		//selectedData.setCmqCriticalEvent(critical); 		//form precision is 5 chars but form sends like 10 chars.
-		
-		//hard coded for now
-		selectedData.setCmqCriticalEvent("Broad");			//Workaround for now
-		selectedData.setCmqCode(91234567L);		
-		selectedData.setCmqNote("Test Note");	
-		selectedData.setCmqName("Test Name");
-		selectedData.setCmqDescription("Test Description");
-		selectedData.setCmqState("P");
-		selectedData.setCmqSource("Test Source");
-		selectedData.setCreatedBy("Test user");
-		selectedData.setActivatedBy("Test user");
-		selectedData.setActivationDate(new Date());
-		selectedData.setDictionaryName("Test-Dict");
-		selectedData.setDictionaryVersion("1.0");
-		selectedData.setCmqSubversion(new BigDecimal(0.23d));
-
 		try {
+			//get the next value of code 
+			Long codevalue = this.cmqBaseService.getNextCodeValue();
+			
+			//fill data
+			selectedData.setCreationDate(new Date());
+			selectedData.setCmqTypeCd(extension);				
+			selectedData.setCmqState(state);
+			selectedData.setCmqAlgorithm(algorithm);
+			selectedData.setCmqProductCd(product);
+			selectedData.setCmqLevel(level);
+			selectedData.setCmqProtocolCd(protocol);
+			selectedData.setCmqProgramCd(drugProgram);
+			selectedData.setCmqGroup(group);
+			selectedData.setCmqStatus("P");				//length is 1 only
+			selectedData.setCmqCode(codevalue);	
+			//selectedData.setCmqParentCode(90000000L);
+			//selectedData.setCmqScope(scope);						//Missing value
+			//selectedData.setCmqCriticalEvent(critical); 		//form precision is 5 chars but form sends like 10 chars.
+			
+			//hard coded for now
+			selectedData.setCmqCriticalEvent("Broad");			//Workaround for now
+			selectedData.setCmqNote("Test Note");	
+			selectedData.setCmqName("Test Name");
+			selectedData.setCmqDescription("Test Description");
+			selectedData.setCmqState("P");
+			selectedData.setCmqSource("Test Source");
+			selectedData.setCreatedBy("Test user");
+			selectedData.setActivatedBy("Test user");
+			selectedData.setActivationDate(new Date());
+			selectedData.setDictionaryName("Test-Dict");
+			selectedData.setDictionaryVersion("1.0");
+			selectedData.setCmqSubversion(new BigDecimal(0.23d));
+			
 			cmqBaseService.create(selectedData);
 
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
