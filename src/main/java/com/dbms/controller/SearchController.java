@@ -80,8 +80,8 @@ public class SearchController extends BaseController<CmqBase190> {
 	@PostConstruct
 	public void init() {
 		maintainDesigBtn = false;
-		status = "Active";
-		state = "Published";
+		status = "Pending";
+		state = "Draft";
 		level = 1;
 		critical = "No";
 		group = "No Group";
