@@ -13,22 +13,23 @@
 			<p:tab title="Description">
 				<p:inputTextarea required="true"
 					requiredMessage="A description is required"
-					style="width: 100%; min-height: 250px" autoResize="true" />
+					style="width: 100%; min-height: 250px" autoResize="true"
+					value="#{createController.description}" />
 				<!-- <h:inputTextarea required="true" value="###"   /> -->
 			</p:tab>
 			<p:tab title="Notes">
-				<p:inputTextarea value="****** Notes *******"
-					style="width: 100%; min-height: 250px" autoResize="true" />
+				<p:inputTextarea style="width: 100%; min-height: 250px"
+					autoResize="true" value="#{createController.notes}" />
 			</p:tab>
 			<p:tab title="Source">
-				<p:inputTextarea value="****** Sources *******"
-					style="width: 100%; min-height: 250px" autoResize="true" />
+				<p:inputTextarea style="width: 100%; min-height: 250px"
+					autoResize="true" value="#{createController.source}" />
 			</p:tab>
 		</p:tabView>
 
 
 		<p:commandButton style="margin-top: 10px;" value="Save"
-			icon="ui-icon-disk" action="SAVE"></p:commandButton>
+			icon="ui-icon-disk" action="#{createController.saveInformativeNotes}"></p:commandButton>
 	</p:panel>
 
 

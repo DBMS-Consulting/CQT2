@@ -7,4 +7,6 @@ public class CqtConstants {
 	public static final String CODE_LIST_TYPE_WORKFLOW_STATES = "WORKFLOW_STATES";
 	public static final String CODE_LIST_TYPE_PRODUCT = "PRODUCT";
 	public static final String CODE_LIST_TYPE_PROTOCOL = "PROTOCOL";
+	
+	public static final String CURRENT_MEDDRA_VERSION = "CURRENT_MEDDRA_VERSION";
 }

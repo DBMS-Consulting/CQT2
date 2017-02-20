@@ -10,4 +10,5 @@ public interface IRefCodeListService extends ICqtPersistenceService<RefConfigCod
 
 	public List<RefConfigCodeList> findByConfigType(String codelistConfigType, OrderBy orderBy);
 
+	public RefConfigCodeList getCurrentMeddraVersion();
 }
