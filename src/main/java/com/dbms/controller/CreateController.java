@@ -54,8 +54,6 @@ public class CreateController implements Serializable {
 		this.status = "Pending";
 		
 	//	maintainDesigBtn = false;
-		status = "Active";
-		state = "Published";
 		level = 1;
 		critical = "No";
 		group = "No Group";

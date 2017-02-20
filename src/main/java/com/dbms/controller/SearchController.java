@@ -79,13 +79,13 @@ public class SearchController extends BaseController<CmqBase190> {
 
 	@PostConstruct
 	public void init() {
-		maintainDesigBtn = false;
-		status = "Active";
-		state = "Published";
-		level = 1;
-		critical = "No";
-		group = "No Group";
-		extension = "TME";
+		this.maintainDesigBtn = false;
+		this.state = "Draft";
+		this.status = "Pending";
+		this.level = 1;
+		this.critical = "No";
+		this.group = "No Group";
+		this.extension = "TME";
 	}
 
 	public TreeNode getHierarchyRoot() {
