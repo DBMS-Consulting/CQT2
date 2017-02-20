@@ -53,7 +53,7 @@
 			createController.extension eq 'TR1' or createController.extension eq 'PRO'}"
 				requiredMessage="The Product is required" id="product">
 				<f:selectItem itemValue="" itemLabel="" />
-				<f:selectItems value="#{configMB.programs}" var="product"
+				<f:selectItems value="#{configMB.products}" var="product"
 					itemLabel="#{product.value}" itemValue="#{product.value}" />
 			</p:selectOneMenu>
 

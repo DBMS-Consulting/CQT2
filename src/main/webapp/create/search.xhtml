@@ -10,11 +10,8 @@
 		<h:panelGrid columns="2" columnClasses="label, value">
 			<p:outputLabel value="Extension" styleClass="label-right" />
 			<p:selectOneMenu value="#{searchController.extension}">
-				<f:selectItem itemLabel="TME" itemValue="TME"></f:selectItem>
-				<f:selectItem itemLabel="TR1" itemValue="TR1"></f:selectItem>
-				<f:selectItem itemLabel="CPT" itemValue="CPT"></f:selectItem>
-				<f:selectItem itemLabel="DME" itemValue="DME"></f:selectItem>
-				<f:selectItem itemLabel="PRO" itemValue="PRO"></f:selectItem>
+				<f:selectItems value="#{configMB.extensions}" var="extension"
+					itemLabel="#{extension.value}" itemValue="#{extension.value}" />
 
 				<p:ajax update="level2 protocol2 drug2 product2" event="change"
 					listener="#{searchController.changeLevel}" />
@@ -23,26 +20,24 @@
 			<p:outputLabel value="Drug Program" styleClass="label-right" />
 			<p:selectOneMenu value="#{searchController.drugProgram}" id="drug2">
 				<f:selectItem itemValue="" itemLabel="" />
-				<f:selectItem itemValue="No Program" itemLabel="No Program" />
-				<f:selectItem itemValue="Val 1" itemLabel="Val 1" />
-				<f:selectItem itemValue="Val 2" itemLabel="Val 2" />
+				<f:selectItems value="#{configMB.programs}" var="program"
+					itemLabel="#{program.value}" itemValue="#{program.value}" />
 			</p:selectOneMenu>
 
 			<p:outputLabel value="Protocol" styleClass="label-right" />
 			<p:selectOneMenu value="#{searchController.protocol}" id="protocol2">
 				<f:selectItem itemValue="" itemLabel="" />
-				<f:selectItem itemValue="No Protocol" itemLabel="No Protocol" />
-				<f:selectItem itemValue="Val 1" itemLabel="Val 1" />
-				<f:selectItem itemValue="Val 2" itemLabel="Val 2" />
+				<f:selectItems value="#{configMB.protocols}" var="protocol"
+					itemLabel="#{protocol.value}" itemValue="#{protocol.value}" />
 			</p:selectOneMenu>
 
 			<p:outputLabel value="Product" rendered="true"
 				styleClass="label-right" />
-			<p:selectOneMenu value="#{searchController.product}" disabled="false" id="product2">
+			<p:selectOneMenu value="#{searchController.product}" disabled="false"
+				id="product2">
 				<f:selectItem itemValue="" itemLabel="" />
-				<f:selectItem itemValue="No Product" itemLabel="No Product" />
-				<f:selectItem itemLabel="Val 1" itemValue="Val 1"></f:selectItem>
-				<f:selectItem itemLabel="Val 2" itemValue="Val 2"></f:selectItem>
+				<f:selectItems value="#{configMB.products}" var="product"
+					itemLabel="#{product.value}" itemValue="#{product.value}" />
 			</p:selectOneMenu>
 
 		</h:panelGrid>
