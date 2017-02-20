@@ -12,14 +12,8 @@
 		<h:panelGrid columns="2" columnClasses="label, value">
 			<p:outputLabel value="Extension" styleClass="label-right" />
 			<p:selectOneMenu value="#{createController.extension}">
-				<!-- <f:selectItem itemLabel="TME" itemValue="TME"></f:selectItem>
-				<f:selectItem itemLabel="TR1" itemValue="TR1"></f:selectItem>
-				<f:selectItem itemLabel="CPT" itemValue="CPT"></f:selectItem>
-				<f:selectItem itemLabel="DME" itemValue="DME"></f:selectItem>
-				<f:selectItem itemLabel="PRO" itemValue="PRO"></f:selectItem> -->
-
-				<f:selectItems value="#{configMB.extentionConfigCodeList}" var="extension"
-					itemLabel="#{extension.value}" itemValue="#{extension.id}" />
+				<f:selectItems value="#{configMB.extensions}" var="extension"
+					itemLabel="#{extension.value}" itemValue="#{extension.value}" />
 
 				<p:ajax
 					update="level lProtocol protocol drug lDrug product lProduct"
@@ -35,9 +29,8 @@
 				createController.extension eq 'TR1' or createController.extension eq 'PRO'}"
 				requiredMessage="The Drug Program is required">
 				<f:selectItem itemValue="" itemLabel="" />
-				<f:selectItem itemValue="No Program" itemLabel="No Program" />
-				<f:selectItem itemValue="Val 1" itemLabel="Val 1" />
-				<f:selectItem itemValue="Val 2" itemLabel="Val 2" />
+				<f:selectItems value="#{configMB.programs}" var="program"
+					itemLabel="#{program.value}" itemValue="#{program.value}" />
 			</p:selectOneMenu>
 
 			<p:outputLabel id="lProtocol"
@@ -47,9 +40,8 @@
 				requiredMessage="The Protocol is required"
 				required="#{createController.extension eq 'PRO'}">
 				<f:selectItem itemValue="" itemLabel="" />
-				<f:selectItem itemValue="No Protocol" itemLabel="No Protocol" />
-				<f:selectItem itemValue="Val 1" itemLabel="Val 1" />
-				<f:selectItem itemValue="Val 2" itemLabel="Val 2" />
+				<f:selectItems value="#{configMB.protocols}" var="protocol"
+					itemLabel="#{protocol.value}" itemValue="#{protocol.value}" />
 			</p:selectOneMenu>
 
 			<p:outputLabel id="lProduct"
@@ -61,9 +53,8 @@
 			createController.extension eq 'TR1' or createController.extension eq 'PRO'}"
 				requiredMessage="The Product is required" id="product">
 				<f:selectItem itemValue="" itemLabel="" />
-				<f:selectItem itemValue="No Product" itemLabel="No Product" />
-				<f:selectItem itemLabel="Val 1" itemValue="Val 1"></f:selectItem>
-				<f:selectItem itemLabel="Val 2" itemValue="Val 2"></f:selectItem>
+				<f:selectItems value="#{configMB.programs}" var="product"
+					itemLabel="#{product.value}" itemValue="#{product.value}" />
 			</p:selectOneMenu>
 
 			<p:outputLabel value="* Designee" styleClass="label-right" />
@@ -71,7 +62,7 @@
 				rendered="true" disabled="false"
 				requiredMessage="The Designee is required" required="true">
 				<f:selectItem itemLabel="" itemValue=""></f:selectItem>
-				<f:selectItem itemLabel="Jane Doe" itemValue="jane"></f:selectItem>
+				<f:selectItem itemLabel="NONE" itemValue="NONE"></f:selectItem>
 				<!-- <f:selectItems></f:selectItems> -->
 			</p:selectOneMenu>
 		</h:panelGrid>

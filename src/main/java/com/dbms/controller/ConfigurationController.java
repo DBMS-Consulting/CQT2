@@ -9,10 +9,9 @@ import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 
-import com.dbms.entity.cqt.ExtentionConfigCodeList;
-import com.dbms.entity.cqt.ProgramConfigCodeList;
-import com.dbms.service.IExtensionCodeListService;
-import com.dbms.service.IProgramCodeListService;
+import com.dbms.entity.cqt.RefConfigCodeList;
+import com.dbms.service.IRefCodeListService;
+import com.dbms.util.CqtConstants;
 import com.dbms.util.OrderBy;
 
 /**
@@ -30,19 +29,17 @@ public class ConfigurationController implements Serializable {
 	 */
 	private static final long serialVersionUID = 5539162862901321913L;
 
-	private List<ExtentionConfigCodeList> extentionConfigCodeList;
+	@ManagedProperty("#{RefCodeListService}")
+	private IRefCodeListService refCodeListService;
 
-	private List<ProgramConfigCodeList> programConfigCodeList;
-
-	@ManagedProperty("#{ExtensionCodeListService}")
-	private IExtensionCodeListService extensionCodeListService;
-
-	@ManagedProperty("#{ProgramCodeListService}")
-	private IProgramCodeListService programCodeListService;
+	private List<RefConfigCodeList> extensions, programs, protocols, products;
 
 	@PostConstruct
 	public void init() {
 		getExtensionList();
+		getProgramList();
+		getProtocolList();
+		getProductList();
 	}
 
 	/**
@@ -50,56 +47,94 @@ public class ConfigurationController implements Serializable {
 	 * 
 	 * @return
 	 */
-	public List<ExtentionConfigCodeList> getExtensionList() {
-		this.extentionConfigCodeList = this.extensionCodeListService.list("displaySN", OrderBy.ASC);
-		if (this.extentionConfigCodeList == null) {
-			this.extentionConfigCodeList = new ArrayList<>();
+	public List<RefConfigCodeList> getExtensionList() {
+		extensions = refCodeListService.findByConfigType(
+				CqtConstants.CODE_LIST_TYPE_EXTENSION, OrderBy.ASC);
+		if (extensions == null) {
+			extensions = new ArrayList<>();
 		}
-		return this.extentionConfigCodeList;
+		return extensions;
 	}
 
 	/**
-	 * Returns extensions list.
+	 * Returns programs list.
 	 * 
 	 * @return
 	 */
-	public List<ProgramConfigCodeList> getDrugProgramList() {
-		this.programConfigCodeList = this.programCodeListService.list("displaySN", OrderBy.ASC);
-		if (this.programConfigCodeList == null) {
-			this.programConfigCodeList = new ArrayList<>();
+	public List<RefConfigCodeList> getProgramList() {
+		programs = refCodeListService.findByConfigType(
+				CqtConstants.CODE_LIST_TYPE_PROGRAM, OrderBy.ASC);
+		if (programs == null) {
+			programs = new ArrayList<>();
 		}
-		return this.programConfigCodeList;
+		return programs;
+	}
+	
+	/**
+	 * Returns protocol list.
+	 * 
+	 * @return
+	 */
+	public List<RefConfigCodeList> getProtocolList() {
+		protocols = refCodeListService.findByConfigType(
+				CqtConstants.CODE_LIST_TYPE_PROTOCOL, OrderBy.ASC);
+		if (protocols == null) {
+			protocols = new ArrayList<>();
+		}
+		return protocols;
+	}
+	
+	/**
+	 * Returns products list.
+	 * 
+	 * @return
+	 */
+	public List<RefConfigCodeList> getProductList() {
+		products = refCodeListService.findByConfigType(
+				CqtConstants.CODE_LIST_TYPE_PRODUCT, OrderBy.ASC);
+		if (products == null) {
+			products = new ArrayList<>();
+		}
+		return products;
 	}
 
-	public List<ExtentionConfigCodeList> getExtentionConfigCodeList() {
-		return extentionConfigCodeList;
+	public IRefCodeListService getRefCodeListService() {
+		return refCodeListService;
 	}
 
-	public void setExtentionConfigCodeList(List<ExtentionConfigCodeList> extentionConfigCodeList) {
-		this.extentionConfigCodeList = extentionConfigCodeList;
+	public void setRefCodeListService(IRefCodeListService refCodeListService) {
+		this.refCodeListService = refCodeListService;
 	}
 
-	public List<ProgramConfigCodeList> getProgramConfigCodeList() {
-		return programConfigCodeList;
+	public List<RefConfigCodeList> getPrograms() {
+		return programs;
 	}
 
-	public void setProgramConfigCodeList(List<ProgramConfigCodeList> programConfigCodeList) {
-		this.programConfigCodeList = programConfigCodeList;
+	public void setPrograms(List<RefConfigCodeList> programs) {
+		this.programs = programs;
 	}
 
-	public IExtensionCodeListService getExtensionCodeListService() {
-		return extensionCodeListService;
+	public List<RefConfigCodeList> getProtocols() {
+		return protocols;
 	}
 
-	public void setExtensionCodeListService(IExtensionCodeListService extensionCodeListService) {
-		this.extensionCodeListService = extensionCodeListService;
+	public void setProtocols(List<RefConfigCodeList> protocols) {
+		this.protocols = protocols;
 	}
 
-	public IProgramCodeListService getProgramCodeListService() {
-		return programCodeListService;
+	public List<RefConfigCodeList> getProducts() {
+		return products;
 	}
 
-	public void setProgramCodeListService(IProgramCodeListService programCodeListService) {
-		this.programCodeListService = programCodeListService;
+	public void setProducts(List<RefConfigCodeList> products) {
+		this.products = products;
+	}
+
+	public List<RefConfigCodeList> getExtensions() {
+		return extensions;
+	}
+
+	public void setExtensions(List<RefConfigCodeList> extensions) {
+		this.extensions = extensions;
 	}
 }
