@@ -10,39 +10,41 @@ import javax.persistence.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.dbms.entity.cqt.ProgramConfigCodeList;
+import com.dbms.entity.cqt.RefConfigCodeList;
 import com.dbms.service.base.CqtPersistenceService;
+import com.dbms.util.OrderBy;
 
-@ManagedBean(name = "ProgramCodeListService")
+@ManagedBean(name = "RefCodeListService")
 @ApplicationScoped
-public class ProgramCodeListService extends CqtPersistenceService<ProgramConfigCodeList>
-		implements IProgramCodeListService {
+public class RefCodeListService extends CqtPersistenceService<RefConfigCodeList>
+		implements IRefCodeListService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(ExtensionCodeListService.class);
+	private static final Logger LOG = LoggerFactory.getLogger(RefCodeListService.class);
 
 	@Override
 	@SuppressWarnings("rawtypes")
-	public ProgramConfigCodeList findByValue(String value) {
-		ProgramConfigCodeList retVal = null;
+	public RefConfigCodeList findByConfigType(String codelistConfigType, OrderBy orderBy) {
+		RefConfigCodeList retVal = null;
 		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
 
-		StringBuilder queryString = new StringBuilder("from ProgramConfigCodeList a");
-		queryString.append(" where a.value = :value");
+		StringBuilder queryString = new StringBuilder("from RefCodeListService a");
+		queryString.append(" where a.codelistConfigType = :codelistConfigType order by a.serialNum ");
+		queryString.append(orderBy.name());
 		try {
 			Query query = entityManager.createQuery(queryString.toString());
-			query.setParameter("value", value);
+			query.setParameter("codelistConfigType", codelistConfigType);
 
 			List results = query.getResultList();
 			if (!results.isEmpty()) {
-				retVal = (ProgramConfigCodeList) results.get(0);
+				retVal = (RefConfigCodeList) results.get(0);
 			}
 		} catch (Exception ex) {
 			StringBuilder msg = new StringBuilder();
 			msg
-					.append("findById with fetchFields, failed for type '")
-					.append("ProgramConfigCodeList")
+					.append("findByConfigType failed for type '")
+					.append("RefConfigCodeList")
 					.append("' and value of ")
-					.append(value)
+					.append(codelistConfigType)
 					.append(". Query used was->")
 					.append(queryString);
 			LOG.error(msg.toString(), ex);
@@ -51,4 +53,5 @@ public class ProgramCodeListService extends CqtPersistenceService<ProgramConfigC
 		}
 		return retVal;
 	}
+
 }

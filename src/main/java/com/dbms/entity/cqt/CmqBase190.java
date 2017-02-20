@@ -12,7 +12,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -51,10 +50,8 @@ public class CmqBase190 extends BaseEntity {
 	 * = 0) private Long cmqParentCode;
 	 */
 
-	/*
-	 * @Column(name = "CMQ_PARENT_ID", nullable = false, precision = 38, scale =
-	 * 0) private Long cmqParentId;
-	 */
+	@Column(name = "CMQ_PARENT_NAME", length = 200)
+	private String cmqParentName;
 
 	@Column(name = "CMQ_DESCRIPTION", nullable = false, length = 4000)
 	private String cmqDescription;
@@ -134,8 +131,7 @@ public class CmqBase190 extends BaseEntity {
 	private BigDecimal cmqSubversion;
 
 	@ManyToOne
-	@JoinColumns({ @JoinColumn(name = "CMQ_PARENT_ID", referencedColumnName = "CMQ_ID"),
-			@JoinColumn(name = "CMQ_PARENT_CODE", referencedColumnName = "CMQ_CODE") })
+	@JoinColumn(name = "CMQ_PARENT_CODE", referencedColumnName = "CMQ_CODE")
 	private CmqBase190 parentCmq;
 
 	@OneToMany(mappedBy = "parentCmq", cascade = CascadeType.ALL)
@@ -179,6 +175,14 @@ public class CmqBase190 extends BaseEntity {
 
 	public void setCmqLevel(Integer cmqLevel) {
 		this.cmqLevel = cmqLevel;
+	}
+
+	public String getCmqParentName() {
+		return cmqParentName;
+	}
+
+	public void setCmqParentName(String cmqParentName) {
+		this.cmqParentName = cmqParentName;
 	}
 
 	public String getCmqDescription() {

@@ -1,5 +1,6 @@
 package com.dbms.entity.cqt;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -15,22 +16,25 @@ import org.hibernate.annotations.GenericGenerator;
 import com.dbms.entity.BaseEntity;
 
 @Entity
-@Table(name = "EXTENTION_CONFIG_CODELIST")
-public class ExtentionConfigCodeList extends BaseEntity {
+@Table(name = "REF_CONFIG_CODELIST")
+public class RefConfigCodeList extends BaseEntity {
 
 	private static final long serialVersionUID = -6991254386386614648L;
 
 	@Id
 	@GeneratedValue(generator = "idGenerator")
 	@GenericGenerator(name = "idGenerator", strategy = "assigned")
-	@Column(name = "CODELIST_ID", length = 10, unique = true, nullable = false)
+	@Column(name = "CODELIST_ID", length = 30, unique = true, nullable = false)
 	private Long id;
 
-	@Column(name = "DISPLAY_SN", length = 4)
-	private Integer displaySN;
-
 	@Column(name = "CODELIST_CONFIGURATION_TYPE", length = 30, nullable = false)
-	private String type;
+	private String codelistConfigType;
+
+	@Column(name = "SERIALNUM", nullable = false, precision = 4, scale = 0)
+	private BigDecimal serialNum;
+
+	@Column(name = "CODELIST_INTERNAL_VALUE", length = 200, nullable = false)
+	private String codelistInternalValue;
 
 	@Column(name = "CODELIST_VALUE", length = 200, nullable = false)
 	private String value;
@@ -63,20 +67,28 @@ public class ExtentionConfigCodeList extends BaseEntity {
 		this.id = id;
 	}
 
-	public Integer getDisplaySN() {
-		return displaySN;
+	public String getCodelistConfigType() {
+		return codelistConfigType;
 	}
 
-	public void setDisplaySN(Integer displaySN) {
-		this.displaySN = displaySN;
+	public void setCodelistConfigType(String codelistConfigType) {
+		this.codelistConfigType = codelistConfigType;
 	}
 
-	public String getType() {
-		return type;
+	public BigDecimal getSerialNum() {
+		return serialNum;
 	}
 
-	public void setType(String type) {
-		this.type = type;
+	public void setSerialNum(BigDecimal serialNum) {
+		this.serialNum = serialNum;
+	}
+
+	public String getCodelistInternalValue() {
+		return codelistInternalValue;
+	}
+
+	public void setCodelistInternalValue(String codelistInternalValue) {
+		this.codelistInternalValue = codelistInternalValue;
 	}
 
 	public String getValue() {
@@ -134,4 +146,5 @@ public class ExtentionConfigCodeList extends BaseEntity {
 	public void setLastModificationDate(Date lastModificationDate) {
 		this.lastModificationDate = lastModificationDate;
 	}
+
 }
