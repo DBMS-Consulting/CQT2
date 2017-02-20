@@ -52,14 +52,14 @@ public class CreateController implements Serializable {
 	public void init() {
 		this.state = "Draft";
 		this.status = "Pending";
+		this.algorithm = "N";
 		
 	//	maintainDesigBtn = false;
-		status = "Active";
-		state = "Published";
 		level = 1;
 		critical = "No";
 		group = "No Group";
 		extension = "TME";
+		
 	}
 
 	private CmqBase190 selectedData;
@@ -129,21 +129,21 @@ public class CreateController implements Serializable {
 		} else
 			setLevel(2);
 
-		if (extension.equals("CPT") || extension.equals("DME"))
+		if (extension.equals("CPT") || extension.equals("DME")) {
 			setDrugProgram("No Program");
-		else
+			setProduct("No Product");
+		}
+		else {
 			setDrugProgram("");
+			setProduct("");
+		}
 
 		if (extension.equals("CPT") || extension.equals("DME")
 				|| extension.equals("TME") || extension.equals("TR1"))
 			setProtocol("No Protocol");
 		else
 			setProtocol("");
-
-		if (extension.equals("CPT") || extension.equals("DME"))
-			setProduct("No Product");
-		else
-			setProduct("");
+			
 	}
 
 	/**
