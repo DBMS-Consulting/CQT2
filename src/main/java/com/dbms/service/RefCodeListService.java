@@ -16,8 +16,7 @@ import com.dbms.util.OrderBy;
 
 @ManagedBean(name = "RefCodeListService")
 @ApplicationScoped
-public class RefCodeListService extends CqtPersistenceService<RefConfigCodeList>
-		implements IRefCodeListService {
+public class RefCodeListService extends CqtPersistenceService<RefConfigCodeList> implements IRefCodeListService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(RefCodeListService.class);
 
