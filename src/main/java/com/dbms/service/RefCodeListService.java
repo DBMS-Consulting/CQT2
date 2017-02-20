@@ -1,5 +1,6 @@
 package com.dbms.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.faces.bean.ApplicationScoped;
@@ -22,8 +23,8 @@ public class RefCodeListService extends CqtPersistenceService<RefConfigCodeList>
 
 	@Override
 	@SuppressWarnings("rawtypes")
-	public RefConfigCodeList findByConfigType(String codelistConfigType, OrderBy orderBy) {
-		RefConfigCodeList retVal = null;
+	public List<RefConfigCodeList> findByConfigType(String codelistConfigType, OrderBy orderBy) {
+		List<RefConfigCodeList> retVal = null;
 		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
 
 		StringBuilder queryString = new StringBuilder("from RefCodeListService a");
@@ -34,8 +35,8 @@ public class RefCodeListService extends CqtPersistenceService<RefConfigCodeList>
 			query.setParameter("codelistConfigType", codelistConfigType);
 
 			List results = query.getResultList();
-			if (!results.isEmpty()) {
-				retVal = (RefConfigCodeList) results.get(0);
+			if (null == results) {
+				retVal = new ArrayList<>();
 			}
 		} catch (Exception ex) {
 			StringBuilder msg = new StringBuilder();
