@@ -79,7 +79,7 @@ public class MeddraDict190 extends BaseEntity {
 	private String createdBy;
 
 	@Temporal(TemporalType.DATE)
-	@Column(name = "CMQ_DUE_DATE", length = 7)
+	@Column(name = "CREATION_DATE", length = 7)
 	private Date creationDate;
 
 	public Long getId() {

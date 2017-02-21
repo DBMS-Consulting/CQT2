@@ -5,6 +5,9 @@
 		<provider>org.hibernate.ejb.HibernatePersistence</provider>
 		<class>com.dbms.entity.cqt.CmqBase190</class>
 		<class>com.dbms.entity.cqt.CmqRelation190</class>
+		<class>com.dbms.entity.cqt.SmqBase190</class>
+		<class>com.dbms.entity.cqt.SmqRelation190</class>
+		<class>com.dbms.entity.cqt.MeddraDict190</class>
 		<class>com.dbms.entity.cqt.RefConfigCodeList</class>
 		<class>com.dbms.entity.meddra.HlgtPrefTerm</class>
 		<class>com.dbms.entity.meddra.HltPrefTerm</class>

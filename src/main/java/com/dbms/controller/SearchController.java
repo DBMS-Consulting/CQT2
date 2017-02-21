@@ -1,5 +1,6 @@
 package com.dbms.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -17,12 +18,17 @@ import org.primefaces.model.TreeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.dbms.controller.beans.HierarchySearchResultBean;
 import com.dbms.csmq.Document;
 import com.dbms.entity.cqt.CmqBase190;
 import com.dbms.entity.cqt.CmqRelation190;
 import com.dbms.entity.cqt.CreateEntity;
+import com.dbms.entity.cqt.MeddraDict190;
+import com.dbms.entity.cqt.SmqBase190;
 import com.dbms.service.ICmqBase190Service;
 import com.dbms.service.ICmqRelation190Service;
+import com.dbms.service.IMeddraDictService;
+import com.dbms.service.ISmqBaseService;
 import com.dbms.web.dto.CodelistDTO;
 
 /**
@@ -38,6 +44,12 @@ public class SearchController extends BaseController<CmqBase190> {
 
 	@ManagedProperty("#{CmqBase190Service}")
 	private ICmqBase190Service cmqBaseService;
+
+	@ManagedProperty("#{SmqBaseService}")
+	private ISmqBaseService smqBaseService;
+
+	@ManagedProperty("#{MeddraDictService}")
+	private IMeddraDictService meddraDictService;
 
 	@ManagedProperty("#{CmqRelation190Service}")
 	private ICmqRelation190Service cmqRelationService;
@@ -73,6 +85,8 @@ public class SearchController extends BaseController<CmqBase190> {
 	private TreeNode hierarchyRoot;
 
 	private CmqBase190 selctedData;
+
+	private List<HierarchySearchResultBean> hierarchySearchResults;
 
 	public SearchController() {
 		this.selectedData = new CmqBase190();
@@ -383,26 +397,103 @@ public class SearchController extends BaseController<CmqBase190> {
 
 	public String loadCmqBaseByCode() {
 		this.selctedData = this.cmqBaseService.findByCode(code);
-		
+
 		return "";
 	}
 
 	public String hierarchySearch() {
 		int level = 0;
+		String meddraSearchTerm = null;
+		boolean searchSmqBase = false;
+		boolean searchMeddraBase = false;
+		boolean searchCmqBase = false;
 		if ("SMQ1".equalsIgnoreCase(levelH)) {
 			level = 1;
+			searchSmqBase = true;
 		} else if ("SMQ2".equalsIgnoreCase(levelH)) {
 			level = 2;
+			searchSmqBase = true;
 		} else if ("SMQ3".equalsIgnoreCase(levelH)) {
 			level = 3;
+			searchSmqBase = true;
 		} else if ("SMQ4".equalsIgnoreCase(levelH)) {
 			level = 4;
+			searchSmqBase = true;
 		} else if ("SMQ5".equalsIgnoreCase(levelH)) {
 			level = 5;
-		} else if ("SMQ2".equalsIgnoreCase(levelH)) {
-			level = 1;
+			searchSmqBase = true;
+		} else if ("SOC".equalsIgnoreCase(levelH)) {
+			meddraSearchTerm = "SOC_TERM";
+			searchMeddraBase = true;
+		} else if ("HLGT".equalsIgnoreCase(levelH)) {
+			meddraSearchTerm = "HLGT_TERM";
+			searchMeddraBase = true;
+		} else if ("HLT".equalsIgnoreCase(levelH)) {
+			meddraSearchTerm = "HLT_TERM";
+			searchMeddraBase = true;
+		} else if ("PT".equalsIgnoreCase(levelH)) {
+			meddraSearchTerm = "PT_TERM";
+			searchMeddraBase = true;
+		} else if ("PRO".equalsIgnoreCase(levelH)) {
+			searchCmqBase = true;
 		}
-		datas = cmqBaseService.findByCriterias(null, null, null, null, level, null, null, null, null, termName, null);
+
+		if (searchSmqBase) {
+			List<SmqBase190> smqBaseList = smqBaseService.findByLevelAndTerm(level, termName);
+			hierarchySearchResults = new ArrayList<>();
+			for (SmqBase190 smqBase190 : smqBaseList) {
+				HierarchySearchResultBean bean = new HierarchySearchResultBean();
+				if (smqBase190.getSmqLevel() == 1) {
+					bean.setLevel("SMQ1");
+				} else if (smqBase190.getSmqLevel() == 2) {
+					bean.setLevel("SMQ2");
+				} else if (smqBase190.getSmqLevel() == 3) {
+					bean.setLevel("SMQ3");
+				} else if (smqBase190.getSmqLevel() == 4) {
+					bean.setLevel("SMQ4");
+				} else if (smqBase190.getSmqLevel() == 5) {
+					bean.setLevel("SMQ5");
+				}
+				bean.setTerm(smqBase190.getSmqName());
+				bean.setCode(smqBase190.getSmqCode().toString());
+				bean.setEntity(smqBase190);
+				hierarchySearchResults.add(bean);
+			}
+		} else if (searchMeddraBase) {
+			List<MeddraDict190> meddraDictList = meddraDictService.findByLevelAndTerm(meddraSearchTerm.toUpperCase(),
+					termName);
+			hierarchySearchResults = new ArrayList<>();
+			for (MeddraDict190 meddraDict190 : meddraDictList) {
+				HierarchySearchResultBean bean = new HierarchySearchResultBean();
+				bean.setLevel(levelH);
+				if ("SOC".equalsIgnoreCase(levelH)) {
+					bean.setTerm(meddraDict190.getSocTerm());
+					bean.setCode(meddraDict190.getSocCode());
+				} else if ("HLGT".equalsIgnoreCase(levelH)) {
+					bean.setTerm(meddraDict190.getHlgtTerm());
+					bean.setCode(meddraDict190.getHlgtCode());
+				} else if ("HLT".equalsIgnoreCase(levelH)) {
+					bean.setTerm(meddraDict190.getHltTerm());
+					bean.setCode(meddraDict190.getHltCode());
+				} else if ("PT".equalsIgnoreCase(levelH)) {
+					bean.setTerm(meddraDict190.getPtTerm());
+					bean.setCode(meddraDict190.getPtCode());
+				}
+				bean.setEntity(meddraDict190);
+				hierarchySearchResults.add(bean);
+			}
+		} else if (searchCmqBase) {
+			List<CmqBase190> cmqBaseList = cmqBaseService.findByLevelAndTerm(2, termName);
+			hierarchySearchResults = new ArrayList<>();
+			for (CmqBase190 cmqBase190 : cmqBaseList) {
+				HierarchySearchResultBean bean = new HierarchySearchResultBean();
+				bean.setLevel(levelH);
+				bean.setTerm(cmqBase190.getCmqName());
+				bean.setCode(cmqBase190.getCmqCode().toString());
+				bean.setEntity(cmqBase190);
+				hierarchySearchResults.add(bean);
+			}
+		}
 		return "";
 	}
 
@@ -496,5 +587,21 @@ public class SearchController extends BaseController<CmqBase190> {
 
 	public void setSelctedData(CmqBase190 selctedData) {
 		this.selctedData = selctedData;
+	}
+
+	public List<HierarchySearchResultBean> getHierarchySearchResults() {
+		return hierarchySearchResults;
+	}
+
+	public void setHierarchySearchResults(List<HierarchySearchResultBean> hierarchySearchResults) {
+		this.hierarchySearchResults = hierarchySearchResults;
+	}
+
+	public void setSmqBaseService(ISmqBaseService smqBaseService) {
+		this.smqBaseService = smqBaseService;
+	}
+
+	public void setMeddraDictService(IMeddraDictService meddraDictService) {
+		this.meddraDictService = meddraDictService;
 	}
 }

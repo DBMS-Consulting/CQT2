@@ -143,6 +143,39 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190> impleme
 		return retVal;
 	}
 
+	@SuppressWarnings("unchecked")
+	public List<CmqBase190> findByLevelAndTerm(Integer level, String searchTerm) {
+		List<CmqBase190> retVal = null;
+		StringBuilder sb = new StringBuilder();
+		sb.append("from CmqBase190 c where c.cmqLevel = :cmqLevel ");
+		if (!StringUtils.isBlank(searchTerm)) {
+			sb.append("and upper(c.cmqName) like :cmqName");
+		}
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		try {
+			Query query = entityManager.createQuery(sb.toString());
+			query.setParameter("cmqLevel", level);
+
+			if (!StringUtils.isBlank(searchTerm)) {
+				query.setParameter("cmqName", searchTerm.toUpperCase());
+			}
+			retVal = query.getResultList();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg
+					.append("An error occured while fetching types from CmqBase190 on cmqLevel ")
+					.append(level)
+					.append(" with cmqName like ")
+					.append("%" + searchTerm.toUpperCase() + "%")
+					.append(" Query used was ->")
+					.append(sb.toString());
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -199,7 +232,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190> impleme
 		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
 		try {
 			Query nativeQuery = entityManager.createNativeQuery(query);
-			BigDecimal retVal = (BigDecimal)nativeQuery.getSingleResult();
+			BigDecimal retVal = (BigDecimal) nativeQuery.getSingleResult();
 			codeValue = retVal.longValue();
 		} catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
@@ -214,7 +247,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190> impleme
 		}
 		return codeValue;
 	}
-	
+
 	public CmqBase190 findByCode(Long cmqCode) {
 		CmqBase190 retVal = null;
 		String queryString = "from CmqBase190 c where c.cmqCode = :cmqCode";
@@ -222,12 +255,13 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190> impleme
 		try {
 			Query query = entityManager.createQuery(queryString);
 			query.setParameter("cmqCode", cmqCode);
-			retVal = (CmqBase190)query.getSingleResult();
+			retVal = (CmqBase190) query.getSingleResult();
 		} catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
 			msg
 					.append("findByCode failed for CMQ_CODE value'")
-					.append(cmqCode).append("' ")
+					.append(cmqCode)
+					.append("' ")
 					.append("Query used was ->")
 					.append(queryString);
 			LOG.error(msg.toString(), e);

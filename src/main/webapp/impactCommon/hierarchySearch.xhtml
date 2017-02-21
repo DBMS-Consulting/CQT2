@@ -80,6 +80,27 @@
 			</p:toolbar>
 			
 			
+			<p:dataTable var="node" value="#{searchController.hierarchySearchResults}"
+				id="resultHier" rows="10" paginator="true" paginatorPosition="bottom"
+				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,25">
+
+				<p:column headerText="Level">
+					<h:outputText value="#{node.level}" />
+				</p:column>
+
+				<p:column headerText="Term">
+					<h:outputText value="#{node.term}" />
+				</p:column>
+
+				<p:column headerText="Code" sortBy="#{node.code}"
+					filterBy="#{node.code}">
+					<h:outputText value="#{node.code}" />
+				</p:column>
+			</p:dataTable>
+			
+			<!-- Leyla's code 
+			
 			<p:dataTable var="node" value="#{searchController.datas}"
 				id="resultHier" rows="10" paginator="true" paginatorPosition="bottom"
 				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
@@ -102,6 +123,9 @@
 					<h:outputText value="#{node.cmqCode}" />
 				</p:column>
 			</p:dataTable>
+
+			 -->
+
 
 			<!-- <p:treeTable value="#{searchController.hierarchyRoot}" var="node"  
 				rowSelection="multiple" id="hierSrc">
