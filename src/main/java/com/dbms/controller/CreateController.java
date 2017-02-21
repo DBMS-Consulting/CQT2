@@ -72,6 +72,16 @@ public class CreateController implements Serializable {
 		extension = "TME";
 		algorithm = "N";
 	}
+	
+	public String loadCmqBaseByCode(Long code) {
+		CmqBase190 cmq = new CmqBase190();
+		cmq = this.cmqBaseService.findByCode(code);
+		
+		if (cmq != null)
+			selectedData = cmq;
+		
+		return "";
+	}
 
 	private CmqBase190 selectedData;
 

@@ -44,51 +44,52 @@
 						<p:spacer />
 
 						<p:outputPanel deferred="true" deferredMode="visible">
-							<p:dataTable var="value" value="#{searchController.values}"
+							<p:dataTable var="value" value="#{searchController.datas}"
 								id="result" rows="10" paginator="true" paginatorPosition="bottom"
 								paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 								rowsPerPageTemplate="5,10,25">
 								<p:column headerText="Term">
-									<h:outputText value="#{value.term}" />
+									<h:outputText value="#{value.cmqName}" />
 								</p:column>
 								<p:column headerText="Extension">
-									<h:outputText value="#{value.extension}" />
+									<h:outputText value="#{value.cmqTypeCd}" />
 								</p:column>
 								<p:column headerText="Level">
-									<h:outputText value="#{value.level}" />
+									<h:outputText value="#{value.cmqLevel}" />
 								</p:column>
 								<p:column headerText="Status">
-									<h:outputText value="#{value.status}" />
+									<h:outputText value="#{value.cmqStatus}" />
 								</p:column>
 								<p:column headerText="State">
-									<h:outputText value="#{value.state}" />
+									<h:outputText value="#{value.cmqState}" />
 								</p:column>
 								<p:column headerText="Code">
-									<!-- <h:outputLink
-										value="#{request.contextPath}/create/create.xhtml">
-										<f:param value="#{value.code}" name="code" />
-										<h:outputText value="#{value.code}" />
+									<!-- <h:outputLink 
+										value="#{request.contextPath}/create/update.xhtml#details">
+										<f:param value="#{value.cmqCode}" name="code" />
+										<h:outputText value="#{value.cmqCode}" />
 									</h:outputLink> -->
-									<p:commandLink action="#{searchController.changeTabCopy}" value="#{value.code}" update="@form"></p:commandLink>
- 								</p:column>
+									<p:commandLink onclick="next();" action="#{createController.loadCmqBaseByCode(value.cmqCode)}"
+										value="#{value.cmqCode}" update="@form"></p:commandLink>
+								</p:column>
 								<p:column headerText="Drug Program">
-									<h:outputText value="#{value.drugProgram}" />
+									<h:outputText value="#{value.cmqProgramCd}" />
 								</p:column>
 								<p:column headerText="Protocol">
-									<h:outputText value="#{value.protocol}" />
+									<h:outputText value="#{value.cmqProtocolCd}" />
 								</p:column>
 								<p:column headerText="Product">
-									<h:outputText value="#{value.product}" />
+									<h:outputText value="#{value.cmqProductCd}" />
 								</p:column>
 								<p:column headerText="Group">
-									<h:outputText value="#{value.group}" />
+									<h:outputText value="#{value.cmqGroup}" />
 								</p:column>
 
 								<p:column headerText="Critical Event">
-									<h:outputText value="#{value.criticalEvent}" />
+									<h:outputText value="#{value.cmqCriticalEvent}" />
 								</p:column>
 								<p:column headerText="Created By">
-									<h:outputText value="#{value.creator.name}" />
+									<h:outputText value="#{value.cmqDesignee}" />
 								</p:column>
 							</p:dataTable>
 						</p:outputPanel>
@@ -97,7 +98,7 @@
 				<p:tab id="details" title="Details">
 					<p:panel header="Details">
 						<ui:include src="details.xhtml" />
-						<p:commandButton value="Save" icon="ui-icon-disk" action="SAVE"></p:commandButton>
+						<p:commandButton value="Save" icon="ui-icon-disk" action="#{createController.save}"></p:commandButton>
 					</p:panel>
 				</p:tab>
 
@@ -118,62 +119,78 @@
 
 				<p:tab id="confirmPanel" title="Confirm">
 					<p:panel header="Details">
-						<h:panelGrid columns="3" cellpadding="30">
+						<h:panelGrid columns="4" cellpadding="30">
 
 							<h:panelGrid columns="2" columnClasses="label, value">
+								<p:outputLabel styleClass="label-right" value="Extension:" />
+								<h:outputText value="#{createController.extension}" />
+
+								<p:outputLabel styleClass="label-right" value="Name:" />
+								<h:outputText value="#{createController.selectedData.cmqName}" />
+
+								<p:outputLabel styleClass="label-right" value="Drug Program:" />
+								<h:outputText value="#{createController.selectedData.cmqProgramCd}" />
+
+								<p:outputLabel styleClass="label-right" value="Protocol:" />
+								<h:outputText value="#{createController.selectedData.cmqProtocolCd}" />
+
+								<p:outputLabel styleClass="label-right" value="Product:" />
+								<h:outputText value="#{createController.selectedData.cmqProductCd}" />
+
+							</h:panelGrid>
+
+							<h:panelGrid columns="2" columnClasses="label, value"
+								style="min-width: 300px;">
+								<p:outputLabel styleClass="label-right" value="Level:" />
+								<h:outputText value="#{createController.selectedData.cmqLevel}" />
+
+								<p:outputLabel styleClass="label-right" value="Code:" />
+								<h:outputText value="#{createController.selectedData.cmqCode}" />
+
+								<p:outputLabel styleClass="label-right" value="Critical event:" />
+								<h:outputText value="#{createController.selectedData.cmqCriticalEvent}" />
+
+								<p:outputLabel styleClass="label-right" value="Scope:" />
+								<h:outputText value="#{dummyView.value}" />
+
+								<p:outputLabel styleClass="label-right" value="Algorithm:" />
+								<h:outputText value="#{createController.selectedData.cmqAlgorithm}" />
+							</h:panelGrid>
+
+							<h:panelGrid columns="2" columnClasses="label, value"
+								style="min-width: 300px;">
+
+								<p:outputLabel styleClass="label-right" value="Status:" />
+								<h:outputText value="#{createController.selectedData.cmqStatus}" />
+
+								<p:outputLabel styleClass="label-right" value="State:" />
+								<h:outputText value="#{createController.selectedData.cmqState}" />
+
+								<p:outputLabel styleClass="label-right" value="Group:" />
+								<h:outputText value="#{createController.selectedData.cmqGroup}" />
+
+								<p:outputLabel styleClass="label-right" value="Designee:" />
+								<h:outputText value="#{createController.selectedData.cmqDesignee}" />
+							</h:panelGrid>
+
+
+							<h:panelGrid columns="2" columnClasses="label, value"
+								style="min-width: 300px;">
+
+								<p:outputLabel styleClass="label-right" value="Create Date:" />
+								<h:outputText value="#{createController.selectedData.creationDate}" />
+
+								<p:outputLabel styleClass="label-right" value="Created By: " />
+								<h:outputText value="#{createController.selectedData.createdBy}" />
+
 								<p:outputLabel styleClass="label-right"
-									value="Filter Dictionary" />
-								<h:outputText value="#{dummyView.value}" />
+									value="Last Activation Date:" />
+								<h:outputText value="#{createController.selectedData.activationDate}" />
 
-								<p:outputLabel styleClass="label-right" value="Drug Program" />
-								<h:outputText value="#{dummyView.value}" />
-
-								<p:outputLabel styleClass="label-right" value="Protocol" />
-								<h:outputText value="#{dummyView.value}" />
-
-								<p:outputLabel styleClass="label-right" value="Name" />
-								<h:outputText value="#{dummyView.value}" />
-
-								<p:outputLabel styleClass="label-right" value="Product" />
-								<h:outputText value="#{dummyView.value}" />
-
-								<p:outputLabel styleClass="label-right" value="Designee" />
-								<h:outputText value="#{dummyView.value}" />
+								<p:outputLabel styleClass="label-right"
+									value="Last Activation By" />
+								<h:outputText value="#{createController.selectedData.activatedBy}" />
 							</h:panelGrid>
-
-							<h:panelGrid columns="2" columnClasses="label, value"
-								style="min-width: 300px;">
-								<p:outputLabel styleClass="label-right" value="Level" />
-								<h:outputText value="#{dummyView.value}" />
-
-								<p:outputLabel styleClass="label-right" value="Code" />
-								<h:outputText value="#{dummyView.value}" />
-
-								<p:outputLabel styleClass="label-right" value="Algorithm" />
-								<h:outputText value="#{dummyView.value}" />
-
-								<p:outputLabel styleClass="label-right" value="Extension" />
-								<h:outputText value="#{dummyView.value}" />
-
-								<p:outputLabel styleClass="label-right" value="Critical event" />
-								<h:outputText value="#{dummyView.value}" />
-							</h:panelGrid>
-
-							<h:panelGrid columns="2" columnClasses="label, value"
-								style="min-width: 300px;">
-								<p:outputLabel styleClass="label-right" value="Group" />
-								<h:outputText value="#{dummyView.value}" />
-
-								<p:outputLabel styleClass="label-right" value="Status" />
-								<h:outputText value="#{dummyView.value}" />
-
-								<p:outputLabel styleClass="label-right" value="State" />
-								<h:outputText value="#{dummyView.value}" />
-
-								<p:outputLabel styleClass="label-right" value="Scope" />
-								<h:outputText value="#{dummyView.value}" />
-							</h:panelGrid>
-
 						</h:panelGrid>
 
 					</p:panel>
@@ -183,13 +200,13 @@
 						<h:panelGrid columns="1" cellpadding="30">
 							<h:panelGrid columns="2" columnClasses="label, value">
 								<p:outputLabel styleClass="label-right" value="Description" />
-								<h:outputText value="#{dummyView.value}" />
+								<h:outputText value="#{createController.selectedData.cmqDescription}" />
 
 								<p:outputLabel styleClass="label-right" value="Source" />
-								<h:outputText value="#{dummyView.value}" />
+								<h:outputText value="#{createController.selectedData.cmqSource}" />
 
 								<p:outputLabel styleClass="label-right" value="Notes" />
-								<h:outputText value="#{dummyView.value}" />
+								<h:outputText value="#{createController.selectedData.cmqNote}" />
 							</h:panelGrid>
 						</h:panelGrid>
 
@@ -443,5 +460,15 @@
 	font-size: 14px !important;
 }
 </style>
+
+<script>
+			function next() {
+				PF('wizard').next();
+			}
+
+			function back() {
+				PF('wizard').back();
+			}
+		</script>
 	</ui:define>
 </ui:composition>
