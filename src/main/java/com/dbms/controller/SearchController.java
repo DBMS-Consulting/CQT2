@@ -72,6 +72,8 @@ public class SearchController extends BaseController<CmqBase190> {
 	private String[] selectedSOCs;
 	private TreeNode hierarchyRoot;
 
+	private CmqBase190 selctedData;
+
 	public SearchController() {
 		this.selectedData = new CmqBase190();
 	}
@@ -369,14 +371,20 @@ public class SearchController extends BaseController<CmqBase190> {
 		if ("All".equalsIgnoreCase(group)) {
 			group = null;
 		}
-		
-		if(code != null && code == 0) {
+
+		if (code != null && code == 0) {
 			code = null;
 		}
-		
+
 		datas = cmqBaseService.findByCriterias(extension, drugProgram, protocol, product, level, status, state,
 				critical, group, termName, code);
 		log.debug("found values {}", datas == null ? 0 : datas.size());
+	}
+
+	public String loadCmqBaseByCode() {
+		this.selctedData = this.cmqBaseService.findByCode(code);
+		
+		return "";
 	}
 
 	public String hierarchySearch() {
@@ -393,7 +401,7 @@ public class SearchController extends BaseController<CmqBase190> {
 			level = 5;
 		} else if ("SMQ2".equalsIgnoreCase(levelH)) {
 			level = 1;
-		} 
+		}
 		datas = cmqBaseService.findByCriterias(null, null, null, null, level, null, null, null, null, termName, null);
 		return "";
 	}
@@ -480,5 +488,13 @@ public class SearchController extends BaseController<CmqBase190> {
 
 	public void setHierarchyRoot(TreeNode hierarchyRoot) {
 		this.hierarchyRoot = hierarchyRoot;
+	}
+
+	public CmqBase190 getSelctedData() {
+		return selctedData;
+	}
+
+	public void setSelctedData(CmqBase190 selctedData) {
+		this.selctedData = selctedData;
 	}
 }
