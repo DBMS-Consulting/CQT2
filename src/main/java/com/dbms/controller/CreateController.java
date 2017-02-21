@@ -8,7 +8,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.SessionScoped;
+import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
 
@@ -16,7 +16,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.dbms.entity.cqt.CmqBase190;
+import com.dbms.entity.cqt.RefConfigCodeList;
 import com.dbms.service.ICmqBase190Service;
+import com.dbms.service.IRefCodeListService;
 import com.dbms.util.exceptions.CqtServiceException;
 
 /**
@@ -24,16 +26,18 @@ import com.dbms.util.exceptions.CqtServiceException;
  * @date Feb 12, 2017 7:34:05 AM
  **/
 @ManagedBean
-@SessionScoped
+@RequestScoped
 public class CreateController implements Serializable {
 
 	private static final long serialVersionUID = -443251941538546278L;
 
-	private static final Logger LOG = LoggerFactory
-			.getLogger(CreateController.class);
+	private static final Logger LOG = LoggerFactory.getLogger(CreateController.class);
 
 	@ManagedProperty("#{CmqBase190Service}")
 	private ICmqBase190Service cmqBaseService;
+
+	@ManagedProperty("#{RefCodeListService}")
+	private IRefCodeListService refCodeListService;
 
 	private String extension;
 	private String drugProgram;
@@ -49,11 +53,18 @@ public class CreateController implements Serializable {
 	private String algorithm;
 	private boolean maintainDesigBtn;
 
+	private String description;
+	private String notes;
+	private String source;
+
 	@PostConstruct
 	public void init() {
 		this.state = "Draft";
 		this.status = "Pending";
-		
+		this.description = "****** Description *******";
+		this.notes = "****** Notes *******";
+		this.source = "****** Source *******";
+
 		maintainDesigBtn = false;
 		level = 1;
 		critical = "No";
@@ -70,12 +81,14 @@ public class CreateController implements Serializable {
 
 	public String save() {
 		try {
-			//get the next value of code 
+			// get the next value of code
 			Long codevalue = this.cmqBaseService.getNextCodeValue();
-			
-			//fill data
+			RefConfigCodeList currentMeddraVersionCodeList = this.refCodeListService.getCurrentMeddraVersion();
+
+			// fill data
 			selectedData.setCreationDate(new Date());
-			selectedData.setCmqTypeCd(extension);				
+			selectedData.setCmqName("MEDDRA");
+			selectedData.setCmqTypeCd(extension);
 			selectedData.setCmqState(state);
 			selectedData.setCmqAlgorithm(algorithm);
 			selectedData.setCmqProductCd(product);
@@ -83,41 +96,60 @@ public class CreateController implements Serializable {
 			selectedData.setCmqProtocolCd(protocol);
 			selectedData.setCmqProgramCd(drugProgram);
 			selectedData.setCmqGroup(group);
-			selectedData.setCmqStatus("P");				//length is 1 only
-			selectedData.setCmqCode(codevalue);	
-			//selectedData.setCmqParentCode(90000000L);
-			//selectedData.setCmqScope(scope);						//Missing value
-			//selectedData.setCmqCriticalEvent(critical); 		//form precision is 5 chars but form sends like 10 chars.
-			
-			//hard coded for now
-			selectedData.setCmqCriticalEvent("Broad");			//Workaround for now
-			selectedData.setCmqNote("Test Note");	
-			selectedData.setCmqName("Test Name");
-			selectedData.setCmqDescription("Test Description");
-			selectedData.setCmqState("P");
-			selectedData.setCmqSource("Test Source");
+			selectedData.setCmqStatus("P"); // length is 1 only
+			selectedData.setCmqCode(codevalue);
+			selectedData.setDictionaryVersion(currentMeddraVersionCodeList.getValue());
+
+			// hard coded for now
+			selectedData.setCmqDescription(description);
 			selectedData.setCreatedBy("Test user");
-			selectedData.setActivatedBy("Test user");
-			selectedData.setActivationDate(new Date());
 			selectedData.setDictionaryName("Test-Dict");
-			selectedData.setDictionaryVersion("1.0");
 			selectedData.setCmqSubversion(new BigDecimal(0.23d));
-			
+
 			cmqBaseService.create(selectedData);
 
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-				"Infos saved", "");
+			// retrieve the saved cmq base
+			CmqBase190 savedEntity = cmqBaseService.findByCode(codevalue);
+
+			// save the cmq code to session
+			FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("NEW-CMQ_BASE-ID",
+					savedEntity.getId());
+
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Infos saved", "");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		} catch (CqtServiceException e) {
 			LOG.error("Exception occured while creating CmqBase190.", e);
 
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Exception occured while saving", "");
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Exception occured while saving", "");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
 			return null;
 		}
-		//return "/index.xhtml";
+		// return "/index.xhtml";
+		return "";
+	}
+
+	public String saveInformativeNotes() {
+		Long cmqId = (Long) (FacesContext
+				.getCurrentInstance()
+				.getExternalContext()
+				.getSessionMap()
+				.get("NEW-CMQ_BASE-ID"));
+
+		CmqBase190 savedEntity = cmqBaseService.findById(cmqId);
+		savedEntity.setCmqDescription(description);
+		savedEntity.setCmqNote(notes);
+		savedEntity.setCmqSource(source);
+		try {
+			this.cmqBaseService.update(savedEntity);
+		} catch (CqtServiceException e) {
+			LOG.error("Exception occured while updating CmqBase190 for add informative notes.", e);
+
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Exception occured while saving", "");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+
+			return null;
+		}
 		return "";
 	}
 
@@ -138,8 +170,7 @@ public class CreateController implements Serializable {
 		else
 			setDrugProgram("");
 
-		if (extension.equals("CPT") || extension.equals("DME")
-				|| extension.equals("TME") || extension.equals("TR1"))
+		if (extension.equals("CPT") || extension.equals("DME") || extension.equals("TME") || extension.equals("TR1"))
 			setProtocol("No Protocol");
 		else
 			setProtocol("");
@@ -279,11 +310,43 @@ public class CreateController implements Serializable {
 		return cmqBaseService;
 	}
 
+	public IRefCodeListService getRefCodeListService() {
+		return refCodeListService;
+	}
+
+	public void setRefCodeListService(IRefCodeListService refCodeListService) {
+		this.refCodeListService = refCodeListService;
+	}
+
 	public boolean isMaintainDesigBtn() {
 		return maintainDesigBtn;
 	}
 
 	public void setMaintainDesigBtn(boolean maintainDesigBtn) {
 		this.maintainDesigBtn = maintainDesigBtn;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String getNotes() {
+		return notes;
+	}
+
+	public void setNotes(String notes) {
+		this.notes = notes;
+	}
+
+	public String getSource() {
+		return source;
+	}
+
+	public void setSource(String source) {
+		this.source = source;
 	}
 }
