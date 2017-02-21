@@ -30,11 +30,11 @@ public class MeddraDictService extends CqtPersistenceService<MeddraDict190> impl
 	@SuppressWarnings("unchecked")
 	public List<MeddraDict190> findByLevelAndTerm(String searchColumnType, String searchTerm) {
 		List<MeddraDict190> retVal = null;
-		String queryString = "from MeddraDict190 c where " + searchColumnType + " like :searchColumnType";
+		String queryString = "from MeddraDict190 c where upper(" + searchColumnType + ") like :searchColumnType";
 		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
 		try {
 			Query query = entityManager.createQuery(queryString);
-			query.setParameter("searchColumnType", searchTerm);
+			query.setParameter("searchColumnType", searchTerm.toUpperCase());
 			retVal = query.getResultList();
 		} catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
