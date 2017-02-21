@@ -137,9 +137,9 @@ public class CreateController implements Serializable {
 				.get("NEW-CMQ_BASE-ID"));
 
 		CmqBase190 savedEntity = cmqBaseService.findById(cmqId);
-		savedEntity.setCmqDescription(description);
-		savedEntity.setCmqNote(notes);
-		savedEntity.setCmqSource(source);
+		savedEntity.setCmqDescription(selectedData.getCmqDescription());
+		savedEntity.setCmqNote(selectedData.getCmqNote());
+		savedEntity.setCmqSource(selectedData.getCmqSource());
 		try {
 			this.cmqBaseService.update(savedEntity);
 		} catch (CqtServiceException e) {
