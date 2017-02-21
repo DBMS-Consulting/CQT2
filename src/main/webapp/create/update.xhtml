@@ -24,9 +24,9 @@
 				</h:panelGrid>
 			</h:panelGrid>
 
-			<p:wizard flowListener="#{wizard.onFlowProcess}">
+			<p:wizard flowListener="#{wizard.onFlowProcess}" >
 				<!-- Search -->
-				<p:tab id="search" title="Search">
+				<p:tab id="searchT" title="Search">
 					<p:panel header="Search">
 						<ui:include src="search.xhtml"></ui:include>
 
@@ -37,7 +37,7 @@
 							<p:outputLabel value="Code" />
 							<p:inputText />
 							<p:commandButton value="Search"
-								action="#{searchController.search()}" update="result" />
+								action="#{searchController.search()}" update="resultS" />
 							<p:commandButton value="Maintain Designees"
 								action="MAINTAIN_DESIGNEE" />
 							<h:commandButton value="Reset" type="reset" />
@@ -47,7 +47,7 @@
 
 						<p:outputPanel deferred="true" deferredMode="visible">
 							<p:dataTable var="value" value="#{searchController.datas}"
-								id="result" rows="10" paginator="true"
+								id="resultS" rows="10" paginator="true"
 								paginatorPosition="bottom"
 								paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 								rowsPerPageTemplate="5,10,25">
@@ -102,7 +102,7 @@
 
 
 
-						<p:commandButton value="Save" icon="ui-icon-disk" action="SAVE"></p:commandButton>
+						<p:commandButton value="Save" icon="ui-icon-disk" action="#{createController.save}" update="m1"></p:commandButton>
 					</p:panel>
 				</p:tab>
 

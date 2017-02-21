@@ -26,7 +26,7 @@
 			<p:spacer width="10" />
 			<p:outputLabel value="Term" for="termH" />
 			<p:inputText id="termH" value="#{searchController.termName}"  />
-			<p:commandButton value="Search" update="result"
+			<p:commandButton value="Search" update="resultHier"
 				action="#{searchController.hierarchySearch}" />
 		</h:panelGrid>
 
@@ -81,12 +81,16 @@
 			
 			
 			<p:dataTable var="node" value="#{searchController.datas}"
-				id="result" rows="10" paginator="true" paginatorPosition="bottom"
+				id="resultHier" rows="10" paginator="true" paginatorPosition="bottom"
 				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 				rowsPerPageTemplate="5,10,25">
 
 				<p:column headerText="Level">
-					<h:outputText value="#{node.cmqLevel}" />
+					<h:outputText rendered="#{node.cmqLevel eq 1}" value="SMQ1" />
+					<h:outputText rendered="#{node.cmqLevel eq 2}" value="SMQ2" />
+					<h:outputText rendered="#{node.cmqLevel eq 3}" value="SMQ3" />
+					<h:outputText rendered="#{node.cmqLevel eq 4}" value="SMQ4" />
+					<h:outputText rendered="#{node.cmqLevel eq 5}" value="SMQ5" />
 				</p:column>
 
 				<p:column headerText="Term">
@@ -94,7 +98,7 @@
 				</p:column>
 
 				<p:column headerText="Code" sortBy="#{node.cmqCode}"
-					filterBy="#{node.code}">
+					filterBy="#{node.cmqCode}">
 					<h:outputText value="#{node.cmqCode}" />
 				</p:column>
 			</p:dataTable>
