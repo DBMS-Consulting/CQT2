@@ -47,17 +47,19 @@ public class CreateController implements Serializable {
 	private String group;
 	private String history;
 	private String algorithm;
+	private boolean maintainDesigBtn;
 
 	@PostConstruct
 	public void init() {
 		this.state = "Draft";
 		this.status = "Pending";
 		
-	//	maintainDesigBtn = false;
+		maintainDesigBtn = false;
 		level = 1;
 		critical = "No";
 		group = "No Group";
 		extension = "TME";
+		algorithm = "N";
 	}
 
 	private CmqBase190 selectedData;
@@ -275,5 +277,13 @@ public class CreateController implements Serializable {
 
 	public ICmqBase190Service getCmqBaseService() {
 		return cmqBaseService;
+	}
+
+	public boolean isMaintainDesigBtn() {
+		return maintainDesigBtn;
+	}
+
+	public void setMaintainDesigBtn(boolean maintainDesigBtn) {
+		this.maintainDesigBtn = maintainDesigBtn;
 	}
 }

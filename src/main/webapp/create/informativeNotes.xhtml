@@ -11,17 +11,17 @@
 	<p:panel header="Informative Notes for ###">
 		<p:tabView>
 			<p:tab title="Description">
-				<p:inputTextarea required="true"
+				<p:inputTextarea required="true" value="#{createController.selectedData.cmqDescription}"
 					requiredMessage="A description is required"
 					style="width: 100%; min-height: 250px" autoResize="true" />
 				<!-- <h:inputTextarea required="true" value="###"   /> -->
 			</p:tab>
 			<p:tab title="Notes">
-				<p:inputTextarea value="****** Notes *******"
+				<p:inputTextarea value="#{createController.selectedData.cmqNote}"
 					style="width: 100%; min-height: 250px" autoResize="true" />
 			</p:tab>
 			<p:tab title="Source">
-				<p:inputTextarea value="****** Sources *******"
+				<p:inputTextarea value="#{createController.selectedData.cmqSource}"
 					style="width: 100%; min-height: 250px" autoResize="true" />
 			</p:tab>
 		</p:tabView>

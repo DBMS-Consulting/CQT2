@@ -56,54 +56,54 @@
 
 							<h:panelGrid columns="2" columnClasses="label, value">
 								<p:outputLabel styleClass="label-right" value="Extension:" />
-								<h:outputText value="#{dummyView.value}" />
+								<h:outputText value="#{createController.extension}" />
 
 								<p:outputLabel styleClass="label-right" value="Name:" />
-								<h:outputText value="#{dummyView.value}" />
+								<h:outputText value="#{createController.selectedData.cmqName}" />
 
 								<p:outputLabel styleClass="label-right" value="Drug Program:" />
-								<h:outputText value="#{dummyView.value}" />
+								<h:outputText value="#{createController.selectedData.cmqProgramCd}" />
 
 								<p:outputLabel styleClass="label-right" value="Protocol:" />
-								<h:outputText value="#{dummyView.value}" />
+								<h:outputText value="#{createController.selectedData.cmqProtocolCd}" />
 
 								<p:outputLabel styleClass="label-right" value="Product:" />
-								<h:outputText value="#{dummyView.value}" />
+								<h:outputText value="#{createController.selectedData.cmqProductCd}" />
 
 							</h:panelGrid>
 
 							<h:panelGrid columns="2" columnClasses="label, value"
 								style="min-width: 300px;">
 								<p:outputLabel styleClass="label-right" value="Level:" />
-								<h:outputText value="#{dummyView.value}" />
+								<h:outputText value="#{createController.selectedData.cmqLevel}" />
 
 								<p:outputLabel styleClass="label-right" value="Code:" />
-								<h:outputText value="#{dummyView.value}" />
+								<h:outputText value="#{createController.selectedData.cmqCode}" />
 
 								<p:outputLabel styleClass="label-right" value="Critical event:" />
-								<h:outputText value="#{dummyView.value}" />
+								<h:outputText value="#{createController.selectedData.cmqCriticalEvent}" />
 
 								<p:outputLabel styleClass="label-right" value="Scope:" />
 								<h:outputText value="#{dummyView.value}" />
 
 								<p:outputLabel styleClass="label-right" value="Algorithm:" />
-								<h:outputText value="#{dummyView.value}" />
+								<h:outputText value="#{createController.selectedData.cmqAlgorithm}" />
 							</h:panelGrid>
 
 							<h:panelGrid columns="2" columnClasses="label, value"
 								style="min-width: 300px;">
 
 								<p:outputLabel styleClass="label-right" value="Status:" />
-								<h:outputText value="#{dummyView.value}" />
+								<h:outputText value="#{createController.selectedData.cmqStatus}" />
 
 								<p:outputLabel styleClass="label-right" value="State:" />
-								<h:outputText value="#{dummyView.value}" />
+								<h:outputText value="#{createController.selectedData.cmqState}" />
 
 								<p:outputLabel styleClass="label-right" value="Group:" />
-								<h:outputText value="#{dummyView.value}" />
+								<h:outputText value="#{createController.selectedData.cmqGroup}" />
 
 								<p:outputLabel styleClass="label-right" value="Designee:" />
-								<h:outputText value="#{dummyView.value}" />
+								<h:outputText value="#{createController.selectedData.cmqDesignee}" />
 							</h:panelGrid>
 
 
@@ -111,18 +111,18 @@
 								style="min-width: 300px;">
 
 								<p:outputLabel styleClass="label-right" value="Create Date:" />
-								<h:outputText value="#{dummyView.value}" />
+								<h:outputText value="#{createController.selectedData.creationDate}" />
 
 								<p:outputLabel styleClass="label-right" value="Created By: " />
-								<h:outputText value="#{dummyView.value}" />
+								<h:outputText value="#{createController.selectedData.createdBy}" />
 
 								<p:outputLabel styleClass="label-right"
 									value="Last Activation Date:" />
-								<h:outputText value="#{dummyView.value}" />
+								<h:outputText value="#{createController.selectedData.activationDate}" />
 
 								<p:outputLabel styleClass="label-right"
 									value="Last Activation By" />
-								<h:outputText value="#{dummyView.value}" />
+								<h:outputText value="#{createController.selectedData.activatedBy}" />
 							</h:panelGrid>
 						</h:panelGrid>
 
@@ -142,10 +142,8 @@
 								<h:outputText value="#{dummyView.value}" />
 							</h:panelGrid>
 						</h:panelGrid>
-
 					</p:panel>
 					<p:spacer height="10"></p:spacer>
-
 
 					<p:panel>
 						<p:toolbar>
