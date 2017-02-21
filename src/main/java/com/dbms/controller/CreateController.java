@@ -114,6 +114,8 @@ public class CreateController implements Serializable {
 			browseWizard.setStep("details");
 		if (updateWizard != null)
 			updateWizard.setStep("details");
+		if (copyWizard != null)
+			copyWizard.setStep("details");
 		
 		return "";
 	}

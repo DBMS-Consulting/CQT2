@@ -70,9 +70,11 @@
 										<f:param value="#{value.cmqCode}" name="code" />
 										<h:outputText value="#{value.cmqCode}" />
 									</h:outputLink> -->
-									<p:commandLink onclick="next();"
+									<p:commandLink 
 										actionListener="#{createController.loadCmqBaseByCode(value.cmqCode)}"
 										value="#{value.cmqCode}" update="@form"></p:commandLink>
+										
+										
 								</p:column>
 								<p:column headerText="Drug Program">
 									<h:outputText value="#{value.cmqProgramCd}" />
