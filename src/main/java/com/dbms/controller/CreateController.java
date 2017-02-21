@@ -87,7 +87,7 @@ public class CreateController implements Serializable {
 
 			// fill data
 			selectedData.setCreationDate(new Date());
-			selectedData.setCmqName("MEDDRA");
+			//selectedData.setCmqName("MEDDRA");
 			selectedData.setCmqTypeCd(extension);
 			selectedData.setCmqState(state);
 			selectedData.setCmqAlgorithm(algorithm);
