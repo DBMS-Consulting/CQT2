@@ -31,9 +31,9 @@
 
 						<h:panelGrid columns="8">
 							<p:outputLabel value="Term" />
-							<p:inputText />
+							<p:inputText value="#{searchController.termName}"/>
 							<p:outputLabel value="Code" />
-							<p:inputText />
+							<p:inputText value="#{searchController.code}"/>
 							<p:commandButton value="Search"
 								action="#{searchController.search()}" update="resultB" />
 							<p:commandButton value="Maintain Designees"

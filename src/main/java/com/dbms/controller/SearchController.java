@@ -369,6 +369,11 @@ public class SearchController extends BaseController<CmqBase190> {
 		if ("All".equalsIgnoreCase(group)) {
 			group = null;
 		}
+		
+		if(code == 0) {
+			code = null;
+		}
+		
 		datas = cmqBaseService.findByCriterias(extension, drugProgram, protocol, product, level, status, state,
 				critical, group, termName, code);
 		log.debug("found values {}", datas == null ? 0 : datas.size());
