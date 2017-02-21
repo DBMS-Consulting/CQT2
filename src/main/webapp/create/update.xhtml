@@ -9,7 +9,7 @@
 	<ui:define name="page-content">
 		<h:form id="fUpdate">
 			<p:growl id="m1" />
- 
+
 			<h:panelGrid columns="2" style="width: 100% !important">
 				<h:panelGrid>
 					<p:breadCrumb>
@@ -24,9 +24,10 @@
 				</h:panelGrid>
 			</h:panelGrid>
 
-			<p:wizard flowListener="#{wizard.onFlowProcess}" widgetVar="wizard">
+			<p:wizard flowListener="#{wizard.onFlowProcess}" widgetVar="wizard" id="wizardId"
+				binding="#{createController.updateWizard}">
 				<!-- Search -->
-				<p:tab id="searchT" title="Search">
+				<p:tab id="searchUpdate" title="Search">
 					<p:panel header="Search">
 						<ui:include src="search.xhtml"></ui:include>
 
@@ -67,12 +68,8 @@
 									<h:outputText value="#{value.cmqState}" />
 								</p:column>
 								<p:column headerText="Code">
-									<!-- <h:outputLink 
-										value="#{request.contextPath}/create/update.xhtml#details">
-										<f:param value="#{value.cmqCode}" name="code" />
-										<h:outputText value="#{value.cmqCode}" />
-									</h:outputLink> -->
-									<p:commandLink onclick="next();" action="#{createController.loadCmqBaseByCode(value.cmqCode)}"
+									<p:commandLink
+										action="#{createController.loadCmqBaseByCode(value.cmqCode)}"
 										value="#{value.cmqCode}" update="@form"></p:commandLink>
 								</p:column>
 								<p:column headerText="Drug Program">
@@ -101,12 +98,9 @@
 				<p:tab id="details" title="Update Details">
 					<p:panel header="Details">
 						<ui:include src="details.xhtml" />
-
-
-
-
-
-						<p:commandButton value="Save" icon="ui-icon-disk" action="#{createController.save}" update="m1"></p:commandButton>
+						
+						<p:commandButton value="Save" icon="ui-icon-disk" 
+							action="#{createController.save}" update="@form:m1"></p:commandButton>
 					</p:panel>
 				</p:tab>
 
@@ -137,13 +131,16 @@
 								<h:outputText value="#{createController.selectedData.cmqName}" />
 
 								<p:outputLabel styleClass="label-right" value="Drug Program:" />
-								<h:outputText value="#{createController.selectedData.cmqProgramCd}" />
+								<h:outputText
+									value="#{createController.selectedData.cmqProgramCd}" />
 
 								<p:outputLabel styleClass="label-right" value="Protocol:" />
-								<h:outputText value="#{createController.selectedData.cmqProtocolCd}" />
+								<h:outputText
+									value="#{createController.selectedData.cmqProtocolCd}" />
 
 								<p:outputLabel styleClass="label-right" value="Product:" />
-								<h:outputText value="#{createController.selectedData.cmqProductCd}" />
+								<h:outputText
+									value="#{createController.selectedData.cmqProductCd}" />
 
 							</h:panelGrid>
 
@@ -156,13 +153,15 @@
 								<h:outputText value="#{createController.selectedData.cmqCode}" />
 
 								<p:outputLabel styleClass="label-right" value="Critical event:" />
-								<h:outputText value="#{createController.selectedData.cmqCriticalEvent}" />
+								<h:outputText
+									value="#{createController.selectedData.cmqCriticalEvent}" />
 
 								<p:outputLabel styleClass="label-right" value="Scope:" />
 								<h:outputText value="#{dummyView.value}" />
 
 								<p:outputLabel styleClass="label-right" value="Algorithm:" />
-								<h:outputText value="#{createController.selectedData.cmqAlgorithm}" />
+								<h:outputText
+									value="#{createController.selectedData.cmqAlgorithm}" />
 							</h:panelGrid>
 
 							<h:panelGrid columns="2" columnClasses="label, value"
@@ -178,7 +177,8 @@
 								<h:outputText value="#{createController.selectedData.cmqGroup}" />
 
 								<p:outputLabel styleClass="label-right" value="Designee:" />
-								<h:outputText value="#{createController.selectedData.cmqDesignee}" />
+								<h:outputText
+									value="#{createController.selectedData.cmqDesignee}" />
 							</h:panelGrid>
 
 
@@ -186,18 +186,21 @@
 								style="min-width: 300px;">
 
 								<p:outputLabel styleClass="label-right" value="Create Date:" />
-								<h:outputText value="#{createController.selectedData.creationDate}" />
+								<h:outputText
+									value="#{createController.selectedData.creationDate}" />
 
 								<p:outputLabel styleClass="label-right" value="Created By: " />
 								<h:outputText value="#{createController.selectedData.createdBy}" />
 
 								<p:outputLabel styleClass="label-right"
 									value="Last Activation Date:" />
-								<h:outputText value="#{createController.selectedData.activationDate}" />
+								<h:outputText
+									value="#{createController.selectedData.activationDate}" />
 
 								<p:outputLabel styleClass="label-right"
 									value="Last Activation By" />
-								<h:outputText value="#{createController.selectedData.activatedBy}" />
+								<h:outputText
+									value="#{createController.selectedData.activatedBy}" />
 							</h:panelGrid>
 						</h:panelGrid>
 
@@ -208,7 +211,8 @@
 						<h:panelGrid columns="1" cellpadding="30">
 							<h:panelGrid columns="2" columnClasses="label, value">
 								<p:outputLabel styleClass="label-right" value="Description" />
-								<h:outputText value="#{createController.selectedData.cmqDescription}" />
+								<h:outputText
+									value="#{createController.selectedData.cmqDescription}" />
 
 								<p:outputLabel styleClass="label-right" value="Source" />
 								<h:outputText value="#{createController.selectedData.cmqSource}" />
@@ -281,6 +285,11 @@
 
 							</tbody>
 						</table>
+						
+						<p:spacer height="5" />
+						<p:commandButton value="Save" icon="ui-icon-disk"
+							action="#{createController.save}"></p:commandButton>
+						<p:spacer height="5" />
 					</p:panel>
 				</p:tab>
 			</p:wizard>
@@ -472,7 +481,7 @@
 }
 </style>
 
-<script>
+		<script>
 			function next() {
 				PF('wizard').next();
 			}

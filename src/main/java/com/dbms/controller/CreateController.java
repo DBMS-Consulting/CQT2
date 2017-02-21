@@ -8,10 +8,11 @@ import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
 
+import org.primefaces.component.wizard.Wizard;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,7 +27,7 @@ import com.dbms.util.exceptions.CqtServiceException;
  * @date Feb 12, 2017 7:34:05 AM
  **/
 @ManagedBean
-@SessionScoped
+@ViewScoped
 public class CreateController implements Serializable {
 
 	private static final long serialVersionUID = -443251941538546278L;
@@ -56,6 +57,8 @@ public class CreateController implements Serializable {
 	private String description;
 	private String notes;
 	private String source;
+	
+	private Wizard updateWizard, copyWizard, browseWizard;
 
 	@PostConstruct
 	public void init() {
@@ -73,20 +76,46 @@ public class CreateController implements Serializable {
 		algorithm = "N";
 	}
 	
-	public String loadCmqBaseByCode(Long code) {
-		CmqBase190 cmq = new CmqBase190();
-		cmq = this.cmqBaseService.findByCode(code);
-		
-		if (cmq != null)
-			selectedData = cmq;
-		
-		return "";
+	public void initCreateForm() {
+		this.selectedData = new CmqBase190();
 	}
+
 
 	private CmqBase190 selectedData;
 
 	public CreateController() {
 		this.selectedData = new CmqBase190();
+	}
+	
+	public String loadCmqBaseByCode(Long code) {
+		CmqBase190 cmq = new CmqBase190();
+		cmq = this.cmqBaseService.findByCode(code);
+		
+		if (cmq != null) {
+			System.out.println("\n \n ******* cmq by code " + cmq.getCmqCode());
+			selectedData = cmq;
+			this.state = selectedData.getCmqState();
+			this.status = selectedData.getCmqState();
+			this.description = selectedData.getCmqDescription();
+			this.notes = selectedData.getCmqNote();
+			this.source = selectedData.getCmqSource();
+
+ 			level = selectedData.getCmqLevel();
+			critical = selectedData.getCmqCriticalEvent();
+			group = selectedData.getCmqGroup();
+			algorithm = selectedData.getCmqAlgorithm();
+			
+			protocol = selectedData.getCmqProtocolCd();
+			drugProgram = selectedData.getCmqProgramCd();
+			product = selectedData.getCmqProductCd();
+		}
+		
+		if (browseWizard != null)
+			browseWizard.setStep("details");
+		if (updateWizard != null)
+			updateWizard.setStep("details");
+		
+		return "";
 	}
 
 	public String save() {
@@ -358,5 +387,29 @@ public class CreateController implements Serializable {
 
 	public void setSource(String source) {
 		this.source = source;
+	}
+
+	public Wizard getUpdateWizard() {
+		return updateWizard;
+	}
+
+	public void setUpdateWizard(Wizard updateWizard) {
+		this.updateWizard = updateWizard;
+	}
+
+	public Wizard getCopyWizard() {
+		return copyWizard;
+	}
+
+	public void setCopyWizard(Wizard copyWizard) {
+		this.copyWizard = copyWizard;
+	}
+
+	public Wizard getBrowseWizard() {
+		return browseWizard;
+	}
+
+	public void setBrowseWizard(Wizard browseWizard) {
+		this.browseWizard = browseWizard;
 	}
 }

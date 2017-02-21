@@ -13,15 +13,18 @@
 			<p:outputLabel value="Extension" styleClass="label-right" />
 			<p:selectOneMenu value="#{createController.extension}">
 				<f:selectItems value="#{configMB.extensions}" var="extension"
-					itemLabel="#{extension.value}" itemValue="#{extension.codelistInternalValue}" />
+					itemLabel="#{extension.value}"
+					itemValue="#{extension.codelistInternalValue}" />
 
 				<p:ajax
 					update="level lProtocol protocol drug lDrug product lProduct"
 					event="change" listener="#{createController.changeLevel}" />
 			</p:selectOneMenu>
-			
-			<p:outputLabel value="Name" styleClass="label-right" />
-			<p:inputText value="#{createController.selectedData.cmqName}" style="width: 200px !important" />
+
+			<p:outputLabel value=" * Name" styleClass="label-right" />
+			<p:inputText required="true" requiredMessage="The name is required"
+				value="#{createController.selectedData.cmqName}"
+				style="width: 200px !important" />
 
 			<p:outputLabel id="lDrug"
 				value="#{createController.extension eq 'TME' or 

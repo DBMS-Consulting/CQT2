@@ -102,6 +102,10 @@ public class SearchController extends BaseController<CmqBase190> {
 		this.group = "No Group";
 		this.extension = "TME";
 	}
+	
+	public void initSearch() {
+		this.datas = new ArrayList<CmqBase190>();
+	}
 
 	public TreeNode getHierarchyRoot() {
 		hierarchyRoot = new DefaultTreeNode(new Document("SOC", "-", "CODE_1"), null);
