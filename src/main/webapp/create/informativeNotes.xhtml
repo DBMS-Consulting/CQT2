@@ -6,7 +6,7 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:p="http://primefaces.org/ui">
 
-	<p:growl />
+	<p:growl id="m_notes" />
 
 	<p:panel header="Informative Notes for ###">
 		<p:tabView>
@@ -27,8 +27,8 @@
 		</p:tabView>
 
 
-		<p:commandButton style="margin-top: 10px;" value="Save"
-			icon="ui-icon-disk" action="SAVE"></p:commandButton>
+		<p:commandButton style="margin-top: 10px;" value="Save" update="m_notes"
+			icon="ui-icon-disk" action="#{createController.save}"></p:commandButton>
 	</p:panel>
 
 

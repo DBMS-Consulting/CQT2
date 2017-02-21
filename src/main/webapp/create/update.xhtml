@@ -67,11 +67,7 @@
 									<h:outputText value="#{value.cmqState}" />
 								</p:column>
 								<p:column headerText="Code">
-									<!-- <h:outputLink 
-										value="#{request.contextPath}/create/update.xhtml#details">
-										<f:param value="#{value.code}" name="code" />
-										<h:outputText value="#{value.code}" />
-									</h:outputLink> -->
+									
 									<p:commandLink action="#{searchController.changeTabUpdate}"
 										value="#{value.cmqCode}" update="@form"></p:commandLink>
 								</p:column>

@@ -28,7 +28,7 @@
 				<p:tab id="details" title="Add Details" disabled="false" closable="true">
 					<p:panel header="Details">
 						<ui:include src="details.xhtml" />
-						<p:commandButton value="Save" icon="ui-icon-disk"
+						<p:commandButton value="Save" icon="ui-icon-disk" update="m1"
 							action="#{createController.save}"></p:commandButton>
 					</p:panel>
 				</p:tab>
@@ -43,8 +43,8 @@
 					<p:panel header="Relations">
 						<ui:include src="relations.xhtml"></ui:include>
 
-						<p:commandButton style="margin-top: 10px" value="Save" id="cb3"
-							action="SAVE" disabled="false"
+						<p:commandButton style="margin-top: 10px" value="Save" id="cb3" update="m1"
+							action="#{createController.save}" disabled="false"
 							icon="ui-icon-disk" />
 					</p:panel>
 				</p:tab>

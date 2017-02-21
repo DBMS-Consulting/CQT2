@@ -52,58 +52,47 @@
 								paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 								rowsPerPageTemplate="5,10,25">
 								<p:column headerText="Term">
-									<h:outputText value="#{value.term}" />
+									<h:outputText value="#{value.cmqName}" />
 								</p:column>
 								<p:column headerText="Extension">
-									<h:outputText value="#{value.extension}" />
+									<h:outputText value="#{value.cmqTypeCd}" />
 								</p:column>
 								<p:column headerText="Level">
-									<h:outputText value="#{value.level}" />
+									<h:outputText value="#{value.cmqLevel}" />
 								</p:column>
 								<p:column headerText="Status">
-									<h:outputText value="#{value.status}" />
+									<h:outputText value="#{value.cmqStatus}" />
 								</p:column>
 								<p:column headerText="State">
-									<h:outputText value="#{value.state}" />
+									<h:outputText value="#{value.cmqState}" />
 								</p:column>
 								<p:column headerText="Code">
-
+									<!-- <h:outputLink 
+										value="#{request.contextPath}/create/update.xhtml#details">
+										<f:param value="#{value.cmqCode}" name="code" />
+										<h:outputText value="#{value.cmqCode}" />
+									</h:outputLink> -->
 									<p:commandLink action="#{searchController.changeTabBrowse}"
-										value="#{value.code}" update="@form"></p:commandLink>
+										value="#{value.cmqCode}" update="@form"></p:commandLink>
 								</p:column>
 								<p:column headerText="Drug Program">
-									<h:outputText value="#{value.drugProgram}" />
+									<h:outputText value="#{value.cmqProgramCd}" />
 								</p:column>
 								<p:column headerText="Protocol">
-									<h:outputText value="#{value.protocol}" />
+									<h:outputText value="#{value.cmqProtocolCd}" />
 								</p:column>
 								<p:column headerText="Product">
-									<h:outputText value="#{value.product}" />
+									<h:outputText value="#{value.cmqProductCd}" />
 								</p:column>
 								<p:column headerText="Group">
-									<h:outputText value="#{value.group}" />
+									<h:outputText value="#{value.cmqGroup}" />
 								</p:column>
 
 								<p:column headerText="Critical Event">
-									<h:outputText value="#{value.criticalEvent}" />
+									<h:outputText value="#{value.cmqCriticalEvent}" />
 								</p:column>
 								<p:column headerText="Created By">
-									<h:outputText value="#{value.creator.name}" />
-								</p:column>
-
-								<p:column headerText="History" style="text-align: center">
-									<!-- <h:outputText value="#{value.history}" /> -->
-									<p:commandLink action="#" style="color: red" label="History"
-										onclick="PF('history-dialog').show()">
-										<i class="fa fa-power-off"></i>
-									</p:commandLink>
-
-								</p:column>
-								<p:column headerText="Audit" style="text-align: center">
-									<p:commandLink value="Audit"
-										style="border: 1px solid black; background-color: grey; font-weight:bold; color: #fff; text-decoration: none !important; 
-										 border-radius: 10px; padding: 3px"
-										action="#" onclick="PF('audit-dialog').show()" />
+									<h:outputText value="#{value.cmqDesignee}" />
 								</p:column>
 							</p:dataTable>
 						</p:outputPanel>
@@ -271,7 +260,8 @@
 						<p:column headerText="Date" sortBy="#{dummyView.value}">
 							<h:outputText value="#{value.term}" />
 						</p:column>
-						<p:column headerText="Field Name" sortBy="#{dummyView.value}" filterBy="#{dummyView.value}">
+						<p:column headerText="Field Name" sortBy="#{dummyView.value}"
+							filterBy="#{dummyView.value}">
 							<h:outputText value="#{dummyView.value}" />
 						</p:column>
 						<p:column headerText="User">
@@ -291,12 +281,13 @@
 						</p:column>
 
 					</p:dataTable>
-					
+
 				</p:panel>
 				<p:spacer height="10"></p:spacer>
-					<h:panelGrid style="float: right">
-						<p:commandButton value="Cancel" onclick="PF('new_pt').hide()" immediate="true" />
-					</h:panelGrid>
+				<h:panelGrid style="float: right">
+					<p:commandButton value="Cancel" onclick="PF('new_pt').hide()"
+						immediate="true" />
+				</h:panelGrid>
 			</p:dialog>
 
 			<p:dialog widgetVar="history-dialog" modal="true" id="historyD"
@@ -343,6 +334,7 @@
 	margin-right: 20px;
 	font-size: 14px !important;
 }
+
 .ui-column-filter {
 	width: 60px !important;
 	height: 10px !important;
