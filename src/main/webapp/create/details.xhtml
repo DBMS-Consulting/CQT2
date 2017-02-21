@@ -19,6 +19,9 @@
 					update="level lProtocol protocol drug lDrug product lProduct"
 					event="change" listener="#{createController.changeLevel}" />
 			</p:selectOneMenu>
+			
+			<p:outputLabel value="Name" styleClass="label-right" />
+			<p:inputText value="#{createController.selectedData.cmqName}" style="width: 200px !important" />
 
 			<p:outputLabel id="lDrug"
 				value="#{createController.extension eq 'TME' or 

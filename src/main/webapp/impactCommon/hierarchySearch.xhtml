@@ -5,7 +5,7 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:p="http://primefaces.org/ui">
-	
+
 
 	<p:panel header="Relations" style="width:700px; height:623px;">
 		<h:panelGrid columns="6">
@@ -25,8 +25,8 @@
 			</p:selectOneMenu>
 			<p:spacer width="10" />
 			<p:outputLabel value="Term" for="termH" />
-			<p:inputText id="termH" value="#{searchController.termName}" />
-			<p:commandButton value="Search"
+			<p:inputText id="termH" value="#{searchController.termName}"  />
+			<p:commandButton value="Search" update="result"
 				action="#{searchController.hierarchySearch}" />
 		</h:panelGrid>
 
@@ -78,8 +78,28 @@
 
 				</f:facet>
 			</p:toolbar>
+			
+			
+			<p:dataTable var="node" value="#{searchController.datas}"
+				id="result" rows="10" paginator="true" paginatorPosition="bottom"
+				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,25">
 
-			<p:treeTable value="#{searchController.hierarchyRoot}" var="node"  
+				<p:column headerText="Level">
+					<h:outputText value="#{node.cmqLevel}" />
+				</p:column>
+
+				<p:column headerText="Term">
+					<h:outputText value="#{node.cmqName}" />
+				</p:column>
+
+				<p:column headerText="Code" sortBy="#{node.cmqCode}"
+					filterBy="#{node.code}">
+					<h:outputText value="#{node.cmqCode}" />
+				</p:column>
+			</p:dataTable>
+
+			<!-- <p:treeTable value="#{searchController.hierarchyRoot}" var="node"  
 				rowSelection="multiple" id="hierSrc">
 
 				<p:column headerText="Level">
@@ -93,8 +113,15 @@
 				<p:column headerText="Code" sortBy="#{node.code}" filterBy="#{node.code}">
 					<h:outputText value="#{node.code}" />
 				</p:column>
-			</p:treeTable>
+			</p:treeTable> -->
 		</h:panelGrid>
 	</p:panel>
+	
+	<style>
+		#termH {
+		
+			 text-transform: uppercase;
+		}
+	</style>
 
 </ui:composition>
