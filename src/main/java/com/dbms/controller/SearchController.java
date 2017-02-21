@@ -34,8 +34,7 @@ public class SearchController extends BaseController<CmqBase190> {
 
 	private static final long serialVersionUID = 5299394344651669792L;
 
-	private static final Logger log = LoggerFactory
-			.getLogger(SearchController.class);
+	private static final Logger log = LoggerFactory.getLogger(SearchController.class);
 
 	@ManagedProperty("#{CmqBase190Service}")
 	private ICmqBase190Service cmqBaseService;
@@ -109,18 +108,16 @@ public class SearchController extends BaseController<CmqBase190> {
 		if (extension.equals("CPT") || extension.equals("DME")) {
 			setDrugProgram("No Program");
 			setProduct("No Product");
-		}
-		else {
+		} else {
 			setDrugProgram("");
 			setProduct("");
 		}
 
-		if (extension.equals("CPT") || extension.equals("DME")
-				|| extension.equals("TME") || extension.equals("TR1"))
+		if (extension.equals("CPT") || extension.equals("DME") || extension.equals("TME") || extension.equals("TR1"))
 			setProtocol("No Protocol");
 		else
 			setProtocol("");
-			
+
 	}
 
 	/**
@@ -360,26 +357,39 @@ public class SearchController extends BaseController<CmqBase190> {
 
 	public void search() {
 		log.debug("search by{}", extension);
-		if("All".equalsIgnoreCase(status)) {
+		if ("All".equalsIgnoreCase(status)) {
 			status = null;
 		}
-		if("All".equalsIgnoreCase(critical)) {
+		if ("All".equalsIgnoreCase(critical)) {
 			critical = null;
 		}
-		if(-1 == level) {
+		if (-1 == level) {
 			level = null;
 		}
-		if("All".equalsIgnoreCase(group)) {
+		if ("All".equalsIgnoreCase(group)) {
 			group = null;
 		}
-		datas = cmqBaseService.findByCriterias(extension, drugProgram,
-				protocol, product, level, status, state, critical, group,
-				termName, code);
+		datas = cmqBaseService.findByCriterias(extension, drugProgram, protocol, product, level, status, state,
+				critical, group, termName, code);
 		log.debug("found values {}", datas == null ? 0 : datas.size());
 	}
 
 	public String hierarchySearch() {
-		
+		int level = 0;
+		if ("SMQ1".equalsIgnoreCase(levelH)) {
+			level = 1;
+		} else if ("SMQ2".equalsIgnoreCase(levelH)) {
+			level = 2;
+		} else if ("SMQ3".equalsIgnoreCase(levelH)) {
+			level = 3;
+		} else if ("SMQ4".equalsIgnoreCase(levelH)) {
+			level = 4;
+		} else if ("SMQ5".equalsIgnoreCase(levelH)) {
+			level = 5;
+		} else if ("SMQ2".equalsIgnoreCase(levelH)) {
+			level = 1;
+		} 
+		datas = cmqBaseService.findByCriterias(null, null, null, null, level, null, null, null, null, termName, null);
 		return "";
 	}
 
@@ -391,8 +401,7 @@ public class SearchController extends BaseController<CmqBase190> {
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		} catch (Exception e) {
 			log.error("Error when sae cmq - {}", e.getMessage(), e);
-			FacesMessage msg = new FacesMessage("Failed - " + e.getMessage(),
-					null);
+			FacesMessage msg = new FacesMessage("Failed - " + e.getMessage(), null);
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}
 	}
@@ -405,8 +414,7 @@ public class SearchController extends BaseController<CmqBase190> {
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		} catch (Exception e) {
 			log.error("Error when sae cmq - {}", e.getMessage(), e);
-			FacesMessage msg = new FacesMessage("Failed - " + e.getMessage(),
-					null);
+			FacesMessage msg = new FacesMessage("Failed - " + e.getMessage(), null);
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}
 	}
@@ -422,7 +430,6 @@ public class SearchController extends BaseController<CmqBase190> {
 		 */
 	}
 
-	
 	public void onRowEdit(RowEditEvent event) {
 		/*
 		 * TreeNode node = (DefaultTreeNode) event.getObject(); RelationTreeNode
@@ -465,8 +472,7 @@ public class SearchController extends BaseController<CmqBase190> {
 	public void setLevelH(String levelH) {
 		this.levelH = levelH;
 	}
- 
- 
+
 	public void setHierarchyRoot(TreeNode hierarchyRoot) {
 		this.hierarchyRoot = hierarchyRoot;
 	}
