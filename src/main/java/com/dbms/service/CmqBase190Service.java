@@ -214,4 +214,26 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190> impleme
 		}
 		return codeValue;
 	}
+	
+	public CmqBase190 findByCode(Long cmqCode) {
+		CmqBase190 retVal = null;
+		String queryString = "from CmqBase190 c where c.cmqCode = :cmqCode";
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		try {
+			Query query = entityManager.createQuery(queryString);
+			query.setParameter("cmqCode", cmqCode);
+			retVal = (CmqBase190)query.getSingleResult();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg
+					.append("findByCode failed for CMQ_CODE value'")
+					.append(cmqCode).append("' ")
+					.append("Query used was ->")
+					.append(queryString);
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
 }

@@ -360,14 +360,23 @@ public class SearchController extends BaseController<CmqBase190> {
 
 	public void search() {
 		log.debug("search by{}", extension);
+		if("All".equalsIgnoreCase(status)) {
+			status = null;
+		}
+		if("All".equalsIgnoreCase(critical)) {
+			critical = null;
+		}
+		if(-1 == level) {
+			level = null;
+		}
 		datas = cmqBaseService.findByCriterias(extension, drugProgram,
-				protocol, product, level, status, state, criticalEvent, group,
+				protocol, product, level, status, state, critical, group,
 				termName, code);
 		log.debug("found values {}", datas == null ? 0 : datas.size());
 	}
 
 	public String hierarchySearch() {
-
+		
 		return "";
 	}
 

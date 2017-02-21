@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import com.dbms.entity.cqt.RefConfigCodeList;
 import com.dbms.service.base.CqtPersistenceService;
+import com.dbms.util.CqtConstants;
 import com.dbms.util.OrderBy;
 
 @ManagedBean(name = "RefCodeListService")
@@ -46,6 +47,39 @@ public class RefCodeListService extends CqtPersistenceService<RefConfigCodeList>
 					.append("' and value of ")
 					.append(codelistConfigType)
 					.append(". Query used was->")
+					.append(queryString);
+			LOG.error(msg.toString(), ex);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
+
+	@SuppressWarnings("unchecked")
+	public RefConfigCodeList getCurrentMeddraVersion() {
+		RefConfigCodeList retVal = null;
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+
+		StringBuilder queryString = new StringBuilder("from RefConfigCodeList a");
+		queryString.append(" where a.codelistConfigType = :codelistConfigType ");
+		queryString.append("and  a.codelistInternalValue = :codelistInternalValue");
+		try {
+			Query query = entityManager.createQuery(queryString.toString());
+			query.setParameter("codelistConfigType", CqtConstants.CODE_LIST_TYPE_MEDDRA_VERSIONS);
+			query.setParameter("codelistInternalValue", CqtConstants.CURRENT_MEDDRA_VERSION);
+
+			List<RefConfigCodeList> result = query.getResultList();
+			if ((null != result) && result.size() > 0) {
+				retVal = result.get(0);
+			}
+		} catch (Exception ex) {
+			StringBuilder msg = new StringBuilder();
+			msg
+					.append("getCurrentMeddraVersion failed for codelistConfigType ")
+					.append(CqtConstants.CODE_LIST_TYPE_MEDDRA_VERSIONS)
+					.append(" and codelistInternalValue ")
+					.append(CqtConstants.CURRENT_MEDDRA_VERSION)
+					.append("Query used was->")
 					.append(queryString);
 			LOG.error(msg.toString(), ex);
 		} finally {

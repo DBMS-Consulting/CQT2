@@ -52,19 +52,19 @@
 								paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 								rowsPerPageTemplate="5,10,25">
 								<p:column headerText="Term">
-									<h:outputText value="#{value.term}" />
+									<h:outputText value="#{value.cmqName}" />
 								</p:column>
 								<p:column headerText="Extension">
-									<h:outputText value="#{value.extension}" />
+									<h:outputText value="#{value.cmqTypeCd}" />
 								</p:column>
 								<p:column headerText="Level">
-									<h:outputText value="#{value.level}" />
+									<h:outputText value="#{value.cmqLevel}" />
 								</p:column>
 								<p:column headerText="Status">
-									<h:outputText value="#{value.status}" />
+									<h:outputText value="#{value.cmqStatus}" />
 								</p:column>
 								<p:column headerText="State">
-									<h:outputText value="#{value.state}" />
+									<h:outputText value="#{value.cmqState}" />
 								</p:column>
 								<p:column headerText="Code">
 									<!-- <h:outputLink 
@@ -73,26 +73,26 @@
 										<h:outputText value="#{value.code}" />
 									</h:outputLink> -->
 									<p:commandLink action="#{searchController.changeTabUpdate}"
-										value="#{value.code}" update="@form"></p:commandLink>
+										value="#{value.cmqCode}" update="@form"></p:commandLink>
 								</p:column>
 								<p:column headerText="Drug Program">
-									<h:outputText value="#{value.drugProgram}" />
+									<h:outputText value="#{value.cmqProgramCd}" />
 								</p:column>
 								<p:column headerText="Protocol">
-									<h:outputText value="#{value.protocol}" />
+									<h:outputText value="#{value.cmqProtocolCd}" />
 								</p:column>
 								<p:column headerText="Product">
-									<h:outputText value="#{value.product}" />
+									<h:outputText value="#{value.cmqProductCd}" />
 								</p:column>
 								<p:column headerText="Group">
-									<h:outputText value="#{value.group}" />
+									<h:outputText value="#{value.cmqGroup}" />
 								</p:column>
 
 								<p:column headerText="Critical Event">
-									<h:outputText value="#{value.criticalEvent}" />
+									<h:outputText value="#{value.cmqCriticalEvent}" />
 								</p:column>
 								<p:column headerText="Created By">
-									<h:outputText value="#{value.creator.name}" />
+									<h:outputText value="#{value.cmqDesignee}" />
 								</p:column>
 							</p:dataTable>
 						</p:outputPanel>

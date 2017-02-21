@@ -73,7 +73,7 @@ public class CmqBase190 extends BaseEntity {
 
 	@Column(name = "CMQ_NOTE")
 	@Lob
-	private String cmqNote;
+	private String cmqNote = null;
 
 	@Column(name = "CMQ_PROGRAM_CD", nullable = false, length = 200)
 	private String cmqProgramCd;

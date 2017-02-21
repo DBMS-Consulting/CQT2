@@ -16,4 +16,6 @@ public interface ICmqBase190Service extends ICqtPersistenceService<CmqBase190> {
 	List<String> findReleaseStatus();
 
 	Long getNextCodeValue() throws CqtServiceException;
+	
+	CmqBase190 findByCode(Long cmqCode);
 }

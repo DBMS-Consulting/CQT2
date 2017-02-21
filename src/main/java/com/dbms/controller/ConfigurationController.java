@@ -34,6 +34,8 @@ public class ConfigurationController implements Serializable {
 
 	private List<RefConfigCodeList> extensions, programs, protocols, products;
 
+	private RefConfigCodeList currentMeddraVersionCodeList;
+	
 	@PostConstruct
 	public void init() {
 		getExtensionList();
@@ -98,6 +100,11 @@ public class ConfigurationController implements Serializable {
 		return products;
 	}
 
+	public RefConfigCodeList getCurrentMeddraVersion() {
+		this.currentMeddraVersionCodeList = refCodeListService.getCurrentMeddraVersion();
+		return this.currentMeddraVersionCodeList;
+	}
+	
 	public IRefCodeListService getRefCodeListService() {
 		return refCodeListService;
 	}
