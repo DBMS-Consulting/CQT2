@@ -97,6 +97,7 @@ public class CreateController implements Serializable {
 			selectedData.setCmqStatus("P"); // length is 1 only
 			selectedData.setCmqCode(codevalue);
 			selectedData.setDictionaryVersion(currentMeddraVersionCodeList.getValue());
+			selectedData.setCmqCriticalEvent(critical);
 
 			// hard coded for now
 			selectedData.setCmqDescription(description);
