@@ -370,7 +370,7 @@ public class SearchController extends BaseController<CmqBase190> {
 			group = null;
 		}
 		
-		if(code == 0) {
+		if(code != null && code == 0) {
 			code = null;
 		}
 		

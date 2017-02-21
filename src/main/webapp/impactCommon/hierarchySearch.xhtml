@@ -25,7 +25,7 @@
 			</p:selectOneMenu>
 			<p:spacer width="10" />
 			<p:outputLabel value="Term" for="termH" />
-			<p:inputText id="termH" value="#{searchController.termName}"  />
+			<p:inputText id="termH" style="text-transform:uppercase" value="#{searchController.termName}"  />
 			<p:commandButton value="Search" update="resultHier"
 				action="#{searchController.hierarchySearch}" />
 		</h:panelGrid>

@@ -24,7 +24,7 @@
 				</h:panelGrid>
 			</h:panelGrid>
 
-			<p:wizard flowListener="#{wizard.onFlowProcess}" >
+			<p:wizard flowListener="#{wizard.onFlowProcess}" widgetVar="wizard">
 				<!-- Search -->
 				<p:tab id="searchT" title="Search">
 					<p:panel header="Search">
@@ -68,7 +68,7 @@
 								</p:column>
 								<p:column headerText="Code">
 									
-									<p:commandLink action="#{searchController.changeTabUpdate}"
+									<p:commandLink onclick="next();"
 										value="#{value.cmqCode}" update="@form"></p:commandLink>
 								</p:column>
 								<p:column headerText="Drug Program">
@@ -467,5 +467,15 @@
 	font-size: 14px !important;
 }
 </style>
+
+<script>
+			function next() {
+				PF('wizard').next();
+			}
+
+			function back() {
+				PF('wizard').back();
+			}
+		</script>
 	</ui:define>
 </ui:composition>

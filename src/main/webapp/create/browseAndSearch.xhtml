@@ -23,7 +23,7 @@
 				</h:panelGrid>
 			</h:panelGrid>
 
-			<p:wizard flowListener="#{wizard.onFlowProcess}">
+			<p:wizard flowListener="#{wizard.onFlowProcess}" widgetVar="wizard">
 				<!-- Search -->
 				<p:tab id="search" title="Search">
 					<p:panel header="Search">
@@ -71,7 +71,7 @@
 										<f:param value="#{value.cmqCode}" name="code" />
 										<h:outputText value="#{value.cmqCode}" />
 									</h:outputLink> -->
-									<p:commandLink action="#{searchController.changeTabBrowse}"
+									<p:commandLink onclick="next();"
 										value="#{value.cmqCode}" update="@form"></p:commandLink>
 								</p:column>
 								<p:column headerText="Drug Program">
@@ -325,7 +325,9 @@
 			</h:panelGrid>
 			<f:attribute name="currentPage"
 				value="Create New #{applicationScope.CSMQBean.customMQName} Wizard" />
+				
 		</h:form>
+		
 
 		<style>
 .label-right {
@@ -340,5 +342,15 @@
 	margin-top: 5px;
 }
 </style>
+
+<script>
+			function next() {
+				PF('wizard').next();
+			}
+
+			function back() {
+				PF('wizard').back();
+			}
+		</script>
 	</ui:define>
 </ui:composition>
