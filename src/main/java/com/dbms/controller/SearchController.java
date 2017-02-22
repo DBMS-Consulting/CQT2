@@ -2,6 +2,7 @@ package com.dbms.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -12,6 +13,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
 
 import org.primefaces.component.wizard.Wizard;
+import org.primefaces.event.NodeExpandEvent;
 import org.primefaces.event.RowEditEvent;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
@@ -20,11 +22,13 @@ import org.slf4j.LoggerFactory;
 
 import com.dbms.controller.beans.HierarchySearchResultBean;
 import com.dbms.csmq.HierarchyNode;
+import com.dbms.entity.IEntity;
 import com.dbms.entity.cqt.CmqBase190;
 import com.dbms.entity.cqt.CmqRelation190;
 import com.dbms.entity.cqt.CreateEntity;
 import com.dbms.entity.cqt.MeddraDict190;
 import com.dbms.entity.cqt.SmqBase190;
+import com.dbms.entity.cqt.SmqRelation190;
 import com.dbms.service.ICmqBase190Service;
 import com.dbms.service.ICmqRelation190Service;
 import com.dbms.service.IMeddraDictService;
@@ -40,8 +44,7 @@ public class SearchController extends BaseController<CmqBase190> {
 
 	private static final long serialVersionUID = 5299394344651669792L;
 
-	private static final Logger log = LoggerFactory
-			.getLogger(SearchController.class);
+	private static final Logger log = LoggerFactory.getLogger(SearchController.class);
 
 	@ManagedProperty("#{CmqBase190Service}")
 	private ICmqBase190Service cmqBaseService;
@@ -103,8 +106,7 @@ public class SearchController extends BaseController<CmqBase190> {
 		this.group = "No Group";
 		this.extension = "TME";
 
-		hierarchyRoot = new DefaultTreeNode(new HierarchyNode("LEVEL", "NAME",
-				"CODE"), null);
+		hierarchyRoot = new DefaultTreeNode("root", new HierarchyNode("LEVEL", "NAME", "CODE", null), null);
 
 	}
 
@@ -164,8 +166,7 @@ public class SearchController extends BaseController<CmqBase190> {
 			setProduct("");
 		}
 
-		if (extension.equals("CPT") || extension.equals("DME")
-				|| extension.equals("TME") || extension.equals("TR1"))
+		if (extension.equals("CPT") || extension.equals("DME") || extension.equals("TME") || extension.equals("TR1"))
 			setProtocol("No Protocol");
 		else
 			setProtocol("");
@@ -426,9 +427,8 @@ public class SearchController extends BaseController<CmqBase190> {
 			code = null;
 		}
 
-		datas = cmqBaseService.findByCriterias(extension, drugProgram,
-				protocol, product, level, status, state, critical, group,
-				termName, code);
+		datas = cmqBaseService.findByCriterias(extension, drugProgram, protocol, product, level, status, state,
+				critical, group, termName, code);
 		log.debug("found values {}", datas == null ? 0 : datas.size());
 	}
 
@@ -476,62 +476,87 @@ public class SearchController extends BaseController<CmqBase190> {
 		}
 
 		if (searchSmqBase) {
-			List<SmqBase190> smqBaseList = smqBaseService.findByLevelAndTerm(
-					level, termName);
-			log.info("smqBaseList values {}", smqBaseList == null ? 0
-					: smqBaseList.size());
+			List<SmqBase190> smqBaseList = smqBaseService.findByLevelAndTerm(level, termName);
+			log.info("smqBaseList values {}", smqBaseList == null ? 0 : smqBaseList.size());
 			hierarchySearchResults = new ArrayList<>();
-			for (SmqBase190 smqBase190 : smqBaseList) {
-				HierarchySearchResultBean bean = new HierarchySearchResultBean();
-				if (smqBase190.getSmqLevel() == 1) {
-					bean.setLevel("SMQ1");
-				} else if (smqBase190.getSmqLevel() == 2) {
-					bean.setLevel("SMQ2");
-				} else if (smqBase190.getSmqLevel() == 3) {
-					bean.setLevel("SMQ3");
-				} else if (smqBase190.getSmqLevel() == 4) {
-					bean.setLevel("SMQ4");
-				} else if (smqBase190.getSmqLevel() == 5) {
-					bean.setLevel("SMQ5");
+
+			this.hierarchyRoot = new DefaultTreeNode("root", new HierarchyNode("LEVEL", "NAME", "CODE", null), null);
+
+			for (SmqBase190 smqBase : smqBaseList) {
+				HierarchyNode node = new HierarchyNode();
+				if (smqBase.getSmqLevel() == 1) {
+					node.setLevel("SMQ1");
+				} else if (smqBase.getSmqLevel() == 2) {
+					node.setLevel("SMQ2");
+				} else if (smqBase.getSmqLevel() == 3) {
+					node.setLevel("SMQ3");
+				} else if (smqBase.getSmqLevel() == 4) {
+					node.setLevel("SMQ4");
+				} else if (smqBase.getSmqLevel() == 5) {
+					node.setLevel("SMQ5");
 				}
-				bean.setTerm(smqBase190.getSmqName());
-				bean.setCode(smqBase190.getSmqCode().toString());
-				bean.setEntity(smqBase190);
-				hierarchySearchResults.add(bean);
-			}
+				node.setTerm(smqBase.getSmqName());
+				node.setCode(smqBase.getSmqCode().toString());
+				node.setEntity(smqBase);
+				TreeNode parentTreeNode = new DefaultTreeNode(node, this.hierarchyRoot);
 
-			for (SmqBase190 smqBase190 : smqBaseList) {
-				String levelH = "";
-				if (smqBase190.getSmqLevel() == 1) {
-					levelH = "SMQ1";
-				} else if (smqBase190.getSmqLevel() == 2) {
-					levelH = "SMQ2";
-				} else if (smqBase190.getSmqLevel() == 3) {
-					levelH = "SMQ3";
-				} else if (smqBase190.getSmqLevel() == 4) {
-					levelH = "SMQ4";
-				} else if (smqBase190.getSmqLevel() == 5) {
-					levelH = "SMQ5";
-				}
+				// process children now
+				Set<SmqBase190> childSmqBaseList = smqBase.getSmqBaseChildres();
+				for (SmqBase190 childSmqBase : childSmqBaseList) {
+					HierarchyNode childNode = new HierarchyNode();
+					if (childSmqBase.getSmqLevel() == 1) {
+						childNode.setLevel("SMQ1");
+					} else if (childSmqBase.getSmqLevel() == 2) {
+						childNode.setLevel("SMQ2");
+					} else if (childSmqBase.getSmqLevel() == 3) {
+						childNode.setLevel("SMQ3");
+					} else if (childSmqBase.getSmqLevel() == 4) {
+						childNode.setLevel("SMQ4");
+					} else if (childSmqBase.getSmqLevel() == 5) {
+						childNode.setLevel("SMQ5");
+					}
+					childNode.setTerm(childSmqBase.getSmqName());
+					childNode.setCode(childSmqBase.getSmqCode().toString());
+					childNode.setEntity(childSmqBase);
 
-				TreeNode level1 = new DefaultTreeNode(new HierarchyNode(levelH,
-						smqBase190.getSmqName(), smqBase190.getSmqCode()
-								.toString()), hierarchyRoot);
-
-//				if (smqBase190.getSmqBaseChildres() != null
-//						&& smqBase190.getSmqBaseChildres().size() > 0) {
-//					for (SmqBase190 child : smqBase190.getSmqBaseChildres()) {
-//						TreeNode level2 = new DefaultTreeNode(
-//								new HierarchyNode(levelH, child.getSmqName(),
-//										child.getSmqCode().toString()), level1);
-//					}
-//				}
-			}
-
+					// add child to parent
+					TreeNode childTreeNode = new DefaultTreeNode(childNode, parentTreeNode);
+					long childSmqrelationsCount = this.smqBaseService
+							.findSmqRelationsCountForSmqCode(childSmqBase.getSmqCode());
+					if (childSmqrelationsCount > 0) {
+						// add a dummmy node to show expand arrow
+						HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
+						dummyNode.setDummyNode(true);
+						new DefaultTreeNode(dummyNode, childTreeNode);
+					}
+					/*
+					 * List<SmqRelation190> childRelations =
+					 * this.smqBaseService.findSmqRelationsForSmqCode(
+					 * childSmqBase.getSmqCode()); if(null != childRelations) {
+					 * for (SmqRelation190 childRelation : childRelations) {
+					 * HierarchyNode childRelationNode = new HierarchyNode(); if
+					 * (childRelation.getSmqLevel() == 1) {
+					 * childRelationNode.setLevel("SMQ1"); } else if
+					 * (childRelation.getSmqLevel() == 2) {
+					 * childRelationNode.setLevel("SMQ2"); } else if
+					 * (childRelation.getSmqLevel() == 3) {
+					 * childRelationNode.setLevel("SMQ3"); } else if
+					 * ((childRelation.getSmqLevel() == 4) ||
+					 * (childRelation.getSmqLevel() == 0) ||
+					 * (childRelation.getSmqLevel() == 5)) {
+					 * childRelationNode.setLevel("PT"); }
+					 * childRelationNode.setTerm(childRelation.getPtName());
+					 * childRelationNode.setCode(childRelation.getPtCode().
+					 * toString()); childRelationNode.setEntity(childRelation);
+					 * 
+					 * TreeNode childRelationTreeNode = new
+					 * DefaultTreeNode(childNode, childTreeNode); } }
+					 */
+				} // end of for (SmqBase190 childSmqBase : childSmqBaseList)
+			} // end of for (SmqBase190 smqBase : smqBaseList)
 		} else if (searchMeddraBase) {
-			List<MeddraDict190> meddraDictList = meddraDictService
-					.findByLevelAndTerm(meddraSearchTerm.toUpperCase(),
-							termName);
+			List<MeddraDict190> meddraDictList = meddraDictService.findByLevelAndTerm(meddraSearchTerm.toUpperCase(),
+					termName);
 			hierarchySearchResults = new ArrayList<>();
 			for (MeddraDict190 meddraDict190 : meddraDictList) {
 				HierarchySearchResultBean bean = new HierarchySearchResultBean();
@@ -551,36 +576,76 @@ public class SearchController extends BaseController<CmqBase190> {
 				}
 				bean.setEntity(meddraDict190);
 				hierarchySearchResults.add(bean);
-				
-			
-			}
-		} else if (searchCmqBase) {
-			List<CmqBase190> cmqBaseList = cmqBaseService.findByLevelAndTerm(2,
-					termName);
-			hierarchySearchResults = new ArrayList<>();
-			for (CmqBase190 cmqBase190 : cmqBaseList) {
-				HierarchySearchResultBean bean = new HierarchySearchResultBean();
-				bean.setLevel(levelH);
-				bean.setTerm(cmqBase190.getCmqName());
-				bean.setCode(cmqBase190.getCmqCode().toString());
-				bean.setEntity(cmqBase190);
-				hierarchySearchResults.add(bean);
 
-				TreeNode level1 = new DefaultTreeNode(new HierarchyNode(levelH,
-						cmqBase190.getCmqName(), cmqBase190.getCmqCode()
-								.toString()), hierarchyRoot);
-
-//				if (cmqBase190.getChildCmqs() != null
-//						&& cmqBase190.getChildCmqs().size() > 0) {
-//					for (CmqBase190 child : cmqBase190.getChildCmqs()) {
-//						TreeNode level2 = new DefaultTreeNode(
-//								new HierarchyNode(levelH, child.getCmqName(),
-//										child.getCmqCode().toString()), level1);
-//					}
-//				}
 			}
-		}
+		} /*
+			 * else if (searchCmqBase) { List<CmqBase190> cmqBaseList =
+			 * cmqBaseService.findByLevelAndTerm(2, termName);
+			 * hierarchySearchResults = new ArrayList<>(); for (CmqBase190
+			 * cmqBase190 : cmqBaseList) { HierarchySearchResultBean bean = new
+			 * HierarchySearchResultBean(); bean.setLevel(levelH);
+			 * bean.setTerm(cmqBase190.getCmqName());
+			 * bean.setCode(cmqBase190.getCmqCode().toString());
+			 * bean.setEntity(cmqBase190); hierarchySearchResults.add(bean);
+			 * 
+			 * TreeNode level1 = new DefaultTreeNode( new HierarchyNode(levelH,
+			 * cmqBase190.getCmqName(), cmqBase190.getCmqCode().toString()),
+			 * hierarchyRoot);
+			 * 
+			 * // if (cmqBase190.getChildCmqs() != null // &&
+			 * cmqBase190.getChildCmqs().size() > 0) { // for (CmqBase190 child
+			 * : cmqBase190.getChildCmqs()) { // TreeNode level2 = new
+			 * DefaultTreeNode( // new HierarchyNode(levelH, child.getCmqName(),
+			 * // child.getCmqCode().toString()), level1); // } // } } }
+			 */
 		return "";
+	}
+
+	public void onNodeExpand(NodeExpandEvent event) {
+		log.info("Expand called finally....");
+		TreeNode expandedTreeNode = event.getTreeNode();
+		HierarchyNode hierarchyNode = (HierarchyNode) expandedTreeNode.getData();
+		boolean isDataFetchCompleted = hierarchyNode.isDataFetchCompleted();
+		if(!isDataFetchCompleted) {
+			IEntity entity = hierarchyNode.getEntity();
+			
+			//remove the first dummy node placeholder
+			HierarchyNode dummyChildData = (HierarchyNode) expandedTreeNode.getChildren().get(0).getData();
+			if(dummyChildData.isDummyNode()) {
+				expandedTreeNode.getChildren().remove(0);
+			}
+			
+			if (entity instanceof SmqBase190) {
+				SmqBase190 smqBase = (SmqBase190) entity;
+	
+				FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Loading....",
+						"Finding relations for SMQ_CODE " + smqBase.getSmqCode());
+				FacesContext.getCurrentInstance().addMessage(null, message);
+	
+				List<SmqRelation190> childRelations = this.smqBaseService.findSmqRelationsForSmqCode(smqBase.getSmqCode());
+				if (null != childRelations) {
+					for (SmqRelation190 childRelation : childRelations) {
+						HierarchyNode childRelationNode = new HierarchyNode();
+						if (childRelation.getSmqLevel() == 1) {
+							childRelationNode.setLevel("SMQ1");
+						} else if (childRelation.getSmqLevel() == 2) {
+							childRelationNode.setLevel("SMQ2");
+						} else if (childRelation.getSmqLevel() == 3) {
+							childRelationNode.setLevel("SMQ3");
+						} else if ((childRelation.getSmqLevel() == 4) || (childRelation.getSmqLevel() == 0)
+								|| (childRelation.getSmqLevel() == 5)) {
+							childRelationNode.setLevel("PT");
+						}
+						childRelationNode.setTerm(childRelation.getPtName());
+						childRelationNode.setCode(childRelation.getPtCode().toString());
+						childRelationNode.setEntity(childRelation);
+	
+						new DefaultTreeNode(childRelationNode, expandedTreeNode);
+					}
+				}
+			}
+			hierarchyNode.setDataFetchCompleted(true);
+		}
 	}
 
 	public void saveDetails() {
@@ -591,8 +656,7 @@ public class SearchController extends BaseController<CmqBase190> {
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		} catch (Exception e) {
 			log.error("Error when sae cmq - {}", e.getMessage(), e);
-			FacesMessage msg = new FacesMessage("Failed - " + e.getMessage(),
-					null);
+			FacesMessage msg = new FacesMessage("Failed - " + e.getMessage(), null);
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}
 	}
@@ -605,8 +669,7 @@ public class SearchController extends BaseController<CmqBase190> {
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		} catch (Exception e) {
 			log.error("Error when sae cmq - {}", e.getMessage(), e);
-			FacesMessage msg = new FacesMessage("Failed - " + e.getMessage(),
-					null);
+			FacesMessage msg = new FacesMessage("Failed - " + e.getMessage(), null);
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}
 	}
@@ -681,8 +744,7 @@ public class SearchController extends BaseController<CmqBase190> {
 		return hierarchySearchResults;
 	}
 
-	public void setHierarchySearchResults(
-			List<HierarchySearchResultBean> hierarchySearchResults) {
+	public void setHierarchySearchResults(List<HierarchySearchResultBean> hierarchySearchResults) {
 		this.hierarchySearchResults = hierarchySearchResults;
 	}
 

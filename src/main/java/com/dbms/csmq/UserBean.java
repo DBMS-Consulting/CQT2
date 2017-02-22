@@ -98,7 +98,7 @@ public class UserBean {
     private DualListModel<String> pickList;
 
     public TreeNode getRoot() {
-    	root = new DefaultTreeNode(new HierarchyNode("Files", "-", "Folder"), null);
+    	root = new DefaultTreeNode(new HierarchyNode("Files", "-", "Folder", null), null);
        
 		return root;
 	}

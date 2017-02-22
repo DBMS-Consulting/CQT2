@@ -3,8 +3,6 @@ package com.dbms.entity.cqt;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.dbms.entity.BaseEntity;
@@ -14,7 +12,7 @@ import com.dbms.entity.BaseEntity;
  * @date Feb 11, 2017 6:21:09 AM
  **/
 @Entity
-@Table(name = "SMQ_RELATION_CURRENT")
+@Table(name = "SMQ_RELATIONS_CURRENT")
 public class SmqRelation190 extends BaseEntity {
 
 	private static final long serialVersionUID = 7671116365991009082L;
@@ -23,6 +21,9 @@ public class SmqRelation190 extends BaseEntity {
 	@Column(name = "SMQ_RELATION_ID", unique = true, nullable = false)
 	private Long id;
 
+	@Column(name = "SMQ_CODE", nullable = false, precision = 38)
+	private Long smqCode;
+	
 	@Column(name = "PT_CODE", length = 10)
 	private Integer ptCode;
 
@@ -50,12 +51,16 @@ public class SmqRelation190 extends BaseEntity {
 	@Column(name = "PT_TERM_ADDITION_VERSION", length = 5)
 	private String ptTermAdditionVersion;
 
-	@Column(name = "PT_TERM_RAST_MODIFIED_VERSION", length = 5)
+	@Column(name = "PT_TERM_LAST_MODIFIED_VERSION", length = 5)
 	private String ptTermLastModifiedVersion;
 
-	@ManyToOne
-	@JoinColumn(name = "SMQ_CODE")
-	private SmqBase190 base;
+	public Long getSmqCode() {
+		return smqCode;
+	}
+
+	public void setSmqCode(Long smqCode) {
+		this.smqCode = smqCode;
+	}
 
 	public Integer getPtCode() {
 		return ptCode;
@@ -144,13 +149,4 @@ public class SmqRelation190 extends BaseEntity {
 	public void setId(Long id) {
 		this.id = id;
 	}
-
-	public SmqBase190 getBase() {
-		return base;
-	}
-
-	public void setBase(SmqBase190 base) {
-		this.base = base;
-	}
-
 }

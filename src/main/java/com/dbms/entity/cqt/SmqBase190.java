@@ -6,6 +6,7 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -62,7 +63,7 @@ public class SmqBase190 extends BaseEntity {
 	@Column(name = "DICTIONARY_VERSION", nullable = false, length = 5)
 	private String dictionaryVersion;
 
-	@OneToMany(mappedBy = "parentSmq", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "parentSmq", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private Set<SmqBase190> smqBaseChildres = new HashSet<>();
 
 	@ManyToOne
