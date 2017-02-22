@@ -10,6 +10,7 @@
 		<h:form id="fUpdate">
 			<p:growl id="m1" />
 
+
 			<h:panelGrid columns="2" style="width: 100% !important">
 				<h:panelGrid>
 					<p:breadCrumb>
@@ -24,13 +25,16 @@
 				</h:panelGrid>
 			</h:panelGrid>
 
-			<p:wizard flowListener="#{wizard.onFlowProcess}" widgetVar="wizard" id="wizardId"
+			<p:wizard 
+				widgetVar="wizard" id="wizardId"
 				binding="#{createController.updateWizard}">
 				<!-- Search -->
 				<p:tab id="searchUpdate" title="Search">
 					<p:panel header="Search">
 						<ui:include src="search.xhtml"></ui:include>
-
+						<!-- <h:inputHidden id="hiddenCode"
+							value="#{createController.codeSelected}" required="true"
+							requiredMessage="Select a code to preview details" /> -->
 
 						<h:panelGrid columns="8">
 							<p:outputLabel value="Term" />
@@ -98,8 +102,8 @@
 				<p:tab id="details" title="Update Details">
 					<p:panel header="Details">
 						<ui:include src="details.xhtml" />
-						
-						<p:commandButton value="Save" icon="ui-icon-disk" 
+
+						<p:commandButton value="Save" icon="ui-icon-disk"
 							action="#{createController.save}" update="@form:m1"></p:commandButton>
 					</p:panel>
 				</p:tab>
@@ -285,7 +289,7 @@
 
 							</tbody>
 						</table>
-						
+
 						<p:spacer height="5" />
 						<p:commandButton value="Save" icon="ui-icon-disk"
 							action="#{createController.save}"></p:commandButton>
@@ -462,12 +466,14 @@
 
 
 				<p:outputLabel for="it1aw" value="Dictionary Version:"></p:outputLabel>
-				<h:inputText id="it1aw" value="#{dummyView.value}" disabled="true"
-					columns="200" />
+				<h:inputText id="it1aw"
+					value="#{createController.selectedData.dictionaryVersion}"
+					disabled="true" columns="200" />
 
 				<p:outputLabel for="it3" value="Name: "></p:outputLabel>
-				<h:inputText id="it3" value="#{dummyView.value}" readOnly="true"
-					disabled="true" />
+				<h:inputText id="it3"
+					value="#{createController.selectedData.dictionaryName}"
+					readOnly="true" disabled="true" />
 			</h:panelGrid>
 			<f:attribute name="currentPage"
 				value="Create New #{applicationScope.CSMQBean.customMQName} Wizard" />

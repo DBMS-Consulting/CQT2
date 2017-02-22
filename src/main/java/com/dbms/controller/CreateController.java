@@ -13,6 +13,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
 
 import org.primefaces.component.wizard.Wizard;
+import org.primefaces.event.FlowEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,7 +33,8 @@ public class CreateController implements Serializable {
 
 	private static final long serialVersionUID = -443251941538546278L;
 
-	private static final Logger LOG = LoggerFactory.getLogger(CreateController.class);
+	private static final Logger LOG = LoggerFactory
+			.getLogger(CreateController.class);
 
 	@ManagedProperty("#{CmqBase190Service}")
 	private ICmqBase190Service cmqBaseService;
@@ -57,8 +59,9 @@ public class CreateController implements Serializable {
 	private String description;
 	private String notes;
 	private String source;
-	
+
 	private Wizard updateWizard, copyWizard, browseWizard;
+	private Long codeSelected;
 
 	@PostConstruct
 	public void init() {
@@ -75,24 +78,38 @@ public class CreateController implements Serializable {
 		extension = "TME";
 		algorithm = "N";
 	}
-	
+
 	public void initCreateForm() {
 		this.selectedData = new CmqBase190();
 	}
-
+	 
+	public String onFlowProcess(FlowEvent event) {
+				
+		System.out.println("\n \n ******* EVENT " + event.getNewStep());
+		
+		if (codeSelected != null)
+			return event.getNewStep();
+		
+		return "";
+		
+		//return event.getNewStep();
+	 }
 
 	private CmqBase190 selectedData;
 
 	public CreateController() {
 		this.selectedData = new CmqBase190();
 	}
-	
+
 	public String loadCmqBaseByCode(Long code) {
+		codeSelected = null;
 		CmqBase190 cmq = new CmqBase190();
 		cmq = this.cmqBaseService.findByCode(code);
-		
+
 		if (cmq != null) {
-			System.out.println("\n \n ******* cmq by code " + cmq.getCmqCode());
+			
+			codeSelected = cmq.getCmqCode();
+			
 			selectedData = cmq;
 			this.state = selectedData.getCmqState();
 			this.status = selectedData.getCmqState();
@@ -100,23 +117,23 @@ public class CreateController implements Serializable {
 			this.notes = selectedData.getCmqNote();
 			this.source = selectedData.getCmqSource();
 
- 			level = selectedData.getCmqLevel();
+			level = selectedData.getCmqLevel();
 			critical = selectedData.getCmqCriticalEvent();
 			group = selectedData.getCmqGroup();
 			algorithm = selectedData.getCmqAlgorithm();
-			
+
 			protocol = selectedData.getCmqProtocolCd();
 			drugProgram = selectedData.getCmqProgramCd();
 			product = selectedData.getCmqProductCd();
 		}
-		
+
 		if (browseWizard != null)
 			browseWizard.setStep("details");
 		if (updateWizard != null)
 			updateWizard.setStep("details");
 		if (copyWizard != null)
 			copyWizard.setStep("details");
-		
+
 		return "";
 	}
 
@@ -124,11 +141,12 @@ public class CreateController implements Serializable {
 		try {
 			// get the next value of code
 			Long codevalue = this.cmqBaseService.getNextCodeValue();
-			RefConfigCodeList currentMeddraVersionCodeList = this.refCodeListService.getCurrentMeddraVersion();
+			RefConfigCodeList currentMeddraVersionCodeList = this.refCodeListService
+					.getCurrentMeddraVersion();
 
 			// fill data
 			selectedData.setCreationDate(new Date());
-			//selectedData.setCmqName("MEDDRA");
+			// selectedData.setCmqName("MEDDRA");
 			selectedData.setCmqTypeCd(extension);
 			selectedData.setCmqState(state);
 			selectedData.setCmqAlgorithm(algorithm);
@@ -139,7 +157,8 @@ public class CreateController implements Serializable {
 			selectedData.setCmqGroup(group);
 			selectedData.setCmqStatus("P"); // length is 1 only
 			selectedData.setCmqCode(codevalue);
-			selectedData.setDictionaryVersion(currentMeddraVersionCodeList.getValue());
+			selectedData.setDictionaryVersion(currentMeddraVersionCodeList
+					.getValue());
 
 			// hard coded for now
 			selectedData.setCmqDescription(description);
@@ -153,15 +172,18 @@ public class CreateController implements Serializable {
 			CmqBase190 savedEntity = cmqBaseService.findByCode(codevalue);
 
 			// save the cmq code to session
-			FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("NEW-CMQ_BASE-ID",
-					savedEntity.getId());
+			FacesContext.getCurrentInstance().getExternalContext()
+					.getSessionMap()
+					.put("NEW-CMQ_BASE-ID", savedEntity.getId());
 
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Infos saved", "");
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Infos saved", "");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		} catch (CqtServiceException e) {
 			LOG.error("Exception occured while creating CmqBase190.", e);
 
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Exception occured while saving", "");
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Exception occured while saving", "");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
 			return null;
@@ -171,11 +193,8 @@ public class CreateController implements Serializable {
 	}
 
 	public String saveInformativeNotes() {
-		Long cmqId = (Long) (FacesContext
-				.getCurrentInstance()
-				.getExternalContext()
-				.getSessionMap()
-				.get("NEW-CMQ_BASE-ID"));
+		Long cmqId = (Long) (FacesContext.getCurrentInstance()
+				.getExternalContext().getSessionMap().get("NEW-CMQ_BASE-ID"));
 
 		CmqBase190 savedEntity = cmqBaseService.findById(cmqId);
 		savedEntity.setCmqDescription(selectedData.getCmqDescription());
@@ -184,9 +203,12 @@ public class CreateController implements Serializable {
 		try {
 			this.cmqBaseService.update(savedEntity);
 		} catch (CqtServiceException e) {
-			LOG.error("Exception occured while updating CmqBase190 for add informative notes.", e);
+			LOG.error(
+					"Exception occured while updating CmqBase190 for add informative notes.",
+					e);
 
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Exception occured while saving", "");
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Exception occured while saving", "");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
 			return null;
@@ -211,7 +233,8 @@ public class CreateController implements Serializable {
 		else
 			setDrugProgram("");
 
-		if (extension.equals("CPT") || extension.equals("DME") || extension.equals("TME") || extension.equals("TR1"))
+		if (extension.equals("CPT") || extension.equals("DME")
+				|| extension.equals("TME") || extension.equals("TR1"))
 			setProtocol("No Protocol");
 		else
 			setProtocol("");
@@ -413,5 +436,13 @@ public class CreateController implements Serializable {
 
 	public void setBrowseWizard(Wizard browseWizard) {
 		this.browseWizard = browseWizard;
+	}
+
+	public Long getCodeSelected() {
+		return codeSelected;
+	}
+
+	public void setCodeSelected(Long codeSelected) {
+		this.codeSelected = codeSelected;
 	}
 }
