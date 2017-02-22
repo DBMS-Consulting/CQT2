@@ -47,6 +47,12 @@
 			<artifactId>jsf-impl</artifactId>
 			<version>${mojarra.version}</version>
 		</dependency>
+		<dependency>
+	    <groupId>javax.enterprise</groupId>
+		    <artifactId>cdi-api</artifactId>
+		    <version>1.2</version>
+		</dependency>
+
 		<!-- PrimeFaces -->
 		<dependency>
 			<groupId>org.primefaces</groupId>

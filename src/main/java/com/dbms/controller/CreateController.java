@@ -225,7 +225,8 @@ public class CreateController implements Serializable {
 		selectedData.setCmqState(state);
 
 		FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Workflow state set to '" + state + "'", "");
-		FacesContext.getCurrentInstance().addMessage(null, msg);
+		FacesContext ctx = FacesContext.getCurrentInstance();
+		ctx.addMessage(null, msg);
 		
 		return state;
 	}

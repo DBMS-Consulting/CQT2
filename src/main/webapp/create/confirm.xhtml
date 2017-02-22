@@ -110,41 +110,41 @@
 			</f:facet>
 			<f:facet name="right">
 				<p:commandButton value="Reactivate" disabled="false"
-					action="#{createController.workflowState('Reactivate')}" process="@this">
+					action="#{createController.workflowState('Reactivate')}" process="@this" update="pt_m2">
 					<p:confirm header="Confirm Reactivate"
 						message="Are you sure you want to reactivate this MedDRA Query?"
 						icon="ui-icon-alert" />
 				</p:commandButton>
 				<p:commandButton value="Retire" disabled="false"
-					action="#{createController.workflowState('Retire')}" process="@this">
+					action="#{createController.workflowState('Retire')}" process="@this" update="pt_m2">
 					<p:confirm header="Confirm Retire"
 						message="Are you sure you want to retire this MedDRA Query?"
 						icon="ui-icon-alert" />
 				</p:commandButton>
 
 				<p:commandButton value="Demote to Draft" disabled="false"
-					action="#{createController.workflowState('Demote to Draft')}" process="@this">
+					action="#{createController.workflowState('Demote to Draft')}" process="@this" update="pt_m2">
 					<p:confirm header="Confirm Demote to Draft"
 						message="Are you sure you want to demote this MedDRA Query to draft?"
 						icon="ui-icon-alert" />
 				</p:commandButton>
 
 				<p:commandButton value="Reviewed" disabled="false"
-					action="#{createController.workflowState('Reviewed')}" process="@this">
+					action="#{createController.workflowState('Reviewed')}" process="@this" update="pt_m2">
 					<p:confirm header="Confirm Review"
 						message="Are you sure you want to confirm this MedDRA Query as reviewed?"
 						icon="ui-icon-alert" />
 				</p:commandButton>
 
 				<p:commandButton value="Approve" disabled="false"
-					action="#{createController.workflowState('Approve')}" process="@this">
+					action="#{createController.workflowState('Approve')}" process="@this" update="pt_m2">
 					<p:confirm header="Confirm Approve"
 						message="Are you sure you want to approve this MedDRA Query?"
 						icon="ui-icon-alert" />
 				</p:commandButton>
 
 				<p:commandButton value="Delete" disabled="false"
-					action="#{createController.workflowState('Delete')}" process="@this">
+					action="#{createController.workflowState('Delete')}" process="@this" update="pt_m2">
 					<p:confirm header="Confirm Delete"
 						message="Are you sure you want to delete this MedDRA Query?"
 						icon="ui-icon-alert" />
