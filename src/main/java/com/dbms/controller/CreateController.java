@@ -194,6 +194,20 @@ public class CreateController implements Serializable {
 		return "";
 	}
 
+
+	//
+	//	set workflow state CMQ_BASE_CURRENT -> CMQ_STATE
+	//
+	public String workflowState(String state) {
+		setState(state);
+		selectedData.setCmqState(state);
+
+		FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Workflow state set to '" + state + "'", "");
+		FacesContext.getCurrentInstance().addMessage(null, msg);
+		
+		return state;
+	}
+	
 	/**
 	 * Method to change Level value on extention selection.
 	 * 
