@@ -14,6 +14,7 @@ import javax.faces.event.AjaxBehaviorEvent;
 
 import org.primefaces.component.wizard.Wizard;
 import org.primefaces.event.FlowEvent;
+import org.primefaces.model.TreeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,13 +64,15 @@ public class CreateController implements Serializable {
 	private Wizard updateWizard, copyWizard, browseWizard;
 	private Long codeSelected;
 
+	private TreeNode[] relationSelected;
+
 	@PostConstruct
 	public void init() {
 		this.state = "Draft";
 		this.status = "Pending";
-		this.description = "****** Description *******";
-		this.notes = "****** Notes *******";
-		this.source = "****** Source *******";
+		this.description = "***Description ***";
+		this.notes = "";
+		this.source = "";
 
 		maintainDesigBtn = false;
 		level = 1;
@@ -82,18 +85,18 @@ public class CreateController implements Serializable {
 	public void initCreateForm() {
 		this.selectedData = new CmqBase190();
 	}
-	 
+
 	public String onFlowProcess(FlowEvent event) {
-				
+
 		System.out.println("\n \n ******* EVENT " + event.getNewStep());
-		
+
 		if (codeSelected != null)
 			return event.getNewStep();
-		
+
 		return "";
-		
-		//return event.getNewStep();
-	 }
+
+		// return event.getNewStep();
+	}
 
 	private CmqBase190 selectedData;
 
@@ -107,9 +110,9 @@ public class CreateController implements Serializable {
 		cmq = this.cmqBaseService.findByCode(code);
 
 		if (cmq != null) {
-			
+
 			codeSelected = cmq.getCmqCode();
-			
+
 			selectedData = cmq;
 			this.state = selectedData.getCmqState();
 			this.status = selectedData.getCmqState();
@@ -148,6 +151,7 @@ public class CreateController implements Serializable {
 			selectedData.setCreationDate(new Date());
 			// selectedData.setCmqName("MEDDRA");
 			selectedData.setCmqTypeCd(extension);
+			selectedData.setCmqCriticalEvent(critical);
 			selectedData.setCmqState(state);
 			selectedData.setCmqAlgorithm(algorithm);
 			selectedData.setCmqProductCd(product);
@@ -183,7 +187,66 @@ public class CreateController implements Serializable {
 			LOG.error("Exception occured while creating CmqBase190.", e);
 
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Exception occured while saving", "");
+					"An error occured while trying to save the details.", "");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+
+			return null;
+		}
+		// return "/index.xhtml";
+		return "";
+	}
+
+	/**
+	 * Update for details.
+	 * 
+	 * @return String
+	 */
+	public String update() {
+		try {
+
+			RefConfigCodeList currentMeddraVersionCodeList = this.refCodeListService
+					.getCurrentMeddraVersion();
+
+			// fill data
+			selectedData.setCreationDate(new Date());
+			// selectedData.setCmqName("MEDDRA");
+			selectedData.setCmqTypeCd(extension);
+			selectedData.setCmqCriticalEvent(critical);
+			selectedData.setCmqState(state);
+			selectedData.setCmqAlgorithm(algorithm);
+			selectedData.setCmqProductCd(product);
+			selectedData.setCmqLevel(level);
+			selectedData.setCmqProtocolCd(protocol);
+			selectedData.setCmqProgramCd(drugProgram);
+			selectedData.setCmqGroup(group);
+			selectedData.setCmqStatus("P");
+			selectedData.setDictionaryVersion(currentMeddraVersionCodeList
+					.getValue());
+
+			// hard coded for now
+			selectedData.setCreatedBy("Test user");
+			selectedData.setDictionaryName("Test-Dict");
+			selectedData.setCmqSubversion(new BigDecimal(0.23d));
+
+			cmqBaseService.update(selectedData);
+
+			// retrieve the saved cmq base
+			CmqBase190 savedEntity = cmqBaseService.findByCode(selectedData
+					.getCmqCode());
+
+			// save the cmq code to session
+			FacesContext.getCurrentInstance().getExternalContext()
+					.getSessionMap()
+					.put("NEW-CMQ_BASE-ID", savedEntity.getId());
+
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Infos saved", "");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		} catch (CqtServiceException e) {
+			LOG.error("Exception occured while creating CmqBase190.", e);
+
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"An error occured while trying to update the details.", "");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
 			return null;
@@ -202,35 +265,59 @@ public class CreateController implements Serializable {
 		savedEntity.setCmqSource(selectedData.getCmqSource());
 		try {
 			this.cmqBaseService.update(savedEntity);
+
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Informative Notes saved", "");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
 		} catch (CqtServiceException e) {
 			LOG.error(
 					"Exception occured while updating CmqBase190 for add informative notes.",
 					e);
 
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Exception occured while saving", "");
+					"An error occured while trying to save Informative Notes.",
+					"");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
 			return null;
 		}
 		return "";
 	}
+	
+	/**
+	 * Save relations on a list.
+	 * @return
+	 */
+	public String saveRelations() {
+		
+		return "";
+	}
+	
+	/**
+	 * Update relations on a list.
+	 * @return
+	 */
+	public String updateRelations() {
+		
+		return "";
+	}
 
 
 	//
-	//	set workflow state CMQ_BASE_CURRENT -> CMQ_STATE
+	// set workflow state CMQ_BASE_CURRENT -> CMQ_STATE
 	//
 	public String workflowState(String state) {
 		setState(state);
 		selectedData.setCmqState(state);
 
-		FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Workflow state set to '" + state + "'", "");
+		FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+				"Workflow state set to '" + state + "'", "");
 		FacesContext ctx = FacesContext.getCurrentInstance();
 		ctx.addMessage(null, msg);
-		
+
 		return state;
 	}
-	
+
 	/**
 	 * Method to change Level value on extention selection.
 	 * 
@@ -275,6 +362,22 @@ public class CreateController implements Serializable {
 			setState("All");
 		if (status.equals("Pending"))
 			setState("Draft");
+	}
+
+	/**
+	 * Add the selected hierarchy details to the relation list.
+	 */
+	public void addSelectedToRelation(TreeNode[] nodes) {
+		if (nodes != null && nodes.length > 0) {
+ 
+			for (TreeNode node : nodes) {
+				System.out.println("\n *******************  node selected " + node.getChildren() != null ? node.getChildren().size() : "No CHILDREN");
+ 			}
+
+//			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,
+//					"Selected", builder.toString());
+//			FacesContext.getCurrentInstance().addMessage(null, message);
+		}
 	}
 
 	public String getExtension() {
@@ -459,5 +562,13 @@ public class CreateController implements Serializable {
 
 	public void setCodeSelected(Long codeSelected) {
 		this.codeSelected = codeSelected;
+	}
+
+	public TreeNode[] getRelationSelected() {
+		return relationSelected;
+	}
+
+	public void setRelationSelected(TreeNode[] relationSelected) {
+		this.relationSelected = relationSelected;
 	}
 }

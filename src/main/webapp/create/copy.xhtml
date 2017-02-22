@@ -15,15 +15,11 @@
 						<p:menuitem value="Home" url="/index.xhtml" />
 						<p:menuitem value="Copy" />
 					</p:breadCrumb>
-
-				</h:panelGrid>
-				<h:panelGrid columns="1" style="text-align: center">
-					<!-- <p:outputLabel value="Historic View as of 05-Feb 2017"
-						style="text-align: center" /> -->
 				</h:panelGrid>
 			</h:panelGrid>
 
-			<p:wizard flowListener="#{wizard.onFlowProcess}" widgetVar="wizard" binding="#{createController.copyWizard}">
+			<p:wizard flowListener="#{wizard.onFlowProcess}" widgetVar="wizard" id="wizardId"
+				binding="#{createController.copyWizard}">
 				<!-- Search -->
 				<p:tab id="searchCopy" title="Search">
 					<p:panel header="Search">
@@ -31,14 +27,15 @@
 
 						<h:panelGrid columns="8">
 							<p:outputLabel value="Term" />
-							<p:inputText />
+							<p:inputText value="#{searchController.termName}" />
 							<p:outputLabel value="Code" />
-							<p:inputText />
+							<p:inputText value="#{searchController.code}" />
 							<p:commandButton value="Search"
 								action="#{searchController.search()}" update="result" />
 							<p:commandButton value="Maintain Designees"
 								action="MAINTAIN_DESIGNEE" />
-							<h:commandButton value="Reset" type="reset" />
+							<p:commandButton action="#{searchController.reset}"
+								update="@form:result" value="Reset" />
 						</h:panelGrid>
 
 						<p:spacer />
@@ -59,22 +56,18 @@
 									<h:outputText value="#{value.cmqLevel}" />
 								</p:column>
 								<p:column headerText="Status">
-									<h:outputText value="#{value.cmqStatus}" />
+									<h:outputText rendered="#{value.cmqStatus eq 'P'}" value="Pending" />
+									<h:outputText rendered="#{value.cmqStatus eq 'I'}" value="Inactive" />
+									<h:outputText rendered="#{value.cmqStatus eq 'A'}" value="Active" />
 								</p:column>
 								<p:column headerText="State">
 									<h:outputText value="#{value.cmqState}" />
 								</p:column>
 								<p:column headerText="Code">
-									<!-- <h:outputLink 
-										value="#{request.contextPath}/create/update.xhtml#details">
-										<f:param value="#{value.cmqCode}" name="code" />
-										<h:outputText value="#{value.cmqCode}" />
-									</h:outputLink> -->
-									<p:commandLink 
+									<p:commandLink
 										actionListener="#{createController.loadCmqBaseByCode(value.cmqCode)}"
-										value="#{value.cmqCode}" update="@form"></p:commandLink>
-										
-										
+										value="#{value.cmqCode}" update="@form:wizardId"></p:commandLink>
+
 								</p:column>
 								<p:column headerText="Drug Program">
 									<h:outputText value="#{value.cmqProgramCd}" />
@@ -118,7 +111,7 @@
 						<ui:include src="relations.xhtml"></ui:include>
 
 						<p:commandButton style="margin-top: 10px" value="Save" id="cb3"
-							disabled="false" icon="ui-icon-disk" />
+							action="#{createController.saveRelations}" icon="ui-icon-disk" /> 
 					</p:panel>
 				</p:tab>
 
@@ -277,7 +270,8 @@
 							<p:inputText value="#{dummyView.value}" />
 
 							<p:outputLabel value="Due Date" styleClass="label-right" />
-							<p:calendar value="#{createController.selectedData.cmqDueDate}" mode="popup" />
+							<p:calendar value="#{createController.selectedData.cmqDueDate}"
+								mode="popup" />
 
 							<p:outputLabel value="Reason for Approval"
 								styleClass="label-right" />
@@ -459,12 +453,14 @@
 
 
 				<p:outputLabel for="it1aw" value="Dictionary Version:"></p:outputLabel>
-				<h:inputText id="it1aw" value="#{createController.selectedData.dictionaryVersion}" disabled="true"
-					columns="200" />
+				<h:inputText id="it1aw"
+					value="#{createController.selectedData.dictionaryVersion}"
+					disabled="true" columns="200" />
 
 				<p:outputLabel for="it3" value="Name: "></p:outputLabel>
-				<h:inputText id="it3" value="#{createController.selectedData.dictionaryName}" readOnly="true"
-					disabled="true" />
+				<h:inputText id="it3"
+					value="#{createController.selectedData.dictionaryName}"
+					readOnly="true" disabled="true" />
 			</h:panelGrid>
 			<f:attribute name="currentPage"
 				value="Create New #{applicationScope.CSMQBean.customMQName} Wizard" />

@@ -80,30 +80,8 @@
 				</f:facet>
 			</p:toolbar>
 
-
-			<!-- <p:dataTable var="node"
-				value="#{searchController.hierarchySearchResults}" id="resultHier"
-				rows="10" paginator="true" paginatorPosition="bottom"
-				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-				rowsPerPageTemplate="5,10,25">
-
-				<p:column headerText="Level">
-					<h:outputText value="#{node.level}" />
-				</p:column>
-
-				<p:column headerText="Term">
-					<h:outputText value="#{node.term}" />
-				</p:column>
-
-				<p:column headerText="Code" sortBy="#{node.code}"
-					filterBy="#{node.code}">
-					<h:outputText value="#{node.code}" />
-				</p:column>
-			</p:dataTable>
- -->
-
 			<p:treeTable value="#{searchController.hierarchyRoot}" var="node"
-				id="resultHier" selectionMode="multiple" rows="20"
+				id="resultHier" rows="20" selectionMode="checkbox" selection="#{createController.relationSelected}" 
 				paginator="true" paginatorPosition="bottom"
 				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 				rowsPerPageTemplate="5,10,25,30">

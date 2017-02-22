@@ -22,9 +22,9 @@
 			</p:selectOneMenu>
 
 			<p:outputLabel value=" * Name" styleClass="label-right" />
-			<p:inputText required="true" requiredMessage="The name is required"
-				value="#{createController.selectedData.cmqName}"
-				style="width: 200px !important" />
+			<p:inputText required="true" requiredMessage="The name is required" maxlength="200"
+				value="#{createController.selectedData.cmqName}" 
+				style="width: 300px !important" />
 
 			<p:outputLabel id="lDrug"
 				value="#{createController.extension eq 'TME' or 
@@ -90,8 +90,8 @@
 			<p:selectOneMenu value="#{createController.critical}" rendered="true"
 				disabled="false" id="critical" required="true">
 				<f:selectItem itemValue="No" itemLabel="No" />
-				<f:selectItem itemValue="Yes-Narrow" itemLabel="Yes-Narrow" />
-				<f:selectItem itemValue="Yes-Broad" itemLabel="Yes-Broad" />
+				<f:selectItem itemLabel="Yes-Narrow" itemValue="Narrow" />
+				<f:selectItem itemLabel="Yes-Broad" itemValue="Broad" />
 			</p:selectOneMenu>
 
 			<p:outputLabel value="Scope" styleClass="label-right" />

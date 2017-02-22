@@ -34,14 +34,15 @@
 
 						<h:panelGrid columns="8">
 							<p:outputLabel value="Term" />
-							<p:inputText />
+							<p:inputText value="#{searchController.termName}" />
 							<p:outputLabel value="Code" />
-							<p:inputText />
+							<p:inputText value="#{searchController.code}" />
 							<p:commandButton value="Search"
 								action="#{searchController.search()}" update="resultS" />
 							<p:commandButton value="Maintain Designees"
 								action="MAINTAIN_DESIGNEE" />
-							<h:commandButton value="Reset" type="reset" />
+							<p:commandButton action="#{searchController.reset}"
+							 value="Reset" update="@form:resultS" />
 						</h:panelGrid>
 
 						<p:spacer />
@@ -62,7 +63,9 @@
 									<h:outputText value="#{value.cmqLevel}" />
 								</p:column>
 								<p:column headerText="Status">
-									<h:outputText value="#{value.cmqStatus}" />
+									<h:outputText rendered="#{value.cmqStatus eq 'P'}" value="Pending" />
+									<h:outputText rendered="#{value.cmqStatus eq 'I'}" value="Inactive" />
+									<h:outputText rendered="#{value.cmqStatus eq 'A'}" value="Active" />
 								</p:column>
 								<p:column headerText="State">
 									<h:outputText value="#{value.cmqState}" />
@@ -70,7 +73,7 @@
 								<p:column headerText="Code">
 									<p:commandLink
 										action="#{createController.loadCmqBaseByCode(value.cmqCode)}"
-										value="#{value.cmqCode}" update="@form"></p:commandLink>
+										value="#{value.cmqCode}" update="@form:wizardId"></p:commandLink>
 								</p:column>
 								<p:column headerText="Drug Program">
 									<h:outputText value="#{value.cmqProgramCd}" />
@@ -99,8 +102,8 @@
 					<p:panel header="Details">
 						<ui:include src="details.xhtml" />
 						
-						<p:commandButton value="Save" icon="ui-icon-disk" 
-							action="#{createController.save}" update="@form:m1"></p:commandButton>
+						<p:commandButton value="Save" icon="ui-icon-disk" process="@this" 
+							action="#{createController.update}" update="@form:m1"></p:commandButton>
 					</p:panel>
 				</p:tab>
 
@@ -115,7 +118,7 @@
 						<ui:include src="relations.xhtml"></ui:include>
 
 						<p:commandButton style="margin-top: 10px" value="Save" id="cb3"
-							disabled="false" icon="ui-icon-disk" />
+							action="#{createController.updateRelations}" icon="ui-icon-disk" /> 
 					</p:panel>
 				</p:tab>
 
@@ -128,7 +131,7 @@
 
 
 
-			<p:dialog widgetVar="search" modal="false" header="Hierarchy search">
+			<!-- <p:dialog widgetVar="search" modal="false" header="Hierarchy search">
 				<p:panel header="Relations" style="width:700px; height:623px;">
 					<table>
 						<tbody>
@@ -192,8 +195,8 @@
 						<p:column headerText="Term" id="c10" width="1" minimumWidth="1"
 							rendered="true 	">
 							<p:inputText value="#####" id="it4">
-								<!-- <f:convertNumber groupingUsed="false"
-									pattern="#{bindings.HierarchySourceTermSearchVO1.hints.Rnum.format}" /> -->
+								<f:convertNumber groupingUsed="false"
+									pattern="#{bindings.HierarchySourceTermSearchVO1.hints.Rnum.format}" />
 							</p:inputText>
 						</p:column>
 						<p:column headerText="Content Code" id="c11" width="75">
@@ -203,17 +206,17 @@
 							<p:commandButton id="cb2" style="height:10px; width:20px;"
 								partialSubmit="true" />
 						</p:column>
-						<!-- 	<af:dragSource actions="MOVE" discriminant="rowmove" /> -->
+							<af:dragSource actions="MOVE" discriminant="rowmove" />
 						<f:facet name="nodeStamp">
 							<p:column id="c14" headerText="Term" width="200">
 								<h:outputText value="#{row.term}" id="ot11" />
 							</p:column>
 						</f:facet>
-						<!-- <f:facet name="pathStamp">
+						<f:facet name="pathStamp">
 							<af:group id="g4">
 								<h:outputText value="#{row}" id="ot12" />
 							</af:group>
-						</f:facet> -->
+						</f:facet>
 
 					</p:treeTable>
 
@@ -286,7 +289,7 @@
 						</p:treeTable>
 					</h:panelGrid>
 				</p:panel>
-			</p:dialog>
+			</p:dialog> -->
 
 			<p:spacer width="10" height="10" id="s6" />
 			<h:panelGrid id="pgl2" columns="5"

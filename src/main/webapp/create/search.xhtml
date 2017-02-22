@@ -10,11 +10,12 @@
 		<h:panelGrid columns="2" columnClasses="label, value">
 			<p:outputLabel value="Extension" styleClass="label-right" />
 			<p:selectOneMenu value="#{searchController.extension}">
+				<f:selectItem itemLabel="All" itemValue=""></f:selectItem>
 				<f:selectItems value="#{configMB.extensions}" var="extension"
 					itemLabel="#{extension.value}" itemValue="#{extension.value}" />
 
-				<p:ajax update="level2 protocol2 drug2 product2" event="change"
-					listener="#{searchController.changeLevel}" />
+				<p:ajax update="level2 protocol2 drug2 product2 status state critical2 group" event="change"
+					listener="#{searchController.resetSearch}" />
 			</p:selectOneMenu>
 
 			<p:outputLabel value="Drug Program" styleClass="label-right" />
@@ -45,7 +46,7 @@
 		<h:panelGrid columns="2" style="min-width: 300px">
 			<p:outputLabel value="Level" styleClass="label-right" />
 			<p:selectOneMenu value="#{searchController.level}" id="level2">
-				<f:selectItem itemValue="-1" itemLabel="All" />
+				<f:selectItem itemValue="" itemLabel="All" />
 				<f:selectItem itemValue="1" itemLabel="1" />
 				<f:selectItem itemValue="2" itemLabel="2" />
 				<f:selectItem itemValue="3" itemLabel="3" />
@@ -54,8 +55,8 @@
 			</p:selectOneMenu>
 
 			<p:outputLabel value="Status" styleClass="label-right" />
-			<p:selectOneMenu value="#{searchController.status}">
-				<f:selectItem itemValue="All" itemLabel="All" />
+			<p:selectOneMenu value="#{searchController.status}" id="status">
+				<f:selectItem itemValue="" itemLabel="All" />
 				<f:selectItem itemValue="A" itemLabel="Active" />
 				<f:selectItem itemValue="P" itemLabel="Pending" />
 				<f:selectItem itemValue="I" itemLabel="Inactive" />
@@ -66,7 +67,7 @@
 
 			<p:outputLabel value="State" styleClass="label-right" />
 			<p:selectOneMenu value="#{searchController.state}" id="state">
-				<f:selectItem itemValue="All" itemLabel="All"
+				<f:selectItem itemValue="" itemLabel="All"
 					itemDisabled="#{searchController.status eq 'Pending'}" />
 				<f:selectItem itemLabel="Draft" itemValue="Draft" />
 				<f:selectItem itemLabel="Reviewed" itemValue="Reviewed" />
@@ -79,17 +80,17 @@
 
 		<h:panelGrid columns="2" style="min-width: 300px">
 			<p:outputLabel value="Critical event" styleClass="label-right" />
-			<p:selectOneMenu value="#{searchController.critical}">
-				<f:selectItem itemValue="All" itemLabel="All" />
+			<p:selectOneMenu value="#{searchController.critical}" id="critical2">
+				<f:selectItem itemValue="" itemLabel="All" />
 				<f:selectItem itemLabel="No" itemValue="No" />
-				<f:selectItem itemLabel="Narrow" itemValue="Yes-Narrow" />
-				<f:selectItem itemLabel="Broad" itemValue="Yes-Broad" />
+				<f:selectItem itemLabel="Yes-Narrow" itemValue="Narrow" />
+				<f:selectItem itemLabel="Yes-Broad" itemValue="Broad" />
 			</p:selectOneMenu>
 
 			<p:outputLabel value="Group" styleClass="label-right" />
-			<p:selectOneMenu value="#{searchController.group}" rendered="true"
+			<p:selectOneMenu value="#{searchController.group}" id="group"
 				disabled="false">
-				<f:selectItem itemLabel="All" itemValue="All"></f:selectItem>
+				<f:selectItem itemLabel="" itemValue="All"></f:selectItem>
 				<f:selectItem itemLabel="No Group" itemValue="No Group"></f:selectItem>
 				<f:selectItems></f:selectItems>
 			</p:selectOneMenu>

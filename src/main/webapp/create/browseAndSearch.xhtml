@@ -36,9 +36,8 @@
 							<p:inputText value="#{searchController.code}"/>
 							<p:commandButton value="Search"
 								action="#{searchController.search()}" update="resultB" />
-							<p:commandButton value="Maintain Designees"
-								rendered="#{searchController.maintainDesigBtn}" />
-							<h:commandButton value="Reset" type="reset" />
+							
+							<p:commandButton update="@form:resultB" value="Reset" action="#{searchController.reset}" />
 						</h:panelGrid>
 
 						<p:spacer />
@@ -60,7 +59,9 @@
 									<h:outputText value="#{value.cmqLevel}" />
 								</p:column>
 								<p:column headerText="Status">
-									<h:outputText value="#{value.cmqStatus}" />
+									<h:outputText rendered="#{value.cmqStatus eq 'P'}" value="Pending" />
+									<h:outputText rendered="#{value.cmqStatus eq 'I'}" value="Inactive" />
+									<h:outputText rendered="#{value.cmqStatus eq 'A'}" value="Active" />
 								</p:column>
 								<p:column headerText="State">
 									<h:outputText value="#{value.cmqState}" />

@@ -18,10 +18,7 @@
 					</p:breadCrumb>
 
 				</h:panelGrid>
-				<h:panelGrid columns="1" style="text-align: center">
-					<!-- <p:outputLabel value="Historic View as of 05-Feb 2017"
-						style="text-align: center" /> -->
-				</h:panelGrid>
+				 
 			</h:panelGrid>
 
 			<p:wizard flowListener="#{wizard.onFlowProcess}" widgetVar="wizard">
@@ -30,7 +27,7 @@
 						<ui:include src="details.xhtml" />
 						<p:commandButton value="Save" icon="ui-icon-disk" update="m1"
 							action="#{createController.save}"></p:commandButton>
-					</p:panel>
+					</p:panel> 
 				</p:tab>
 
 				<!-- CONTACT -->
@@ -44,7 +41,7 @@
 						<ui:include src="relations.xhtml"></ui:include>
 
 						<p:commandButton style="margin-top: 10px" value="Save" id="cb3" update="m1"
-							action="#{createController.save}" disabled="false"
+							action="#{createController.saveRelations}" disabled="false"
 							icon="ui-icon-disk" />
 					</p:panel>
 				</p:tab>
