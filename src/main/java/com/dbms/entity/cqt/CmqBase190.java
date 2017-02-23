@@ -137,6 +137,8 @@ public class CmqBase190 extends BaseEntity {
 	@OneToMany(mappedBy = "parentCmq", cascade = CascadeType.ALL)
 	private Set<CmqBase190> childCmqs = new HashSet<>();
 
+	
+	
 	public Long getId() {
 		return cmqId;
 	}

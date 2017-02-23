@@ -2,7 +2,9 @@ package com.dbms.controller;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -14,12 +16,19 @@ import javax.faces.event.AjaxBehaviorEvent;
 
 import org.primefaces.component.wizard.Wizard;
 import org.primefaces.event.FlowEvent;
+import org.primefaces.model.TreeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.dbms.csmq.HierarchyNode;
+import com.dbms.entity.IEntity;
 import com.dbms.entity.cqt.CmqBase190;
+import com.dbms.entity.cqt.CmqRelation190;
 import com.dbms.entity.cqt.RefConfigCodeList;
+import com.dbms.entity.cqt.SmqBase190;
+import com.dbms.entity.cqt.dtos.MeddraDictHierarchySearchDto;
 import com.dbms.service.ICmqBase190Service;
+import com.dbms.service.ICmqRelation190Service;
 import com.dbms.service.IRefCodeListService;
 import com.dbms.util.exceptions.CqtServiceException;
 
@@ -33,11 +42,13 @@ public class CreateController implements Serializable {
 
 	private static final long serialVersionUID = -443251941538546278L;
 
-	private static final Logger LOG = LoggerFactory
-			.getLogger(CreateController.class);
+	private static final Logger LOG = LoggerFactory.getLogger(CreateController.class);
 
 	@ManagedProperty("#{CmqBase190Service}")
 	private ICmqBase190Service cmqBaseService;
+
+	@ManagedProperty("#{CmqRelation190Service}")
+	private ICmqRelation190Service cmqRelationService;
 
 	@ManagedProperty("#{RefCodeListService}")
 	private IRefCodeListService refCodeListService;
@@ -63,7 +74,7 @@ public class CreateController implements Serializable {
 	private Wizard updateWizard, copyWizard, browseWizard;
 	private Long codeSelected;
 
-
+	private TreeNode relationsRoot;
 
 	@PostConstruct
 	public void init() {
@@ -144,8 +155,7 @@ public class CreateController implements Serializable {
 		try {
 			// get the next value of code
 			Long codevalue = this.cmqBaseService.getNextCodeValue();
-			RefConfigCodeList currentMeddraVersionCodeList = this.refCodeListService
-					.getCurrentMeddraVersion();
+			RefConfigCodeList currentMeddraVersionCodeList = this.refCodeListService.getCurrentMeddraVersion();
 
 			// fill data
 			selectedData.setCreationDate(new Date());
@@ -177,9 +187,8 @@ public class CreateController implements Serializable {
 			CmqBase190 savedEntity = cmqBaseService.findByCode(codevalue);
 
 			// save the cmq code to session
-			FacesContext.getCurrentInstance().getExternalContext()
-					.getSessionMap()
-					.put("NEW-CMQ_BASE-ID", savedEntity.getId());
+			FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("NEW-CMQ_BASE-ID",
+					savedEntity.getId());
 
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"List CMQ_NAME is successfully saved.", "");
@@ -211,8 +220,7 @@ public class CreateController implements Serializable {
 	public String update() {
 		try {
 			Long codevalue = this.cmqBaseService.getNextCodeValue();
-			RefConfigCodeList currentMeddraVersionCodeList = this.refCodeListService
-					.getCurrentMeddraVersion();
+			RefConfigCodeList currentMeddraVersionCodeList = this.refCodeListService.getCurrentMeddraVersion();
 
 			// fill data
 			selectedData.setCreationDate(new Date());
@@ -229,8 +237,7 @@ public class CreateController implements Serializable {
 			selectedData.setCmqStatus("P");
 			selectedData.setCmqCode(codevalue);
 			selectedData.setCmqDescription(description);
-			selectedData.setDictionaryVersion(currentMeddraVersionCodeList
-					.getValue());
+			selectedData.setDictionaryVersion(currentMeddraVersionCodeList.getValue());
 
 			// hard coded for now
 			selectedData.setCreatedBy("Test user");
@@ -242,13 +249,11 @@ public class CreateController implements Serializable {
 			cmqBaseService.update(selectedData);
 
 			// retrieve the saved cmq base
-			CmqBase190 savedEntity = cmqBaseService.findByCode(selectedData
-					.getCmqCode());
+			CmqBase190 savedEntity = cmqBaseService.findByCode(selectedData.getCmqCode());
 
 			// save the cmq code to session
-			FacesContext.getCurrentInstance().getExternalContext()
-					.getSessionMap()
-					.put("NEW-CMQ_BASE-ID", savedEntity.getId());
+			FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("NEW-CMQ_BASE-ID",
+					savedEntity.getId());
 
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"List CMQ_NAME is successfully saved.", "");
@@ -267,6 +272,7 @@ public class CreateController implements Serializable {
 	}
 
 	public String saveInformativeNotes() {
+
 		if (selectedData.getCmqDescription().equals("Please enter the description.")) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"The description is required",
@@ -288,38 +294,98 @@ public class CreateController implements Serializable {
 					"Informative Notes are successfully saved for '" + selectedData.getCmqName() + "'", "");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		} catch (CqtServiceException e) {
-			LOG.error(
-					"Exception occured while updating CmqBase190 for add informative notes.",
-					e);
+			LOG.error("Exception occured while updating CmqBase190 for add informative notes.", e);
 
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"An error occured while trying to save Informative Notes.",
-					"");
+					"An error occured while trying to save Informative Notes.", "");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
 			return null;
 		}
 		return "";
 	}
-	
+
 	/**
 	 * Save relations on a list.
+	 * 
 	 * @return
 	 */
-	public String saveRelations() {
-		
-		return "";
-	}
-	
-	/**
-	 * Update relations on a list.
-	 * @return
-	 */
-	public String updateRelations() {
-		
+	public String saveRelations(TreeNode relationsRoot) {
+		if ((relationsRoot != null) && (relationsRoot.getChildCount() > 0)) {
+			List<TreeNode> childTreeNodes = relationsRoot.getChildren();
+			Long cmqId = (Long) (FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
+					.get("NEW-CMQ_BASE-ID"));
+			List<CmqRelation190> cmqRelationsList = new ArrayList<>();
+
+			CmqBase190 cmqBase = cmqBaseService.findById(cmqId);
+			for (TreeNode childTreeNode : childTreeNodes) {
+				CmqRelation190 cmqRelation = new CmqRelation190();
+				cmqRelation.setCmqCode(cmqBase.getCmqCode());
+				cmqRelation.setCmqId(cmqId);
+				HierarchyNode hierarchyNode = (HierarchyNode) childTreeNode.getData();
+				if (null != hierarchyNode) {
+					IEntity entity = hierarchyNode.getEntity();
+					if (entity instanceof MeddraDictHierarchySearchDto) {
+						MeddraDictHierarchySearchDto meddraDictHierarchySearchDto = (MeddraDictHierarchySearchDto) entity;
+						String level = hierarchyNode.getLevel();
+						// set the code first
+						if (level.equalsIgnoreCase("SOC")) {
+							cmqRelation.setSocCode(Long.parseLong(meddraDictHierarchySearchDto.getCode()));
+						} else if (level.equalsIgnoreCase("HLGT")) {
+							cmqRelation.setHlgtCode(Long.parseLong(meddraDictHierarchySearchDto.getCode()));
+						} else if (level.equalsIgnoreCase("HLT")) {
+							cmqRelation.setHltCode(Long.parseLong(meddraDictHierarchySearchDto.getCode()));
+						} else if (level.equalsIgnoreCase("PT")) {
+							cmqRelation.setPtCode(Long.parseLong(meddraDictHierarchySearchDto.getCode()));
+						} else if (level.equalsIgnoreCase("LLT")) {
+							cmqRelation.setLltCode(Long.parseLong(meddraDictHierarchySearchDto.getCode()));
+						}
+					} else if (entity instanceof SmqBase190) {
+						SmqBase190 smqBase = (SmqBase190) entity;
+						cmqRelation.setSmqCode(smqBase.getSmqCode());
+					}
+					cmqRelation.setTermWeight(Long.parseLong(hierarchyNode.getWeight()));
+					cmqRelation.setTermScope(hierarchyNode.getScope());
+					cmqRelation.setTermCategory(hierarchyNode.getCategory());
+					cmqRelation.setDictionaryName(cmqBase.getDictionaryName());
+					cmqRelation.setDictionaryVersion(cmqBase.getDictionaryVersion());
+					cmqRelation.setCreatedBy("test-user");
+					cmqRelation.setCreationDate(new Date());
+					cmqRelation.setCmqSubversion(cmqBase.getCmqSubversion());
+					cmqRelationsList.add(cmqRelation);
+					cmqRelation.setCmqBase(cmqBase);
+				}
+			}
+			if (!cmqRelationsList.isEmpty()) {
+				try {
+					this.cmqRelationService.create(cmqRelationsList);
+					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+							"Relations are successfully saved for '" + cmqBase.getCmqName() + "'", "");
+					FacesContext.getCurrentInstance().addMessage(null, msg);
+				} catch (CqtServiceException e) {
+					LOG.error("Exception occured while saving the list of CmqRelations for CMQ base code "
+							+ cmqBase.getCmqCode(), e);
+
+					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+							"An error occured while saving the list of CmqRelations for CMQ base code "
+									+ cmqBase.getCmqCode(),
+							"");
+					FacesContext.getCurrentInstance().addMessage(null, msg);
+				}
+			}
+		}
 		return "";
 	}
 
+	/**
+	 * Update relations on a list.
+	 * 
+	 * @return
+	 */
+	public String updateRelations() {
+
+		return "";
+	}
 
 	//
 	// set workflow state CMQ_BASE_CURRENT -> CMQ_STATE
@@ -328,8 +394,7 @@ public class CreateController implements Serializable {
 		setState(state);
 		selectedData.setCmqState(state);
 
-		FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-				"Workflow state set to '" + state + "'", "");
+		FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Workflow state set to '" + state + "'", "");
 		FacesContext ctx = FacesContext.getCurrentInstance();
 		ctx.addMessage(null, msg);
 
@@ -353,8 +418,7 @@ public class CreateController implements Serializable {
 		else
 			setDrugProgram("");
 
-		if (extension.equals("CPT") || extension.equals("DME")
-				|| extension.equals("TME") || extension.equals("TR1"))
+		if (extension.equals("CPT") || extension.equals("DME") || extension.equals("TME") || extension.equals("TR1"))
 			setProtocol("No Protocol");
 		else
 			setProtocol("");
@@ -381,8 +445,6 @@ public class CreateController implements Serializable {
 		if (status.equals("Pending"))
 			setState("Draft");
 	}
-
-
 
 	public String getExtension() {
 		return extension;
@@ -568,5 +630,20 @@ public class CreateController implements Serializable {
 		this.codeSelected = codeSelected;
 	}
 
-	
+	public TreeNode getRelationsRoot() {
+		return relationsRoot;
+	}
+
+	public void setRelationsRoot(TreeNode relationsRoot) {
+		this.relationsRoot = relationsRoot;
+	}
+
+	public ICmqRelation190Service getCmqRelationService() {
+		return cmqRelationService;
+	}
+
+	public void setCmqRelationService(ICmqRelation190Service cmqRelationService) {
+		this.cmqRelationService = cmqRelationService;
+	}
+
 }

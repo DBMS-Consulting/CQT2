@@ -2,10 +2,10 @@ package com.dbms.service;
 
 import java.util.List;
 
-import com.dbms.entity.cqt.MeddraDict190;
+import com.dbms.entity.cqt.dtos.MeddraDictHierarchySearchDto;
 
 public interface IMeddraDictService {
 
-	List<MeddraDict190> findByLevelAndTerm(String searchColumnType, String searchTerm);
+	List<MeddraDictHierarchySearchDto> findByLevelAndTerm(String searchColumnType, String searchTerm);
 
 }

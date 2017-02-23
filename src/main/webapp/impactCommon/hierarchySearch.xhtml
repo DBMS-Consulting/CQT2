@@ -25,7 +25,8 @@
 			</p:selectOneMenu>
 			<p:spacer width="10" />
 			<p:outputLabel value="Term" for="termH" />
-			<p:inputText id="termH" style="text-transform:uppercase" value="#{searchController.termName}"  />
+			<p:inputText id="termH" style="text-transform:uppercase"
+				value="#{searchController.termName}" />
 			<p:commandButton value="Search" update="resultHier"
 				action="#{searchController.hierarchySearch}" />
 		</h:panelGrid>
@@ -78,10 +79,35 @@
 
 				</f:facet>
 			</p:toolbar>
-			
-			
-			<p:dataTable var="node" value="#{searchController.hierarchySearchResults}"
-				id="resultHier" rows="10" paginator="true" paginatorPosition="bottom"
+
+			<p:treeTable value="#{searchController.hierarchyRoot}" var="node"
+				selectionMode="multiple" id="resultHier" rows="10" paginator="true"
+				paginatorPosition="bottom"
+				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,25,30">
+				
+				<p:ajax event="expand" listener="#{searchController.onNodeExpandListener}" update=":pc3:resultHier" />
+				<p:ajax event="collapse" listener="#{searchController.onNodeExpandListener}" update=":pc3:resultHier" />
+
+				<p:column headerText="Level">
+					<h:outputText value="#{node.level}" />
+				</p:column>
+
+				<p:column headerText="Term">
+					<h:outputText value="#{node.term}" />
+				</p:column>
+
+				<p:column headerText="Code" sortBy="#{node.code}"
+					filterBy="#{node.code}">
+					<h:outputText value="#{node.code}" />
+				</p:column>
+				
+			</p:treeTable>
+
+
+			<!-- <p:dataTable var="node"
+				value="#{searchController.hierarchySearchResults}" id="resultHier"
+				rows="10" paginator="true" paginatorPosition="bottom"
 				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 				rowsPerPageTemplate="5,10,25">
 
@@ -97,8 +123,8 @@
 					filterBy="#{node.code}">
 					<h:outputText value="#{node.code}" />
 				</p:column>
-			</p:dataTable>
-			
+			</p:dataTable> -->
+
 			<!-- Leyla's code 
 			
 			<p:dataTable var="node" value="#{searchController.datas}"
@@ -144,12 +170,11 @@
 			</p:treeTable> -->
 		</h:panelGrid>
 	</p:panel>
-	
+
 	<style>
-		#termH {
-		
-			 text-transform: uppercase;
-		}
-	</style>
+#termH {
+	text-transform: uppercase;
+}
+</style>
 
 </ui:composition>

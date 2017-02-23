@@ -5,12 +5,14 @@ import java.util.List;
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
 import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.dbms.entity.cqt.CmqRelation190;
 import com.dbms.service.base.CqtPersistenceService;
+import com.dbms.util.exceptions.CqtServiceException;
 
 /**
  * @author Jay G.(jayshanchn@hotmail.com)
@@ -22,50 +24,26 @@ public class CmqRelation190Service extends CqtPersistenceService<CmqRelation190>
 
 	private static final Logger LOG = LoggerFactory.getLogger(CmqRelation190Service.class);
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.dbms.service.ICmqRelation190Service#findBaseWithRootRelations()
-	 */
-	@Override
-	@SuppressWarnings("unchecked")
-	public List<CmqRelation190> findBaseWithRootRelations() {
-		List<CmqRelation190> result = null;
+	public void create(List<CmqRelation190> cmqRelations) throws CqtServiceException {
 		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		EntityTransaction tx = null;
 		try {
-			result = entityManager.createNamedQuery("CmqRelation190.rootRelations").getResultList();
+			tx = entityManager.getTransaction();
+			tx.begin();
+			for (CmqRelation190 cmqRelation : cmqRelations) {
+				entityManager.persist(cmqRelation);
+			}
+			tx.commit();
 		} catch (Exception ex) {
+			if ((tx != null) && tx.isActive()) {
+				tx.rollback();
+			}
 			StringBuilder msg = new StringBuilder();
-			msg.append("An error occured while executing named query CmqRelation190.rootRelations");
+			msg.append("Failed to save List<CmqRelation190>");
 			LOG.error(msg.toString(), ex);
+			throw new CqtServiceException(ex);
 		} finally {
 			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
 		}
-		return result;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.dbms.service.ICmqRelation190Service#findByTermName(java.lang.String)
-	 */
-	@Override
-	public CmqRelation190 findByTermName(String termName) {
-		CmqRelation190 result = null;
-		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
-		try {
-			result = entityManager
-					.createNamedQuery("CmqRelation190.findByTermName", CmqRelation190.class)
-					.setParameter("termName", termName)
-					.getSingleResult();
-		} catch (Exception ex) {
-			StringBuilder msg = new StringBuilder();
-			msg.append("An error occured while executing named query CmqRelation190.findByTermName");
-			LOG.error(msg.toString(), ex);
-		} finally {
-			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
-		}
-		return result;
 	}
 }

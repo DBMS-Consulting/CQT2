@@ -31,6 +31,9 @@
 			<property name="hibernate.default_schema" value="OPENCQT" />
 			<property name="hibernate.connection.autocommit" value="false" />
 			<property name="hibernate.max_fetch_depth" value="3" />
+			<property name="hibernate.jdbc.batch_size property" value="15" />
+			<property name="hibernate.order_inserts" value="true" />
+			<property name="hibernate.order_updates" value="true" />
 			<!-- <property name="hibernate.hbm2ddl.auto" value="create-drop" /> -->
 			<!-- <property name="hibernate.hbm2ddl.auto" value="update" /> -->
 			<property name="hibernate.cache.use_second_level_cache"

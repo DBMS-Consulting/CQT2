@@ -46,9 +46,11 @@
 					<p:panel header="Relations">
 						<ui:include src="relations.xhtml"></ui:include>
 
-						<p:commandButton style="margin-top: 10px" value="Save" id="cb3"
-							update="m1" action="#{createController.saveRelations}"
-							disabled="false" icon="ui-icon-disk" />
+						<p:commandButton style="margin-top: 10px" value="Save" id="cb3" update="m1"
+							action="#{createController.saveRelations(searchController.relationsRoot)}" disabled="false"
+							icon="ui-icon-disk">
+							<f:param name="relationsRoot" value="#{searchController.relationsRoot}"> </f:param>	
+						</p:commandButton>
 					</p:panel>
 				</p:tab>
 
