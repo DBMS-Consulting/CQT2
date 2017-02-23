@@ -24,86 +24,25 @@
 				</h:panelGrid>
 			</h:panelGrid>
 
-			<p:wizard flowListener="#{wizard.onFlowProcess}" widgetVar="wizard" id="wizardId"
-				binding="#{createController.updateWizard}">
+			<p:wizard flowListener="#{wizard.onFlowProcess}" widgetVar="wizard"
+				id="wizardId" binding="#{createController.updateWizard}">
 				<!-- Search -->
 				<p:tab id="searchUpdate" title="Search">
 					<p:panel header="Search">
 						<ui:include src="search.xhtml"></ui:include>
-
-
-						<h:panelGrid columns="8">
-							<p:outputLabel value="Term" />
-							<p:inputText value="#{searchController.termName}" />
-							<p:outputLabel value="Code" />
-							<p:inputText value="#{searchController.code}" />
-							<p:commandButton value="Search"
-								action="#{searchController.search()}" update="resultS" />
-							<p:commandButton value="Maintain Designees"
-								action="MAINTAIN_DESIGNEE" />
-							<p:commandButton action="#{searchController.reset}"
-							 value="Reset" update="@form:resultS" />
-						</h:panelGrid>
-
-						<p:spacer />
-
-						<p:outputPanel deferred="true" deferredMode="visible">
-							<p:dataTable var="value" value="#{searchController.datas}"
-								id="resultS" rows="10" paginator="true"
-								paginatorPosition="bottom"
-								paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-								rowsPerPageTemplate="5,10,25">
-								<p:column headerText="Term">
-									<h:outputText value="#{value.cmqName}" />
-								</p:column>
-								<p:column headerText="Extension">
-									<h:outputText value="#{value.cmqTypeCd}" />
-								</p:column>
-								<p:column headerText="Level">
-									<h:outputText value="#{value.cmqLevel}" />
-								</p:column>
-								<p:column headerText="Status">
-									<h:outputText rendered="#{value.cmqStatus eq 'P'}" value="Pending" />
-									<h:outputText rendered="#{value.cmqStatus eq 'I'}" value="Inactive" />
-									<h:outputText rendered="#{value.cmqStatus eq 'A'}" value="Active" />
-								</p:column>
-								<p:column headerText="State">
-									<h:outputText value="#{value.cmqState}" />
-								</p:column>
-								<p:column headerText="Code">
-									<p:commandLink
-										action="#{createController.loadCmqBaseByCode(value.cmqCode)}"
-										value="#{value.cmqCode}" update="@form:wizardId"></p:commandLink>
-								</p:column>
-								<p:column headerText="Drug Program">
-									<h:outputText value="#{value.cmqProgramCd}" />
-								</p:column>
-								<p:column headerText="Protocol">
-									<h:outputText value="#{value.cmqProtocolCd}" />
-								</p:column>
-								<p:column headerText="Product">
-									<h:outputText value="#{value.cmqProductCd}" />
-								</p:column>
-								<p:column headerText="Group">
-									<h:outputText value="#{value.cmqGroup}" />
-								</p:column>
-
-								<p:column headerText="Critical Event">
-									<h:outputText value="#{value.cmqCriticalEvent}" />
-								</p:column>
-								<p:column headerText="Created By">
-									<h:outputText value="#{value.cmqDesignee}" />
-								</p:column>
-							</p:dataTable>
-						</p:outputPanel>
 					</p:panel>
 				</p:tab>
 				<p:tab id="details" title="Update Details">
 					<p:panel header="Details">
 						<ui:include src="details.xhtml" />
-						
-						<p:commandButton value="Save" icon="ui-icon-disk" process="@this" 
-							action="#{createController.update}" update="@form:m1"></p:commandButton>
+
+						<h:panelGrid columns="2" style="width: 100%">
+							<p:commandButton value="Save" icon="ui-icon-disk" process="@this"
+								action="#{createController.update}" update="@form:m1 pgl2 @form:codeValue"></p:commandButton>
+
+							<p:commandButton value="Cancel" icon="ui-icon-close" update="@form:m1" process="@this"
+								style="float: right" action="#{createController.cancel}"></p:commandButton>
+						</h:panelGrid>
 					</p:panel>
 				</p:tab>
 
@@ -118,7 +57,7 @@
 						<ui:include src="relations.xhtml"></ui:include>
 
 						<p:commandButton style="margin-top: 10px" value="Save" id="cb3"
-							action="#{createController.updateRelations}" icon="ui-icon-disk" /> 
+							action="#{createController.updateRelations}" icon="ui-icon-disk" />
 					</p:panel>
 				</p:tab>
 
@@ -129,180 +68,20 @@
 
 			</p:wizard>
 
-
-
-			<!-- <p:dialog widgetVar="search" modal="false" header="Hierarchy search">
-				<p:panel header="Relations" style="width:700px; height:623px;">
-					<table>
-						<tbody>
-							<tr>
-								<td><p:outputLabel value="Dictionary" /></td>
-								<td><p:selectOneMenu label="Dictionary" id="soc99"
-										autoSubmit="true" value="BASE">
-										<f:selectItem itemLabel="MedDRA" itemValue="BASE" />
-										<f:selectItem itemLabel="MQ" itemValue="FILTER" />
-									</p:selectOneMenu></td>
-								<td><p:inputText placeholder="Term" id="iterm" /></td>
-							</tr>
-
-							<tr>
-								<td><p:outputLabel value="Level" /></td>
-								<p:spacer width="10" />
-								<td><p:selectOneMenu id="sc10" label="Level"
-										partialTriggers="soc9" value="SOC">
-										<f:selectItem itemLabel="SMQ 1" itemValue="MQ1" id="sit42"
-											rendered="true" />
-										<f:selectItem itemLabel="SMQ 2" itemValue="MQ2" id="sit48"
-											rendered="true" />
-										<f:selectItem itemLabel="SMQ 3" itemValue="MQ3" id="sit43"
-											rendered="true" />
-										<f:selectItem itemLabel="SMQ 4" itemValue="MQ4" id="sit44"
-											rendered="true" />
-										<f:selectItem itemLabel="SMQ 5" itemValue="MQ5" id="sit45"
-											rendered="true" />
-										<f:selectItem itemLabel="All SMQs" itemValue="MQ%" id="sit1"
-											rendered="true" />
-										<f:selectItem itemLabel="NMQ/CMQ 1" itemValue="NMQ1"
-											id="sit46" rendered="true" />
-										<f:selectItem itemLabel="NMQ 2" itemValue="NMQ2" id="sit49"
-											rendered="true" />
-										<f:selectItem itemLabel="NMQ 3" itemValue="NMQ3" id="sit47"
-											rendered="true" />
-										<f:selectItem itemLabel="NMQ 4" itemValue="NMQ4" id="sit52"
-											rendered="true" />
-										<f:selectItem itemLabel="NMQ 5" itemValue="NMQ5" id="sit50"
-											rendered="true" />
-										<f:selectItem itemLabel="All NMQ/CMQs" itemValue="NMQ%"
-											id="sit2" rendered="true" />
-										<f:selectItem itemLabel="SOC" itemValue="SOC" id="sit51"
-											rendered="true" />
-										<f:selectItem itemLabel="HLGT" itemValue="HLGT" id="sit53"
-											rendered="true" />
-										<f:selectItem itemLabel="HLT" itemValue="HLT" id="sit54"
-											rendered="true" />
-										<f:selectItem itemLabel="PT" itemValue="PT" id="sit55"
-											rendered="true" />
-									</p:selectOneMenu></td>
-								<td><p:commandButton value="Search" id="searchBt"
-										partialSubmit="true" style="height:auto;" /></td>
-							</tr>
-						</tbody>
-					</table>
-
-					<br />
-					<p:treeTable value="#{userBean.root}" var="row"
-						style="height:200px;" styleClass="AFStretchWidth" width="521">
-						<p:column headerText="Term" id="c10" width="1" minimumWidth="1"
-							rendered="true 	">
-							<p:inputText value="#####" id="it4">
-								<f:convertNumber groupingUsed="false"
-									pattern="#{bindings.HierarchySourceTermSearchVO1.hints.Rnum.format}" />
-							</p:inputText>
-						</p:column>
-						<p:column headerText="Content Code" id="c11" width="75">
-							<h:outputText value="#{row.dictContentCode}" id="ot8" />
-						</p:column>
-						<p:column id="c28" width="20" minimumWidth="15">
-							<p:commandButton id="cb2" style="height:10px; width:20px;"
-								partialSubmit="true" />
-						</p:column>
-							<af:dragSource actions="MOVE" discriminant="rowmove" />
-						<f:facet name="nodeStamp">
-							<p:column id="c14" headerText="Term" width="200">
-								<h:outputText value="#{row.term}" id="ot11" />
-							</p:column>
-						</f:facet>
-						<f:facet name="pathStamp">
-							<af:group id="g4">
-								<h:outputText value="#{row}" id="ot12" />
-							</af:group>
-						</f:facet>
-
-					</p:treeTable>
-
-					<br />
-					<h:panelGrid id="pg3" styleClass="AFStretchWidth">
-						<p:toolbar id="tb4">
-							<f:facet name="left">
-								<h:panelGrid columns="4">
-									<h:panelGrid columns="1">
-										<p:selectOneMenu label="Sort" value="#" id="sc11">
-											<f:selectItem itemLabel="Filter and Sort" itemValue="TERM" />
-											<f:selectItem itemLabel="Term Name" itemValue="#" />
-											<f:selectItem itemLabel="Level"
-												itemValue="DEF_LEVEL_REF_SHORT_NAME" />
-											<f:selectItem itemLabel="Scope" itemValue="SCOPE" />
-										</p:selectOneMenu>
-									</h:panelGrid>
-									<h:panelGrid columns="2">
-										<p:outputLabel value="Show Primary Only"></p:outputLabel>
-										<p:selectBooleanCheckbox id="sbc" value="false"
-											autoSubmit="true" />
-									</h:panelGrid>
-									<p:selectOneMenu label="Scope" id="sm12" value="0">
-										<f:selectItem
-											itemLabel="Full #{applicationScope.CSMQBean.customMQName}/SMQ"
-											itemValue="0" />
-										<f:selectItem itemLabel="Child Narrow" itemValue="3" />
-									</p:selectOneMenu>
-									<p:commandButton value="Refresh" id="refresh"
-										icon="fa fa-refresh" disabled="false" />
-								</h:panelGrid>
-							</f:facet>
-						</p:toolbar>
-
-						<p:treeTable value="#{userBean.root}" var="node"
-							rowSelection="multiple" id="tree">
-
-							<p:columnGroup type="header">
-								<p:row>
-									<p:column rowspan="2" headerText="ABC" />
-									<p:column colspan="3" headerText="Hierarchy Details" />
-								</p:row>
-
-								<p:row>
-									<p:column headerText="Code" />
-									<p:column headerText="Level" />
-									<p:column headerText="Scope" />
-								</p:row>
-							</p:columnGroup>
-
-							<p:column id="c8" width="200" noWrap="false">
-								<h:panelGrid id="pgl5" halign="left">
-									<h:outputText value="#{node.term}" id="ot1"
-										styleClass="#{node.style}"
-										rendered="#{!node.showHasChildrenButton}" />
-									<p:commandLink value="#####" id="cl2" rendered="true"
-										partialSubmit="true" />
-								</h:panelGrid>
-							</p:column>
-
-							<p:column id="c26" width="50" sortable="true" filterable="true">
-								<h:outputText value="#{node.dictContentCode}" id="ot7" />
-							</p:column>
-							<p:column id="c18" width="50" sortable="true" filterable="true">
-								<h:outputText value="#{node.levelName}" id="ot14" />
-							</p:column>
-							<p:column id="c17" width="50" sortable="true" filterable="true">
-								<h:outputText value="#{node.scopeName}" id="ot13" />
-							</p:column>
-						</p:treeTable>
-					</h:panelGrid>
-				</p:panel>
-			</p:dialog> -->
-
 			<p:spacer width="10" height="10" id="s6" />
 			<h:panelGrid id="pgl2" columns="5"
 				style="padding:3px; font-size: 10px !important">
 
 
 				<p:outputLabel for="it1aw" value="Dictionary Version:"></p:outputLabel>
-				<h:inputText id="it1aw" value="#{dummyView.value}" disabled="true"
-					columns="200" />
+				<h:inputText id="it1aw"
+					value="#{createController.selectedData.dictionaryVersion}"
+					disabled="true" columns="200" />
 
 				<p:outputLabel for="it3" value="Name: "></p:outputLabel>
-				<h:inputText id="it3" value="#{dummyView.value}" readOnly="true"
-					disabled="true" />
+				<h:inputText id="it3"
+					value="#{createController.selectedData.dictionaryName}"
+					readOnly="true" disabled="true" />
 			</h:panelGrid>
 			<f:attribute name="currentPage"
 				value="Create New #{applicationScope.CSMQBean.customMQName} Wizard" />

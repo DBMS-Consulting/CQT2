@@ -10,8 +10,8 @@
 	<h:panelGrid columns="4" cellpadding="5">
 
 		<h:panelGrid columns="2" columnClasses="label, value">
-			<p:outputLabel value="Extension" styleClass="label-right" />
-			<p:selectOneMenu value="#{createController.extension}">
+			<p:outputLabel value="* Extension" styleClass="label-right" />
+			<p:selectOneMenu value="#{createController.extension}" required="true" requiredMessage="The extension is required">
 				<f:selectItems value="#{configMB.extensions}" var="extension"
 					itemLabel="#{extension.value}"
 					itemValue="#{extension.codelistInternalValue}" />
@@ -21,7 +21,7 @@
 					event="change" listener="#{createController.changeLevel}" />
 			</p:selectOneMenu>
 
-			<p:outputLabel value=" * Name" styleClass="label-right" />
+			<p:outputLabel value="* Name" styleClass="label-right" />
 			<p:inputText required="true" requiredMessage="The name is required" maxlength="200"
 				value="#{createController.selectedData.cmqName}" 
 				style="width: 300px !important" />
@@ -115,16 +115,17 @@
 			<h:outputText value="#{createController.state}"></h:outputText>
 
 
-			<p:outputLabel value="* Group" styleClass="label-right" />
-			<p:selectOneMenu value="#{createController.selectedData.cmqGroup}"
+			<p:outputLabel value="Group" styleClass="label-right" />
+			<!-- <p:selectOneMenu value="#{createController.selectedData.cmqGroup}"
 				rendered="true" disabled="false" required="true"
 				requiredMessage="A group is required">
 				<f:selectItem itemLabel="No Group" itemValue="No Group"></f:selectItem>
 				<f:selectItem itemLabel="" itemValue=""></f:selectItem>
-			</p:selectOneMenu>
+			</p:selectOneMenu> -->
+			<h:outputText value="#{createController.group}" />
 
 			<p:outputLabel value="Code" styleClass="label-right" />
-			<h:outputText value="#{createController.selectedData.cmqCode}" />
+			<h:outputText id="codeValue" value="#{createController.selectedData.cmqCode}" />
 		</h:panelGrid>
 
 		<h:panelGrid columns="2" columnClasses="label, value">

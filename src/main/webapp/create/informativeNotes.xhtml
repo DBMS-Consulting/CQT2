@@ -8,7 +8,7 @@
 
 	<!-- <p:growl id="m_notes" /> -->
 
-	<p:panel header="Informative Notes for ###">
+	<p:panel header="Informative Notes for #{createController.selectedData.cmqName}">
 		<p:tabView>
 			<p:tab title="Description">
 				<p:inputTextarea required="true" value="#{createController.selectedData.cmqDescription}"

@@ -69,7 +69,7 @@ public class CreateController implements Serializable {
 	public void init() {
 		this.state = "Draft";
 		this.status = "Pending";
-		this.description = "***Description ***";
+		this.description = "Please enter the description.";
 		this.notes = "";
 		this.source = "";
 
@@ -83,6 +83,7 @@ public class CreateController implements Serializable {
 
 	public void initCreateForm() {
 		this.selectedData = new CmqBase190();
+		selectedData.setCmqDescription("Please enter the description.");
 	}
 
 	public String onFlowProcess(FlowEvent event) {
@@ -149,6 +150,7 @@ public class CreateController implements Serializable {
 			// fill data
 			selectedData.setCreationDate(new Date());
 			// selectedData.setCmqName("MEDDRA");
+			selectedData.setCmqGroup(group);
 			selectedData.setCmqTypeCd(extension);
 			selectedData.setCmqCriticalEvent(critical);
 			selectedData.setCmqState(state);
@@ -160,11 +162,11 @@ public class CreateController implements Serializable {
 			selectedData.setCmqGroup(group);
 			selectedData.setCmqStatus("P"); // length is 1 only
 			selectedData.setCmqCode(codevalue);
+			selectedData.setCmqDescription(description);
 			selectedData.setDictionaryVersion(currentMeddraVersionCodeList
 					.getValue());
 
 			// hard coded for now
-			selectedData.setCmqDescription(description);
 			selectedData.setCreatedBy("Test user");
 			selectedData.setDictionaryName("Test-Dict");
 			selectedData.setCmqSubversion(new BigDecimal(0.23d));
@@ -180,7 +182,7 @@ public class CreateController implements Serializable {
 					.put("NEW-CMQ_BASE-ID", savedEntity.getId());
 
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Infos saved", "");
+					"List CMQ_NAME is successfully saved.", "");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		} catch (CqtServiceException e) {
 			LOG.error("Exception occured while creating CmqBase190.", e);
@@ -192,6 +194,12 @@ public class CreateController implements Serializable {
 			return null;
 		}
 		// return "/index.xhtml";
+		return "";
+	}
+	
+	public String cancel() {
+		
+		
 		return "";
 	}
 
@@ -243,7 +251,7 @@ public class CreateController implements Serializable {
 					.put("NEW-CMQ_BASE-ID", savedEntity.getId());
 
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Infos saved", "");
+					"List CMQ_NAME is successfully saved.", "");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		} catch (CqtServiceException e) {
 			LOG.error("Exception occured while creating CmqBase190.", e);
@@ -259,6 +267,13 @@ public class CreateController implements Serializable {
 	}
 
 	public String saveInformativeNotes() {
+		if (selectedData.getCmqDescription().equals("Please enter the description.")) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"The description is required",
+					"");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return "";
+		}
 		Long cmqId = (Long) (FacesContext.getCurrentInstance()
 				.getExternalContext().getSessionMap().get("NEW-CMQ_BASE-ID"));
 
@@ -270,7 +285,7 @@ public class CreateController implements Serializable {
 			this.cmqBaseService.update(savedEntity);
 
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Informative Notes saved", "");
+					"Informative Notes are successfully saved for '" + selectedData.getCmqName() + "'", "");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		} catch (CqtServiceException e) {
 			LOG.error(

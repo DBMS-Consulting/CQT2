@@ -106,7 +106,7 @@ public class SearchController extends BaseController<CmqBase190> {
 		this.state = "Published";
 		this.status = "Active";
 		this.level = 1;
-		this.critical = "No";
+		this.critical = null;
 		this.group = "No Group";
 		this.extension = "";
 
@@ -122,6 +122,8 @@ public class SearchController extends BaseController<CmqBase190> {
 
 	public void reset() {
 		this.datas = new ArrayList<CmqBase190>();
+		
+		resetSearch();
 	}
 
 	public TreeNode getHierarchyRoot() {
@@ -162,16 +164,20 @@ public class SearchController extends BaseController<CmqBase190> {
 	 * @param event
 	 */
 	public void resetSearch(AjaxBehaviorEvent event) {
+		resetSearch();
+	}
+
+	private void resetSearch() {
+		this.extension = "";
 		this.state = "Published";
 		this.status = "Active";
 		this.level = 1;
-		this.critical = "No";
+		//this.critical = "No";
 		this.group = "No Group";
 
 		this.product = "";
 		this.protocol = "";
-		this.drugProgram = "";
-		this.extension = "";
+		this.drugProgram = "";		
 	}
 
 	/**
@@ -437,6 +443,13 @@ public class SearchController extends BaseController<CmqBase190> {
 				protocol, product, level, status, state, critical, group,
 				termName, code);
 		log.debug("found values {}", datas == null ? 0 : datas.size());
+	}
+	
+	/**
+	 * Maintain Designees on search.
+	 */
+	public void maintainDesignees() {
+		
 	}
 
 	public String loadCmqBaseByCode() {

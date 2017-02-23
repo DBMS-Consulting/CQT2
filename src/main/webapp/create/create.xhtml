@@ -7,7 +7,7 @@
 	xmlns:p="http://primefaces.org/ui" template="../CSMQ.xhtml">
 
 	<ui:define name="page-content">
-		<h:form id="fCreate"> 
+		<h:form id="fCreate">
 			<p:growl id="m1" />
 
 			<h:panelGrid columns="2" style="width: 100% !important">
@@ -18,16 +18,22 @@
 					</p:breadCrumb>
 
 				</h:panelGrid>
-				 
+
 			</h:panelGrid>
 
 			<p:wizard flowListener="#{wizard.onFlowProcess}" widgetVar="wizard">
-				<p:tab id="details" title="Add Details" disabled="false" closable="true">
+				<p:tab id="details" title="Add Details" disabled="false"
+					closable="true">
 					<p:panel header="Details">
 						<ui:include src="details.xhtml" />
-						<p:commandButton value="Save" icon="ui-icon-disk" update="m1"
-							action="#{createController.save}"></p:commandButton>
-					</p:panel> 
+						<h:panelGrid columns="2" style="width: 100%">
+							<p:commandButton value="Save" icon="ui-icon-disk" update="m1 @form:codeValue pgl2"
+								action="#{createController.save}"></p:commandButton>
+							<p:commandButton value="Cancel" icon="ui-icon-close"
+								process="@this" update="m1" style="float: right"
+								action="#{createController.cancel}"></p:commandButton>
+						</h:panelGrid>
+					</p:panel>
 				</p:tab>
 
 				<!-- CONTACT -->
@@ -40,9 +46,9 @@
 					<p:panel header="Relations">
 						<ui:include src="relations.xhtml"></ui:include>
 
-						<p:commandButton style="margin-top: 10px" value="Save" id="cb3" update="m1"
-							action="#{createController.saveRelations}" disabled="false"
-							icon="ui-icon-disk" />
+						<p:commandButton style="margin-top: 10px" value="Save" id="cb3"
+							update="m1" action="#{createController.saveRelations}"
+							disabled="false" icon="ui-icon-disk" />
 					</p:panel>
 				</p:tab>
 
@@ -52,186 +58,21 @@
 				</p:tab>
 			</p:wizard>
 
-			<!-- Popups - dialogs   -->
-			<!-- <p:dialog widgetVar="confirm" header="Confirm">
-				<h:commandButton value="Delete all selected terms?" />
-			</p:dialog> -->
 
-			<!-- <p:dialog widgetVar="search" modal="false" header="Hierarchy search">
-				<p:panel header="Relations" style="width:700px; height:623px;">
-					<table>
-						<tbody>
-							<tr>
-								<td><p:outputLabel value="Dictionary" /></td>
-								<td><p:selectOneMenu label="Dictionary" id="soc99"
-										autoSubmit="true" value="BASE">
-										<f:selectItem itemLabel="MedDRA" itemValue="BASE" />
-										<f:selectItem itemLabel="MQ" itemValue="FILTER" />
-									</p:selectOneMenu></td>
-								<td><p:inputText placeholder="Term" id="iterm" /></td>
-							</tr>
-
-							<tr>
-								<td><p:outputLabel value="Level" /></td>
-								<p:spacer width="10" />
-								<td><p:selectOneMenu id="sc10" label="Level"
-										partialTriggers="soc9" value="SOC">
-										<f:selectItem itemLabel="SMQ 1" itemValue="MQ1" id="sit42"
-											rendered="true" />
-										<f:selectItem itemLabel="SMQ 2" itemValue="MQ2" id="sit48"
-											rendered="true" />
-										<f:selectItem itemLabel="SMQ 3" itemValue="MQ3" id="sit43"
-											rendered="true" />
-										<f:selectItem itemLabel="SMQ 4" itemValue="MQ4" id="sit44"
-											rendered="true" />
-										<f:selectItem itemLabel="SMQ 5" itemValue="MQ5" id="sit45"
-											rendered="true" />
-										<f:selectItem itemLabel="All SMQs" itemValue="MQ%" id="sit1"
-											rendered="true" />
-										<f:selectItem itemLabel="NMQ/CMQ 1" itemValue="NMQ1"
-											id="sit46" rendered="true" />
-										<f:selectItem itemLabel="NMQ 2" itemValue="NMQ2" id="sit49"
-											rendered="true" />
-										<f:selectItem itemLabel="NMQ 3" itemValue="NMQ3" id="sit47"
-											rendered="true" />
-										<f:selectItem itemLabel="NMQ 4" itemValue="NMQ4" id="sit52"
-											rendered="true" />
-										<f:selectItem itemLabel="NMQ 5" itemValue="NMQ5" id="sit50"
-											rendered="true" />
-										<f:selectItem itemLabel="All NMQ/CMQs" itemValue="NMQ%"
-											id="sit2" rendered="true" />
-										<f:selectItem itemLabel="SOC" itemValue="SOC" id="sit51"
-											rendered="true" />
-										<f:selectItem itemLabel="HLGT" itemValue="HLGT" id="sit53"
-											rendered="true" />
-										<f:selectItem itemLabel="HLT" itemValue="HLT" id="sit54"
-											rendered="true" />
-										<f:selectItem itemLabel="PT" itemValue="PT" id="sit55"
-											rendered="true" />
-									</p:selectOneMenu></td>
-								<td><p:commandButton value="Search" id="searchBt"
-										partialSubmit="true" style="height:auto;" /></td>
-							</tr>
-						</tbody>
-					</table>
-
-					<br />
-					<p:treeTable value="#{userBean.root}" var="row"
-						style="height:200px;" styleClass="AFStretchWidth" width="521">
-						<p:column headerText="Term" id="c10" width="1" minimumWidth="1"
-							rendered="true 	">
-							<p:inputText value="#####" id="it4">
-								<f:convertNumber groupingUsed="false"
-									pattern="#{bindings.HierarchySourceTermSearchVO1.hints.Rnum.format}" />
-							</p:inputText>
-						</p:column>
-						<p:column headerText="Content Code" id="c11" width="75">
-							<h:outputText value="#{row.dictContentCode}" id="ot8" />
-						</p:column>
-						<p:column id="c28" width="20" minimumWidth="15">
-							<p:commandButton id="cb2" style="height:10px; width:20px;"
-								partialSubmit="true" />
-						</p:column>
-							<af:dragSource actions="MOVE" discriminant="rowmove" />
-						<f:facet name="nodeStamp">
-							<p:column id="c14" headerText="Term" width="200">
-								<h:outputText value="#{row.term}" id="ot11" />
-							</p:column>
-						</f:facet>
-						<f:facet name="pathStamp">
-							<af:group id="g4">
-								<h:outputText value="#{row}" id="ot12" />
-							</af:group>
-						</f:facet>
-
-					</p:treeTable>
-
-					<br />
-					<h:panelGrid id="pg3" styleClass="AFStretchWidth">
-						<p:toolbar id="tb4">
-							<f:facet name="left">
-								<h:panelGrid columns="4">
-									<h:panelGrid columns="1">
-										<p:selectOneMenu label="Sort" value="#" id="sc11">
-											<f:selectItem itemLabel="Filter and Sort" itemValue="TERM" />
-											<f:selectItem itemLabel="Term Name" itemValue="#" />
-											<f:selectItem itemLabel="Level"
-												itemValue="DEF_LEVEL_REF_SHORT_NAME" />
-											<f:selectItem itemLabel="Scope" itemValue="SCOPE" />
-										</p:selectOneMenu>
-									</h:panelGrid>
-									<h:panelGrid columns="2">
-										<p:outputLabel value="Show Primary Only"></p:outputLabel>
-										<p:selectBooleanCheckbox id="sbc" value="false"
-											autoSubmit="true" />
-									</h:panelGrid>
-									<p:selectOneMenu label="Scope" id="sm12" value="0">
-										<f:selectItem
-											itemLabel="Full #{applicationScope.CSMQBean.customMQName}/SMQ"
-											itemValue="0" />
-										<f:selectItem itemLabel="Child Narrow" itemValue="3" />
-									</p:selectOneMenu>
-									<p:commandButton value="Refresh" id="refresh"
-										icon="fa fa-refresh" disabled="false" />
-								</h:panelGrid>
-							</f:facet>
-						</p:toolbar>
-
-						<p:treeTable value="#{userBean.root}" var="node"
-							rowSelection="multiple" id="tree">
-
-							<p:columnGroup type="header">
-								<p:row>
-									<p:column rowspan="2" headerText="ABC" />
-									<p:column colspan="3" headerText="Hierarchy Details" />
-								</p:row>
-
-								<p:row>
-									<p:column headerText="Code" />
-									<p:column headerText="Level" />
-									<p:column headerText="Scope" />
-								</p:row>
-							</p:columnGroup>
-
-							<p:column id="c8" width="200" noWrap="false">
-								<h:panelGrid id="pgl5" halign="left">
-									<h:outputText value="#{node.term}" id="ot1"
-										styleClass="#{node.style}"
-										rendered="#{!node.showHasChildrenButton}" />
-									<p:commandLink value="#####" id="cl2" rendered="true"
-										partialSubmit="true" />
-								</h:panelGrid>
-							</p:column>
-
-							<p:column id="c26" width="50" sortable="true" filterable="true">
-								<h:outputText value="#{node.dictContentCode}" id="ot7" />
-							</p:column>
-							<p:column id="c18" width="50" sortable="true" filterable="true">
-								<h:outputText value="#{node.levelName}" id="ot14" />
-							</p:column>
-							<p:column id="c17" width="50" sortable="true" filterable="true">
-								<h:outputText value="#{node.scopeName}" id="ot13" />
-							</p:column>
-						</p:treeTable>
-					</h:panelGrid>
-				</p:panel>
-			</p:dialog> -->
-			
-			<!-- <p:commandButton value="Back" type="button" onclick="back();" icon="fa fa-long-arrow-left" iconPos="left" />
-			<p:commandButton value="Next" type="button" onclick="next();" icon="fa fa-long-arrow-right" iconPos="right" style="float: right" />
- -->
 			<p:spacer width="10" height="10" id="s6" />
-			<h:panelGrid id="pgl2" columns="6"
+			<h:panelGrid id="pgl2" columns="6" 
 				style="padding:3px; font-size: 10px !important">
 
 
 				<p:outputLabel for="it1aw" value="Dictionary Version:"></p:outputLabel>
-				<h:inputText id="it1aw" value="#{dummyView.value}" disabled="true"
-					columns="200" />
+				<h:inputText id="it1aw"
+					value="#{createController.selectedData.dictionaryVersion}"
+					disabled="true" columns="200" />
 
 				<p:outputLabel for="it3" value="Name: "></p:outputLabel>
-				<h:inputText id="it3" value="#{dummyView.value}" readOnly="true"
-					disabled="true" />
+				<h:inputText id="it3"
+					value="#{createController.selectedData.dictionaryName}"
+					readOnly="true" disabled="true" />
 			</h:panelGrid>
 			<f:attribute name="currentPage"
 				value="Create New #{applicationScope.CSMQBean.customMQName} Wizard" />

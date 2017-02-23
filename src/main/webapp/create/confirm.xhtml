@@ -166,15 +166,15 @@
 				<tr>
 					<td><p:outputLabel styleClass="label-right"
 							value="Reason for Approval" /></td>
-					<td><p:inputText value="#{dummyView.value}" /></td>
+					<td><p:inputText value="#{dummyView.value}" disabled="#{createController.selectedData.cmqState ne 'Reviewed'}" /></td>
 				</tr>
 
 			</tbody>
 		</table>
 		
-		<p:spacer height="5" />
+		<!-- <p:spacer height="5" />
 		<p:commandButton value="Save" icon="ui-icon-disk"
-			action="#{createController.save}" process="@this"></p:commandButton>
+			action="#{createController.save}" process="@this"></p:commandButton> -->
 		<p:spacer height="5" />
 	</p:panel>
 

@@ -7,7 +7,7 @@
 	xmlns:p="http://primefaces.org/ui">
 
 
-	<p:panel header="Informative Notes for ########">
+	<p:panel header="Informative Notes for #{createController.selectedData.cmqName}">
 		<p:tabView>
 			<p:tab title="Description">
 				<p:inputTextarea readonly="true" value="#{createController.selectedData.cmqDescription}" style="width: 100%;min-height: 250px" />

@@ -6,7 +6,7 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:p="http://primefaces.org/ui">
 
-	<h:panelGrid columns="3" cellpadding="10">
+	<h:panelGrid columns="2" cellpadding="10" id="searchPanel">
 		<h:panelGrid columns="2" columnClasses="label, value">
 			<p:outputLabel value="Extension" styleClass="label-right" />
 			<p:selectOneMenu value="#{searchController.extension}">
@@ -14,8 +14,8 @@
 				<f:selectItems value="#{configMB.extensions}" var="extension"
 					itemLabel="#{extension.value}" itemValue="#{extension.value}" />
 
-				<p:ajax update="level2 protocol2 drug2 product2 status state critical2 group" event="change"
-					listener="#{searchController.resetSearch}" />
+				<p:ajax update="level2 protocol2 drug2 product2 status state group"
+					event="change" listener="#{searchController.resetSearch}" />
 			</p:selectOneMenu>
 
 			<p:outputLabel value="Drug Program" styleClass="label-right" />
@@ -76,9 +76,17 @@
 					itemDisabled="#{searchController.status eq 'Pending'}" />
 
 			</p:selectOneMenu>
+
+			<p:outputLabel value="Group" styleClass="label-right" />
+			<p:selectOneMenu value="#{searchController.group}" id="group"
+				disabled="false">
+				<f:selectItem itemLabel="" itemValue="All"></f:selectItem>
+				<f:selectItem itemLabel="No Group" itemValue="No Group"></f:selectItem>
+				<f:selectItems></f:selectItems>
+			</p:selectOneMenu>
 		</h:panelGrid>
 
-		<h:panelGrid columns="2" style="min-width: 300px">
+		<!-- <h:panelGrid columns="2" style="min-width: 300px">
 			<p:outputLabel value="Critical event" styleClass="label-right" />
 			<p:selectOneMenu value="#{searchController.critical}" id="critical2">
 				<f:selectItem itemValue="" itemLabel="All" />
@@ -94,10 +102,200 @@
 				<f:selectItem itemLabel="No Group" itemValue="No Group"></f:selectItem>
 				<f:selectItems></f:selectItems>
 			</p:selectOneMenu>
-		</h:panelGrid>
+			
+		</h:panelGrid> -->
 	</h:panelGrid>
 
 	<p:separator />
+
+	<h:panelGrid columns="8">
+		<p:outputLabel value="Term" />
+		<p:inputText value="#{searchController.termName}" />
+		<p:outputLabel value="Code" />
+		<p:inputText value="#{searchController.code}" />
+		<p:commandButton value="Search" action="#{searchController.search()}"
+			update="result" />
+		<p:commandButton value="Maintain Designees"
+			action="#{searchController.maintainDesignees}"
+			rendered="#{view.viewId == '/create/browseAndSearch.xhtml'}" />
+		<p:commandButton action="#{searchController.reset}" value="Reset"
+			update="@form:result @form:searchPanel" />
+	</h:panelGrid>
+
+	<p:spacer />
+
+	<p:outputPanel deferred="true" deferredMode="visible">
+		<p:dataTable var="value" value="#{searchController.datas}" id="result"
+			rows="10" paginator="true" paginatorPosition="bottom"
+			paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+			rowsPerPageTemplate="5,10,25">
+			<p:column headerText="Term">
+				<h:outputText value="#{value.cmqName}" />
+			</p:column>
+			<p:column headerText="Extension">
+				<h:outputText value="#{value.cmqTypeCd}" />
+			</p:column>
+			<p:column headerText="Level">
+				<h:outputText value="#{value.cmqLevel}" />
+			</p:column>
+			<p:column headerText="Status">
+				<h:outputText rendered="#{value.cmqStatus eq 'P'}" value="Pending" />
+				<h:outputText rendered="#{value.cmqStatus eq 'I'}" value="Inactive" />
+				<h:outputText rendered="#{value.cmqStatus eq 'A'}" value="Active" />
+			</p:column>
+			<p:column headerText="State">
+				<h:outputText value="#{value.cmqState}" />
+			</p:column>
+			<p:column headerText="Code">
+
+				<p:commandLink
+					action="#{createController.loadCmqBaseByCode(value.cmqCode)}"
+					value="#{value.cmqCode}" update="@form:wizardId @form:pgl2"></p:commandLink>
+			</p:column>
+			<p:column headerText="Drug Program">
+				<h:outputText value="#{value.cmqProgramCd}" />
+			</p:column>
+			<p:column headerText="Protocol">
+				<h:outputText value="#{value.cmqProtocolCd}" />
+			</p:column>
+			<p:column headerText="Product">
+				<h:outputText value="#{value.cmqProductCd}" />
+			</p:column>
+			<p:column headerText="Group">
+				<h:outputText value="#{value.cmqGroup}" />
+			</p:column>
+
+			<p:column headerText="Critical Event">
+				<h:outputText value="#{value.cmqCriticalEvent}" />
+			</p:column>
+			<p:column headerText="Created By">
+				<h:outputText value="#{value.cmqDesignee}" />
+			</p:column>
+			<p:column headerText="History" style="text-align: center">
+				<!-- <h:outputText value="#{value.history}" /> -->
+				<p:commandLink action="#" style="color: red" label="History"
+					onclick="PF('history-dialog').show()">
+					<i class="fa fa-power-off"></i>
+				</p:commandLink>
+
+			</p:column>
+			<p:column headerText="Audit" style="text-align: center">
+				<p:commandLink value="Audit"
+					style="border: 1px solid black; background-color: grey; font-weight:bold; color: #fff; text-decoration: none !important; 
+										 border-radius: 10px; padding: 3px"
+					action="#" onclick="PF('audit-dialog').show()" />
+			</p:column>
+		</p:dataTable>
+	</p:outputPanel>
+
+
+	<p:dialog widgetVar="audit-dialog" modal="false" header="Audit">
+		<p:panel header="Audit Trail " style="width:900px; height:623px;">
+			<p:toolbar>
+				<f:facet name="left">
+					<p:commandButton id="filterAT" value="Filter and Sort"
+						type="button" icon="ui-icon-triangle-1-s" />
+					<p:overlayPanel id="filterPanelAT" for="filterAT"
+						showCloseIcon="true">
+						<h:panelGrid columns="2">
+							<p:outputLabel value="Sort" />
+							<p:selectOneMenu value="TERM">
+								<f:selectItem itemValue="TERM" itemLabel="Term name"></f:selectItem>
+								<f:selectItem itemValue="DEF_LEVEL_REF_SHORT_NAME"
+									itemLabel="Level"></f:selectItem>
+								<f:selectItem itemValue="SCOPE" itemLabel="Scope"></f:selectItem>
+							</p:selectOneMenu>
+
+							<p:outputLabel for="showAT" value="Show Primary Only"
+								style="min-width: 100px !important" />
+							<p:selectBooleanCheckbox value="false" id="showAT"
+								label="Show Primary Only"></p:selectBooleanCheckbox>
+
+							<p:outputLabel value="Scope" />
+							<p:selectOneMenu value="0">
+								<f:selectItem itemValue="0" itemLabel="Full /SMQ"></f:selectItem>
+								<f:selectItem itemValue="3" itemLabel="Child Narrow"></f:selectItem>
+							</p:selectOneMenu>
+
+							<p:spacer />
+							<p:commandButton value="Refresh" icon="fa fa-refresh"
+								rendered="true" />
+						</h:panelGrid>
+					</p:overlayPanel>
+					<p:spacer width="5" />
+
+					<p:submenu label="View" icon="fa fa-wrench">
+						<p:menuButton value="View">
+							<p:menuitem value="View 1" actionListener="#" ajax="false"
+								icon="ui-icon-close" />
+							<p:menuitem value="View 2" url="#" icon="ui-icon-extlink" />
+						</p:menuButton>
+					</p:submenu>
+
+				</f:facet>
+			</p:toolbar>
+			<p:dataTable var="value" value="#{searchController.values}"
+				id="auditTable" rows="10" paginator="true"
+				paginatorPosition="bottom"
+				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,25">
+				<p:column headerText="Transaction Type">
+					<h:outputText value="#{value.term}" />
+				</p:column>
+				<p:column headerText="Date" sortBy="#{dummyView.value}">
+					<h:outputText value="#{value.term}" />
+				</p:column>
+				<p:column headerText="Field Name" sortBy="#{dummyView.value}"
+					filterBy="#{dummyView.value}">
+					<h:outputText value="#{dummyView.value}" />
+				</p:column>
+				<p:column headerText="User">
+					<h:outputText value="#{value.level}" />
+				</p:column>
+				<p:column headerText="Old Value">
+					<h:outputText value="#{value.status}" />
+				</p:column>
+				<p:column headerText="New value">
+					<h:outputText value="#{value.state}" />
+				</p:column>
+				<p:column headerText="State">
+					<h:outputText value="#{value.status}" />
+				</p:column>
+				<p:column headerText="Status">
+					<h:outputText value="#{value.state}" />
+				</p:column>
+
+			</p:dataTable>
+
+		</p:panel>
+		<p:spacer height="10"></p:spacer>
+		<h:panelGrid style="float: right">
+			<p:commandButton value="Cancel" onclick="PF('new_pt').hide()"
+				immediate="true" />
+		</h:panelGrid>
+	</p:dialog>
+
+	<p:dialog widgetVar="history-dialog" modal="true" id="historyD"
+		closable="true" header="History As of Date (Required for history)">
+
+		<h:panelGrid columns="1">
+			<h:panelGrid>
+				<p:calendar showOn="button" style="margin-left: 50px !important;" />
+			</h:panelGrid>
+
+			<h:panelGrid style="float: right" columns="2">
+				<p:commandButton value="OK" action="OK" />
+				<p:commandButton value="Cancel" onclick="PF('new_pt').hide()"
+					immediate="true" />
+			</h:panelGrid>
+		</h:panelGrid>
+	</p:dialog>
+
+
+	<!-- Popups - dialogs   -->
+	<p:dialog widgetVar="confirm" header="Confirm">
+		<h:commandButton value="Delete all selected terms?" />
+	</p:dialog>
 
 	<style>
 .label-right {
