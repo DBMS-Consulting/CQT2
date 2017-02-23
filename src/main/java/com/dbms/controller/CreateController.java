@@ -8,18 +8,15 @@ import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.RequestScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
 
 import org.primefaces.component.wizard.Wizard;
 import org.primefaces.event.FlowEvent;
-import org.primefaces.model.DefaultTreeNode;
-import org.primefaces.model.TreeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.dbms.csmq.HierarchyNode;
 import com.dbms.entity.cqt.CmqBase190;
 import com.dbms.entity.cqt.RefConfigCodeList;
 import com.dbms.service.ICmqBase190Service;
@@ -31,7 +28,7 @@ import com.dbms.util.exceptions.CqtServiceException;
  * @date Feb 12, 2017 7:34:05 AM
  **/
 @ManagedBean
-@RequestScoped
+@ViewScoped
 public class CreateController implements Serializable {
 
 	private static final long serialVersionUID = -443251941538546278L;
@@ -205,7 +202,7 @@ public class CreateController implements Serializable {
 	 */
 	public String update() {
 		try {
-
+			Long codevalue = this.cmqBaseService.getNextCodeValue();
 			RefConfigCodeList currentMeddraVersionCodeList = this.refCodeListService
 					.getCurrentMeddraVersion();
 
@@ -222,7 +219,8 @@ public class CreateController implements Serializable {
 			selectedData.setCmqProgramCd(drugProgram);
 			selectedData.setCmqGroup(group);
 			selectedData.setCmqStatus("P");
-			//selectedData.setCmqCode(se);
+			selectedData.setCmqCode(codevalue);
+			selectedData.setCmqDescription(description);
 			selectedData.setDictionaryVersion(currentMeddraVersionCodeList
 					.getValue());
 
@@ -230,6 +228,8 @@ public class CreateController implements Serializable {
 			selectedData.setCreatedBy("Test user");
 			selectedData.setDictionaryName("Test-Dict");
 			selectedData.setCmqSubversion(new BigDecimal(0.23d));
+			if (selectedData.getCmqDesignee() == null)
+				selectedData.setCmqDesignee("NONE");
 
 			cmqBaseService.update(selectedData);
 

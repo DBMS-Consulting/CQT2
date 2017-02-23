@@ -138,7 +138,8 @@
 		</p:treeTable> -->
 
 		<p:treeTable value="#{searchController.relationsRoot}" var="node"
-			id="resultRelations" rows="20" paginator="true" paginatorPosition="bottom"
+			id="resultRelations" rows="20" paginator="true"
+			paginatorPosition="bottom"
 			paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 			rowsPerPageTemplate="5,10,25,30">
 
@@ -162,10 +163,8 @@
 			</p:columnGroup>
 
 			<p:column>
-				<h:panelGrid columns="1">
-					
-					<h:outputText value="#{node.term}" id="cl1" rendered="true" />
-				</h:panelGrid>
+
+				<h:outputText value="#{node.term}" id="cl1" rendered="true" />
 			</p:column>
 
 			<p:column>
@@ -176,7 +175,7 @@
 			</p:column>
 
 			<p:column>
-				<p:selectOneMenu   id="soc3" value="#{node.scope}">
+				<p:selectOneMenu id="soc3" value="#{node.scope}">
 
 					<f:selectItem itemLabel="Broad" itemValue="1" id="si13s" />
 					<f:selectItem itemLabel="Narrow" itemValue="2" id="si13d" />
@@ -185,7 +184,7 @@
 			</p:column>
 
 			<p:column>
-				<p:selectOneMenu  id="soc2" value="#{node.category}" rendered="true">
+				<p:selectOneMenu id="soc2" value="#{node.category}" rendered="true">
 					<f:selectItem itemLabel="A" itemValue="A" id="si3" />
 					<f:selectItem itemLabel="S" itemValue="S" id="si33" />
 					<f:selectItem itemLabel="B" itemValue="B" id="si8" />
@@ -202,7 +201,7 @@
 			<p:column>
 				<p:spinner value="#{node.weight}" id="ot6" />
 			</p:column>
-			
+
 			<p:columnGroup>
 				<p:selectBooleanCheckbox />
 			</p:columnGroup>
@@ -215,7 +214,8 @@
 
 		<p:spacer height="10"></p:spacer>
 		<h:panelGrid style="float: right" columns="2">
-			<p:commandButton value="Add selected" onclick="PF('search').hide()" update="@form:resultRelations"
+			<p:commandButton value="Add selected" onclick="PF('search').hide()"
+				update="@form:resultRelations"
 				action="#{searchController.addSelectedToRelation(searchController.relationSelected)}" />
 			<p:commandButton value="Cancel" onclick="PF('search').hide()"
 				immediate="true" />
