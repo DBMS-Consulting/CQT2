@@ -81,7 +81,7 @@
 			</p:toolbar>
 
 			<p:treeTable value="#{searchController.hierarchyRoot}" var="node"
-				id="resultHier" rows="20" selectionMode="checkbox" selection="#{createController.relationSelected}" 
+				id="resultHier" rows="20" selectionMode="checkbox" selection="#{searchController.relationSelected}" 
 				paginator="true" paginatorPosition="bottom"
 				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 				rowsPerPageTemplate="5,10,25,30">

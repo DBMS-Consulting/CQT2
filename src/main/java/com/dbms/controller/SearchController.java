@@ -92,6 +92,9 @@ public class SearchController extends BaseController<CmqBase190> {
 	private CmqBase190 selctedData;
 
 	private List<HierarchySearchResultBean> hierarchySearchResults;
+	
+	private TreeNode[] relationSelected;
+	private TreeNode relationsRoot;
 
 	public SearchController() {
 		this.selectedData = new CmqBase190();
@@ -109,7 +112,8 @@ public class SearchController extends BaseController<CmqBase190> {
 
 		hierarchyRoot = new DefaultTreeNode("root", new HierarchyNode("LEVEL",
 				"NAME", "CODE", null), null);
-
+		relationsRoot = new DefaultTreeNode("root", new HierarchyNode("LEVEL",
+				"NAME", "CODE", "SCOPE", "CATEGORY", "WEIGHT", null), null);
 	}
 
 	public void initSearch() {
@@ -665,6 +669,22 @@ public class SearchController extends BaseController<CmqBase190> {
 			hierarchyNode.setDataFetchCompleted(true);
 		}
 	}
+	
+	/**
+	 * Add the selected hierarchy details to the relation list.
+	 */
+	public void addSelectedToRelation(TreeNode[] nodes) {
+		if (nodes != null && nodes.length > 0) {
+			//testing one node
+			relationsRoot = nodes[0];
+ 
+			setRelationSelected(nodes); 
+
+			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Relations selected","");
+			FacesContext.getCurrentInstance().addMessage(null, message);
+		}
+	}
 
 	public void saveDetails() {
 		log.debug("save cmq details ... ");
@@ -777,4 +797,20 @@ public class SearchController extends BaseController<CmqBase190> {
 		this.meddraDictService = meddraDictService;
 	}
 
+	
+	public TreeNode[] getRelationSelected() {
+		return relationSelected;
+	}
+
+	public void setRelationSelected(TreeNode[] relationSelected) {
+		this.relationSelected = relationSelected;
+	}
+
+	public TreeNode getRelationsRoot() {
+		return relationsRoot;
+	}
+
+	public void setRelationsRoot(TreeNode relationsRoot) {
+		this.relationsRoot = relationsRoot;
+	}
 }

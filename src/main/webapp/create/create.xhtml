@@ -57,7 +57,7 @@
 				<h:commandButton value="Delete all selected terms?" />
 			</p:dialog> -->
 
-			<p:dialog widgetVar="search" modal="false" header="Hierarchy search">
+			<!-- <p:dialog widgetVar="search" modal="false" header="Hierarchy search">
 				<p:panel header="Relations" style="width:700px; height:623px;">
 					<table>
 						<tbody>
@@ -121,8 +121,8 @@
 						<p:column headerText="Term" id="c10" width="1" minimumWidth="1"
 							rendered="true 	">
 							<p:inputText value="#####" id="it4">
-								<!-- <f:convertNumber groupingUsed="false"
-									pattern="#{bindings.HierarchySourceTermSearchVO1.hints.Rnum.format}" /> -->
+								<f:convertNumber groupingUsed="false"
+									pattern="#{bindings.HierarchySourceTermSearchVO1.hints.Rnum.format}" />
 							</p:inputText>
 						</p:column>
 						<p:column headerText="Content Code" id="c11" width="75">
@@ -132,17 +132,17 @@
 							<p:commandButton id="cb2" style="height:10px; width:20px;"
 								partialSubmit="true" />
 						</p:column>
-						<!-- 	<af:dragSource actions="MOVE" discriminant="rowmove" /> -->
+							<af:dragSource actions="MOVE" discriminant="rowmove" />
 						<f:facet name="nodeStamp">
 							<p:column id="c14" headerText="Term" width="200">
 								<h:outputText value="#{row.term}" id="ot11" />
 							</p:column>
 						</f:facet>
-						<!-- <f:facet name="pathStamp">
+						<f:facet name="pathStamp">
 							<af:group id="g4">
 								<h:outputText value="#{row}" id="ot12" />
 							</af:group>
-						</f:facet> -->
+						</f:facet>
 
 					</p:treeTable>
 
@@ -215,7 +215,7 @@
 						</p:treeTable>
 					</h:panelGrid>
 				</p:panel>
-			</p:dialog>
+			</p:dialog> -->
 			
 			<!-- <p:commandButton value="Back" type="button" onclick="back();" icon="fa fa-long-arrow-left" iconPos="left" />
 			<p:commandButton value="Next" type="button" onclick="next();" icon="fa fa-long-arrow-right" iconPos="right" style="float: right" />

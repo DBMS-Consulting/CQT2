@@ -8,16 +8,18 @@ import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.ViewScoped;
+import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
 
 import org.primefaces.component.wizard.Wizard;
 import org.primefaces.event.FlowEvent;
+import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.dbms.csmq.HierarchyNode;
 import com.dbms.entity.cqt.CmqBase190;
 import com.dbms.entity.cqt.RefConfigCodeList;
 import com.dbms.service.ICmqBase190Service;
@@ -29,7 +31,7 @@ import com.dbms.util.exceptions.CqtServiceException;
  * @date Feb 12, 2017 7:34:05 AM
  **/
 @ManagedBean
-@ViewScoped
+@RequestScoped
 public class CreateController implements Serializable {
 
 	private static final long serialVersionUID = -443251941538546278L;
@@ -64,7 +66,7 @@ public class CreateController implements Serializable {
 	private Wizard updateWizard, copyWizard, browseWizard;
 	private Long codeSelected;
 
-	private TreeNode[] relationSelected;
+
 
 	@PostConstruct
 	public void init() {
@@ -220,6 +222,7 @@ public class CreateController implements Serializable {
 			selectedData.setCmqProgramCd(drugProgram);
 			selectedData.setCmqGroup(group);
 			selectedData.setCmqStatus("P");
+			//selectedData.setCmqCode(se);
 			selectedData.setDictionaryVersion(currentMeddraVersionCodeList
 					.getValue());
 
@@ -364,21 +367,7 @@ public class CreateController implements Serializable {
 			setState("Draft");
 	}
 
-	/**
-	 * Add the selected hierarchy details to the relation list.
-	 */
-	public void addSelectedToRelation(TreeNode[] nodes) {
-		if (nodes != null && nodes.length > 0) {
- 
-			for (TreeNode node : nodes) {
-				System.out.println("\n *******************  node selected " + node.getChildren() != null ? node.getChildren().size() : "No CHILDREN");
- 			}
 
-//			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,
-//					"Selected", builder.toString());
-//			FacesContext.getCurrentInstance().addMessage(null, message);
-		}
-	}
 
 	public String getExtension() {
 		return extension;
@@ -564,11 +553,5 @@ public class CreateController implements Serializable {
 		this.codeSelected = codeSelected;
 	}
 
-	public TreeNode[] getRelationSelected() {
-		return relationSelected;
-	}
-
-	public void setRelationSelected(TreeNode[] relationSelected) {
-		this.relationSelected = relationSelected;
-	}
+	
 }

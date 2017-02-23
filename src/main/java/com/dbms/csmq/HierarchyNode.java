@@ -19,6 +19,12 @@ public class HierarchyNode implements Serializable, Comparable<HierarchyNode> {
 	private boolean isDataFetchCompleted;
 	
 	private boolean isDummyNode;
+	
+	private String category;
+
+	private String weight;
+
+	private String scope;
 
 	public HierarchyNode() {
 	}
@@ -27,6 +33,16 @@ public class HierarchyNode implements Serializable, Comparable<HierarchyNode> {
 		this.level = level;
 		this.term = term;
 		this.code = code;
+		this.entity = entity;
+	}
+	
+	public HierarchyNode(String level, String term, String code, String category, String weight, String scope, IEntity entity) {
+		this.level = level;
+		this.term = term;
+		this.code = code;
+		this.scope = scope;
+		this.weight = weight;
+		this.category = category;
 		this.entity = entity;
 	}
 
@@ -126,5 +142,29 @@ public class HierarchyNode implements Serializable, Comparable<HierarchyNode> {
 	@Override
 	public String toString() {
 		return term;
+	}
+
+	public String getCategory() {
+		return category;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
+	}
+
+	public String getWeight() {
+		return weight;
+	}
+
+	public void setWeight(String weight) {
+		this.weight = weight;
+	}
+
+	public String getScope() {
+		return scope;
+	}
+
+	public void setScope(String scope) {
+		this.scope = scope;
 	}
 }
