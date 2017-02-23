@@ -113,7 +113,8 @@ public class CmqRelationUploadController implements Serializable {
 					}
 					//relation.setTermDictLevel(ss[2]);	//missing in schema
 					if(ss.length>3&&StringUtils.isNotEmpty(ss[3])){
-						CmqRelation190 parent=cmqRelationService.findByTermName(ss[3]);
+						//CmqRelation190 parent=cmqRelationService.findByTermName(ss[3]);
+						CmqRelation190 parent=null;
 						if(parent==null){
 							log.error("no found parent Relation by {}",ss[3]);
 						}
