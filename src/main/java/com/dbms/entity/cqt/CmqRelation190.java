@@ -28,7 +28,7 @@ public class CmqRelation190 extends BaseEntity {
 
 	@Id
 	@GeneratedValue(generator = "CMQ_RELATION_ID_SEQ", strategy = GenerationType.SEQUENCE)
-	@SequenceGenerator(name = "CMQ_RELATION_ID_SEQ", sequenceName = "CMQ_RELATION_ID_SEQ", allocationSize = 20)
+	@SequenceGenerator(name = "CMQ_RELATION_ID_SEQ", sequenceName = "CMQ_RELATION_ID_SEQ", allocationSize = 1)
 	@Column(name = "CMQ_RELATION_ID", unique = true, nullable = false)
 	private Long cmqRelationId;
 
