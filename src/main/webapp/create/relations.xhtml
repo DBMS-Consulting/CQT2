@@ -26,12 +26,6 @@
 						<p:selectBooleanCheckbox value="false" id="show"
 							label="Show Primary Only"></p:selectBooleanCheckbox>
 
-						<p:outputLabel value="Scope" />
-						<p:selectOneMenu value="0">
-							<f:selectItem itemValue="0" itemLabel="Full /SMQ"></f:selectItem>
-							<f:selectItem itemValue="3" itemLabel="Child Narrow"></f:selectItem>
-						</p:selectOneMenu>
-
 						<p:spacer />
 						<p:commandButton value="Refresh" id="cb7" icon="fa fa-refresh"
 							rendered="true" />
@@ -138,16 +132,17 @@
 		</p:treeTable> -->
 
 		<p:treeTable value="#{searchController.relationsRoot}" var="node"
-			id="resultRelations" rows="20" paginator="true"
-			paginatorPosition="bottom"
+			selectionMode="checkbox" id="resultRelations" rows="20"
+			paginator="true" paginatorPosition="bottom"
 			paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 			rowsPerPageTemplate="5,10,25,30">
 			<p:ajax event="expand" listener="#{searchController.onNodeExpand}"
 				update="resultRelations" />
-			
+
 			<p:columnGroup type="header">
 				<p:row>
-					<p:column rowspan="2" headerText="#{createController.selectedData.cmqName}" />
+					<p:column rowspan="2"
+						headerText="#{createController.selectedData.cmqName}" />
 					<p:column colspan="6" headerText="Hierarchy Details" />
 				</p:row>
 
@@ -175,15 +170,15 @@
 
 			<p:column>
 				<p:selectOneMenu id="soc3" value="#{node.scope}">
-
-					<f:selectItem itemLabel="Broad" itemValue="1" id="si13s" />
 					<f:selectItem itemLabel="Narrow" itemValue="2" id="si13d" />
+					<f:selectItem itemLabel="Broad" itemValue="1" id="si13s" />
 					<f:selectItem itemLabel="Child Narrow" itemValue="3" id="si4" />
 				</p:selectOneMenu>
 			</p:column>
 
 			<p:column>
 				<p:selectOneMenu id="soc2" value="#{node.category}" rendered="true">
+					<f:selectItem itemLabel="" itemValue="" />
 					<f:selectItem itemLabel="A" itemValue="A" id="si3" />
 					<f:selectItem itemLabel="S" itemValue="S" id="si33" />
 					<f:selectItem itemLabel="B" itemValue="B" id="si8" />

@@ -16,7 +16,7 @@
 
 	<link rel="stylesheet" href="/skins/CQT/CQT.css" />
 	<link rel="stylesheet" href="/skins/NMAT/NMAT.css" />
-	
+
 </h:head>
 
 <h:body>
@@ -24,8 +24,7 @@
 		<h:form>
 			<h:panelGrid id="l1" columns="2" style="width: 100%">
 				<p:panel id="pl1" style="border: none">
-					<p:graphicImage id="logo" title="desc" alt="logo"
-						url="#" />
+					<p:graphicImage id="logo" title="desc" alt="logo" url="#" />
 				</p:panel>
 
 				<h:panelGrid columns="1" style="max-width: 400px; float: right">
@@ -116,22 +115,27 @@
 		</h:form>
 		<h:form>
 			<p:menubar id="menubar">
-				<p:menuitem value="Create" id="pt_cmi1" action="#{createController.initCreateForm}" styleClass="#{view.viewId == '/create/create.xhtml' ? 'ui-state-active2' : ''}"
+				<p:menuitem value="Create" id="pt_cmi1"
+					action="#{createController.initCreateForm}"
+					styleClass="#{view.viewId == '/create/create.xhtml' ? 'ui-state-active2' : ''}"
 					style="font-weight:#{userBean.currentMenu eq 'CREATE_NEW_NMQ' ? 'bold' : 'normal'}"
-					url="/create/create.xhtml" rendered="true" />	
-				<p:menuitem value="Update" id="pt_cmi3" action="#{searchController.initSearch}" styleClass="#{view.viewId == '/create/update.xhtml' ? 'ui-state-active2' : ''}"
+					url="/create/create.xhtml" rendered="true" />
+				<p:menuitem value="Update" id="pt_cmi3"
+					action="#{searchController.initSearch}"
+					styleClass="#{view.viewId == '/create/update.xhtml' ? 'ui-state-active2' : ''}"
 					style="font-weight:#{userBean.currentMenu eq 'UPDATE_NMQ' ? 'bold' : 'normal'};"
-					url="/create/update.xhtml"
-					rendered="true" />
-				<p:menuitem value="Copy" id="pt_cmi5" action="#{searchController.initSearch}" styleClass="#{view.viewId == '/create/copy.xhtml' ? 'ui-state-active2' : ''}"
+					url="/create/update.xhtml" rendered="true" />
+				<p:menuitem value="Copy" id="pt_cmi5"
+					action="#{searchController.initSearch}"
+					styleClass="#{view.viewId == '/create/copy.xhtml' ? 'ui-state-active2' : ''}"
 					style="font-weight:#{userBean.currentMenu eq 'COPY_NMQ' ? 'bold' : 'normal'};"
-					url="/create/copy.xhtml"
-					rendered="true" />
-				 
+					url="/create/copy.xhtml" rendered="true" />
+
 				<p:menuitem value="Browse &amp; Search" id="pt_cmi17"
-					action="#{searchController.initSearch}" rendered="true" styleClass="#{view.viewId == '/create/browseAndSearch.xhtml' ? 'ui-state-active2' : ''}"
+					action="#{searchController.initSearch}" rendered="true"
+					styleClass="#{view.viewId == '/create/browseAndSearch.xhtml' ? 'ui-state-active2' : ''}"
 					style="font-weight:#{userBean.currentMenu eq 'BROWSE_SEARCH' ? 'bold' : 'normal'};"
-					url="/create/browseAndSearch.xhtml" />	
+					url="/create/browseAndSearch.xhtml" />
 				<p:menuitem value="MQ Compare" id="pt_cmi11" action="DIFF"
 					style="font-weight:#{userBean.currentMenu eq 'DIFF' ? 'bold' : 'normal'};"
 					rendered="false" />
@@ -140,20 +144,24 @@
 					style="font-weight:#{userBean.currentMenu eq 'NON_IMPACT_PUBLISH' or userBean.currentMenu eq 'IMPACT_PUBLISH' ? 'bold' : 'normal'};"
 					rendered="true">
 					<p:menuitem value="Publish Current Version" id="pt_cmi2"
-						action="NON_IMPACT_PUBLISH" rendered="true" styleClass="#{view.viewId == '/publish/publishCurrentVersion.xhtml' ? 'ui-state-active2' : ''}"
+						action="NON_IMPACT_PUBLISH" rendered="true"
+						styleClass="#{view.viewId == '/publish/publishCurrentVersion.xhtml' ? 'ui-state-active2' : ''}"
 						style="font-weight:#{userBean.currentMenu eq 'NON_IMPACT_PUBLISH' ? 'bold' : 'normal'};"
 						url="/publish/publishCurrentVersion.xhtml" disabled="false" />
 					<p:menuitem value="Publish Future Version" id="pt_cmi8"
-						action="IMPACT_PUBLISH" rendered="true" styleClass="#{view.viewId == '/publish/publishPreviousVersion.xhtml' ? 'ui-state-active2' : ''}"
+						action="IMPACT_PUBLISH" rendered="true"
+						styleClass="#{view.viewId == '/publish/publishPreviousVersion.xhtml' ? 'ui-state-active2' : ''}"
 						style="font-weight:#{userBean.currentMenu eq 'IMPACT_PUBLISH' ? 'bold' : 'normal'};"
 						url="/publish/publishPreviousVersion.xhtml" />
 				</p:submenu>
-				<p:menuitem value="Reports" id="pt_cmi4" action="REPORTS" styleClass="#{view.viewId == '/report/reports.xhtml' ? 'ui-state-active2' : ''}"
+				<p:menuitem value="Reports" id="pt_cmi4" action="REPORTS"
+					styleClass="#{view.viewId == '/report/reports.xhtml' ? 'ui-state-active2' : ''}"
 					style="font-weight:#{userBean.currentMenu eq 'REPORTS' ? 'bold' : 'normal'};"
 					disabled="false" url="/report/reports.xhtml" />
 
 				<p:menuitem value="Impact Assessment" id="pt_cmi10"
-					action="MEDDRA_IMPACT_ASSESSMENT" styleClass="#{view.viewId == '/impactAssessment/impactAssessment.xhtml' ? 'ui-state-active2' : ''}"
+					action="MEDDRA_IMPACT_ASSESSMENT"
+					styleClass="#{view.viewId == '/impactAssessment/impactAssessment.xhtml' ? 'ui-state-active2' : ''}"
 					rendered='true' url="/impactAssessment/impactAssessment.xhtml"
 					style="font-weight:#{userBean.currentMenu eq 'MEDDRA_IMPACT_ASSESSMENT' ? 'bold' : 'normal'};" />
 
@@ -161,19 +169,22 @@
 				<p:submenu label="View Version Impacts" icon="ui-icon-document"
 					id="pt_m3"
 					style="font-weight:#{userBean.currentMenu eq 'VIEW_CURRENT_VERSION_IMPACT' or userBean.currentMenu eq 'VIEW_PREVIOUS_VERSION_IMPACT' ? 'bold' : 'normal'};">
-					<p:menuitem value="View Current Version Impact" id="pt_cmi13" styleClass="#{view.viewId == '/viewVersionImpact/versionImpact.xhtml' ? 'ui-state-active2' : ''}"
+					<p:menuitem value="View Current Version Impact" id="pt_cmi13"
+						styleClass="#{view.viewId == '/viewVersionImpact/versionImpact.xhtml' ? 'ui-state-active2' : ''}"
 						action="#{CQTPageTemplateBean.displayCurrentViewVersionImpact}"
 						style="font-weight:#{userBean.currentMenu eq 'VIEW_CURRENT_VERSION_IMPACT' ? 'bold' : 'normal'};"
 						url="/viewVersionImpact/versionImpact.xhtml" />
 					<p:menuitem value="View Previous Version Impact" id="pt_cmi14"
-						action="VIEW_PREVIOUS_VERSION_IMPACT" styleClass="#{view.viewId == '/viewPreviousVersionImpact/previousVersionImpact.xhtml' ? 'ui-state-active2' : ''}"
+						action="VIEW_PREVIOUS_VERSION_IMPACT"
+						styleClass="#{view.viewId == '/viewPreviousVersionImpact/previousVersionImpact.xhtml' ? 'ui-state-active2' : ''}"
 						style="font-weight:#{userBean.currentMenu eq 'VIEW_PREVIOUS_VERSION_IMPACT' ? 'bold' : 'normal'};"
 						url="/viewPreviousVersionImpact/previousVersionImpact.xhtml" />
 				</p:submenu>
-				
-				<p:submenu label="Import csv" icon="ui-icon-document" id="pt_m4" 
+
+				<p:submenu label="Import csv" icon="ui-icon-document" id="pt_m4"
 					style="font-weight:normal;">
-					<p:menuitem value="Import TME" outcome="/import/importTme.xhtml" styleClass="#{view.viewId == '/import/importTme.xhtml' ? 'ui-state-active2' : ''}"
+					<p:menuitem value="Import TME" outcome="/import/importTme.xhtml"
+						styleClass="#{view.viewId == '/import/importTme.xhtml' ? 'ui-state-active2' : ''}"
 						style="font-weight:normal;" />
 				</p:submenu>
 
@@ -189,10 +200,11 @@
 				<!-- <p:menuitem value="Administration" id="pt_cmi12" action="ADMIN"
 					style="font-weight:#{userBean.currentMenu eq 'ADMIN' ? 'bold' : 'normal'};"
 					rendered="false" /> -->
-					
-				<p:menuitem value="Administration" id="admin_menu" action="ADMIN" styleClass="#{view.viewId == '/admin/admin.xhtml' ? 'ui-state-active2' : ''}"
- 					disabled="false" url="/admin/admin.xhtml" />
-				
+
+				<p:menuitem value="Administration" id="admin_menu" action="ADMIN"
+					styleClass="#{view.viewId == '/admin/admin.xhtml' ? 'ui-state-active2' : ''}"
+					disabled="false" url="/admin/admin.xhtml" />
+
 			</p:menubar>
 		</h:form>
 		<p:spacer width="10" height="5" id="pt_s1" />
@@ -202,14 +214,24 @@
 			</ui:insert>
 		</div>
 	</div>
+
+	<p:ajaxStatus onstart="PF('statusDialog').show()"
+		onsuccess="PF('statusDialog').hide()" />
+
+	<p:dialog
+		widgetVar="statusDialog" modal="true" draggable="false"
+		closable="false" resizable="false" showHeader="false">
+		<!-- <img src="/image/ajax-loader.gif" /> -->
+ 			Loading...
+ 	</p:dialog>
 	<style>
-	.ui-state-active2 {
-		font-weight: bold !important;
-		background-color: #777 !important;
-		border: 1px solid #eee !important;
-		color: #fff !important;
-		border-radius: 5px;
-	}
+.ui-state-active2 {
+	font-weight: bold !important;
+	background-color: #777 !important;
+	border: 1px solid #eee !important;
+	color: #fff !important;
+	border-radius: 5px;
+}
 /* 
 .ui-widget .ui-widget {
 	font-size: 12px !important;

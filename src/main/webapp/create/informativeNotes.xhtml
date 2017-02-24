@@ -8,10 +8,12 @@
 
 	<!-- <p:growl id="m_notes" /> -->
 
-	<p:panel header="Informative Notes for #{createController.selectedData.cmqName}">
+	<p:panel
+		header="Informative Notes for #{createController.selectedData.cmqName}">
 		<p:tabView>
 			<p:tab title="Description">
-				<p:inputTextarea required="true" value="#{createController.selectedData.cmqDescription}"
+				<p:inputTextarea required="true" placeholder="Please Enter Description"
+					value="#{createController.selectedData.cmqDescription}"
 					requiredMessage="A description is required"
 					style="width: 100%; min-height: 250px" autoResize="true" />
 				<!-- <h:inputTextarea required="true" value="###"   /> -->
@@ -26,9 +28,15 @@
 			</p:tab>
 		</p:tabView>
 
+		<h:panelGrid columns="2" style="width: 100%">
+			<p:commandButton  value="Save" update="m1"
+				icon="ui-icon-disk"
+				action="#{createController.saveInformativeNotes}"></p:commandButton>
 
-		<p:commandButton style="margin-top: 10px;" value="Save" update="m1"
-			icon="ui-icon-disk" action="#{createController.saveInformativeNotes}"></p:commandButton>
+			<p:commandButton value="Cancel" icon="ui-icon-close" process="@this"
+				update="m1" style="float: right" action="#{createController.cancel}"></p:commandButton>
+
+		</h:panelGrid>
 	</p:panel>
 
 

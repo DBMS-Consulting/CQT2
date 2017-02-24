@@ -75,12 +75,15 @@ public class CreateController implements Serializable {
 	private Long codeSelected;
 
 	private TreeNode relationsRoot;
+	private String[] selectedDesignees;
+	
+	private boolean reactivate, retire, demote, delete, approve, reviewed;
 
 	@PostConstruct
 	public void init() {
 		this.state = "Draft";
 		this.status = "Pending";
-		this.description = "Please enter the description.";
+		this.description = "*** Description ****";
 		this.notes = "";
 		this.source = "";
 
@@ -90,11 +93,18 @@ public class CreateController implements Serializable {
 		group = "No Group";
 		extension = "TME";
 		algorithm = "N";
+		
+		setReactivate(true);
+		setRetire(true);
+		setDemote(true);
+		setDelete(true);
+		setApprove(true);
+		setReviewed(true); 
 	}
 
 	public void initCreateForm() {
 		this.selectedData = new CmqBase190();
-		selectedData.setCmqDescription("Please enter the description.");
+		selectedData.setCmqDescription("*** Description ****");
 	}
 
 	public String onFlowProcess(FlowEvent event) {
@@ -163,6 +173,12 @@ public class CreateController implements Serializable {
 			selectedData.setCmqGroup(group);
 			selectedData.setCmqTypeCd(extension);
 			selectedData.setCmqCriticalEvent(critical);
+			if (status.equals("Pending"))
+				selectedData.setCmqStatus("P");
+			if (status.equals("Active"))
+				selectedData.setCmqStatus("A");
+			if (status.equals("Inactive"))
+				selectedData.setCmqStatus("I");
 			selectedData.setCmqState(state);
 			selectedData.setCmqAlgorithm(algorithm);
 			selectedData.setCmqProductCd(product);
@@ -170,7 +186,7 @@ public class CreateController implements Serializable {
 			selectedData.setCmqProtocolCd(protocol);
 			selectedData.setCmqProgramCd(drugProgram);
 			selectedData.setCmqGroup(group);
-			selectedData.setCmqStatus("P"); // length is 1 only
+			//selectedData.setCmqStatus("P"); // length is 1 only
 			selectedData.setCmqCode(codevalue);
 			selectedData.setCmqDescription(description);
 			selectedData.setDictionaryVersion(currentMeddraVersionCodeList
@@ -191,8 +207,11 @@ public class CreateController implements Serializable {
 					savedEntity.getId());
 
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"List CMQ_NAME is successfully saved.", "");
+					"List '" + selectedData.getCmqName() + "' is successfully saved.", "");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
+			
+			if (selectedData.getCmqDescription().equals("*** Description ****"))
+				selectedData.setCmqDescription("");
 		} catch (CqtServiceException e) {
 			LOG.error("Exception occured while creating CmqBase190.", e);
 
@@ -223,18 +242,21 @@ public class CreateController implements Serializable {
 			RefConfigCodeList currentMeddraVersionCodeList = this.refCodeListService.getCurrentMeddraVersion();
 
 			// fill data
-			selectedData.setCreationDate(new Date());
-			// selectedData.setCmqName("MEDDRA");
 			selectedData.setCmqTypeCd(extension);
 			selectedData.setCmqCriticalEvent(critical);
-			selectedData.setCmqState(state);
+			if (status.equals("Pending"))
+				selectedData.setCmqState("P");
+			if (status.equals("Active"))
+				selectedData.setCmqState("A");
+			if (status.equals("Inactive"))
+				selectedData.setCmqState("I");
 			selectedData.setCmqAlgorithm(algorithm);
 			selectedData.setCmqProductCd(product);
 			selectedData.setCmqLevel(level);
 			selectedData.setCmqProtocolCd(protocol);
 			selectedData.setCmqProgramCd(drugProgram);
 			selectedData.setCmqGroup(group);
-			selectedData.setCmqStatus("P");
+			selectedData.setCmqState(state);
 			selectedData.setCmqCode(codevalue);
 			selectedData.setCmqDescription(description);
 			selectedData.setDictionaryVersion(currentMeddraVersionCodeList.getValue());
@@ -256,7 +278,7 @@ public class CreateController implements Serializable {
 					savedEntity.getId());
 
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"List CMQ_NAME is successfully saved.", "");
+					"List '" + selectedData.getCmqName() + "' is successfully saved.", "");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		} catch (CqtServiceException e) {
 			LOG.error("Exception occured while creating CmqBase190.", e);
@@ -272,14 +294,6 @@ public class CreateController implements Serializable {
 	}
 
 	public String saveInformativeNotes() {
-
-		if (selectedData.getCmqDescription().equals("Please enter the description.")) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"The description is required",
-					"");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return "";
-		}
 		Long cmqId = (Long) (FacesContext.getCurrentInstance()
 				.getExternalContext().getSessionMap().get("NEW-CMQ_BASE-ID"));
 
@@ -344,7 +358,7 @@ public class CreateController implements Serializable {
 						SmqBase190 smqBase = (SmqBase190) entity;
 						cmqRelation.setSmqCode(smqBase.getSmqCode());
 					}
-					cmqRelation.setTermWeight(Long.parseLong(hierarchyNode.getWeight()));
+					cmqRelation.setTermWeight((hierarchyNode.getWeight() != null && !hierarchyNode.getWeight().equals("")) ? Long.parseLong(hierarchyNode.getWeight()) : null);
 					cmqRelation.setTermScope(hierarchyNode.getScope());
 					cmqRelation.setTermCategory(hierarchyNode.getCategory());
 					cmqRelation.setDictionaryName(cmqBase.getDictionaryName());
@@ -391,13 +405,28 @@ public class CreateController implements Serializable {
 	// set workflow state CMQ_BASE_CURRENT -> CMQ_STATE
 	//
 	public String workflowState(String state) {
+		LOG.info("\n OLD STATE :" + selectedData.getCmqState());
+
 		setState(state);
 		selectedData.setCmqState(state);
+		
+		//Update
+		try {
+			cmqBaseService.update(selectedData);
+			LOG.info("\n NEW STATE :" + selectedData.getCmqState());
 
-		FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Workflow state set to '" + state + "'", "");
-		FacesContext ctx = FacesContext.getCurrentInstance();
-		ctx.addMessage(null, msg);
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Workflow state set to '" + state + "'", "");
+			FacesContext ctx = FacesContext.getCurrentInstance();
+			ctx.addMessage(null, msg);
 
+		} catch (CqtServiceException e) {
+			e.printStackTrace();
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "An error occured while updating the state", "");
+			FacesContext ctx = FacesContext.getCurrentInstance();
+			ctx.addMessage(null, msg);
+		}
+
+		
 		return state;
 	}
 
@@ -409,9 +438,9 @@ public class CreateController implements Serializable {
 	 */
 	public void changeLevel(AjaxBehaviorEvent event) {
 		if (extension.equals("PRO")) {
-			setLevel(1);
-		} else
 			setLevel(2);
+		} else
+			setLevel(1);
 
 		if (extension.equals("CPT") || extension.equals("DME"))
 			setDrugProgram("No Program");
@@ -644,6 +673,74 @@ public class CreateController implements Serializable {
 
 	public void setCmqRelationService(ICmqRelation190Service cmqRelationService) {
 		this.cmqRelationService = cmqRelationService;
+	}
+
+	public String[] getSelectedDesignees() {
+		return selectedDesignees;
+	}
+
+	public void setSelectedDesignees(String[] selectedDesignees) {
+		this.selectedDesignees = selectedDesignees;
+	}
+	
+	public boolean isReactivate() {
+		if (selectedData != null && selectedData.getCmqStatus().equals("I"))
+			return false;
+		return true;
+	}
+
+	public void setReactivate(boolean reactivate) {
+		this.reactivate = reactivate;
+	}
+
+	public boolean isRetire() {
+		if (selectedData != null && selectedData.getCmqStatus().equals("A"))
+			return false;
+		return true;
+	}
+
+	public void setRetire(boolean retire) {
+		this.retire = retire;
+	}
+
+	public boolean isDemote() {
+		if (selectedData.getCmqState().equals("Reviewed") || selectedData.getCmqState().equals("Approved"))
+			return false;
+		return true;
+	}
+
+	public void setDemote(boolean demote) {
+		this.demote = demote;
+	}
+
+	public boolean isDelete() {
+		if (selectedData.getCmqState().equals("Draft"))
+			return false;
+		return true;
+	}
+
+	public void setDelete(boolean delete) {
+		this.delete = delete;
+	}
+
+	public boolean isApprove() {
+		if (selectedData.getCmqState().equals("Reviewed"))
+			return false;
+		return true;
+	}
+
+	public void setApprove(boolean approve) {
+		this.approve = approve;
+	}
+
+	public boolean isReviewed() {
+		if (selectedData.getCmqState().equals("Draft"))
+			return false;
+		return true;
+	}
+
+	public void setReviewed(boolean reviewed) {
+		this.reviewed = reviewed;
 	}
 
 }

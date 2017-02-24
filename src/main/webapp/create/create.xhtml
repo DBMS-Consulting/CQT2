@@ -16,9 +16,7 @@
 						<p:menuitem value="Home" url="/index.xhtml" />
 						<p:menuitem value="Create" />
 					</p:breadCrumb>
-
 				</h:panelGrid>
-
 			</h:panelGrid>
 
 			<p:wizard flowListener="#{wizard.onFlowProcess}" widgetVar="wizard">
@@ -27,7 +25,7 @@
 					<p:panel header="Details">
 						<ui:include src="details.xhtml" />
 						<h:panelGrid columns="2" style="width: 100%">
-							<p:commandButton value="Save" icon="ui-icon-disk" update="m1 @form:codeValue pgl2"
+							<p:commandButton value="Save" icon="ui-icon-disk" update="m1 @form:detailsPanel pgl2"
 								action="#{createController.save}"></p:commandButton>
 							<p:commandButton value="Cancel" icon="ui-icon-close"
 								process="@this" update="m1" style="float: right"

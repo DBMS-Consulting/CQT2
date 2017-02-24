@@ -85,25 +85,6 @@
 				<f:selectItems></f:selectItems>
 			</p:selectOneMenu>
 		</h:panelGrid>
-
-		<!-- <h:panelGrid columns="2" style="min-width: 300px">
-			<p:outputLabel value="Critical event" styleClass="label-right" />
-			<p:selectOneMenu value="#{searchController.critical}" id="critical2">
-				<f:selectItem itemValue="" itemLabel="All" />
-				<f:selectItem itemLabel="No" itemValue="No" />
-				<f:selectItem itemLabel="Yes-Narrow" itemValue="Narrow" />
-				<f:selectItem itemLabel="Yes-Broad" itemValue="Broad" />
-			</p:selectOneMenu>
-
-			<p:outputLabel value="Group" styleClass="label-right" />
-			<p:selectOneMenu value="#{searchController.group}" id="group"
-				disabled="false">
-				<f:selectItem itemLabel="" itemValue="All"></f:selectItem>
-				<f:selectItem itemLabel="No Group" itemValue="No Group"></f:selectItem>
-				<f:selectItems></f:selectItems>
-			</p:selectOneMenu>
-			
-		</h:panelGrid> -->
 	</h:panelGrid>
 
 	<p:separator />
@@ -113,11 +94,19 @@
 		<p:inputText value="#{searchController.termName}" />
 		<p:outputLabel value="Code" />
 		<p:inputText value="#{searchController.code}" />
+
+		<!-- <p:outputLabel value="Designee" /> -->
+		<!-- <p:selectOneMenu value="#{createController.selectedData.cmqDesignee}">
+			<f:selectItem itemLabel="" itemValue=""></f:selectItem>
+			<f:selectItem itemLabel="NONE" itemValue="NONE"></f:selectItem>
+		</p:selectOneMenu> -->
+		<p:selectCheckboxMenu  value="#{createController.selectedDesignees}" label="Designees">
+			<f:selectItem itemLabel="" itemValue=""></f:selectItem>
+			<f:selectItem itemLabel="NONE" itemValue="NONE"></f:selectItem>
+		</p:selectCheckboxMenu >
+
 		<p:commandButton value="Search" action="#{searchController.search()}"
 			update="result" />
-		<p:commandButton value="Maintain Designees"
-			action="#{searchController.maintainDesignees}"
-			rendered="#{view.viewId == '/create/browseAndSearch.xhtml'}" />
 		<p:commandButton action="#{searchController.reset}" value="Reset"
 			update="@form:result @form:searchPanel" />
 	</h:panelGrid>
@@ -150,7 +139,7 @@
 
 				<p:commandLink
 					action="#{createController.loadCmqBaseByCode(value.cmqCode)}"
-					value="#{value.cmqCode}" update="@form:wizardId @form:pgl2"></p:commandLink>
+					value="#{value.cmqCode}" update="@form:wizardId @form:pgl2 @form:pgl2"></p:commandLink>
 			</p:column>
 			<p:column headerText="Drug Program">
 				<h:outputText value="#{value.cmqProgramCd}" />

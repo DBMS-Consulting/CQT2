@@ -6,8 +6,8 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:p="http://primefaces.org/ui">
 
-	<p:growl id="messages" />
-	<h:panelGrid columns="4" cellpadding="5">
+	<!-- <p:growl id="messages" /> -->
+	<h:panelGrid columns="3" cellpadding="5" id="detailsPanel">
 
 		<h:panelGrid columns="2" columnClasses="label, value">
 			<p:outputLabel value="* Extension" styleClass="label-right" />
@@ -86,28 +86,9 @@
 				<f:selectItem itemValue="5" itemLabel="5" />
 			</p:selectOneMenu>
 
-			<p:outputLabel value="* Critical event" styleClass="label-right" />
-			<p:selectOneMenu value="#{createController.critical}" rendered="true"
-				disabled="false" id="critical" required="true">
-				<f:selectItem itemValue="No" itemLabel="No" />
-				<f:selectItem itemLabel="Yes-Narrow" itemValue="Narrow" />
-				<f:selectItem itemLabel="Yes-Broad" itemValue="Broad" />
-			</p:selectOneMenu>
-
-			<p:outputLabel value="Scope" styleClass="label-right" />
-			<p:selectOneMenu value="#{createController.scope}" rendered="true"
-				disabled="false" id="scope" required="true">
-				<f:selectItem itemValue="No" itemLabel="No" />
-				<f:selectItem itemValue="Yes" itemLabel="Yes" />
-			</p:selectOneMenu>
-
 			<p:outputLabel value="* Algorithm" styleClass="label-right" />
 			<p:inputText value="#{createController.algorithm}" />
 
-		</h:panelGrid>
-
-		<h:panelGrid columns="2" columnClasses="label, value"
-			style="min-width: 300px">
 			<p:outputLabel value="* Status" styleClass="label-right" />
 			<h:outputText value="#{createController.status}"></h:outputText>
 
@@ -116,18 +97,12 @@
 
 
 			<p:outputLabel value="Group" styleClass="label-right" />
-			<!-- <p:selectOneMenu value="#{createController.selectedData.cmqGroup}"
-				rendered="true" disabled="false" required="true"
-				requiredMessage="A group is required">
-				<f:selectItem itemLabel="No Group" itemValue="No Group"></f:selectItem>
-				<f:selectItem itemLabel="" itemValue=""></f:selectItem>
-			</p:selectOneMenu> -->
 			<h:outputText value="#{createController.group}" />
 
 			<p:outputLabel value="Code" styleClass="label-right" />
 			<h:outputText id="codeValue" value="#{createController.selectedData.cmqCode}" />
 		</h:panelGrid>
-
+ 
 		<h:panelGrid columns="2" columnClasses="label, value">
 			<p:outputLabel value="Creation Date  " styleClass="label-right" />
 			<h:outputText value="#{createController.selectedData.creationDate}" />

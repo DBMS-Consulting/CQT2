@@ -38,7 +38,7 @@
 
 						<h:panelGrid columns="2" style="width: 100%">
 							<p:commandButton value="Save" icon="ui-icon-disk" process="@this"
-								action="#{createController.update}" update="@form:m1 pgl2 @form:codeValue"></p:commandButton>
+								action="#{createController.update}" update="@form:m1 pgl2 @form:codeValue @form:detailsPanel"></p:commandButton>
 
 							<p:commandButton value="Cancel" icon="ui-icon-close" update="@form:m1" process="@this"
 								style="float: right" action="#{createController.cancel}"></p:commandButton>
