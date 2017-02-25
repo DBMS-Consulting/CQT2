@@ -36,12 +36,16 @@ public class ConfigurationController implements Serializable {
 
 	private RefConfigCodeList currentMeddraVersionCodeList;
 	
+	private String dictionaryName;
+	
 	@PostConstruct
 	public void init() {
+		dictionaryName = "MEDDRA";
 		getExtensionList();
 		getProgramList();
 		getProtocolList();
 		getProductList();
+		getCurrentMeddraVersion();
 	}
 
 	/**
@@ -143,5 +147,13 @@ public class ConfigurationController implements Serializable {
 
 	public void setExtensions(List<RefConfigCodeList> extensions) {
 		this.extensions = extensions;
+	}
+
+	public String getDictionaryName() {
+		return dictionaryName;
+	}
+
+	public void setDictionaryName(String dictionaryName) {
+		this.dictionaryName = dictionaryName;
 	}
 }
