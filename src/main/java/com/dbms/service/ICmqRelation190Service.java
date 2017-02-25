@@ -8,5 +8,7 @@ import com.dbms.util.exceptions.CqtServiceException;
 
 public interface ICmqRelation190Service extends ICqtPersistenceService<CmqRelation190> {
 
-	public void create(List<CmqRelation190> cmqRelations) throws CqtServiceException;
+	void create(List<CmqRelation190> cmqRelations) throws CqtServiceException;
+	
+	List<CmqRelation190> findByCmqCode(Long cmqCode);
 }

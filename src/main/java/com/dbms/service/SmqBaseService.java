@@ -110,4 +110,26 @@ public class SmqBaseService extends CqtPersistenceService<SmqBase190> implements
 		}
 		return retVal;
 	}
+	
+	public SmqBase190 findByCode(Long smqCode) {
+		SmqBase190 retVal = null;
+		String queryString = "from SmqBase190 c where c.smqCode = :smqCode ";
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		try {
+			Query query = entityManager.createQuery("from SmqBase190 c where c.smqCode = :smqCode ");
+			query.setParameter("smqCode", smqCode);
+			retVal = (SmqBase190) query.getSingleResult();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg
+					.append("An error occured while findSmqRelationsForSmqCode ")
+					.append(smqCode)
+					.append(" Query used was ->")
+					.append(queryString);
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
 }

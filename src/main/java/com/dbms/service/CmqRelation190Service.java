@@ -6,10 +6,13 @@ import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.Query;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.dbms.entity.cqt.CmqBase190;
 import com.dbms.entity.cqt.CmqRelation190;
 import com.dbms.service.base.CqtPersistenceService;
 import com.dbms.util.exceptions.CqtServiceException;
@@ -45,5 +48,29 @@ public class CmqRelation190Service extends CqtPersistenceService<CmqRelation190>
 		} finally {
 			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
 		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<CmqRelation190> findByCmqCode(Long cmqCode) {
+		List<CmqRelation190> retVal = null;
+		StringBuilder sb = new StringBuilder();
+		sb.append("from CmqRelation190 c where c.cmqCode = :cmqCode ");
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		try {
+			Query query = entityManager.createQuery(sb.toString());
+			query.setParameter("cmqCode", cmqCode);
+			retVal = query.getResultList();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg
+					.append("An error occured while fetching types from CmqRelation190 on cmqCode ")
+					.append(cmqCode)
+					.append(" Query used was ->")
+					.append(sb.toString());
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
 	}
 }

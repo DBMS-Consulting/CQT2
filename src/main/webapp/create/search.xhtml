@@ -144,7 +144,9 @@
 
 				<p:commandLink 
 					action="#{createController.loadCmqBaseByCode(value.cmqCode)}"
-					value="#{value.cmqCode}" update="@form:wizardId @form:pgl2 @form:pgl2"></p:commandLink>
+					value="#{value.cmqCode}" update="@form:wizardId @form:pgl2 @form:pgl2 @form:relations">
+					<f:setPropertyActionListener target="#{searchController.clickedCmqCode}" value="#{value.cmqCode}" />
+				</p:commandLink>
 			</p:column>
 			<p:column headerText="Drug Program">
 				<h:outputText value="#{value.cmqProgramCd}" />

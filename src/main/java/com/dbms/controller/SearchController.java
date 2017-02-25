@@ -61,7 +61,7 @@ public class SearchController extends BaseController<CmqBase190> {
 
 	@ManagedProperty("#{CmqRelation190Service}")
 	private ICmqRelation190Service cmqRelationService;
-	
+
 	@ManagedProperty("#{RefCodeListService}")
 	private IRefCodeListService refCodeListService;
 
@@ -100,7 +100,10 @@ public class SearchController extends BaseController<CmqBase190> {
 	private List<HierarchySearchResultBean> hierarchySearchResults;
 
 	private TreeNode[] relationSelected;
+	private TreeNode[] relationSelectedInRelationsTable;
 	private TreeNode relationsRoot;
+
+	private Long clickedCmqCode;
 
 	public SearchController() {
 		this.selectedData = new CmqBase190();
@@ -115,7 +118,7 @@ public class SearchController extends BaseController<CmqBase190> {
 		this.critical = null;
 		this.group = "No Group";
 		this.extension = "";
- 		drugProgram = "";
+		drugProgram = "";
 		product = "";
 		protocol = "";
 
@@ -128,11 +131,10 @@ public class SearchController extends BaseController<CmqBase190> {
 		this.datas = new ArrayList<CmqBase190>();
 		if (selctedData == null) {
 			selctedData = new CmqBase190();
-			RefConfigCodeList currentMeddraVersionCodeList = this.refCodeListService
-					.getCurrentMeddraVersion();
+			RefConfigCodeList currentMeddraVersionCodeList = this.refCodeListService.getCurrentMeddraVersion();
 			if (currentMeddraVersionCodeList != null) {
 				selctedData.setDictionaryVersion(currentMeddraVersionCodeList.getValue());
-				//selectedData.setDictionaryName(dictionaryName);
+				// selectedData.setDictionaryName(dictionaryName);
 			}
 		}
 	}
@@ -149,16 +151,16 @@ public class SearchController extends BaseController<CmqBase190> {
 	}
 
 	public void changeLevel(AjaxBehaviorEvent event) {
-		 changeLevel();
+		changeLevel();
 	}
-	
+
 	public void changeLevel() {
 		if (extension.equals("PRO")) {
 			setLevel(2);
-			
+
 		} else {
 			setLevel(1);
-		
+
 		}
 
 		if (extension.equals("CPT") || extension.equals("DME"))
@@ -523,22 +525,8 @@ public class SearchController extends BaseController<CmqBase190> {
 			this.hierarchyRoot = new DefaultTreeNode("root", new HierarchyNode("LEVEL", "NAME", "CODE", null), null);
 
 			for (SmqBase190 smqBase : smqBaseList) {
-				HierarchyNode node = new HierarchyNode();
-				if (smqBase.getSmqLevel() == 1) {
-					node.setLevel("SMQ1");
-				} else if (smqBase.getSmqLevel() == 2) {
-					node.setLevel("SMQ2");
-				} else if (smqBase.getSmqLevel() == 3) {
-					node.setLevel("SMQ3");
-				} else if (smqBase.getSmqLevel() == 4) {
-					node.setLevel("SMQ4");
-				} else if (smqBase.getSmqLevel() == 5) {
-					node.setLevel("SMQ5");
-				}
-				node.setTerm(smqBase.getSmqName());
-				node.setCode(smqBase.getSmqCode().toString());
-				node.setEntity(smqBase);
-				TreeNode parentTreeNode = new DefaultTreeNode(node, this.hierarchyRoot);
+				HierarchyNode node = this.createSmqBaseNode(smqBase);
+				TreeNode parentTreeNode = new DefaultTreeNode(node, this.hierarchyRoot); 
 
 				// process children now
 				Set<SmqBase190> childSmqBaseList = smqBase.getSmqBaseChildres();
@@ -577,12 +565,7 @@ public class SearchController extends BaseController<CmqBase190> {
 			this.hierarchyRoot = new DefaultTreeNode("root", new HierarchyNode("LEVEL", "NAME", "CODE", null), null);
 
 			for (MeddraDictHierarchySearchDto meddraDictDto : meddraDictDtoList) {
-				HierarchyNode node = new HierarchyNode();
-				node.setLevel(levelH.toUpperCase());
-				node.setTerm(meddraDictDto.getTerm());
-				node.setCode(meddraDictDto.getCode());
-				node.setEntity(meddraDictDto);
-
+				HierarchyNode node = this.createMeddraNode(meddraDictDto, levelH);
 				new DefaultTreeNode(node, this.hierarchyRoot);
 			}
 		} else if (searchCmqBase) {
@@ -689,7 +672,7 @@ public class SearchController extends BaseController<CmqBase190> {
 				HierarchyNode hierarchyNode = (HierarchyNode) treeNode.getData();
 				if ((null != hierarchyNode) && !hierarchyNode.isDummyNode()) {
 					TreeNode parentNode = treeNode.getParent();
-					if(!nodesList.contains(parentNode)) {
+					if (!nodesList.contains(parentNode)) {
 						// remove the first dummy node placeholder
 						List<TreeNode> childTreeNodes = treeNode.getChildren();
 						if ((null != childTreeNodes) && (childTreeNodes.size() > 0)) {
@@ -704,7 +687,7 @@ public class SearchController extends BaseController<CmqBase190> {
 					}
 				}
 			}
-			setRelationSelected(nodes);
+			// setRelationSelected(nodes);
 
 			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Relations selected", "");
 			FacesContext.getCurrentInstance().addMessage(null, message);
@@ -717,23 +700,56 @@ public class SearchController extends BaseController<CmqBase190> {
 	 * @param rootNodeToSearchFrom
 	 * @param selectedTreeNode
 	 */
-	public void deleteRelation(TreeNode rootNodeToSearchFrom, HierarchyNode selectedNode) {
-		if(rootNodeToSearchFrom.getChildCount() > 0) {
-			List<TreeNode> childTreeNodes = rootNodeToSearchFrom.getChildren();
-			for(Iterator<TreeNode> treeNodeIterator = childTreeNodes.listIterator(); treeNodeIterator.hasNext();) {
-				TreeNode childTreeNode = treeNodeIterator.next();
-				HierarchyNode childNode = (HierarchyNode) childTreeNode.getData();
-				if(childNode.equals(selectedNode)) {
-					treeNodeIterator.remove(); //remove it from the root node
-					break;
-				} else if(childTreeNode.getChildCount() > 0) {
-					//drill down
-					this.deleteRelation(childTreeNode, selectedNode);
+	public void deleteRelations(TreeNode rootNodeToSearchFrom) {
+		if ((this.relationSelectedInRelationsTable != null) && (this.relationSelectedInRelationsTable.length > 0)) {
+			if (null == rootNodeToSearchFrom) {
+				rootNodeToSearchFrom = this.relationsRoot;
+			}
+			this.deleteSelectedRelations(rootNodeToSearchFrom);
+
+			// clear the selections in the table
+			clearTreeTableSelections(rootNodeToSearchFrom);
+
+			this.relationSelectedInRelationsTable = null;
+		}
+	}
+
+	private void deleteSelectedRelations(TreeNode rootNodeToSearchFrom) {
+
+		List<TreeNode> relationsSelectedInRelationsTableList = Arrays.asList(this.relationSelectedInRelationsTable);
+		List<TreeNode> childTreeNodes = rootNodeToSearchFrom.getChildren();
+		for (Iterator<TreeNode> treeNodeIterator = childTreeNodes.listIterator(); treeNodeIterator.hasNext();) {
+			TreeNode childTreeNode = treeNodeIterator.next();
+			// HierarchyNode childNode = (HierarchyNode)
+			// childTreeNode.getData();
+			if (relationsSelectedInRelationsTableList.contains(childTreeNode)) {
+				treeNodeIterator.remove(); // remove it from the root node
+				// break;
+			} else if (childTreeNode.getChildCount() > 0) {
+				// drill down
+				this.deleteSelectedRelations(childTreeNode);
+			}
+		}
+	}
+
+	public void clearTreeTableSelections(TreeNode rootTreeNode) {
+		if (null == rootTreeNode) {
+			rootTreeNode = this.relationsRoot;
+		}
+		rootTreeNode.setSelected(false);
+		if (rootTreeNode.getChildCount() > 0) {
+			List<TreeNode> childTreeNodes = rootTreeNode.getChildren();
+			for (TreeNode childTreeNode : childTreeNodes) {
+				if (null != childTreeNode) {
+					childTreeNode.setSelected(false);
+				}
+				if (childTreeNode.getChildCount() > 0) {
+					clearTreeTableSelections(childTreeNode);
 				}
 			}
 		}
 	}
-	
+
 	public void saveDetails() {
 		log.debug("save cmq details ... ");
 		try {
@@ -860,5 +876,109 @@ public class SearchController extends BaseController<CmqBase190> {
 
 	public void setRefCodeListService(IRefCodeListService refCodeListService) {
 		this.refCodeListService = refCodeListService;
+	}
+
+	public TreeNode[] getRelationSelectedInRelationsTable() {
+		return relationSelectedInRelationsTable;
+	}
+
+	public void setRelationSelectedInRelationsTable(TreeNode[] relationSelectedInRelationsTable) {
+		this.relationSelectedInRelationsTable = relationSelectedInRelationsTable;
+	}
+
+	public Long getClickedCmqCode() {
+		return clickedCmqCode;
+	}
+
+	public void setClickedCmqCode(Long clickedCmqCode) {
+		this.clickedCmqCode = clickedCmqCode;
+		this.selctedData = this.cmqBaseService.findByCode(clickedCmqCode);
+		List<CmqRelation190> cmqRelationList = this.cmqRelationService.findByCmqCode(clickedCmqCode);
+		relationsRoot = new DefaultTreeNode("root",
+				new HierarchyNode("LEVEL", "NAME", "CODE", "SCOPE", "CATEGORY", "WEIGHT", null), null);
+		for (CmqRelation190 cmqRelation : cmqRelationList) {
+			HierarchyNode node = null;
+			if((cmqRelation.getSmqCode() != null) && (cmqRelation.getSmqCode() > 0)) {
+				SmqBase190 smqBase190 = this.smqBaseService.findByCode(cmqRelation.getSmqCode());
+				if(null != smqBase190) {
+					node = this.createSmqBaseNode(smqBase190);
+					node.setCategory(cmqRelation.getTermCategory());
+					node.setScope(cmqRelation.getTermScope());
+					node.setWeight(cmqRelation.getTermWeight() + "");
+					TreeNode smqBaseTreeNode = new DefaultTreeNode(node, this.relationsRoot);
+					long childSmqrelationsCount = this.smqBaseService
+							.findSmqRelationsCountForSmqCode(smqBase190.getSmqCode());
+					if (childSmqrelationsCount > 0) {
+						// add a dummmy node to show expand arrow
+						HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
+						dummyNode.setDummyNode(true);
+						new DefaultTreeNode(dummyNode, smqBaseTreeNode);
+					}
+				}
+			} else if((cmqRelation.getSocCode() != null) && (cmqRelation.getSocCode() > 0)) {
+				MeddraDictHierarchySearchDto searchDto = this.meddraDictService.findByCode("SOC_", cmqRelation.getSocCode());
+				node = this.createMeddraNode(searchDto, "SOC");
+				node.setCategory(cmqRelation.getTermCategory());
+				node.setScope(cmqRelation.getTermScope());
+				node.setWeight(cmqRelation.getTermWeight() + "");
+				new DefaultTreeNode(node, this.relationsRoot);
+			} else if((cmqRelation.getHlgtCode() != null) && (cmqRelation.getHlgtCode() > 0)) {
+				MeddraDictHierarchySearchDto searchDto = this.meddraDictService.findByCode("HLGT_", cmqRelation.getHlgtCode());
+				node = this.createMeddraNode(searchDto, "HLGT");
+				node.setCategory(cmqRelation.getTermCategory());
+				node.setScope(cmqRelation.getTermScope());
+				node.setWeight(cmqRelation.getTermWeight() + "");
+				new DefaultTreeNode(node, this.relationsRoot);
+			} else if((cmqRelation.getHltCode() != null) && (cmqRelation.getHltCode() > 0)) {
+				MeddraDictHierarchySearchDto searchDto = this.meddraDictService.findByCode("HLT_", cmqRelation.getHltCode());
+				node = this.createMeddraNode(searchDto, "HLT");
+				node.setCategory(cmqRelation.getTermCategory());
+				node.setScope(cmqRelation.getTermScope());
+				node.setWeight(cmqRelation.getTermWeight() + "");
+				new DefaultTreeNode(node, this.relationsRoot);
+			} else if((cmqRelation.getPtCode() != null) && (cmqRelation.getPtCode() > 0)) {
+				MeddraDictHierarchySearchDto searchDto = this.meddraDictService.findByCode("PT_", cmqRelation.getPtCode());
+				node = this.createMeddraNode(searchDto, "PT");
+				node.setCategory(cmqRelation.getTermCategory());
+				node.setScope(cmqRelation.getTermScope());
+				node.setWeight(cmqRelation.getTermWeight() + "");
+				new DefaultTreeNode(node, this.relationsRoot);
+			} else if((cmqRelation.getLltCode() != null) && (cmqRelation.getLltCode() > 0)) {
+				MeddraDictHierarchySearchDto searchDto = this.meddraDictService.findByCode("LLT_", cmqRelation.getLltCode());
+				node = this.createMeddraNode(searchDto, "LLT");
+				node.setCategory(cmqRelation.getTermCategory());
+				node.setScope(cmqRelation.getTermScope());
+				node.setWeight(cmqRelation.getTermWeight() + "");
+				new DefaultTreeNode(node, this.relationsRoot);
+			}
+		}
+	}
+	
+	private HierarchyNode createSmqBaseNode(SmqBase190 smqBase) {
+		HierarchyNode node = new HierarchyNode();
+		if (smqBase.getSmqLevel() == 1) {
+			node.setLevel("SMQ1");
+		} else if (smqBase.getSmqLevel() == 2) {
+			node.setLevel("SMQ2");
+		} else if (smqBase.getSmqLevel() == 3) {
+			node.setLevel("SMQ3");
+		} else if (smqBase.getSmqLevel() == 4) {
+			node.setLevel("SMQ4");
+		} else if (smqBase.getSmqLevel() == 5) {
+			node.setLevel("SMQ5");
+		}
+		node.setTerm(smqBase.getSmqName());
+		node.setCode(smqBase.getSmqCode().toString());
+		node.setEntity(smqBase);
+		return node;
+	}
+	
+	private HierarchyNode createMeddraNode(MeddraDictHierarchySearchDto searchDto, String level) {
+		HierarchyNode node = new HierarchyNode();
+		node.setLevel(level);
+		node.setTerm(searchDto.getTerm());
+		node.setCode(searchDto.getCode());
+		node.setEntity(searchDto);
+		return node;
 	}
 }

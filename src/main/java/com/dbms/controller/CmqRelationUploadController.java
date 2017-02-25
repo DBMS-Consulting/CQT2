@@ -104,7 +104,7 @@ public class CmqRelationUploadController implements Serializable {
 						break;
 					}
 					relation=new CmqRelation190();
-					relation.setCmqBase(base);
+					//relation.setCmqBase(base);
 					//relation.setTermName(ss[1]);	//missing in schema
 					if(ss.length>2&&StringUtils.isNotEmpty(ss[2])&&ss[2].length()>3){
 						failed++;

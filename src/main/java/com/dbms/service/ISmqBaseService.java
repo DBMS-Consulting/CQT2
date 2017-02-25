@@ -12,4 +12,6 @@ public interface ISmqBaseService {
 	Long findSmqRelationsCountForSmqCode(Long smqCode);
 
 	List<SmqRelation190> findSmqRelationsForSmqCode(Long smqCode);
+	
+	SmqBase190 findByCode(Long smqCode);
 }

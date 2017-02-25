@@ -26,6 +26,7 @@ import com.dbms.entity.cqt.CmqBase190;
 import com.dbms.entity.cqt.CmqRelation190;
 import com.dbms.entity.cqt.RefConfigCodeList;
 import com.dbms.entity.cqt.SmqBase190;
+import com.dbms.entity.cqt.SmqRelation190;
 import com.dbms.entity.cqt.dtos.MeddraDictHierarchySearchDto;
 import com.dbms.service.ICmqBase190Service;
 import com.dbms.service.ICmqRelation190Service;
@@ -446,6 +447,9 @@ public class CreateController implements Serializable {
 					} else if (entity instanceof SmqBase190) {
 						SmqBase190 smqBase = (SmqBase190) entity;
 						cmqRelation.setSmqCode(smqBase.getSmqCode());
+					} else if (entity instanceof SmqRelation190){
+						SmqRelation190 smqRelation = (SmqRelation190) entity;
+						cmqRelation.setSmqCode(smqRelation.getSmqCode());
 					}
 					cmqRelation
 							.setTermWeight((hierarchyNode.getWeight() != null && !hierarchyNode
@@ -461,7 +465,6 @@ public class CreateController implements Serializable {
 					cmqRelation.setCreationDate(new Date());
 					cmqRelation.setCmqSubversion(cmqBase.getCmqSubversion());
 					cmqRelationsList.add(cmqRelation);
-					cmqRelation.setCmqBase(cmqBase);
 				}
 			}
 			if (!cmqRelationsList.isEmpty()) {

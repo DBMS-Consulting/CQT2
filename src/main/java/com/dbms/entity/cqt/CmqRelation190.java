@@ -35,7 +35,7 @@ public class CmqRelation190 extends BaseEntity {
 	@Column(name = "CMQ_ID", nullable = false)
 	private Long cmqId;
 
-	@Column(name = "CMQ_CODE", nullable = false, insertable = false, updatable = false)
+	@Column(name = "CMQ_CODE", nullable = false)
 	private Long cmqCode;
 
 	@Column(name = "SOC_CODE")
@@ -93,10 +93,6 @@ public class CmqRelation190 extends BaseEntity {
 
 	@Column(name = "CMQ_SUBVERSION", nullable = false, precision = 10)
 	private BigDecimal cmqSubversion;
-
-	@ManyToOne
-	@JoinColumn(name = "CMQ_CODE", nullable = false, updatable = false)
-	private CmqBase190 cmqBase;
 
 	public Long getId() {
 		return cmqRelationId;
@@ -264,14 +260,6 @@ public class CmqRelation190 extends BaseEntity {
 
 	public void setCmqSubversion(BigDecimal cmqSubversion) {
 		this.cmqSubversion = cmqSubversion;
-	}
-
-	public CmqBase190 getCmqBase() {
-		return cmqBase;
-	}
-
-	public void setCmqBase(CmqBase190 cmqBase) {
-		this.cmqBase = cmqBase;
 	}
 
 }
