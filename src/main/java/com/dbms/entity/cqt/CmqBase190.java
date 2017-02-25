@@ -2,19 +2,13 @@ package com.dbms.entity.cqt;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -45,10 +39,8 @@ public class CmqBase190 extends BaseEntity {
 	@Column(name = "CMQ_LEVEL", nullable = false, precision = 1)
 	private Integer cmqLevel;
 
-	/*
-	 * @Column(name = "CMQ_PARENT_CODE", nullable = false, precision = 38, scale
-	 * = 0) private Long cmqParentCode;
-	 */
+	@Column(name = "CMQ_PARENT_CODE", precision = 38, scale = 0)
+	private Long cmqParentCode;
 
 	@Column(name = "CMQ_PARENT_NAME", length = 200)
 	private String cmqParentName;
@@ -130,15 +122,6 @@ public class CmqBase190 extends BaseEntity {
 	@Column(name = "CMQ_SUBVERSION", nullable = false, precision = 10)
 	private BigDecimal cmqSubversion;
 
-	@ManyToOne
-	@JoinColumn(name = "CMQ_PARENT_CODE", referencedColumnName = "CMQ_CODE")
-	private CmqBase190 parentCmq;
-
-	@OneToMany(mappedBy = "parentCmq", cascade = CascadeType.ALL)
-	private Set<CmqBase190> childCmqs = new HashSet<>();
-
-	
-	
 	public Long getId() {
 		return cmqId;
 	}
@@ -379,24 +362,16 @@ public class CmqBase190 extends BaseEntity {
 		this.cmqSubversion = cmqSubversion;
 	}
 
-	public CmqBase190 getParentCmq() {
-		return parentCmq;
-	}
-
-	public void setParentCmq(CmqBase190 parentCmq) {
-		this.parentCmq = parentCmq;
-	}
-
-	public Set<CmqBase190> getChildCmqs() {
-		return childCmqs;
-	}
-
-	public void setChildCmqs(Set<CmqBase190> childCmqs) {
-		this.childCmqs = childCmqs;
-	}
-
 	public Long getCmqId() {
 		return cmqId;
+	}
+
+	public Long getCmqParentCode() {
+		return cmqParentCode;
+	}
+
+	public void setCmqParentCode(Long cmqParentCode) {
+		this.cmqParentCode = cmqParentCode;
 	}
 
 }

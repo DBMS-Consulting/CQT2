@@ -270,4 +270,28 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190> impleme
 		}
 		return retVal;
 	}
+	
+	public Long findCmqChildCountForParentCmqCode(Long cmqCode) {
+		Long retVal = null;
+		StringBuilder sb = new StringBuilder();
+		sb.append("select count(*) from CmqBase190 c where c.cmqParentCode = :cmqCode");
+		
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		try {
+			Query query = entityManager.createQuery(sb.toString());
+			query.setParameter("cmqCode", cmqCode);
+			retVal = (Long)query.getSingleResult();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg
+					.append("An error occured while findCmqChildCountForCmqCode ")
+					.append(cmqCode)
+					.append(" Query used was ->")
+					.append(sb.toString());
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
 }

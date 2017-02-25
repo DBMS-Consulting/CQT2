@@ -1,6 +1,8 @@
 package com.dbms.controller;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -137,7 +139,7 @@ public class SearchController extends BaseController<CmqBase190> {
 
 	public void reset() {
 		this.datas = new ArrayList<CmqBase190>();
-		
+
 		resetSearch();
 		changeLevel();
 	}
@@ -189,14 +191,13 @@ public class SearchController extends BaseController<CmqBase190> {
 		this.state = "Published";
 		this.status = "Active";
 		this.level = 1;
-		//this.critical = "No";
+		// this.critical = "No";
 		this.group = "No Group";
 
 		this.product = "";
 		this.protocol = "";
-		this.drugProgram = "";		
-		
- 	}
+		this.drugProgram = "";
+	}
 
 	/**
 	 * Method to change State value on status selection.
@@ -461,12 +462,12 @@ public class SearchController extends BaseController<CmqBase190> {
 				critical, group, termName, code);
 		log.debug("found values {}", datas == null ? 0 : datas.size());
 	}
-	
+
 	/**
 	 * Maintain Designees on search.
 	 */
 	public void maintainDesignees() {
-		
+
 	}
 
 	public String loadCmqBaseByCode() {
@@ -571,8 +572,8 @@ public class SearchController extends BaseController<CmqBase190> {
 				} // end of for (SmqBase190 childSmqBase : childSmqBaseList)
 			} // end of for (SmqBase190 smqBase : smqBaseList)
 		} else if (searchMeddraBase) {
-			List<MeddraDictHierarchySearchDto> meddraDictDtoList = meddraDictService.findByLevelAndTerm(meddraSearchTermPrefix.toUpperCase(),
-					termName);
+			List<MeddraDictHierarchySearchDto> meddraDictDtoList = meddraDictService
+					.findByLevelAndTerm(meddraSearchTermPrefix.toUpperCase(), termName);
 			this.hierarchyRoot = new DefaultTreeNode("root", new HierarchyNode("LEVEL", "NAME", "CODE", null), null);
 
 			for (MeddraDictHierarchySearchDto meddraDictDto : meddraDictDtoList) {
@@ -581,34 +582,36 @@ public class SearchController extends BaseController<CmqBase190> {
 				node.setTerm(meddraDictDto.getTerm());
 				node.setCode(meddraDictDto.getCode());
 				node.setEntity(meddraDictDto);
-				
+
 				new DefaultTreeNode(node, this.hierarchyRoot);
 			}
-		} /*
-			 * else if (searchCmqBase) { List<CmqBase190> cmqBaseList =
-			 * cmqBaseService.findByLevelAndTerm(2, termName);
-			 * hierarchySearchResults = new ArrayList<>(); for (CmqBase190
-			 * cmqBase190 : cmqBaseList) { HierarchySearchResultBean bean = new
-			 * HierarchySearchResultBean(); bean.setLevel(levelH);
-			 * bean.setTerm(cmqBase190.getCmqName());
-			 * bean.setCode(cmqBase190.getCmqCode().toString());
-			 * bean.setEntity(cmqBase190); hierarchySearchResults.add(bean);
-			 * 
-			 * TreeNode level1 = new DefaultTreeNode( new HierarchyNode(levelH,
-			 * cmqBase190.getCmqName(), cmqBase190.getCmqCode().toString()),
-			 * hierarchyRoot);
-			 * 
-			 * // if (cmqBase190.getChildCmqs() != null // &&
-			 * cmqBase190.getChildCmqs().size() > 0) { // for (CmqBase190 child
-			 * : cmqBase190.getChildCmqs()) { // TreeNode level2 = new
-			 * DefaultTreeNode( // new HierarchyNode(levelH, child.getCmqName(),
-			 * // child.getCmqCode().toString()), level1); // } // } } }
-			 */
+		} else if (searchCmqBase) {
+			List<CmqBase190> cmqBaseList = cmqBaseService.findByLevelAndTerm(2, termName);
+			this.hierarchyRoot = new DefaultTreeNode("root", new HierarchyNode("LEVEL", "NAME", "CODE", null), null);
+			for (CmqBase190 cmqBase190 : cmqBaseList) {
+				HierarchyNode node = new HierarchyNode();
+				node.setLevel(levelH);
+				node.setTerm(cmqBase190.getCmqName());
+				node.setCode(cmqBase190.getCmqCode().toString());
+				node.setEntity(cmqBase190);
+
+				TreeNode cmqBaseTreeNode = new DefaultTreeNode(node, hierarchyRoot);
+
+				Long childCount = this.cmqBaseService.findCmqChildCountForParentCmqCode(cmqBase190.getCmqCode());
+
+				if ((null != childCount) && childCount.longValue() > 0) {
+					// add a dummmy node to show expand arrow
+					HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
+					dummyNode.setDummyNode(true);
+					new DefaultTreeNode(dummyNode, cmqBaseTreeNode);
+				}
+			}
+		}
+
 		return "";
 	}
 
 	public void onNodeExpand(NodeExpandEvent event) {
-		log.info("Expand called finally....");
 		TreeNode expandedTreeNode = event.getTreeNode();
 		HierarchyNode hierarchyNode = (HierarchyNode) expandedTreeNode.getData();
 		boolean isDataFetchCompleted = hierarchyNode.isDataFetchCompleted();
@@ -650,6 +653,27 @@ public class SearchController extends BaseController<CmqBase190> {
 						new DefaultTreeNode(childRelationNode, expandedTreeNode);
 					}
 				}
+			} else if (entity instanceof CmqBase190) {
+				CmqBase190 cmqBase = (CmqBase190) entity;
+				Long cmqCode = cmqBase.getCmqCode();
+				CmqBase190 childCmqBase = cmqBaseService.findByCode(cmqCode);
+				if (null != childCmqBase) {
+					HierarchyNode node = new HierarchyNode();
+					node.setLevel(levelH);
+					node.setTerm(childCmqBase.getCmqName());
+					node.setCode(childCmqBase.getCmqCode().toString());
+					node.setEntity(childCmqBase);
+					TreeNode cmqBaseChildNode = new DefaultTreeNode(node, expandedTreeNode);
+
+					Long childCount = this.cmqBaseService.findCmqChildCountForParentCmqCode(childCmqBase.getCmqCode());
+
+					if ((null != childCount) && childCount.longValue() > 0) {
+						// add a dummmy node to show expand arrow
+						HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
+						dummyNode.setDummyNode(true);
+						new DefaultTreeNode(dummyNode, cmqBaseChildNode);
+					}
+				}
 			}
 			hierarchyNode.setDataFetchCompleted(true);
 		}
@@ -660,20 +684,24 @@ public class SearchController extends BaseController<CmqBase190> {
 	 */
 	public void addSelectedToRelation(TreeNode[] nodes) {
 		if (nodes != null && nodes.length > 0) {
-			for (TreeNode treeNode : nodes) {
+			List<TreeNode> nodesList = Arrays.asList(nodes);
+			for (TreeNode treeNode : nodesList) {
 				HierarchyNode hierarchyNode = (HierarchyNode) treeNode.getData();
-				if((null != hierarchyNode) && !hierarchyNode.isDummyNode()) {
-					// remove the first dummy node placeholder
-					List<TreeNode> childTreeNodes = treeNode.getChildren();
-					if((null != childTreeNodes) && (childTreeNodes.size() > 0)) {
-						HierarchyNode dummyChildData = (HierarchyNode) childTreeNodes.get(0).getData();
-						if (dummyChildData.isDummyNode()) {
-							treeNode.getChildren().remove(0);
+				if ((null != hierarchyNode) && !hierarchyNode.isDummyNode()) {
+					TreeNode parentNode = treeNode.getParent();
+					if(!nodesList.contains(parentNode)) {
+						// remove the first dummy node placeholder
+						List<TreeNode> childTreeNodes = treeNode.getChildren();
+						if ((null != childTreeNodes) && (childTreeNodes.size() > 0)) {
+							HierarchyNode dummyChildData = (HierarchyNode) childTreeNodes.get(0).getData();
+							if (dummyChildData.isDummyNode()) {
+								treeNode.getChildren().remove(0);
+							}
 						}
+						// now add it to the parent
+						treeNode.setParent(relationsRoot);
+						relationsRoot.getChildren().add(treeNode);
 					}
-					//now add it to the parent
-					treeNode.setParent(relationsRoot);
-					relationsRoot.getChildren().add(treeNode);
 				}
 			}
 			setRelationSelected(nodes);
@@ -683,6 +711,29 @@ public class SearchController extends BaseController<CmqBase190> {
 		}
 	}
 
+	/**
+	 * Recursively find and delete the selected treenode from root treenode.
+	 * 
+	 * @param rootNodeToSearchFrom
+	 * @param selectedTreeNode
+	 */
+	public void deleteRelation(TreeNode rootNodeToSearchFrom, HierarchyNode selectedNode) {
+		if(rootNodeToSearchFrom.getChildCount() > 0) {
+			List<TreeNode> childTreeNodes = rootNodeToSearchFrom.getChildren();
+			for(Iterator<TreeNode> treeNodeIterator = childTreeNodes.listIterator(); treeNodeIterator.hasNext();) {
+				TreeNode childTreeNode = treeNodeIterator.next();
+				HierarchyNode childNode = (HierarchyNode) childTreeNode.getData();
+				if(childNode.equals(selectedNode)) {
+					treeNodeIterator.remove(); //remove it from the root node
+					break;
+				} else if(childTreeNode.getChildCount() > 0) {
+					//drill down
+					this.deleteRelation(childTreeNode, selectedNode);
+				}
+			}
+		}
+	}
+	
 	public void saveDetails() {
 		log.debug("save cmq details ... ");
 		try {
