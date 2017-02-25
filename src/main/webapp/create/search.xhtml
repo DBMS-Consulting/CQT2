@@ -12,10 +12,15 @@
 			<p:selectOneMenu value="#{searchController.extension}">
 				<f:selectItem itemLabel="All" itemValue=""></f:selectItem>
 				<f:selectItems value="#{configMB.extensions}" var="extension"
-					itemLabel="#{extension.value}" itemValue="#{extension.value}" />
+					itemLabel="#{extension.value}" itemValue="#{extension.codelistInternalValue}" />
 
 				<p:ajax update="level2 protocol2 drug2 product2 status state group"
 					event="change" listener="#{searchController.resetSearch}" />
+					
+				 
+				<p:ajax
+					update="level2 protocol2 drug2 product2 status state group"
+					event="change" listener="#{searchController.changeLevel}" />
 			</p:selectOneMenu>
 
 			<p:outputLabel value="Drug Program" styleClass="label-right" />
@@ -137,7 +142,7 @@
 			</p:column>
 			<p:column headerText="Code">
 
-				<p:commandLink
+				<p:commandLink 
 					action="#{createController.loadCmqBaseByCode(value.cmqCode)}"
 					value="#{value.cmqCode}" update="@form:wizardId @form:pgl2 @form:pgl2"></p:commandLink>
 			</p:column>

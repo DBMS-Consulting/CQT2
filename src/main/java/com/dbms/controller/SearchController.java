@@ -26,12 +26,14 @@ import com.dbms.entity.IEntity;
 import com.dbms.entity.cqt.CmqBase190;
 import com.dbms.entity.cqt.CmqRelation190;
 import com.dbms.entity.cqt.CreateEntity;
+import com.dbms.entity.cqt.RefConfigCodeList;
 import com.dbms.entity.cqt.SmqBase190;
 import com.dbms.entity.cqt.SmqRelation190;
 import com.dbms.entity.cqt.dtos.MeddraDictHierarchySearchDto;
 import com.dbms.service.ICmqBase190Service;
 import com.dbms.service.ICmqRelation190Service;
 import com.dbms.service.IMeddraDictService;
+import com.dbms.service.IRefCodeListService;
 import com.dbms.service.ISmqBaseService;
 import com.dbms.web.dto.CodelistDTO;
 
@@ -57,6 +59,9 @@ public class SearchController extends BaseController<CmqBase190> {
 
 	@ManagedProperty("#{CmqRelation190Service}")
 	private ICmqRelation190Service cmqRelationService;
+	
+	@ManagedProperty("#{RefCodeListService}")
+	private IRefCodeListService refCodeListService;
 
 	private String releaseStatus;
 	private String criticalEvent;
@@ -108,6 +113,9 @@ public class SearchController extends BaseController<CmqBase190> {
 		this.critical = null;
 		this.group = "No Group";
 		this.extension = "";
+ 		drugProgram = "";
+		product = "";
+		protocol = "";
 
 		hierarchyRoot = new DefaultTreeNode("root", new HierarchyNode("LEVEL", "NAME", "CODE", null), null);
 		relationsRoot = new DefaultTreeNode("root",
@@ -116,43 +124,55 @@ public class SearchController extends BaseController<CmqBase190> {
 
 	public void initSearch() {
 		this.datas = new ArrayList<CmqBase190>();
+		if (selctedData == null) {
+			selctedData = new CmqBase190();
+			RefConfigCodeList currentMeddraVersionCodeList = this.refCodeListService
+					.getCurrentMeddraVersion();
+			if (currentMeddraVersionCodeList != null) {
+				selctedData.setDictionaryVersion(currentMeddraVersionCodeList.getValue());
+				//selectedData.setDictionaryName(dictionaryName);
+			}
+		}
 	}
 
 	public void reset() {
 		this.datas = new ArrayList<CmqBase190>();
 		
 		resetSearch();
+		changeLevel();
 	}
 
 	public TreeNode getHierarchyRoot() {
 		return hierarchyRoot;
 	}
 
-	/**
-	 * Method to change Level value on extention selection.
-	 * 
-	 * @param event
-	 *            AjaxBehaviour
-	 */
 	public void changeLevel(AjaxBehaviorEvent event) {
+		 changeLevel();
+	}
+	
+	public void changeLevel() {
 		if (extension.equals("PRO")) {
-			setLevel(1);
-		} else
 			setLevel(2);
-
-		if (extension.equals("CPT") || extension.equals("DME")) {
-			setDrugProgram("No Program");
-			setProduct("No Product");
+			
 		} else {
-			setDrugProgram("");
-			setProduct("");
+			setLevel(1);
+		
 		}
+
+		if (extension.equals("CPT") || extension.equals("DME"))
+			setDrugProgram("No Program");
+		else
+			setDrugProgram("");
 
 		if (extension.equals("CPT") || extension.equals("DME") || extension.equals("TME") || extension.equals("TR1"))
 			setProtocol("No Protocol");
 		else
 			setProtocol("");
 
+		if (extension.equals("CPT") || extension.equals("DME"))
+			setProduct("No Product");
+		else
+			setProduct("");
 	}
 
 	/**
@@ -175,7 +195,8 @@ public class SearchController extends BaseController<CmqBase190> {
 		this.product = "";
 		this.protocol = "";
 		this.drugProgram = "";		
-	}
+		
+ 	}
 
 	/**
 	 * Method to change State value on status selection.
@@ -784,5 +805,9 @@ public class SearchController extends BaseController<CmqBase190> {
 
 	public void setRelationsRoot(TreeNode relationsRoot) {
 		this.relationsRoot = relationsRoot;
+	}
+
+	public void setRefCodeListService(IRefCodeListService refCodeListService) {
+		this.refCodeListService = refCodeListService;
 	}
 }

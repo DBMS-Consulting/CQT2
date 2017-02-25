@@ -24,12 +24,17 @@
 					closable="true">
 					<p:panel header="Details">
 						<ui:include src="details.xhtml" />
-						<h:panelGrid columns="2" style="width: 100%">
-							<p:commandButton value="Save" icon="ui-icon-disk" update="m1 @form:detailsPanel pgl2"
+						<h:panelGrid columns="2">
+							<p:commandButton value="Save" icon="ui-icon-disk"
+								update="m1 @form:detailsPanel pgl2"
 								action="#{createController.save}"></p:commandButton>
-							<p:commandButton value="Cancel" icon="ui-icon-close"
-								process="@this" update="m1" style="float: right"
-								action="#{createController.cancel}"></p:commandButton>
+							<p:commandButton value="Cancel" icon="ui-icon-close" immediate="true"
+								update="@form" process="@this"
+								action="#{createController.cancel}">
+								<p:confirm header="Confirm"
+									message="Are you sure you want to erase these fields?"
+									icon="ui-icon-alert" />
+							</p:commandButton>
 						</h:panelGrid>
 					</p:panel>
 				</p:tab>
@@ -44,11 +49,24 @@
 					<p:panel header="Relations">
 						<ui:include src="relations.xhtml"></ui:include>
 
-						<p:commandButton style="margin-top: 10px" value="Save" id="cb3" update="m1"
-							action="#{createController.saveRelations(searchController.relationsRoot)}" disabled="false"
-							icon="ui-icon-disk">
-							<f:param name="relationsRoot" value="#{searchController.relationsRoot}"> </f:param>	
-						</p:commandButton>
+						<h:panelGrid columns="2">
+
+							<p:commandButton value="Save" id="cb3"
+								update="m1"
+								action="#{createController.saveRelations(searchController.relationsRoot)}"
+								disabled="false" icon="ui-icon-disk">
+								<f:param name="relationsRoot"
+									value="#{searchController.relationsRoot}">
+								</f:param>
+							</p:commandButton>
+
+							<p:commandButton value="Cancel" icon="ui-icon-close"
+								update="@form" action="#{createController.cancelRelations}">
+								<p:confirm header="Confirm"
+									message="Are you sure you want to erase these fields?"
+									icon="ui-icon-alert" />
+							</p:commandButton>
+						</h:panelGrid>
 					</p:panel>
 				</p:tab>
 
@@ -60,7 +78,7 @@
 
 
 			<p:spacer width="10" height="10" id="s6" />
-			<h:panelGrid id="pgl2" columns="6" 
+			<h:panelGrid id="pgl2" columns="6"
 				style="padding:3px; font-size: 10px !important">
 
 

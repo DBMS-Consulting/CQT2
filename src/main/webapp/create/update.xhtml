@@ -36,12 +36,18 @@
 					<p:panel header="Details">
 						<ui:include src="details.xhtml" />
 
-						<h:panelGrid columns="2" style="width: 100%">
+						<h:panelGrid columns="2">
 							<p:commandButton value="Save" icon="ui-icon-disk" process="@this"
-								action="#{createController.update}" update="@form:m1 pgl2 @form:codeValue @form:detailsPanel"></p:commandButton>
+								action="#{createController.update}"
+								update="@form:m1 pgl2 @form:codeValue @form:detailsPanel"></p:commandButton>
 
-							<p:commandButton value="Cancel" icon="ui-icon-close" update="@form:m1" process="@this"
-								style="float: right" action="#{createController.cancel}"></p:commandButton>
+							<p:commandButton value="Cancel" icon="ui-icon-close" immediate="true"
+								update="@form" process="@this"
+								action="#{createController.cancel}">
+								<p:confirm header="Confirm"
+									message="Are you sure you want to erase these fields?"
+									icon="ui-icon-alert" />
+							</p:commandButton>
 						</h:panelGrid>
 					</p:panel>
 				</p:tab>
@@ -56,8 +62,19 @@
 					<p:panel header="Relations">
 						<ui:include src="relations.xhtml"></ui:include>
 
-						<p:commandButton style="margin-top: 10px" value="Save" id="cb3"
-							action="#{createController.updateRelations}" icon="ui-icon-disk" />
+						<h:panelGrid columns="2">
+							<p:commandButton value="Save" id="cb3"
+								action="#{createController.updateRelations}" icon="ui-icon-disk" />
+
+							<p:commandButton value="Cancel" icon="ui-icon-close"
+								process="@this" update="m1" style="float: right"
+								action="#{createController.cancelRelations}">
+								<p:confirm header="Confirm"
+									message="Are you sure you want to erase these fields?"
+									icon="ui-icon-alert" />
+							</p:commandButton>
+						</h:panelGrid>
+
 					</p:panel>
 				</p:tab>
 
@@ -71,16 +88,14 @@
 			<p:spacer width="10" height="10" id="s6" />
 			<h:panelGrid id="pgl2" columns="5"
 				style="padding:3px; font-size: 10px !important">
-
-
 				<p:outputLabel for="it1aw" value="Dictionary Version:"></p:outputLabel>
 				<h:inputText id="it1aw"
-					value="#{createController.selectedData.dictionaryVersion}"
+					value="#{searchController.selctedData.dictionaryVersion}"
 					disabled="true" columns="200" />
 
 				<p:outputLabel for="it3" value="Name: "></p:outputLabel>
 				<h:inputText id="it3"
-					value="#{createController.selectedData.dictionaryName}"
+					value="#{searchController.selctedData.dictionaryName}"
 					readOnly="true" disabled="true" />
 			</h:panelGrid>
 			<f:attribute name="currentPage"

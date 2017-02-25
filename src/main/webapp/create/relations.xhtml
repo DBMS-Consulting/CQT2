@@ -67,70 +67,7 @@
 		</p:toolbar>
 
 		<br />
-		<!-- <p:treeTable value="#{userBean.root}" var="document">
-
-			<p:columnGroup type="header">
-				<p:row>
-					<p:column rowspan="2" headerText="" />
-					<p:column colspan="6" headerText="Hierarchy Details" />
-				</p:row>
-
-				<p:row>
-					<p:column headerText="Code" />
-					<p:column headerText="Level" />
-					<p:column headerText="Scope" />
-					<p:column headerText="Category" />
-					<p:column headerText="Weight" />
-					<p:column headerText="Delete" />
-				</p:row>
-			</p:columnGroup>
-
-			<p:column>
-				<h:panelGrid columns="1">
-					<h:outputText value="ABC" id="ot5" rendered="true"
-						shortDesc="#{node.path}" style="white-space:pre-wrap"
-						noWrap="false" />
-					<h:commandLink value="abc" id="cl1" rendered="true" />
-				</h:panelGrid>
-			</p:column>
-
-			<p:column>
-				<h:outputText value="#" rendered="true" />
-			</p:column>
-			<p:column headerText="Level" style="width: 50px !important">
-				<h:outputText value="#" rendered="true" />
-			</p:column>
-
-			<p:column>
-				<p:selectOneMenu id="soc3" value="Narrow">
-
-					<f:selectItem itemLabel="Broad" itemValue="1" id="si13s" />
-					<f:selectItem itemLabel="Narrow" itemValue="2" id="si13d" />
-					<f:selectItem itemLabel="Child Narrow" itemValue="3" id="si4" />
-				</p:selectOneMenu>
-			</p:column>
-
-			<p:column>
-				<p:selectOneMenu id="soc2" value="S" rendered="true">
-					<f:selectItem itemLabel="A" itemValue="A" id="si3" />
-					<f:selectItem itemLabel="S" itemValue="S" id="si33" />
-					<f:selectItem itemLabel="B" itemValue="B" id="si8" />
-					<f:selectItem itemLabel="C" itemValue="C" id="si9" />
-					<f:selectItem itemLabel="D" itemValue="D" id="si10" />
-					<f:selectItem itemLabel="E" itemValue="E" id="si11" />
-					<f:selectItem itemLabel="F" itemValue="F" id="si19" />
-					<f:selectItem itemLabel="G" itemValue="G" id="si12" />
-					<f:selectItem itemLabel="H" itemValue="H" id="si17" />
-					<f:selectItem itemLabel="I" itemValue="I" id="si18" />
-				</p:selectOneMenu>
-			</p:column>
-
-			<p:column>
-				<p:spinner value="2" id="ot6" />
-			</p:column>
- 
-		</p:treeTable> -->
-
+		 
 		<p:treeTable value="#{searchController.relationsRoot}" var="node"
 			selectionMode="checkbox" id="resultRelations" rows="20"
 			paginator="true" paginatorPosition="bottom"

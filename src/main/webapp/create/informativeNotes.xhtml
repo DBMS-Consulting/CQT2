@@ -8,11 +8,12 @@
 
 	<!-- <p:growl id="m_notes" /> -->
 
-	<p:panel
+	<p:panel id="panelNotes"
 		header="Informative Notes for #{createController.selectedData.cmqName}">
 		<p:tabView>
 			<p:tab title="Description">
-				<p:inputTextarea required="true" placeholder="Please Enter Description"
+				<p:inputTextarea required="true"
+					placeholder="Please Enter Description"
 					value="#{createController.selectedData.cmqDescription}"
 					requiredMessage="A description is required"
 					style="width: 100%; min-height: 250px" autoResize="true" />
@@ -28,13 +29,17 @@
 			</p:tab>
 		</p:tabView>
 
-		<h:panelGrid columns="2" style="width: 100%">
-			<p:commandButton  value="Save" update="m1"
-				icon="ui-icon-disk"
+		<h:panelGrid columns="2">
+			<p:commandButton value="Save" update="m1" icon="ui-icon-disk"
 				action="#{createController.saveInformativeNotes}"></p:commandButton>
 
 			<p:commandButton value="Cancel" icon="ui-icon-close" process="@this"
-				update="m1" style="float: right" action="#{createController.cancel}"></p:commandButton>
+				update="m1 @form:panelNotes" style="float: right"
+				action="#{createController.cancelNotes}">
+				<p:confirm header="Confirm"
+					message="Are you sure you want to erase these fields?"
+					icon="ui-icon-alert" />
+			</p:commandButton>
 
 		</h:panelGrid>
 	</p:panel>
