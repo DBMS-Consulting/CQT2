@@ -22,4 +22,10 @@ public interface ICmqBase190Service extends ICqtPersistenceService<CmqBase190> {
 	List<CmqBase190> findByLevelAndTerm(Integer level, String searchTerm);
 	
 	Long findCmqChildCountForParentCmqCode(Long cmqCode);
+	
+	List<CmqBase190> findApprovedCmqs();
+	
+	List<CmqBase190> findChildCmqsByCodes(List<Long> codes);
+	
+	List<CmqBase190> findParentCmqsByCodes(List<Long> codes);
 }
