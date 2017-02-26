@@ -76,7 +76,7 @@
 					itemDisabled="#{searchController.status eq 'Pending'}" />
 				<f:selectItem itemLabel="Draft" itemValue="Draft" />
 				<f:selectItem itemLabel="Reviewed" itemValue="Reviewed" />
-				<f:selectItem itemLabel="Approved" itemValue="Published" />
+				<f:selectItem itemLabel="Approved" itemValue="Approve" />
 				<f:selectItem itemLabel="Published" itemValue="Published"
 					itemDisabled="#{searchController.status eq 'Pending'}" />
 
@@ -144,7 +144,7 @@
 
 				<p:commandLink 
 					action="#{createController.loadCmqBaseByCode(value.cmqCode)}"
-					value="#{value.cmqCode}" update="@form:wizardId @form:pgl2 @form:pgl2 @form:relations">
+					value="#{value.cmqCode}" update="@form @form:pgl2 @form:pgl2 @form:relations">
 					<f:setPropertyActionListener target="#{searchController.clickedCmqCode}" value="#{value.cmqCode}" />
 				</p:commandLink>
 			</p:column>

@@ -73,7 +73,7 @@ public class CreateController implements Serializable {
 	private String notes;
 	private String source;
 
-	private Wizard updateWizard, copyWizard, browseWizard;
+	private Wizard updateWizard, copyWizard, browseWizard, createWizard;
 	private Long codeSelected;
 
 	private TreeNode relationsRoot;
@@ -109,7 +109,7 @@ public class CreateController implements Serializable {
 		product = "";
 		protocol = "";
 		extension = "TME";
-		algorithm = "N";
+		algorithm = "N";		
 	}
 
 	public void initCreateForm() {
@@ -163,8 +163,12 @@ public class CreateController implements Serializable {
 
 		if (browseWizard != null)
 			browseWizard.setStep("details");
-		if (updateWizard != null)
+		if (updateWizard != null) {
 			updateWizard.setStep("details");
+			
+			selectedData = new CmqBase190();
+			setSelectedData(cmq); 
+		}
 		if (copyWizard != null)
 			copyWizard.setStep("details");
 
@@ -286,6 +290,10 @@ public class CreateController implements Serializable {
 		selectedData.setCmqNote("");
 		selectedData.setCmqSource("");
 		
+		if (selectedData.getId() == null) {
+			selectedData = new CmqBase190();
+		}
+		
 		FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN,
 				"Form canceled", "");
 		FacesContext.getCurrentInstance().addMessage(null, msg);
@@ -293,8 +301,9 @@ public class CreateController implements Serializable {
 	}
 
 	public String cancelRelations() {
-		
-		
+		if (selectedData.getId() == null) {
+			selectedData = new CmqBase190();	 
+		}
 		FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN,
 				"Form canceled", "");
 		FacesContext.getCurrentInstance().addMessage(null, msg);
@@ -337,19 +346,21 @@ public class CreateController implements Serializable {
 			// hard coded for now
 			selectedData.setDictionaryName("Test-Dict");
 			selectedData.setCmqSubversion(new BigDecimal(0.23d));
-			// if (selectedData.getCmqDesignee() == null)
-			// selectedData.setCmqDesignee("NONE");
+			if (selectedData.getCmqDesignee() == null)
+				selectedData.setCmqDesignee("NONE");
 
 			cmqBaseService.update(selectedData);
 
 			// retrieve the saved cmq base
 			CmqBase190 savedEntity = cmqBaseService.findByCode(selectedData
 					.getCmqCode());
+			
+			//setSelectedData(savedEntity);
 
-			// save the cmq code to session
-			FacesContext.getCurrentInstance().getExternalContext()
-					.getSessionMap()
-					.put("NEW-CMQ_BASE-ID", savedEntity.getId());
+//			// save the cmq code to session
+//			FacesContext.getCurrentInstance().getExternalContext()
+//					.getSessionMap()
+//					.put("NEW-CMQ_BASE-ID", savedEntity.getId());
 
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"List '" + selectedData.getCmqName()
@@ -510,6 +521,30 @@ public class CreateController implements Serializable {
 		if (state.equals("Retire")
 				&& selectedData.getCmqState().equals("Active")) {
 			setState("Inactive");
+		}
+		
+		//Deletes record
+		if (state.equals("Delete")) {
+			try {
+				cmqBaseService.remove(selectedData.getCmqId());
+				
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+						"Record deleted!'" + state + "'", "");
+				FacesContext ctx = FacesContext.getCurrentInstance();
+				ctx.addMessage(null, msg);
+				
+				selectedData = new CmqBase190();
+				initAll();
+				
+			} catch (CqtServiceException e) {
+				e.printStackTrace();
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+						"An error occured while deleting the state", "");
+				FacesContext ctx = FacesContext.getCurrentInstance();
+				ctx.addMessage(null, msg);
+			}
+			
+			return "";
 		}
 
 		setState(state);
@@ -792,7 +827,7 @@ public class CreateController implements Serializable {
 	}
 
 	public boolean isReactivate() {
-		if (selectedData != null && selectedData.getCmqStatus().equals("I"))
+		if (selectedData != null && selectedData.getCmqStatus() != null && selectedData.getCmqStatus().equals("I"))
 			return false;
 		return true;
 	}
@@ -802,7 +837,7 @@ public class CreateController implements Serializable {
 	}
 
 	public boolean isRetire() {
-		if (selectedData != null && selectedData.getCmqStatus().equals("A"))
+		if (selectedData != null && selectedData.getCmqStatus() != null && selectedData.getCmqStatus().equals("A"))
 			return false;
 		return true;
 	}
@@ -812,8 +847,8 @@ public class CreateController implements Serializable {
 	}
 
 	public boolean isDemote() {
-		if (selectedData.getCmqState().equals("Reviewed")
-				|| selectedData.getCmqState().equals("Approved"))
+		if (selectedData != null && selectedData.getCmqStatus() != null && (selectedData.getCmqState().equals("Reviewed")
+				|| selectedData.getCmqState().equals("Approved")))
 			return false;
 		return true;
 	}
@@ -823,7 +858,7 @@ public class CreateController implements Serializable {
 	}
 
 	public boolean isDelete() {
-		if (selectedData.getCmqState().equals("Draft"))
+		if (selectedData != null && selectedData.getCmqStatus() != null && selectedData.getCmqState().equals("Draft"))
 			return false;
 		return true;
 	}
@@ -833,7 +868,7 @@ public class CreateController implements Serializable {
 	}
 
 	public boolean isApprove() {
-		if (selectedData.getCmqState().equals("Reviewed"))
+		if (selectedData != null && selectedData.getCmqStatus() != null && selectedData.getCmqState().equals("Reviewed"))
 			return false;
 		return true;
 	}
@@ -843,7 +878,7 @@ public class CreateController implements Serializable {
 	}
 
 	public boolean isReviewed() {
-		if (selectedData.getCmqState().equals("Draft"))
+		if (selectedData != null && selectedData.getCmqStatus() != null &&selectedData.getCmqState().equals("Draft"))
 			return false;
 		return true;
 	}
@@ -858,6 +893,14 @@ public class CreateController implements Serializable {
 
 	public void setCodevalue(Long codevalue) {
 		this.codevalue = codevalue;
+	}
+
+	public Wizard getCreateWizard() {
+		return createWizard;
+	}
+
+	public void setCreateWizard(Wizard createWizard) {
+		this.createWizard = createWizard;
 	}
 
 }

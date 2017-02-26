@@ -19,7 +19,8 @@
 				</h:panelGrid>
 			</h:panelGrid>
 
-			<p:wizard flowListener="#{wizard.onFlowProcess}" widgetVar="wizard">
+			<p:wizard flowListener="#{wizard.onFlowProcess}" widgetVar="wizard"
+				id="wizardC">
 				<p:tab id="details" title="Add Details" disabled="false"
 					closable="true">
 					<p:panel header="Details">
@@ -28,7 +29,7 @@
 							<p:commandButton value="Save" icon="ui-icon-disk"
 								update="m1 @form:detailsPanel pgl2"
 								action="#{createController.save}"></p:commandButton>
-							<p:commandButton value="Cancel" icon="ui-icon-close" immediate="true"
+							<p:commandButton value="Cancel" icon="ui-icon-close"
 								update="@form" process="@this"
 								action="#{createController.cancel}">
 								<p:confirm header="Confirm"
@@ -51,8 +52,7 @@
 
 						<h:panelGrid columns="2">
 
-							<p:commandButton value="Save" id="cb3"
-								update="m1"
+							<p:commandButton value="Save" id="cb3" update="m1"
 								action="#{createController.saveRelations(searchController.relationsRoot)}"
 								disabled="false" icon="ui-icon-disk">
 								<f:param name="relationsRoot"
@@ -61,7 +61,8 @@
 							</p:commandButton>
 
 							<p:commandButton value="Cancel" icon="ui-icon-close"
-								update="@form" action="#{createController.cancelRelations}">
+								process="@this" update="@form"
+								action="#{createController.cancelRelations}">
 								<p:confirm header="Confirm"
 									message="Are you sure you want to erase these fields?"
 									icon="ui-icon-alert" />
@@ -83,13 +84,11 @@
 
 
 				<p:outputLabel for="it1aw" value="Dictionary Version:"></p:outputLabel>
-				<h:inputText id="it1aw"
-					value="#{configMB.dictionaryName}"
+				<h:inputText id="it1aw" value="#{configMB.dictionaryName}"
 					disabled="true" columns="200" />
 
 				<p:outputLabel for="it3" value="Name: "></p:outputLabel>
-				<h:inputText id="it3"
-					value="#{configMB.currentMeddraVersion.value}"
+				<h:inputText id="it3" value="#{configMB.currentMeddraVersion.value}"
 					readOnly="true" disabled="true" />
 			</h:panelGrid>
 			<f:attribute name="currentPage"

@@ -24,7 +24,7 @@
 				</h:panelGrid>
 			</h:panelGrid>
 
-			<p:wizard flowListener="#{wizard.onFlowProcess}" widgetVar="wizard"
+			<p:wizard flowListener="#{wizard.onFlowProcess}" widgetVar="wizard" 
 				id="wizardId" binding="#{createController.updateWizard}">
 				<!-- Search -->
 				<p:tab id="searchUpdate" title="Search">
@@ -38,10 +38,10 @@
 
 						<h:panelGrid columns="2">
 							<p:commandButton value="Save" icon="ui-icon-disk" process="@this"
-								action="#{createController.update}"
+								action="#{createController.update}" 
 								update="@form:m1 pgl2 @form:codeValue @form:detailsPanel"></p:commandButton>
 
-							<p:commandButton value="Cancel" icon="ui-icon-close" immediate="true"
+							<p:commandButton value="Cancel" icon="ui-icon-close" 
 								update="@form" process="@this"
 								action="#{createController.cancel}">
 								<p:confirm header="Confirm"

@@ -34,7 +34,7 @@
 				action="#{createController.saveInformativeNotes}"></p:commandButton>
 
 			<p:commandButton value="Cancel" icon="ui-icon-close" process="@this"
-				update="m1 @form:panelNotes" style="float: right"
+				update="m1 @form:panelNotes @form" style="float: right"
 				action="#{createController.cancelNotes}">
 				<p:confirm header="Confirm"
 					message="Are you sure you want to erase these fields?"

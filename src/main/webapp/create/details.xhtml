@@ -11,7 +11,8 @@
 
 		<h:panelGrid columns="2" columnClasses="label, value">
 			<p:outputLabel value="* Extension" styleClass="label-right" />
-			<p:selectOneMenu value="#{createController.extension}" required="true" requiredMessage="The extension is required">
+			<p:selectOneMenu value="#{createController.extension}"
+				required="true" requiredMessage="The extension is required">
 				<f:selectItems value="#{configMB.extensions}" var="extension"
 					itemLabel="#{extension.value}"
 					itemValue="#{extension.codelistInternalValue}" />
@@ -22,8 +23,8 @@
 			</p:selectOneMenu>
 
 			<p:outputLabel value="* Name" styleClass="label-right" />
-			<p:inputText required="true" requiredMessage="The name is required" maxlength="200"
-				value="#{createController.selectedData.cmqName}" 
+			<p:inputText required="true" requiredMessage="The name is required"
+				maxlength="200" value="#{createController.selectedData.cmqName}"
 				style="width: 300px !important" />
 
 			<p:outputLabel id="lDrug"
@@ -74,11 +75,12 @@
 		</h:panelGrid>
 
 		<h:panelGrid columns="2" columnClasses="label, value"
-			style="min-width: 300px">
+			style="min-width: 300px" >
 
 			<p:outputLabel value="* Level" styleClass="label-right" />
 			<p:selectOneMenu value="#{createController.level}" rendered="true"
-				disabled="false" id="level" required="true">
+				requiredMessage="The level is required" disabled="false" id="level"
+				required="true">
 				<f:selectItem itemValue="1" itemLabel="1" />
 				<f:selectItem itemValue="2" itemLabel="2" />
 				<f:selectItem itemValue="3" itemLabel="3" />
@@ -89,33 +91,83 @@
 			<p:outputLabel value="* Algorithm" styleClass="label-right" />
 			<p:inputText value="#{createController.algorithm}" />
 
-			<p:outputLabel value="* Status" styleClass="label-right" />
-			<h:outputText value="#{createController.status}"></h:outputText>
-
-			<p:outputLabel value="* State" styleClass="label-right" />
-			<h:outputText value="#{createController.state}"></h:outputText>
 
 
-			<p:outputLabel value="Group" styleClass="label-right" />
-			<h:outputText value="#{createController.group}" />
+			<h:panelGrid columns="1" styleClass="grid-right">
+				<p:outputLabel value="* Status" />
+			</h:panelGrid>
+			<h:panelGrid columns="1">
+				<h:outputText value="#{createController.status}"
+					style="height: 30px !important"></h:outputText>
+			</h:panelGrid>
 
-			<p:outputLabel value="Code" styleClass="label-right" />
-			<h:outputText id="codeValue" value="#{createController.selectedData.cmqCode}" />
+			<h:panelGrid columns="1" styleClass="grid-right">
+				<p:outputLabel value="* State" />
+			</h:panelGrid>
+			<h:panelGrid columns="1">
+				<h:outputText value="#{createController.state}"></h:outputText>
+			</h:panelGrid>
+
+
+			<h:panelGrid columns="1" styleClass="grid-right">
+				<p:outputLabel value="Group" />
+			</h:panelGrid>
+			<h:panelGrid columns="1">
+				<h:outputText value="#{createController.group}" />
+			</h:panelGrid>
+
+
+			<h:panelGrid columns="1" styleClass="grid-right">
+				<p:outputLabel value="Code" />
+			</h:panelGrid>
+			<h:panelGrid columns="1">
+				<h:outputText id="codeValue"
+					value="#{createController.selectedData.cmqCode}" />
+			</h:panelGrid>
 		</h:panelGrid>
- 
-		<h:panelGrid columns="2" columnClasses="label, value">
-			<p:outputLabel value="Creation Date  " styleClass="label-right" />
-			<h:outputText value="#{createController.selectedData.creationDate}" />
 
-			<p:outputLabel value="Created By  " styleClass="label-right" />
-			<h:outputText value="#{createController.selectedData.createdBy}" />
+		<h:panelGrid columns="2" columnClasses="label, value" >
+			<h:panelGrid columns="1" styleClass="grid-right">
+				<p:outputLabel value="Creation Date  " />
+			</h:panelGrid>
 
-			<p:outputLabel value="Last Activation Date  "
-				styleClass="label-right" />
-			<h:outputText value="#{createController.selectedData.activationDate}" />
+			<h:panelGrid columns="1" styleClass="grid-right">
+				<h:outputText value="#{createController.selectedData.creationDate}" />
+			</h:panelGrid>
 
-			<p:outputLabel value="Last Activation By  " styleClass="label-right" />
-			<h:outputText value="#{createController.selectedData.activatedBy}" />
+			<h:panelGrid columns="1" styleClass="grid-right">
+				<p:outputLabel value="Created By  " />
+			</h:panelGrid>
+
+			<h:panelGrid columns="1">
+				<h:outputText value="#{createController.selectedData.createdBy}" />
+			</h:panelGrid>
+
+			<h:panelGrid columns="1" styleClass="grid-right">
+				<p:outputLabel value="Last Activation Date  " />
+			</h:panelGrid>
+
+			<h:panelGrid columns="1">
+				<h:outputText
+					value="#{createController.selectedData.activationDate}" />
+			</h:panelGrid>
+
+			<h:panelGrid columns="1" styleClass="grid-right">
+				<p:outputLabel value="Last Activation By  " />
+			</h:panelGrid>
+
+			<h:panelGrid columns="1">
+				<h:outputText value="#{createController.selectedData.activatedBy}" />
+			</h:panelGrid>
+			
+			<h:panelGrid columns="1" styleClass="grid-right">
+			</h:panelGrid>
+			
+			<h:panelGrid columns="1" styleClass="grid-right">
+			</h:panelGrid>
+			
+			<h:panelGrid columns="1" styleClass="grid-right">
+			</h:panelGrid>
 		</h:panelGrid>
 	</h:panelGrid>
 
@@ -124,6 +176,13 @@
 	float: right;
 	margin-right: 20px;
 	font-size: 14px !important;
+}
+
+.grid-right {
+	float: right;
+	margin-right: 20px;
+	font-size: 14px !important;
+	height: 30px !important;
 }
 </style>
 </ui:composition>
