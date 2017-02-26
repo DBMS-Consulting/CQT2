@@ -174,7 +174,7 @@
 
 				<p:commandButton value="Approve" id="approveBtn"
 					disabled="#{createController.selectedData.cmqState eq 'Reviewed' ? false : true}"
-					action="#{createController.workflowState('Approve')}"
+					action="#{createController.workflowState('Approved')}"
 					process="@this"
 					update="m1 @form:confirmPan retireBtn reviewedBtn demoteBtn approveBtn deleteBtn reactivateBtn reason_approval">
 					<p:confirm header="Confirm Approve"
