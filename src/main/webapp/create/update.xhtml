@@ -37,12 +37,12 @@
 						<ui:include src="details.xhtml" />
 
 						<h:panelGrid columns="2">
-							<p:commandButton value="Save" icon="ui-icon-disk" process="@this"
+							<p:commandButton value="Save" icon="ui-icon-disk"
 								action="#{createController.update}" 
 								update="@form:m1 pgl2 @form:codeValue @form:detailsPanel"></p:commandButton>
 
 							<p:commandButton value="Cancel" icon="ui-icon-close" 
-								update="@form" process="@this"
+								update="@form" 
 								action="#{createController.cancel}">
 								<p:confirm header="Confirm"
 									message="Are you sure you want to erase these fields?"

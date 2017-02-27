@@ -118,11 +118,12 @@ public class CreateController implements Serializable {
 	}
 
 	public String onFlowProcess(FlowEvent event) {
-
 		System.out.println("\n \n ******* EVENT " + event.getNewStep());
 
-		if (codeSelected != null)
+		if (codeSelected != null) {
 			return event.getNewStep();
+			
+		}
 
 		return "";
 
@@ -166,8 +167,8 @@ public class CreateController implements Serializable {
 		if (updateWizard != null) {
 			updateWizard.setStep("details");
 			
-			selectedData = new CmqBase190();
-			setSelectedData(cmq); 
+//			selectedData = new CmqBase190();
+//			setSelectedData(cmq); 
 		}
 		if (copyWizard != null)
 			copyWizard.setStep("details");
@@ -358,9 +359,9 @@ public class CreateController implements Serializable {
 			//setSelectedData(savedEntity);
 
 //			// save the cmq code to session
-//			FacesContext.getCurrentInstance().getExternalContext()
-//					.getSessionMap()
-//					.put("NEW-CMQ_BASE-ID", savedEntity.getId());
+			FacesContext.getCurrentInstance().getExternalContext()
+					.getSessionMap()
+					.put("NEW-CMQ_BASE-ID", savedEntity.getId());
 
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"List '" + selectedData.getCmqName()
