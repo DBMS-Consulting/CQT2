@@ -322,49 +322,49 @@ public class CreateController implements Serializable {
 	 */
 	public String update() {
 		try {
-			// Long codevalue = this.cmqBaseService.getNextCodeValue();
-			RefConfigCodeList currentMeddraVersionCodeList = this.refCodeListService.getCurrentMeddraVersion();
+			
+			Long count = this.cmqBaseService.findCmqCountByCmqNameAndExtension(extension, selectedData.getCmqName());
+			
+			if(count < 2) {
+				//we should have atmost 1
+				CmqBase190 existingCmqBase = this.cmqBaseService.findByCode(selectedData.getCmqCode());
+				
+				existingCmqBase.setCmqTypeCd(extension);
+				existingCmqBase.setCmqName(selectedData.getCmqName());
+				existingCmqBase.setCmqProgramCd(drugProgram);
+				existingCmqBase.setCmqProtocolCd(protocol);
+				existingCmqBase.setCmqProductCd(product);
+				if (selectedData.getCmqDesignee() == null){
+					existingCmqBase.setCmqDesignee("NONE");
+				}
+				existingCmqBase.setCmqLevel(level);
+				existingCmqBase.setCmqAlgorithm(algorithm);
+				
 
-			// fill data
-			selectedData.setCmqTypeCd(extension);
-			selectedData.setCmqCriticalEvent(critical);
-			if (status.equals("Pending"))
-				selectedData.setCmqState("P");
-			if (status.equals("Active"))
-				selectedData.setCmqState("A");
-			if (status.equals("Inactive"))
-				selectedData.setCmqState("I");
-			selectedData.setCmqAlgorithm(algorithm);
-			selectedData.setCmqProductCd(product);
-			selectedData.setCmqLevel(level);
-			selectedData.setCmqProtocolCd(protocol);
-			selectedData.setCmqProgramCd(drugProgram);
-			selectedData.setCmqGroup(group);
-			selectedData.setCmqState(state);
-			selectedData.setCmqDescription(description);
-			selectedData.setDictionaryVersion(currentMeddraVersionCodeList.getValue());
-			selectedData.setCmqCode(codeSelected);
+				cmqBaseService.update(existingCmqBase);
 
-			// hard coded for now
-			selectedData.setDictionaryName("Test-Dict");
-			selectedData.setCmqSubversion(new BigDecimal(0.23d));
-			if (selectedData.getCmqDesignee() == null)
-				selectedData.setCmqDesignee("NONE");
+				// retrieve the saved cmq base
+				CmqBase190 savedEntity = cmqBaseService.findByCode(selectedData.getCmqCode());
 
-			cmqBaseService.update(selectedData);
+				// setSelectedData(savedEntity);
 
-			// retrieve the saved cmq base
-			CmqBase190 savedEntity = cmqBaseService.findByCode(selectedData.getCmqCode());
+				// // save the cmq code to session
+				FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("NEW-CMQ_BASE-ID",
+						savedEntity.getId());
 
-			// setSelectedData(savedEntity);
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+						"List '" + selectedData.getCmqName() + "' is successfully saved.", "");
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+			} else {
+				String errorMsg = "Duplicate CMQ name ('" + selectedData.getCmqName() + "')and exteion ('" + extension
+						+ "') found in db.";
+				LOG.error(errorMsg);
 
-			// // save the cmq code to session
-			FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("NEW-CMQ_BASE-ID",
-					savedEntity.getId());
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, errorMsg, "");
+				FacesContext.getCurrentInstance().addMessage(null, msg);
 
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"List '" + selectedData.getCmqName() + "' is successfully saved.", "");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
+				return null;
+			}
 		} catch (CqtServiceException e) {
 			LOG.error("Exception occured while creating CmqBase190.", e);
 
