@@ -5,9 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 
 import org.primefaces.model.DualListModel;
 import org.slf4j.Logger;
@@ -53,7 +55,7 @@ public class PublishController implements Serializable {
 		publishCurrentVersionDualListModel = new DualListModel<CmqBase190>(sourceList, targetList);
 	}
 
-	public void promoteTargetList() {
+	public String promoteTargetList() {
 		List<Long> targetCmqCodes = new ArrayList<>();
 		List<Long> targetCmqParentCodes = new ArrayList<>();
 		List<CmqBase190> targetCmqsSelected = this.publishCurrentVersionDualListModel.getTarget();
@@ -77,7 +79,18 @@ public class PublishController implements Serializable {
 		}
 		
 		if(!isListPublishable) {
+			String codes = "";
+			if (faultyCmqs != null) {
+				for (CmqBase190 cmq : faultyCmqs) {
+					codes += cmq.getCmqCode() + ";";
+				}
+			}
 			//show error dialog with names of faulty cmqs
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Cannot publish the following cmqs :" + codes, "");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			
+			return "";
 		} else {
 			//now check the parents of these cmqs
 			if(targetCmqParentCodes.size() > 0) {
@@ -95,6 +108,18 @@ public class PublishController implements Serializable {
 		
 		if(!isListPublishable) {
 			//show error dialog with names of faulty cmqs
+			String codes = "";
+			if (faultyCmqs != null) {
+				for (CmqBase190 cmq : faultyCmqs) {
+					codes += cmq.getCmqCode() + ";";
+				}
+			}
+			//show error dialog with names of faulty cmqs
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Cannot publish the following cmqs :" + codes, "");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			
+			return "";
 		} else {
 			boolean hasErrorOccured = false;
 			List<CmqBase190> cmqsFailedToSave = new ArrayList<>();
@@ -103,6 +128,9 @@ public class PublishController implements Serializable {
 				cmqBase190.setCmqState("Published");
 				try {
 					this.cmqBaseService.update(cmqBase190);
+					
+					
+					
 				} catch (CqtServiceException e) {
 					LOG.error(e.getMessage(), e);
 					hasErrorOccured = true;
@@ -112,8 +140,25 @@ public class PublishController implements Serializable {
 			
 			if(hasErrorOccured) {
 				//show error message popup for partial success.
+				String codes = "";
+				if (cmqsFailedToSave != null) {
+					for (CmqBase190 cmq : cmqsFailedToSave) {
+						codes += cmq.getCmqCode() + ";";
+					}
+				}
+				//show error dialog with names of faulty cmqs
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+						"The system could not publish the following cmqs :" + codes, "");
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+			}
+			else {
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+						"The CMQs were published with success", "");
+				FacesContext.getCurrentInstance().addMessage(null, msg);
 			}
 		}
+		
+		return "";
 	}
 	
 	public ICmqBase190Service getCmqBaseService() {
