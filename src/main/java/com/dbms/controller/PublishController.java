@@ -104,59 +104,61 @@ public class PublishController implements Serializable {
 					}
 				}
 			}
-		}
-		
-		if(!isListPublishable) {
-			//show error dialog with names of faulty cmqs
-			String codes = "";
-			if (faultyCmqs != null) {
-				for (CmqBase190 cmq : faultyCmqs) {
-					codes += cmq.getCmqCode() + ";";
-				}
-			}
-			//show error dialog with names of faulty cmqs
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Cannot publish the following cmqs :" + codes, "");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
 			
-			return "";
-		} else {
-			boolean hasErrorOccured = false;
-			List<CmqBase190> cmqsFailedToSave = new ArrayList<>();
-			//success
-			for (CmqBase190 cmqBase190 : targetCmqsSelected) {
-				cmqBase190.setCmqState("Published");
-				try {
-					this.cmqBaseService.update(cmqBase190);
-					
-					
-					
-				} catch (CqtServiceException e) {
-					LOG.error(e.getMessage(), e);
-					hasErrorOccured = true;
-					cmqsFailedToSave.add(cmqBase190);
-				}
-			}
-			
-			if(hasErrorOccured) {
-				//show error message popup for partial success.
+			if(!isListPublishable) {
+				//show error dialog with names of faulty cmqs
 				String codes = "";
-				if (cmqsFailedToSave != null) {
-					for (CmqBase190 cmq : cmqsFailedToSave) {
+				if (faultyCmqs != null) {
+					for (CmqBase190 cmq : faultyCmqs) {
 						codes += cmq.getCmqCode() + ";";
 					}
 				}
 				//show error dialog with names of faulty cmqs
 				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-						"The system could not publish the following cmqs :" + codes, "");
+						"Cannot publish the following cmqs :" + codes, "");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
+				
+				return "";
+			} else {
+				boolean hasErrorOccured = false;
+				List<CmqBase190> cmqsFailedToSave = new ArrayList<>();
+				//success
+				for (CmqBase190 cmqBase190 : targetCmqsSelected) {
+					cmqBase190.setCmqState("Published");
+					try {
+						this.cmqBaseService.update(cmqBase190);
+						
+						
+						
+					} catch (CqtServiceException e) {
+						LOG.error(e.getMessage(), e);
+						hasErrorOccured = true;
+						cmqsFailedToSave.add(cmqBase190);
+					}
+				}
+				
+				if(hasErrorOccured) {
+					//show error message popup for partial success.
+					String codes = "";
+					if (cmqsFailedToSave != null) {
+						for (CmqBase190 cmq : cmqsFailedToSave) {
+							codes += cmq.getCmqCode() + ";";
+						}
+					}
+					//show error dialog with names of faulty cmqs
+					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+							"The system could not publish the following cmqs :" + codes, "");
+					FacesContext.getCurrentInstance().addMessage(null, msg);
+				}
+				else {
+					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+							"The CMQs were published with success", "");
+					FacesContext.getCurrentInstance().addMessage(null, msg);
+				}
 			}
-			else {
-				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-						"The CMQs were published with success", "");
-				FacesContext.getCurrentInstance().addMessage(null, msg);
-			}
-		}
+			
+			
+		}//end 
 		
 		return "";
 	}
