@@ -700,6 +700,22 @@ public class SearchController extends BaseController<CmqBase190> {
 	 * @param rootNodeToSearchFrom
 	 * @param selectedTreeNode
 	 */
+	public void deleteRelation(TreeNode rootNodeToSearchFrom, HierarchyNode selectedNode) {
+		if (rootNodeToSearchFrom.getChildCount() > 0) {
+			List<TreeNode> childTreeNodes = rootNodeToSearchFrom.getChildren();
+			for (Iterator<TreeNode> treeNodeIterator = childTreeNodes.listIterator(); treeNodeIterator.hasNext();) {
+				TreeNode childTreeNode = treeNodeIterator.next();
+				HierarchyNode childNode = (HierarchyNode) childTreeNode.getData();
+				if (childNode.equals(selectedNode)) {
+					treeNodeIterator.remove(); // remove it from the root node
+					break;
+				} else if (childTreeNode.getChildCount() > 0) {
+					// drill down
+					this.deleteRelation(childTreeNode, selectedNode);
+				}
+			}
+		}
+	}
 	public void deleteRelations(TreeNode rootNodeToSearchFrom) {
 		if ((this.relationSelectedInRelationsTable != null) && (this.relationSelectedInRelationsTable.length > 0)) {
 			if (null == rootNodeToSearchFrom) {

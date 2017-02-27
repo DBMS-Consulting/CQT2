@@ -89,6 +89,7 @@
 					<p:column headerText="Scope" />
 					<p:column headerText="Category" />
 					<p:column headerText="Weight" />
+					<p:column headerText="Delete" />
 				</p:row>
 			</p:columnGroup>
 
@@ -132,12 +133,12 @@
 				<p:spinner value="#{node.weight}" id="ot6" />
 			</p:column>
 
-			<!-- <p:column>
+			<p:column>
 				<p:commandButton
 					action="#{searchController.deleteRelation(searchController.relationsRoot, node)}"
 					update="resultRelations" value="Delete">
 				</p:commandButton>
-			</p:column> -->
+			</p:column>
 		</p:treeTable>
 	</h:panelGrid>
 
