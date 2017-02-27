@@ -47,7 +47,7 @@ public class PublishController implements Serializable {
 	private List<CmqBase190> targetList;
 
 	private DualListModel<CmqBase190> publishCurrentVersionDualListModel;
-
+	
 	@PostConstruct
 	public void init() {
 		sourceList = this.cmqBaseService.findApprovedCmqs();

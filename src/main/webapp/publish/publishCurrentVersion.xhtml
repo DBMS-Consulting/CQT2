@@ -27,7 +27,9 @@
 								itemLabel="#{pick.cmqName}" itemValue="#{pick.cmqCode}" />
 
 							<!-- <p:commandButton value="Promote" onclick="PF('confirm1').show();" /> -->
+
 							<p:commandButton value="Promote" action="#{publishController.promoteTargetList}" update="promote m1" />
+
 						</h:panelGrid>
 
 					</p:panel>
@@ -36,10 +38,13 @@
 				<p:tab id="demote" title="Demote to Draft">
 					<p:panel header="Demote to Draft">
 						<h:panelGrid columns="2">
-							<p:pickList id="pickList2" value="#{userBean.pickList}"
-								var="pick" itemLabel="#{pick}" itemValue="#{pick}" />
+							<p:pickList id="pickList2" value="#{demoteToDraftController.demoteToDraftDualListModel}"
+								var="pick" converter="cmqBaseDualListConverter" 
+								itemLabel="#{pick.cmqName}" itemValue="#{pick.cmqCode}" />
 
-							<p:commandButton value="Demote" onclick="PF('confirm2').show();" />
+							<!-- <p:commandButton value="Demote" onclick="PF('confirm2').show();" /> -->
+							
+							<p:commandButton value="Demote" action="#{demoteToDraftController.demote}" update="demote m1" />
 						</h:panelGrid>
 					</p:panel>
 				</p:tab>
