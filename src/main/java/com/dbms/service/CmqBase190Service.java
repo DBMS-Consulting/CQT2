@@ -295,6 +295,30 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190> impleme
 		return retVal;
 	}
 	
+	public Long findCmqCountByCmqNameAndExtension(String extension, String cmqName) {
+		Long retVal = null;
+		StringBuilder sb = new StringBuilder();
+		sb.append("select count(*) from CmqBase190 c where upper(c.cmqName) = :cmqName and upper(cmqTypeCd) = :cmqTypeCd");
+		
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		try {
+			Query query = entityManager.createQuery(sb.toString());
+			query.setParameter("cmqName", cmqName.toUpperCase());
+			query.setParameter("cmqTypeCd", extension.toUpperCase());
+			retVal = (Long)query.getSingleResult();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg
+					.append("An error occured while findCmqCountByCmqNameAndExtension ")
+					.append(" Query used was ->")
+					.append(sb.toString());
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
+	
 	public List<CmqBase190> findApprovedCmqs() {
 		List<CmqBase190> retVal = null;
 		String queryString = "from CmqBase190 c where upper(c.cmqState) = upper('Approved') and c.cmqStatus = 'P' ";
