@@ -127,9 +127,6 @@ public class PublishController implements Serializable {
 					cmqBase190.setCmqState("Published");
 					try {
 						this.cmqBaseService.update(cmqBase190);
-						
-						
-						
 					} catch (CqtServiceException e) {
 						LOG.error(e.getMessage(), e);
 						hasErrorOccured = true;
@@ -156,8 +153,6 @@ public class PublishController implements Serializable {
 					FacesContext.getCurrentInstance().addMessage(null, msg);
 				}
 			}
-			
-			
 		}//end 
 		
 		return "";
