@@ -22,19 +22,12 @@
 							<f:selectItem itemValue="TERM" itemLabel="Term name"></f:selectItem>
 							<f:selectItem itemValue="DEF_LEVEL_REF_SHORT_NAME"
 								itemLabel="Level"></f:selectItem>
-							<f:selectItem itemValue="SCOPE" itemLabel="Scope"></f:selectItem>
 						</p:selectOneMenu>
 
 						<p:outputLabel for="show" value="Show Primary Only"
 							style="min-width: 100px !important" />
 						<p:selectBooleanCheckbox value="false" id="show"
 							label="Show Primary Only"></p:selectBooleanCheckbox>
-
-						<p:outputLabel value="Scope" />
-						<p:selectOneMenu value="0">
-							<f:selectItem itemValue="0" itemLabel="Full /SMQ"></f:selectItem>
-							<f:selectItem itemValue="3" itemLabel="Child Narrow"></f:selectItem>
-						</p:selectOneMenu>
 
 						<p:spacer />
 						<p:commandButton value="Refresh" id="cb7" icon="fa fa-refresh"
@@ -57,8 +50,8 @@
 				</p:commandButton>
 
 				<p:spacer width="10" />
-				<p:commandButton value="MQ Detailed Report" id="ctb1">
-					<p:fileDownload value="#{null}"></p:fileDownload>
+				<p:commandButton value="MQ Detailed Report" id="ctb1" action="#">
+					<!-- <p:fileDownload value="#{null}"></p:fileDownload> -->
 				</p:commandButton>
 				<p:spacer width="10" />
 				 
@@ -66,7 +59,7 @@
 		</p:toolbar>
 
 		<br />
-		<p:treeTable value="#{searchController.relationsRootFromCode}" var="node" 
+		<p:treeTable value="#{searchController.relationsRoot}" var="node" resizableColumns="true"
 			selectionMode="checkbox" id="resultRelations" rows="20"
 			paginator="true" paginatorPosition="bottom"
 			paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"

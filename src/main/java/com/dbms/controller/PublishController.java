@@ -86,8 +86,9 @@ public class PublishController implements Serializable {
 				}
 			}
 			//show error dialog with names of faulty cmqs
+			LOG.info("\n\n ******  " + codes); 
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Cannot publish the following cmqs :" + codes, "");
+					"The list being promoted has an associated list that must be Promoted", "");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			
 			return "";
@@ -113,9 +114,10 @@ public class PublishController implements Serializable {
 						codes += cmq.getCmqCode() + ";";
 					}
 				}
+				LOG.info("\n\n ******  " + codes); 
 				//show error dialog with names of faulty cmqs
 				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-						"Cannot publish the following cmqs :" + codes, "");
+						"The list being promoted has an associated list that must be Promoted. ", "");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 				
 				return "";
@@ -149,7 +151,7 @@ public class PublishController implements Serializable {
 				}
 				else {
 					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-							"The CMQs were published with success", "");
+							"The CMQs were successfully published", "");
 					FacesContext.getCurrentInstance().addMessage(null, msg);
 				}
 			}

@@ -15,6 +15,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
 
 import org.primefaces.component.wizard.Wizard;
+import org.primefaces.event.FlowEvent;
 import org.primefaces.event.NodeExpandEvent;
 import org.primefaces.event.RowEditEvent;
 import org.primefaces.model.DefaultTreeNode;
@@ -126,6 +127,16 @@ public class SearchController extends BaseController<CmqBase190> {
 		relationsRoot = new DefaultTreeNode("root",
 				new HierarchyNode("LEVEL", "NAME", "CODE", "SCOPE", "CATEGORY", "WEIGHT", null), null);
 	}
+	
+	/**
+	 * Used by wizard component.
+	 * @param event FlowEvent
+	 * @return String
+	 */
+//	public String onFlowProcess(FlowEvent event) {
+//		
+//		
+//	}
 
 	public void initSearch() {
 		this.datas = new ArrayList<CmqBase190>();
@@ -463,6 +474,9 @@ public class SearchController extends BaseController<CmqBase190> {
 		datas = cmqBaseService.findByCriterias(extension, drugProgram, protocol, product, level, status, state,
 				critical, group, termName, code);
 		log.debug("found values {}", datas == null ? 0 : datas.size());
+		
+		//Relations retrieval
+		buildRelationsRoot();
 	}
 
 	/**
@@ -886,8 +900,8 @@ public class SearchController extends BaseController<CmqBase190> {
 		return relationsRoot;
 	}
 	
-	public TreeNode getRelationsRootFromCode() {
- 		this.selctedData = this.cmqBaseService.findByCode(clickedCmqCode);
+	public void buildRelationsRoot() {
+		this.selctedData = this.cmqBaseService.findByCode(clickedCmqCode);
 		List<CmqRelation190> cmqRelationList = this.cmqRelationService.findByCmqCode(clickedCmqCode);
 		relationsRoot = new DefaultTreeNode("root",
 				new HierarchyNode("LEVEL", "NAME", "CODE", "SCOPE", "CATEGORY", "WEIGHT", null), null);
@@ -948,6 +962,9 @@ public class SearchController extends BaseController<CmqBase190> {
 			}
 		}
 		
+	}
+	
+	public TreeNode getRelationsRootFromCode() {
 		return relationsRoot;
 	}
 

@@ -17,10 +17,12 @@
 					</p:breadCrumb>
 
 				</h:panelGrid>
-				
+
 			</h:panelGrid>
 
-			<p:wizard flowListener="#{wizard.onFlowProcess}" widgetVar="wizard" id="wizardId" binding="#{createController.browseWizard}">
+			<p:wizard 
+				widgetVar="wizard" id="wizardId"
+				binding="#{createController.browseWizard}">
 				<!-- Search -->
 				<p:tab id="searchBrowse" title="Search">
 					<p:panel header="Search">
@@ -48,13 +50,16 @@
 								<h:outputText value="#{createController.selectedData.cmqName}" />
 
 								<p:outputLabel styleClass="label-right" value="Drug Program:" />
-								<h:outputText value="#{createController.selectedData.cmqProgramCd}" />
+								<h:outputText
+									value="#{createController.selectedData.cmqProgramCd}" />
 
 								<p:outputLabel styleClass="label-right" value="Protocol:" />
-								<h:outputText value="#{createController.selectedData.cmqProtocolCd}" />
+								<h:outputText
+									value="#{createController.selectedData.cmqProtocolCd}" />
 
 								<p:outputLabel styleClass="label-right" value="Product:" />
-								<h:outputText value="#{createController.selectedData.cmqProductCd}" />
+								<h:outputText
+									value="#{createController.selectedData.cmqProductCd}" />
 
 							</h:panelGrid>
 
@@ -67,11 +72,12 @@
 								<h:outputText value="#{createController.selectedData.cmqCode}" />
 
 								<p:outputLabel styleClass="label-right" value="Algorithm:" />
-								<h:outputText value="#{createController.selectedData.cmqAlgorithm}" />
-								
+								<h:outputText
+									value="#{createController.selectedData.cmqAlgorithm}" />
+
 								<p:spacer />
 								<p:spacer />
-								
+
 								<p:spacer />
 								<p:spacer />
 							</h:panelGrid>
@@ -80,7 +86,15 @@
 								style="min-width: 300px;">
 
 								<p:outputLabel styleClass="label-right" value="Status:" />
-								<h:outputText value="#{createController.selectedData.cmqStatus}" />
+								<!-- <h:outputText value="#{createController.selectedData.cmqStatus}" /> -->
+								<h:panelGrid>
+									<h:outputText rendered="#{createController.selectedData.cmqStatus eq 'P'}"
+									value="Pending" />
+								<h:outputText rendered="#{createController.selectedData.cmqStatus eq 'I'}"
+									value="Inactive" />
+								<h:outputText rendered="#{createController.selectedData.cmqStatus eq 'A'}"
+									value="Active" />
+								</h:panelGrid>
 
 								<p:outputLabel styleClass="label-right" value="State:" />
 								<h:outputText value="#{createController.selectedData.cmqState}" />
@@ -89,8 +103,9 @@
 								<h:outputText value="#{createController.selectedData.cmqGroup}" />
 
 								<p:outputLabel styleClass="label-right" value="Designee:" />
-								<h:outputText value="#{createController.selectedData.cmqDesignee}" />
-								
+								<h:outputText
+									value="#{createController.selectedData.cmqDesignee}" />
+
 								<p:spacer />
 								<p:spacer />
 							</h:panelGrid>
@@ -100,19 +115,22 @@
 								style="min-width: 300px;">
 
 								<p:outputLabel styleClass="label-right" value="Create Date:" />
-								<h:outputText value="#{createController.selectedData.creationDate}" />
+								<h:outputText
+									value="#{createController.selectedData.creationDate}" />
 
 								<p:outputLabel styleClass="label-right" value="Created By: " />
 								<h:outputText value="#{createController.selectedData.createdBy}" />
 
 								<p:outputLabel styleClass="label-right"
 									value="Last Activation Date:" />
-								<h:outputText value="#{createController.selectedData.activationDate}" />
+								<h:outputText
+									value="#{createController.selectedData.activationDate}" />
 
 								<p:outputLabel styleClass="label-right"
 									value="Last Activation By" />
-								<h:outputText value="#{createController.selectedData.activatedBy}" />
-								
+								<h:outputText
+									value="#{createController.selectedData.activatedBy}" />
+
 								<p:spacer />
 								<p:spacer />
 							</h:panelGrid>
@@ -139,18 +157,19 @@
 				style="padding:3px; font-size: 10px !important">
 
 				<p:outputLabel for="it1aw" value="Dictionary Version:"></p:outputLabel>
-				<h:inputText id="it1aw" value="#{configMB.currentMeddraVersion.value}" disabled="true"
+				<h:inputText id="it1aw"
+					value="#{configMB.currentMeddraVersion.value}" disabled="true"
 					columns="200" />
 
 				<p:outputLabel for="it3" value="Name: "></p:outputLabel>
-				<h:inputText id="it3" value="#{configMB.dictionaryName}" readOnly="true"
-					disabled="true" />
+				<h:inputText id="it3" value="#{configMB.dictionaryName}"
+					readOnly="true" disabled="true" />
 			</h:panelGrid>
 			<f:attribute name="currentPage"
 				value="Create New #{applicationScope.CSMQBean.customMQName} Wizard" />
-				
+
 		</h:form>
-		
+
 
 		<style>
 .label-right {
@@ -166,7 +185,7 @@
 }
 </style>
 
-<script>
+		<script>
 			function next() {
 				PF('wizard').next();
 			}
