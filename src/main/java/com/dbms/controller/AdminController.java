@@ -156,23 +156,48 @@ public class AdminController implements Serializable {
 		initValuesForAdmin();
 	}
 
-	/******
-	 * 
-	 * 
-	 * 
-	 * 
-	 * Dummy test on the ADMIN MODULE - To REMOVE if we have a service TODO
-	 * 
-	 * 
-	 */
-	public void addValue() {
-		list.add(new CodelistDTO());
+	 
+	public void addProgram() {
+		programs.add(new RefConfigCodeList());
+	}
+	
+	public void addExtension() {
+		extensions.add(new RefConfigCodeList());
+	}
+	
+	public void addProtocol() {
+		protocols.add(new RefConfigCodeList());
+	}
+	
+	public void addProduct() {
+		products.add(new RefConfigCodeList());
 	}
 
-	public void cancel() {
-		for (CodelistDTO codel : list) {
-			if (codel.getName() == null)
-				list.remove(codel);
+	public void cancelProgram() {
+		for (RefConfigCodeList ref : programs) {
+			if (ref.getCodelistConfigType() == null || ref.getValue() == null)
+				programs.remove(ref);
+		}
+	}
+	
+	public void cancelProtocol() {
+		for (RefConfigCodeList ref : protocols) {
+			if (ref.getCodelistConfigType() == null || ref.getValue() == null)
+				protocols.remove(ref);
+		}
+	}
+	
+	public void cancelProduct() {
+		for (RefConfigCodeList ref : products) {
+			if (ref.getCodelistConfigType() == null || ref.getValue() == null)
+				products.remove(ref);
+		}
+	}
+	
+	public void cancelExtension() {
+		for (RefConfigCodeList ref : extensions) {
+			if (ref.getCodelistConfigType() == null || ref.getValue() == null)
+				extensions.remove(ref);
 		}
 	}
 

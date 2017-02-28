@@ -15,13 +15,8 @@
 				<p:outputLabel styleClass="label-right" value="Extension:" />
 				<h:panelGrid>
 					<h:outputText
-						rendered="#{createController.selectedData.cmqTypeCd eq 'PRO'}"
-						value="Protocol" />
-					<h:outputText
-						rendered="#{createController.selectedData.cmqTypeCd eq 'TR1'}"
-						value="TIER1" />
-					<h:outputText rendered="#{createController.selectedData.cmqTypeCd ne 'PRO' and createController.selectedData.cmqTypeCd ne 'TR1'}"
-					value="#{createController.selectedData.cmqTypeCd}"  />
+						value="#{createController.selectedData.cmqTypeCd}" />
+					
 				</h:panelGrid>
 
 				<p:outputLabel styleClass="label-right" value="Name:" />

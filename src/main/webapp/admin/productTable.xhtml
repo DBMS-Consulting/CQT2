@@ -19,37 +19,70 @@
 			listener="#{adminController.onRowCancel}" update="f1:m1" />
 
 		<p:column headerText="Serial #" style="text-align: center">
-			<h:outputText value="#{val.serialNum}" />
+			<p:cellEditor>
+				<f:facet name="output">
+					<h:outputText value="#{val.serialNum}" />
+				</f:facet>
+				<f:facet name="input">
+					<p:inputText value="#{val.serialNum}" style="width:100%" />
+				</f:facet>
+			</p:cellEditor>
 		</p:column>
 
 		<p:column headerText="Code" style="text-align: center">
-			<h:outputText value="#{val.codelistInternalValue}" />
+ 			<p:cellEditor>
+				<f:facet name="output">
+					<h:outputText value="#{val.codelistInternalValue}" />
+				</f:facet>
+				<f:facet name="input">
+					<p:inputText value="#{val.codelistInternalValue}" style="width:100%" />
+				</f:facet>
+			</p:cellEditor>
 		</p:column>
 
 		<p:column headerText="Product Name" style="text-align: center">
-			<h:outputText value="#{val.value}" />
+			<p:cellEditor>
+				<f:facet name="output">
+					<h:outputText value="#{val.value}" />
+				</f:facet>
+				<f:facet name="input">
+					<p:inputText value="#{val.value}" style="width:100%" />
+				</f:facet>
+			</p:cellEditor>
 		</p:column>
 
 		<p:column headerText="Active?" style="text-align: center">
-			<h:outputText value="#{val.activeFlag}" />
+			<p:cellEditor>
+				<f:facet name="output">
+					<h:outputText value="#{val.activeFlag ? 'Y' : 'N'}" />
+				</f:facet>
+				<f:facet name="input">
+					<p:inputText value="#{val.activeFlag}" />
+				</f:facet>
+			</p:cellEditor>
 		</p:column>
 
 		<p:column headerText="Default?" style="text-align: center">
-			<h:outputText value="#{val.defaultFlag}" />
+			<p:cellEditor>
+				<f:facet name="output">
+					<h:outputText value="#{val.defaultFlag ? 'Y' : 'N'}" />
+				</f:facet>
+				<f:facet name="input">
+					<p:inputText value="#{val.defaultFlag}" />
+				</f:facet>
+			</p:cellEditor>
 		</p:column>
 
-		<!-- <p:column style="width:32px">
+		<p:column style="width:32px">
 			<p:rowEditor />
-		</p:column> -->
+		</p:column>
 	</p:dataTable>
 
-	<h:panelGrid columns="4" cellpadding="5" rendered="false">
-		<!-- <p:commandButton value="Edit" icon="fa fa-pencil"></p:commandButton> -->
-		<p:commandButton value="Add" icon="fa fa-plus" update="table1"
-			action="#{adminController.addValue}"></p:commandButton>
-		<!-- <p:commandButton value="Save" icon="fa fa-floppy-o"></p:commandButton> -->
-		<p:commandButton value="Cancel" icon="fa fa-close" update="table1"
-			action="#{adminController.cancel}" />
+	<h:panelGrid columns="2" cellpadding="5">
+		<p:commandButton value="Add" icon="fa fa-plus" update="tableProduct"
+			action="#{adminController.addProduct}"></p:commandButton>
+		<p:commandButton value="Cancel" icon="fa fa-close" update="tableProduct"
+			action="#{adminController.cancelProduct}" />
 	</h:panelGrid>
 
 </ui:composition>
