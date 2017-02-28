@@ -11,8 +11,8 @@
 			<p:outputLabel value="Extension" styleClass="label-right" />
 			<p:selectOneMenu value="#{searchController.extension}">
 				<f:selectItem itemLabel="All" itemValue=""></f:selectItem>
-				<f:selectItems value="#{configMB.extensions}" var="extension"
-					itemLabel="#{extension.value}" itemValue="#{extension.codelistInternalValue}" />
+				<f:selectItems value="#{configMB.extensions}" var="ext"
+					itemLabel="#{ext.value}" itemValue="#{ext.codelistInternalValue}" />
 
 				<p:ajax update="level2 protocol2 drug2 product2 status state group"
 					event="change" listener="#{searchController.resetSearch}" />

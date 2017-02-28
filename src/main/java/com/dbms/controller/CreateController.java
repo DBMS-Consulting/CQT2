@@ -169,7 +169,14 @@ public class CreateController implements Serializable {
 			selectedData = cmq;
 			this.extension = selectedData.getCmqTypeCd();
 			this.state = selectedData.getCmqState();
-			this.status = selectedData.getCmqStatus();
+			
+			if(selectedData.getCmqStatus().equalsIgnoreCase("p")) {
+				this.status = "Pending";
+			} else if (selectedData.getCmqStatus().equalsIgnoreCase("a")) {
+				this.status = "Active";
+			} else {
+				this.status = "Inactive";
+			}
 			this.description = selectedData.getCmqDescription();
 			this.notes = selectedData.getCmqNote();
 			this.source = selectedData.getCmqSource();

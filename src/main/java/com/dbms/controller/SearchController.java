@@ -166,25 +166,23 @@ public class SearchController extends BaseController<CmqBase190> {
 	}
 
 	public void changeLevel() {
-		if (extension.equals("PRO")) {
+		if (this.extension.equals("PRO")) {
 			setLevel(2);
-
 		} else {
 			setLevel(1);
-
 		}
 
-		if (extension.equals("CPT") || extension.equals("DME"))
+		if (this.extension.equals("CPT") || this.extension.equals("DME"))
 			setDrugProgram("No Program");
 		else
 			setDrugProgram("");
 
-		if (extension.equals("CPT") || extension.equals("DME") || extension.equals("TME") || extension.equals("TR1"))
+		if (this.extension.equals("CPT") || this.extension.equals("DME") || this.extension.equals("TME") || this.extension.equals("TR1"))
 			setProtocol("No Protocol");
 		else
 			setProtocol("");
 
-		if (extension.equals("CPT") || extension.equals("DME"))
+		if (this.extension.equals("CPT") || this.extension.equals("DME"))
 			setProduct("No Product");
 		else
 			setProduct("");
