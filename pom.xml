@@ -13,7 +13,8 @@
 		<java.version>1.7</java.version>
 		<junit.version>4.12</junit.version>
 		<servlet.version>3.1.0</servlet.version>
-		<mojarra.version>2.1.28</mojarra.version>
+		<!-- <mojarra.version>2.1.28</mojarra.version> -->
+		<mojarra.version>2.2.14</mojarra.version>
 		<jetty.version>9.4.0.v20161208</jetty.version>
 		<primefaces.version>6.0</primefaces.version>
 		<maven.compiler.plugin.version>3.5.1</maven.compiler.plugin.version>
