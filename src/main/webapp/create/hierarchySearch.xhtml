@@ -7,13 +7,27 @@
 	xmlns:p="http://primefaces.org/ui">
 
 
-	<p:panel header="Relations" style="width:700px; height:623px;">
+	<p:panel header="Relations" style="width:700px; height:623px;" id="hierarchy-modal">
 		<h:panelGrid columns="6">
 			<p:outputLabel value="Level" for="levelH" />
-			<p:selectOneMenu id="levelH" label="Level" partialTriggers="soc9"
+			<p:selectOneMenu id="levelH" label="Level"  rendered="#{createController.extension ne 'PRO'}"
 				value="#{searchController.levelH}">
-				<f:selectItem itemValue="PRO" itemLabel="PRO" />
-				<f:selectItem itemValue="SMQ1" itemLabel="SMQ1" />
+ 				<f:selectItem itemValue="PRO" itemLabel="PRO"/> 				
+ 				<f:selectItem itemValue="SMQ1" itemLabel="SMQ1" />
+				<f:selectItem itemValue="SMQ2" itemLabel="SMQ2" />
+				<f:selectItem itemValue="SMQ3" itemLabel="SMQ3" />
+				<f:selectItem itemValue="SMQ4" itemLabel="SMQ4" />
+				<f:selectItem itemValue="SMQ5" itemLabel="SMQ5" />
+				<f:selectItem itemValue="SOC" itemLabel="SOC" />
+				<f:selectItem itemValue="HLGT" itemLabel="HLGT" />
+				<f:selectItem itemValue="HLT" itemLabel="HLT" />
+				<f:selectItem itemValue="PT" itemLabel="PT" />
+				<f:selectItem itemValue="LLT" itemLabel="LLT" />
+			</p:selectOneMenu>
+			<p:selectOneMenu id="levelH2" label="Level"  rendered="#{createController.extension eq 'PRO'}"
+				value="#{searchController.levelH}">			
+ 				
+ 				<f:selectItem itemValue="SMQ1" itemLabel="SMQ1" />
 				<f:selectItem itemValue="SMQ2" itemLabel="SMQ2" />
 				<f:selectItem itemValue="SMQ3" itemLabel="SMQ3" />
 				<f:selectItem itemValue="SMQ4" itemLabel="SMQ4" />
