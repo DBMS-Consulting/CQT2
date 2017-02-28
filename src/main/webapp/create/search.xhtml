@@ -145,7 +145,7 @@
 					action="#{createController.loadCmqBaseByCode(value.cmqCode)}"
 					value="#{value.cmqCode}">
 					
-					<f:ajax render="@form @form:pgl2 @form:relations_panel" />
+					<f:ajax render="@form @form:relations_panel" />
 					
 					<f:setPropertyActionListener target="#{searchController.clickedCmqCode}" value="#{value.cmqCode}" />
 					
