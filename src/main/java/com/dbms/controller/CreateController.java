@@ -142,12 +142,19 @@ public class CreateController implements Serializable {
 	 * @return boolean
 	 */
 	public boolean isReadOnlyState() {
-		if (selectedData != null && selectedData.getCmqState() != null && (selectedData.getCmqState().equals("Draft") || selectedData.getCmqState().equals("Reviewed")))
+		if(copyWizard != null) {
 			return false;
-		if (selectedData != null && selectedData.getCmqState() == null)
-			return false;
-		
-		return true;
+		} else if (updateWizard != null) {
+			if ((selectedData != null) && (selectedData.getCmqState() != null) 
+					&& (selectedData.getCmqState().equals("Draft") || selectedData.getCmqState().equals("Reviewed"))){
+				return false;
+			} else if (selectedData != null && selectedData.getCmqState() == null) {
+				return false;	
+			} else {
+				return true;
+			}
+		} 
+		return false;
 	}
 	
 	public String loadCmqBaseByCode(Long code) {
@@ -160,6 +167,7 @@ public class CreateController implements Serializable {
 			codeSelected = cmq.getCmqCode();
 
 			selectedData = cmq;
+			this.extension = selectedData.getCmqTypeCd();
 			this.state = selectedData.getCmqState();
 			this.status = selectedData.getCmqStatus();
 			this.description = selectedData.getCmqDescription();
@@ -184,8 +192,22 @@ public class CreateController implements Serializable {
 			// selectedData = new CmqBase190();
 			// setSelectedData(cmq);
 		}
-		if (copyWizard != null)
+		if (copyWizard != null) {
+			//reset the values which are not supposed to be copied.
+			selectedData.setId(null);//need to set since we may need to create a new cmq
+			selectedData.setCmqCode(null);//need to set since we may need to create a new cmq
+			selectedData.setCmqStatus("P");
+			selectedData.setCmqState("Draft");
+			this.state = "Draft";
+			this.status = "Pending";
+			selectedData.setCmqGroup(null);
+			selectedData.setCreationDate(null);
+			selectedData.setCreatedBy(null);
+			selectedData.setCmqDescription("");
+			selectedData.setCmqNote("");
+			selectedData.setCmqSource("");
 			copyWizard.setStep("details");
+		}
 
 		return "";
 	}
@@ -238,11 +260,11 @@ public class CreateController implements Serializable {
 	public String copy() {
 		try {
 			setDatas();
-
+			
 			cmqBaseService.create(selectedData);
 
 			// retrieve the saved cmq base
-			CmqBase190 savedEntity = cmqBaseService.findByCode(codevalue);
+			CmqBase190 savedEntity = cmqBaseService.findByCode(selectedData.getCmqCode());
 
 			// save the cmq code to session
 			FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("NEW-CMQ_BASE-ID",
@@ -275,7 +297,7 @@ public class CreateController implements Serializable {
 		selectedData.setCreationDate(new Date());
 		selectedData.setCmqGroup(group);
 		selectedData.setCmqTypeCd(extension);
-		if (status.equals("Pending"))
+		if ((status == null) || status.equals("Pending"))
 			selectedData.setCmqStatus("P");
 		if (status.equals("Active"))
 			selectedData.setCmqStatus("A");

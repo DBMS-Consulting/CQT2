@@ -7,6 +7,7 @@ import javax.faces.bean.ManagedBean;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.transform.Transformers;
@@ -38,11 +39,20 @@ public class MeddraDictService extends CqtPersistenceService<MeddraDict190> impl
 		List<MeddraDictHierarchySearchDto> retVal = null;
 		String termColumnName = searchColumnTypePrefix + "TERM";
 		String codeColumnName = searchColumnTypePrefix + "CODE";
-		String queryString = "select MEDDRA_DICT_ID as meddraDictId, " + termColumnName + " as term, " + codeColumnName
-				+ " as code from (select MEDDRA_DICT_ID, " + termColumnName + ", " + codeColumnName
-				+ ", row_number() over (partition by " + codeColumnName
-				+ " order by MEDDRA_DICT_ID) rn from MEDDRA_DICT_CURRENT where upper(" + termColumnName
-				+ ")  like :searchTerm ) where rn = 1";
+		String queryString = "";
+		if(StringUtils.isBlank(searchTerm)) {
+			queryString = "select MEDDRA_DICT_ID as meddraDictId, " + termColumnName + " as term, " + codeColumnName
+					+ " as code from (select MEDDRA_DICT_ID, " + termColumnName + ", " + codeColumnName
+					+ ", row_number() over (partition by " + codeColumnName
+					+ " order by MEDDRA_DICT_ID) rn from MEDDRA_DICT_CURRENT ) where rn = 1";
+		} else {
+			queryString = "select MEDDRA_DICT_ID as meddraDictId, " + termColumnName + " as term, " + codeColumnName
+					+ " as code from (select MEDDRA_DICT_ID, " + termColumnName + ", " + codeColumnName
+					+ ", row_number() over (partition by " + codeColumnName
+					+ " order by MEDDRA_DICT_ID) rn from MEDDRA_DICT_CURRENT where upper(" + termColumnName
+					+ ")  like :searchTerm ) where rn = 1";
+		}
+		
 
 		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
 		Session session = entityManager.unwrap(Session.class);
@@ -51,7 +61,9 @@ public class MeddraDictService extends CqtPersistenceService<MeddraDict190> impl
 			query.addScalar("meddraDictId", StandardBasicTypes.LONG);
 			query.addScalar("term", StandardBasicTypes.STRING);
 			query.addScalar("code", StandardBasicTypes.STRING);
-			query.setParameter("searchTerm", searchTerm.toUpperCase());
+			if(!StringUtils.isBlank(searchTerm)) {
+				query.setParameter("searchTerm", searchTerm.toUpperCase());
+			}
 			query.setResultTransformer(Transformers.aliasToBean(MeddraDictHierarchySearchDto.class));
 			
 			retVal = query.list();
