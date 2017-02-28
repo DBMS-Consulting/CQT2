@@ -60,13 +60,15 @@
 
 		<br />
 		<p:treeTable value="#{searchController.relationsRoot}" var="node" resizableColumns="true"
-			selectionMode="checkbox" id="resultRelationsB" rows="20"
+			selectionMode="checkbox" rows="20"
 			paginator="true" paginatorPosition="bottom"
 			paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 			rowsPerPageTemplate="5,10,25,30">
 			<p:ajax event="expand" listener="#{searchController.onNodeExpand}"
-				update="resultRelationsB" />
-
+			/>
+<!-- 
+				update="resultRelationsB" 
+ -->
 			<p:columnGroup type="header">
 				<p:row>
 					<p:column rowspan="2"
