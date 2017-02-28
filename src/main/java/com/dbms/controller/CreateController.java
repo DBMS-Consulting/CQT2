@@ -80,6 +80,8 @@ public class CreateController implements Serializable {
 
 	private boolean reactivate, retire, demote, delete, approve, reviewed;
 	private Long codevalue;
+	
+	private CmqBase190 selectedData;
 
 	@PostConstruct
 	public void init() {
@@ -129,12 +131,25 @@ public class CreateController implements Serializable {
 		// return event.getNewStep();
 	}
 
-	private CmqBase190 selectedData;
+	
 
 	public CreateController() {
 		this.selectedData = new CmqBase190();
 	}
 
+	/**
+	 * Bool when State is 'Draft' or 'Reviewed'.
+	 * @return boolean
+	 */
+	public boolean isReadOnlyState() {
+		if (selectedData != null && selectedData.getCmqState() != null && (selectedData.getCmqState().equals("Draft") || selectedData.getCmqState().equals("Reviewed")))
+			return false;
+		if (selectedData != null && selectedData.getCmqState() == null)
+			return false;
+		
+		return true;
+	}
+	
 	public String loadCmqBaseByCode(Long code) {
 		codeSelected = null;
 		CmqBase190 cmq = new CmqBase190();
@@ -146,7 +161,7 @@ public class CreateController implements Serializable {
 
 			selectedData = cmq;
 			this.state = selectedData.getCmqState();
-			this.status = selectedData.getCmqState();
+			this.status = selectedData.getCmqStatus();
 			this.description = selectedData.getCmqDescription();
 			this.notes = selectedData.getCmqNote();
 			this.source = selectedData.getCmqSource();

@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<h3 style="text-align: center">Protocols CodeList</h3>
+	<p:dataTable id="tableProtocol" var="val" rows="10"
+		value="#{adminController.protocols}" editable="true"
+		style="margin-bottom:20px" paginator="true" paginatorPosition="bottom"
+		paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+		rowsPerPageTemplate="5,10,25">
+
+		<p:ajax event="rowEdit" listener="#{adminController.onRowEdit}"
+			update="f1:m1" />
+		<p:ajax event="rowEditCancel"
+			listener="#{adminController.onRowCancel}" update="f1:m1" />
+
+		<p:column headerText="Serial #" style="text-align: center">
+			<h:outputText value="#{val.serialNum}" />
+		</p:column>
+
+		<p:column headerText="Code" style="text-align: center">
+			<h:outputText value="#{val.codelistInternalValue}" />
+		</p:column>
+
+		<p:column headerText="Program Name" style="text-align: center">
+			<h:outputText value="#{val.value}" />
+		</p:column>
+
+		<p:column headerText="Active?" style="text-align: center">
+			<h:outputText value="#{val.activeFlag}" />
+		</p:column>
+
+		<p:column headerText="Default?" style="text-align: center">
+			<h:outputText value="#{val.defaultFlag}" />
+		</p:column>
+
+		<!-- <p:column style="width:32px">
+			<p:rowEditor />
+		</p:column> -->
+	</p:dataTable>
+
+	<h:panelGrid columns="4" cellpadding="5" rendered="false">
+		<!-- <p:commandButton value="Edit" icon="fa fa-pencil"></p:commandButton> -->
+		<p:commandButton value="Add" icon="fa fa-plus" update="table1"
+			action="#{adminController.addValue}"></p:commandButton>
+		<!-- <p:commandButton value="Save" icon="fa fa-floppy-o"></p:commandButton> -->
+		<p:commandButton value="Cancel" icon="fa fa-close" update="table1"
+			action="#{adminController.cancel}" />
+	</h:panelGrid>
+
+</ui:composition>
+
+
+

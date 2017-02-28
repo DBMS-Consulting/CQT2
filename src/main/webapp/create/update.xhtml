@@ -38,10 +38,10 @@
 
 						<h:panelGrid columns="2">
 							<p:commandButton value="Save" icon="ui-icon-disk"
-								action="#{createController.update}" 
+								action="#{createController.update}" disabled="#{createController.readOnlyState}"
 								update="@form:m1 pgl2 @form:codeValue @form:detailsPanel"></p:commandButton>
 
-							<p:commandButton value="Cancel" icon="ui-icon-close" 
+							<p:commandButton value="Cancel" icon="ui-icon-close" disabled="#{createController.readOnlyState}"
 								update="@form" 
 								action="#{createController.cancel}">
 								<p:confirm header="Confirm"
@@ -63,10 +63,10 @@
 						<ui:include src="relations.xhtml"></ui:include>
 
 						<h:panelGrid columns="2">
-							<p:commandButton value="Save" id="cb3"
+							<p:commandButton value="Save" id="cb3" disabled="#{createController.readOnlyState}"
 								action="#{createController.updateRelations}" icon="ui-icon-disk" />
 
-							<p:commandButton value="Cancel" icon="ui-icon-close"
+							<p:commandButton value="Cancel" icon="ui-icon-close" disabled="#{createController.readOnlyState}"
 								process="@this" update="m1" style="float: right"
 								action="#{createController.cancelRelations}">
 								<p:confirm header="Confirm"

@@ -7,11 +7,16 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
 
 import org.primefaces.event.RowEditEvent;
 
+import com.dbms.entity.cqt.RefConfigCodeList;
+import com.dbms.service.IRefCodeListService;
+import com.dbms.util.CqtConstants;
+import com.dbms.util.OrderBy;
 import com.dbms.web.dto.CodelistDTO;
 
 /**
@@ -26,13 +31,16 @@ public class AdminController implements Serializable {
 	 */
 	private static final long serialVersionUID = 1085292862045772511L;
 
-	private List<CodelistDTO> products, protocols, extensions, programs;
+//	private List<CodelistDTO> products, protocols, extensions, programs;
 
 	private String codelistType;
 	List<CodelistDTO> list;
 	private String codelist;
-	
 
+	@ManagedProperty("#{RefCodeListService}")
+	private IRefCodeListService refCodeListService;
+
+	private List<RefConfigCodeList> extensions, programs, protocols, products;
 
 	public AdminController() {
 
@@ -40,9 +48,63 @@ public class AdminController implements Serializable {
 
 	@PostConstruct
 	public void init() {
-		// TODO To test UI of ADMIN MODULE - Will be removed
-		initValuesForAdmin();
-		codelist = "";
+		//initValuesForAdmin();
+		codelist = "PROGRAM";
+		getExtensionList();
+		getProductList();
+		getProgramList();
+		getProtocolList();
+	}
+
+	public List<RefConfigCodeList> getExtensionList() {
+		extensions = refCodeListService.findByConfigType(
+				CqtConstants.CODE_LIST_TYPE_EXTENSION, OrderBy.ASC);
+		if (extensions == null) {
+			extensions = new ArrayList<>();
+		}
+		return extensions;
+	}
+	
+	/**
+	 * Returns programs list.
+	 * 
+	 * @return
+	 */
+	public List<RefConfigCodeList> getProgramList() {
+		programs = refCodeListService.findByConfigType(
+				CqtConstants.CODE_LIST_TYPE_PROGRAM, OrderBy.ASC);
+		if (programs == null) {
+			programs = new ArrayList<>();
+		}
+		return programs;
+	}
+	
+	/**
+	 * Returns protocol list.
+	 * 
+	 * @return
+	 */
+	public List<RefConfigCodeList> getProtocolList() {
+		protocols = refCodeListService.findByConfigType(
+				CqtConstants.CODE_LIST_TYPE_PROTOCOL, OrderBy.ASC);
+		if (protocols == null) {
+			protocols = new ArrayList<>();
+		}
+		return protocols;
+	}
+	
+	/**
+	 * Returns products list.
+	 * 
+	 * @return
+	 */
+	public List<RefConfigCodeList> getProductList() {
+		products = refCodeListService.findByConfigType(
+				CqtConstants.CODE_LIST_TYPE_PRODUCT, OrderBy.ASC);
+		if (products == null) {
+			products = new ArrayList<>();
+		}
+		return products;
 	}
 
 	private void initValuesForAdmin() {
@@ -89,12 +151,11 @@ public class AdminController implements Serializable {
 		c.setDefaultValue(false);
 		list.add(c);
 	}
-	
-	
+
 	public void switchTable() {
 		initValuesForAdmin();
 	}
-	
+
 	/******
 	 * 
 	 * 
@@ -114,46 +175,14 @@ public class AdminController implements Serializable {
 				list.remove(codel);
 		}
 	}
-	
+
 	public void onRowCancel(RowEditEvent event) {
 		FacesMessage msg = new FacesMessage("Canceled", "");
 		FacesContext.getCurrentInstance().addMessage(null, msg);
 	}
-	
+
 	public void onRowEdit(RowEditEvent event) {
-		
-	}
 
-	public List<CodelistDTO> getProducts() {
-		return products;
-	}
-
-	public void setProducts(List<CodelistDTO> products) {
-		this.products = products;
-	}
-
-	public List<CodelistDTO> getProtocols() {
-		return protocols;
-	}
-
-	public void setProtocols(List<CodelistDTO> protocols) {
-		this.protocols = protocols;
-	}
-
-	public List<CodelistDTO> getExtensions() {
-		return extensions;
-	}
-
-	public void setExtensions(List<CodelistDTO> extensions) {
-		this.extensions = extensions;
-	}
-
-	public List<CodelistDTO> getPrograms() {
-		return programs;
-	}
-
-	public void setPrograms(List<CodelistDTO> programs) {
-		this.programs = programs;
 	}
 
 	public String getCodelistType() {
@@ -178,6 +207,46 @@ public class AdminController implements Serializable {
 
 	public void setCodelist(String codelist) {
 		this.codelist = codelist;
+	}
+
+	public IRefCodeListService getRefCodeListService() {
+		return refCodeListService;
+	}
+
+	public void setRefCodeListService(IRefCodeListService refCodeListService) {
+		this.refCodeListService = refCodeListService;
+	}
+
+	public void setExtensions(List<RefConfigCodeList> extensions) {
+		this.extensions = extensions;
+	}
+
+	public void setPrograms(List<RefConfigCodeList> programs) {
+		this.programs = programs;
+	}
+
+	public void setProtocols(List<RefConfigCodeList> protocols) {
+		this.protocols = protocols;
+	}
+
+	public void setProducts(List<RefConfigCodeList> products) {
+		this.products = products;
+	}
+
+	public List<RefConfigCodeList> getExtensions() {
+		return extensions;
+	}
+
+	public List<RefConfigCodeList> getPrograms() {
+		return programs;
+	}
+
+	public List<RefConfigCodeList> getProtocols() {
+		return protocols;
+	}
+
+	public List<RefConfigCodeList> getProducts() {
+		return products;
 	}
 
 }

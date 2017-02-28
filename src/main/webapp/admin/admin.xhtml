@@ -25,12 +25,10 @@
 			<p:tabView id="pb1">
 				<p:tab title="Codelist Configurations">
 
-					<!-- <h3 style="text-align: center">Drug Program CodeList</h3> -->
 					<h:panelGrid columns="2">
 						<p:outputLabel value="Codelist Type" />
 						<p:selectOneMenu label="Codelist Type" autoSubmit="true"
 							value="#{adminController.codelist}">
-							<f:selectItem itemLabel="" itemValue="" />
 							<f:selectItem itemLabel="PROGRAM" itemValue="PROGRAM" />
 							<f:selectItem itemLabel="PROTOCOL" itemValue="PROTOCOL" />
 							<f:selectItem itemLabel="PRODUCT" itemValue="PRODUCT" />
@@ -41,84 +39,23 @@
 						</p:selectOneMenu>
 					</h:panelGrid>
 					<p:spacer height="10" />
-					<p:panel style=" padding:5px;" id="panel"
-						rendered="#{adminController.codelist ne ''}">
-						<p:dataTable id="table1" var="val" value="#{adminController.list}"
-							editable="true" style="margin-bottom:20px" paginator="true"
-							paginatorPosition="bottom"
-							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-							rowsPerPageTemplate="5,10,25">
-
-							<p:ajax event="rowEdit" listener="#{adminController.onRowEdit}"
-								update="f1:m1" />
-							<p:ajax event="rowEditCancel"
-								listener="#{adminController.onRowCancel}" update="f1:m1" />
-
-							<p:column headerText="Serial #" style="text-align: center">
-								<p:cellEditor>
-									<f:facet name="output">
-										<h:outputText value="#{val.sequence}" />
-									</f:facet>
-									<f:facet name="input">
-										<p:inputText id="seq" value="#{val.sequence}"
-											style="width:100%" />
-									</f:facet>
-								</p:cellEditor>
-							</p:column>
-
-							<p:column headerText="Codelist Value" style="text-align: center">
-								<p:cellEditor>
-									<f:facet name="output">
-										<h:outputText value="#{val.name}" />
-									</f:facet>
-									<f:facet name="input">
-										<p:inputText id="name" value="#{val.name}" style="width:100%" rendered="#{adminController.codelist ne 'PRODUCT'}" />
-										<p:selectOneMenu value="#{val.name}" rendered="#{adminController.codelist eq 'PRODUCT'}"
-											disabled="false" id="product2">
-											<f:selectItem itemValue="" itemLabel="" />
-											<f:selectItem itemValue="No Product" itemLabel="No Product" />
-											<f:selectItem itemLabel="Val 1" itemValue="Val 1"></f:selectItem>
-											<f:selectItem itemLabel="Val 2" itemValue="Val 2"></f:selectItem>
-										</p:selectOneMenu>
-									</f:facet>
-								</p:cellEditor>
-							</p:column>
-
-							<p:column headerText="Active?" style="text-align: center">
-								<p:cellEditor>
-									<f:facet name="output">
-										<h:outputText value="#{val.activeValue ? 'Y' : 'N'}" />
-									</f:facet>
-									<f:facet name="input">
-										<p:selectBooleanCheckbox value="#{val.activeValue}" />
-									</f:facet>
-								</p:cellEditor>
-							</p:column>
-
-							<p:column headerText="Default?" style="text-align: center">
-								<p:cellEditor>
-									<f:facet name="output">
-										<h:outputText value="#{val.defaultValue ? 'Y' : 'N'}" />
-									</f:facet>
-									<f:facet name="input">
-										<p:selectBooleanCheckbox value="#{val.defaultValue}" />
-									</f:facet>
-								</p:cellEditor>
-							</p:column>
-							<p:column style="width:32px">
-								<p:rowEditor />
-							</p:column>
-						</p:dataTable>
-
-						<h:panelGrid columns="4" cellpadding="5">
-							<!-- <p:commandButton value="Edit" icon="fa fa-pencil"></p:commandButton> -->
-							<p:commandButton value="Add" icon="fa fa-plus" update="table1"
-								action="#{adminController.addValue}"></p:commandButton>
-							<!-- <p:commandButton value="Save" icon="fa fa-floppy-o"></p:commandButton> -->
-							<p:commandButton value="Cancel" icon="fa fa-close"
-								update="table1" action="#{adminController.cancel}" />
-						</h:panelGrid>
-					</p:panel>
+					
+					<h:panelGrid rendered="#{adminController.codelist eq 'EXTENSION'}">
+						<ui:include src="extensionTable.xhtml"></ui:include>
+					</h:panelGrid>
+					
+					<h:panelGrid rendered="#{adminController.codelist eq 'PRODUCT'}">
+						<ui:include src="productTable.xhtml"></ui:include>
+					</h:panelGrid>
+					
+					<h:panelGrid rendered="#{adminController.codelist eq 'PROGRAM'}">
+						<ui:include src="programTable.xhtml"></ui:include>
+					</h:panelGrid>
+					
+					<h:panelGrid rendered="#{adminController.codelist eq 'PROTOCOL'}">
+						<ui:include src="protocolsTable.xhtml"></ui:include>
+					</h:panelGrid>
+					
 				</p:tab>
 
 				<p:tab title="Mappings">

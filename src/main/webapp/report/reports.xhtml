@@ -32,18 +32,16 @@
 								</p:selectOneMenu>
 
 								<p:outputLabel value="Start Date" styleClass="label-right" />
-								<p:calendar id="id1" navigator="true" mode="popup"
+								<p:calendar id="id1" navigator="true" mode="popup" pattern="dd/MM/yyyy"
 									value="#{projetMB.projetDTO.dateDebut}">
 									<!-- binding="#{reportBean.cntrlStartDate}" -->
-									<f:convertDateTime pattern="dd-MMM-yyyy" />
 								</p:calendar>
 
 								<p:outputLabel value="End Date" styleClass="label-right" />
-								<p:calendar id="id2" label="End Date" navigator="true"
+								<p:calendar id="id2" label="End Date" navigator="true" pattern="dd/MM/yyyy"
 									mode="popup" value="#{projetMB.projetDTO.dateDebut}">
 									<!-- binding="#{reportBean.cntrlEndDate}" -->
 
-									<f:convertDateTime pattern="dd-MMM-yyyy" />
 								</p:calendar>
 
 								<p:outputLabel value="Format" styleClass="label-right" />

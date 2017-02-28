@@ -15,7 +15,6 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
 
 import org.primefaces.component.wizard.Wizard;
-import org.primefaces.event.FlowEvent;
 import org.primefaces.event.NodeExpandEvent;
 import org.primefaces.event.RowEditEvent;
 import org.primefaces.model.DefaultTreeNode;

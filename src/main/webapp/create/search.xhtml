@@ -76,7 +76,7 @@
 					itemDisabled="#{searchController.status eq 'Pending'}" />
 				<f:selectItem itemLabel="Draft" itemValue="Draft" />
 				<f:selectItem itemLabel="Reviewed" itemValue="Reviewed" />
-				<f:selectItem itemLabel="Approved" itemValue="Approve" />
+				<f:selectItem itemLabel="Approved" itemValue="Approved" />
 				<f:selectItem itemLabel="Published" itemValue="Published"
 					itemDisabled="#{searchController.status eq 'Pending'}" />
 
@@ -145,7 +145,7 @@
 					action="#{createController.loadCmqBaseByCode(value.cmqCode)}"
 					value="#{value.cmqCode}">
 					
-					<f:ajax render="@form:wizardId @form:pgl2" />
+					<f:ajax render="@form:wizardId @form:pgl2 @form:relations_panel" />
 					
 					<f:setPropertyActionListener target="#{searchController.clickedCmqCode}" value="#{value.cmqCode}" />
 					
@@ -187,36 +187,6 @@
 
 	<p:dialog widgetVar="audit-dialog" modal="false" header="Audit">
 		<p:panel header="Audit Trail " style="width:900px; height:623px;">
-			<p:toolbar>
-				<f:facet name="left">
-					<p:commandButton id="filterAT" value="Filter and Sort"
-						type="button" icon="ui-icon-triangle-1-s" />
-					<p:overlayPanel id="filterPanelAT" for="filterAT"
-						showCloseIcon="true">
-						<h:panelGrid columns="2">
-							<p:outputLabel value="Sort" />
-							<p:selectOneMenu value="TERM">
-								<f:selectItem itemValue="TERM" itemLabel="Term name"></f:selectItem>
-								<f:selectItem itemValue="DEF_LEVEL_REF_SHORT_NAME"
-									itemLabel="Level"></f:selectItem>
-							</p:selectOneMenu>
-
-							<p:outputLabel for="showAT" value="Show Primary Only"
-								style="min-width: 100px !important" />
-							<p:selectBooleanCheckbox value="false" id="showAT"
-								label="Show Primary Only"></p:selectBooleanCheckbox>
-
-							 
-							<p:spacer />
-							<p:commandButton value="Refresh" icon="fa fa-refresh"
-								rendered="true" />
-						</h:panelGrid>
-					</p:overlayPanel>
-					<p:spacer width="5" />
- 
-
-				</f:facet>
-			</p:toolbar>
 			<p:dataTable var="value" value="#{searchController.values}"
 				id="auditTable" rows="10" paginator="true"
 				paginatorPosition="bottom"
@@ -263,7 +233,7 @@
 
 		<h:panelGrid columns="1">
 			<h:panelGrid>
-				<p:calendar showOn="button" style="margin-left: 50px !important;" />
+				<p:calendar showOn="button" style="margin-left: 50px !important;" pattern="dd/MM/yyyy" />
 			</h:panelGrid>
 
 			<h:panelGrid style="float: right" columns="2">

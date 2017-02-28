@@ -9,9 +9,9 @@
 	<!-- <p:growl id="messages" /> -->
 	<h:panelGrid columns="3" cellpadding="5" id="detailsPanel">
 
-		<h:panelGrid columns="2" columnClasses="label, value">
+		<h:panelGrid columns="2" columnClasses="label, value"> 
 			<p:outputLabel value="* Extension" styleClass="label-right" />
-			<p:selectOneMenu value="#{createController.extension}"
+			<p:selectOneMenu value="#{createController.extension}" disabled="#{createController.readOnlyState}"
 				required="true" requiredMessage="The extension is required">
 				<f:selectItems value="#{configMB.extensions}" var="extension"
 					itemLabel="#{extension.value}"
@@ -23,7 +23,7 @@
 			</p:selectOneMenu>
 
 			<p:outputLabel value="* Name" styleClass="label-right" />
-			<p:inputText required="true" requiredMessage="The name is required"
+			<p:inputText required="true" requiredMessage="The name is required" disabled="#{createController.readOnlyState}"
 				maxlength="200" value="#{createController.selectedData.cmqName}"
 				style="width: 300px !important" />
 
@@ -31,7 +31,7 @@
 				value="#{createController.extension eq 'TME' or 
 			createController.extension eq 'TR1' or createController.extension eq 'PRO' ? '* Drug Program' : 'Drug Program'}"
 				styleClass="label-right" />
-			<p:selectOneMenu value="#{createController.drugProgram}" id="drug"
+			<p:selectOneMenu value="#{createController.drugProgram}" id="drug" disabled="#{createController.readOnlyState}"
 				required="#{createController.extension eq 'TME' or 
 				createController.extension eq 'TR1' or createController.extension eq 'PRO'}"
 				requiredMessage="The Drug Program is required">
@@ -43,7 +43,7 @@
 			<p:outputLabel id="lProtocol"
 				value="#{createController.extension eq 'PRO' ? '* Protocol' : 'Protocol'}"
 				styleClass="label-right" />
-			<p:selectOneMenu value="#{createController.protocol}" id="protocol"
+			<p:selectOneMenu value="#{createController.protocol}" id="protocol" disabled="#{createController.readOnlyState}"
 				requiredMessage="The Protocol is required"
 				required="#{createController.extension eq 'PRO'}">
 				<f:selectItem itemValue="" itemLabel="" />
@@ -55,7 +55,7 @@
 				value="#{createController.extension eq 'TME' or 
 			createController.extension eq 'TR1' or createController.extension eq 'PRO' ? '* Product' : 'Product'}"
 				rendered="true" styleClass="label-right" />
-			<p:selectOneMenu value="#{createController.product}" disabled="false"
+			<p:selectOneMenu value="#{createController.product}"  disabled="#{createController.readOnlyState}"
 				required="#{createController.extension eq 'TME' or 
 			createController.extension eq 'TR1' or createController.extension eq 'PRO'}"
 				requiredMessage="The Product is required" id="product">
@@ -66,7 +66,7 @@
 
 			<p:outputLabel value="* Designee" styleClass="label-right" />
 			<p:selectOneMenu value="#{createController.selectedData.cmqDesignee}"
-				rendered="true" disabled="false"
+				rendered="true"  disabled="#{createController.readOnlyState}"
 				requiredMessage="The Designee is required" required="true">
 				<f:selectItem itemLabel="" itemValue=""></f:selectItem>
 				<f:selectItem itemLabel="NONE" itemValue="NONE"></f:selectItem>
@@ -79,7 +79,7 @@
 
 			<p:outputLabel value="* Level" styleClass="label-right" />
 			<p:selectOneMenu value="#{createController.level}" rendered="true"
-				requiredMessage="The level is required" disabled="false" id="level"
+				requiredMessage="The level is required"  disabled="#{createController.readOnlyState}" id="level"
 				required="true">
 				<f:selectItem itemValue="1" itemLabel="1" />
 				<f:selectItem itemValue="2" itemLabel="2" />
@@ -89,7 +89,7 @@
 			</p:selectOneMenu>
 
 			<p:outputLabel value="* Algorithm" styleClass="label-right" />
-			<p:inputText value="#{createController.algorithm}" />
+			<p:inputText value="#{createController.algorithm}" disabled="#{createController.readOnlyState}" />
 
 
 
@@ -183,6 +183,10 @@
 	margin-right: 20px;
 	font-size: 14px !important;
 	height: 30px !important;
+}
+
+.ui-state-disabled {
+	opacity: 1 !important;
 }
 </style>
 </ui:composition>

@@ -13,7 +13,16 @@
 
 			<h:panelGrid columns="2" columnClasses="label, value">
 				<p:outputLabel styleClass="label-right" value="Extension:" />
-				<h:outputText value="#{createController.selectedData.cmqTypeCd}" />
+				<h:panelGrid>
+					<h:outputText
+						rendered="#{createController.selectedData.cmqTypeCd eq 'PRO'}"
+						value="Protocol" />
+					<h:outputText
+						rendered="#{createController.selectedData.cmqTypeCd eq 'TR1'}"
+						value="TIER1" />
+					<h:outputText rendered="#{createController.selectedData.cmqTypeCd ne 'PRO' and createController.selectedData.cmqTypeCd ne 'TR1'}"
+					value="#{createController.selectedData.cmqTypeCd}"  />
+				</h:panelGrid>
 
 				<p:outputLabel styleClass="label-right" value="Name:" />
 				<h:outputText value="#{createController.selectedData.cmqName}" />
@@ -203,7 +212,8 @@
 				</tr>
 				<tr>
 					<td><p:outputLabel styleClass="label-right" value="Due Date" /></td>
-					<td><p:calendar value="#{dummyView.value}" mode="popup" /></td>
+					<td><p:calendar value="#{dummyView.value}" mode="popup"
+							pattern="dd/MM/yyyy" /></td>
 				</tr>
 				<tr>
 					<td><p:outputLabel styleClass="label-right"
