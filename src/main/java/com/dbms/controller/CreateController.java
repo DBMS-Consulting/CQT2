@@ -602,21 +602,24 @@ public class CreateController implements Serializable {
 		} else {
 			setLevel(1);
 		}
+		
+		if(copyWizard == null) {
+			//we are not doing copy so change others.
+			if (extension.equals("CPT") || extension.equals("DME"))
+				setDrugProgram("No Program");
+			else
+				setDrugProgram("");
 
-		if (extension.equals("CPT") || extension.equals("DME"))
-			setDrugProgram("No Program");
-		else
-			setDrugProgram("");
+			if (extension.equals("CPT") || extension.equals("DME") || extension.equals("TME") || extension.equals("TR1"))
+				setProtocol("No Protocol");
+			else
+				setProtocol("");
 
-		if (extension.equals("CPT") || extension.equals("DME") || extension.equals("TME") || extension.equals("TR1"))
-			setProtocol("No Protocol");
-		else
-			setProtocol("");
-
-		if (extension.equals("CPT") || extension.equals("DME"))
-			setProduct("No Product");
-		else
-			setProduct("");
+			if (extension.equals("CPT") || extension.equals("DME"))
+				setProduct("No Product");
+			else
+				setProduct("");
+		}
 	}
 
 	/**
