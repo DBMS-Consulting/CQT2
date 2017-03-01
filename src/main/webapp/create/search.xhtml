@@ -14,13 +14,8 @@
 				<f:selectItems value="#{configMB.extensions}" var="ext"
 					itemLabel="#{ext.value}" itemValue="#{ext.codelistInternalValue}" />
 
-				<p:ajax update="level2 protocol2 drug2 product2 status state group"
-					event="change" listener="#{searchController.resetSearch}" />
-					
-				 
-				<p:ajax
-					update="level2 protocol2 drug2 product2 status state group"
-					event="change" listener="#{searchController.changeLevel}" />
+				<p:ajax update="level2" event="change"
+					listener="#{searchController.changeLevel}" />
 			</p:selectOneMenu>
 
 			<p:outputLabel value="Drug Program" styleClass="label-right" />
@@ -65,9 +60,6 @@
 				<f:selectItem itemValue="A" itemLabel="Active" />
 				<f:selectItem itemValue="P" itemLabel="Pending" />
 				<f:selectItem itemValue="I" itemLabel="Inactive" />
-
-				<p:ajax update="state" event="change"
-					listener="#{searchController.changeState}" />
 			</p:selectOneMenu>
 
 			<p:outputLabel value="State" styleClass="label-right" />
@@ -79,6 +71,9 @@
 				<f:selectItem itemLabel="Approved" itemValue="Approved" />
 				<f:selectItem itemLabel="Published" itemValue="Published"
 					itemDisabled="#{searchController.status eq 'Pending'}" />
+
+				<p:ajax update="status" event="change"
+					listener="#{searchController.changeStatus}" />
 
 			</p:selectOneMenu>
 
@@ -105,10 +100,11 @@
 			<f:selectItem itemLabel="" itemValue=""></f:selectItem>
 			<f:selectItem itemLabel="NONE" itemValue="NONE"></f:selectItem>
 		</p:selectOneMenu> -->
-		<p:selectCheckboxMenu  value="#{createController.selectedDesignees}" label="Designees">
+		<p:selectCheckboxMenu value="#{createController.selectedDesignees}"
+			label="Designees">
 			<f:selectItem itemLabel="" itemValue=""></f:selectItem>
 			<f:selectItem itemLabel="NONE" itemValue="NONE"></f:selectItem>
-		</p:selectCheckboxMenu >
+		</p:selectCheckboxMenu>
 
 		<p:commandButton value="Search" action="#{searchController.search()}"
 			update="result" />
@@ -144,12 +140,15 @@
 				<h:commandLink partialSubmit="true"
 					action="#{createController.loadCmqBaseByCode(value.cmqCode)}"
 					value="#{value.cmqCode}">
-					
-					<p:ajax  update="@form:wizardId @form:relations" />
-					
-					<f:setPropertyActionListener target="#{searchController.clickedCmqCode}" value="#{value.cmqCode}" />
-					
-					<f:setPropertyActionListener target="#{createController.codeSelected}" value="#{value.cmqCode}" />					
+
+					<p:ajax update="@form:wizardId @form:relations" />
+
+					<f:setPropertyActionListener
+						target="#{searchController.clickedCmqCode}"
+						value="#{value.cmqCode}" />
+
+					<f:setPropertyActionListener
+						target="#{createController.codeSelected}" value="#{value.cmqCode}" />
 				</h:commandLink>
 			</p:column>
 			<p:column headerText="Drug Program">
@@ -167,7 +166,8 @@
 			<p:column headerText="Created By">
 				<h:outputText value="#{value.cmqDesignee}" />
 			</p:column>
-			<p:column headerText="History" style="text-align: center" rendered="#{view.viewId == '/create/browseAndSearch.xhtml' ? true : false}">
+			<p:column headerText="History" style="text-align: center"
+				rendered="#{view.viewId == '/create/browseAndSearch.xhtml' ? true : false}">
 				<!-- <h:outputText value="#{value.history}" /> -->
 				<p:commandLink action="#" style="color: red" label="History"
 					onclick="PF('history-dialog').show()">
@@ -175,7 +175,8 @@
 				</p:commandLink>
 
 			</p:column>
-			<p:column headerText="Audit" style="text-align: center" rendered="#{view.viewId == '/create/browseAndSearch.xhtml' ? true : false}">
+			<p:column headerText="Audit" style="text-align: center"
+				rendered="#{view.viewId == '/create/browseAndSearch.xhtml' ? true : false}">
 				<p:commandLink value="Audit"
 					style="border: 1px solid black; background-color: grey; font-weight:bold; color: #fff; text-decoration: none !important; 
 										 border-radius: 10px; padding: 3px"
@@ -233,7 +234,8 @@
 
 		<h:panelGrid columns="1">
 			<h:panelGrid>
-				<p:calendar showOn="button" style="margin-left: 50px !important;" pattern="dd/MM/yyyy" />
+				<p:calendar showOn="button" style="margin-left: 50px !important;"
+					pattern="dd/MM/yyyy" />
 			</h:panelGrid>
 
 			<h:panelGrid style="float: right" columns="2">

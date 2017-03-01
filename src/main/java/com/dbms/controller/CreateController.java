@@ -225,7 +225,7 @@ public class CreateController implements Serializable {
 			Long count = this.cmqBaseService.findCmqCountByCmqNameAndExtension(extension, selectedData.getCmqName());
 
 			if (count > 0) {
-				String errorMsg = "Duplicate CMQ name ('" + selectedData.getCmqName() + "')and exteion ('" + extension
+				String errorMsg = "Duplicate CMQ name ('" + selectedData.getCmqName() + "')and extention ('" + extension
 						+ "') found in db.";
 				LOG.error(errorMsg);
 
@@ -607,37 +607,16 @@ public class CreateController implements Serializable {
 			//we are not doing copy so change others.
 			if (extension.equals("CPT") || extension.equals("DME"))
 				setDrugProgram("No Program");
-			else
-				setDrugProgram("");
-
+		
 			if (extension.equals("CPT") || extension.equals("DME") || extension.equals("TME") || extension.equals("TR1"))
 				setProtocol("No Protocol");
-			else
-				setProtocol("");
-
+			
 			if (extension.equals("CPT") || extension.equals("DME"))
 				setProduct("No Product");
-			else
-				setProduct("");
+			
 		}
 	}
 
-	/**
-	 * Method to change State value on status selection.
-	 * 
-	 * @param event
-	 *            AjaxBehaviour
-	 */
-	public void changeState(AjaxBehaviorEvent event) {
-		if (status.equals("Active"))
-			setState("Published");
-		if (status.equals("Inactive"))
-			setState("Draft");
-		if (status.equals("All"))
-			setState("All");
-		if (status.equals("Pending"))
-			setState("Draft");
-	}
 
 	public String getExtension() {
 		return extension;

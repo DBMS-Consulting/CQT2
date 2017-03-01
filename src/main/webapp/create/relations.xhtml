@@ -29,12 +29,16 @@
 						<p:spacer />
 						<p:commandButton value="Refresh" id="cb7" icon="fa fa-refresh"
 							rendered="true" />
+
 					</h:panelGrid>
 				</p:overlayPanel>
 
 				<p:spacer width="10" />
 				<p:commandButton value="Delete selected" icon="fa fa-trash-o"
-					id="ctb2" disabled="false" action="#{searchController.deleteRelations(null)}" update="resultRelations">
+					styleClass="#{(createController.selectedData.cmqState ne 'Draft' and createController.selectedData.cmqState ne 'Reviewed') ? 'btn-disabled' : ''}" id="ctb2"
+					disabled="#{(createController.selectedData.cmqState ne 'Draft' and createController.selectedData.cmqState ne 'Reviewed') ? true : false}"
+					action="#{searchController.deleteRelations(null)}"
+					update="resultRelations">
 					<p:confirm header="Confirm Delete"
 						message="Delete all selected terms?" icon="ui-icon-alert" />
 				</p:commandButton>
@@ -58,8 +62,10 @@
 					<p:fileDownload value="#{null}"></p:fileDownload>
 				</p:commandButton>
 				<p:spacer width="10" />
-				<p:commandButton value="Hierarchy Search" id="ctb13" 
-					onclick="PF('search').show();" icon="fa fa-search">
+				<p:commandButton value="Hierarchy Search" id="ctb13"
+					styleClass="#{(createController.selectedData.cmqState ne 'Draft' and createController.selectedData.cmqState ne 'Reviewed') ? 'btn-disabled' : ''}" update="@form:hierarchy-modal"
+					disabled="#{(createController.selectedData.cmqState ne 'Draft' and createController.selectedData.cmqState ne 'Reviewed') ? true : false}"
+					oncomplete="PF('search').show();" icon="fa fa-search">
 				</p:commandButton>
 
 				<p:spacer width="10" />
@@ -67,12 +73,13 @@
 		</p:toolbar>
 
 		<br />
-		 
+
 		<p:treeTable value="#{searchController.relationsRoot}" var="node"
 			selectionMode="checkbox" id="resultRelations" rows="20"
 			paginator="true" paginatorPosition="bottom"
 			paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-			rowsPerPageTemplate="5,10,25,30" selection="#{searchController.relationSelectedInRelationsTable}">
+			rowsPerPageTemplate="5,10,25,30"
+			selection="#{searchController.relationSelectedInRelationsTable}">
 			<p:ajax event="expand" listener="#{searchController.onNodeExpand}"
 				update="resultRelations" />
 
@@ -106,7 +113,8 @@
 			</p:column>
 
 			<p:column>
-				<p:selectOneMenu id="soc3" value="#{node.scope}" disabled="#{createController.readOnlyState}">
+				<p:selectOneMenu id="soc3" value="#{node.scope}"
+					disabled="#{createController.readOnlyState}">
 					<f:selectItem itemLabel="Narrow" itemValue="2" id="si13d" />
 					<f:selectItem itemLabel="Broad" itemValue="1" id="si13s" />
 					<f:selectItem itemLabel="Child Narrow" itemValue="3" id="si4" />
@@ -114,7 +122,8 @@
 			</p:column>
 
 			<p:column>
-				<p:selectOneMenu id="soc2" value="#{node.category}" rendered="true" disabled="#{createController.readOnlyState}">
+				<p:selectOneMenu id="soc2" value="#{node.category}" rendered="true"
+					disabled="#{createController.readOnlyState}">
 					<f:selectItem itemLabel="" itemValue="" />
 					<f:selectItem itemLabel="A" itemValue="A" id="si3" />
 					<f:selectItem itemLabel="S" itemValue="S" id="si33" />
@@ -130,14 +139,15 @@
 			</p:column>
 
 			<p:column>
-				<p:spinner value="#{node.weight}" id="ot6" disabled="#{createController.readOnlyState}" />
+				<p:spinner value="#{node.weight}" id="ot6"
+					disabled="#{createController.readOnlyState}" />
 			</p:column>
 
 			<p:column>
 				<p:commandButton disabled="#{createController.readOnlyState}"
 					action="#{searchController.deleteRelation(searchController.relationsRoot, node)}"
 					update="resultRelations" value="Delete">
-					
+
 					<p:confirm header="Delete relation"
 						message="Are you sure you want to delete this relation?"
 						icon="ui-icon-alert" />
@@ -162,6 +172,10 @@
 	<style>
 .ui-state-disabled {
 	opacity: 1 !important;
+}
+
+.btn-disabled {
+	opacity: .50 !important;
 }
 </style>
 </ui:composition>

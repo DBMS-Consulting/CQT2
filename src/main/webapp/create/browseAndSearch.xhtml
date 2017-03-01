@@ -20,8 +20,8 @@
 
 			</h:panelGrid>
 
-			<p:wizard 
-				widgetVar="wizard" id="wizardId" flowListener="#{createController.onFlowProcess}"
+			<p:wizard widgetVar="wizard" id="wizardId"
+				flowListener="#{createController.onFlowProcess}"
 				binding="#{createController.browseWizard}">
 				<!-- Search -->
 				<p:tab id="searchBrowse" title="Search">
@@ -44,7 +44,27 @@
 
 							<h:panelGrid columns="2" columnClasses="label, value">
 								<p:outputLabel styleClass="label-right" value="Extension:" />
-								<h:outputText value="#{createController.selectedData.cmqTypeCd}" />
+								<h:panelGrid>
+									<h:outputText
+										rendered="#{createController.selectedData.cmqTypeCd eq 'PRO'}"
+										value="Protocol" />
+									<h:outputText
+										rendered="#{createController.selectedData.cmqTypeCd eq 'CPT'}"
+										value="Critical Preferred Terms" />
+									<h:outputText
+										rendered="#{createController.selectedData.cmqTypeCd eq 'DME'}"
+										value="Designated Medical Events" />
+									<h:outputText
+										rendered="#{createController.selectedData.cmqTypeCd eq 'TME'}"
+										value="Targeted Medical Events" />
+									<h:outputText
+										rendered="#{createController.selectedData.cmqTypeCd eq 'TR1'}"
+										value="Events of Special Clinical Interest" />
+									<h:outputText
+										rendered="#{createController.selectedData.cmqTypeCd eq 'TIER1'}"
+										value="Events of Clinical Interest" />
+
+								</h:panelGrid>
 
 								<p:outputLabel styleClass="label-right" value="Name:" />
 								<h:outputText value="#{createController.selectedData.cmqName}" />
@@ -88,12 +108,15 @@
 								<p:outputLabel styleClass="label-right" value="Status:" />
 								<!-- <h:outputText value="#{createController.selectedData.cmqStatus}" /> -->
 								<h:panelGrid>
-									<h:outputText rendered="#{createController.selectedData.cmqStatus eq 'P'}"
-									value="Pending" />
-								<h:outputText rendered="#{createController.selectedData.cmqStatus eq 'I'}"
-									value="Inactive" />
-								<h:outputText rendered="#{createController.selectedData.cmqStatus eq 'A'}"
-									value="Active" />
+									<h:outputText
+										rendered="#{createController.selectedData.cmqStatus eq 'P'}"
+										value="Pending" />
+									<h:outputText
+										rendered="#{createController.selectedData.cmqStatus eq 'I'}"
+										value="Inactive" />
+									<h:outputText
+										rendered="#{createController.selectedData.cmqStatus eq 'A'}"
+										value="Active" />
 								</h:panelGrid>
 
 								<p:outputLabel styleClass="label-right" value="State:" />

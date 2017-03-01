@@ -14,8 +14,18 @@
 			<h:panelGrid columns="2" columnClasses="label, value">
 				<p:outputLabel styleClass="label-right" value="Extension:" />
 				<h:panelGrid>
-					<h:outputText
-						value="#{createController.selectedData.cmqTypeCd}" />
+					<h:outputText rendered="#{createController.selectedData.cmqTypeCd eq 'PRO'}"
+						value="Protocol" />
+					<h:outputText rendered="#{createController.selectedData.cmqTypeCd eq 'CPT'}"
+						value="Critical Preferred Terms" />
+					<h:outputText rendered="#{createController.selectedData.cmqTypeCd eq 'DME'}"
+						value="Designated Medical Events" />
+					<h:outputText rendered="#{createController.selectedData.cmqTypeCd eq 'TME'}"
+						value="Targeted Medical Events" />
+					<h:outputText rendered="#{createController.selectedData.cmqTypeCd eq 'TR1'}"
+						value="Events of Special Clinical Interest" />
+					<h:outputText rendered="#{createController.selectedData.cmqTypeCd eq 'TIER1'}"
+						value="Events of Clinical Interest" />
 					
 				</h:panelGrid>
 
@@ -84,18 +94,18 @@
 			<h:panelGrid columns="2" columnClasses="label, value"
 				style="min-width: 300px;">
 
-				<p:outputLabel styleClass="label-right" value="Creation Date:" />
+				<p:outputLabel styleClass="label-right" value="Creation Date: " />
 				<h:outputText value="#{createController.selectedData.creationDate}" />
 
 				<p:outputLabel styleClass="label-right" value="Created By: " />
 				<h:outputText value="#{createController.selectedData.createdBy}" />
 
 				<p:outputLabel styleClass="label-right"
-					value="Last Activation Date:" />
+					value="Last Activation Date: " />
 				<h:outputText
 					value="#{createController.selectedData.activationDate}" />
 
-				<p:outputLabel styleClass="label-right" value="Last Activation By" />
+				<p:outputLabel styleClass="label-right" value="Last Activation By: " />
 				<h:outputText value="#{createController.selectedData.activatedBy}" />
 
 				<p:spacer />
@@ -208,7 +218,7 @@
 				<tr>
 					<td><p:outputLabel styleClass="label-right" value="Due Date" /></td>
 					<td><p:calendar value="#{dummyView.value}" mode="popup"
-							pattern="dd/MM/yyyy" /></td>
+							pattern="-dd-MMM-yyyy" /></td>
 				</tr>
 				<tr>
 					<td><p:outputLabel styleClass="label-right"
