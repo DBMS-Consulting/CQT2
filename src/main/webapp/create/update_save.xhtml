@@ -1,0 +1,123 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" template="../CSMQ.xhtml">
+
+	<ui:define name="page-content">
+		<h:form id="fUpdate">
+			<p:growl id="m1" />
+
+			<h:panelGrid columns="2" style="width: 100% !important">
+				<h:panelGrid>
+					<p:breadCrumb>
+						<p:menuitem value="Home" url="/index.xhtml" />
+						<p:menuitem value="Update" />
+					</p:breadCrumb>
+
+				</h:panelGrid>
+				<h:panelGrid columns="1" style="text-align: center">
+					<!-- <p:outputLabel value="Historic View as of 05-Feb 2017"
+						style="text-align: center" /> -->
+				</h:panelGrid>
+			</h:panelGrid>
+
+			<p:wizard flowListener="#{wizard.onFlowProcess}" widgetVar="wizard" 
+				id="wizardId" binding="#{createController.updateWizard}">
+				<!-- Search -->
+				<p:tab id="searchUpdate" title="Search">
+					<p:panel header="Search">
+						<ui:include src="search.xhtml"></ui:include>
+					</p:panel>
+				</p:tab>
+				<p:tab id="details" title="Update Details">
+					<p:panel header="Details">
+						<ui:include src="details.xhtml" />
+
+						<h:panelGrid columns="2">
+							<p:commandButton value="Save" icon="ui-icon-disk"
+								action="#{createController.update}" disabled="#{createController.readOnlyState}"
+								update="@form:m1 @form:codeValue @form:detailsPanel"></p:commandButton>
+
+							<p:commandButton value="Cancel" icon="ui-icon-close" disabled="#{createController.readOnlyState}"
+								update="@form" 
+								action="#{createController.cancel}">
+								<p:confirm header="Confirm"
+									message="Are you sure you want to erase these fields?"
+									icon="ui-icon-alert" />
+							</p:commandButton>
+						</h:panelGrid>
+					</p:panel>
+				</p:tab>
+
+				<!-- Notes -->
+				<p:tab id="contact" title="Update Informative Notes">
+					<ui:include src="informativeNotes.xhtml"></ui:include>
+				</p:tab>
+
+				<!-- RELATIONS -->
+				<p:tab id="relations" title="Update Relations">
+					<p:panel header="Relations">
+						<ui:include src="relations.xhtml"></ui:include>
+
+						<h:panelGrid columns="2">
+							<p:commandButton value="Save" id="cb3" disabled="#{createController.readOnlyState}"
+								action="#{createController.updateRelations}" icon="ui-icon-disk" />
+
+							<p:commandButton value="Cancel" icon="ui-icon-close" disabled="#{createController.readOnlyState}"
+								process="@this" update="m1" style="float: right"
+								action="#{createController.cancelRelations}">
+								<p:confirm header="Confirm"
+									message="Are you sure you want to erase these fields?"
+									icon="ui-icon-alert" />
+							</p:commandButton>
+						</h:panelGrid>
+
+					</p:panel>
+				</p:tab>
+
+				<!-- CONFIRM -->
+				<p:tab id="confirmPanel" title="Confirm">
+					<ui:include src="confirm.xhtml"></ui:include>
+				</p:tab>
+
+			</p:wizard>
+
+			<p:spacer width="10" height="10" id="s6" />
+			<h:panelGrid id="pgl2" columns="5"
+				style="padding:3px; font-size: 10px !important">
+				<p:outputLabel for="it1aw" value="Dictionary Version:"></p:outputLabel>
+				<h:inputText id="it1aw"
+					value="#{configMB.currentMeddraVersion.value}"
+					disabled="true" columns="200" />
+
+				<p:outputLabel for="it3" value="Name: "></p:outputLabel>
+				<h:inputText id="it3"
+					value="#{configMB.dictionaryName}"
+					readOnly="true" disabled="true" />
+			</h:panelGrid>
+			<f:attribute name="currentPage"
+				value="Create New #{applicationScope.CSMQBean.customMQName} Wizard" />
+		</h:form>
+
+		<style>
+.label-right {
+	float: right;
+	margin-right: 20px;
+	font-size: 14px !important;
+}
+</style>
+
+		<script>
+			function next() {
+				PF('wizard').next();
+			}
+
+			function back() {
+				PF('wizard').back();
+			}
+		</script>
+	</ui:define>
+</ui:composition>

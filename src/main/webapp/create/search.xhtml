@@ -106,10 +106,10 @@
 			<f:selectItem itemLabel="NONE" itemValue="NONE"></f:selectItem>
 		</p:selectCheckboxMenu>
 
-		<p:commandButton value="Search" action="#{searchController.search()}"
+		<p:commandButton value="Search" action="#{searchController.search}" process="@this"
 			update="result" />
 		<p:commandButton action="#{searchController.reset}" value="Reset"
-			update="@form:result @form:searchPanel" />
+			update="@form" />
 	</h:panelGrid>
 
 	<p:spacer />
@@ -137,11 +137,11 @@
 				<h:outputText value="#{value.cmqState}" />
 			</p:column>
 			<p:column headerText="Code">
-				<h:commandLink partialSubmit="true"
+				<p:commandLink process="@this" update="@form:wizardId"
 					action="#{createController.loadCmqBaseByCode(value.cmqCode)}"
 					value="#{value.cmqCode}">
 
-					<p:ajax update="@form:wizardId @form:relations" />
+					<!-- <p:ajax update="@form" /> -->
 
 					<f:setPropertyActionListener
 						target="#{searchController.clickedCmqCode}"
@@ -149,7 +149,7 @@
 
 					<f:setPropertyActionListener
 						target="#{createController.codeSelected}" value="#{value.cmqCode}" />
-				</h:commandLink>
+				</p:commandLink>
 			</p:column>
 			<p:column headerText="Drug Program">
 				<h:outputText value="#{value.cmqProgramCd}" />

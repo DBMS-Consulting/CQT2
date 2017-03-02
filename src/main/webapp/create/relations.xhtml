@@ -63,7 +63,7 @@
 				</p:commandButton>
 				<p:spacer width="10" />
 				<p:commandButton value="Hierarchy Search" id="ctb13"
-					styleClass="#{(createController.selectedData.cmqState ne 'Draft' and createController.selectedData.cmqState ne 'Reviewed') ? 'btn-disabled' : ''}" update="@form:hierarchy-modal"
+					styleClass="#{(createController.selectedData.cmqState ne 'Draft' and createController.selectedData.cmqState ne 'Reviewed') ? 'btn-disabled' : ''}" update="hierarchy-modal"
 					disabled="#{(createController.selectedData.cmqState ne 'Draft' and createController.selectedData.cmqState ne 'Reviewed') ? true : false}"
 					oncomplete="PF('search').show();" icon="fa fa-search">
 				</p:commandButton>

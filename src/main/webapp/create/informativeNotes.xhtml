@@ -33,13 +33,13 @@
 		</p:tabView>
 
 		<h:panelGrid columns="2">
-			<p:commandButton value="Save" update="m1" icon="ui-icon-disk"
+			<p:commandButton value="Save" update="@form:m1" icon="ui-icon-disk" id="save-notes-btn"
 				disabled="#{createController.readOnlyState}"
 				action="#{createController.saveInformativeNotes}"></p:commandButton>
 
-			<p:commandButton value="Cancel" icon="ui-icon-close" process="@this"
+			<p:commandButton value="Cancel" icon="ui-icon-close" process="@this" id="cancel-notes-btn"
 				disabled="#{createController.readOnlyState}"
-				update="m1 @form:panelNotes @form" style="float: right"
+				update="@form:m1 panelNotes @form:wizardId" style="float: right"
 				action="#{createController.cancelNotes}">
 				<p:confirm header="Confirm"
 					message="Are you sure you want to erase these fields?"

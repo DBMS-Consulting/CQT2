@@ -14,6 +14,7 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
 
+import org.primefaces.component.tabview.TabView;
 import org.primefaces.component.wizard.Wizard;
 import org.primefaces.event.FlowEvent;
 import org.primefaces.model.TreeNode;
@@ -72,8 +73,10 @@ public class CreateController implements Serializable {
 	private String notes;
 	private String source;
 
-	private Wizard updateWizard, copyWizard, browseWizard, createWizard;
+	private Wizard copyWizard, browseWizard, createWizard;
 	private Long codeSelected;
+	
+	private TabView updateWizard;
 
 	private TreeNode relationsRoot;
 	private String[] selectedDesignees;
@@ -194,7 +197,7 @@ public class CreateController implements Serializable {
 		if (browseWizard != null)
 			browseWizard.setStep("details");
 		if (updateWizard != null) {
-			updateWizard.setStep("details");
+			updateWizard.setActiveIndex(1);//setStep("details");
 
 			// selectedData = new CmqBase190();
 			// setSelectedData(cmq);
@@ -770,11 +773,11 @@ public class CreateController implements Serializable {
 		this.source = source;
 	}
 
-	public Wizard getUpdateWizard() {
+	public TabView getUpdateWizard() {
 		return updateWizard;
 	}
 
-	public void setUpdateWizard(Wizard updateWizard) {
+	public void setUpdateWizard(TabView updateWizard) {
 		this.updateWizard = updateWizard;
 	}
 
