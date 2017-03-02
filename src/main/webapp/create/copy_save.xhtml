@@ -18,7 +18,8 @@
 				</h:panelGrid>
 			</h:panelGrid>
 
-			<p:tabView id="wizardId" binding="#{createController.copyWizard}">
+			<p:wizard flowListener="#{wizard.onFlowProcess}" widgetVar="wizard"
+				id="wizardId" binding="#{createController.copyWizard}">
 				<!-- Search -->
 				<p:tab id="searchCopy" title="Search">
 					<p:panel header="Search">
@@ -30,11 +31,13 @@
 						<ui:include src="details.xhtml" />
 
 						<h:panelGrid columns="2">
-							<p:commandButton value="Save" icon="ui-icon-disk" ajax="false"
-								update="@form:m1 codeValue" action="#{createController.copy}"></p:commandButton>
+							<p:commandButton value="Save" icon="ui-icon-disk"
+								update="@form:m1 @form:codeValue"
+								action="#{createController.copy}"></p:commandButton>
 
 							<p:commandButton value="Cancel" icon="ui-icon-close"
-								update="@form" action="#{createController.cancel}">
+								update="@form"
+								action="#{createController.cancel}">
 								<p:confirm header="Confirm"
 									message="Are you sure you want to erase these fields?"
 									icon="ui-icon-alert" />
@@ -57,10 +60,9 @@
 
 						<h:panelGrid columns="2">
 							<p:commandButton value="Save" id="cb3"
-								action="#{createController.saveRelations(searchController.relationsRoot)}"
-								icon="ui-icon-disk" />
+								action="#{createController.saveRelations(searchController.relationsRoot)}" icon="ui-icon-disk" />
 							<p:commandButton value="Cancel" icon="ui-icon-close"
-								process="@this" update="@form:m1" style="float: right"
+								process="@this" update="m1" style="float: right"
 								action="#{createController.cancelNotes}">
 								<p:confirm header="Confirm"
 									message="Are you sure you want to erase these fields?"
@@ -73,17 +75,9 @@
 
 				<p:tab id="confirmPanel" title="Confirm">
 					<ui:include src="confirm.xhtml"></ui:include>
-
+					
 				</p:tab>
-			</p:tabView>
-			
-			<p:commandButton value="Back"
-				action="#{createController.previousStep}" rendered="true" immediate="true"
-				icon="fa fa-long-arrow-left" iconPos="left" update="wizardId" />
-			<p:commandButton value="Next" action="#{createController.nextStep}"
-				rendered="true" icon="fa fa-long-arrow-right" iconPos="right"
-				immediate="true" update="@form" style="float: right" />
-			
+			</p:wizard>
 
 			<p:spacer width="10" height="10" id="s6" />
 			<h:panelGrid id="pgl2" columns="5"
@@ -92,14 +86,16 @@
 
 				<p:outputLabel for="it1aw" value="Dictionary Version:"></p:outputLabel>
 				<h:inputText id="it1aw"
-					value="#{configMB.currentMeddraVersion.value}" disabled="true"
-					columns="200" />
+					value="#{configMB.currentMeddraVersion.value}"
+					disabled="true" columns="200" />
 
 				<p:outputLabel for="it3" value="Name: "></p:outputLabel>
-				<h:inputText id="it3" value="#{configMB.dictionaryName}"
+				<h:inputText id="it3"
+					value="#{configMB.dictionaryName}"
 					readOnly="true" disabled="true" />
 			</h:panelGrid>
-
+			<f:attribute name="currentPage"
+				value="Create New #{applicationScope.CSMQBean.customMQName} Wizard" />
 		</h:form>
 
 

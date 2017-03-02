@@ -20,9 +20,7 @@
 
 			</h:panelGrid>
 
-			<p:wizard widgetVar="wizard" id="wizardId"
-				flowListener="#{createController.onFlowProcess}"
-				binding="#{createController.browseWizard}">
+			<p:tabView id="wizardId" binding="#{createController.browseWizard}">
 				<!-- Search -->
 				<p:tab id="searchBrowse" title="Search">
 					<p:panel header="Search">
@@ -172,7 +170,17 @@
 						<ui:include src="relationsForBrowse.xhtml" />
 					</p:panel>
 				</p:tab>
-			</p:wizard>
+			</p:tabView>
+
+			<p:spacer width="10" height="20" />
+
+			<p:commandButton value="Back"
+				action="#{createController.previousStep}" rendered="true" immediate="true"
+				icon="fa fa-long-arrow-left" iconPos="left" update="wizardId" />
+			<p:commandButton value="Next" action="#{createController.nextStep}"
+				rendered="true" icon="fa fa-long-arrow-right" iconPos="right"
+				immediate="true" update="@form" style="float: right" />
+
 
 
 			<p:spacer width="10" height="10" id="s6" />
@@ -188,8 +196,6 @@
 				<h:inputText id="it3" value="#{configMB.dictionaryName}"
 					readOnly="true" disabled="true" />
 			</h:panelGrid>
-			<f:attribute name="currentPage"
-				value="Create New #{applicationScope.CSMQBean.customMQName} Wizard" />
 
 		</h:form>
 
@@ -208,14 +214,5 @@
 }
 </style>
 
-		<script>
-			function next() {
-				PF('wizard').next();
-			}
-
-			function back() {
-				PF('wizard').back();
-			}
-		</script>
 	</ui:define>
 </ui:composition>

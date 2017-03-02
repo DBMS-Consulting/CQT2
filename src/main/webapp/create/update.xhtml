@@ -21,7 +21,7 @@
 				 
 			</h:panelGrid>
 
-			<p:tabView id="wizardId" activeIndex="0" binding="#{createController.updateWizard}">
+			<p:tabView id="wizardId" binding="#{createController.updateWizard}">
 				<!-- Search -->
 				<p:tab id="searchUpdate" title="Search">
 					<p:panel header="Search">
@@ -33,7 +33,7 @@
 						<ui:include src="details.xhtml" />
 
 						<h:panelGrid columns="2">
-							<p:commandButton value="Save" icon="ui-icon-disk"
+							<p:commandButton value="Save" icon="ui-icon-disk" ajax="false"
 								action="#{createController.update}"
 								disabled="#{createController.readOnlyState}"
 								update="codeValue detailsPanel"></p:commandButton>
@@ -83,6 +83,14 @@
 				</p:tab>
 
 				</p:tabView>
+				
+				<p:commandButton value="Back"
+				action="#{createController.previousStep}" rendered="true" immediate="true"
+				icon="fa fa-long-arrow-left" iconPos="left" update="wizardId" />
+			<p:commandButton value="Next" action="#{createController.nextStep}"
+				rendered="true" icon="fa fa-long-arrow-right" iconPos="right"
+				immediate="true" update="@form" style="float: right" />
+				
 
 				<p:spacer width="10" height="10" id="s6" />
 				<h:panelGrid id="pgl2" columns="5"

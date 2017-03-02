@@ -12,7 +12,7 @@
 		header="Informative Notes for #{createController.selectedData.cmqName}">
 		<p:tabView>
 			<p:tab title="Description">
-				<p:inputTextarea required="true"
+				<p:inputTextarea required="false"
 					readonly="#{createController.readOnlyState}"
 					placeholder="Please Enter Description"
 					value="#{createController.selectedData.cmqDescription}"
@@ -39,7 +39,7 @@
 
 			<p:commandButton value="Cancel" icon="ui-icon-close" process="@this" id="cancel-notes-btn"
 				disabled="#{createController.readOnlyState}"
-				update="@form:m1 panelNotes @form:wizardId" style="float: right"
+				update="@form:m1 panelNotes" style="float: right"
 				action="#{createController.cancelNotes}">
 				<p:confirm header="Confirm"
 					message="Are you sure you want to erase these fields?"

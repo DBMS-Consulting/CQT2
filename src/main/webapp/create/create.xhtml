@@ -19,18 +19,18 @@
 				</h:panelGrid>
 			</h:panelGrid>
 
-			<p:wizard flowListener="#{wizard.onFlowProcess}" widgetVar="wizard"
-				id="wizardC">
+			<p:tabView id="wizardId" binding="#{createController.createWizard}">
 				<p:tab id="details" title="Add Details" disabled="false"
-					closable="true">
+					>
 					<p:panel header="Details">
 						<ui:include src="details.xhtml" />
 						<h:panelGrid columns="2">
-							<p:commandButton value="Save" icon="ui-icon-disk"
-								update="m1 @form:detailsPanel"
-								action="#{createController.save}"></p:commandButton>
+							<p:commandButton value="Save" icon="ui-icon-disk" ajax="false"
+								update="@form:m1" action="#{createController.save}"></p:commandButton>
+								
+							 			
 							<p:commandButton value="Cancel" icon="ui-icon-close"
-								update="@form" process="@this"
+								update="@form" 
 								action="#{createController.cancel}">
 								<p:confirm header="Confirm"
 									message="Are you sure you want to erase these fields?"
@@ -52,7 +52,7 @@
 
 						<h:panelGrid columns="2">
 
-							<p:commandButton value="Save" id="cb3" update="m1"
+							<p:commandButton value="Save" id="cb3" update="@form:m1"
 								action="#{createController.saveRelations(searchController.relationsRoot)}"
 								disabled="false" icon="ui-icon-disk">
 								<f:param name="relationsRoot"
@@ -75,10 +75,19 @@
 				<p:tab id="confirmPanel" title="Confirm">
 					<ui:include src="confirm.xhtml"></ui:include>
 				</p:tab>
-			</p:wizard>
-
+			</p:tabView>
+			 
 
 			<p:spacer width="10" height="10" id="s6" />
+			
+			<p:commandButton value="Back"
+				action="#{createController.previousStep}" rendered="true" immediate="true"
+				icon="fa fa-long-arrow-left" iconPos="left" update="wizardId" />
+			<p:commandButton value="Next" action="#{createController.nextStep}"
+				rendered="true" icon="fa fa-long-arrow-right" iconPos="right"
+				immediate="true" update="@form" style="float: right" />
+
+			
 			<h:panelGrid id="pgl2" columns="6"
 				style="padding:3px; font-size: 10px !important">
 
@@ -110,14 +119,5 @@
 }
 </style>
 
-		<!-- <script>
-			function next() {
-				PF('wizard').next();
-			}
-
-			function back() {
-				PF('wizard').back();
-			}
-		</script> -->
 	</ui:define>
 </ui:composition>

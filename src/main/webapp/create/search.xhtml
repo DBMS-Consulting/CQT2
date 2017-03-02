@@ -106,7 +106,7 @@
 			<f:selectItem itemLabel="NONE" itemValue="NONE"></f:selectItem>
 		</p:selectCheckboxMenu>
 
-		<p:commandButton value="Search" action="#{searchController.search}" process="@this"
+		<p:commandButton value="Search" action="#{searchController.search}" ajax="false"
 			update="result" />
 		<p:commandButton action="#{searchController.reset}" value="Reset"
 			update="@form" />
