@@ -149,6 +149,30 @@ public abstract class CqtPersistenceService<E extends IEntity> implements ICqtPe
 		}
 		return e;
 	}
+	
+	@Override
+	public void update(List<E> listOfE) throws CqtServiceException {
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		EntityTransaction tx = null;
+		try {
+			tx = entityManager.getTransaction();
+			tx.begin();
+			for (E e : listOfE) {
+				entityManager.merge(e);
+			}
+			tx.commit();
+		} catch (Exception ex) {
+			if ((tx != null) && tx.isActive()) {
+				tx.rollback();
+			}
+			StringBuilder msg = new StringBuilder();
+			msg.append("Failed to update entity of type '").append(getEntityClass().getName()).append("'");
+			LOG.error(msg.toString(), ex);
+			throw new CqtServiceException(ex);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+	}
 
 	@Override
 	public void remove(Long id) throws CqtServiceException {

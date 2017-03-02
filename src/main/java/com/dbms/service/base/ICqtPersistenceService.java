@@ -31,4 +31,6 @@ public interface ICqtPersistenceService<E extends IEntity> {
 	public List<E> list();
 
 	public List<E> list(String orderByEntityField, OrderBy orderBy);
+
+	public void update(List<E> e) throws CqtServiceException;
 }
