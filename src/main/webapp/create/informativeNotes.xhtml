@@ -12,7 +12,7 @@
 		header="Informative Notes for #{createController.selectedData.cmqName}">
 		<p:tabView>
 			<p:tab title="Description">
-				<p:inputTextarea required="false"
+				<p:inputTextarea required="true"
 					readonly="#{createController.readOnlyState}"
 					placeholder="Please Enter Description"
 					value="#{createController.selectedData.cmqDescription}"
@@ -33,13 +33,13 @@
 		</p:tabView>
 
 		<h:panelGrid columns="2">
-			<p:commandButton value="Save" update="@form:m1" icon="ui-icon-disk" id="save-notes-btn"
+			<p:commandButton value="Save" update="m1" icon="ui-icon-disk"
 				disabled="#{createController.readOnlyState}"
 				action="#{createController.saveInformativeNotes}"></p:commandButton>
 
-			<p:commandButton value="Cancel" icon="ui-icon-close" process="@this" id="cancel-notes-btn"
+			<p:commandButton value="Cancel" icon="ui-icon-close" process="@this"
 				disabled="#{createController.readOnlyState}"
-				update="@form:m1 panelNotes" style="float: right"
+				update="m1 @form:panelNotes @form" style="float: right"
 				action="#{createController.cancelNotes}">
 				<p:confirm header="Confirm"
 					message="Are you sure you want to erase these fields?"

@@ -14,7 +14,8 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
 
-import org.primefaces.component.tabview.TabView;
+import org.primefaces.component.wizard.Wizard;
+import org.primefaces.event.FlowEvent;
 import org.primefaces.model.TreeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,10 +72,9 @@ public class CreateController implements Serializable {
 	private String notes;
 	private String source;
 
-	private TabView updateWizard, copyWizard, browseWizard, createWizard;
+	private Wizard updateWizard, copyWizard, browseWizard, createWizard;
 	private Long codeSelected;
-	
- 
+
 	private TreeNode relationsRoot;
 	private String[] selectedDesignees;
 
@@ -82,7 +82,6 @@ public class CreateController implements Serializable {
 	private Long codevalue;
 	
 	private CmqBase190 selectedData;
-	private Date date;
 
 	@PostConstruct
 	public void init() {
@@ -94,7 +93,6 @@ public class CreateController implements Serializable {
 		setDelete(true);
 		setApprove(true);
 		setReviewed(true);
-		date = new Date();
 	}
 
 	private void initAll() {
@@ -120,149 +118,19 @@ public class CreateController implements Serializable {
 		selectedData.setCmqDescription("*** Description ****");
 	}
 
-	public String nextStep() {
-		if (createWizard != null) {
-			if (createWizard.getActiveIndex() == 0) {
-				createWizard.setActiveIndex(1);
-				return "";
-			}
-			if (createWizard.getActiveIndex() == 1) {
-				createWizard.setActiveIndex(2);
-				return "";
-			}
-			if (createWizard.getActiveIndex() == 2) {
-				createWizard.setActiveIndex(3);
-				return "";
-			}
+	public String onFlowProcess(FlowEvent event) {
+		System.out.println("\n \n ******* EVENT " + event.getNewStep());
+
+		if (codeSelected != null) {
+			return event.getNewStep();
+
 		}
-		
-		if (browseWizard != null) {
-			if (browseWizard.getActiveIndex() == 0) {
-				browseWizard.setActiveIndex(1);
-				return "";
-			}
-			if (browseWizard.getActiveIndex() == 1) {
-				browseWizard.setActiveIndex(2);
-				return "";
-			}
-			if (browseWizard.getActiveIndex() == 2) {
-				browseWizard.setActiveIndex(3);
-				return "";
-			}
-		}
-		
-		if (updateWizard != null) {
-			if (updateWizard.getActiveIndex() == 0) {
-				updateWizard.setActiveIndex(1);
-				return "";
-			}
-			if (updateWizard.getActiveIndex() == 1) {
-				updateWizard.setActiveIndex(2);
-				return "";
-			}
-			if (updateWizard.getActiveIndex() == 2) {
-				updateWizard.setActiveIndex(3);
-				return "";
-			}
-			
-			if (updateWizard.getActiveIndex() == 3) {
-				updateWizard.setActiveIndex(4);
-				return "";
-			}
-		}
-		
-		if (copyWizard != null) {
-			if (copyWizard.getActiveIndex() == 0) {
-				copyWizard.setActiveIndex(1);
-				return "";
-			}
-			if (copyWizard.getActiveIndex() == 1) {
-				copyWizard.setActiveIndex(2);
-				return "";
-			}
-			if (copyWizard.getActiveIndex() == 2) {
-				copyWizard.setActiveIndex(3);
-				return "";
-			}
-			if (copyWizard.getActiveIndex() == 3) {
-				copyWizard.setActiveIndex(4);
-				return "";
-			}
-		}
-		
+
 		return "";
+
+		// return event.getNewStep();
 	}
-	
-	public String previousStep() {
-		if (createWizard != null) {
-			if (createWizard.getActiveIndex() == 3) {
-				createWizard.setActiveIndex(2);
-				return "";
-			}
-			if (createWizard.getActiveIndex() == 2) {
-				createWizard.setActiveIndex(1);
-				return "";
-			}
-			if (createWizard.getActiveIndex() == 1) {
-				createWizard.setActiveIndex(0);
-				return "";
-			}
-		}
-		
-		if (browseWizard != null) {
-			if (browseWizard.getActiveIndex() == 3) {
-				browseWizard.setActiveIndex(2);
-				return "";
-			}
-			if (browseWizard.getActiveIndex() == 2) {
-				browseWizard.setActiveIndex(1);
-				return "";
-			}
-			if (browseWizard.getActiveIndex() == 1) {
-				browseWizard.setActiveIndex(0);
-				return "";
-			}
-		}
-		
-		if (updateWizard != null) {
-			if (updateWizard.getActiveIndex() == 4) {
-				updateWizard.setActiveIndex(3);
-				return "";
-			}
-			if (updateWizard.getActiveIndex() == 3) {
-				updateWizard.setActiveIndex(2);
-				return "";
-			}
-			if (updateWizard.getActiveIndex() == 2) {
-				updateWizard.setActiveIndex(1);
-				return "";
-			}
-			if (updateWizard.getActiveIndex() == 1) {
-				updateWizard.setActiveIndex(0);
-				return "";
-			}
-		}
-		
-		if (copyWizard != null) {
-			if (copyWizard.getActiveIndex() == 4) {
-				copyWizard.setActiveIndex(3);
-				return "";
-			}
-			if (copyWizard.getActiveIndex() == 3) {
-				copyWizard.setActiveIndex(2);
-				return "";
-			}
-			if (copyWizard.getActiveIndex() == 2) {
-				copyWizard.setActiveIndex(1);
-				return "";
-			}
-			if (copyWizard.getActiveIndex() == 1) {
-				copyWizard.setActiveIndex(0);
-				return "";
-			}
-		}
-		return "";
-	}
+
 	
 
 	public CreateController() {
@@ -324,9 +192,9 @@ public class CreateController implements Serializable {
 		}
 
 		if (browseWizard != null)
-			browseWizard.setActiveIndex(1);
+			browseWizard.setStep("details");
 		if (updateWizard != null) {
-			updateWizard.setActiveIndex(1);//setStep("details");
+			updateWizard.setStep("details");
 
 			// selectedData = new CmqBase190();
 			// setSelectedData(cmq);
@@ -345,7 +213,7 @@ public class CreateController implements Serializable {
 			selectedData.setCmqDescription("");
 			selectedData.setCmqNote("");
 			selectedData.setCmqSource("");
-			copyWizard.setActiveIndex(1);
+			copyWizard.setStep("details");
 		}
 
 		return "";
@@ -356,7 +224,7 @@ public class CreateController implements Serializable {
 
 			Long count = this.cmqBaseService.findCmqCountByCmqNameAndExtension(extension, selectedData.getCmqName());
 
-			if (count != null && count > 0) {
+			if (count > 0) {
 				String errorMsg = "Duplicate CMQ name ('" + selectedData.getCmqName() + "')and extention ('" + extension
 						+ "') found in db.";
 				LOG.error(errorMsg);
@@ -367,10 +235,6 @@ public class CreateController implements Serializable {
 				return null;
 			} else {
 				setDatas();
-				selectedData.setCmqDescription("***Description****");
-//				if (selectedData.getCmqDesignee() == null){
-//					selectedData.setCmqDesignee("NONE");
-//				}
 
 				cmqBaseService.create(selectedData);
 
@@ -456,7 +320,6 @@ public class CreateController implements Serializable {
 		selectedData.setCmqCode(codevalue);
 		selectedData.setCmqDescription(description);
 		selectedData.setDictionaryVersion(currentMeddraVersionCodeList.getValue());
-		
 
 		// hard coded for now
 		selectedData.setCreatedBy("Test user");
@@ -561,14 +424,6 @@ public class CreateController implements Serializable {
 	public String saveInformativeNotes() {
 		Long cmqId = (Long) (FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
 				.get("NEW-CMQ_BASE-ID"));
-		
-		if (selectedData.getCmqDescription() == null) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"A description is required", "");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-
-			return "";
-		}
 
 		CmqBase190 savedEntity = cmqBaseService.findById(cmqId);
 		savedEntity.setCmqDescription(selectedData.getCmqDescription());
@@ -915,27 +770,27 @@ public class CreateController implements Serializable {
 		this.source = source;
 	}
 
-	public TabView getUpdateWizard() {
+	public Wizard getUpdateWizard() {
 		return updateWizard;
 	}
 
-	public void setUpdateWizard(TabView updateWizard) {
+	public void setUpdateWizard(Wizard updateWizard) {
 		this.updateWizard = updateWizard;
 	}
 
-	public TabView getCopyWizard() {
+	public Wizard getCopyWizard() {
 		return copyWizard;
 	}
 
-	public void setCopyWizard(TabView copyWizard) {
+	public void setCopyWizard(Wizard copyWizard) {
 		this.copyWizard = copyWizard;
 	}
 
-	public TabView getBrowseWizard() {
+	public Wizard getBrowseWizard() {
 		return browseWizard;
 	}
 
-	public void setBrowseWizard(TabView browseWizard) {
+	public void setBrowseWizard(Wizard browseWizard) {
 		this.browseWizard = browseWizard;
 	}
 
@@ -1041,20 +896,12 @@ public class CreateController implements Serializable {
 		this.codevalue = codevalue;
 	}
 
-	public TabView getCreateWizard() {
+	public Wizard getCreateWizard() {
 		return createWizard;
 	}
 
-	public void setCreateWizard(TabView createWizard) {
+	public void setCreateWizard(Wizard createWizard) {
 		this.createWizard = createWizard;
-	}
-
-	public Date getDate() {
-		return date;
-	}
-
-	public void setDate(Date date) {
-		this.date = date;
 	}
 
 }

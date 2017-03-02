@@ -158,7 +158,6 @@ public class SearchController extends BaseController<CmqBase190> {
 
 	public void reset() {
 		this.datas = new ArrayList<CmqBase190>();
-		this.selectedData = new CmqBase190();
 
 		resetSearch();
 		changeLevel();
