@@ -4,7 +4,9 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -14,6 +16,7 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
 
+import org.apache.commons.lang3.StringUtils;
 import org.primefaces.component.wizard.Wizard;
 import org.primefaces.event.FlowEvent;
 import org.primefaces.model.TreeNode;
@@ -528,11 +531,216 @@ public class CreateController implements Serializable {
 	 * 
 	 * @return
 	 */
-	public String updateRelations() {
+	public String updateRelations(TreeNode relationsRoot) {
+		if ((relationsRoot != null) && (relationsRoot.getChildCount() > 0)) {
+			List<CmqRelation190> cmqRelationsList = new ArrayList<>();
+			List<CmqBase190> cmqBaseChildrenList = new ArrayList<>();
+			List<TreeNode> childTreeNodes = relationsRoot.getChildren();
+			CmqBase190 cmqBase = this.cmqBaseService.findByCode(selectedData.getCmqCode());//TEST laster if we really need this call.
+			
+			List<CmqRelation190> existingRelation = this.cmqRelationService.findByCmqCode(selectedData.getCmqCode());
+			for (TreeNode childTreeNode : childTreeNodes) {
+				boolean matchFound = false;
+				boolean updateNeeded = false;
+				Map<String, Object> matchingMap = null;
+				HierarchyNode hierarchyNode = (HierarchyNode) childTreeNode.getData();
+				if (null != hierarchyNode) {
+					IEntity entity = hierarchyNode.getEntity();
+					if (entity instanceof CmqBase190) {
+						CmqBase190 cmqEntity = (CmqBase190) entity;
+						cmqEntity.setCmqParentCode(cmqBase.getCmqCode());
+						cmqEntity.setCmqParentName(cmqBase.getCmqName());
+						cmqBaseChildrenList.add(cmqEntity);
+					} else {
+						CmqRelation190 cmqRelation = null;						
+						if (entity instanceof MeddraDictHierarchySearchDto) {
+							MeddraDictHierarchySearchDto meddraDictHierarchySearchDto = (MeddraDictHierarchySearchDto) entity;
+							String level = hierarchyNode.getLevel();
+							long meddraDictCode = Long.parseLong(meddraDictHierarchySearchDto.getCode());
+							matchingMap = this.checkIfMeddraRelationExists(existingRelation, level, hierarchyNode);
+							matchFound = (boolean) matchingMap.get("MATCH_FOUND");
+							updateNeeded = (boolean) matchingMap.get("UPDATE_NEEDED");
+							
+							if(updateNeeded) {
+								cmqRelation = (CmqRelation190) matchingMap.get("TARGET_CMQ_RELATION_FOR_UPDATE");
+							} else {
+								cmqRelation = new CmqRelation190();
+								cmqRelation.setCmqCode(selectedData.getCmqCode());
+								cmqRelation.setCmqId(cmqBase.getId());
+								
+								// set the code first if needed
+								if (level.equalsIgnoreCase("SOC") && !matchFound) {
+									cmqRelation.setSocCode(meddraDictCode);
+								} else if (level.equalsIgnoreCase("HLGT") && !matchFound) {
+									cmqRelation.setHlgtCode(meddraDictCode);
+								} else if (level.equalsIgnoreCase("HLT") && !matchFound) {
+									cmqRelation.setHltCode(meddraDictCode);
+								} else if (level.equalsIgnoreCase("PT") && !matchFound) {
+									cmqRelation.setPtCode(meddraDictCode);
+								} else if (level.equalsIgnoreCase("LLT") && !matchFound) {
+									cmqRelation.setLltCode(meddraDictCode);
+								}
+							}
+						} else if (entity instanceof SmqBase190) {
+							SmqBase190 smqBase = (SmqBase190) entity;
+							matchingMap = this.checkIfSmqBaseOrSmqRelationExists(existingRelation, smqBase.getSmqCode(), hierarchyNode);
+							matchFound = (boolean) matchingMap.get("MATCH_FOUND");
+							updateNeeded = (boolean) matchingMap.get("UPDATE_NEEDED");
+							if(updateNeeded) {
+								cmqRelation = (CmqRelation190) matchingMap.get("TARGET_CMQ_RELATION_FOR_UPDATE");
+							} else if(!matchFound) {
+								cmqRelation = new CmqRelation190();
+								cmqRelation.setCmqCode(selectedData.getCmqCode());
+								cmqRelation.setCmqId(cmqBase.getId());
+								cmqRelation.setSmqCode(smqBase.getSmqCode());
+							}
+						} else if (entity instanceof SmqRelation190) {
+							SmqRelation190 smqRelation = (SmqRelation190) entity;
+							matchingMap = this.checkIfSmqBaseOrSmqRelationExists(existingRelation, smqRelation.getSmqCode(), hierarchyNode);
+							matchFound = (boolean) matchingMap.get("MATCH_FOUND");
+							updateNeeded = (boolean) matchingMap.get("UPDATE_NEEDED");
+							if(updateNeeded) {
+								cmqRelation = (CmqRelation190) matchingMap.get("TARGET_CMQ_RELATION_FOR_UPDATE");
+							} else if(!matchFound) {
+								cmqRelation = new CmqRelation190();
+								cmqRelation.setCmqCode(selectedData.getCmqCode());
+								cmqRelation.setCmqId(cmqBase.getId());
+								cmqRelation.setSmqCode(smqRelation.getSmqCode());
+							}
+						}
+						
+						if(!matchFound || updateNeeded) {
+							cmqRelation.setTermWeight((!StringUtils.isBlank(hierarchyNode.getWeight()) 
+															&& !hierarchyNode.getWeight().equalsIgnoreCase("null"))
+														? Long.parseLong(hierarchyNode.getWeight()) : null);
+							cmqRelation.setTermScope(hierarchyNode.getScope());
+							cmqRelation.setTermCategory(hierarchyNode.getCategory());
+							cmqRelation.setDictionaryName(cmqBase.getDictionaryName());
+							cmqRelation.setDictionaryVersion(cmqBase.getDictionaryVersion());
+							cmqRelation.setCmqSubversion(cmqBase.getCmqSubversion());
+							if(updateNeeded) {
+								cmqRelation.setLastModifiedDate(new Date());
+								cmqRelation.setLastModifiedBy("test-user");
+							} else {
+								cmqRelation.setCreationDate(new Date());
+								cmqRelation.setCreatedBy("test-user");
+							}
+							cmqRelationsList.add(cmqRelation);
+						}
+					}
+				}//end of if (null != hierarchyNode)
+			}
+			
+			if (!cmqRelationsList.isEmpty() || !cmqBaseChildrenList.isEmpty()) {
+				try {
+					if(!cmqRelationsList.isEmpty()) {
+						this.cmqRelationService.update(cmqRelationsList);
+					}
+					if(!cmqBaseChildrenList.isEmpty()) {
+						this.cmqBaseService.update(cmqBaseChildrenList);
+					}
+					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+							"Relations are successfully updated for '" + cmqBase.getCmqName() + "'", "");
+					FacesContext.getCurrentInstance().addMessage(null, msg);
+				} catch (CqtServiceException e) {
+					LOG.error("Exception occured while updated the list of CmqRelations for CMQ base code "
+							+ cmqBase.getCmqCode(), e);
 
+					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+							"An error occured while updated the list of CmqRelations for CMQ base code "
+									+ cmqBase.getCmqCode(),
+							"");
+					FacesContext.getCurrentInstance().addMessage(null, msg);
+				}
+			}
+		}
 		return "";
 	}
 
+	private Map<String, Object> checkIfMeddraRelationExists(List<CmqRelation190> existingRelation, String matchKey, HierarchyNode hierarchyNode) {
+		Map<String, Object> matchingMap = new HashMap<String, Object>(3);
+		matchingMap.put("MATCH_FOUND", false);
+		matchingMap.put("UPDATE_NEEDED", false);
+		matchingMap.put("TARGET_CMQ_RELATION_FOR_UPDATE", null);
+		
+		MeddraDictHierarchySearchDto meddraDictHierarchySearchDto = (MeddraDictHierarchySearchDto) hierarchyNode.getEntity();
+		long nodeSocCode = Long.parseLong(meddraDictHierarchySearchDto.getCode());
+		for (CmqRelation190 cmqRelation190 : existingRelation) {
+			if(null != cmqRelation190) {
+				if(matchKey.equalsIgnoreCase("SOC")) {
+					if((null != cmqRelation190.getSmqCode()) && (cmqRelation190.getSocCode().longValue() == nodeSocCode)){
+						matchingMap.put("MATCH_FOUND", true);
+					}
+				} else if(matchKey.equalsIgnoreCase("HLGT")) {
+					if((null != cmqRelation190.getHlgtCode()) && (cmqRelation190.getHlgtCode().longValue() == nodeSocCode)){
+						matchingMap.put("MATCH_FOUND", true);
+					}
+				} else if(matchKey.equalsIgnoreCase("HLT")) {
+					if((null != cmqRelation190.getHltCode()) && (cmqRelation190.getHltCode().longValue() == nodeSocCode)){
+						matchingMap.put("MATCH_FOUND", true);
+					}
+				} else if(matchKey.equalsIgnoreCase("PT")) {
+					if((null != cmqRelation190.getPtCode()) && (cmqRelation190.getPtCode().longValue() == nodeSocCode)){
+						matchingMap.put("MATCH_FOUND", true);
+					}
+				} else if(matchKey.equalsIgnoreCase("LLT")) {
+					if((null != cmqRelation190.getLltCode()) && (cmqRelation190.getLltCode().longValue() == nodeSocCode)){
+						matchingMap.put("MATCH_FOUND", true);
+					}
+				}
+				Boolean matchFound = (Boolean) matchingMap.get("MATCH_FOUND");
+				if(matchFound) {
+					matchingMap.put("UPDATE_NEEDED", this.checkIfExistingRelationNeedsUpdate(cmqRelation190, hierarchyNode));
+					matchingMap.put("TARGET_CMQ_RELATION_FOR_UPDATE", cmqRelation190);
+					break;
+				}
+			}//end of if(null != cmqRelation190)
+		}//end of for (CmqRelation190 cmqRelation190 : existingRelation) 
+		return matchingMap;
+	}
+	
+	private Map<String, Object> checkIfSmqBaseOrSmqRelationExists(List<CmqRelation190> existingRelation, Long smqCode, HierarchyNode hierarchyNode) {
+		Map<String, Object> matchingMap = new HashMap<String, Object>(3);
+		matchingMap.put("MATCH_FOUND", false);
+		matchingMap.put("UPDATE_NEEDED", false);
+		matchingMap.put("TARGET_CMQ_RELATION_FOR_UPDATE", null);
+		
+		for (CmqRelation190 cmqRelation190 : existingRelation) {
+			if((null != cmqRelation190.getSmqCode()) && (cmqRelation190.getSmqCode().longValue() == smqCode.longValue())){
+				matchingMap.put("MATCH_FOUND", true);
+			}
+			
+			Boolean matchFound = (Boolean) matchingMap.get("MATCH_FOUND");
+			if(matchFound) {
+				matchingMap.put("UPDATE_NEEDED", this.checkIfExistingRelationNeedsUpdate(cmqRelation190, hierarchyNode));
+				matchingMap.put("TARGET_CMQ_RELATION_FOR_UPDATE", cmqRelation190);
+				break;
+			}
+		}
+		return matchingMap;
+	}
+	
+	private boolean checkIfExistingRelationNeedsUpdate(CmqRelation190 cmqRelation190, HierarchyNode hierarchyNode) {
+		boolean needsUpdate = false;
+		if(!StringUtils.isBlank(hierarchyNode.getScope()) && !StringUtils.isBlank(cmqRelation190.getTermScope())
+				&& !hierarchyNode.getScope().equals(cmqRelation190.getTermScope())) {
+			needsUpdate = true;
+		} else if(!StringUtils.isBlank(hierarchyNode.getCategory()) && !StringUtils.isBlank(cmqRelation190.getTermCategory())
+				&& !hierarchyNode.getCategory().equals(cmqRelation190.getTermCategory())) {
+			needsUpdate = true;
+		} else {
+			long nodeWeight = 0;
+			if((null != cmqRelation190.getTermWeight()) && !StringUtils.isBlank(hierarchyNode.getWeight()) 
+					&& StringUtils.isNumeric(hierarchyNode.getWeight())) {
+				nodeWeight = Long.parseLong(hierarchyNode.getWeight());
+				if(nodeWeight != cmqRelation190.getTermWeight().longValue()) {
+					needsUpdate = true;
+				}
+			} 
+		}
+		return needsUpdate;
+	}
+	
 	//
 	// set workflow state CMQ_BASE_CURRENT -> CMQ_STATE
 	//
