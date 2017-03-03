@@ -5,6 +5,34 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:p="http://primefaces.org/ui">
+	
+	
+<script>
+	function initRelationDND() {
+		// define the droppable area on the treetable
+		$('.ui-treetable.ui-treetable-resultRelations').droppable({
+           activeClass: 'ui-state-active',
+           hoverClass: 'ui-state-highlight',
+           tolerance: 'pointer',
+           scope: 'selRelationDnd',
+           drop: function(event, ui) {
+        	    var dndRow = $(ui.draggable).closest('tr');
+        	    
+        		relationSearchToResult([
+        	         {name: 'level', value:  $('td:nth-child(2)', dndRow).text()}
+        	        ,{name: 'name', value: $('td:nth-child(3)', dndRow).text()}
+        	        ,{name: 'code', value: $('td:nth-child(4)', dndRow).text()}
+        	        ,{name: 'entityId', value: $(ui.draggable).data('entityId')}
+        	    ]);
+           }
+        });
+	}
+
+	$(function() {
+		initRelationDND();
+	});
+
+</script>
 
 	<h:panelGrid>
 		<p:toolbar>
@@ -73,9 +101,12 @@
 		</p:toolbar>
 
 		<br />
+		
+		<p:remoteCommand name="relationSearchToResult" actionListener="#{searchController.onRelationDrop}" update="resultRelations resultHier" oncomplete="initRelationDND()"/>
 
 		<p:treeTable value="#{searchController.relationsRoot}" var="node"
 			selectionMode="checkbox" id="resultRelations" rows="20"
+			styleClass="ui-treetable-resultRelations"
 			paginator="true" paginatorPosition="bottom"
 			paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 			rowsPerPageTemplate="5,10,25,30"
@@ -101,7 +132,6 @@
 			</p:columnGroup>
 
 			<p:column>
-
 				<h:outputText value="#{node.term}" rendered="true" />
 			</p:column>
 
@@ -154,6 +184,7 @@
 				</p:commandButton>
 			</p:column>
 		</p:treeTable>
+		
 	</h:panelGrid>
 
 	<p:dialog widgetVar="search" modal="false" header="Hierarchy search">
@@ -178,4 +209,5 @@
 	opacity: .50 !important;
 }
 </style>
+
 </ui:composition>

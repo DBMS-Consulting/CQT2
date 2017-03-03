@@ -2,8 +2,13 @@ package com.dbms.controller;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 
 import javax.annotation.PostConstruct;
@@ -16,6 +21,7 @@ import javax.faces.event.AjaxBehaviorEvent;
 
 import org.apache.commons.lang3.StringUtils;
 import org.primefaces.component.wizard.Wizard;
+import org.primefaces.event.DragDropEvent;
 import org.primefaces.event.NodeExpandEvent;
 import org.primefaces.event.RowEditEvent;
 import org.primefaces.model.DefaultTreeNode;
@@ -39,6 +45,7 @@ import com.dbms.service.IMeddraDictService;
 import com.dbms.service.IRefCodeListService;
 import com.dbms.service.ISmqBaseService;
 import com.dbms.web.dto.CodelistDTO;
+import com.sun.faces.util.CollectionsUtils;
 
 /**
  * @date Feb 7, 2017 7:39:34 AM
@@ -1117,6 +1124,61 @@ public class SearchController extends BaseController<CmqBase190> {
 				new DefaultTreeNode(node, this.relationsRoot);
 			}
 		}
+	}
+	
+	/**
+	 * Event handler for drag-and-drop from "Hierarchy Search" treetable to "Result Relations" treetable
+	 */
+	public void onRelationDrop() {
+		//TODO: real data link
+		Map<String,String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+        String nodeLevel = params.get("level");
+        String nodeName = params.get("name");
+        String nodeCode = params.get("code");
+        Long nodeEntityId = Long.parseLong(params.get("entityId"));
+        
+        TreeNode treeNode = findTreenodeByEntityId(hierarchyRoot, nodeEntityId);
+		if(treeNode != null) {
+			HierarchyNode hierarchyNode = (HierarchyNode) treeNode.getData();
+			if ((null != hierarchyNode) && !hierarchyNode.isDummyNode()) {
+				// remove the first dummy node placeholder
+				List<TreeNode> childTreeNodes = treeNode.getChildren();
+				if ((null != childTreeNodes)
+						&& (childTreeNodes.size() > 0)) {
+					HierarchyNode dummyChildData = (HierarchyNode) childTreeNodes
+							.get(0).getData();
+					if (dummyChildData.isDummyNode()) {
+						treeNode.getChildren().remove(0);
+					}
+				}
+				// now add it to the parent
+				treeNode.setParent(relationsRoot);
+				relationsRoot.getChildren().add(treeNode);
+			}
+		}
+	}
+	
+	/**
+	 * find a TreeNode by a given Entity ID
+	 * Recursive function
+	 * @author andmiel81@yandex.com
+	 * @param rtNode root node of the subtree to be searched in.
+	 * @param entityId Entity ID to be searched for
+	 */
+	private TreeNode findTreenodeByEntityId(TreeNode rtNode, long entityId) {
+		for(TreeNode chNode: rtNode.getChildren()) {
+			log.debug(((HierarchyNode)chNode.getData()).getEntity().getId().toString());
+			if(chNode.getData() instanceof HierarchyNode
+					&& ((HierarchyNode)chNode.getData()).getEntity()!=null
+					&& ((HierarchyNode)chNode.getData()).getEntity().getId() == entityId) {
+				return chNode;
+			} else {
+				TreeNode f = findTreenodeByEntityId(chNode, entityId);
+				if(f!=null)
+					return f;
+			}
+		}
+		return null;
 	}
 
 	private HierarchyNode createSmqBaseNode(SmqBase190 smqBase) {

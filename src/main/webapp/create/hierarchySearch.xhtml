@@ -78,7 +78,8 @@
 			</p:toolbar>
 
 			<p:treeTable value="#{searchController.hierarchyRoot}" var="node"
-				id="resultHier" rows="20" selectionMode="checkbox" selection="#{searchController.relationSelected}" 
+				id="resultHier" rows="20" selectionMode="checkbox" selection="#{searchController.relationSelected}"
+				styleClass="ui-treetable-resultHier" 
 				paginator="true" paginatorPosition="bottom"
 				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 				rowsPerPageTemplate="5,10,25,30">
@@ -86,6 +87,13 @@
 				<p:ajax event="expand" listener="#{searchController.onNodeExpand}"
 					update="resultHier" />
 
+				<p:column headerText="">
+					<h:outputText id="dragIcon" styleClass="ui-icon ui-icon-arrow-4" style="float:left;">
+						<f:passThroughAttribute  name="data-entity-id" value="#{node.entity.id}" />
+					</h:outputText>
+                	<p:draggable for="dragIcon" revert="true" helper="clone" scope="selRelationDnd"/>
+				</p:column>
+				
 				<p:column headerText="Level">
 					<h:outputText value="#{node.level}" />
 				</p:column>
@@ -94,8 +102,7 @@
 					<h:outputText value="#{node.term}" />
 				</p:column>
 
-				<p:column headerText="Code" sortBy="#{node.code}"
-					filterBy="#{node.code}">
+				<p:column headerText="Code" sortBy="#{node.code}" filterBy="#{node.code}">
 					<h:outputText value="#{node.code}" />
 				</p:column>
 			</p:treeTable>
