@@ -18,6 +18,7 @@ import javax.faces.event.AjaxBehaviorEvent;
 
 import org.apache.commons.lang3.StringUtils;
 import org.primefaces.component.wizard.Wizard;
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.FlowEvent;
 import org.primefaces.model.TreeNode;
 import org.slf4j.Logger;
@@ -121,20 +122,77 @@ public class CreateController implements Serializable {
 		selectedData.setCmqDescription("*** Description ****");
 	}
 
-	public String onFlowProcess(FlowEvent event) {
-		System.out.println("\n \n ******* EVENT " + event.getNewStep());
-
+	/**
+	 * FlowListener of Browse Wizard Component
+	 * @param event
+	 * @return
+	 */
+	public String onBrowseWizardFlowProcess(FlowEvent event) {
+		String nextStep = event.getOldStep();
 		if (codeSelected != null) {
-			return event.getNewStep();
-
+			nextStep = event.getNewStep();
 		}
-
-		return "";
-
-		// return event.getNewStep();
+		RequestContext.getCurrentInstance().update("fBrowse:wizardNavbar");
+		return nextStep;
 	}
 
-	
+	public boolean isBrowseWizardNavbarShown() {
+		return !browseWizard.getStep().equals("searchBrowse");
+	}
+	public boolean isBrowseWizardNavbarNextShown() {
+		return isBrowseWizardNavbarShown() && !browseWizard.getStep().equals("relations");
+	}
+	public boolean isBrowseWizardNavbarBackShown() {
+		return !browseWizard.getStep().equals("searchBrowse");
+	}
+
+	/**
+	 * FlowListener of Update Wizard Component
+	 * @param event
+	 * @return
+	 */
+	public String onUpdateWizardFlowProcess(FlowEvent event) {
+		String nextStep = event.getOldStep();
+		if (codeSelected != null) {
+			nextStep = event.getNewStep();
+		}
+		RequestContext.getCurrentInstance().update("fUpdate:wizardNavbar");
+		return nextStep;
+	}
+
+	public boolean isUpdateWizardNavbarShown() {
+		return !updateWizard.getStep().equals("searchUpdate");
+	}
+	public boolean isUpdateWizardNavbarNextShown() {
+		return isUpdateWizardNavbarShown() && !updateWizard.getStep().equals("confirmPanel");
+	}
+	public boolean isUpdateWizardNavbarBackShown() {
+		return !updateWizard.getStep().equals("searchUpdate");
+	}
+
+	/**
+	 * FlowListener of Update Wizard Component
+	 * @param event
+	 * @return
+	 */
+	public String onCopyWizardFlowProcess(FlowEvent event) {
+		String nextStep = event.getOldStep();
+		if (codeSelected != null) {
+			nextStep = event.getNewStep();
+		}
+		RequestContext.getCurrentInstance().update("fCopy:wizardNavbar");
+		return nextStep;
+	}
+
+	public boolean isCopyWizardNavbarShown() {
+		return !copyWizard.getStep().equals("searchCopy");
+	}
+	public boolean isCopyWizardNavbarNextShown() {
+		return isCopyWizardNavbarShown() && !copyWizard.getStep().equals("confirmPanel");
+	}
+	public boolean isCopyWizardNavbarBackShown() {
+		return !copyWizard.getStep().equals("searchCopy");
+	}
 
 	public CreateController() {
 		this.selectedData = new CmqBase190();
@@ -194,14 +252,22 @@ public class CreateController implements Serializable {
 			product = selectedData.getCmqProductCd();
 		}
 
-		if (browseWizard != null)
+		if (browseWizard != null) {
 			browseWizard.setStep("details");
+			if(RequestContext.getCurrentInstance() != null) {
+				RequestContext.getCurrentInstance().update("fBrowse:wizardNavbar");
+			}
+		}
+		
 		if (updateWizard != null) {
 			updateWizard.setStep("details");
-
+			if(RequestContext.getCurrentInstance() != null) {
+				RequestContext.getCurrentInstance().update("fUpdate:wizardNavbar");
+			}
 			// selectedData = new CmqBase190();
 			// setSelectedData(cmq);
 		}
+		
 		if (copyWizard != null) {
 			//reset the values which are not supposed to be copied.
 			selectedData.setId(null);//need to set since we may need to create a new cmq
@@ -217,6 +283,9 @@ public class CreateController implements Serializable {
 			selectedData.setCmqNote("");
 			selectedData.setCmqSource("");
 			copyWizard.setStep("details");
+			if(RequestContext.getCurrentInstance() != null) {
+				RequestContext.getCurrentInstance().update("fCopy:wizardNavbar");
+			}
 		}
 
 		return "";
@@ -461,48 +530,57 @@ public class CreateController implements Serializable {
 			Long cmqId = (Long) (FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
 					.get("NEW-CMQ_BASE-ID"));
 			List<CmqRelation190> cmqRelationsList = new ArrayList<>();
-
+			List<CmqBase190> cmqBaseChildrenList = new ArrayList<>();
+			
 			CmqBase190 cmqBase = cmqBaseService.findById(cmqId);
 			for (TreeNode childTreeNode : childTreeNodes) {
-				CmqRelation190 cmqRelation = new CmqRelation190();
-				cmqRelation.setCmqCode(cmqBase.getCmqCode());
-				cmqRelation.setCmqId(cmqId);
+				
 				HierarchyNode hierarchyNode = (HierarchyNode) childTreeNode.getData();
 				if (null != hierarchyNode) {
 					IEntity entity = hierarchyNode.getEntity();
-					if (entity instanceof MeddraDictHierarchySearchDto) {
-						MeddraDictHierarchySearchDto meddraDictHierarchySearchDto = (MeddraDictHierarchySearchDto) entity;
-						String level = hierarchyNode.getLevel();
-						// set the code first
-						if (level.equalsIgnoreCase("SOC")) {
-							cmqRelation.setSocCode(Long.parseLong(meddraDictHierarchySearchDto.getCode()));
-						} else if (level.equalsIgnoreCase("HLGT")) {
-							cmqRelation.setHlgtCode(Long.parseLong(meddraDictHierarchySearchDto.getCode()));
-						} else if (level.equalsIgnoreCase("HLT")) {
-							cmqRelation.setHltCode(Long.parseLong(meddraDictHierarchySearchDto.getCode()));
-						} else if (level.equalsIgnoreCase("PT")) {
-							cmqRelation.setPtCode(Long.parseLong(meddraDictHierarchySearchDto.getCode()));
-						} else if (level.equalsIgnoreCase("LLT")) {
-							cmqRelation.setLltCode(Long.parseLong(meddraDictHierarchySearchDto.getCode()));
+					if(entity instanceof CmqBase190) {
+						CmqBase190 cmqEntity = (CmqBase190) entity;
+						cmqEntity.setCmqParentCode(cmqBase.getCmqCode());
+						cmqEntity.setCmqParentName(cmqBase.getCmqName());
+						cmqBaseChildrenList.add(cmqEntity);
+					} else {
+						CmqRelation190 cmqRelation = new CmqRelation190();
+						cmqRelation.setCmqCode(cmqBase.getCmqCode());
+						cmqRelation.setCmqId(cmqId);		
+						if (entity instanceof MeddraDictHierarchySearchDto) {
+							MeddraDictHierarchySearchDto meddraDictHierarchySearchDto = (MeddraDictHierarchySearchDto) entity;
+							String level = hierarchyNode.getLevel();
+							// set the code first
+							if (level.equalsIgnoreCase("SOC")) {
+								cmqRelation.setSocCode(Long.parseLong(meddraDictHierarchySearchDto.getCode()));
+							} else if (level.equalsIgnoreCase("HLGT")) {
+								cmqRelation.setHlgtCode(Long.parseLong(meddraDictHierarchySearchDto.getCode()));
+							} else if (level.equalsIgnoreCase("HLT")) {
+								cmqRelation.setHltCode(Long.parseLong(meddraDictHierarchySearchDto.getCode()));
+							} else if (level.equalsIgnoreCase("PT")) {
+								cmqRelation.setPtCode(Long.parseLong(meddraDictHierarchySearchDto.getCode()));
+							} else if (level.equalsIgnoreCase("LLT")) {
+								cmqRelation.setLltCode(Long.parseLong(meddraDictHierarchySearchDto.getCode()));
+							}
+						} else if (entity instanceof SmqBase190) {
+							SmqBase190 smqBase = (SmqBase190) entity;
+							cmqRelation.setSmqCode(smqBase.getSmqCode());
+						} else if (entity instanceof SmqRelation190) {
+							SmqRelation190 smqRelation = (SmqRelation190) entity;
+							cmqRelation.setSmqCode(smqRelation.getSmqCode());
 						}
-					} else if (entity instanceof SmqBase190) {
-						SmqBase190 smqBase = (SmqBase190) entity;
-						cmqRelation.setSmqCode(smqBase.getSmqCode());
-					} else if (entity instanceof SmqRelation190) {
-						SmqRelation190 smqRelation = (SmqRelation190) entity;
-						cmqRelation.setSmqCode(smqRelation.getSmqCode());
+						cmqRelation
+								.setTermWeight((hierarchyNode.getWeight() != null && !hierarchyNode.getWeight().equals(""))
+										? Long.parseLong(hierarchyNode.getWeight()) : null);
+						cmqRelation.setTermScope(hierarchyNode.getScope());
+						cmqRelation.setTermCategory(hierarchyNode.getCategory());
+						cmqRelation.setDictionaryName(cmqBase.getDictionaryName());
+						cmqRelation.setDictionaryVersion(cmqBase.getDictionaryVersion());
+						cmqRelation.setCreatedBy("test-user");
+						cmqRelation.setCreationDate(new Date());
+						cmqRelation.setCmqSubversion(cmqBase.getCmqSubversion());
+						cmqRelationsList.add(cmqRelation);
 					}
-					cmqRelation
-							.setTermWeight((hierarchyNode.getWeight() != null && !hierarchyNode.getWeight().equals(""))
-									? Long.parseLong(hierarchyNode.getWeight()) : null);
-					cmqRelation.setTermScope(hierarchyNode.getScope());
-					cmqRelation.setTermCategory(hierarchyNode.getCategory());
-					cmqRelation.setDictionaryName(cmqBase.getDictionaryName());
-					cmqRelation.setDictionaryVersion(cmqBase.getDictionaryVersion());
-					cmqRelation.setCreatedBy("test-user");
-					cmqRelation.setCreationDate(new Date());
-					cmqRelation.setCmqSubversion(cmqBase.getCmqSubversion());
-					cmqRelationsList.add(cmqRelation);
 				}
 			}
 			if (!cmqRelationsList.isEmpty()) {

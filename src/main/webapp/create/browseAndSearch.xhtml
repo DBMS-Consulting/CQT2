@@ -6,8 +6,18 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:p="http://primefaces.org/ui" template="../CSMQ.xhtml">
 
-	<ui:define name="page-content">
+	<ui:define name="page-content">	
 		<h:form id="fBrowse">
+			<script>
+				function next() {
+					PF('wizard').next();
+				}
+	
+				function back() {
+					PF('wizard').back();
+				}
+			</script>
+			
 			<p:growl id="m1" />
 			<h:panelGrid columns="2" style="width: 100% !important">
 				<h:panelGrid>
@@ -17,12 +27,13 @@
 					</p:breadCrumb>
 
 				</h:panelGrid>
-
-			</h:panelGrid>
+			</h:panelGrid>	
 
 			<p:wizard widgetVar="wizard" id="wizardId"
-				flowListener="#{createController.onFlowProcess}"
-				binding="#{createController.browseWizard}">
+				flowListener="#{createController.onBrowseWizardFlowProcess}"
+				binding="#{createController.browseWizard}"
+				showNavBar="false" >
+				
 				<!-- Search -->
 				<p:tab id="searchBrowse" title="Search">
 					<p:panel header="Search">
@@ -173,6 +184,13 @@
 					</p:panel>
 				</p:tab>
 			</p:wizard>
+			
+			<h:panelGroup id="wizardNavbar" layout="block" styleClass="ui-wizard-navbar ui-helper-clearfix">
+				<p:commandButton value="Back" onclick="PF('wizard').back();" icon="ui-icon-arrowthick-1-w"
+	        			styleClass="ui-wizard-nav-back" rendered="#{createController.browseWizardNavbarBackShown}" />
+				<p:commandButton value="Next" onclick="PF('wizard').next();" icon="ui-icon-arrowthick-1-e"
+				        styleClass="ui-wizard-nav-next" rendered="#{createController.browseWizardNavbarNextShown}" /> 
+			</h:panelGroup>
 
 
 			<p:spacer width="10" height="10" id="s6" />
@@ -195,27 +213,18 @@
 
 
 		<style>
-.label-right {
-	float: right;
-	margin-right: 20px;
-	font-size: 14px !important;
-}
+		.label-right {
+			float: right;
+			margin-right: 20px;
+			font-size: 14px !important;
+		}
+		
+		.ui-column-filter {
+			width: 60px !important;
+			height: 10px !important;
+			margin-top: 5px;
+		}
+		</style>
 
-.ui-column-filter {
-	width: 60px !important;
-	height: 10px !important;
-	margin-top: 5px;
-}
-</style>
-
-		<script>
-			function next() {
-				PF('wizard').next();
-			}
-
-			function back() {
-				PF('wizard').back();
-			}
-		</script>
 	</ui:define>
 </ui:composition>

@@ -175,7 +175,7 @@
 
 			<p:column>
 				<p:commandButton disabled="#{createController.readOnlyState}"
-					action="#{searchController.deleteRelation(searchController.relationsRoot, node)}"
+					action="#{searchController.deleteRelation(searchController.relationsRoot, node, createController.selectedData.cmqCode)}"
 					update="resultRelations" value="Delete">
 
 					<p:confirm header="Delete relation"
