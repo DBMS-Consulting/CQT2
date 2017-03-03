@@ -6,7 +6,9 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -22,8 +24,8 @@ public class RefConfigCodeList extends BaseEntity {
 	private static final long serialVersionUID = -6991254386386614648L;
 
 	@Id
-	@GeneratedValue(generator = "idGenerator")
-	@GenericGenerator(name = "idGenerator", strategy = "assigned")
+	@GeneratedValue(generator = "CODELIST_ID_SEQ", strategy = GenerationType.SEQUENCE)
+	@SequenceGenerator(name = "CODELIST_ID_SEQ", sequenceName = "CMQ_ID_SEQ", allocationSize = 1)
 	@Column(name = "CODELIST_ID", length = 30, unique = true, nullable = false)
 	private Long id;
 

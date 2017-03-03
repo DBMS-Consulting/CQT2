@@ -530,48 +530,57 @@ public class CreateController implements Serializable {
 			Long cmqId = (Long) (FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
 					.get("NEW-CMQ_BASE-ID"));
 			List<CmqRelation190> cmqRelationsList = new ArrayList<>();
-
+			List<CmqBase190> cmqBaseChildrenList = new ArrayList<>();
+			
 			CmqBase190 cmqBase = cmqBaseService.findById(cmqId);
 			for (TreeNode childTreeNode : childTreeNodes) {
-				CmqRelation190 cmqRelation = new CmqRelation190();
-				cmqRelation.setCmqCode(cmqBase.getCmqCode());
-				cmqRelation.setCmqId(cmqId);
+				
 				HierarchyNode hierarchyNode = (HierarchyNode) childTreeNode.getData();
 				if (null != hierarchyNode) {
 					IEntity entity = hierarchyNode.getEntity();
-					if (entity instanceof MeddraDictHierarchySearchDto) {
-						MeddraDictHierarchySearchDto meddraDictHierarchySearchDto = (MeddraDictHierarchySearchDto) entity;
-						String level = hierarchyNode.getLevel();
-						// set the code first
-						if (level.equalsIgnoreCase("SOC")) {
-							cmqRelation.setSocCode(Long.parseLong(meddraDictHierarchySearchDto.getCode()));
-						} else if (level.equalsIgnoreCase("HLGT")) {
-							cmqRelation.setHlgtCode(Long.parseLong(meddraDictHierarchySearchDto.getCode()));
-						} else if (level.equalsIgnoreCase("HLT")) {
-							cmqRelation.setHltCode(Long.parseLong(meddraDictHierarchySearchDto.getCode()));
-						} else if (level.equalsIgnoreCase("PT")) {
-							cmqRelation.setPtCode(Long.parseLong(meddraDictHierarchySearchDto.getCode()));
-						} else if (level.equalsIgnoreCase("LLT")) {
-							cmqRelation.setLltCode(Long.parseLong(meddraDictHierarchySearchDto.getCode()));
+					if(entity instanceof CmqBase190) {
+						CmqBase190 cmqEntity = (CmqBase190) entity;
+						cmqEntity.setCmqParentCode(cmqBase.getCmqCode());
+						cmqEntity.setCmqParentName(cmqBase.getCmqName());
+						cmqBaseChildrenList.add(cmqEntity);
+					} else {
+						CmqRelation190 cmqRelation = new CmqRelation190();
+						cmqRelation.setCmqCode(cmqBase.getCmqCode());
+						cmqRelation.setCmqId(cmqId);		
+						if (entity instanceof MeddraDictHierarchySearchDto) {
+							MeddraDictHierarchySearchDto meddraDictHierarchySearchDto = (MeddraDictHierarchySearchDto) entity;
+							String level = hierarchyNode.getLevel();
+							// set the code first
+							if (level.equalsIgnoreCase("SOC")) {
+								cmqRelation.setSocCode(Long.parseLong(meddraDictHierarchySearchDto.getCode()));
+							} else if (level.equalsIgnoreCase("HLGT")) {
+								cmqRelation.setHlgtCode(Long.parseLong(meddraDictHierarchySearchDto.getCode()));
+							} else if (level.equalsIgnoreCase("HLT")) {
+								cmqRelation.setHltCode(Long.parseLong(meddraDictHierarchySearchDto.getCode()));
+							} else if (level.equalsIgnoreCase("PT")) {
+								cmqRelation.setPtCode(Long.parseLong(meddraDictHierarchySearchDto.getCode()));
+							} else if (level.equalsIgnoreCase("LLT")) {
+								cmqRelation.setLltCode(Long.parseLong(meddraDictHierarchySearchDto.getCode()));
+							}
+						} else if (entity instanceof SmqBase190) {
+							SmqBase190 smqBase = (SmqBase190) entity;
+							cmqRelation.setSmqCode(smqBase.getSmqCode());
+						} else if (entity instanceof SmqRelation190) {
+							SmqRelation190 smqRelation = (SmqRelation190) entity;
+							cmqRelation.setSmqCode(smqRelation.getSmqCode());
 						}
-					} else if (entity instanceof SmqBase190) {
-						SmqBase190 smqBase = (SmqBase190) entity;
-						cmqRelation.setSmqCode(smqBase.getSmqCode());
-					} else if (entity instanceof SmqRelation190) {
-						SmqRelation190 smqRelation = (SmqRelation190) entity;
-						cmqRelation.setSmqCode(smqRelation.getSmqCode());
+						cmqRelation
+								.setTermWeight((hierarchyNode.getWeight() != null && !hierarchyNode.getWeight().equals(""))
+										? Long.parseLong(hierarchyNode.getWeight()) : null);
+						cmqRelation.setTermScope(hierarchyNode.getScope());
+						cmqRelation.setTermCategory(hierarchyNode.getCategory());
+						cmqRelation.setDictionaryName(cmqBase.getDictionaryName());
+						cmqRelation.setDictionaryVersion(cmqBase.getDictionaryVersion());
+						cmqRelation.setCreatedBy("test-user");
+						cmqRelation.setCreationDate(new Date());
+						cmqRelation.setCmqSubversion(cmqBase.getCmqSubversion());
+						cmqRelationsList.add(cmqRelation);
 					}
-					cmqRelation
-							.setTermWeight((hierarchyNode.getWeight() != null && !hierarchyNode.getWeight().equals(""))
-									? Long.parseLong(hierarchyNode.getWeight()) : null);
-					cmqRelation.setTermScope(hierarchyNode.getScope());
-					cmqRelation.setTermCategory(hierarchyNode.getCategory());
-					cmqRelation.setDictionaryName(cmqBase.getDictionaryName());
-					cmqRelation.setDictionaryVersion(cmqBase.getDictionaryVersion());
-					cmqRelation.setCreatedBy("test-user");
-					cmqRelation.setCreationDate(new Date());
-					cmqRelation.setCmqSubversion(cmqBase.getCmqSubversion());
-					cmqRelationsList.add(cmqRelation);
 				}
 			}
 			if (!cmqRelationsList.isEmpty()) {

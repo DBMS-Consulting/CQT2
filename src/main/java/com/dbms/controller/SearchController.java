@@ -2,13 +2,9 @@ package com.dbms.controller;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 
 import javax.annotation.PostConstruct;
@@ -19,9 +15,7 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
 
-import org.apache.commons.lang3.StringUtils;
 import org.primefaces.component.wizard.Wizard;
-import org.primefaces.event.DragDropEvent;
 import org.primefaces.event.NodeExpandEvent;
 import org.primefaces.event.RowEditEvent;
 import org.primefaces.model.DefaultTreeNode;
@@ -44,8 +38,8 @@ import com.dbms.service.ICmqRelation190Service;
 import com.dbms.service.IMeddraDictService;
 import com.dbms.service.IRefCodeListService;
 import com.dbms.service.ISmqBaseService;
+import com.dbms.util.exceptions.CqtServiceException;
 import com.dbms.web.dto.CodelistDTO;
-import com.sun.faces.util.CollectionsUtils;
 
 /**
  * @date Feb 7, 2017 7:39:34 AM
@@ -744,7 +738,7 @@ public class SearchController extends BaseController<CmqBase190> {
 	 * @param selectedTreeNode
 	 */
 	public void deleteRelation(TreeNode rootNodeToSearchFrom,
-			HierarchyNode selectedNode) {
+			HierarchyNode selectedNode, Long ownerCmqCode) {
 		if (rootNodeToSearchFrom.getChildCount() > 0) {
 			List<TreeNode> childTreeNodes = rootNodeToSearchFrom.getChildren();
 			for (Iterator<TreeNode> treeNodeIterator = childTreeNodes
@@ -754,13 +748,108 @@ public class SearchController extends BaseController<CmqBase190> {
 						.getData();
 				if (childNode.equals(selectedNode)) {
 					treeNodeIterator.remove(); // remove it from the root node
+					this.deleteRelationFromDb(childNode, ownerCmqCode);
 					break;
 				} else if (childTreeNode.getChildCount() > 0) {
 					// drill down
-					this.deleteRelation(childTreeNode, selectedNode);
+					this.deleteRelation(childTreeNode, selectedNode, ownerCmqCode);
 				}
 			}
 		}
+	}
+	
+	private void deleteRelationFromDb(HierarchyNode hierarchyNode, Long ownerCmqCode) {
+		if (null != hierarchyNode) {
+			IEntity entity = hierarchyNode.getEntity();
+			if(null != entity) {
+				if (entity instanceof CmqBase190) {
+					CmqBase190 cmqEntity = (CmqBase190) entity;
+					cmqEntity.setCmqParentCode(null);
+					cmqEntity.setCmqParentName(null);
+					try {
+						this.cmqBaseService.update(cmqEntity);
+					} catch (CqtServiceException e) {
+						log.error("Error while removing cmq_parent_code value from cmq_id " + cmqEntity.getId(), e);
+					}
+				} else {
+					List<CmqRelation190> existingRelation = this.cmqRelationService.findByCmqCode(ownerCmqCode);
+					if((null != existingRelation) && (existingRelation.size() > 0)) {
+						boolean matchFound = false;
+						Long cmqRelationIdToDelete = null;
+						if(entity instanceof MeddraDictHierarchySearchDto) {
+							MeddraDictHierarchySearchDto meddraDictHierarchySearchDto = (MeddraDictHierarchySearchDto) hierarchyNode.getEntity();
+							String level = hierarchyNode.getLevel();
+							long nodeCode = Long.parseLong(meddraDictHierarchySearchDto.getCode());
+							for (CmqRelation190 cmqRelation190 : existingRelation) {
+								if(level.equalsIgnoreCase("SOC")) {
+									if((null != cmqRelation190.getSmqCode()) 
+											&& (cmqRelation190.getSocCode().longValue() == nodeCode)){
+										matchFound = true;
+									}
+								} else if(level.equalsIgnoreCase("HLGT")) {
+									if((null != cmqRelation190.getHlgtCode()) 
+											&& (cmqRelation190.getHlgtCode().longValue() == nodeCode)){
+										matchFound = true;
+									}
+								} else if(level.equalsIgnoreCase("HLT")) {
+									if((null != cmqRelation190.getHltCode()) 
+											&& (cmqRelation190.getHltCode().longValue() == nodeCode)){
+										matchFound = true;
+									}
+								} else if(level.equalsIgnoreCase("PT")) {
+									if((null != cmqRelation190.getPtCode()) 
+											&& (cmqRelation190.getPtCode().longValue() == nodeCode)){
+										matchFound = true;
+									}
+								} else if(level.equalsIgnoreCase("LLT")) {
+									if((null != cmqRelation190.getLltCode()) 
+											&& (cmqRelation190.getLltCode().longValue() == nodeCode)){
+										matchFound = true;
+									}
+								}
+								if(matchFound) {
+									cmqRelationIdToDelete = cmqRelation190.getId();
+									break;
+								}
+							}//end of for (CmqRelation190 cmqRelation190 : existingRelation)
+						} else if (entity instanceof SmqBase190) {
+							SmqBase190 smqBase = (SmqBase190) entity;
+							for (CmqRelation190 cmqRelation190 : existingRelation) {
+								if((null != cmqRelation190.getSmqCode()) 
+										&& (cmqRelation190.getSmqCode().longValue() == smqBase.getSmqCode().longValue())){
+									matchFound = true;
+									cmqRelationIdToDelete = cmqRelation190.getId();
+									break;
+								}
+							}//end of for (CmqRelation190 cmqRelation190 : existingRelation)
+						} else if (entity instanceof SmqRelation190) {
+							SmqRelation190 smqRelation = (SmqRelation190) entity;
+							for (CmqRelation190 cmqRelation190 : existingRelation) {
+								if((null != cmqRelation190.getSmqCode()) 
+										&& (cmqRelation190.getSmqCode().longValue() == smqRelation.getSmqCode().longValue())){
+									matchFound = true;
+									cmqRelationIdToDelete = cmqRelation190.getId();
+									break;
+								}
+							}//end of for (CmqRelation190 cmqRelation190 : existingRelation)
+						}
+						
+						if(matchFound && (cmqRelationIdToDelete != null)) {
+							try {
+								this.cmqRelationService.remove(cmqRelationIdToDelete);
+							} catch (CqtServiceException e) {
+								log.error("Error while removing cmqbase relation.", e);
+								FacesMessage message = new FacesMessage(
+										FacesMessage.SEVERITY_ERROR, "Loading....",
+										"Failed to delete the relation for cmqRelationId "
+												+ cmqRelationIdToDelete);
+								FacesContext.getCurrentInstance().addMessage(null, message);
+							}
+						}
+					}
+				}//end of if(null != entity)
+			}//end of if (null != hierarchyNode)
+		}//end of if (null != hierarchyNode)
 	}
 
 	public void deleteRelations(TreeNode rootNodeToSearchFrom) {
@@ -1053,6 +1142,8 @@ public class SearchController extends BaseController<CmqBase190> {
 				.findByCmqCode(clickedCmqCode);
 		relationsRoot = new DefaultTreeNode("root", new HierarchyNode("LEVEL",
 				"NAME", "CODE", "SCOPE", "CATEGORY", "WEIGHT", null), null);
+		//first process the cmq relations
+		log.info("Populating cmq relations for cmq code " + clickedCmqCode);
 		for (CmqRelation190 cmqRelation : cmqRelationList) {
 			HierarchyNode node = null;
 			if ((cmqRelation.getSmqCode() != null)
@@ -1061,9 +1152,9 @@ public class SearchController extends BaseController<CmqBase190> {
 						.findByCode(cmqRelation.getSmqCode());
 				if (null != smqBase190) {
 					node = this.createSmqBaseNode(smqBase190);
-					node.setCategory(cmqRelation.getTermCategory());
-					node.setScope(cmqRelation.getTermScope());
-					node.setWeight(cmqRelation.getTermWeight() + "");
+					node.setCategory((cmqRelation.getTermCategory() == null) ? "" : cmqRelation.getTermCategory());
+					node.setScope((cmqRelation.getTermScope() == null) ? "" : cmqRelation.getTermScope());
+					node.setWeight((cmqRelation.getTermWeight() == null) ? "" : cmqRelation.getTermWeight() + "");
 					TreeNode smqBaseTreeNode = new DefaultTreeNode(node,
 							this.relationsRoot);
 					long childSmqrelationsCount = this.smqBaseService
@@ -1082,45 +1173,56 @@ public class SearchController extends BaseController<CmqBase190> {
 				MeddraDictHierarchySearchDto searchDto = this.meddraDictService
 						.findByCode("SOC_", cmqRelation.getSocCode());
 				node = this.createMeddraNode(searchDto, "SOC");
-				node.setCategory(cmqRelation.getTermCategory());
-				node.setScope(cmqRelation.getTermScope());
-				node.setWeight(cmqRelation.getTermWeight() + "");
+				node.setCategory((cmqRelation.getTermCategory() == null) ? "" : cmqRelation.getTermCategory());
+				node.setScope((cmqRelation.getTermScope() == null) ? "" : cmqRelation.getTermScope());
+				node.setWeight((cmqRelation.getTermWeight() == null) ? "" : cmqRelation.getTermWeight() + "");
 				new DefaultTreeNode(node, this.relationsRoot);
 			} else if ((cmqRelation.getHlgtCode() != null)
 					&& (cmqRelation.getHlgtCode() > 0)) {
 				MeddraDictHierarchySearchDto searchDto = this.meddraDictService
 						.findByCode("HLGT_", cmqRelation.getHlgtCode());
 				node = this.createMeddraNode(searchDto, "HLGT");
-				node.setCategory(cmqRelation.getTermCategory());
-				node.setScope(cmqRelation.getTermScope());
-				node.setWeight(cmqRelation.getTermWeight() + "");
+				node.setCategory((cmqRelation.getTermCategory() == null) ? "" : cmqRelation.getTermCategory());
+				node.setScope((cmqRelation.getTermScope() == null) ? "" : cmqRelation.getTermScope());
+				node.setWeight((cmqRelation.getTermWeight() == null) ? "" : cmqRelation.getTermWeight() + "");
 				new DefaultTreeNode(node, this.relationsRoot);
 			} else if ((cmqRelation.getHltCode() != null)
 					&& (cmqRelation.getHltCode() > 0)) {
 				MeddraDictHierarchySearchDto searchDto = this.meddraDictService
 						.findByCode("HLT_", cmqRelation.getHltCode());
 				node = this.createMeddraNode(searchDto, "HLT");
-				node.setCategory(cmqRelation.getTermCategory());
-				node.setScope(cmqRelation.getTermScope());
-				node.setWeight(cmqRelation.getTermWeight() + "");
+				node.setCategory((cmqRelation.getTermCategory() == null) ? "" : cmqRelation.getTermCategory());
+				node.setScope((cmqRelation.getTermScope() == null) ? "" : cmqRelation.getTermScope());
+				node.setWeight((cmqRelation.getTermWeight() == null) ? "" : cmqRelation.getTermWeight() + "");
 				new DefaultTreeNode(node, this.relationsRoot);
 			} else if ((cmqRelation.getPtCode() != null)
 					&& (cmqRelation.getPtCode() > 0)) {
 				MeddraDictHierarchySearchDto searchDto = this.meddraDictService
 						.findByCode("PT_", cmqRelation.getPtCode());
 				node = this.createMeddraNode(searchDto, "PT");
-				node.setCategory(cmqRelation.getTermCategory());
-				node.setScope(cmqRelation.getTermScope());
-				node.setWeight(cmqRelation.getTermWeight() + "");
+				node.setCategory((cmqRelation.getTermCategory() == null) ? "" : cmqRelation.getTermCategory());
+				node.setScope((cmqRelation.getTermScope() == null) ? "" : cmqRelation.getTermScope());
+				node.setWeight((cmqRelation.getTermWeight() == null) ? "" : cmqRelation.getTermWeight() + "");
 				new DefaultTreeNode(node, this.relationsRoot);
 			} else if ((cmqRelation.getLltCode() != null)
 					&& (cmqRelation.getLltCode() > 0)) {
 				MeddraDictHierarchySearchDto searchDto = this.meddraDictService
 						.findByCode("LLT_", cmqRelation.getLltCode());
 				node = this.createMeddraNode(searchDto, "LLT");
-				node.setCategory(cmqRelation.getTermCategory());
-				node.setScope(cmqRelation.getTermScope());
-				node.setWeight(cmqRelation.getTermWeight() + "");
+				node.setCategory((cmqRelation.getTermCategory() == null) ? "" : cmqRelation.getTermCategory());
+				node.setScope((cmqRelation.getTermScope() == null) ? "" : cmqRelation.getTermScope());
+				node.setWeight((cmqRelation.getTermWeight() == null) ? "" : cmqRelation.getTermWeight() + "");
+				new DefaultTreeNode(node, this.relationsRoot);
+			}
+		}
+		
+		log.info("Populating cmq base children for cmq parent code " + clickedCmqCode);
+		//now process the cmq parent child relations
+		List<CmqBase190> childCmqs = this.cmqBaseService.findChildCmqsByParentCode(clickedCmqCode);
+		if((null != childCmqs) && (childCmqs.size() > 0)) {
+			for (CmqBase190 childCmq : childCmqs) {
+				HierarchyNode node = this.createCmqBaseNode(childCmq);
+				node.setEntity(childCmq);
 				new DefaultTreeNode(node, this.relationsRoot);
 			}
 		}
@@ -1184,6 +1286,17 @@ public class SearchController extends BaseController<CmqBase190> {
 		return null;
 	}
 
+	private HierarchyNode createCmqBaseNode(CmqBase190 childCmq) {
+		HierarchyNode node = new HierarchyNode();
+		node.setLevel("PRO");
+		node.setCode(childCmq.getCmqCode().toString());
+		node.setTerm(childCmq.getCmqName());
+		node.setCategory("");
+		node.setWeight("");
+		node.setScope("");
+		return node;
+	}
+	
 	private HierarchyNode createSmqBaseNode(SmqBase190 smqBase) {
 		HierarchyNode node = new HierarchyNode();
 		if (smqBase.getSmqLevel() == 1) {
