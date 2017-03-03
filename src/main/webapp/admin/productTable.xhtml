@@ -6,84 +6,104 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:p="http://primefaces.org/ui">
 
-	<h3 style="text-align: center">Products CodeList</h3>
+	<h3 style="text-align: center">Product CodeList</h3>
 	<p:dataTable id="tableProduct" var="val" rows="10"
-		value="#{adminController.products}" editable="true"
-		style="margin-bottom:20px" paginator="true" paginatorPosition="bottom"
+		value="#{adminController.productList}" style="margin-bottom:20px"
+		paginator="true" paginatorPosition="bottom"
 		paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 		rowsPerPageTemplate="5,10,25">
 
-		<p:ajax event="rowEdit" listener="#{adminController.onRowEdit}"
-			update="f1:m1" />
-		<p:ajax event="rowEditCancel"
-			listener="#{adminController.onRowCancel}" update="f1:m1" />
-
 		<p:column headerText="Serial #" style="text-align: center">
-			<p:cellEditor>
-				<f:facet name="output">
-					<h:outputText value="#{val.serialNum}" />
-				</f:facet>
-				<f:facet name="input">
-					<p:inputText value="#{val.serialNum}" style="width:100%" />
-				</f:facet>
-			</p:cellEditor>
+			<h:outputText value="#{val.serialNum}" />
 		</p:column>
 
-		<p:column headerText="Code" style="text-align: center">
- 			<p:cellEditor>
-				<f:facet name="output">
-					<h:outputText value="#{val.codelistInternalValue}" />
-				</f:facet>
-				<f:facet name="input">
-					<p:inputText value="#{val.codelistInternalValue}" style="width:100%" />
-				</f:facet>
-			</p:cellEditor>
+		<p:column headerText="Code" style="text-align: center" >
+			<h:outputText value="#{val.codelistInternalValue}" />
 		</p:column>
 
 		<p:column headerText="Product Name" style="text-align: center">
-			<p:cellEditor>
-				<f:facet name="output">
-					<h:outputText value="#{val.value}" />
-				</f:facet>
-				<f:facet name="input">
-					<p:inputText value="#{val.value}" style="width:100%" />
-				</f:facet>
-			</p:cellEditor>
+			<h:outputText value="#{val.value}" />
 		</p:column>
 
 		<p:column headerText="Active?" style="text-align: center">
-			<p:cellEditor>
-				<f:facet name="output">
-					<h:outputText value="#{val.activeFlag ? 'Y' : 'N'}" />
-				</f:facet>
-				<f:facet name="input">
-					<p:inputText value="#{val.activeFlag}" />
-				</f:facet>
-			</p:cellEditor>
+			<h:outputText value="#{val.activeFlag}" />
 		</p:column>
 
 		<p:column headerText="Default?" style="text-align: center">
-			<p:cellEditor>
-				<f:facet name="output">
-					<h:outputText value="#{val.defaultFlag ? 'Y' : 'N'}" />
-				</f:facet>
-				<f:facet name="input">
-					<p:inputText value="#{val.defaultFlag}" />
-				</f:facet>
-			</p:cellEditor>
+			<h:outputText value="#{val.defaultFlag}" />
 		</p:column>
 
-		<p:column style="width:32px">
-			<p:rowEditor />
+		<p:column style="width:32px;text-align: center">
+			<p:commandButton update="@form"
+				action="#{adminController.initGetRef}"
+				oncomplete="PF('productD').show()" icon="ui-icon-pencil"
+				title="View">
+				<f:setPropertyActionListener value="#{val}"
+					target="#{adminController.selectedRow}" />
+			</p:commandButton>
 		</p:column>
 	</p:dataTable>
 
-	<h:panelGrid columns="2" cellpadding="5">
-		<p:commandButton value="Add" icon="fa fa-plus" update="tableProduct"
-			action="#{adminController.addProduct}"></p:commandButton>
-		<p:commandButton value="Cancel" icon="fa fa-close" update="tableProduct"
-			action="#{adminController.cancelProduct}" />
+	<h:panelGrid columns="1" cellpadding="5">
+		<p:commandButton value="Add Product" icon="fa fa-plus"
+			immediate="true" onclick="PF('productD').show()"
+			action="#{adminController.initAddCodelist}" />
 	</h:panelGrid>
+
+	<p:dialog header="Product details" widgetVar="productD" modal="true"
+		showEffect="fade" hideEffect="fade" resizable="false">
+		<p:outputPanel style="text-align:center;">
+			<h:panelGrid columns="2" columnClasses="label, value">
+
+				<p:outputLabel value="Serial #" styleClass="label-right" />
+				<p:spinner required="true" style="float: left"
+					requiredMessage="The serial # is required"
+					value="#{adminController.ref.serialNum}" />
+
+				<p:outputLabel value="Code" styleClass="label-right" />
+				<p:inputText required="true" requiredMessage="The code is required"
+					value="#{adminController.ref.codelistInternalValue}"
+					style="width: 50px !important; text-transform: uppercase; float: left" />
+
+				<p:outputLabel value="Product Name" styleClass="label-right" />
+				<p:inputText required="true" requiredMessage="The value is required"
+					value="#{adminController.ref.value}"
+					style="width: 300px !important; float: left" />
+
+				<p:outputLabel value="Active flag" styleClass="label-right" />
+				<p:selectOneMenu value="#{adminController.ref.activeFlag}"
+					style="float: left" id="activeFlagPROD">
+					<f:selectItem itemValue="Y" itemLabel="Y" />
+					<f:selectItem itemValue="N" itemLabel="N" />
+				</p:selectOneMenu>
+
+				<p:outputLabel value="Default flag" styleClass="label-right" />
+				<p:selectOneMenu value="#{adminController.ref.defaultFlag}"
+					style="float: left" id="defaultFlagPROD">
+					<f:selectItem itemValue="Y" itemLabel="Y" />
+					<f:selectItem itemValue="N" itemLabel="N" />
+				</p:selectOneMenu>
+			</h:panelGrid>
+
+			<h:panelGrid columns="2" cellpadding="5">
+				<p:commandButton value="Save" icon="fa fa-plus"
+					onclick="PF('productD').hide()" update="tableProduct"
+					action="#{adminController.addRefCodelist}" />
+
+				<p:commandButton value="Cancel" icon="fa fa-close"
+					onclick="PF('productD').hide()" update="tableProduct"
+					immediate="true" />
+			</h:panelGrid>
+
+		</p:outputPanel>
+	</p:dialog>
+	<style>
+.label-right {
+	float: right;
+	margin-right: 20px;
+	font-size: 14px !important;
+}
+</style>
 
 </ui:composition>
 

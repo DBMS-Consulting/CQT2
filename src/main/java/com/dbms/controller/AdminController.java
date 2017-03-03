@@ -2,13 +2,14 @@ package com.dbms.controller;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.RequestScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
 import org.primefaces.event.RowEditEvent;
@@ -17,21 +18,20 @@ import com.dbms.entity.cqt.RefConfigCodeList;
 import com.dbms.service.IRefCodeListService;
 import com.dbms.util.CqtConstants;
 import com.dbms.util.OrderBy;
+import com.dbms.util.exceptions.CqtServiceException;
 import com.dbms.web.dto.CodelistDTO;
 
 /**
  * @date Feb 7, 2017 7:39:34 AM
  **/
 @ManagedBean
-@RequestScoped
+@ViewScoped
 public class AdminController implements Serializable {
 
 	/**
 	 * serialVersionUID.
 	 */
 	private static final long serialVersionUID = 1085292862045772511L;
-
-//	private List<CodelistDTO> products, protocols, extensions, programs;
 
 	private String codelistType;
 	List<CodelistDTO> list;
@@ -41,6 +41,8 @@ public class AdminController implements Serializable {
 	private IRefCodeListService refCodeListService;
 
 	private List<RefConfigCodeList> extensions, programs, protocols, products;
+	
+	private RefConfigCodeList selectedRow, ref;
 
 	public AdminController() {
 
@@ -48,12 +50,49 @@ public class AdminController implements Serializable {
 
 	@PostConstruct
 	public void init() {
-		//initValuesForAdmin();
-		codelist = "PROGRAM";
-		getExtensionList();
-		getProductList();
-		getProgramList();
-		getProtocolList();
+		codelist = "EXTENSION";
+//		getExtensionList();
+//		getProductList();
+//		getProgramList();
+//		getProtocolList();
+	}
+	
+	public String initAddCodelist() {
+		ref = new RefConfigCodeList();
+		if (codelist.equals("EXTENSION"))
+			ref.setCodelistConfigType(CqtConstants.CODE_LIST_TYPE_EXTENSION); 
+		if (codelist.equals("EXTENSION"))
+			ref.setCodelistConfigType(CqtConstants.CODE_LIST_TYPE_PRODUCT); 
+		if (codelist.equals("EXTENSION"))
+			ref.setCodelistConfigType(CqtConstants.CODE_LIST_TYPE_PROGRAM); 
+		if (codelist.equals("EXTENSION"))
+			ref.setCodelistConfigType(CqtConstants.CODE_LIST_TYPE_PROTOCOL); 
+		if (codelist.equals("EXTENSION"))
+			ref.setCodelistConfigType(CqtConstants.CODE_LIST_TYPE_MEDDRA_VERSIONS); 
+		ref.setCreationDate(new Date());
+		ref.setLastModificationDate(new Date()); 
+		
+		return "";
+	}
+	
+	public String initGetRef() {
+		ref = new RefConfigCodeList();
+		if (selectedRow == null) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"No selection was performed. Try again", "");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return "";
+		}
+		
+		ref = refCodeListService.findById(selectedRow.getId());
+		
+		if (ref == null) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"The codeList selected does not exist.", "");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		}
+		
+		return "";
 	}
 
 	public List<RefConfigCodeList> getExtensionList() {
@@ -106,108 +145,27 @@ public class AdminController implements Serializable {
 		}
 		return products;
 	}
-
-	private void initValuesForAdmin() {
-		list = new ArrayList<CodelistDTO>();
-		CodelistDTO c = new CodelistDTO();
-		c.setSequence("1");
-		if (codelist != null && codelist.equals("PRODUCT"))
-			c.setName("Product 1");
-		if (codelist != null && codelist.equals("PROGRAM"))
-			c.setName("Program 1");
-		if (codelist != null && codelist.equals("PROTOCOL"))
-			c.setName("Protocol 1");
-		if (codelist != null && codelist.equals("EXTENSION"))
-			c.setName("Extension 1");
-		c.setActiveValue(true);
-		c.setDefaultValue(true);
-		list.add(c);
-
-		c = new CodelistDTO();
-		c.setSequence("2");
-		if (codelist != null && codelist.equals("PRODUCT"))
-			c.setName("Product 2");
-		if (codelist != null && codelist.equals("PROGRAM"))
-			c.setName("Program 2");
-		if (codelist != null && codelist.equals("PROTOCOL"))
-			c.setName("Protocol 2");
-		if (codelist != null && codelist.equals("EXTENSION"))
-			c.setName("Extension 2");
-		c.setActiveValue(true);
-		c.setDefaultValue(false);
-		list.add(c);
-
-		c = new CodelistDTO();
-		c.setSequence("3");
-		if (codelist != null && codelist.equals("PRODUCT"))
-			c.setName("Product 3");
-		if (codelist != null && codelist != null && codelist.equals("PROGRAM"))
-			c.setName("Program 3");
-		if (codelist != null && codelist.equals("PROTOCOL"))
-			c.setName("Protocol 3");
-		if (codelist != null && codelist.equals("EXTENSION"))
-			c.setName("Extension 3");
-		c.setActiveValue(true);
-		c.setDefaultValue(false);
-		list.add(c);
-	}
-
-	public void switchTable() {
-		initValuesForAdmin();
-	}
-
-	 
-	public void addProgram() {
-		programs.add(new RefConfigCodeList());
-	}
 	
-	public void addExtension() {
-		extensions.add(new RefConfigCodeList());
-	}
-	
-	public void addProtocol() {
-		protocols.add(new RefConfigCodeList());
-	}
-	
-	public void addProduct() {
-		products.add(new RefConfigCodeList());
-	}
-
-	public void cancelProgram() {
-		for (RefConfigCodeList ref : programs) {
-			if (ref.getCodelistConfigType() == null || ref.getValue() == null)
-				programs.remove(ref);
+	public void addRefCodelist() {
+		ref.setCreatedBy("test-user");
+		ref.setLastModifiedBy("test-user"); 
+		ref.setCodelistInternalValue(ref.getCodelistInternalValue().toUpperCase());
+		try {
+			if (ref.getId() != null)
+				refCodeListService.update(ref);
+			else
+				refCodeListService.create(ref);
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Extension '" + ref.getCodelistInternalValue() + "' is successfully saved.", "");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		} catch (CqtServiceException e) {
+			e.printStackTrace();
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"An error occured while creating an extension code", "");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}
-	}
-	
-	public void cancelProtocol() {
-		for (RefConfigCodeList ref : protocols) {
-			if (ref.getCodelistConfigType() == null || ref.getValue() == null)
-				protocols.remove(ref);
-		}
-	}
-	
-	public void cancelProduct() {
-		for (RefConfigCodeList ref : products) {
-			if (ref.getCodelistConfigType() == null || ref.getValue() == null)
-				products.remove(ref);
-		}
-	}
-	
-	public void cancelExtension() {
-		for (RefConfigCodeList ref : extensions) {
-			if (ref.getCodelistConfigType() == null || ref.getValue() == null)
-				extensions.remove(ref);
-		}
-	}
-
-	public void onRowCancel(RowEditEvent event) {
-		FacesMessage msg = new FacesMessage("Canceled", "");
-		FacesContext.getCurrentInstance().addMessage(null, msg);
-	}
-
-	public void onRowEdit(RowEditEvent event) {
-
+		
+		ref = new RefConfigCodeList();
 	}
 
 	public String getCodelistType() {
@@ -272,6 +230,22 @@ public class AdminController implements Serializable {
 
 	public List<RefConfigCodeList> getProducts() {
 		return products;
+	}
+
+	public RefConfigCodeList getSelectedRow() {
+		return selectedRow;
+	}
+
+	public void setSelectedRow(RefConfigCodeList selectedRow) {
+		this.selectedRow = selectedRow;
+	}
+
+	public RefConfigCodeList getRef() {
+		return ref;
+	}
+
+	public void setRef(RefConfigCodeList ref) {
+		this.ref = ref;
 	}
 
 }
