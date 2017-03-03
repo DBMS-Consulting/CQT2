@@ -11,9 +11,9 @@
 	<p:panel header="Details" id="confirmPan">
 		<h:panelGrid columns="4" cellpadding="30">
 
-			<h:panelGrid columns="2" columnClasses="label, value">
+			<h:panelGrid columns="2" columnClasses="label-cell, value-cell">
 				<p:outputLabel styleClass="label-right" value="Extension:" />
-				<h:panelGrid>
+				<h:panelGroup>
 					<h:outputText rendered="#{createController.selectedData.cmqTypeCd eq 'PRO'}"
 						value="Protocol" />
 					<h:outputText rendered="#{createController.selectedData.cmqTypeCd eq 'CPT'}"
@@ -26,8 +26,7 @@
 						value="Events of Special Clinical Interest" />
 					<h:outputText rendered="#{createController.selectedData.cmqTypeCd eq 'TIER1'}"
 						value="Events of Clinical Interest" />
-					
-				</h:panelGrid>
+				</h:panelGroup>
 
 				<p:outputLabel styleClass="label-right" value="Name:" />
 				<h:outputText value="#{createController.selectedData.cmqName}" />
@@ -40,11 +39,9 @@
 
 				<p:outputLabel styleClass="label-right" value="Product:" />
 				<h:outputText value="#{createController.selectedData.cmqProductCd}" />
-
 			</h:panelGrid>
 
-			<h:panelGrid columns="2" columnClasses="label, value"
-				style="min-width: 300px;">
+			<h:panelGrid columns="2" columnClasses="label-cell, value-cell" style="min-width: 300px;">
 				<p:outputLabel styleClass="label-right" value="Level:" />
 				<h:outputText value="#{createController.selectedData.cmqLevel}" />
 
@@ -61,11 +58,10 @@
 				<p:spacer />
 			</h:panelGrid>
 
-			<h:panelGrid columns="2" columnClasses="label, value"
-				style="min-width: 300px;">
+			<h:panelGrid columns="2" columnClasses="label-cell, value-cell" style="min-width: 300px;">
 
 				<p:outputLabel styleClass="label-right" value="Status:" />
-				<h:panelGrid>
+				<h:panelGroup>
 					<h:outputText
 						rendered="#{createController.selectedData.cmqStatus eq 'P'}"
 						value="Pending" />
@@ -75,7 +71,7 @@
 					<h:outputText
 						rendered="#{createController.selectedData.cmqStatus eq 'A'}"
 						value="Active" />
-				</h:panelGrid>
+				</h:panelGroup>
 
 				<p:outputLabel styleClass="label-right" value="State:" />
 				<h:outputText value="#{createController.selectedData.cmqState}" />
@@ -91,8 +87,7 @@
 			</h:panelGrid>
 
 
-			<h:panelGrid columns="2" columnClasses="label, value"
-				style="min-width: 300px;">
+			<h:panelGrid columns="2" columnClasses="label-cell, value-cell" style="min-width: 300px;">
 
 				<p:outputLabel styleClass="label-right" value="Creation Date: " />
 				<h:outputText value="#{createController.selectedData.creationDate}" />
@@ -118,28 +113,23 @@
 
 	<p:panel header="Informative Notes">
 		<h:panelGrid columns="1" cellpadding="30">
-			<h:panelGrid columns="2" columnClasses="label, value">
-				<h:panelGrid columns="2" columnClasses="label, value">
-					<p:outputLabel styleClass="label-right" value="Description"
-						style="width: 150px !important;" />
-					<h:outputText
-						value="#{createController.selectedData.cmqDescription}" />
-				</h:panelGrid>
-				<p:spacer height="20" />
-				<h:panelGrid columns="2" columnClasses="label, value">
-					<p:outputLabel styleClass="label-right" value="Source"
-						style="width: 150px !important;" />
-					<h:outputText value="#{createController.selectedData.cmqSource}" />
-				</h:panelGrid>
-				<p:spacer height="20" />
-				<h:panelGrid columns="2" columnClasses="label, value">
-					<p:outputLabel styleClass="label-right" value="Notes"
-						style="width: 150px !important;" />
-					<h:outputText value="#{createController.selectedData.cmqNote}" />
-				</h:panelGrid>
+			<h:panelGrid columns="2" columnClasses="label-cell, value-cell">
+				<p:outputLabel styleClass="label-right" value="Description:" style="width: 150px !important;" />
+				<h:outputText value="#{createController.selectedData.cmqDescription}" />
+
+				<p:spacer height="20" /> <p:spacer height="20" />
+				
+				<p:outputLabel styleClass="label-right" value="Source:" style="width: 150px !important;" />
+				<h:outputText value="#{createController.selectedData.cmqSource}" />
+				
+				<p:spacer height="20" /> <p:spacer height="20" />
+				
+				<p:outputLabel styleClass="label-right" value="Notes:" style="width: 150px !important;" />
+				<h:outputText value="#{createController.selectedData.cmqNote}" />
 			</h:panelGrid>
 		</h:panelGrid>
 	</p:panel>
+	
 	<p:spacer height="10"></p:spacer>
 
 	<p:panel>
@@ -147,6 +137,7 @@
 			<f:facet name="left">
 				<p:outputLabel value="Workflow" />
 			</f:facet>
+			
 			<f:facet name="right">
 				<p:commandButton value="Reactivate" id="reactivateBtn"
 					disabled="#{createController.reactivate}"
@@ -211,23 +202,18 @@
 		<table>
 			<tbody>
 				<tr>
-					<td><p:outputLabel styleClass="label-right"
-							value="Reason for Request" /></td>
-					<td><p:inputText value="#{dummyView.value}" /></td>
+					<td class="label-cell"><p:outputLabel styleClass="label-right" value="Reason for Request:" /></td>
+					<td class="value-cell"><p:inputText value="#{dummyView.value}" /></td>
 				</tr>
 				<tr>
-					<td><p:outputLabel styleClass="label-right" value="Due Date" /></td>
-					<td><p:calendar value="#{dummyView.value}" mode="popup"
-							pattern="-dd-MMM-yyyy" /></td>
+					<td class="label-cell"><p:outputLabel styleClass="label-right" value="Due Date:" /></td>
+					<td class="value-cell"><p:calendar value="#{dummyView.value}" mode="popup" pattern="-dd-MMM-yyyy" /></td>
 				</tr>
 				<tr>
-					<td><p:outputLabel styleClass="label-right"
-							value="Reason for Approval" /></td>
-					<td><p:inputText value="#{dummyView.value}"
-							id="reason_approval"
+					<td class="label-cell"><p:outputLabel styleClass="label-right" value="Reason for Approval:" /></td>
+					<td class="value-cell"><p:inputText value="#{dummyView.value}" id="reason_approval"
 							disabled="#{createController.selectedData.cmqState ne 'Reviewed'}" /></td>
 				</tr>
-
 			</tbody>
 		</table>
 
@@ -236,5 +222,19 @@
 			action="#{createController.save}" process="@this"></p:commandButton> -->
 		<p:spacer height="5" />
 	</p:panel>
+	<style>
+		td.label-cell, td.value-cell {
+			vertical-align: top;
+		}
+		
+		td.label-cell label {
+			line-height: 1.4;
+			font-weight: 600;
+			
+		}
+		td.value-cell {
+			line-height: 1.4;
+		}
+	</style>
 
 </ui:composition>
