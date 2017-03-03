@@ -1138,7 +1138,8 @@ public class SearchController extends BaseController<CmqBase190> {
         Long nodeEntityId = Long.parseLong(params.get("entityId"));
         
         TreeNode treeNode = findTreenodeByEntityId(hierarchyRoot, nodeEntityId);
-		if(treeNode != null) {
+        TreeNode existingNode = findTreenodeByEntityId(relationsRoot, nodeEntityId);
+		if(treeNode != null && existingNode==null) {
 			HierarchyNode hierarchyNode = (HierarchyNode) treeNode.getData();
 			if ((null != hierarchyNode) && !hierarchyNode.isDummyNode()) {
 				// remove the first dummy node placeholder
@@ -1166,16 +1167,18 @@ public class SearchController extends BaseController<CmqBase190> {
 	 * @param entityId Entity ID to be searched for
 	 */
 	private TreeNode findTreenodeByEntityId(TreeNode rtNode, long entityId) {
-		for(TreeNode chNode: rtNode.getChildren()) {
-			log.debug(((HierarchyNode)chNode.getData()).getEntity().getId().toString());
-			if(chNode.getData() instanceof HierarchyNode
-					&& ((HierarchyNode)chNode.getData()).getEntity()!=null
-					&& ((HierarchyNode)chNode.getData()).getEntity().getId() == entityId) {
-				return chNode;
-			} else {
-				TreeNode f = findTreenodeByEntityId(chNode, entityId);
-				if(f!=null)
-					return f;
+		if(rtNode!=null) {
+			for(TreeNode chNode: rtNode.getChildren()) {
+				if(chNode!=null && chNode.getData()!=null
+						&& chNode.getData() instanceof HierarchyNode
+						&& ((HierarchyNode)chNode.getData()).getEntity()!=null
+						&& ((HierarchyNode)chNode.getData()).getEntity().getId() == entityId) {
+					return chNode;
+				} else {
+					TreeNode f = findTreenodeByEntityId(chNode, entityId);
+					if(f!=null)
+						return f;
+				}
 			}
 		}
 		return null;
