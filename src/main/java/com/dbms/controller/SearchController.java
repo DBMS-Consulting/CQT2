@@ -858,10 +858,12 @@ public class SearchController extends BaseController<CmqBase190> {
 			if (null == rootNodeToSearchFrom) {
 				rootNodeToSearchFrom = this.relationsRoot;
 			}
-			this.deleteSelectedRelations(rootNodeToSearchFrom);
 
 			// clear the selections in the table
 			clearTreeTableSelections(rootNodeToSearchFrom);
+			
+			this.deleteSelectedRelations(rootNodeToSearchFrom);
+
 
 			this.relationSelectedInRelationsTable = null;
 		}
@@ -1232,32 +1234,21 @@ public class SearchController extends BaseController<CmqBase190> {
 	 * Event handler for drag-and-drop from "Hierarchy Search" treetable to "Result Relations" treetable
 	 */
 	public void onRelationDrop() {
-		//TODO: real data link
-		Map<String,String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
-        String nodeLevel = params.get("level");
-        String nodeName = params.get("name");
-        String nodeCode = params.get("code");
-        Long nodeEntityId = Long.parseLong(params.get("entityId"));
-        
-        TreeNode treeNode = findTreenodeByEntityId(hierarchyRoot, nodeEntityId);
-        TreeNode existingNode = findTreenodeByEntityId(relationsRoot, nodeEntityId);
-		if(treeNode != null && existingNode==null) {
-			HierarchyNode hierarchyNode = (HierarchyNode) treeNode.getData();
-			if ((null != hierarchyNode) && !hierarchyNode.isDummyNode()) {
-				// remove the first dummy node placeholder
-				List<TreeNode> childTreeNodes = treeNode.getChildren();
-				if ((null != childTreeNodes)
-						&& (childTreeNodes.size() > 0)) {
-					HierarchyNode dummyChildData = (HierarchyNode) childTreeNodes
-							.get(0).getData();
-					if (dummyChildData.isDummyNode()) {
-						treeNode.getChildren().remove(0);
-					}
-				}
-				// now add it to the parent
-				treeNode.setParent(relationsRoot);
-				relationsRoot.getChildren().add(treeNode);
-			}
+		if(relationSelected.length > 0) {
+			// Multiple item Drag-n-Drop
+			addSelectedToRelation(relationSelected);
+		} else {
+			//One by one Drag-n-Drop
+			Map<String,String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+	        String nodeLevel = params.get("level");
+	        String nodeName = params.get("name");
+	        String nodeCode = params.get("code");
+	        Long nodeEntityId = Long.parseLong(params.get("entityId"));
+	        
+			TreeNode treeNode = findTreenodeByEntityId(hierarchyRoot, nodeEntityId);
+			setRelationSelected(new TreeNode[] {treeNode});
+			
+			addSelectedToRelation(relationSelected);
 		}
 	}
 	

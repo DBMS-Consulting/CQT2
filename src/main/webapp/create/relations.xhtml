@@ -22,16 +22,17 @@
         	         {name: 'level', value:  $('td:nth-child(2)', dndRow).text()}
         	        ,{name: 'name', value: $('td:nth-child(3)', dndRow).text()}
         	        ,{name: 'code', value: $('td:nth-child(4)', dndRow).text()}
-        	        ,{name: 'entityId', value: $(ui.draggable).data('entityId')}
+        	        ,{name: 'entityId', value: $('.data-entity-id', dndRow).text()}
         	    ]);
            }
         });
+
+		$('.ui-treetable.ui-treetable-resultHier tr').draggable({
+			helper: 'clone',
+			scope: 'selRelationDnd',
+            zIndex: 10000
+		});
 	}
-
-	$(function() {
-		initRelationDND();
-	});
-
 </script>
 
 	<h:panelGrid>
@@ -111,8 +112,10 @@
 			paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 			rowsPerPageTemplate="5,10,25,30"
 			selection="#{searchController.relationSelectedInRelationsTable}">
-			<p:ajax event="expand" listener="#{searchController.onNodeExpand}"
-				update="resultRelations" />
+			
+			<script>initRelationDND()</script>
+					
+			<p:ajax event="expand" listener="#{searchController.onNodeExpand}" update="resultRelations" />
 
 			<p:columnGroup type="header">
 				<p:row>
