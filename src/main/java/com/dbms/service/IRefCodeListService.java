@@ -9,6 +9,9 @@ import com.dbms.util.OrderBy;
 public interface IRefCodeListService extends ICqtPersistenceService<RefConfigCodeList> {
 
 	public List<RefConfigCodeList> findByConfigType(String codelistConfigType, OrderBy orderBy);
+	
+	public List<RefConfigCodeList> findAllByConfigType(String codelistConfigType, OrderBy orderBy);
+
 
 	public RefConfigCodeList getCurrentMeddraVersion();
 }

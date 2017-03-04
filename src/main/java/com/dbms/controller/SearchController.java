@@ -115,8 +115,8 @@ public class SearchController extends BaseController<CmqBase190> {
 	@PostConstruct
 	public void init() {
 		this.maintainDesigBtn = false;
-		this.state = "Published";
-		this.status = "Active";
+		this.state = "";
+		this.status = "";
 		this.level = 1;
 		this.critical = null;
 		this.group = "No Group";
@@ -210,15 +210,15 @@ public class SearchController extends BaseController<CmqBase190> {
 	 * @param event
 	 *            AjaxBehaviour
 	 */
-	public void changeStatus(AjaxBehaviorEvent event) {		
-		if (this.state.equals("Draft") || this.state.equals("Reviewed") ||this.state.equals("Approved"))
-			setStatus("P");
+	public void changeState(AjaxBehaviorEvent event) {		
+		if (status.equals("P"))
+			setState("Draft");
+		if (status.equals("A"))
+			setState("Published");
 		
-		if (this.state.equals("Published"))
-			setStatus("A");
-		
-		if (this.state.equals(""))
-			setStatus("");
+		if (status.equals(""))
+			setState("");
+		 
 	}
 
 	public void changeTabUpdate() {

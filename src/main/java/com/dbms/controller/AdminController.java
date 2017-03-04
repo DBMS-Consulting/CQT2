@@ -96,7 +96,7 @@ public class AdminController implements Serializable {
 	}
 
 	public List<RefConfigCodeList> getExtensionList() {
-		extensions = refCodeListService.findByConfigType(
+		extensions = refCodeListService.findAllByConfigType(
 				CqtConstants.CODE_LIST_TYPE_EXTENSION, OrderBy.ASC);
 		if (extensions == null) {
 			extensions = new ArrayList<>();
@@ -110,7 +110,7 @@ public class AdminController implements Serializable {
 	 * @return
 	 */
 	public List<RefConfigCodeList> getProgramList() {
-		programs = refCodeListService.findByConfigType(
+		programs = refCodeListService.findAllByConfigType(
 				CqtConstants.CODE_LIST_TYPE_PROGRAM, OrderBy.ASC);
 		if (programs == null) {
 			programs = new ArrayList<>();
@@ -124,7 +124,7 @@ public class AdminController implements Serializable {
 	 * @return
 	 */
 	public List<RefConfigCodeList> getProtocolList() {
-		protocols = refCodeListService.findByConfigType(
+		protocols = refCodeListService.findAllByConfigType(
 				CqtConstants.CODE_LIST_TYPE_PROTOCOL, OrderBy.ASC);
 		if (protocols == null) {
 			protocols = new ArrayList<>();
@@ -138,7 +138,7 @@ public class AdminController implements Serializable {
 	 * @return
 	 */
 	public List<RefConfigCodeList> getProductList() {
-		products = refCodeListService.findByConfigType(
+		products = refCodeListService.findAllByConfigType(
 				CqtConstants.CODE_LIST_TYPE_PRODUCT, OrderBy.ASC);
 		if (products == null) {
 			products = new ArrayList<>();
