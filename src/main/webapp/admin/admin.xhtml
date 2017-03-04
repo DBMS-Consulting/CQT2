@@ -10,7 +10,7 @@
 
 
 		<h:form id="f1">
-			<p:growl id="m1" />
+		<!-- 	<p:growl id="m1" /> -->
 
 			<!-- Extension for search purposes -->
 			<h:panelGrid columns="2" style="width: 100% !important">
@@ -33,6 +33,7 @@
 							<f:selectItem itemLabel="PROGRAM" itemValue="PROGRAM" />
 							<f:selectItem itemLabel="PROTOCOL" itemValue="PROTOCOL" />
 							<f:selectItem itemLabel="PRODUCT" itemValue="PRODUCT" />
+							<f:selectItem itemLabel="MedDRA Dictionary" itemValue="MEDDRA" />
 
 							<p:ajax update="@form" event="change" />
 						</p:selectOneMenu>
@@ -53,6 +54,10 @@
 
 					<h:panelGrid rendered="#{adminController.codelist eq 'PROTOCOL'}">
 						<ui:include src="protocolsTable.xhtml"></ui:include>
+					</h:panelGrid>
+					
+					<h:panelGrid rendered="#{adminController.codelist eq 'MEDDRA'}">
+						<ui:include src="meddraTable.xhtml"></ui:include>
 					</h:panelGrid>
 
 				</p:tab>

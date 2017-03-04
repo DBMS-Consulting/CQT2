@@ -5,6 +5,8 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:p="http://primefaces.org/ui">
+	
+	<p:growl id="msgProd" />
 
 	<h3 style="text-align: center">Product CodeList</h3>
 	<p:dataTable id="tableProduct" var="val" rows="10"
@@ -87,11 +89,11 @@
 
 			<h:panelGrid columns="2" cellpadding="5">
 				<p:commandButton value="Save" icon="fa fa-plus"
-					onclick="PF('productD').hide()" update="tableProduct"
+					onclick="PF('productD').hide()" update="tableProduct msgProd"
 					action="#{adminController.addRefCodelist}" />
 
 				<p:commandButton value="Cancel" icon="fa fa-close"
-					onclick="PF('productD').hide()" update="tableProduct"
+					onclick="PF('productD').hide()" update="tableProduct msgProd"
 					immediate="true" />
 			</h:panelGrid>
 

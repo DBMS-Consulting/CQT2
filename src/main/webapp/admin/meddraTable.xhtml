@@ -6,11 +6,11 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:p="http://primefaces.org/ui">
 	
-	<p:growl id="msgExt" />
+	<p:growl id="msgMed" />
 
-	<h3 style="text-align: center">Extension CodeList</h3>
-	<p:dataTable id="tableExtension" var="val" rows="10" lazy="true" 
-		value="#{adminController.extensionList}" style="margin-bottom:20px"
+	<h3 style="text-align: center">MedDRA CodeList</h3>
+	<p:dataTable id="tableMeddra" var="val" rows="10"
+		value="#{adminController.meddraList}" style="margin-bottom:20px"
 		paginator="true" paginatorPosition="bottom"
 		paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 		rowsPerPageTemplate="5,10,25">
@@ -23,7 +23,7 @@
 			<h:outputText value="#{val.codelistInternalValue}" />
 		</p:column>
 
-		<p:column headerText="Extension Name" style="text-align: center">
+		<p:column headerText="MedDRA Value" style="text-align: center">
 			<h:outputText value="#{val.value}" />
 		</p:column>
 
@@ -36,8 +36,9 @@
 		</p:column>
 
 		<p:column style="width:32px;text-align: center">
-			<p:commandButton action="#{adminController.initGetRef}" update="@form" process="@this"
-				oncomplete="PF('extensionD').show()" icon="ui-icon-pencil"
+			<p:commandButton update="@form"
+				action="#{adminController.initGetRef}"
+				oncomplete="PF('meddraD').show()" icon="ui-icon-pencil"
 				title="View">
 				<f:setPropertyActionListener value="#{val}"
 					target="#{adminController.selectedRow}" />
@@ -46,42 +47,41 @@
 	</p:dataTable>
 
 	<h:panelGrid columns="1" cellpadding="5">
-		<p:commandButton value="Add extension" icon="fa fa-plus" process="@this"
-			onclick="PF('extensionD').show()" 
+		<p:commandButton value="Add MedDRA" icon="fa fa-plus"
+			immediate="true" onclick="PF('meddraD').show()"
 			action="#{adminController.initAddCodelist}" />
 	</h:panelGrid>
 
-	<p:dialog header="Extension details" widgetVar="extensionD" modal="true" id="dialog"
-		showEffect="fade" hideEffect="fade" resizable="false">
-		<p:outputPanel id="codeDetail" style="text-align:center;">
+	<p:dialog header="MedDRA details" widgetVar="meddraD"
+		modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+		<p:outputPanel style="text-align:center;">
 			<h:panelGrid columns="2" columnClasses="label, value">
 
 				<p:outputLabel value="Serial #" styleClass="label-right" />
 				<p:spinner required="true" style="float: left"
 					requiredMessage="The serial # is required"
-					value="#{adminController.ref.serialNum}"
-					 />
+					value="#{adminController.ref.serialNum}" />
 
 				<p:outputLabel value="Code" styleClass="label-right" />
 				<p:inputText required="true" requiredMessage="The code is required"
 					value="#{adminController.ref.codelistInternalValue}"
 					style="width: 50px !important; text-transform: uppercase; float: left" />
 
-				<p:outputLabel value="Extension Name" styleClass="label-right" />
+				<p:outputLabel value="MedDRA Value" styleClass="label-right" />
 				<p:inputText required="true" requiredMessage="The value is required"
 					value="#{adminController.ref.value}"
 					style="width: 300px !important; float: left" />
 
 				<p:outputLabel value="Active flag" styleClass="label-right" />
-				<p:selectOneMenu value="#{adminController.ref.activeFlag}" style="float: left"
-					id="activeFlagEX">
+				<p:selectOneMenu value="#{adminController.ref.activeFlag}"
+					style="float: left" id="activeFlagMed">
 					<f:selectItem itemValue="Y" itemLabel="Y" />
 					<f:selectItem itemValue="N" itemLabel="N" />
 				</p:selectOneMenu>
 
 				<p:outputLabel value="Default flag" styleClass="label-right" />
-				<p:selectOneMenu value="#{adminController.ref.defaultFlag}" style="float: left"
-					id="defaultFlagEX">
+				<p:selectOneMenu value="#{adminController.ref.defaultFlag}"
+					style="float: left" id="defaultFlagMed">
 					<f:selectItem itemValue="Y" itemLabel="Y" />
 					<f:selectItem itemValue="N" itemLabel="N" />
 				</p:selectOneMenu>
@@ -89,23 +89,22 @@
 
 			<h:panelGrid columns="2" cellpadding="5">
 				<p:commandButton value="Save" icon="fa fa-plus"
-					onclick="PF('extensionD').hide()" update="tableExtension msgExt"
+					onclick="PF('meddraD').hide()" update="tableMeddra msgMed"
 					action="#{adminController.addRefCodelist}" />
 
-				<p:commandButton value="Cancel" icon="fa fa-close" 
-					onclick="PF('extensionD').hide()" update="tableExtension msgExt"
+				<p:commandButton value="Cancel" icon="fa fa-close"
+					onclick="PF('meddraD').hide()" update="tableMeddra msgMed"
 					immediate="true" />
 			</h:panelGrid>
 
 		</p:outputPanel>
 	</p:dialog>
-<style>
+	<style>
 .label-right {
 	float: right;
 	margin-right: 20px;
 	font-size: 14px !important;
 }
-
 </style>
 
 </ui:composition>

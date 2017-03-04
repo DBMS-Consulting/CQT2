@@ -40,7 +40,7 @@ public class AdminController implements Serializable {
 	@ManagedProperty("#{RefCodeListService}")
 	private IRefCodeListService refCodeListService;
 
-	private List<RefConfigCodeList> extensions, programs, protocols, products;
+	private List<RefConfigCodeList> extensions, programs, protocols, products, meddras;
 	
 	private RefConfigCodeList selectedRow, ref;
 
@@ -61,13 +61,13 @@ public class AdminController implements Serializable {
 		ref = new RefConfigCodeList();
 		if (codelist.equals("EXTENSION"))
 			ref.setCodelistConfigType(CqtConstants.CODE_LIST_TYPE_EXTENSION); 
-		if (codelist.equals("EXTENSION"))
+		if (codelist.equals("PRODUCT"))
 			ref.setCodelistConfigType(CqtConstants.CODE_LIST_TYPE_PRODUCT); 
-		if (codelist.equals("EXTENSION"))
+		if (codelist.equals("PROGRAM"))
 			ref.setCodelistConfigType(CqtConstants.CODE_LIST_TYPE_PROGRAM); 
-		if (codelist.equals("EXTENSION"))
+		if (codelist.equals("PROTOCOL"))
 			ref.setCodelistConfigType(CqtConstants.CODE_LIST_TYPE_PROTOCOL); 
-		if (codelist.equals("EXTENSION"))
+		if (codelist.equals("MEDDRA"))
 			ref.setCodelistConfigType(CqtConstants.CODE_LIST_TYPE_MEDDRA_VERSIONS); 
 		ref.setCreationDate(new Date());
 		ref.setLastModificationDate(new Date()); 
@@ -133,6 +133,19 @@ public class AdminController implements Serializable {
 	}
 	
 	/**
+	 * Returns Meddra codelist.
+	 * @return
+	 */
+	public List<RefConfigCodeList> getMeddraList() {
+		meddras = refCodeListService.findAllByConfigType(
+				CqtConstants.CODE_LIST_TYPE_MEDDRA_VERSIONS, OrderBy.ASC);
+		if (meddras == null) {
+			meddras = new ArrayList<>();
+		}
+		return meddras;
+	}
+	
+	/**
 	 * Returns products list.
 	 * 
 	 * @return
@@ -149,7 +162,8 @@ public class AdminController implements Serializable {
 	public void addRefCodelist() {
 		ref.setCreatedBy("test-user");
 		ref.setLastModifiedBy("test-user"); 
-		ref.setCodelistInternalValue(ref.getCodelistInternalValue().toUpperCase());
+		if (ref.getCodelistInternalValue() != null)
+			ref.setCodelistInternalValue(ref.getCodelistInternalValue().toUpperCase());
 		try {
 			if (ref.getId() != null)
 				refCodeListService.update(ref);
@@ -164,7 +178,6 @@ public class AdminController implements Serializable {
 					"An error occured while creating an extension code", "");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}
-		
 		ref = new RefConfigCodeList();
 	}
 
@@ -246,6 +259,14 @@ public class AdminController implements Serializable {
 
 	public void setRef(RefConfigCodeList ref) {
 		this.ref = ref;
+	}
+
+	public List<RefConfigCodeList> getMeddras() {
+		return meddras;
+	}
+
+	public void setMeddras(List<RefConfigCodeList> meddras) {
+		this.meddras = meddras;
 	}
 
 }
