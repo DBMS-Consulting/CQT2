@@ -23,12 +23,12 @@
 					<p:panel header="Promote to Published">
 						<h:panelGrid columns="2">
 							<p:pickList id="pickList" value="#{publishController.publishCurrentVersionDualListModel}" 
-								var="pick" converter="cmqBaseDualListConverter"
+								var="pick" converter="#{publishController.cmqBaseDualListConverter}"
 								itemLabel="#{pick.cmqName}" itemValue="#{pick.cmqCode}" />
 
 							<!-- <p:commandButton value="Promote" onclick="PF('confirm1').show();" /> -->
 
-							<p:commandButton value="Promote" action="#{publishController.promoteTargetList}" update="promote m1" />
+							<p:commandButton id="Promote" value="Promote" action="#{publishController.promoteTargetList}" update="promote pickList m1" />
 
 						</h:panelGrid>
 
@@ -39,12 +39,12 @@
 					<p:panel header="Demote to Draft">
 						<h:panelGrid columns="2">
 							<p:pickList id="pickList2" value="#{demoteToDraftController.demoteToDraftDualListModel}"
-								var="pick" converter="cmqBaseDualListConverter" 
+								var="pick" converter="#{publishController.cmqBaseDualListConverter}" 
 								itemLabel="#{pick.cmqName}" itemValue="#{pick.cmqCode}" />
 
 							<!-- <p:commandButton value="Demote" onclick="PF('confirm2').show();" /> -->
 							
-							<p:commandButton value="Demote" action="#{demoteToDraftController.demote}" update="demote m1" />
+							<p:commandButton value="Demote" action="#{demoteToDraftController.demote}" update="demote pickList2 m1" />
 						</h:panelGrid>
 					</p:panel>
 				</p:tab>
