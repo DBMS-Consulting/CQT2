@@ -5,6 +5,8 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:p="http://primefaces.org/ui">
+	
+	<p:growl id="msgProt" />
 
 	<h3 style="text-align: center">Protocol CodeList</h3>
 	<p:dataTable id="tableProtocol" var="val" rows="10"
@@ -87,11 +89,11 @@
 
 			<h:panelGrid columns="2" cellpadding="5">
 				<p:commandButton value="Save" icon="fa fa-plus"
-					onclick="PF('protocolD').hide()" update="tableProtocol"
+					onclick="PF('protocolD').hide()" update="tableProtocol msgProt"
 					action="#{adminController.addRefCodelist}" />
 
 				<p:commandButton value="Cancel" icon="fa fa-close"
-					onclick="PF('protocolD').hide()" update="tableProtocol"
+					onclick="PF('protocolD').hide()" update="tableProtocol msgProt"
 					immediate="true" />
 			</h:panelGrid>
 
