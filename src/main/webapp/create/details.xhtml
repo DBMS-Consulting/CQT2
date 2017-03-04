@@ -132,7 +132,9 @@
 			</h:panelGrid>
 
 			<h:panelGrid columns="1" styleClass="grid-right">
-				<h:outputText value="#{createController.selectedData.creationDate}" />
+				<h:outputText value="#{createController.selectedData.creationDate}">
+					<f:convertDateTime pattern="yyyy-MM-dd"/>
+				</h:outputText>
 			</h:panelGrid>
 
 			<h:panelGrid columns="1" styleClass="grid-right">

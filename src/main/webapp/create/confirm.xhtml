@@ -90,7 +90,9 @@
 			<h:panelGrid columns="2" columnClasses="label-cell, value-cell" style="min-width: 300px;">
 
 				<p:outputLabel styleClass="label-right" value="Creation Date: " />
-				<h:outputText value="#{createController.selectedData.creationDate}" />
+				<h:outputText value="#{createController.selectedData.creationDate}">
+					<f:convertDateTime pattern="yyyy-MM-dd"/>
+				</h:outputText>
 
 				<p:outputLabel styleClass="label-right" value="Created By: " />
 				<h:outputText value="#{createController.selectedData.createdBy}" />
@@ -114,13 +116,13 @@
 	<p:panel header="Informative Notes">
 		<h:panelGrid columns="1" cellpadding="30" style="width: 100%">
 			<h:panelGrid columns="2" columnClasses="label-cell ui-grid-col-1, value-cell ui-grid-col-11 bordered ui-text-wrap" style="width: 100%">
-				<p:outputLabel styleClass="label-right" value="Description:" style="width: 150px !important;" />
+				<p:outputLabel styleClass="label-right" value="Description:" />
 				<h:outputText value="#{createController.selectedData.cmqDescription}" />
 		
-				<p:outputLabel styleClass="label-right" value="Source:" style="width: 150px !important;" />
+				<p:outputLabel styleClass="label-right" value="Source:" />
 				<h:outputText value="#{createController.selectedData.cmqSource}" />
 								
-				<p:outputLabel styleClass="label-right" value="Notes:" style="width: 150px !important;" />
+				<p:outputLabel styleClass="label-right" value="Notes:" />
 				<h:outputText value="#{createController.selectedData.cmqNote}" />
 			</h:panelGrid>
 		</h:panelGrid>
