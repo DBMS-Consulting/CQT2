@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
-import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.SessionScoped;
 
 import com.dbms.entity.cqt.RefConfigCodeList;
 import com.dbms.service.IRefCodeListService;
@@ -21,7 +21,7 @@ import com.dbms.util.OrderBy;
  *
  */
 @ManagedBean(name = "configMB")
-@ApplicationScoped
+@SessionScoped
 public class ConfigurationController implements Serializable {
 
 	/**

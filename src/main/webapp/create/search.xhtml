@@ -60,22 +60,18 @@
 				<f:selectItem itemValue="A" itemLabel="Active" />
 				<f:selectItem itemValue="P" itemLabel="Pending" />
 				<f:selectItem itemValue="I" itemLabel="Inactive" />
+
+				<p:ajax update="state" listener="#{searchController.changeState}" event="change" />
 			</p:selectOneMenu>
 
 			<p:outputLabel value="State" styleClass="label-right" />
 			<p:selectOneMenu value="#{searchController.state}" id="state">
-				<f:selectItem itemValue="" itemLabel="All"
-					itemDisabled="#{searchController.status eq 'Pending'}" />
-				<f:selectItem itemLabel="Draft" itemValue="Draft" />
-				<f:selectItem itemLabel="Reviewed" itemValue="Reviewed" />
-				<f:selectItem itemLabel="Approved" itemValue="Approved" />
-				<f:selectItem itemLabel="Published" itemValue="Published"
-					itemDisabled="#{searchController.status eq 'Pending'}" />
-
-				<p:ajax update="status" event="change"
-					listener="#{searchController.changeStatus}" />
-
-			</p:selectOneMenu>
+				<f:selectItem itemValue="" itemLabel="All" />
+				<f:selectItem itemLabel="Draft" itemValue="Draft" itemDisabled="#{searchController.status ne 'I' and searchController.status ne 'P' and searchController.status ne ''}" />
+				<f:selectItem itemLabel="Reviewed" itemValue="Reviewed" itemDisabled="#{searchController.status ne 'I' and searchController.status ne 'P' and searchController.status ne ''}" />
+				<f:selectItem itemLabel="Approved" itemValue="Approved" itemDisabled="#{searchController.status ne 'I' and searchController.status ne 'P' and searchController.status ne ''}" />
+				<f:selectItem itemLabel="Published" itemValue="Published" itemDisabled="#{searchController.status ne 'I' and searchController.status ne 'A' and searchController.status ne ''}" />
+ 			</p:selectOneMenu>
 
 			<p:outputLabel value="Group" styleClass="label-right" />
 			<p:selectOneMenu value="#{searchController.group}" id="group"
