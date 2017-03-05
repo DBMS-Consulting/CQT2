@@ -170,6 +170,8 @@ public class PublishController implements Serializable {
 			}
 		}//end 
 		
+		targetCmqsSelected = new ArrayList<CmqBase190>();
+		
 		return "";
 	}
 	

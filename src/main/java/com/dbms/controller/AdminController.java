@@ -12,7 +12,6 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
-import org.primefaces.event.RowEditEvent;
 
 import com.dbms.entity.cqt.RefConfigCodeList;
 import com.dbms.service.IRefCodeListService;
@@ -40,7 +39,7 @@ public class AdminController implements Serializable {
 	@ManagedProperty("#{RefCodeListService}")
 	private IRefCodeListService refCodeListService;
 
-	private List<RefConfigCodeList> extensions, programs, protocols, products, meddras;
+	private List<RefConfigCodeList> extensions, programs, protocols, products, meddras, workflows;
 	
 	private RefConfigCodeList selectedRow, ref;
 
@@ -69,6 +68,8 @@ public class AdminController implements Serializable {
 			ref.setCodelistConfigType(CqtConstants.CODE_LIST_TYPE_PROTOCOL); 
 		if (codelist.equals("MEDDRA"))
 			ref.setCodelistConfigType(CqtConstants.CODE_LIST_TYPE_MEDDRA_VERSIONS); 
+		if (codelist.equals("WORKFLOW"))
+			ref.setCodelistConfigType(CqtConstants.CODE_LIST_TYPE_WORKFLOW_STATES); 
 		ref.setCreationDate(new Date());
 		ref.setLastModificationDate(new Date()); 
 		
@@ -159,9 +160,26 @@ public class AdminController implements Serializable {
 		return products;
 	}
 	
+	/**
+	 * Returns Workflow State codelist.
+	 * @return
+	 */
+	public List<RefConfigCodeList> getWorkflowList() {
+		workflows = refCodeListService.findAllByConfigType(
+				CqtConstants.CODE_LIST_TYPE_WORKFLOW_STATES, OrderBy.ASC);
+		if (workflows == null) {
+			workflows = new ArrayList<>();
+		}
+		return workflows;
+	}
+	
 	public void addRefCodelist() {
 		ref.setCreatedBy("test-user");
 		ref.setLastModifiedBy("test-user"); 
+		//To uppercase for workflow State
+		if (ref.getCodelistConfigType().equals(CqtConstants.CODE_LIST_TYPE_WORKFLOW_STATES))
+			ref.setValue(ref.getValue().toUpperCase());
+			
 		if (ref.getCodelistInternalValue() != null)
 			ref.setCodelistInternalValue(ref.getCodelistInternalValue().toUpperCase());
 		try {
@@ -169,8 +187,22 @@ public class AdminController implements Serializable {
 				refCodeListService.update(ref);
 			else
 				refCodeListService.create(ref);
+			String type = "";
+			
+			if (ref.getCodelistConfigType().equals(CqtConstants.CODE_LIST_TYPE_EXTENSION))
+				type = "Extension";
+			if (ref.getCodelistConfigType().equals(CqtConstants.CODE_LIST_TYPE_MEDDRA_VERSIONS))
+				type = "MedDRA Dictionary";
+			if (ref.getCodelistConfigType().equals(CqtConstants.CODE_LIST_TYPE_PRODUCT))
+				type = "Product";
+			if (ref.getCodelistConfigType().equals(CqtConstants.CODE_LIST_TYPE_PROGRAM))
+				type = "Program";
+			if (ref.getCodelistConfigType().equals(CqtConstants.CODE_LIST_TYPE_PROTOCOL))
+				type = "Protocol";
+			if (ref.getCodelistConfigType().equals(CqtConstants.CODE_LIST_TYPE_WORKFLOW_STATES))
+				type = "Workflow State";
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Extension '" + ref.getCodelistInternalValue() + "' is successfully saved.", "");
+					type + " '" + ref.getCodelistInternalValue() + "' is successfully saved.", "");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		} catch (CqtServiceException e) {
 			e.printStackTrace();
@@ -267,6 +299,14 @@ public class AdminController implements Serializable {
 
 	public void setMeddras(List<RefConfigCodeList> meddras) {
 		this.meddras = meddras;
+	}
+
+	public List<RefConfigCodeList> getWorkflows() {
+		return workflows;
+	}
+
+	public void setWorkflows(List<RefConfigCodeList> workflows) {
+		this.workflows = workflows;
 	}
 
 }

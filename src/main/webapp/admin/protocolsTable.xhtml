@@ -46,13 +46,18 @@
 		</p:column>
 	</p:dataTable>
 
-	<h:panelGrid columns="1" cellpadding="5">
-		<p:commandButton value="Add Protocol" icon="fa fa-plus"
+	<h:panelGrid columns="2" cellpadding="5">
+		<!-- <p:commandButton value="Add Protocol" icon="fa fa-plus"
 			immediate="true" onclick="PF('protocolD').show()"
-			action="#{adminController.initAddCodelist}" />
+			action="#{adminController.initAddCodelist}" /> -->
+			
+		<i class="fa fa-plus"></i>
+		<p:commandLink type="button" value="Add Protocol"
+			update="dialogProto" process="@this" oncomplete="PF('protocolD').show()"
+			actionListener="#{adminController.initAddCodelist}" />
 	</h:panelGrid>
 
-	<p:dialog header="Protocol details" widgetVar="protocolD" modal="true"
+	<p:dialog header="Protocol details" widgetVar="protocolD" modal="true" id="dialogProto"
 		showEffect="fade" hideEffect="fade" resizable="false">
 		<p:outputPanel style="text-align:center;">
 			<h:panelGrid columns="2" columnClasses="label, value">

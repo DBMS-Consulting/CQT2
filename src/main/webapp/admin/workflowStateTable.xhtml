@@ -5,12 +5,12 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:p="http://primefaces.org/ui">
-	
-	<p:growl id="msgPg" />
 
-	<h3 style="text-align: center">Program CodeList</h3>
-	<p:dataTable id="tableProgram" var="val" rows="10"
-		value="#{adminController.programList}" style="margin-bottom:20px"
+	<p:growl id="msgW" />
+
+	<h3 style="text-align: center">Workflow State CodeList</h3>
+	<p:dataTable id="workflowTable" var="val" rows="10" lazy="true"
+		value="#{adminController.workflowList}" style="margin-bottom:20px"
 		paginator="true" paginatorPosition="bottom"
 		paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 		rowsPerPageTemplate="5,10,25">
@@ -19,11 +19,11 @@
 			<h:outputText value="#{val.serialNum}" />
 		</p:column>
 
-		<p:column headerText="Code" style="text-align: center" >
+		<p:column headerText="Code" style="text-align: center">
 			<h:outputText value="#{val.codelistInternalValue}" />
 		</p:column>
 
-		<p:column headerText="Program Name" style="text-align: center">
+		<p:column headerText="Workflow State Name" style="text-align: center">
 			<h:outputText value="#{val.value}" />
 		</p:column>
 
@@ -36,10 +36,10 @@
 		</p:column>
 
 		<p:column style="width:32px;text-align: center">
-			<p:commandButton update="@form"
-				action="#{adminController.initGetRef}"
-				oncomplete="PF('programD').show()" icon="ui-icon-pencil"
-				title="View">
+
+			<p:commandButton action="#{adminController.initGetRef}"
+				update="@form" process="@this" oncomplete="PF('workflowD').show()"
+				icon="ui-icon-pencil" title="View">
 				<f:setPropertyActionListener value="#{val}"
 					target="#{adminController.selectedRow}" />
 			</p:commandButton>
@@ -47,17 +47,16 @@
 	</p:dataTable>
 
 	<h:panelGrid columns="2" cellpadding="5">
-		<!-- <p:commandButton value="Add Program" icon="fa fa-plus"
-			immediate="true" onclick="PF('programD').show()"
+		<!-- <p:commandButton value="Add Workflow State" icon="fa fa-plus"
+			process="@this" onclick="PF('workflowD').show()"
 			action="#{adminController.initAddCodelist}" /> -->
-			
-		<i class="fa fa-plus"></i>
-		<p:commandLink type="button" value="Add Program"
-			update="dialogProg" process="@this" oncomplete="PF('programD').show()"
+	<i class="fa fa-plus"></i>
+		<p:commandLink type="button" value="Add Workflow State" update="dialogW"
+			process="@this" oncomplete="PF('workflowD').show()"
 			actionListener="#{adminController.initAddCodelist}" />
 	</h:panelGrid>
 
-	<p:dialog header="Program details" widgetVar="programD" id="dialogProg"
+	<p:dialog header="Workflow State details" widgetVar="workflowD" id="dialogW"
 		modal="true" showEffect="fade" hideEffect="fade" resizable="false">
 		<p:outputPanel style="text-align:center;">
 			<h:panelGrid columns="2" columnClasses="label, value">
@@ -72,21 +71,21 @@
 					value="#{adminController.ref.codelistInternalValue}"
 					style="width: 50px !important; text-transform: uppercase; float: left" />
 
-				<p:outputLabel value="Program Name" styleClass="label-right" />
+				<p:outputLabel value="Workflow State Name" styleClass="label-right" />
 				<p:inputText required="true" requiredMessage="The value is required"
 					value="#{adminController.ref.value}"
-					style="width: 300px !important; float: left" />
+					style="width: 300px !important; float: left; text-transform: uppercase;" />
 
 				<p:outputLabel value="Active flag" styleClass="label-right" />
 				<p:selectOneMenu value="#{adminController.ref.activeFlag}"
-					style="float: left" id="activeFlagPG">
+					style="float: left" id="activeFlagW">
 					<f:selectItem itemValue="Y" itemLabel="Y" />
 					<f:selectItem itemValue="N" itemLabel="N" />
 				</p:selectOneMenu>
 
 				<p:outputLabel value="Default flag" styleClass="label-right" />
 				<p:selectOneMenu value="#{adminController.ref.defaultFlag}"
-					style="float: left" id="defaultFlagPG">
+					style="float: left" id="defaultFlagW">
 					<f:selectItem itemValue="Y" itemLabel="Y" />
 					<f:selectItem itemValue="N" itemLabel="N" />
 				</p:selectOneMenu>
@@ -94,11 +93,11 @@
 
 			<h:panelGrid columns="2" cellpadding="5">
 				<p:commandButton value="Save" icon="fa fa-plus"
-					onclick="PF('programD').hide()" update="tableProgram msgPg"
+					onclick="PF('workflowD').hide()" update="workflowTable msgW"
 					action="#{adminController.addRefCodelist}" />
 
 				<p:commandButton value="Cancel" icon="fa fa-close"
-					onclick="PF('programD').hide()" update="tableProgram msgPg"
+					onclick="PF('workflowD').hide()"
 					immediate="true" />
 			</h:panelGrid>
 

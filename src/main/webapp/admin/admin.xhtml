@@ -33,7 +33,8 @@
 							<f:selectItem itemLabel="PROGRAM" itemValue="PROGRAM" />
 							<f:selectItem itemLabel="PROTOCOL" itemValue="PROTOCOL" />
 							<f:selectItem itemLabel="PRODUCT" itemValue="PRODUCT" />
-							<f:selectItem itemLabel="MedDRA Dictionary" itemValue="MEDDRA" />
+							<f:selectItem itemLabel="MEDDRA DICTIONARY" itemValue="MEDDRA" />
+							<f:selectItem itemLabel="WORKFLOW STATE" itemValue="WORKFLOW" />
 
 							<p:ajax update="@form" event="change" />
 						</p:selectOneMenu>
@@ -58,6 +59,10 @@
 					
 					<h:panelGrid rendered="#{adminController.codelist eq 'MEDDRA'}">
 						<ui:include src="meddraTable.xhtml"></ui:include>
+					</h:panelGrid>
+					
+					<h:panelGrid rendered="#{adminController.codelist eq 'WORKFLOW'}">
+						<ui:include src="workflowStateTable.xhtml"></ui:include>
 					</h:panelGrid>
 
 				</p:tab>

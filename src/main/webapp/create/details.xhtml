@@ -37,7 +37,7 @@
 				requiredMessage="The Drug Program is required">
 				<f:selectItem itemValue="" itemLabel="" />
 				<f:selectItems value="#{configMB.programs}" var="program"
-					itemLabel="#{program.value}" itemValue="#{program.value}" />
+					itemLabel="#{program.value}" itemValue="#{program.codelistInternalValue}" />
 			</p:selectOneMenu>
 
 			<p:outputLabel id="lProtocol"
@@ -48,7 +48,7 @@
 				required="#{createController.extension eq 'PRO'}">
 				<f:selectItem itemValue="" itemLabel="" />
 				<f:selectItems value="#{configMB.protocols}" var="protocol"
-					itemLabel="#{protocol.value}" itemValue="#{protocol.value}" />
+					itemLabel="#{protocol.value}" itemValue="#{protocol.codelistInternalValue}" />
 			</p:selectOneMenu>
 
 			<p:outputLabel id="lProduct"
@@ -61,7 +61,7 @@
 				requiredMessage="The Product is required" id="product">
 				<f:selectItem itemValue="" itemLabel="" />
 				<f:selectItems value="#{configMB.products}" var="product"
-					itemLabel="#{product.value}" itemValue="#{product.value}" />
+					itemLabel="#{product.value}" itemValue="#{product.codelistInternalValue}" />
 			</p:selectOneMenu>
 
 			<p:outputLabel value="* Designee" styleClass="label-right" />
@@ -188,7 +188,7 @@
 }
 
 .ui-state-disabled {
-	opacity: 1 !important;
+	opacity: 0.7 !important;
 }
 </style>
 </ui:composition>

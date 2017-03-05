@@ -45,10 +45,12 @@
 		</p:column>
 	</p:dataTable>
 
-	<h:panelGrid columns="1" cellpadding="5">
-		<p:commandButton value="Add extension" icon="fa fa-plus" process="@this"
-			onclick="PF('extensionD').show()" 
-			action="#{adminController.initAddCodelist}" />
+	<h:panelGrid columns="2" cellpadding="5">
+	<i class="fa fa-plus"></i>
+		
+		<p:commandLink type="button" value="Add extension"  update="dialog" process="@this"
+			oncomplete="PF('extensionD').show()" 
+			actionListener="#{adminController.initAddCodelist}" />
 	</h:panelGrid>
 
 	<p:dialog header="Extension details" widgetVar="extensionD" modal="true" id="dialog"
@@ -93,7 +95,7 @@
 					action="#{adminController.addRefCodelist}" />
 
 				<p:commandButton value="Cancel" icon="fa fa-close" 
-					onclick="PF('extensionD').hide()" update="tableExtension msgExt"
+					onclick="PF('extensionD').hide()" 
 					immediate="true" />
 			</h:panelGrid>
 
