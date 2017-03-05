@@ -82,15 +82,15 @@
 
 								<p:outputLabel styleClass="label-right" value="Drug Program:" />
 								<h:outputText
-									value="#{searchController.refCodeValue(createController.selectedData.cmqProgramCd)}" />
+									value="#{RefCodeListService.interpretInternalCodeToValue('PROGRAM', createController.selectedData.cmqProgramCd)}" />
 
 								<p:outputLabel styleClass="label-right" value="Protocol:" />
 								<h:outputText
-									value="#{searchController.refCodeValue(createController.selectedData.cmqProtocolCd)}" />
+									value="#{RefCodeListService.interpretInternalCodeToValue('PROTOCOL', createController.selectedData.cmqProtocolCd)}" />
 
 								<p:outputLabel styleClass="label-right" value="Product:" />
 								<h:outputText
-									value="#{searchController.refCodeValue(createController.selectedData.cmqProductCd)}" />
+									value="#{RefCodeListService.interpretInternalCodeToValue('PRODUCT', createController.selectedData.cmqProductCd)}" />
 
 							</h:panelGrid>
 

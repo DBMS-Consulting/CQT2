@@ -1,6 +1,10 @@
 package com.dbms.service;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.faces.bean.ApplicationScoped;
@@ -11,7 +15,6 @@ import javax.persistence.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.dbms.entity.cqt.CmqBase190;
 import com.dbms.entity.cqt.RefConfigCodeList;
 import com.dbms.service.base.CqtPersistenceService;
 import com.dbms.util.CqtConstants;
@@ -22,6 +25,10 @@ import com.dbms.util.OrderBy;
 public class RefCodeListService extends CqtPersistenceService<RefConfigCodeList> implements IRefCodeListService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(RefCodeListService.class);
+	
+	// members required for caching mechanism for performance of code-value interpretation for UI
+	private static final int cacheValidTimeInMillis = 10000; // 10 sec
+	private HashMap<String, RefConfigCodeListCache> codeListCache = new HashMap<String, RefConfigCodeListCache>();
 
 	@Override
 	@SuppressWarnings({ "unchecked" })
@@ -146,6 +153,105 @@ public class RefCodeListService extends CqtPersistenceService<RefConfigCodeList>
 		if (ref != null)
 			return ref.getValue();
 		return codelistInternalValue;
+	}
+	
+	/**
+	 * @author Andrius Mielkus(andrius.mielkus@yandex.com)
+	 * 
+	 * Interprets internal code to value
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public String interpretInternalCodeToValue(String configType, String internalCode) {
+		RefConfigCodeListCache codeList;
+		codeList = codeListCache.get(configType);
+		if(codeList == null || !codeList.isValid()) {
+			// since the cache is empty or invalid, update it from DB
+			List<RefConfigCodeList> listFromDB = null;
+			EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+
+			StringBuilder queryString = new StringBuilder("from RefConfigCodeList a");
+			queryString.append(" where a.codelistConfigType = :codelistConfigType order by a.codelistInternalValue ASC");
+			try {
+				Query query = entityManager.createQuery(queryString.toString());
+				query.setParameter("codelistConfigType", configType);
+
+				listFromDB = query.getResultList();
+			} catch (Exception ex) {
+				StringBuilder msg = new StringBuilder();
+				msg
+						.append("interpretInternalCodeToValue: failed to find the code list for '")
+						.append(configType)
+						.append("' type. Query used was->")
+						.append(queryString);
+				LOG.error(msg.toString(), ex);
+			} finally {
+				this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+				if (null == listFromDB) {
+					listFromDB = new ArrayList<>();
+				}
+			}
+			if(codeList == null) {
+				codeList = new RefConfigCodeListCache(listFromDB, cacheValidTimeInMillis);
+				codeListCache.put(configType, codeList);
+			} else
+				codeList.setValueList(listFromDB);
+		}
+		
+		RefConfigCodeList foundEntity = codeList.findByInternalCode(internalCode);
+		
+		if(foundEntity != null)
+			return foundEntity.getValue();
+		return internalCode;
+	}
+	
+	/**
+	 * 
+	 * @author Andrius Mielkus(andrius.mielkus@yandex.com)
+	 * Caching mechanism implementation of RefConfigCodeList
+	 *
+	 */
+	private class RefConfigCodeListCache {
+		private List<RefConfigCodeList> valueList;
+		private final int validTimeInMillis;
+		private long updateTimestamp;
+		
+		RefConfigCodeListCache(List<RefConfigCodeList> valueList, int validTimeInMillis) {
+			this.valueList = valueList;
+			this.validTimeInMillis = validTimeInMillis;
+			this.updateTimestamp = Calendar.getInstance().getTimeInMillis();
+		}
+		
+		public List<RefConfigCodeList> getValueList() {
+			return valueList;
+		}
+		
+		public void setValueList(List<RefConfigCodeList> valueList) {
+			this.valueList = valueList;
+			this.updateTimestamp = Calendar.getInstance().getTimeInMillis();
+		}
+		
+		public boolean isValid() {
+			long now = Calendar.getInstance().getTimeInMillis();
+			return (now - updateTimestamp < validTimeInMillis);
+		}
+		
+		public RefConfigCodeList findByInternalCode(String internalCode) {
+			RefConfigCodeList searchKey = new RefConfigCodeList();
+			searchKey.setCodelistInternalValue(internalCode);
+			int loc = Collections.binarySearch(valueList, searchKey, new Comparator<RefConfigCodeList>() {
+
+				@Override
+				public int compare(RefConfigCodeList o1, RefConfigCodeList o2) {
+					return o1.getCodelistInternalValue().compareTo(o2.getCodelistInternalValue());
+				}
+				
+			});
+			if(loc >= 0) {
+				return valueList.get(loc);
+			}
+			return null;
+		}
 	}
 
 }

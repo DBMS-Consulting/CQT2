@@ -119,7 +119,7 @@
 				<h:outputText value="#{value.cmqName}" />
 			</p:column>
 			<p:column headerText="Extension">
-				<h:outputText value="#{searchController.refCodeValue(value.cmqTypeCd)}" />
+				<h:outputText value="#{RefCodeListService.interpretInternalCodeToValue('LIST_EXTENSION_TYPES', value.cmqTypeCd)}" />
 			</p:column>
 			<p:column headerText="Level">
 				<h:outputText value="#{value.cmqLevel}" />
@@ -148,13 +148,13 @@
 				</h:commandLink>
 			</p:column>
 			<p:column headerText="Drug Program">
-				<h:outputText value="#{searchController.refCodeValue(value.cmqProgramCd)}" />
+				<h:outputText value="#{RefCodeListService.interpretInternalCodeToValue('PROGRAM', value.cmqProgramCd)}" />
 			</p:column>
 			<p:column headerText="Protocol">
-				<h:outputText value="#{searchController.refCodeValue(value.cmqProtocolCd)}" />
+				<h:outputText value="#{RefCodeListService.interpretInternalCodeToValue('PROTOCOL', value.cmqProtocolCd)}" />
 			</p:column>
 			<p:column headerText="Product">
-				<h:outputText value="#{searchController.refCodeValue(value.cmqProductCd)}" />
+				<h:outputText value="#{RefCodeListService.interpretInternalCodeToValue('PRODUCT', value.cmqProductCd)}" />
 			</p:column>
 			<p:column headerText="Group">
 				<h:outputText value="#{value.cmqGroup}" />

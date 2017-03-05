@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.PostConstruct;
@@ -180,8 +179,6 @@ public class SearchController extends BaseController<CmqBase190> {
 		}			
 	}
 	
-	
-
 	/**
 	 * Reset search on every extension change.
 	 * 
@@ -219,12 +216,6 @@ public class SearchController extends BaseController<CmqBase190> {
 		if (status.equals(""))
 			setState("");
 		 
-	}
-	
-	public String refCodeValue(String ref) {
-		String result = refCodeListService.findCodeByInternalCode(ref);
-		log.info("\n \n*************** ref : " + result); 
-		return result;
 	}
 
 	public void changeTabUpdate() {
