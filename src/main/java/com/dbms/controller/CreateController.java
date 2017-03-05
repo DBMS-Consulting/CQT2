@@ -456,6 +456,8 @@ public class CreateController implements Serializable {
 				existingCmqBase.setCmqLevel(level);
 				existingCmqBase.setCmqAlgorithm(algorithm);
 				
+				existingCmqBase.setLastModifiedDate(new Date());
+				existingCmqBase.setLastModifiedBy("test-user");
 
 				cmqBaseService.update(existingCmqBase);
 
@@ -482,7 +484,7 @@ public class CreateController implements Serializable {
 				return null;
 			}
 		} catch (CqtServiceException e) {
-			LOG.error("Exception occured while creating CmqBase190.", e);
+			LOG.error("Exception occured while updating CmqBase190.", e);
 
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"An error occured while trying to update the details.", "");

@@ -95,14 +95,14 @@ public class CmqBase190 extends BaseEntity {
 	@Column(name = "CREATED_BY", nullable = false, length = 30)
 	private String createdBy;
 
-	@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "CREATION_DATE", nullable = false, length = 7)
 	private Date creationDate;
 
 	@Column(name = "LAST_MODIFIED_BY", length = 30)
 	private String lastModifiedBy;
 
-	@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "LAST_MODIFIED_DATE", length = 7)
 	private Date lastModifiedDate;
 
