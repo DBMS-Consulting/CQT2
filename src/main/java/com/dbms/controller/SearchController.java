@@ -1239,16 +1239,16 @@ public class SearchController extends BaseController<CmqBase190> {
 			addSelectedToRelation(relationSelected);
 		} else {
 			//One by one Drag-n-Drop
-			Map<String,String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
-	        String nodeLevel = params.get("level");
-	        String nodeName = params.get("name");
-	        String nodeCode = params.get("code");
-	        Long nodeEntityId = Long.parseLong(params.get("entityId"));
-	        
-			TreeNode treeNode = findTreenodeByEntityId(hierarchyRoot, nodeEntityId);
-			setRelationSelected(new TreeNode[] {treeNode});
-			
-			addSelectedToRelation(relationSelected);
+//			Map<String,String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+//	        String nodeLevel = params.get("level");
+//	        String nodeName = params.get("name");
+//	        String nodeCode = params.get("code");
+//	        Long nodeEntityId = Long.parseLong(params.get("entityId"));
+//	        
+//			TreeNode treeNode = findTreenodeByEntityId(hierarchyRoot, nodeEntityId);
+//			setRelationSelected(new TreeNode[] {treeNode});
+//			
+//			addSelectedToRelation(relationSelected);
 		}
 	}
 	

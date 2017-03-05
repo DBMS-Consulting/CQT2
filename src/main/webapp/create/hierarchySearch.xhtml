@@ -86,7 +86,6 @@
 				<p:ajax event="expand" listener="#{searchController.onNodeExpand}"
 					update="resultHier" />
 
-				<p:column headerText="Select"></p:column>
 				<p:column headerText="Level">
 					<h:outputText value="#{node.level}" />
 				</p:column>
@@ -115,8 +114,8 @@
 		#termH {
 			text-transform: uppercase;
 		}
-		.ui-treetable.ui-treetable-resultHier tr>th:first-child,
-		.ui-treetable.ui-treetable-resultHier tr>td:first-child {
+		
+		.ui-treetable.ui-treetable-resultHier .ui-treetable-selectable-node .ui-chkbox.ui-selection {
 			display: none;
 		}
 		.ui-hidden {

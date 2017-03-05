@@ -255,6 +255,7 @@ public class CreateController implements Serializable {
 		if (browseWizard != null) {
 			browseWizard.setStep("details");
 			if(RequestContext.getCurrentInstance() != null) {
+				// UI: force update the custom wizard navbar area
 				RequestContext.getCurrentInstance().update("fBrowse:wizardNavbar");
 			}
 		}
@@ -262,6 +263,7 @@ public class CreateController implements Serializable {
 		if (updateWizard != null) {
 			updateWizard.setStep("details");
 			if(RequestContext.getCurrentInstance() != null) {
+				// UI: force update the custom wizard navbar area
 				RequestContext.getCurrentInstance().update("fUpdate:wizardNavbar");
 			}
 			// selectedData = new CmqBase190();
@@ -284,6 +286,7 @@ public class CreateController implements Serializable {
 			selectedData.setCmqSource("");
 			copyWizard.setStep("details");
 			if(RequestContext.getCurrentInstance() != null) {
+				// UI: force update the custom wizard navbar area
 				RequestContext.getCurrentInstance().update("fCopy:wizardNavbar");
 			}
 		}
