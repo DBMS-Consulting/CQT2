@@ -83,6 +83,7 @@
 			<version>${hibernate.version}</version>
 		</dependency>
 		<!-- oracle -->
+<!-- 
 		<dependency>
 			<groupId>com.oracle</groupId>
 			<artifactId>ojdbc7</artifactId>
@@ -92,6 +93,12 @@
 			<groupId>com.oracle</groupId>
 			<artifactId>ucp</artifactId>
 			<version>12.1.0.2</version>
+		</dependency>
+ -->
+		<dependency>
+		    <groupId>cn.easyproject</groupId>
+		    <artifactId>ojdbc7</artifactId>
+		    <version>12.1.0.2.0</version>
 		</dependency>
 
 		<!-- hsqldb driver -->
@@ -146,8 +153,21 @@
 					</webApp>
 				</configuration>
 			</plugin>
+			
+			<!-- 
+				mvn jboss-as:deploy
+				mvn jboss-as:redeploy
+				mvn jboss-as:undeploy
+  			 -->
+            <plugin>
+                <groupId>org.jboss.as.plugins</groupId>
+                <artifactId>jboss-as-maven-plugin</artifactId>
+                <version>7.5.Final</version>
+            </plugin>
+			
 		</plugins>
 	</build>
+	
 	<repositories>
 		<repository>
 			<id>jboss-repo</id>
