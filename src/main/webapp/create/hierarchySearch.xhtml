@@ -42,8 +42,7 @@
 			<p:outputLabel value="Term" for="termH" />
 			<p:inputText id="termH" style="text-transform:uppercase"
 				value="#{searchController.termName}" />
-			<p:commandButton value="Search" update="resultHier"
-				action="#{searchController.hierarchySearch}" />
+			<p:commandButton value="Search" update="resultHier" action="#{searchController.hierarchySearch}" oncomplete="initRelationDND()"/>
 		</h:panelGrid>
 
 		<br />
