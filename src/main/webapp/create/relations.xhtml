@@ -147,8 +147,8 @@
 			</p:column>
 
 			<p:column>
-				<p:selectOneMenu id="soc3" value="#{node.scope}"
-					disabled="#{createController.readOnlyState}">
+				<p:selectOneMenu id="soc3" value="#{node.scope}" disabled="#{createController.readOnlyState || createController.algorithm eq 'N'}">
+					<f:selectItem itemLabel="" itemValue="" />
 					<f:selectItem itemLabel="Narrow" itemValue="2" id="si13d" />
 					<f:selectItem itemLabel="Broad" itemValue="1" id="si13s" />
 					<f:selectItem itemLabel="Child Narrow" itemValue="3" id="si4" />
@@ -156,8 +156,7 @@
 			</p:column>
 
 			<p:column>
-				<p:selectOneMenu id="soc2" value="#{node.category}" rendered="true"
-					disabled="#{createController.readOnlyState}">
+				<p:selectOneMenu id="soc2" value="#{node.category}" disabled="#{createController.readOnlyState || createController.algorithm eq 'N'}">
 					<f:selectItem itemLabel="" itemValue="" />
 					<f:selectItem itemLabel="A" itemValue="A" id="si3" />
 					<f:selectItem itemLabel="S" itemValue="S" id="si33" />
@@ -173,8 +172,7 @@
 			</p:column>
 
 			<p:column>
-				<p:spinner value="#{node.weight}" id="ot6"
-					disabled="#{createController.readOnlyState}" />
+				<p:spinner value="#{node.weight}" id="ot6" disabled="#{createController.readOnlyState || createController.algorithm eq 'N'}" />
 			</p:column>
 
 			<p:column>

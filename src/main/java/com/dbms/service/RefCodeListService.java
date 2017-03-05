@@ -155,6 +155,34 @@ public class RefCodeListService extends CqtPersistenceService<RefConfigCodeList>
 		return codelistInternalValue;
 	}
 	
+	@Override
+	public String findCodeByInternalCode(String configType, String internalCode) {
+		RefConfigCodeList ref = null;
+		String queryString = "from RefConfigCodeList a where a.codelistConfigType = :codelistConfigType and a.codelistInternalValue = :codelistInternalValue";
+		
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		try {
+			Query query = entityManager.createQuery(queryString);
+			query.setParameter("codelistConfigType", configType);
+			query.setParameter("codelistInternalValue", internalCode);
+			ref = (RefConfigCodeList) query.getSingleResult();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg
+					.append("findCodeByInternalCode failed for CODELIST_INTERNAL_VALUE value'")
+					.append(internalCode)
+					.append("' ")
+					.append("Query used was ->")
+					.append(queryString);
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		if (ref != null)
+			return ref.getValue();
+		return internalCode;
+	}
+	
 	/**
 	 * @author Andrius Mielkus(andrius.mielkus@yandex.com)
 	 * 

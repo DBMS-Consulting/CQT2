@@ -98,11 +98,22 @@
 			</p:column>
 
 			<p:column>
-				<h:outputText value="#{node.scope}" />
+				<h:outputText rendered="#{node.scope eq '1'}" value="Broad" />
+				<h:outputText rendered="#{node.scope eq '2'}" value="Narrow" />
+				<h:outputText rendered="#{node.scope eq '3'}" value="Child Narrow" />
 			</p:column>
 
 			<p:column>
-				<h:outputText value="#{node.category}" />
+				<h:outputText rendered="#{node.category eq 'A'}" value="A" />
+				<h:outputText rendered="#{node.category eq 'S'}" value="S" />
+				<h:outputText rendered="#{node.category eq 'B'}" value="B" />
+				<h:outputText rendered="#{node.category eq 'C'}" value="C" />
+				<h:outputText rendered="#{node.category eq 'D'}" value="D" />
+				<h:outputText rendered="#{node.category eq 'E'}" value="E" />
+				<h:outputText rendered="#{node.category eq 'F'}" value="F" />
+				<h:outputText rendered="#{node.category eq 'G'}" value="G" />
+				<h:outputText rendered="#{node.category eq 'H'}" value="H" />
+				<h:outputText rendered="#{node.category eq 'I'}" value="I" />
 			</p:column>
 
 			<p:column>

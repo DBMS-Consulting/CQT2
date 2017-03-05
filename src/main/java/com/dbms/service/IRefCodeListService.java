@@ -16,5 +16,19 @@ public interface IRefCodeListService extends ICqtPersistenceService<RefConfigCod
 	
 	public String findCodeByInternalCode(String codelistInternalValue);
 	
+	/**
+	 * Use this function for single interpretation
+	 * @param configType
+	 * @param internalCode
+	 * @return
+	 */
+	public String findCodeByInternalCode(String configType, String internalCode);
+	
+	/**
+	 * Use this function for batch interpretation like listing in the table
+	 * @param configType
+	 * @param internalCode
+	 * @return
+	 */
 	public String interpretInternalCodeToValue(String configType, String internalCode);
 }

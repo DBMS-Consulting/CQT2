@@ -49,7 +49,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190> impleme
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
-	public List<CmqBase190> findByCriterias(String extension, String drugProgram, String protocol, String product,
+	public List<CmqBase190> findByCriterias(String extension, String drugProgramCd, String protocolCd, String productCd,
 			Integer level, String status, String state, String criticalEvent, String group, String termName,
 			Long code) {
 		List<CmqBase190> retVal = null;
@@ -62,22 +62,22 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190> impleme
 			queryParams.put("cmqTypeCd", extension);
 			first = false;
 		}
-		if (StringUtils.isNoneEmpty(drugProgram)) {
+		if (StringUtils.isNoneEmpty(drugProgramCd)) {
 			sb = appendClause(sb, first);
 			sb.append(" lower(c.cmqProgramCd) like lower(:cmqProgramCd)");
-			queryParams.put("cmqProgramCd", "%" + drugProgram + "%");
+			queryParams.put("cmqProgramCd", drugProgramCd);
 			first = false;
 		}
-		if (StringUtils.isNotEmpty(protocol)) {
+		if (StringUtils.isNotEmpty(protocolCd)) {
 			sb = appendClause(sb, first);
 			sb.append(" lower(c.cmqProtocolCd) like lower(:cmqProtocolCd)");
-			queryParams.put("cmqProtocolCd", "%" + protocol + "%");
+			queryParams.put("cmqProtocolCd", protocolCd);
 			first = false;
 		}
-		if (StringUtils.isNotEmpty(product)) {
+		if (StringUtils.isNotEmpty(productCd)) {
 			sb = appendClause(sb, first);
 			sb.append(" lower(c.cmqProductCd) like lower(:cmqProductCd)");
-			queryParams.put("cmqProductCd", "%" + product + "%");
+			queryParams.put("cmqProductCd", productCd);
 			first = false;
 		}
 		if (level != null) {

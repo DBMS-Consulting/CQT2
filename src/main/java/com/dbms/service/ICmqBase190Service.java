@@ -8,7 +8,7 @@ import com.dbms.util.exceptions.CqtServiceException;
 
 public interface ICmqBase190Service extends ICqtPersistenceService<CmqBase190> {
 
-	List<CmqBase190> findByCriterias(String extension, String drugProgram, String protocol, String product,
+	List<CmqBase190> findByCriterias(String extension, String drugProgramCd, String protocolCd, String productCd,
 			Integer level, String status, String state, String criticalEvent, String group, String termName, Long code);
 
 	List<String> findTypes();
