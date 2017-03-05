@@ -220,6 +220,12 @@ public class SearchController extends BaseController<CmqBase190> {
 			setState("");
 		 
 	}
+	
+	public String refCodeValue(String ref) {
+		String result = refCodeListService.findCodeByInternalCode(ref);
+		log.info("\n \n*************** ref : " + result); 
+		return result;
+	}
 
 	public void changeTabUpdate() {
 		updateWizard.setStep("details");

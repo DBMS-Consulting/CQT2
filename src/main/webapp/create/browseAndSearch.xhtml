@@ -82,15 +82,15 @@
 
 								<p:outputLabel styleClass="label-right" value="Drug Program:" />
 								<h:outputText
-									value="#{createController.selectedData.cmqProgramCd}" />
+									value="#{searchController.refCodeValue(createController.selectedData.cmqProgramCd)}" />
 
 								<p:outputLabel styleClass="label-right" value="Protocol:" />
 								<h:outputText
-									value="#{createController.selectedData.cmqProtocolCd}" />
+									value="#{searchController.refCodeValue(createController.selectedData.cmqProtocolCd)}" />
 
 								<p:outputLabel styleClass="label-right" value="Product:" />
 								<h:outputText
-									value="#{createController.selectedData.cmqProductCd}" />
+									value="#{searchController.refCodeValue(createController.selectedData.cmqProductCd)}" />
 
 							</h:panelGrid>
 

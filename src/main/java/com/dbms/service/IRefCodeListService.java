@@ -14,4 +14,6 @@ public interface IRefCodeListService extends ICqtPersistenceService<RefConfigCod
 
 
 	public RefConfigCodeList getCurrentMeddraVersion();
+	
+	public String findCodeByInternalCode(String codelistInternalValue);
 }

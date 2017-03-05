@@ -76,7 +76,7 @@
 			<p:outputLabel value="Group" styleClass="label-right" />
 			<p:selectOneMenu value="#{searchController.group}" id="group"
 				disabled="false">
-				<f:selectItem itemLabel="" itemValue="All"></f:selectItem>
+				<f:selectItem itemLabel="" itemValue=""></f:selectItem>
 				<f:selectItem itemLabel="No Group" itemValue="No Group"></f:selectItem>
 				<f:selectItems></f:selectItems>
 			</p:selectOneMenu>
@@ -119,7 +119,7 @@
 				<h:outputText value="#{value.cmqName}" />
 			</p:column>
 			<p:column headerText="Extension">
-				<h:outputText value="#{value.cmqTypeCd}" />
+				<h:outputText value="#{searchController.refCodeValue(value.cmqTypeCd)}" />
 			</p:column>
 			<p:column headerText="Level">
 				<h:outputText value="#{value.cmqLevel}" />
@@ -148,13 +148,13 @@
 				</h:commandLink>
 			</p:column>
 			<p:column headerText="Drug Program">
-				<h:outputText value="#{value.cmqProgramCd}" />
+				<h:outputText value="#{searchController.refCodeValue(value.cmqProgramCd)}" />
 			</p:column>
 			<p:column headerText="Protocol">
-				<h:outputText value="#{value.cmqProtocolCd}" />
+				<h:outputText value="#{searchController.refCodeValue(value.cmqProtocolCd)}" />
 			</p:column>
 			<p:column headerText="Product">
-				<h:outputText value="#{value.cmqProductCd}" />
+				<h:outputText value="#{searchController.refCodeValue(value.cmqProductCd)}" />
 			</p:column>
 			<p:column headerText="Group">
 				<h:outputText value="#{value.cmqGroup}" />

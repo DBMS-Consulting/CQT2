@@ -11,6 +11,7 @@ import javax.persistence.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.dbms.entity.cqt.CmqBase190;
 import com.dbms.entity.cqt.RefConfigCodeList;
 import com.dbms.service.base.CqtPersistenceService;
 import com.dbms.util.CqtConstants;
@@ -119,6 +120,32 @@ public class RefCodeListService extends CqtPersistenceService<RefConfigCodeList>
 			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
 		}
 		return retVal;
+	}
+	
+	@Override
+	public String findCodeByInternalCode(String codelistInternalValue) {
+		RefConfigCodeList ref = null;
+		String queryString = "from RefConfigCodeList c where c.codelistInternalValue = :codelistInternalValue";
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		try {
+			Query query = entityManager.createQuery(queryString);
+			query.setParameter("codelistInternalValue", codelistInternalValue);
+			ref = (RefConfigCodeList) query.getSingleResult();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg
+					.append("findByCode failed for CODELIST_INTERNAL_VALUE value'")
+					.append(codelistInternalValue)
+					.append("' ")
+					.append("Query used was ->")
+					.append(queryString);
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		if (ref != null)
+			return ref.getValue();
+		return codelistInternalValue;
 	}
 
 }
