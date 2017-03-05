@@ -114,25 +114,26 @@
 		<p:dataTable var="value" value="#{searchController.datas}" id="result"
 			rows="10" paginator="true" paginatorPosition="bottom"
 			paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-			rowsPerPageTemplate="5,10,25">
-			<p:column headerText="Term">
+			rowsPerPageTemplate="5,10,25"
+			resizableColumns="true">
+			<p:column headerText="Term" width="100">
 				<h:outputText value="#{value.cmqName}" />
 			</p:column>
-			<p:column headerText="Extension">
+			<p:column headerText="Extension" width="140">
 				<h:outputText value="#{RefCodeListService.interpretInternalCodeToValue('LIST_EXTENSION_TYPES', value.cmqTypeCd)}" />
 			</p:column>
-			<p:column headerText="Level">
+			<p:column headerText="Level" width="30">
 				<h:outputText value="#{value.cmqLevel}" />
 			</p:column>
-			<p:column headerText="Status">
+			<p:column headerText="Status" width="80">
 				<h:outputText rendered="#{value.cmqStatus eq 'P'}" value="Pending" />
 				<h:outputText rendered="#{value.cmqStatus eq 'I'}" value="Inactive" />
 				<h:outputText rendered="#{value.cmqStatus eq 'A'}" value="Active" />
 			</p:column>
-			<p:column headerText="State">
+			<p:column headerText="State" width="80">
 				<h:outputText value="#{value.cmqState}" />
 			</p:column>
-			<p:column headerText="Code">
+			<p:column headerText="Code" width="100">
 				<h:commandLink partialSubmit="true"
 					action="#{createController.loadCmqBaseByCode(value.cmqCode)}"
 					value="#{value.cmqCode}">
@@ -147,22 +148,22 @@
 						target="#{createController.codeSelected}" value="#{value.cmqCode}" />
 				</h:commandLink>
 			</p:column>
-			<p:column headerText="Drug Program">
+			<p:column headerText="Drug Program" width="100">
 				<h:outputText value="#{RefCodeListService.interpretInternalCodeToValue('PROGRAM', value.cmqProgramCd)}" />
 			</p:column>
-			<p:column headerText="Protocol">
+			<p:column headerText="Protocol" width="100">
 				<h:outputText value="#{RefCodeListService.interpretInternalCodeToValue('PROTOCOL', value.cmqProtocolCd)}" />
 			</p:column>
-			<p:column headerText="Product">
+			<p:column headerText="Product" width="100">
 				<h:outputText value="#{RefCodeListService.interpretInternalCodeToValue('PRODUCT', value.cmqProductCd)}" />
 			</p:column>
-			<p:column headerText="Group">
+			<p:column headerText="Group" width="100">
 				<h:outputText value="#{value.cmqGroup}" />
 			</p:column>
-			<p:column headerText="Created By">
+			<p:column headerText="Created By" width="100">
 				<h:outputText value="#{value.cmqDesignee}" />
 			</p:column>
-			<p:column headerText="History" style="text-align: center"
+			<p:column headerText="History" style="text-align: center" width="40"
 				rendered="#{view.viewId == '/create/browseAndSearch.xhtml' ? true : false}">
 				<!-- <h:outputText value="#{value.history}" /> -->
 				<p:commandLink action="#" style="color: red" label="History"
@@ -172,7 +173,7 @@
 
 			</p:column>
 			<p:column headerText="Audit" style="text-align: center"
-				rendered="#{view.viewId == '/create/browseAndSearch.xhtml' ? true : false}">
+				rendered="#{view.viewId == '/create/browseAndSearch.xhtml' ? true : false}" width="100">
 				<p:commandLink value="Audit"
 					style="border: 1px solid black; background-color: grey; font-weight:bold; color: #fff; text-decoration: none !important; 
 										 border-radius: 10px; padding: 3px"

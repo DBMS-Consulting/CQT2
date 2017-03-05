@@ -1250,6 +1250,16 @@ public class SearchController extends BaseController<CmqBase190> {
 	}
 	
 	/**
+	 * Reset relations
+	 */
+	public String resetRelations() {
+		buildRelationsRoot();
+		FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Form canceled", "");
+		FacesContext.getCurrentInstance().addMessage(null, msg);
+		return "";
+	}
+	
+	/**
 	 * find a TreeNode by a given Entity ID
 	 * Recursive function
 	 * @author andmiel81@yandex.com

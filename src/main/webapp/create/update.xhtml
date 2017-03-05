@@ -69,7 +69,7 @@
 
 							<p:commandButton value="Cancel" icon="ui-icon-close" disabled="#{createController.readOnlyState}"
 								process="@this" update="m1" style="float: right"
-								action="#{createController.cancelRelations}">
+								action="#{searchController.resetRelations}">
 								<p:confirm header="Confirm"
 									message="Are you sure you want to erase these fields?"
 									icon="ui-icon-alert" />
