@@ -13,7 +13,7 @@
 			<p:outputLabel value="* Extension" styleClass="label-right" />
 			<p:selectOneMenu value="#{createController.extension}" disabled="#{createController.readOnlyState}"
 				required="true" requiredMessage="The extension is required">
-				<f:selectItems value="#{configMB.extensions}" var="extension"
+				<f:selectItems value="#{configMB.extensionList}" var="extension"
 					itemLabel="#{extension.value}"
 					itemValue="#{extension.codelistInternalValue}" />
 
@@ -36,7 +36,7 @@
 				createController.extension eq 'TR1' or createController.extension eq 'PRO'}"
 				requiredMessage="The Drug Program is required">
 				<f:selectItem itemValue="" itemLabel="" />
-				<f:selectItems value="#{configMB.programs}" var="program"
+				<f:selectItems value="#{configMB.programList}" var="program"
 					itemLabel="#{program.value}" itemValue="#{program.codelistInternalValue}" />
 			</p:selectOneMenu>
 
@@ -47,7 +47,7 @@
 				requiredMessage="The Protocol is required"
 				required="#{createController.extension eq 'PRO'}">
 				<f:selectItem itemValue="" itemLabel="" />
-				<f:selectItems value="#{configMB.protocols}" var="protocol"
+				<f:selectItems value="#{configMB.protocolList}" var="protocol"
 					itemLabel="#{protocol.value}" itemValue="#{protocol.codelistInternalValue}" />
 			</p:selectOneMenu>
 
@@ -60,7 +60,7 @@
 			createController.extension eq 'TR1' or createController.extension eq 'PRO'}"
 				requiredMessage="The Product is required" id="product">
 				<f:selectItem itemValue="" itemLabel="" />
-				<f:selectItems value="#{configMB.products}" var="product"
+				<f:selectItems value="#{configMB.productList}" var="product"
 					itemLabel="#{product.value}" itemValue="#{product.codelistInternalValue}" />
 			</p:selectOneMenu>
 

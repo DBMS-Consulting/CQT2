@@ -84,11 +84,11 @@
 
 
 				<p:outputLabel for="it1aw" value="Dictionary Version:"></p:outputLabel>
-				<h:inputText id="it1aw" value="#{configMB.dictionaryName}"
+				<h:inputText id="it1aw" value="#{configMB.currentMeddraVersion.value}"
 					disabled="true" columns="200" />
 
 				<p:outputLabel for="it3" value="Name: "></p:outputLabel>
-				<h:inputText id="it3" value="#{configMB.currentMeddraVersion.value}"
+				<h:inputText id="it3" value="#{configMB.dictionaryName}"
 					readOnly="true" disabled="true" />
 			</h:panelGrid>
 			<f:attribute name="currentPage"

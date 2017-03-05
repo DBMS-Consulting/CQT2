@@ -11,7 +11,7 @@
 			<p:outputLabel value="Extension" styleClass="label-right" />
 			<p:selectOneMenu value="#{searchController.extension}">
 				<f:selectItem itemLabel="All" itemValue=""></f:selectItem>
-				<f:selectItems value="#{configMB.extensions}" var="ext"
+				<f:selectItems value="#{configMB.extensionList}" var="ext"
 					itemLabel="#{ext.value}" itemValue="#{ext.codelistInternalValue}" />
 
 				<p:ajax update="level2" event="change"
@@ -21,14 +21,14 @@
 			<p:outputLabel value="Drug Program" styleClass="label-right" />
 			<p:selectOneMenu value="#{searchController.drugProgram}" id="drug2">
 				<f:selectItem itemValue="" itemLabel="" />
-				<f:selectItems value="#{configMB.programs}" var="program"
+				<f:selectItems value="#{configMB.programList}" var="program"
 					itemLabel="#{program.value}" itemValue="#{program.codelistInternalValue}" />
 			</p:selectOneMenu>
 
 			<p:outputLabel value="Protocol" styleClass="label-right" />
 			<p:selectOneMenu value="#{searchController.protocol}" id="protocol2">
 				<f:selectItem itemValue="" itemLabel="" />
-				<f:selectItems value="#{configMB.protocols}" var="protocol"
+				<f:selectItems value="#{configMB.protocolList}" var="protocol"
 					itemLabel="#{protocol.value}" itemValue="#{protocol.codelistInternalValue}" />
 			</p:selectOneMenu>
 
@@ -37,7 +37,7 @@
 			<p:selectOneMenu value="#{searchController.product}" disabled="false"
 				id="product2">
 				<f:selectItem itemValue="" itemLabel="" />
-				<f:selectItems value="#{configMB.products}" var="product"
+				<f:selectItems value="#{configMB.productList}" var="product"
 					itemLabel="#{product.value}" itemValue="#{product.codelistInternalValue}" />
 			</p:selectOneMenu>
 

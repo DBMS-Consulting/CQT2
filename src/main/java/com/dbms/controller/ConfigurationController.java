@@ -8,6 +8,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ViewScoped;
 
 import com.dbms.entity.cqt.RefConfigCodeList;
 import com.dbms.service.IRefCodeListService;
@@ -21,7 +22,8 @@ import com.dbms.util.OrderBy;
  *
  */
 @ManagedBean(name = "configMB")
-@SessionScoped
+//@SessionScoped
+@ViewScoped
 public class ConfigurationController implements Serializable {
 
 	/**
@@ -41,10 +43,10 @@ public class ConfigurationController implements Serializable {
 	@PostConstruct
 	public void init() {
 		dictionaryName = "MEDDRA";
-		getExtensionList();
-		getProgramList();
-		getProtocolList();
-		getProductList();
+//		getExtensionList();
+//		getProgramList();
+//		getProtocolList();
+//		getProductList();
 		getCurrentMeddraVersion();
 	}
 
