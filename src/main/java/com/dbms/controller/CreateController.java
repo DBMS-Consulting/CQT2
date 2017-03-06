@@ -867,6 +867,15 @@ public class CreateController implements Serializable {
 		// Deletes record
 		if (state.equals("Delete")) {
 			try {
+				// delete the relations
+				List<CmqRelation190> existingRelation = this.cmqRelationService.findByCmqCode(selectedData.getCmqCode());
+				Set<Long> ids = new HashSet<Long>();
+				for(CmqRelation190 r: existingRelation) {
+					ids.add(r.getId());
+				}
+				this.cmqRelationService.remove(ids);
+				
+				// delete the record
 				cmqBaseService.remove(selectedData.getCmqId());
 
 				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Record deleted!'" + state + "'", "");
