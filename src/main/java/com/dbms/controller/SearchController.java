@@ -14,6 +14,7 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
 
+import org.apache.commons.lang3.StringUtils;
 import org.primefaces.component.wizard.Wizard;
 import org.primefaces.event.NodeExpandEvent;
 import org.primefaces.event.RowEditEvent;
@@ -450,15 +451,15 @@ public class SearchController extends BaseController<CmqBase190> {
 		log.debug("search by{}", extension);
 
 		// Item label is 'All' but value is empty string
-		if ("".equalsIgnoreCase(status)) {
+		if (StringUtils.isBlank(status)) {
 			status = null;
 		}
 		// Item label is 'All' but value is empty string
-		if ("".equalsIgnoreCase(critical)) {
+		if (StringUtils.isBlank(critical)) {
 			critical = null;
 		}
 		// Item label is 'All' but value is empty string
-		if ("".equals(level)) {
+		if ((null != level) && (level.intValue() <= 0)) {
 			level = null;
 		}
 		// Item label is 'All' but value is empty string
