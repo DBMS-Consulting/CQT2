@@ -5,9 +5,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
+import javax.faces.convert.Converter;
 
 import org.primefaces.model.DualListModel;
 import org.slf4j.Logger;
@@ -46,83 +50,102 @@ public class DemoteToDraftController implements Serializable {
 
 	private DualListModel<CmqBase190> demoteToDraftDualListModel;
 
+	private CmqBaseDualListConverter cmqBaseDualListConverter;
+	
 	@PostConstruct
 	public void init() {
 		sourceList = this.cmqBaseService.findPublishedCmqs();
 		targetList = new ArrayList<CmqBase190>();
 		demoteToDraftDualListModel = new DualListModel<CmqBase190>(sourceList, targetList);
+		this.cmqBaseDualListConverter = new CmqBaseDualListConverter();
 	}
 
 	public void demote() {
 		List<Long> targetCmqCodes = new ArrayList<>();
 		List<Long> targetCmqParentCodes = new ArrayList<>();
 		List<CmqBase190> targetCmqsSelected = new ArrayList<CmqBase190>(this.demoteToDraftDualListModel.getTarget());
-		for (CmqBase190 cmqBase : targetCmqsSelected) {
-			targetCmqCodes.add(cmqBase.getCmqCode());
-			if(null != cmqBase.getCmqParentCode()) {
-				targetCmqParentCodes.add(cmqBase.getCmqParentCode());
+		if((targetCmqsSelected == null) || (targetCmqsSelected.size() == 0)) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Please select atleats 1 list to demote.", "");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		} else {
+			for (CmqBase190 cmqBase : targetCmqsSelected) {
+				targetCmqCodes.add(cmqBase.getCmqCode());
+				if(null != cmqBase.getCmqParentCode()) {
+					targetCmqParentCodes.add(cmqBase.getCmqParentCode());
+				}
 			}
-		}
-		
-		
-		//If the is a child is being demoted, and the parent is NOT demoted, 
-		//it should give only a WARNING that the parent is not demoted but it should NOT stop the child from being demoted.
-		boolean isListDemotable = true;
-		List<CmqBase190> faultyCmqs = new ArrayList<>();
-		if(targetCmqParentCodes.size() > 0) {
-			List<CmqBase190> parentCmqsList = this.cmqBaseService.findParentCmqsByCodes(targetCmqParentCodes);
-			if(null != parentCmqsList) {
-				for (CmqBase190 parentcmqBase : parentCmqsList) {
-					if(!parentcmqBase.getCmqState().equalsIgnoreCase("draft") && parentcmqBase.getCmqStatus().equalsIgnoreCase("P")) {
-						isListDemotable = false;
-						faultyCmqs.add(parentcmqBase);
+			
+			List<CmqBase190> faultyCmqs = new ArrayList<>();
+			
+			//now get the children
+			//If a parent is demoted, then child must be demoted 
+			//(If the child is status in active then show a error 
+			//"The list being demoted has an associated active child list hence cannot be demoted.”
+			boolean isChildDemotedError = false;
+			List<CmqBase190> childCmqsOftargets = this.cmqBaseService.findChildCmqsByCodes(targetCmqCodes);
+			if((null != childCmqsOftargets) && (childCmqsOftargets.size() > 0)) {
+				//add them to the selected cmqs list
+				for (CmqBase190 childCmq : childCmqsOftargets) {
+					if(!childCmq.getCmqState().equalsIgnoreCase("published") && childCmq.getCmqStatus().equalsIgnoreCase("P")) {
+						isChildDemotedError = true;
+						faultyCmqs.add(childCmq);
+					} else {
+						targetCmqsSelected.add(childCmq);//we need to demote this as well
 					}
 				}
 			}
-		}
-		
-		if(!isListDemotable) {
-			//we need to show message that parent is not demoted yet but we carry on with the children.
 			
-		} 
-		
-		//now get the children
-		List<CmqBase190> childCmqsOftargets = this.cmqBaseService.findChildCmqsByCodes(targetCmqCodes);
-		if((null != childCmqsOftargets) && (childCmqsOftargets.size() > 0)) {
-			//add them to the selected cmqs list
-			for (CmqBase190 childCmq : childCmqsOftargets) {
-				if(!childCmq.getCmqState().equalsIgnoreCase("draft") && childCmq.getCmqStatus().equalsIgnoreCase("P")) {
-					isListDemotable = false;
-					faultyCmqs.add(childCmq);
-					targetCmqsSelected.add(childCmq);//we need to demote this as well
+			if(isChildDemotedError) {
+				//we show a error on screen that we have one or more parents in the list which has a child which is published and pending.
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+						"The lists being demoted have an associated active child list hence cannot be demoted.", "");
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+			} else {
+				//If there is a child is being demoted, and the parent is NOT demoted, 
+				//it should give only a WARNING that the parent is not demoted but it should NOT stop the child from being demoted.
+				//and continue forward
+				if(targetCmqParentCodes.size() > 0) {
+					//we need to show message that parent is not demoted yet but we carry on with the children.
+					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN,
+							"The lists being demoted have parent lists which are not demoted yet.", "");
+					FacesContext.getCurrentInstance().addMessage(null, msg);
+				} 
+				
+				//continue
+				boolean hasErrorOccured = false;
+				for (CmqBase190 cmqBase190 : targetCmqsSelected) {
+					cmqBase190.setCmqState("Draft");
 				}
-			}
-		}
-		
-		
-		if(!isListDemotable) {
-			//we show a warning on screen that we have one or more parents in the list which has a child which is not demoted yet.
-			//do you want to demote both?
-			//when user clicks on yes we demote both by using the following code.
-			
-		} else {
-			boolean hasErrorOccured = false;
-			List<CmqBase190> cmqsFailedToSave = new ArrayList<>();
-			//success
-			for (CmqBase190 cmqBase190 : targetCmqsSelected) {
-				cmqBase190.setCmqState("Draft");
-				cmqBase190.setCmqStatus("P");
+				
 				try {
-					this.cmqBaseService.update(cmqBase190);
+					this.cmqBaseService.update(targetCmqsSelected);
 				} catch (CqtServiceException e) {
 					LOG.error(e.getMessage(), e);
 					hasErrorOccured = true;
-					cmqsFailedToSave.add(cmqBase190);
 				}
-			}
-			
-			if(hasErrorOccured) {
-				//show error message popup for partial success.
+				
+				if(hasErrorOccured) {
+					//show error message popup for partial success.
+					String codes = "";
+					if (targetCmqsSelected != null) {
+						for (CmqBase190 cmq : targetCmqsSelected) {
+							codes += cmq.getCmqCode() + ";";
+						}
+					}
+					//show error dialog with names of faulty cmqs
+					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+							"The system could not demote the following cmqs :" + codes, "");
+					FacesContext.getCurrentInstance().addMessage(null, msg);
+				} else {
+					//update the dualListModel source and target
+					init();
+					
+					//show messages on screen
+					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+							"The CMQs were successfully published", "");
+					FacesContext.getCurrentInstance().addMessage(null, msg);
+				}
 			}
 		}
 	}
@@ -174,4 +197,40 @@ public class DemoteToDraftController implements Serializable {
 	public void setDemoteToDraftDualListModel(DualListModel<CmqBase190> demoteToDraftDualListModel) {
 		this.demoteToDraftDualListModel = demoteToDraftDualListModel;
 	}
+	
+	public CmqBaseDualListConverter getCmqBaseDualListConverter() {
+		return cmqBaseDualListConverter;
+	}
+
+	public void setCmqBaseDualListConverter(CmqBaseDualListConverter cmqBaseDualListConverter) {
+		this.cmqBaseDualListConverter = cmqBaseDualListConverter;
+	}
+
+	private class CmqBaseDualListConverter implements Converter {
+
+		@Override
+		public Object getAsObject(FacesContext context, UIComponent component, String value) {
+			long inputValue = 0;
+			try{
+				inputValue = Long.valueOf(value);
+			} catch (Exception e) {
+				LOG.error(e.getMessage(), e);
+			}
+			/*PickList p = (PickList) component;
+		    DualListModel<CmqBase190> dl = (DualListModel) p.getValue();
+			List<CmqBase190> sourceList = dl.getSource();*/
+			for (CmqBase190 cmqBase190 : sourceList) {
+				if(cmqBase190.getCmqCode().longValue() == inputValue) {
+					return cmqBase190;
+				}
+			}
+			return null;
+		}
+
+		@Override
+		public String getAsString(FacesContext context, UIComponent component, Object value) {
+			return value.toString();
+		}
+	}
+
 }

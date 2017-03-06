@@ -256,7 +256,6 @@ public class PublishController implements Serializable {
 		public String getAsString(FacesContext context, UIComponent component, Object value) {
 			return value.toString();
 		}
-
 	}
 
 }

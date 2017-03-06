@@ -39,12 +39,12 @@
 					<p:panel header="Demote to Draft">
 						<h:panelGrid columns="2">
 							<p:pickList id="pickList2" value="#{demoteToDraftController.demoteToDraftDualListModel}"
-								var="pick" converter="#{publishController.cmqBaseDualListConverter}" 
+								var="pick" converter="#{demoteToDraftController.cmqBaseDualListConverter}" 
 								itemLabel="#{pick.cmqName}" itemValue="#{pick.cmqCode}" />
 
 							<!-- <p:commandButton value="Demote" onclick="PF('confirm2').show();" /> -->
 							
-							<p:commandButton value="Demote" action="#{demoteToDraftController.demote}" update="demote pickList2 m1" />
+							<p:commandButton value="Demote" action="#{demoteToDraftController.demote}" update="@form m1" />
 						</h:panelGrid>
 					</p:panel>
 				</p:tab>
