@@ -3,10 +3,13 @@ package com.dbms.controller;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -615,7 +618,7 @@ public class CreateController implements Serializable {
 	 * @return
 	 */
 	public String updateRelations(TreeNode relationsRoot) {
-		if ((relationsRoot != null) && (relationsRoot.getChildCount() > 0)) {
+		if (relationsRoot != null) {
 			List<CmqRelation190> cmqRelationsList = new ArrayList<>();
 			List<CmqBase190> cmqBaseChildrenList = new ArrayList<>();
 			List<TreeNode> childTreeNodes = relationsRoot.getChildren();
@@ -692,7 +695,7 @@ public class CreateController implements Serializable {
 							}
 						}
 						
-						if(!matchFound || updateNeeded) {
+						if(!matchFound || updateNeeded) { // when the relation is newly added or being updated
 							cmqRelation.setTermWeight((!StringUtils.isBlank(hierarchyNode.getWeight()) 
 															&& !hierarchyNode.getWeight().equalsIgnoreCase("null"))
 														? Long.parseLong(hierarchyNode.getWeight()) : null);
@@ -702,13 +705,18 @@ public class CreateController implements Serializable {
 							cmqRelation.setDictionaryVersion(cmqBase.getDictionaryVersion());
 							cmqRelation.setCmqSubversion(cmqBase.getCmqSubversion());
 							if(updateNeeded) {
+								// when the relation is being updated.
 								cmqRelation.setLastModifiedDate(new Date());
 								cmqRelation.setLastModifiedBy("test-user");
 							} else {
+								// when the relation is newly added.
 								cmqRelation.setCreationDate(new Date());
 								cmqRelation.setCreatedBy("test-user");
 							}
 							cmqRelationsList.add(cmqRelation);
+						}
+						if(matchFound) {
+							existingRelation.remove(cmqRelation);
 						}
 					}
 				}//end of if (null != hierarchyNode)
@@ -736,10 +744,32 @@ public class CreateController implements Serializable {
 					FacesContext.getCurrentInstance().addMessage(null, msg);
 				}
 			}
+			
+			// if there is some relations that are deleted from UI (exists in DB, but not existing in current UI relation tree structure)
+			// delete them
+			if(!existingRelation.isEmpty()) {
+				Set<Long> ids = new HashSet<Long>();
+				for(CmqRelation190 r: existingRelation) {
+					ids.add(r.getId());
+				}
+				try {
+					this.cmqRelationService.remove(ids);
+				} catch (CqtServiceException e) {
+					LOG.error("Exception occured while updated the list of CmqRelations for CMQ base code "
+							+ cmqBase.getCmqCode(), e);
+
+					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+							"An error occured while updated the list of CmqRelations for CMQ base code "
+									+ cmqBase.getCmqCode(),
+							"");
+					FacesContext.getCurrentInstance().addMessage(null, msg);
+				}
+					
+			}
 		}
 		return "";
 	}
-
+	
 	private Map<String, Object> checkIfMeddraRelationExists(List<CmqRelation190> existingRelation, String matchKey, HierarchyNode hierarchyNode) {
 		Map<String, Object> matchingMap = new HashMap<String, Object>(3);
 		matchingMap.put("MATCH_FOUND", false);
@@ -751,7 +781,7 @@ public class CreateController implements Serializable {
 		for (CmqRelation190 cmqRelation190 : existingRelation) {
 			if(null != cmqRelation190) {
 				if(matchKey.equalsIgnoreCase("SOC")) {
-					if((null != cmqRelation190.getSmqCode()) && (cmqRelation190.getSocCode().longValue() == nodeSocCode)){
+					if((null != cmqRelation190.getSocCode()) && (cmqRelation190.getSocCode().longValue() == nodeSocCode)){
 						matchingMap.put("MATCH_FOUND", true);
 					}
 				} else if(matchKey.equalsIgnoreCase("HLGT")) {

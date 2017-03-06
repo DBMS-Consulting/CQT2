@@ -24,7 +24,7 @@ public interface ICqtPersistenceService<E extends IEntity> {
 
 	public void remove(E e) throws CqtServiceException;
 
-	public void remove(Set<Integer> ids) throws CqtServiceException;
+	public void remove(Set<Long> ids) throws CqtServiceException;
 
 	public Class<E> getEntityClass();
 

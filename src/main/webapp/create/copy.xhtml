@@ -63,7 +63,7 @@
 							<p:commandButton value="Save" id="cb3"
 								action="#{createController.saveRelations(searchController.relationsRoot)}" icon="ui-icon-disk" />
 							<p:commandButton value="Cancel" icon="ui-icon-close"
-								process="@this" update="m1" style="float: right"
+								process="@this" update="m1 resultRelations" style="float: right"
 								action="#{searchController.resetRelations}">
 								<p:confirm header="Confirm"
 									message="Are you sure you want to erase these fields?"

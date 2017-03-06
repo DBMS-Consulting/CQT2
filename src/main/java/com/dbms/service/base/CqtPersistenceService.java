@@ -212,21 +212,10 @@ public abstract class CqtPersistenceService<E extends IEntity> implements ICqtPe
 	}
 
 	@Override
-	public void remove(Set<Integer> ids) throws CqtServiceException {
+	public void remove(Set<Long> ids) throws CqtServiceException {
 		final Class<? extends E> entityClass = getEntityClass();
 		StringBuilder queryString = new StringBuilder("delete from ");
 		queryString.append(entityClass.getName()).append(" where id in (:ids) ");
-
-		StringBuilder idsParamString = new StringBuilder();
-		int i = 0;
-		for (Integer id : ids) {
-			if (i == (ids.size() - 1)) {
-				idsParamString.append(id);
-			} else {
-				idsParamString.append(id).append(", ");
-			}
-			i++;
-		}
 
 		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
 		EntityTransaction tx = null;
@@ -234,7 +223,7 @@ public abstract class CqtPersistenceService<E extends IEntity> implements ICqtPe
 			tx = entityManager.getTransaction();
 			tx.begin();
 			Query query = entityManager.createQuery(queryString.toString());
-			query.setParameter("ids", idsParamString.toString());
+			query.setParameter("ids", ids);
 			query.executeUpdate();
 			tx.commit();
 		} catch (Exception ex) {
@@ -246,7 +235,7 @@ public abstract class CqtPersistenceService<E extends IEntity> implements ICqtPe
 					.append("Failed to update remove on ids of type '")
 					.append(getEntityClass().getName())
 					.append("' Ids provided were->")
-					.append(idsParamString.toString());
+					.append(ids.toString());
 			LOG.error(msg.toString(), ex);
 			throw new CqtServiceException(ex);
 		} finally {

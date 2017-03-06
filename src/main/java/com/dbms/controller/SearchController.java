@@ -779,7 +779,7 @@ public class SearchController extends BaseController<CmqBase190> {
 							long nodeCode = Long.parseLong(meddraDictHierarchySearchDto.getCode());
 							for (CmqRelation190 cmqRelation190 : existingRelation) {
 								if(level.equalsIgnoreCase("SOC")) {
-									if((null != cmqRelation190.getSmqCode()) 
+									if((null != cmqRelation190.getSocCode()) 
 											&& (cmqRelation190.getSocCode().longValue() == nodeCode)){
 										matchFound = true;
 									}
@@ -876,6 +876,7 @@ public class SearchController extends BaseController<CmqBase190> {
 			TreeNode childTreeNode = treeNodeIterator.next();
 			// HierarchyNode childNode = (HierarchyNode)
 			// childTreeNode.getData();
+			int i = relationsSelectedInRelationsTableList.indexOf(childTreeNode);
 			if (relationsSelectedInRelationsTableList.contains(childTreeNode)) {
 				treeNodeIterator.remove(); // remove it from the root node
 				// break;
