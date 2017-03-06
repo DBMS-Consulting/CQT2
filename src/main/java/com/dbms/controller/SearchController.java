@@ -116,15 +116,15 @@ public class SearchController extends BaseController<CmqBase190> {
 	@PostConstruct
 	public void init() {
 		this.maintainDesigBtn = false;
-		this.state = "";
-		this.status = "";
+		this.state = ""; // default is "All"
+		this.status = ""; // default is "All"
 		this.level = 1;
 		this.critical = null;
-		this.group = "No Group";
-		this.extension = "";
-		drugProgram = "";
-		product = "";
-		protocol = "";
+		this.group = ""; // default is "All"
+		this.extension = ""; // default is "All"
+		drugProgram = ""; // default is "All"
+		product = ""; // default is "All"
+		protocol = ""; // default is "All"
 
 		hierarchyRoot = new DefaultTreeNode("root", new HierarchyNode("LEVEL",
 				"NAME", "CODE", null), null);

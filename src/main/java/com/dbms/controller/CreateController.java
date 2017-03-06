@@ -469,8 +469,20 @@ public class CreateController implements Serializable {
 
 				// retrieve the saved cmq base
 				CmqBase190 savedEntity = cmqBaseService.findByCode(selectedData.getCmqCode());
-
-				// setSelectedData(savedEntity);
+				
+				// update the selectedData with saved one
+				// we do not simply assign selectedData = savedEntity,
+				// because selectedData might contain other unsaved changes like description
+				selectedData.setCmqTypeCd(savedEntity.getCmqTypeCd());
+				selectedData.setCmqName(savedEntity.getCmqName());
+				selectedData.setCmqProgramCd(savedEntity.getCmqProgramCd());
+				selectedData.setCmqProtocolCd(savedEntity.getCmqProtocolCd());		
+				selectedData.setCmqProductCd(savedEntity.getCmqProductCd());
+				selectedData.setCmqDesignee(savedEntity.getCmqDesignee());
+				selectedData.setCmqLevel(savedEntity.getCmqLevel());
+				selectedData.setCmqAlgorithm(savedEntity.getCmqAlgorithm());
+				selectedData.setLastModifiedDate(savedEntity.getLastModifiedDate());
+				selectedData.setLastModifiedBy(savedEntity.getLastModifiedBy());			
 
 				// // save the cmq code to session
 				FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("NEW-CMQ_BASE-ID",

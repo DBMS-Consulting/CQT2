@@ -2,6 +2,8 @@ package com.dbms.service.base;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.TypeVariable;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -14,6 +16,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.dbms.entity.IEntity;
+import com.dbms.entity.cqt.CmqBase190;
+import com.dbms.entity.cqt.CmqRelation190;
+import com.dbms.entity.cqt.SmqBase190;
 import com.dbms.util.ICqtEntityManagerFactory;
 import com.dbms.util.OrderBy;
 import com.dbms.util.exceptions.CqtServiceException;
@@ -126,6 +131,20 @@ public abstract class CqtPersistenceService<E extends IEntity> implements ICqtPe
 			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
 		}
 	}
+	
+	/**
+	 * set the last modified date/user info
+	 * @param e
+	 */
+	private void setModifyTimestampAndUserInfo(E e) {
+		if(e instanceof CmqBase190) {
+			((CmqBase190) e).setLastModifiedDate(new Date());
+			((CmqBase190) e).setLastModifiedBy("test-user");
+		} else if(e instanceof CmqRelation190) {
+			((CmqRelation190) e).setLastModifiedDate(new Date());
+			((CmqRelation190) e).setLastModifiedBy("test-user");
+		}
+	}
 
 	@Override
 	public E update(E e) throws CqtServiceException {
@@ -134,6 +153,9 @@ public abstract class CqtPersistenceService<E extends IEntity> implements ICqtPe
 		try {
 			tx = entityManager.getTransaction();
 			tx.begin();
+			
+			// set the last modified date/user info
+			setModifyTimestampAndUserInfo(e);
 			entityManager.merge(e);
 			tx.commit();
 		} catch (Exception ex) {
@@ -158,6 +180,7 @@ public abstract class CqtPersistenceService<E extends IEntity> implements ICqtPe
 			tx = entityManager.getTransaction();
 			tx.begin();
 			for (E e : listOfE) {
+				setModifyTimestampAndUserInfo(e);
 				entityManager.merge(e);
 			}
 			tx.commit();
