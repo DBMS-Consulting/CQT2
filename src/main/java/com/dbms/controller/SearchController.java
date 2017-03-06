@@ -70,6 +70,8 @@ public class SearchController extends BaseController<CmqBase190> {
 	private String releaseStatus;
 	private String criticalEvent;
 	private String termName;
+	private String termNameOfHierarchySearch;
+
 	private Long code;
 
 	private String extension;
@@ -359,6 +361,14 @@ public class SearchController extends BaseController<CmqBase190> {
 	public void setTermName(String termName) {
 		this.termName = termName;
 	}
+	
+	public String getTermNameOfHierarchySearch() {
+		return termNameOfHierarchySearch;
+	}
+
+	public void setTermNameOfHierarchySearch(String termNameOfHierarchySearch) {
+		this.termNameOfHierarchySearch = termNameOfHierarchySearch;
+	}
 
 	public Long getCode() {
 		return code;
@@ -524,7 +534,7 @@ public class SearchController extends BaseController<CmqBase190> {
 
 		if (searchSmqBase) {
 			List<SmqBase190> smqBaseList = smqBaseService.findByLevelAndTerm(
-					level, termName);
+					level, termNameOfHierarchySearch);
 			log.info("smqBaseList values {}", smqBaseList == null ? 0
 					: smqBaseList.size());
 
@@ -573,7 +583,7 @@ public class SearchController extends BaseController<CmqBase190> {
 		} else if (searchMeddraBase) {
 			List<MeddraDictHierarchySearchDto> meddraDictDtoList = meddraDictService
 					.findByLevelAndTerm(meddraSearchTermPrefix.toUpperCase(),
-							termName);
+							termNameOfHierarchySearch);
 			this.hierarchyRoot = new DefaultTreeNode("root", new HierarchyNode(
 					"LEVEL", "NAME", "CODE", null), null);
 
@@ -584,7 +594,7 @@ public class SearchController extends BaseController<CmqBase190> {
 			}
 		} else if (searchCmqBase) {
 			List<CmqBase190> cmqBaseList = cmqBaseService.findByLevelAndTerm(2,
-					termName);
+					termNameOfHierarchySearch);
 			this.hierarchyRoot = new DefaultTreeNode("root", new HierarchyNode(
 					"LEVEL", "NAME", "CODE", null), null);
 			for (CmqBase190 cmqBase190 : cmqBaseList) {
