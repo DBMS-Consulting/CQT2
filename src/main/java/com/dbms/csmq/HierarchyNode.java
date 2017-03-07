@@ -153,7 +153,7 @@ public class HierarchyNode implements Serializable, Comparable<HierarchyNode> {
 	}
 
 	public String getWeight() {
-		return weight;
+		return weight==null?"":weight;
 	}
 
 	public void setWeight(String weight) {
