@@ -63,7 +63,7 @@ public class CmqRelation190Service extends CqtPersistenceService<CmqRelation190>
 		} catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
 			msg
-					.append("An error occured while fetching types from CmqRelation190 on cmqCode ")
+					.append("An error occurred while fetching types from CmqRelation190 on cmqCode ")
 					.append(cmqCode)
 					.append(" Query used was ->")
 					.append(sb.toString());

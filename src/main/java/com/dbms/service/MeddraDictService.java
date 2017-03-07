@@ -69,7 +69,7 @@ public class MeddraDictService extends CqtPersistenceService<MeddraDict190> impl
 			retVal = query.list();
 		} catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
-			msg.append("An error occured while fetching types from MeddraDict190 on searchColumnType ")
+			msg.append("An error occurred while fetching types from MeddraDict190 on searchColumnType ")
 					.append(termColumnName).append(" with value like ").append(searchTerm)
 					.append(" Query used was ->").append(queryString);
 			LOG.error(msg.toString(), e);
@@ -106,7 +106,7 @@ public class MeddraDictService extends CqtPersistenceService<MeddraDict190> impl
 			}
 		} catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
-			msg.append("An error occured while fetching types from MeddraDict190 on searchColumnType ")
+			msg.append("An error occurred while fetching types from MeddraDict190 on searchColumnType ")
 					.append(termColumnName).append(" with code equal to ").append(code)
 					.append(" Query used was ->").append(queryString);
 			LOG.error(msg.toString(), e);

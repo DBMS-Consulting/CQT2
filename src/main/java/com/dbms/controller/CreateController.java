@@ -334,10 +334,10 @@ public class CreateController implements Serializable {
 					selectedData.setCmqDescription("");
 			}
 		} catch (CqtServiceException e) {
-			LOG.error("Exception occured while creating CmqBase190.", e);
+			LOG.error("Exception occurred while creating CmqBase190.", e);
 
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"An error occured while trying to save the details.", "");
+					"An error occurred while trying to save the details.", "");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
 			return null;
@@ -365,10 +365,10 @@ public class CreateController implements Serializable {
 			if (selectedData.getCmqDescription().equals("*** Description ****"))
 				selectedData.setCmqDescription("");
 		} catch (CqtServiceException e) {
-			LOG.error("Exception occured while creating CmqBase190.", e);
+			LOG.error("Exception occurred while creating CmqBase190.", e);
 
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"An error occured while trying to save the details.", "");
+					"An error occurred while trying to save the details.", "");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
 			return null;
@@ -505,10 +505,10 @@ public class CreateController implements Serializable {
 				return null;
 			}
 		} catch (CqtServiceException e) {
-			LOG.error("Exception occured while updating CmqBase190.", e);
+			LOG.error("Exception occurred while updating CmqBase190.", e);
 
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"An error occured while trying to update the details.", "");
+					"An error occurred while trying to update the details.", "");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
 			return null;
@@ -531,10 +531,10 @@ public class CreateController implements Serializable {
 					"Informative Notes are successfully saved for '" + selectedData.getCmqName() + "'", "");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		} catch (CqtServiceException e) {
-			LOG.error("Exception occured while updating CmqBase190 for add informative notes.", e);
+			LOG.error("Exception occurred while updating CmqBase190 for add informative notes.", e);
 
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"An error occured while trying to save Informative Notes.", "");
+					"An error occurred while trying to save Informative Notes.", "");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
 			return null;
@@ -613,11 +613,11 @@ public class CreateController implements Serializable {
 							"Relations are successfully saved for '" + cmqBase.getCmqName() + "'", "");
 					FacesContext.getCurrentInstance().addMessage(null, msg);
 				} catch (CqtServiceException e) {
-					LOG.error("Exception occured while saving the list of CmqRelations for CMQ base code "
+					LOG.error("Exception occurred while saving the list of CmqRelations for CMQ base code "
 							+ cmqBase.getCmqCode(), e);
 
 					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-							"An error occured while saving the list of CmqRelations for CMQ base code "
+							"An error occurred while saving the list of CmqRelations for CMQ base code "
 									+ cmqBase.getCmqCode(),
 							"");
 					FacesContext.getCurrentInstance().addMessage(null, msg);
@@ -745,11 +745,11 @@ public class CreateController implements Serializable {
 							"Relations are successfully updated for '" + cmqBase.getCmqName() + "'", "");
 					FacesContext.getCurrentInstance().addMessage(null, msg);
 				} catch (CqtServiceException e) {
-					LOG.error("Exception occured while updated the list of CmqRelations for CMQ base code "
+					LOG.error("Exception occurred while updated the list of CmqRelations for CMQ base code "
 							+ cmqBase.getCmqCode(), e);
 
 					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-							"An error occured while updated the list of CmqRelations for CMQ base code "
+							"An error occurred while updated the list of CmqRelations for CMQ base code "
 									+ cmqBase.getCmqCode(),
 							"");
 					FacesContext.getCurrentInstance().addMessage(null, msg);
@@ -877,7 +877,7 @@ public class CreateController implements Serializable {
 			} catch (CqtServiceException e) {
 				e.printStackTrace();
 				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-						"An error occured while deleting the state", "");
+						"An error occurred while deleting the state", "");
 				FacesContext ctx = FacesContext.getCurrentInstance();
 				ctx.addMessage(null, msg);
 			}
@@ -909,7 +909,7 @@ public class CreateController implements Serializable {
 		} catch (CqtServiceException e) {
 			e.printStackTrace();
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"An error occured while updating the state", "");
+					"An error occurred while updating the state", "");
 			FacesContext ctx = FacesContext.getCurrentInstance();
 			ctx.addMessage(null, msg);
 		}

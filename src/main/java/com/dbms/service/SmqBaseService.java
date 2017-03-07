@@ -49,7 +49,7 @@ public class SmqBaseService extends CqtPersistenceService<SmqBase190> implements
 		} catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
 			msg
-					.append("An error occured while fetching types from SmqBase190 on smqLevel ")
+					.append("An error occurred while fetching types from SmqBase190 on smqLevel ")
 					.append(level)
 					.append(" with smqName like ")
 					.append(searchTerm.toUpperCase())
@@ -75,7 +75,7 @@ public class SmqBaseService extends CqtPersistenceService<SmqBase190> implements
 		} catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
 			msg
-					.append("An error occured while findSmqRelationsCountForSmqCode ")
+					.append("An error occurred while findSmqRelationsCountForSmqCode ")
 					.append(smqCode)
 					.append(" Query used was ->")
 					.append(sb.toString());
@@ -100,7 +100,7 @@ public class SmqBaseService extends CqtPersistenceService<SmqBase190> implements
 		} catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
 			msg
-					.append("An error occured while findSmqRelationsForSmqCode ")
+					.append("An error occurred while findSmqRelationsForSmqCode ")
 					.append(smqCode)
 					.append(" Query used was ->")
 					.append(sb.toString());
@@ -122,7 +122,7 @@ public class SmqBaseService extends CqtPersistenceService<SmqBase190> implements
 		} catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
 			msg
-					.append("An error occured while findSmqRelationsForSmqCode ")
+					.append("An error occurred while findSmqRelationsForSmqCode ")
 					.append(smqCode)
 					.append(" Query used was ->")
 					.append(queryString);

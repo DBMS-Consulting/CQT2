@@ -135,7 +135,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190> impleme
 			retVal = query.getResultList();
 		} catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
-			msg.append("An error occured while fetching data from CmqBase190.").append("Query used was ->").append(sb);
+			msg.append("An error occurred while fetching data from CmqBase190.").append("Query used was ->").append(sb);
 			LOG.error(msg.toString(), e);
 		} finally {
 			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
@@ -163,7 +163,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190> impleme
 		} catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
 			msg
-					.append("An error occured while fetching types from CmqBase190 on cmqLevel ")
+					.append("An error occurred while fetching types from CmqBase190 on cmqLevel ")
 					.append(level)
 					.append(" with cmqName like ")
 					.append("%" + searchTerm.toUpperCase() + "%")
@@ -191,7 +191,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190> impleme
 			retVal = entityManager.createQuery(query).getResultList();
 		} catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
-			msg.append("An error occured while fetching types from CmqBase190.").append("Query used was ->").append(
+			msg.append("An error occurred while fetching types from CmqBase190.").append("Query used was ->").append(
 					query);
 			LOG.error(msg.toString(), e);
 		} finally {
@@ -216,7 +216,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190> impleme
 		} catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
 			msg
-					.append("An error occured while fetching ReleaseStatus from CmqBase190.")
+					.append("An error occurred while fetching ReleaseStatus from CmqBase190.")
 					.append("Query used was ->")
 					.append(query);
 			LOG.error(msg.toString(), e);
@@ -237,7 +237,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190> impleme
 		} catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
 			msg
-					.append("An error occured while fetching next code value form sequence CMQ_CODE_SEQ.")
+					.append("An error occurred while fetching next code value form sequence CMQ_CODE_SEQ.")
 					.append("Query used was ->")
 					.append(query);
 			LOG.error(msg.toString(), e);
@@ -284,7 +284,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190> impleme
 		} catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
 			msg
-					.append("An error occured while findCmqChildCountForCmqCode ")
+					.append("An error occurred while findCmqChildCountForCmqCode ")
 					.append(cmqCode)
 					.append(" Query used was ->")
 					.append(sb.toString());
@@ -309,7 +309,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190> impleme
 		} catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
 			msg
-					.append("An error occured while findCmqCountByCmqNameAndExtension ")
+					.append("An error occurred while findCmqCountByCmqNameAndExtension ")
 					.append(" Query used was ->")
 					.append(sb.toString());
 			LOG.error(msg.toString(), e);

@@ -207,7 +207,7 @@ public class AdminController implements Serializable {
 		} catch (CqtServiceException e) {
 			e.printStackTrace();
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"An error occured while creating an extension code", "");
+					"An error occurred while creating an extension code", "");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}
 		ref = new RefConfigCodeList();
