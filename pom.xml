@@ -21,7 +21,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 		<!-- to be compatible with JBoss EAP 6.4 -->
-		<hibernate.version>4.2.7.Final</hibernate.version>
+		<hibernate.version>4.2.18.Final</hibernate.version>
 
 	</properties>
 	<dependencies>
@@ -49,9 +49,9 @@
 			<version>${mojarra.version}</version>
 		</dependency>
 		<dependency>
-	    <groupId>javax.enterprise</groupId>
-		    <artifactId>cdi-api</artifactId>
-		    <version>1.2</version>
+			<groupId>javax.enterprise</groupId>
+			<artifactId>cdi-api</artifactId>
+			<version>1.2</version>
 		</dependency>
 
 		<!-- PrimeFaces -->
@@ -82,23 +82,25 @@
 			<artifactId>hibernate-c3p0</artifactId>
 			<version>${hibernate.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-ehcache</artifactId>
+			<version>${hibernate.version}</version>
+		</dependency>
+		<!-- <dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-search-orm</artifactId>
+			<version>4.6.0.Final-redhat-2</version>
+		</dependency> -->
+		
 		<!-- oracle -->
-<!-- 
+		<!-- <dependency> <groupId>com.oracle</groupId> <artifactId>ojdbc7</artifactId> 
+			<version>12.1.0.2</version> </dependency> <dependency> <groupId>com.oracle</groupId> 
+			<artifactId>ucp</artifactId> <version>12.1.0.2</version> </dependency> -->
 		<dependency>
-			<groupId>com.oracle</groupId>
+			<groupId>cn.easyproject</groupId>
 			<artifactId>ojdbc7</artifactId>
-			<version>12.1.0.2</version>
-		</dependency>
-		<dependency>
-			<groupId>com.oracle</groupId>
-			<artifactId>ucp</artifactId>
-			<version>12.1.0.2</version>
-		</dependency>
- -->
-		<dependency>
-		    <groupId>cn.easyproject</groupId>
-		    <artifactId>ojdbc7</artifactId>
-		    <version>12.1.0.2.0</version>
+			<version>12.1.0.2.0</version>
 		</dependency>
 
 		<!-- hsqldb driver -->
@@ -153,21 +155,17 @@
 					</webApp>
 				</configuration>
 			</plugin>
-			
-			<!-- 
-				mvn jboss-as:deploy
-				mvn jboss-as:redeploy
-				mvn jboss-as:undeploy
-  			 -->
-            <plugin>
-                <groupId>org.jboss.as.plugins</groupId>
-                <artifactId>jboss-as-maven-plugin</artifactId>
-                <version>7.5.Final</version>
-            </plugin>
-			
+
+			<!-- mvn jboss-as:deploy mvn jboss-as:redeploy mvn jboss-as:undeploy -->
+			<plugin>
+				<groupId>org.jboss.as.plugins</groupId>
+				<artifactId>jboss-as-maven-plugin</artifactId>
+				<version>7.5.Final</version>
+			</plugin>
+
 		</plugins>
 	</build>
-	
+
 	<repositories>
 		<repository>
 			<id>jboss-repo</id>
@@ -184,6 +182,11 @@
 		<repository>
 			<id>codelds</id>
 			<url>https://code.lds.org/nexus/content/groups/main-repo</url>
+		</repository>
+
+		<repository>
+			<id>redhat-ga</id>
+			<url>https://maven.repository.redhat.com/ga</url>
 		</repository>
 	</repositories>
 </project>

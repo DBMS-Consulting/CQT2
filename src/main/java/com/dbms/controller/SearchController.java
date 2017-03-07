@@ -38,6 +38,7 @@ import com.dbms.service.ICmqRelation190Service;
 import com.dbms.service.IMeddraDictService;
 import com.dbms.service.IRefCodeListService;
 import com.dbms.service.ISmqBaseService;
+import com.dbms.util.CqtConstants;
 import com.dbms.util.exceptions.CqtServiceException;
 import com.dbms.web.dto.CodelistDTO;
 
@@ -588,10 +589,31 @@ public class SearchController extends BaseController<CmqBase190> {
 			this.hierarchyRoot = new DefaultTreeNode("root", new HierarchyNode(
 					"LEVEL", "NAME", "CODE", null), null);
 
+			String childSearchColumnTypePrefix = null;
+			String parentCodeColumnPrefix = levelH + "_";
+			if ("SOC".equalsIgnoreCase(levelH)) {
+				childSearchColumnTypePrefix = "HLGT_";
+			} else if ("HLGT".equalsIgnoreCase(levelH)) {
+				childSearchColumnTypePrefix = "HLT_";
+			} else if ("HLT".equalsIgnoreCase(levelH)) {
+				childSearchColumnTypePrefix = "PT_";
+			} else if ("PT".equalsIgnoreCase(levelH)) {
+				childSearchColumnTypePrefix = "LLT_";
+			}
+			
 			for (MeddraDictHierarchySearchDto meddraDictDto : meddraDictDtoList) {
-				HierarchyNode node = this.createMeddraNode(meddraDictDto,
-						levelH);
-				new DefaultTreeNode(node, this.hierarchyRoot);
+				HierarchyNode node = this.createMeddraNode(meddraDictDto, levelH);
+				TreeNode parentTreeNode = new DefaultTreeNode(node, this.hierarchyRoot);
+				
+				Long countOfChildren = this.meddraDictService.findChldrenCountByParentCode(childSearchColumnTypePrefix,
+						parentCodeColumnPrefix, Long.valueOf(meddraDictDto.getCode()));
+				if((null != countOfChildren) && (countOfChildren > 0)) {
+					// add a dummmy node to show expand arrow
+					HierarchyNode dummyNode = new HierarchyNode(null, null,
+							null, null);
+					dummyNode.setDummyNode(true);
+					new DefaultTreeNode(dummyNode, parentTreeNode);
+				}
 			}
 		} else if (searchCmqBase) {
 			List<CmqBase190> cmqBaseList = cmqBaseService.findByLevelAndTerm(2,
@@ -671,6 +693,60 @@ public class SearchController extends BaseController<CmqBase190> {
 						childRelationNode.setEntity(childRelation);
 
 						new DefaultTreeNode(childRelationNode, expandedTreeNode);
+					}
+				}
+			} else if(entity instanceof MeddraDictHierarchySearchDto) {
+				String parentLevel = hierarchyNode.getLevel();
+				MeddraDictHierarchySearchDto meddraDictHierarchySearchDto = (MeddraDictHierarchySearchDto)entity;
+				
+				//child code and term type prefix for the parent i.e: node that was expanded in ui
+				String childLevel = null;
+				String childSearchColumnTypePrefix = null;
+				
+				//child of the above child
+				String childOfChildLevel = null;
+				String childchildOfChildSearchColumnTypePrefix = null;
+				
+				String parentCodeColumnPrefix = parentLevel + "_";
+				if ("SOC".equalsIgnoreCase(parentLevel)) {
+					childLevel = "HLGT";
+					childSearchColumnTypePrefix = childLevel + "_";
+					childOfChildLevel = "HLT";
+					childchildOfChildSearchColumnTypePrefix = childOfChildLevel + "_";
+				} else if ("HLGT".equalsIgnoreCase(parentLevel)) {
+					childLevel = "HLT";
+					childSearchColumnTypePrefix = childLevel + "_";
+					childOfChildLevel = "PT";
+					childchildOfChildSearchColumnTypePrefix = childOfChildLevel + "_";
+				} else if ("HLT".equalsIgnoreCase(parentLevel)) {
+					childLevel = "PT";
+					childSearchColumnTypePrefix = childLevel + "_";
+					childOfChildLevel = "LLT";
+					childchildOfChildSearchColumnTypePrefix = childOfChildLevel + "_";
+				} else if ("PT".equalsIgnoreCase(parentLevel)) {
+					childLevel = "LLT";
+					childSearchColumnTypePrefix = childLevel + "_";
+				}
+				
+				//fetch children of parent node by code of parent
+				List<MeddraDictHierarchySearchDto> childDtos = this.meddraDictService.findChildrenByParentCode(
+						childSearchColumnTypePrefix, parentCodeColumnPrefix, Long.valueOf(meddraDictHierarchySearchDto.getCode()));
+				
+				for (MeddraDictHierarchySearchDto childDto : childDtos) {
+					HierarchyNode childNode = this.createMeddraNode(childDto, childLevel);
+					TreeNode childTreeNode = new DefaultTreeNode(childNode, expandedTreeNode);
+					
+					//fetch children count of this iterating child node by code of child
+					//no need to do this is the childOfChild is LLT since LT is the leaf ode type
+					if(!"LLT".equalsIgnoreCase(childLevel)) {
+						Long countOfChildrenOfChild = this.meddraDictService.findChldrenCountByParentCode(childchildOfChildSearchColumnTypePrefix
+											, childSearchColumnTypePrefix, Long.valueOf(childDto.getCode()));
+						if(countOfChildrenOfChild > 0) {
+							// add a dummmy node to show expand arrow
+							HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
+							dummyNode.setDummyNode(true);
+							new DefaultTreeNode(dummyNode, childTreeNode);
+						}
 					}
 				}
 			} else if (entity instanceof CmqBase190) {

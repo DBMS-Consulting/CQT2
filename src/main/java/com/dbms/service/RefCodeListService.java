@@ -9,6 +9,7 @@ import java.util.List;
 
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
@@ -25,44 +26,51 @@ import com.dbms.util.OrderBy;
 public class RefCodeListService extends CqtPersistenceService<RefConfigCodeList> implements IRefCodeListService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(RefCodeListService.class);
-	
-	// members required for caching mechanism for performance of code-value interpretation for UI
-	private static final int cacheValidTimeInMillis = 10000; // 10 sec
+
+	// members required for caching mechanism for performance of code-value
+	// interpretation for UI
+	private static final int cacheValidTimeInMillis = 30000000; // 10 sec
 	private HashMap<String, RefConfigCodeListCache> codeListCache = new HashMap<String, RefConfigCodeListCache>();
+
+	@ManagedProperty("#{CqtCacheManager}")
+	private ICqtCacheManager cqtCacheManager;
 
 	@Override
 	@SuppressWarnings({ "unchecked" })
 	public List<RefConfigCodeList> findByConfigType(String codelistConfigType, OrderBy orderBy) {
-		List<RefConfigCodeList> retVal = null;
-		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		List<RefConfigCodeList> retVal = (List<RefConfigCodeList>) this.cqtCacheManager.getFromCache("code-list-cache",
+				codelistConfigType);
 
-		StringBuilder queryString = new StringBuilder("from RefConfigCodeList a");
-		queryString.append(" where a.codelistConfigType = :codelistConfigType and a.activeFlag = 'Y' order by a.serialNum ");
-		queryString.append(orderBy.name());
-		try {
-			Query query = entityManager.createQuery(queryString.toString());
-			query.setParameter("codelistConfigType", codelistConfigType);
+		if (null == retVal) {
+			EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
 
-			retVal = query.getResultList();
-			if (null == retVal) {
-				retVal = new ArrayList<>();
+			StringBuilder queryString = new StringBuilder("from RefConfigCodeList a");
+			queryString.append(
+					" where a.codelistConfigType = :codelistConfigType and a.activeFlag = 'Y' order by a.serialNum ");
+			queryString.append(orderBy.name());
+			try {
+				Query query = entityManager.createQuery(queryString.toString());
+				query.setParameter("codelistConfigType", codelistConfigType);
+
+				retVal = query.getResultList();
+				if (null == retVal) {
+					retVal = new ArrayList<>();
+				} else {
+					// add them to cache
+					cqtCacheManager.addToCache("code-list-cache", codelistConfigType, retVal);
+				}
+			} catch (Exception ex) {
+				StringBuilder msg = new StringBuilder();
+				msg.append("findByConfigType failed for type '").append("RefConfigCodeList").append("' and value of ")
+						.append(codelistConfigType).append(". Query used was->").append(queryString);
+				LOG.error(msg.toString(), ex);
+			} finally {
+				this.cqtEntityManagerFactory.closeEntityManager(entityManager);
 			}
-		} catch (Exception ex) {
-			StringBuilder msg = new StringBuilder();
-			msg
-					.append("findByConfigType failed for type '")
-					.append("RefConfigCodeList")
-					.append("' and value of ")
-					.append(codelistConfigType)
-					.append(". Query used was->")
-					.append(queryString);
-			LOG.error(msg.toString(), ex);
-		} finally {
-			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
 		}
 		return retVal;
 	}
-	
+
 	@Override
 	@SuppressWarnings({ "unchecked" })
 	public List<RefConfigCodeList> findAllByConfigType(String codelistConfigType, OrderBy orderBy) {
@@ -82,13 +90,8 @@ public class RefCodeListService extends CqtPersistenceService<RefConfigCodeList>
 			}
 		} catch (Exception ex) {
 			StringBuilder msg = new StringBuilder();
-			msg
-					.append("findByConfigType failed for type '")
-					.append("RefConfigCodeList")
-					.append("' and value of ")
-					.append(codelistConfigType)
-					.append(". Query used was->")
-					.append(queryString);
+			msg.append("findByConfigType failed for type '").append("RefConfigCodeList").append("' and value of ")
+					.append(codelistConfigType).append(". Query used was->").append(queryString);
 			LOG.error(msg.toString(), ex);
 		} finally {
 			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
@@ -115,20 +118,16 @@ public class RefCodeListService extends CqtPersistenceService<RefConfigCodeList>
 			}
 		} catch (Exception ex) {
 			StringBuilder msg = new StringBuilder();
-			msg
-					.append("getCurrentMeddraVersion failed for codelistConfigType ")
-					.append(CqtConstants.CODE_LIST_TYPE_MEDDRA_VERSIONS)
-					.append(" and codelistInternalValue ")
-					.append(CqtConstants.CURRENT_MEDDRA_VERSION)
-					.append("Query used was->")
-					.append(queryString);
+			msg.append("getCurrentMeddraVersion failed for codelistConfigType ")
+					.append(CqtConstants.CODE_LIST_TYPE_MEDDRA_VERSIONS).append(" and codelistInternalValue ")
+					.append(CqtConstants.CURRENT_MEDDRA_VERSION).append("Query used was->").append(queryString);
 			LOG.error(msg.toString(), ex);
 		} finally {
 			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
 		}
 		return retVal;
 	}
-	
+
 	@Override
 	public String findCodeByInternalCode(String codelistInternalValue) {
 		RefConfigCodeList ref = null;
@@ -140,12 +139,8 @@ public class RefCodeListService extends CqtPersistenceService<RefConfigCodeList>
 			ref = (RefConfigCodeList) query.getSingleResult();
 		} catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
-			msg
-					.append("findByCode failed for CODELIST_INTERNAL_VALUE value'")
-					.append(codelistInternalValue)
-					.append("' ")
-					.append("Query used was ->")
-					.append(queryString);
+			msg.append("findByCode failed for CODELIST_INTERNAL_VALUE value'").append(codelistInternalValue)
+					.append("' ").append("Query used was ->").append(queryString);
 			LOG.error(msg.toString(), e);
 		} finally {
 			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
@@ -154,12 +149,12 @@ public class RefCodeListService extends CqtPersistenceService<RefConfigCodeList>
 			return ref.getValue();
 		return codelistInternalValue;
 	}
-	
+
 	@Override
 	public String findCodeByInternalCode(String configType, String internalCode) {
 		RefConfigCodeList ref = null;
 		String queryString = "from RefConfigCodeList a where a.codelistConfigType = :codelistConfigType and a.codelistInternalValue = :codelistInternalValue";
-		
+
 		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
 		try {
 			Query query = entityManager.createQuery(queryString);
@@ -168,12 +163,8 @@ public class RefCodeListService extends CqtPersistenceService<RefConfigCodeList>
 			ref = (RefConfigCodeList) query.getSingleResult();
 		} catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
-			msg
-					.append("findCodeByInternalCode failed for CODELIST_INTERNAL_VALUE value'")
-					.append(internalCode)
-					.append("' ")
-					.append("Query used was ->")
-					.append(queryString);
+			msg.append("findCodeByInternalCode failed for CODELIST_INTERNAL_VALUE value'").append(internalCode)
+					.append("' ").append("Query used was ->").append(queryString);
 			LOG.error(msg.toString(), e);
 		} finally {
 			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
@@ -182,24 +173,25 @@ public class RefCodeListService extends CqtPersistenceService<RefConfigCodeList>
 			return ref.getValue();
 		return internalCode;
 	}
-	
+
 	/**
 	 * @author Andrius Mielkus(andrius.mielkus@yandex.com)
 	 * 
-	 * Interprets internal code to value
+	 *         Interprets internal code to value
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public String interpretInternalCodeToValue(String configType, String internalCode) {
 		RefConfigCodeListCache codeList;
 		codeList = codeListCache.get(configType);
-		if(codeList == null || !codeList.isValid()) {
+		if (codeList == null || !codeList.isValid()) {
 			// since the cache is empty or invalid, update it from DB
 			List<RefConfigCodeList> listFromDB = null;
 			EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
 
 			StringBuilder queryString = new StringBuilder("from RefConfigCodeList a");
-			queryString.append(" where a.codelistConfigType = :codelistConfigType order by a.codelistInternalValue ASC");
+			queryString
+					.append(" where a.codelistConfigType = :codelistConfigType order by a.codelistInternalValue ASC");
 			try {
 				Query query = entityManager.createQuery(queryString.toString());
 				query.setParameter("codelistConfigType", configType);
@@ -207,11 +199,8 @@ public class RefCodeListService extends CqtPersistenceService<RefConfigCodeList>
 				listFromDB = query.getResultList();
 			} catch (Exception ex) {
 				StringBuilder msg = new StringBuilder();
-				msg
-						.append("interpretInternalCodeToValue: failed to find the code list for '")
-						.append(configType)
-						.append("' type. Query used was->")
-						.append(queryString);
+				msg.append("interpretInternalCodeToValue: failed to find the code list for '").append(configType)
+						.append("' type. Query used was->").append(queryString);
 				LOG.error(msg.toString(), ex);
 			} finally {
 				this.cqtEntityManagerFactory.closeEntityManager(entityManager);
@@ -219,51 +208,51 @@ public class RefCodeListService extends CqtPersistenceService<RefConfigCodeList>
 					listFromDB = new ArrayList<>();
 				}
 			}
-			if(codeList == null) {
+			if (codeList == null) {
 				codeList = new RefConfigCodeListCache(listFromDB, cacheValidTimeInMillis);
 				codeListCache.put(configType, codeList);
 			} else
 				codeList.setValueList(listFromDB);
 		}
-		
+
 		RefConfigCodeList foundEntity = codeList.findByInternalCode(internalCode);
-		
-		if(foundEntity != null)
+
+		if (foundEntity != null)
 			return foundEntity.getValue();
 		return internalCode;
 	}
-	
+
 	/**
 	 * 
-	 * @author Andrius Mielkus(andrius.mielkus@yandex.com)
-	 * Caching mechanism implementation of RefConfigCodeList
+	 * @author Andrius Mielkus(andrius.mielkus@yandex.com) Caching mechanism
+	 *         implementation of RefConfigCodeList
 	 *
 	 */
 	private class RefConfigCodeListCache {
 		private List<RefConfigCodeList> valueList;
 		private final int validTimeInMillis;
 		private long updateTimestamp;
-		
+
 		RefConfigCodeListCache(List<RefConfigCodeList> valueList, int validTimeInMillis) {
 			this.valueList = valueList;
 			this.validTimeInMillis = validTimeInMillis;
 			this.updateTimestamp = Calendar.getInstance().getTimeInMillis();
 		}
-		
+
 		public List<RefConfigCodeList> getValueList() {
 			return valueList;
 		}
-		
+
 		public void setValueList(List<RefConfigCodeList> valueList) {
 			this.valueList = valueList;
 			this.updateTimestamp = Calendar.getInstance().getTimeInMillis();
 		}
-		
+
 		public boolean isValid() {
 			long now = Calendar.getInstance().getTimeInMillis();
 			return (now - updateTimestamp < validTimeInMillis);
 		}
-		
+
 		public RefConfigCodeList findByInternalCode(String internalCode) {
 			RefConfigCodeList searchKey = new RefConfigCodeList();
 			searchKey.setCodelistInternalValue(internalCode);
@@ -273,13 +262,21 @@ public class RefCodeListService extends CqtPersistenceService<RefConfigCodeList>
 				public int compare(RefConfigCodeList o1, RefConfigCodeList o2) {
 					return o1.getCodelistInternalValue().compareTo(o2.getCodelistInternalValue());
 				}
-				
+
 			});
-			if(loc >= 0) {
+			if (loc >= 0) {
 				return valueList.get(loc);
 			}
 			return null;
 		}
+	}
+
+	public ICqtCacheManager getCqtCacheManager() {
+		return cqtCacheManager;
+	}
+
+	public void setCqtCacheManager(ICqtCacheManager cqtCacheManager) {
+		this.cqtCacheManager = cqtCacheManager;
 	}
 
 }

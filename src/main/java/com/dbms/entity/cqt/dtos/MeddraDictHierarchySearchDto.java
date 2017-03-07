@@ -1,7 +1,6 @@
 package com.dbms.entity.cqt.dtos;
 
 import com.dbms.entity.IEntity;
-import com.dbms.util.MeddraDictLevelType;
 
 public class MeddraDictHierarchySearchDto implements IEntity {
 

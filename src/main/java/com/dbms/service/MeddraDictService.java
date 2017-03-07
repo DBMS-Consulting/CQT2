@@ -40,7 +40,7 @@ public class MeddraDictService extends CqtPersistenceService<MeddraDict190> impl
 		String termColumnName = searchColumnTypePrefix + "TERM";
 		String codeColumnName = searchColumnTypePrefix + "CODE";
 		String queryString = "";
-		if(StringUtils.isBlank(searchTerm)) {
+		if (StringUtils.isBlank(searchTerm)) {
 			queryString = "select MEDDRA_DICT_ID as meddraDictId, " + termColumnName + " as term, " + codeColumnName
 					+ " as code from (select MEDDRA_DICT_ID, " + termColumnName + ", " + codeColumnName
 					+ ", row_number() over (partition by " + codeColumnName
@@ -52,7 +52,6 @@ public class MeddraDictService extends CqtPersistenceService<MeddraDict190> impl
 					+ " order by MEDDRA_DICT_ID) rn from MEDDRA_DICT_CURRENT where upper(" + termColumnName
 					+ ")  like :searchTerm ) where rn = 1";
 		}
-		
 
 		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
 		Session session = entityManager.unwrap(Session.class);
@@ -61,17 +60,17 @@ public class MeddraDictService extends CqtPersistenceService<MeddraDict190> impl
 			query.addScalar("meddraDictId", StandardBasicTypes.LONG);
 			query.addScalar("term", StandardBasicTypes.STRING);
 			query.addScalar("code", StandardBasicTypes.STRING);
-			if(!StringUtils.isBlank(searchTerm)) {
+			if (!StringUtils.isBlank(searchTerm)) {
 				query.setParameter("searchTerm", searchTerm.toUpperCase());
 			}
 			query.setResultTransformer(Transformers.aliasToBean(MeddraDictHierarchySearchDto.class));
-			
+
 			retVal = query.list();
 		} catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
 			msg.append("An error occurred while fetching types from MeddraDict190 on searchColumnType ")
-					.append(termColumnName).append(" with value like ").append(searchTerm)
-					.append(" Query used was ->").append(queryString);
+					.append(termColumnName).append(" with value like ").append(searchTerm).append(" Query used was ->")
+					.append(queryString);
 			LOG.error(msg.toString(), e);
 		} finally {
 			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
@@ -89,7 +88,7 @@ public class MeddraDictService extends CqtPersistenceService<MeddraDict190> impl
 				+ ", row_number() over (partition by " + codeColumnName
 				+ " order by MEDDRA_DICT_ID) rn from MEDDRA_DICT_CURRENT where " + codeColumnName
 				+ " = :code ) where rn = 1";
-		
+
 		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
 		Session session = entityManager.unwrap(Session.class);
 		try {
@@ -99,15 +98,47 @@ public class MeddraDictService extends CqtPersistenceService<MeddraDict190> impl
 			query.addScalar("code", StandardBasicTypes.STRING);
 			query.setParameter("code", code);
 			query.setResultTransformer(Transformers.aliasToBean(MeddraDictHierarchySearchDto.class));
-			
+
 			List<MeddraDictHierarchySearchDto> dataList = query.list();
-			if((null != dataList) && (dataList.size() > 0)) {
+			if ((null != dataList) && (dataList.size() > 0)) {
 				retVal = dataList.get(0);
 			}
 		} catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
 			msg.append("An error occurred while fetching types from MeddraDict190 on searchColumnType ")
-					.append(termColumnName).append(" with code equal to ").append(code)
+					.append(termColumnName).append(" with code equal to ").append(code).append(" Query used was ->")
+					.append(queryString);
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
+
+	public Long findChldrenCountByParentCode(String searchColumnTypePrefix,
+			String parentCodeColumnPrefix, Long parentCode) {
+		Long retVal = null;
+		String termColumnName = searchColumnTypePrefix + "TERM";
+		String codeColumnName = searchColumnTypePrefix + "CODE";
+		String parentCodeColumnName = parentCodeColumnPrefix + "CODE";
+		String queryString = "select count(*) "
+				+ " from (select MEDDRA_DICT_ID, " + termColumnName + ", " + codeColumnName
+				+ ", row_number() over (partition by " + codeColumnName
+				+ " order by MEDDRA_DICT_ID) rn from MEDDRA_DICT_CURRENT where " + parentCodeColumnName
+				+ " = :code ) where rn = 1";
+
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		Session session = entityManager.unwrap(Session.class);
+		try {
+			SQLQuery query = session.createSQLQuery(queryString);
+			query.setParameter("code", parentCode);
+
+			retVal = ((Number)query.uniqueResult()).longValue();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg.append("An error occurred in findChldrenCountByParentCode termColumnName was ").append(termColumnName)
+					.append(" codeColumnName was ").append(codeColumnName).append(" parentCodeColumnName was ")
+					.append(parentCodeColumnName).append(" parentCode was ").append(parentCode)
 					.append(" Query used was ->").append(queryString);
 			LOG.error(msg.toString(), e);
 		} finally {
@@ -115,5 +146,42 @@ public class MeddraDictService extends CqtPersistenceService<MeddraDict190> impl
 		}
 		return retVal;
 	}
-	
+
+	@SuppressWarnings("unchecked")
+	public List<MeddraDictHierarchySearchDto> findChildrenByParentCode(String searchColumnTypePrefix,
+			String parentCodeColumnPrefix, Long parentCode) {
+		List<MeddraDictHierarchySearchDto> retVal = null;
+		String termColumnName = searchColumnTypePrefix + "TERM";
+		String codeColumnName = searchColumnTypePrefix + "CODE";
+		String parentCodeColumnName = parentCodeColumnPrefix + "CODE";
+		String queryString = "select MEDDRA_DICT_ID as meddraDictId, " + termColumnName + " as term, " + codeColumnName
+				+ " as code from (select MEDDRA_DICT_ID, " + termColumnName + ", " + codeColumnName
+				+ ", row_number() over (partition by " + codeColumnName
+				+ " order by MEDDRA_DICT_ID) rn from MEDDRA_DICT_CURRENT where " + parentCodeColumnName
+				+ " = :code ) where rn = 1";
+
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		Session session = entityManager.unwrap(Session.class);
+		try {
+			SQLQuery query = session.createSQLQuery(queryString);
+			query.addScalar("meddraDictId", StandardBasicTypes.LONG);
+			query.addScalar("term", StandardBasicTypes.STRING);
+			query.addScalar("code", StandardBasicTypes.STRING);
+			query.setParameter("code", parentCode);
+			query.setResultTransformer(Transformers.aliasToBean(MeddraDictHierarchySearchDto.class));
+
+			retVal = query.list();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg.append("An error occurred in findChldrenByParentCode termColumnName was ").append(termColumnName)
+					.append(" codeColumnName was ").append(codeColumnName).append(" parentCodeColumnName was ")
+					.append(parentCodeColumnName).append(" parentCode was ").append(parentCode)
+					.append(" Query used was ->").append(queryString);
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
+
 }
