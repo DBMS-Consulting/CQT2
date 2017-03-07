@@ -3,6 +3,7 @@ package com.dbms.controller;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -88,6 +89,8 @@ public class CreateController implements Serializable {
 	private Long codevalue;
 	
 	private CmqBase190 selectedData;
+	
+	private Date dueDate;
 
 	@PostConstruct
 	public void init() {
@@ -292,6 +295,7 @@ public class CreateController implements Serializable {
 				RequestContext.getCurrentInstance().update("fCopy:wizardNavbar");
 			}
 		}
+		dueDate = selectedData.getCmqDueDate();
 
 		return "";
 	}
@@ -880,7 +884,15 @@ public class CreateController implements Serializable {
 
 			return "";
 		}
+		
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(dueDate);
+		LOG.info("\n\n\n  ****************************** DUE DATE :: " + cal.get(Calendar.DATE));
+		LOG.info("\n\n\n  ****************************** DUE DATE month :: " + cal.get(Calendar.MONTH));
 
+		
+		//Adding the due date to be updated
+		selectedData.setCmqDueDate(dueDate); 
 		setState(state);
 		selectedData.setCmqState(state);
 
@@ -920,14 +932,18 @@ public class CreateController implements Serializable {
 		
 		if(copyWizard == null) {
 			//we are not doing copy so change others.
+			
+			/**
+			 * Getting code internal value from now on
+			 */
 			if (extension.equals("CPT") || extension.equals("DME"))
-				setDrugProgram("No Program");
+				setDrugProgram("420001");
 		
 			if (extension.equals("CPT") || extension.equals("DME") || extension.equals("TME") || extension.equals("TR1"))
-				setProtocol("No Protocol");
+				setProtocol("999999");
 			
 			if (extension.equals("CPT") || extension.equals("DME"))
-				setProduct("No Product");
+				setProduct("99999");
 			
 		}
 	}
@@ -1217,6 +1233,14 @@ public class CreateController implements Serializable {
 
 	public void setCreateWizard(Wizard createWizard) {
 		this.createWizard = createWizard;
+	}
+
+	public Date getDueDate() {
+		return dueDate;
+	}
+
+	public void setDueDate(Date dueDate) {
+		this.dueDate = dueDate;
 	}
 
 }
