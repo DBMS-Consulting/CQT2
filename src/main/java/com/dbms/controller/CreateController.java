@@ -335,6 +335,10 @@ public class CreateController implements Serializable {
 			}
 		} catch (CqtServiceException e) {
 			LOG.error("Exception occurred while creating CmqBase190.", e);
+			
+			// since it failed to save the record, clear the creation date/user info 
+			selectedData.setCreationDate(null);
+			selectedData.setCreatedBy(null);
 
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"An error occurred while trying to save the details.", "");

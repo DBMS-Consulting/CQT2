@@ -85,7 +85,7 @@
 	<p:separator />
 
 	<h:panelGrid columns="8">
-		<p:outputLabel value="Term" />
+		<p:outputLabel value="List Name" />
 		<p:inputText value="#{searchController.termName}" />
 		<p:outputLabel value="Code" />
 		<p:inputText value="#{searchController.code}" />
@@ -115,7 +115,7 @@
 			paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 			rowsPerPageTemplate="5,10,25"
 			resizableColumns="true">
-			<p:column headerText="Term" width="100">
+			<p:column headerText="List Name" width="100">
 				<h:outputText value="#{value.cmqName}" />
 			</p:column>
 			<p:column headerText="Extension" width="140">
