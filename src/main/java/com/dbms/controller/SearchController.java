@@ -620,6 +620,7 @@ public class SearchController extends BaseController<CmqBase190> {
 					termNameOfHierarchySearch);
 			this.hierarchyRoot = new DefaultTreeNode("root", new HierarchyNode(
 					"LEVEL", "NAME", "CODE", null), null);
+			boolean dummyNodeAdded = false;
 			for (CmqBase190 cmqBase190 : cmqBaseList) {
 				HierarchyNode node = new HierarchyNode();
 				node.setLevel(levelH);
@@ -640,6 +641,19 @@ public class SearchController extends BaseController<CmqBase190> {
 							null, null);
 					dummyNode.setDummyNode(true);
 					new DefaultTreeNode(dummyNode, cmqBaseTreeNode);
+					dummyNodeAdded = true;
+				}
+				
+				if(!dummyNodeAdded) {
+					//add cmq relations now
+					List<CmqRelation190> existingRelations = this.cmqRelationService.findByCmqCode(cmqBase190.getCmqCode());
+					if((null != existingRelations) && (existingRelations.size() > 0)) {
+						// add a dummmy node to show expand arrow
+						HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
+						dummyNode.setDummyNode(true);
+						new DefaultTreeNode(dummyNode, cmqBaseTreeNode);
+						dummyNodeAdded = true;
+					}
 				}
 			}
 		}
@@ -752,26 +766,114 @@ public class SearchController extends BaseController<CmqBase190> {
 			} else if (entity instanceof CmqBase190) {
 				CmqBase190 cmqBase = (CmqBase190) entity;
 				Long cmqCode = cmqBase.getCmqCode();
-				CmqBase190 childCmqBase = cmqBaseService.findByCode(cmqCode);
-				if (null != childCmqBase) {
-					HierarchyNode node = new HierarchyNode();
-					node.setLevel(levelH);
-					node.setTerm(childCmqBase.getCmqName());
-					node.setCode(childCmqBase.getCmqCode().toString());
-					node.setEntity(childCmqBase);
-					TreeNode cmqBaseChildNode = new DefaultTreeNode(node,
-							expandedTreeNode);
-
-					Long childCount = this.cmqBaseService
-							.findCmqChildCountForParentCmqCode(childCmqBase
+				List<CmqBase190> childCmqBaseList = cmqBaseService.findChildCmqsByParentCode(cmqCode);
+				if ((null != childCmqBaseList) && (childCmqBaseList.size() > 0)) {
+					for (CmqBase190 childCmqBase : childCmqBaseList) {
+						HierarchyNode node = new HierarchyNode();
+						node.setLevel(levelH);
+						node.setTerm(childCmqBase.getCmqName());
+						node.setCode(childCmqBase.getCmqCode().toString());
+						node.setEntity(childCmqBase);
+						TreeNode cmqBaseChildNode = new DefaultTreeNode(node, expandedTreeNode);
+						
+						Long childCount = this.cmqBaseService
+								.findCmqChildCountForParentCmqCode(childCmqBase
+										.getCmqCode());
+						boolean dummyNodeAdded = false;
+						if ((null != childCount) && childCount.longValue() > 0) {
+							// add a dummmy node to show expand arrow
+							HierarchyNode dummyNode = new HierarchyNode(null, null,
+									null, null);
+							dummyNode.setDummyNode(true);
+							new DefaultTreeNode(dummyNode, cmqBaseChildNode);
+							dummyNodeAdded = true;
+						}
+						
+						if(!dummyNodeAdded) {
+							//add cmq relations now
+							List<CmqRelation190> existingRelations = this.cmqRelationService.findByCmqCode(childCmqBase
 									.getCmqCode());
-
-					if ((null != childCount) && childCount.longValue() > 0) {
-						// add a dummmy node to show expand arrow
-						HierarchyNode dummyNode = new HierarchyNode(null, null,
-								null, null);
-						dummyNode.setDummyNode(true);
-						new DefaultTreeNode(dummyNode, cmqBaseChildNode);
+							if((null != existingRelations) && (existingRelations.size() > 0)) {
+								// add a dummmy node to show expand arrow
+								HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
+								dummyNode.setDummyNode(true);
+								new DefaultTreeNode(dummyNode, cmqBaseChildNode);
+								dummyNodeAdded = true;
+							}
+						}
+					}
+				}
+				
+				//add cmq relations now
+				List<CmqRelation190> existingRelations = this.cmqRelationService.findByCmqCode(cmqCode);
+				if((null != existingRelations) && (existingRelations.size() > 0)) {
+					for (CmqRelation190 cmqRelation : existingRelations) {
+						
+						if((cmqRelation.getSocCode() != null) && (cmqRelation.getSocCode().longValue() > 0)) {
+							MeddraDictHierarchySearchDto meddraDictHierarchySearchDto = this.meddraDictService.findByCode("SOC_", cmqRelation.getSocCode());
+							HierarchyNode node = this.createMeddraNode(meddraDictHierarchySearchDto, "SOC");
+							TreeNode treeNode = new DefaultTreeNode(node, expandedTreeNode);
+							
+							Long countOfChildren = this.meddraDictService.findChldrenCountByParentCode("HLGT_",
+									"SOC_", Long.valueOf(cmqRelation.getSocCode()));
+							if((null != countOfChildren) && (countOfChildren > 0)) {
+								// add a dummmy node to show expand arrow
+								HierarchyNode dummyNode = new HierarchyNode(null, null,
+										null, null);
+								dummyNode.setDummyNode(true);
+								new DefaultTreeNode(dummyNode, treeNode);
+							}
+						} else if((cmqRelation.getHlgtCode() != null) && (cmqRelation.getHlgtCode().longValue() > 0)) {
+							MeddraDictHierarchySearchDto meddraDictHierarchySearchDto = this.meddraDictService.findByCode("HLGT_", cmqRelation.getHlgtCode());
+							HierarchyNode node = this.createMeddraNode(meddraDictHierarchySearchDto, "HLGT");
+							TreeNode treeNode = new DefaultTreeNode(node, expandedTreeNode);
+							
+							Long countOfChildren = this.meddraDictService.findChldrenCountByParentCode("HLT_",
+									"HLGT_", Long.valueOf(cmqRelation.getHlgtCode()));
+							if((null != countOfChildren) && (countOfChildren > 0)) {
+								// add a dummmy node to show expand arrow
+								HierarchyNode dummyNode = new HierarchyNode(null, null,
+										null, null);
+								dummyNode.setDummyNode(true);
+								new DefaultTreeNode(dummyNode, treeNode);
+							}
+						} else if((cmqRelation.getHltCode() != null) && (cmqRelation.getHltCode().longValue() > 0)) {
+							MeddraDictHierarchySearchDto meddraDictHierarchySearchDto = this.meddraDictService.findByCode("HLT_", cmqRelation.getHltCode());
+							HierarchyNode node = this.createMeddraNode(meddraDictHierarchySearchDto, "HLT");
+							TreeNode treeNode = new DefaultTreeNode(node, expandedTreeNode);
+							
+							Long countOfChildren = this.meddraDictService.findChldrenCountByParentCode("PT_",
+									"HLT_", Long.valueOf(cmqRelation.getHltCode()));
+							if((null != countOfChildren) && (countOfChildren > 0)) {
+								// add a dummmy node to show expand arrow
+								HierarchyNode dummyNode = new HierarchyNode(null, null,
+										null, null);
+								dummyNode.setDummyNode(true);
+								new DefaultTreeNode(dummyNode, treeNode);
+							}
+						} else if((cmqRelation.getPtCode() != null) && (cmqRelation.getPtCode().longValue() > 0)) {
+							MeddraDictHierarchySearchDto meddraDictHierarchySearchDto = this.meddraDictService.findByCode("PT_", cmqRelation.getPtCode());
+							HierarchyNode node = this.createMeddraNode(meddraDictHierarchySearchDto, "PT");
+							TreeNode treeNode = new DefaultTreeNode(node, expandedTreeNode);
+							
+							Long countOfChildren = this.meddraDictService.findChldrenCountByParentCode("LLT_",
+									"PT_", Long.valueOf(cmqRelation.getPtCode()));
+							if((null != countOfChildren) && (countOfChildren > 0)) {
+								// add a dummmy node to show expand arrow
+								HierarchyNode dummyNode = new HierarchyNode(null, null,
+										null, null);
+								dummyNode.setDummyNode(true);
+								new DefaultTreeNode(dummyNode, treeNode);
+							}
+						} else if((cmqRelation.getLltCode() != null) && (cmqRelation.getLltCode().longValue() > 0)) {
+							MeddraDictHierarchySearchDto meddraDictHierarchySearchDto = this.meddraDictService.findByCode("LLT_", cmqRelation.getLltCode());
+							HierarchyNode node = this.createMeddraNode(meddraDictHierarchySearchDto, "LLT");
+							TreeNode treeNode = new DefaultTreeNode(node, expandedTreeNode);
+						} else if((cmqRelation.getSmqCode() != null) && (cmqRelation.getSmqCode().longValue() > 0)) {
+							SmqBase190 smqBase = this.smqBaseService.findByCode(cmqRelation.getSmqCode());
+							HierarchyNode node = this.createSmqBaseNode(smqBase);
+							TreeNode treeNode = new DefaultTreeNode(node, expandedTreeNode);
+						}
 					}
 				}
 			}
