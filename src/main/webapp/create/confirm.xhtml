@@ -205,7 +205,10 @@
 				</tr>
 				<tr>
 					<td class="label-cell"><p:outputLabel styleClass="label-right" value="Due Date:" /></td>
-					<td class="value-cell"><p:calendar value="#{createController.dueDate}" id="dueDate" mode="popup" pattern="dd-MMM-yyyy" />
+					<td class="value-cell">
+						<p:calendar value="#{createController.dueDate}" id="dueDate" mode="popup" pattern="dd-MMM-yyyy" >
+							<p:ajax event="dateSelect" listener="#{createController.onDueDateSelect}" />
+						</p:calendar>
 					</td>
 				</tr>
 				<tr>

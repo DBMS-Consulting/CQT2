@@ -23,6 +23,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.primefaces.component.wizard.Wizard;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.FlowEvent;
+import org.primefaces.event.SelectEvent;
 import org.primefaces.model.TreeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -85,7 +86,6 @@ public class CreateController implements Serializable {
 	private TreeNode relationsRoot;
 	private String[] selectedDesignees;
 
-	private boolean reactivate, retire, demote, delete, approve, reviewed;
 	private Long codevalue;
 	
 	private CmqBase190 selectedData;
@@ -95,13 +95,6 @@ public class CreateController implements Serializable {
 	@PostConstruct
 	public void init() {
 		initAll();
-
-		setReactivate(true);
-		setRetire(true);
-		setDemote(true);
-		setDelete(true);
-		setApprove(true);
-		setReviewed(true);
 	}
 
 	private void initAll() {
@@ -852,13 +845,8 @@ public class CreateController implements Serializable {
 	//
 	public String workflowState(String state) {
 		LOG.info("\n OLD STATE :" + selectedData.getCmqState());
-
-		if (state.equals("Retire") && selectedData.getCmqState().equals("Active")) {
-			setState("Inactive");
-		}
-
-		// Deletes record
-		if (state.equals("Delete")) {
+		
+		if (state.equals("Delete")) { // Deletes record
 			try {
 				// delete the relations
 				List<CmqRelation190> existingRelation = this.cmqRelationService.findByCmqCode(selectedData.getCmqCode());
@@ -887,19 +875,18 @@ public class CreateController implements Serializable {
 			}
 
 			return "";
+		} else if (state.equals("Retire")) { // Retires a record
+			if(selectedData.getCmqStatus().equals("A") && selectedData.getCmqState().equalsIgnoreCase("Published")) {
+				selectedData.setCmqStatus("I");
+			}
+		} else {
+			setState(state);
+			selectedData.setCmqState(state);
 		}
 		
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(dueDate);
-		LOG.info("\n\n\n  ****************************** DUE DATE :: " + cal.get(Calendar.DATE));
-		LOG.info("\n\n\n  ****************************** DUE DATE month :: " + cal.get(Calendar.MONTH));
-
-		
 		//Adding the due date to be updated
-		selectedData.setCmqDueDate(dueDate); 
-		setState(state);
-		selectedData.setCmqState(state);
-
+		selectedData.setCmqDueDate(dueDate);
+		
 		// Update
 		try {
 			cmqBaseService.update(selectedData);
@@ -1162,65 +1149,43 @@ public class CreateController implements Serializable {
 	}
 
 	public boolean isReactivate() {
-		if (selectedData != null && selectedData.getCmqStatus() != null && selectedData.getCmqStatus().equals("I"))
+		if (selectedData != null && "I".equals(selectedData.getCmqStatus()))
 			return false;
 		return true;
 	}
 
-	public void setReactivate(boolean reactivate) {
-		this.reactivate = reactivate;
-	}
-
+	// returns if the retire button should be disabled or not. (true for disabled)
+	// The retire button will be enabled only when lists Status is A (active).
 	public boolean isRetire() {
-		if (selectedData != null && selectedData.getCmqStatus() != null && selectedData.getCmqStatus().equals("A"))
+		if (selectedData != null && "A".equals(selectedData.getCmqStatus()))
 			return false;
 		return true;
-	}
-
-	public void setRetire(boolean retire) {
-		this.retire = retire;
 	}
 
 	public boolean isDemote() {
 		if (selectedData != null && selectedData.getCmqStatus() != null
-				&& (selectedData.getCmqState().equals("Reviewed") || selectedData.getCmqState().equals("Approved")))
+				&& ("Reviewed".equalsIgnoreCase(selectedData.getCmqState()) || "Approved".equalsIgnoreCase(selectedData.getCmqState())))
 			return false;
 		return true;
-	}
-
-	public void setDemote(boolean demote) {
-		this.demote = demote;
 	}
 
 	public boolean isDelete() {
-		if (selectedData != null && selectedData.getCmqStatus() != null && selectedData.getCmqState().equals("Draft"))
+		if (selectedData != null && selectedData.getCmqStatus() != null && "Draft".equalsIgnoreCase(selectedData.getCmqState()))
 			return false;
 		return true;
-	}
-
-	public void setDelete(boolean delete) {
-		this.delete = delete;
 	}
 
 	public boolean isApprove() {
 		if (selectedData != null && selectedData.getCmqStatus() != null
-				&& selectedData.getCmqState().equals("Reviewed"))
+				&& "Reviewed".equalsIgnoreCase(selectedData.getCmqState()))
 			return false;
 		return true;
-	}
-
-	public void setApprove(boolean approve) {
-		this.approve = approve;
 	}
 
 	public boolean isReviewed() {
-		if (selectedData != null && selectedData.getCmqStatus() != null && selectedData.getCmqState().equals("Draft"))
+		if (selectedData != null && selectedData.getCmqStatus() != null && "Draft".equalsIgnoreCase(selectedData.getCmqState()))
 			return false;
 		return true;
-	}
-
-	public void setReviewed(boolean reviewed) {
-		this.reviewed = reviewed;
 	}
 
 	public Long getCodevalue() {
@@ -1245,6 +1210,11 @@ public class CreateController implements Serializable {
 
 	public void setDueDate(Date dueDate) {
 		this.dueDate = dueDate;
+	}
+	
+	public void onDueDateSelect(SelectEvent event) {
+		if(event.getObject() instanceof Date)
+			setDueDate((Date)event.getObject());
 	}
 
 }
