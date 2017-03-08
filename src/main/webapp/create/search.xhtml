@@ -64,14 +64,22 @@
 				<p:ajax update="state" listener="#{searchController.changeState}" event="change" />
 			</p:selectOneMenu>
 
-			<p:outputLabel value="State" styleClass="label-right" />
+			<!-- <p:outputLabel value="State" styleClass="label-right" />
 			<p:selectOneMenu value="#{searchController.state}" id="state">
 				<f:selectItem itemValue="" itemLabel="All" />
 				<f:selectItem itemLabel="Draft" itemValue="Draft" itemDisabled="#{searchController.status ne 'I' and searchController.status ne 'P' and searchController.status ne ''}" />
 				<f:selectItem itemLabel="Reviewed" itemValue="Reviewed" itemDisabled="#{searchController.status ne 'I' and searchController.status ne 'P' and searchController.status ne ''}" />
 				<f:selectItem itemLabel="Approved" itemValue="Approved" itemDisabled="#{searchController.status ne 'I' and searchController.status ne 'P' and searchController.status ne ''}" />
 				<f:selectItem itemLabel="Published" itemValue="Published" itemDisabled="#{searchController.status ne 'I' and searchController.status ne 'A' and searchController.status ne ''}" />
- 			</p:selectOneMenu>
+ 			</p:selectOneMenu> -->
+ 			
+ 			<p:outputLabel value="State" styleClass="label-right" />
+			<p:selectOneMenu value="#{searchController.state}" id="state">
+				<f:selectItem itemValue="" itemLabel="All" />
+				<f:selectItems></f:selectItems>	
+				<f:selectItems value="#{configMB.workflowStateList}" var="wk"
+					itemLabel="#{wk.value}" itemValue="#{wk.codelistInternalValue}" />
+			</p:selectOneMenu>
 
 			<p:outputLabel value="Group" styleClass="label-right" />
 			<p:selectOneMenu value="#{searchController.group}" id="group" disabled="false">

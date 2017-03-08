@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
 
 import com.dbms.entity.cqt.RefConfigCodeList;
@@ -22,8 +22,7 @@ import com.dbms.util.OrderBy;
  *
  */
 @ManagedBean(name = "configMB")
-//@SessionScoped
-@ViewScoped
+@ApplicationScoped
 public class ConfigurationController implements Serializable {
 
 	/**
@@ -34,7 +33,7 @@ public class ConfigurationController implements Serializable {
 	@ManagedProperty("#{RefCodeListService}")
 	private IRefCodeListService refCodeListService;
 
-	private List<RefConfigCodeList> extensions, programs, protocols, products;
+	private List<RefConfigCodeList> extensions, programs, protocols, products, workflows;
 
 	private RefConfigCodeList currentMeddraVersionCodeList;
 	
@@ -47,7 +46,8 @@ public class ConfigurationController implements Serializable {
 //		getProgramList();
 //		getProtocolList();
 //		getProductList();
-		getCurrentMeddraVersion();
+//		getCurrentMeddraVersion();
+//		getWorkflowStateList();
 	}
 
 	/**
@@ -105,6 +105,20 @@ public class ConfigurationController implements Serializable {
 		}
 		return products;
 	}
+	
+	/**
+	 * Returns worflow states.
+	 * 
+	 * @return
+	 */
+	public List<RefConfigCodeList> getWorkflowStateList() {
+		workflows = refCodeListService.findByConfigType(
+				CqtConstants.CODE_LIST_TYPE_WORKFLOW_STATES, OrderBy.ASC);
+		if (workflows == null) {
+			workflows = new ArrayList<>();
+		}
+		return workflows;
+	}
 
 	public RefConfigCodeList getCurrentMeddraVersion() {
 		this.currentMeddraVersionCodeList = refCodeListService.getCurrentMeddraVersion();
@@ -157,5 +171,13 @@ public class ConfigurationController implements Serializable {
 
 	public void setDictionaryName(String dictionaryName) {
 		this.dictionaryName = dictionaryName;
+	}
+
+	public List<RefConfigCodeList> getWorkflows() {
+		return workflows;
+	}
+
+	public void setWorkflows(List<RefConfigCodeList> workflows) {
+		this.workflows = workflows;
 	}
 }

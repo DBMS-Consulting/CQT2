@@ -9,10 +9,11 @@
 	<!-- <p:growl id="messages" /> -->
 	<h:panelGrid columns="3" cellpadding="5" id="detailsPanel">
 
-		<h:panelGrid columns="2" columnClasses="label, value"> 
+		<h:panelGrid columns="2" columnClasses="label, value">
 			<p:outputLabel value="* Extension" styleClass="label-right" />
-			<p:selectOneMenu value="#{createController.extension}" disabled="#{createController.readOnlyState}"
-				required="true" requiredMessage="The extension is required">
+			<p:selectOneMenu value="#{createController.extension}"
+				disabled="#{createController.readOnlyState}" required="true"
+				requiredMessage="The extension is required">
 				<f:selectItems value="#{configMB.extensionList}" var="extension"
 					itemLabel="#{extension.value}"
 					itemValue="#{extension.codelistInternalValue}" />
@@ -23,50 +24,57 @@
 			</p:selectOneMenu>
 
 			<p:outputLabel value="* Name" styleClass="label-right" />
-			<p:inputText required="true" requiredMessage="The name is required" disabled="#{createController.readOnlyState}"
-				maxlength="200" value="#{createController.selectedData.cmqName}"
+			<p:inputText required="true" requiredMessage="The name is required"
+				disabled="#{createController.readOnlyState}" maxlength="200"
+				value="#{createController.selectedData.cmqName}"
 				style="width: 300px !important" />
 
 			<p:outputLabel id="lDrug"
 				value="#{createController.extension eq 'TME' or 
 			createController.extension eq 'TR1' or createController.extension eq 'PRO' ? '* Drug Program' : 'Drug Program'}"
 				styleClass="label-right" />
-			<p:selectOneMenu value="#{createController.drugProgram}" id="drug" disabled="#{createController.readOnlyState}"
+			<p:selectOneMenu value="#{createController.drugProgram}" id="drug"
+				disabled="#{createController.readOnlyState}"
 				required="#{createController.extension eq 'TME' or 
 				createController.extension eq 'TR1' or createController.extension eq 'PRO'}"
 				requiredMessage="The Drug Program is required">
 				<f:selectItem itemValue="" itemLabel="" />
 				<f:selectItems value="#{configMB.programList}" var="program"
-					itemLabel="#{program.value}" itemValue="#{program.codelistInternalValue}" />
+					itemLabel="#{program.value}"
+					itemValue="#{program.codelistInternalValue}" />
 			</p:selectOneMenu>
 
 			<p:outputLabel id="lProtocol"
 				value="#{createController.extension eq 'PRO' ? '* Protocol' : 'Protocol'}"
 				styleClass="label-right" />
-			<p:selectOneMenu value="#{createController.protocol}" id="protocol" disabled="#{createController.readOnlyState}"
+			<p:selectOneMenu value="#{createController.protocol}" id="protocol"
+				disabled="#{createController.readOnlyState}"
 				requiredMessage="The Protocol is required"
 				required="#{createController.extension eq 'PRO'}">
 				<f:selectItem itemValue="" itemLabel="" />
 				<f:selectItems value="#{configMB.protocolList}" var="protocol"
-					itemLabel="#{protocol.value}" itemValue="#{protocol.codelistInternalValue}" />
+					itemLabel="#{protocol.value}"
+					itemValue="#{protocol.codelistInternalValue}" />
 			</p:selectOneMenu>
 
 			<p:outputLabel id="lProduct"
 				value="#{createController.extension eq 'TME' or 
 			createController.extension eq 'TR1' or createController.extension eq 'PRO' ? '* Product' : 'Product'}"
 				rendered="true" styleClass="label-right" />
-			<p:selectOneMenu value="#{createController.product}"  disabled="#{createController.readOnlyState}"
+			<p:selectOneMenu value="#{createController.product}"
+				disabled="#{createController.readOnlyState}"
 				required="#{createController.extension eq 'TME' or 
 			createController.extension eq 'TR1' or createController.extension eq 'PRO'}"
 				requiredMessage="The Product is required" id="product">
 				<f:selectItem itemValue="" itemLabel="" />
 				<f:selectItems value="#{configMB.productList}" var="product"
-					itemLabel="#{product.value}" itemValue="#{product.codelistInternalValue}" />
+					itemLabel="#{product.value}"
+					itemValue="#{product.codelistInternalValue}" />
 			</p:selectOneMenu>
 
 			<p:outputLabel value="* Designee" styleClass="label-right" />
 			<p:selectOneMenu value="#{createController.selectedData.cmqDesignee}"
-				rendered="true"  disabled="#{createController.readOnlyState}"
+				rendered="true" disabled="#{createController.readOnlyState}"
 				requiredMessage="The Designee is required" required="true">
 				<f:selectItem itemLabel="" itemValue=""></f:selectItem>
 				<f:selectItem itemLabel="NONE" itemValue="NONE"></f:selectItem>
@@ -75,11 +83,12 @@
 		</h:panelGrid>
 
 		<h:panelGrid columns="2" columnClasses="label, value"
-			style="min-width: 300px" >
+			style="min-width: 300px">
 
 			<p:outputLabel value="* Level" styleClass="label-right" />
 			<p:selectOneMenu value="#{createController.level}" rendered="true"
-				requiredMessage="The level is required"  disabled="#{createController.readOnlyState}" id="level"
+				requiredMessage="The level is required"
+				disabled="#{createController.readOnlyState}" id="level"
 				required="true">
 				<f:selectItem itemValue="1" itemLabel="1" />
 				<f:selectItem itemValue="2" itemLabel="2" />
@@ -89,7 +98,8 @@
 			</p:selectOneMenu>
 
 			<p:outputLabel value="* Algorithm" styleClass="label-right" />
-			<p:inputText value="#{createController.algorithm}" disabled="#{createController.readOnlyState}" />
+			<p:inputText value="#{createController.algorithm}"
+				disabled="#{createController.readOnlyState}" />
 
 
 
@@ -105,7 +115,8 @@
 				<p:outputLabel value="* State" />
 			</h:panelGrid>
 			<h:panelGrid columns="1">
-				<h:outputText value="#{createController.state}"></h:outputText>
+				<h:outputText value="#{createController.state}"
+					styleClass="uppercase"></h:outputText>
 			</h:panelGrid>
 
 
@@ -126,14 +137,14 @@
 			</h:panelGrid>
 		</h:panelGrid>
 
-		<h:panelGrid columns="2" columnClasses="label, value" >
+		<h:panelGrid columns="2" columnClasses="label, value">
 			<h:panelGrid columns="1" styleClass="grid-right">
 				<p:outputLabel value="Creation Date  " />
 			</h:panelGrid>
 
 			<h:panelGrid columns="1" styleClass="grid-right">
 				<h:outputText value="#{createController.selectedData.creationDate}">
-					<f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss"/>
+					<f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
 				</h:outputText>
 			</h:panelGrid>
 
@@ -161,13 +172,13 @@
 			<h:panelGrid columns="1">
 				<h:outputText value="#{createController.selectedData.activatedBy}" />
 			</h:panelGrid>
-			
+
 			<h:panelGrid columns="1" styleClass="grid-right">
 			</h:panelGrid>
-			
+
 			<h:panelGrid columns="1" styleClass="grid-right">
 			</h:panelGrid>
-			
+
 			<h:panelGrid columns="1" styleClass="grid-right">
 			</h:panelGrid>
 		</h:panelGrid>
@@ -189,6 +200,10 @@
 
 .ui-state-disabled {
 	opacity: 0.7 !important;
+}
+
+.uppercase {
+	text-transform: uppercase !important;
 }
 </style>
 </ui:composition>

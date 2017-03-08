@@ -929,13 +929,18 @@ public class CreateController implements Serializable {
 			 */
 			if (extension.equals("CPT") || extension.equals("DME"))
 				setDrugProgram("420001");
+			else
+				setDrugProgram("");
 		
 			if (extension.equals("CPT") || extension.equals("DME") || extension.equals("TME") || extension.equals("TR1"))
 				setProtocol("999999");
+			else
+				setProtocol("");
 			
 			if (extension.equals("CPT") || extension.equals("DME"))
 				setProduct("99999");
-			
+			else
+				setProduct(""); 
 		}
 	}
 
