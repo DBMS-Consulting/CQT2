@@ -161,6 +161,7 @@ public class MeddraDictService extends CqtPersistenceService<MeddraDict190> impl
 		} finally {
 			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
 		}
+		session.close();
 		return retVal;
 	}
 

@@ -302,6 +302,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190> impleme
 		} finally {
 			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
 		}
+		session.close();
 		return retVal;
 	}
 	
