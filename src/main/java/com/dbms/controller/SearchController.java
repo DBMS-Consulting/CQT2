@@ -203,6 +203,8 @@ public class SearchController extends BaseController<CmqBase190> {
 		this.product = "";
 		this.protocol = "";
 		this.drugProgram = "";
+		this.termName = "";
+		this.code = null;
 	}
 
 	/**

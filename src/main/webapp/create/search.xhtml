@@ -94,9 +94,9 @@
 
 	<h:panelGrid columns="8">
 		<p:outputLabel value="List Name" />
-		<p:inputText value="#{searchController.termName}" />
+		<p:inputText id="termSearch" value="#{searchController.termName}" />
 		<p:outputLabel value="Code" />
-		<p:inputText value="#{searchController.code}" />
+		<p:inputText id="codeSearch" value="#{searchController.code}" />
 
 		<!-- <p:outputLabel value="Designee" /> -->
 		<!-- <p:selectOneMenu value="#{createController.selectedData.cmqDesignee}">
@@ -112,7 +112,7 @@
 		<p:commandButton value="Search" action="#{searchController.search()}"
 			update="result" />
 		<p:commandButton action="#{searchController.reset}" value="Reset"
-			update="@form:result @form:searchPanel" />
+			update="@form:result @form:searchPanel termSearch codeSearch" />
 	</h:panelGrid>
 
 	<p:spacer />

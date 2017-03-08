@@ -113,7 +113,7 @@ public class CreateController implements Serializable {
 		group = "No Group";
 		drugProgram = "";
 		product = "";
-		protocol = "";
+		protocol = "999999";
 		extension = "TME";
 		algorithm = "N";
 	}
