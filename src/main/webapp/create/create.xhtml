@@ -27,8 +27,7 @@
 						<ui:include src="details.xhtml" />
 						<h:panelGrid columns="2">
 							<p:commandButton value="Save" icon="ui-icon-disk"
-								update="m1 @form:detailsPanel"
-								action="#{createController.save}"></p:commandButton>
+								update="m1 @form:detailsPanel" action="#{createController.save}"></p:commandButton>
 							<p:commandButton value="Cancel" icon="ui-icon-close"
 								update="@form" process="@this"
 								action="#{createController.cancel}">
@@ -55,7 +54,8 @@
 							<p:commandButton value="Save" id="cb3" update="m1"
 								action="#{createController.updateRelations(searchController.relationsRoot)}"
 								disabled="false" icon="ui-icon-disk">
-								<f:param name="relationsRoot" value="#{searchController.relationsRoot}"></f:param>
+								<f:param name="relationsRoot"
+									value="#{searchController.relationsRoot}"></f:param>
 							</p:commandButton>
 
 							<p:commandButton value="Cancel" icon="ui-icon-close"
@@ -82,12 +82,14 @@
 
 
 				<p:outputLabel for="it1aw" value="Dictionary Version:"></p:outputLabel>
-				<h:inputText id="it1aw" value="#{configMB.currentMeddraVersion.value}"
-					disabled="true" columns="200" />
+				<h:inputText id="it1aw"
+					value="#{configMB.currentMeddraVersion.value}" disabled="true"
+					columns="200" />
 
 				<p:outputLabel for="it3" value="Name: "></p:outputLabel>
 				<h:inputText id="it3" value="#{configMB.dictionaryName}"
-					readOnly="true" disabled="true" />
+					binding="#{createController.dictionaryName}" readOnly="true"
+					disabled="true" />
 			</h:panelGrid>
 			<f:attribute name="currentPage"
 				value="Create New #{applicationScope.CSMQBean.customMQName} Wizard" />

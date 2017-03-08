@@ -143,7 +143,7 @@ public class DemoteToDraftController implements Serializable {
 					
 					//show messages on screen
 					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-							"The CMQs were successfully published", "");
+							"The List(s) are successfully demoted to Draft", "");
 					FacesContext.getCurrentInstance().addMessage(null, msg);
 				}
 			}

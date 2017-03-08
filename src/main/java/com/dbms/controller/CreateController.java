@@ -16,6 +16,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import javax.faces.component.html.HtmlInputText;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
 
@@ -91,6 +92,8 @@ public class CreateController implements Serializable {
 	private CmqBase190 selectedData;
 	
 	private Date dueDate;
+	
+	private HtmlInputText dictionaryName;
 
 	@PostConstruct
 	public void init() {
@@ -401,7 +404,10 @@ public class CreateController implements Serializable {
 
 		// hard coded for now
 		selectedData.setCreatedBy("Test user");
-		selectedData.setDictionaryName("Test-Dict");
+		if (dictionaryName != null && dictionaryName.getValue() != null)
+			selectedData.setDictionaryName((String) dictionaryName.getValue());
+		else
+			selectedData.setDictionaryName("");
 		selectedData.setCmqSubversion(new BigDecimal(0.23d));
 	}
 
@@ -1220,6 +1226,14 @@ public class CreateController implements Serializable {
 	public void onDueDateSelect(SelectEvent event) {
 		if(event.getObject() instanceof Date)
 			setDueDate((Date)event.getObject());
+	}
+
+	public HtmlInputText getDictionaryName() {
+		return dictionaryName;
+	}
+
+	public void setDictionaryName(HtmlInputText dictionaryName) {
+		this.dictionaryName = dictionaryName;
 	}
 
 }

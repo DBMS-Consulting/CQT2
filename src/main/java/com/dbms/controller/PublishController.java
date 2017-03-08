@@ -164,7 +164,7 @@ public class PublishController implements Serializable {
 					
 					//show messages on screen
 					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-							"The CMQs were successfully published", "");
+							"The List(s) were successfully Published", "");
 					FacesContext.getCurrentInstance().addMessage(null, msg);
 				}
 			}
