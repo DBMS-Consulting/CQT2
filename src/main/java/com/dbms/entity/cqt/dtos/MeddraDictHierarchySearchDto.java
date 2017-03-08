@@ -12,6 +12,8 @@ public class MeddraDictHierarchySearchDto implements IEntity {
 
 	private String code;
 
+	private String primaryPathFlag;
+
 	public Long getId() {
 		return meddraDictId;
 	}
@@ -34,5 +36,13 @@ public class MeddraDictHierarchySearchDto implements IEntity {
 
 	public void setCode(String code) {
 		this.code = code;
+	}
+
+	public String getPrimaryPathFlag() {
+		return primaryPathFlag;
+	}
+
+	public void setPrimaryPathFlag(String primaryPathFlag) {
+		this.primaryPathFlag = primaryPathFlag;
 	}
 }

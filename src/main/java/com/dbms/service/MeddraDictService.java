@@ -42,13 +42,13 @@ public class MeddraDictService extends CqtPersistenceService<MeddraDict190> impl
 		String queryString = "";
 		if (StringUtils.isBlank(searchTerm)) {
 			queryString = "select MEDDRA_DICT_ID as meddraDictId, " + termColumnName + " as term, " + codeColumnName
-					+ " as code from (select MEDDRA_DICT_ID, " + termColumnName + ", " + codeColumnName
-					+ ", row_number() over (partition by " + codeColumnName
+					+ " as code, PRIMARY_PATH_FLAG as primaryPathFlag from (select MEDDRA_DICT_ID, " + termColumnName + ", " + codeColumnName
+					+ ", PRIMARY_PATH_FLAG, row_number() over (partition by " + codeColumnName
 					+ " order by MEDDRA_DICT_ID) rn from MEDDRA_DICT_CURRENT ) where rn = 1";
 		} else {
 			queryString = "select MEDDRA_DICT_ID as meddraDictId, " + termColumnName + " as term, " + codeColumnName
-					+ " as code from (select MEDDRA_DICT_ID, " + termColumnName + ", " + codeColumnName
-					+ ", row_number() over (partition by " + codeColumnName
+					+ " as code, PRIMARY_PATH_FLAG as primaryPathFlag from (select MEDDRA_DICT_ID, " + termColumnName + ", " + codeColumnName
+					+ ", PRIMARY_PATH_FLAG, row_number() over (partition by " + codeColumnName
 					+ " order by MEDDRA_DICT_ID) rn from MEDDRA_DICT_CURRENT where upper(" + termColumnName
 					+ ")  like :searchTerm ) where rn = 1";
 		}
@@ -60,6 +60,7 @@ public class MeddraDictService extends CqtPersistenceService<MeddraDict190> impl
 			query.addScalar("meddraDictId", StandardBasicTypes.LONG);
 			query.addScalar("term", StandardBasicTypes.STRING);
 			query.addScalar("code", StandardBasicTypes.STRING);
+			query.addScalar("primaryPathFlag", StandardBasicTypes.STRING);
 			if (!StringUtils.isBlank(searchTerm)) {
 				query.setParameter("searchTerm", searchTerm.toUpperCase());
 			}
@@ -84,8 +85,8 @@ public class MeddraDictService extends CqtPersistenceService<MeddraDict190> impl
 		String termColumnName = searchColumnTypePrefix + "TERM";
 		String codeColumnName = searchColumnTypePrefix + "CODE";
 		String queryString = "select MEDDRA_DICT_ID as meddraDictId, " + termColumnName + " as term, " + codeColumnName
-				+ " as code from (select MEDDRA_DICT_ID, " + termColumnName + ", " + codeColumnName
-				+ ", row_number() over (partition by " + codeColumnName
+				+ " as code, PRIMARY_PATH_FLAG as primaryPathFlag from (select MEDDRA_DICT_ID, " + termColumnName + ", " + codeColumnName
+				+ ", PRIMARY_PATH_FLAG, row_number() over (partition by " + codeColumnName
 				+ " order by MEDDRA_DICT_ID) rn from MEDDRA_DICT_CURRENT where " + codeColumnName
 				+ " = :code ) where rn = 1";
 
@@ -96,6 +97,7 @@ public class MeddraDictService extends CqtPersistenceService<MeddraDict190> impl
 			query.addScalar("meddraDictId", StandardBasicTypes.LONG);
 			query.addScalar("term", StandardBasicTypes.STRING);
 			query.addScalar("code", StandardBasicTypes.STRING);
+			query.addScalar("primaryPathFlag", StandardBasicTypes.STRING);
 			query.setParameter("code", code);
 			query.setResultTransformer(Transformers.aliasToBean(MeddraDictHierarchySearchDto.class));
 
@@ -107,6 +109,53 @@ public class MeddraDictService extends CqtPersistenceService<MeddraDict190> impl
 			StringBuilder msg = new StringBuilder();
 			msg.append("An error occurred while fetching types from MeddraDict190 on searchColumnType ")
 					.append(termColumnName).append(" with code equal to ").append(code).append(" Query used was ->")
+					.append(queryString);
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<MeddraDictHierarchySearchDto> findByCodes(String searchColumnTypePrefix, List<Long> codes) {
+		List<MeddraDictHierarchySearchDto> retVal = null;
+		String termColumnName = searchColumnTypePrefix + "TERM";
+		String codeColumnName = searchColumnTypePrefix + "CODE";
+		String queryString = "select MEDDRA_DICT_ID as meddraDictId, " + termColumnName + " as term, " + codeColumnName
+				+ " as code, PRIMARY_PATH_FLAG as primaryPathFlag from (select MEDDRA_DICT_ID, " + termColumnName + ", " + codeColumnName
+				+ ", PRIMARY_PATH_FLAG, row_number() over (partition by " + codeColumnName
+				+ " order by MEDDRA_DICT_ID) rn from MEDDRA_DICT_CURRENT where " + codeColumnName
+				+ " in :codeList ) where rn = 1";
+		
+		//setParameterList is not working here for somereason so have to do it manually
+		String codesString = " ( ";
+		int i = 0;
+		for (Long code : codes) {
+			codesString += code;
+			if(++i < codes.size()) {
+				codesString += " , ";
+			}
+		}
+		codesString += " ) ";
+		queryString = queryString.replace(":codeList", codesString);
+		
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		Session session = entityManager.unwrap(Session.class);
+		try {
+			SQLQuery query = session.createSQLQuery(queryString);
+			query.addScalar("meddraDictId", StandardBasicTypes.LONG);
+			query.addScalar("term", StandardBasicTypes.STRING);
+			query.addScalar("code", StandardBasicTypes.STRING);
+			query.addScalar("primaryPathFlag", StandardBasicTypes.STRING);
+			//query.setParameterList("codeList", codes);
+			query.setResultTransformer(Transformers.aliasToBean(MeddraDictHierarchySearchDto.class));
+
+			retVal = query.list();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg.append("An error occurred while fetching types from MeddraDict190 on searchColumnType ")
+					.append(termColumnName).append(" with code equal to ").append(codes).append(" Query used was ->")
 					.append(queryString);
 			LOG.error(msg.toString(), e);
 		} finally {
@@ -155,8 +204,8 @@ public class MeddraDictService extends CqtPersistenceService<MeddraDict190> impl
 		String codeColumnName = searchColumnTypePrefix + "CODE";
 		String parentCodeColumnName = parentCodeColumnPrefix + "CODE";
 		String queryString = "select MEDDRA_DICT_ID as meddraDictId, " + termColumnName + " as term, " + codeColumnName
-				+ " as code from (select MEDDRA_DICT_ID, " + termColumnName + ", " + codeColumnName
-				+ ", row_number() over (partition by " + codeColumnName
+				+ " as code, PRIMARY_PATH_FLAG as primaryPathFlag from (select MEDDRA_DICT_ID, " + termColumnName + ", " + codeColumnName
+				+ ", PRIMARY_PATH_FLAG, row_number() over (partition by " + codeColumnName
 				+ " order by MEDDRA_DICT_ID) rn from MEDDRA_DICT_CURRENT where " + parentCodeColumnName
 				+ " = :code ) where rn = 1";
 
@@ -167,6 +216,7 @@ public class MeddraDictService extends CqtPersistenceService<MeddraDict190> impl
 			query.addScalar("meddraDictId", StandardBasicTypes.LONG);
 			query.addScalar("term", StandardBasicTypes.STRING);
 			query.addScalar("code", StandardBasicTypes.STRING);
+			query.addScalar("primaryPathFlag", StandardBasicTypes.STRING);
 			query.setParameter("code", parentCode);
 			query.setResultTransformer(Transformers.aliasToBean(MeddraDictHierarchySearchDto.class));
 

@@ -2,8 +2,11 @@ package com.dbms.controller;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.PostConstruct;
@@ -496,6 +499,7 @@ public class SearchController extends BaseController<CmqBase190> {
 		return "";
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public String hierarchySearch() {
 		int level = 0;
 		String meddraSearchTermPrefix = null;
@@ -622,7 +626,10 @@ public class SearchController extends BaseController<CmqBase190> {
 					termNameOfHierarchySearch);
 			this.hierarchyRoot = new DefaultTreeNode("root", new HierarchyNode(
 					"LEVEL", "NAME", "CODE", null), null);
-			boolean dummyNodeAdded = false;
+			
+			List<Long> parentCmqCodeList = new ArrayList<>();
+			Map<Long, TreeNode> parentTreeNodes = new HashMap<Long, TreeNode>();
+			
 			for (CmqBase190 cmqBase190 : cmqBaseList) {
 				HierarchyNode node = new HierarchyNode();
 				node.setLevel(levelH);
@@ -632,37 +639,66 @@ public class SearchController extends BaseController<CmqBase190> {
 
 				TreeNode cmqBaseTreeNode = new DefaultTreeNode(node,
 						hierarchyRoot);
-
-				Long childCount = this.cmqBaseService
-						.findCmqChildCountForParentCmqCode(cmqBase190
-								.getCmqCode());
-
-				if ((null != childCount) && childCount.longValue() > 0) {
-					// add a dummmy node to show expand arrow
-					HierarchyNode dummyNode = new HierarchyNode(null, null,
-							null, null);
-					dummyNode.setDummyNode(true);
-					new DefaultTreeNode(dummyNode, cmqBaseTreeNode);
-					dummyNodeAdded = true;
-				}
-				
-				if(!dummyNodeAdded) {
-					//add cmq relations now
-					List<CmqRelation190> existingRelations = this.cmqRelationService.findByCmqCode(cmqBase190.getCmqCode());
-					if((null != existingRelations) && (existingRelations.size() > 0)) {
-						// add a dummmy node to show expand arrow
-						HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
-						dummyNode.setDummyNode(true);
-						new DefaultTreeNode(dummyNode, cmqBaseTreeNode);
-						dummyNodeAdded = true;
+				parentTreeNodes.put(cmqBase190.getCmqCode(), cmqBaseTreeNode);
+				parentCmqCodeList.add(cmqBase190.getCmqCode());
+			}
+			
+			List<Map<String, Object>> childCountsList = this.cmqBaseService.findCmqChildCountForParentCmqCode(parentCmqCodeList);
+			if((null != childCountsList) && (childCountsList.size() > 0)) {
+				//first find and fix child nodes stuff
+				for (Iterator<Long> it = parentCmqCodeList.iterator(); it.hasNext();) {
+					ListIterator li = childCountsList.listIterator();
+					Long parentCmqCode = it.next();
+					while(li.hasNext()) {
+						Map<String, Object> map = (Map<String, Object>) li.next();
+						if(map.get("CMQ_CODE") != null) {
+							Long cmqCode = (Long)map.get("CMQ_CODE");
+							if(cmqCode.longValue() == parentCmqCode.longValue()) {
+								Long count = (Long)map.get("COUNT");
+								if(count > 0) {
+									it.remove();//remove it from parentCmqCodeList
+									
+									//add a dummy node for this child in parent
+									TreeNode parentTreeNode = parentTreeNodes.get(parentCmqCode);
+									HierarchyNode dummyNode = new HierarchyNode(null, null,
+											null, null);
+									dummyNode.setDummyNode(true);
+									new DefaultTreeNode(dummyNode, parentTreeNode);
+								}
+								break;
+							}//end of if(cmqCode.longValue() == parentCmqCode.longValue())
+						}
 					}
 				}
+			}
+
+			//now find relations for those who don't have children
+			List<Map<String, Object>> relationsCountsList = this.cmqRelationService.findCountByCmqCodes(parentCmqCodeList);	
+			if((null != relationsCountsList) && (relationsCountsList.size() > 0)) {
+				ListIterator li = relationsCountsList.listIterator();
+				while(li.hasNext()) {
+					Map<String, Object> map = (Map<String, Object>) li.next();
+					if(map.get("CMQ_CODE") != null) {
+						Long cmqCode = (Long)map.get("CMQ_CODE");
+						Long count = (Long)map.get("COUNT");
+						if(count > 0) {
+							//add a dummy node for this child in parent
+							TreeNode parentTreeNode = parentTreeNodes.get(cmqCode);
+							HierarchyNode dummyNode = new HierarchyNode(null, null,
+									null, null);
+							dummyNode.setDummyNode(true);
+							new DefaultTreeNode(dummyNode, parentTreeNode);
+						}
+					}
+				}
+				
 			}
 		}
 
 		return "";
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void onNodeExpand(NodeExpandEvent event) {
 		TreeNode expandedTreeNode = event.getTreeNode();
 		HierarchyNode hierarchyNode = (HierarchyNode) expandedTreeNode
@@ -769,6 +805,10 @@ public class SearchController extends BaseController<CmqBase190> {
 				CmqBase190 cmqBase = (CmqBase190) entity;
 				Long cmqCode = cmqBase.getCmqCode();
 				List<CmqBase190> childCmqBaseList = cmqBaseService.findChildCmqsByParentCode(cmqCode);
+				
+				List<Long> childCmqCodeList = new ArrayList<>();
+				Map<Long, TreeNode> childTreeNodes = new HashMap<Long, TreeNode>();
+				
 				if ((null != childCmqBaseList) && (childCmqBaseList.size() > 0)) {
 					for (CmqBase190 childCmqBase : childCmqBaseList) {
 						HierarchyNode node = new HierarchyNode();
@@ -778,46 +818,98 @@ public class SearchController extends BaseController<CmqBase190> {
 						node.setEntity(childCmqBase);
 						TreeNode cmqBaseChildNode = new DefaultTreeNode(node, expandedTreeNode);
 						
-						Long childCount = this.cmqBaseService
-								.findCmqChildCountForParentCmqCode(childCmqBase
-										.getCmqCode());
-						boolean dummyNodeAdded = false;
-						if ((null != childCount) && childCount.longValue() > 0) {
-							// add a dummmy node to show expand arrow
-							HierarchyNode dummyNode = new HierarchyNode(null, null,
-									null, null);
-							dummyNode.setDummyNode(true);
-							new DefaultTreeNode(dummyNode, cmqBaseChildNode);
-							dummyNodeAdded = true;
+						childTreeNodes.put(childCmqBase.getCmqCode(), cmqBaseChildNode);
+						childCmqCodeList.add(childCmqBase.getCmqCode());
+					}
+					
+					List<Map<String, Object>> childrenOfChildCountsList = this.cmqBaseService.findCmqChildCountForParentCmqCode(childCmqCodeList);
+					if((null != childrenOfChildCountsList) && (childrenOfChildCountsList.size() > 0)) {
+						//first find and fix child nodes stuff
+						for (Iterator<Long> it = childCmqCodeList.iterator(); it.hasNext();) {
+							ListIterator li = childrenOfChildCountsList.listIterator();
+							Long  childCmqCode = it.next();
+							while(li.hasNext()) {
+								Map<String, Object> map = (Map<String, Object>) li.next();
+								if(map.get("CMQ_CODE") != null) {
+									Long resultCmqCode = (Long)map.get("CMQ_CODE");
+									if(resultCmqCode.longValue() ==  childCmqCode.longValue()) {
+										it.remove();//remove it from parentCmqCodeList
+										Long count = (Long)map.get("COUNT");
+										if(count > 0) {
+											
+											//add a dummy node for this child in parent
+											TreeNode parentTreeNode = childTreeNodes.get(childCmqCode);
+											HierarchyNode dummyNode = new HierarchyNode(null, null,
+													null, null);
+											dummyNode.setDummyNode(true);
+											new DefaultTreeNode(dummyNode, parentTreeNode);
+										}
+										break;
+									}//end of if(cmqCode.longValue() == parentCmqCode.longValue())
+								}
+							}
 						}
-						
-						if(!dummyNodeAdded) {
-							//add cmq relations now
-							List<CmqRelation190> existingRelations = this.cmqRelationService.findByCmqCode(childCmqBase
-									.getCmqCode());
-							if((null != existingRelations) && (existingRelations.size() > 0)) {
-								// add a dummmy node to show expand arrow
-								HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
-								dummyNode.setDummyNode(true);
-								new DefaultTreeNode(dummyNode, cmqBaseChildNode);
-								dummyNodeAdded = true;
+					}
+					
+					//now find relations for those who don't have children
+					List<Map<String, Object>> relationsCountsList = this.cmqRelationService.findCountByCmqCodes(childCmqCodeList);	
+					if((null != relationsCountsList) && (relationsCountsList.size() > 0)) {
+						ListIterator li = relationsCountsList.listIterator();
+						while(li.hasNext()) {
+							Map<String, Object> map = (Map<String, Object>) li.next();
+							if(map.get("CMQ_CODE") != null) {
+								Long resultCmqCode = (Long)map.get("CMQ_CODE");
+								Long count = (Long)map.get("COUNT");
+								if(count > 0) {
+									//add a dummy node for this child in parent
+									TreeNode parentTreeNode = childTreeNodes.get(cmqCode);
+									HierarchyNode dummyNode = new HierarchyNode(null, null,
+											null, null);
+									dummyNode.setDummyNode(true);
+									new DefaultTreeNode(dummyNode, parentTreeNode);
+								}
 							}
 						}
 					}
 				}
 				
 				//add cmq relations now
+				List<Long> socCodesList = new ArrayList<>();
+				List<Long> hlgtCodesList = new ArrayList<>();
+				List<Long> hltCodesList = new ArrayList<>();
+				List<Long> ptCodesList = new ArrayList<>();
+				List<Long> lltCodesList = new ArrayList<>();
+				List<Long> smqCodesList = new ArrayList<>();
+				
 				List<CmqRelation190> existingRelations = this.cmqRelationService.findByCmqCode(cmqCode);
 				if((null != existingRelations) && (existingRelations.size() > 0)) {
-					for (CmqRelation190 cmqRelation : existingRelations) {
-						
+					for (CmqRelation190 cmqRelation : existingRelations) {						
 						if((cmqRelation.getSocCode() != null) && (cmqRelation.getSocCode().longValue() > 0)) {
-							MeddraDictHierarchySearchDto meddraDictHierarchySearchDto = this.meddraDictService.findByCode("SOC_", cmqRelation.getSocCode());
+							socCodesList.add(cmqRelation.getSocCode());
+						} else if((cmqRelation.getHlgtCode() != null) && (cmqRelation.getHlgtCode().longValue() > 0)) {
+							hlgtCodesList.add(cmqRelation.getHlgtCode());
+						} else if((cmqRelation.getHltCode() != null) && (cmqRelation.getHltCode().longValue() > 0)) {
+							hltCodesList.add(cmqRelation.getHltCode());
+						} else if((cmqRelation.getPtCode() != null) && (cmqRelation.getPtCode().longValue() > 0)) {
+							ptCodesList.add(cmqRelation.getPtCode());
+						} else if((cmqRelation.getLltCode() != null) && (cmqRelation.getLltCode().longValue() > 0)) {
+							lltCodesList.add(cmqRelation.getLltCode());
+						} else if((cmqRelation.getSmqCode() != null) && (cmqRelation.getSmqCode().longValue() > 0)) {
+							SmqBase190 smqBase = this.smqBaseService.findByCode(cmqRelation.getSmqCode());
+							HierarchyNode node = this.createSmqBaseNode(smqBase);
+							TreeNode treeNode = new DefaultTreeNode(node, expandedTreeNode);
+						}
+					}
+					
+					//find socs now
+					if(socCodesList.size() > 0) {
+						List<MeddraDictHierarchySearchDto> socDtos = this.meddraDictService.findByCodes("SOC_", socCodesList);
+						for (MeddraDictHierarchySearchDto meddraDictHierarchySearchDto : socDtos) {
 							HierarchyNode node = this.createMeddraNode(meddraDictHierarchySearchDto, "SOC");
 							TreeNode treeNode = new DefaultTreeNode(node, expandedTreeNode);
 							
 							Long countOfChildren = this.meddraDictService.findChldrenCountByParentCode("HLGT_",
-									"SOC_", Long.valueOf(cmqRelation.getSocCode()));
+									"SOC_", Long.valueOf(meddraDictHierarchySearchDto.getCode()));
 							if((null != countOfChildren) && (countOfChildren > 0)) {
 								// add a dummmy node to show expand arrow
 								HierarchyNode dummyNode = new HierarchyNode(null, null,
@@ -825,13 +917,17 @@ public class SearchController extends BaseController<CmqBase190> {
 								dummyNode.setDummyNode(true);
 								new DefaultTreeNode(dummyNode, treeNode);
 							}
-						} else if((cmqRelation.getHlgtCode() != null) && (cmqRelation.getHlgtCode().longValue() > 0)) {
-							MeddraDictHierarchySearchDto meddraDictHierarchySearchDto = this.meddraDictService.findByCode("HLGT_", cmqRelation.getHlgtCode());
+						}
+					}
+					
+					if(hlgtCodesList.size() > 0) {
+						List<MeddraDictHierarchySearchDto> socDtos = this.meddraDictService.findByCodes("HLGT_", hlgtCodesList);
+						for (MeddraDictHierarchySearchDto meddraDictHierarchySearchDto : socDtos) {
 							HierarchyNode node = this.createMeddraNode(meddraDictHierarchySearchDto, "HLGT");
 							TreeNode treeNode = new DefaultTreeNode(node, expandedTreeNode);
 							
 							Long countOfChildren = this.meddraDictService.findChldrenCountByParentCode("HLT_",
-									"HLGT_", Long.valueOf(cmqRelation.getHlgtCode()));
+									"HLGT_", Long.valueOf(meddraDictHierarchySearchDto.getCode()));
 							if((null != countOfChildren) && (countOfChildren > 0)) {
 								// add a dummmy node to show expand arrow
 								HierarchyNode dummyNode = new HierarchyNode(null, null,
@@ -839,13 +935,17 @@ public class SearchController extends BaseController<CmqBase190> {
 								dummyNode.setDummyNode(true);
 								new DefaultTreeNode(dummyNode, treeNode);
 							}
-						} else if((cmqRelation.getHltCode() != null) && (cmqRelation.getHltCode().longValue() > 0)) {
-							MeddraDictHierarchySearchDto meddraDictHierarchySearchDto = this.meddraDictService.findByCode("HLT_", cmqRelation.getHltCode());
+						}
+					}
+					
+					if(hltCodesList.size() > 0) {
+						List<MeddraDictHierarchySearchDto> socDtos = this.meddraDictService.findByCodes("HLT_", hltCodesList);
+						for (MeddraDictHierarchySearchDto meddraDictHierarchySearchDto : socDtos) {
 							HierarchyNode node = this.createMeddraNode(meddraDictHierarchySearchDto, "HLT");
 							TreeNode treeNode = new DefaultTreeNode(node, expandedTreeNode);
 							
 							Long countOfChildren = this.meddraDictService.findChldrenCountByParentCode("PT_",
-									"HLT_", Long.valueOf(cmqRelation.getHltCode()));
+									"HLT_", Long.valueOf(meddraDictHierarchySearchDto.getCode()));
 							if((null != countOfChildren) && (countOfChildren > 0)) {
 								// add a dummmy node to show expand arrow
 								HierarchyNode dummyNode = new HierarchyNode(null, null,
@@ -853,13 +953,17 @@ public class SearchController extends BaseController<CmqBase190> {
 								dummyNode.setDummyNode(true);
 								new DefaultTreeNode(dummyNode, treeNode);
 							}
-						} else if((cmqRelation.getPtCode() != null) && (cmqRelation.getPtCode().longValue() > 0)) {
-							MeddraDictHierarchySearchDto meddraDictHierarchySearchDto = this.meddraDictService.findByCode("PT_", cmqRelation.getPtCode());
+						}
+					}
+					
+					if(ptCodesList.size() > 0) {
+						List<MeddraDictHierarchySearchDto> socDtos = this.meddraDictService.findByCodes("PT_", ptCodesList);
+						for (MeddraDictHierarchySearchDto meddraDictHierarchySearchDto : socDtos) {
 							HierarchyNode node = this.createMeddraNode(meddraDictHierarchySearchDto, "PT");
 							TreeNode treeNode = new DefaultTreeNode(node, expandedTreeNode);
 							
 							Long countOfChildren = this.meddraDictService.findChldrenCountByParentCode("LLT_",
-									"PT_", Long.valueOf(cmqRelation.getPtCode()));
+									"PT_", Long.valueOf(meddraDictHierarchySearchDto.getCode()));
 							if((null != countOfChildren) && (countOfChildren > 0)) {
 								// add a dummmy node to show expand arrow
 								HierarchyNode dummyNode = new HierarchyNode(null, null,
@@ -867,13 +971,13 @@ public class SearchController extends BaseController<CmqBase190> {
 								dummyNode.setDummyNode(true);
 								new DefaultTreeNode(dummyNode, treeNode);
 							}
-						} else if((cmqRelation.getLltCode() != null) && (cmqRelation.getLltCode().longValue() > 0)) {
-							MeddraDictHierarchySearchDto meddraDictHierarchySearchDto = this.meddraDictService.findByCode("LLT_", cmqRelation.getLltCode());
+						}
+					}
+					
+					if(lltCodesList.size() > 0) {
+						List<MeddraDictHierarchySearchDto> socDtos = this.meddraDictService.findByCodes("LLT_", lltCodesList);
+						for (MeddraDictHierarchySearchDto meddraDictHierarchySearchDto : socDtos) {
 							HierarchyNode node = this.createMeddraNode(meddraDictHierarchySearchDto, "LLT");
-							TreeNode treeNode = new DefaultTreeNode(node, expandedTreeNode);
-						} else if((cmqRelation.getSmqCode() != null) && (cmqRelation.getSmqCode().longValue() > 0)) {
-							SmqBase190 smqBase = this.smqBaseService.findByCode(cmqRelation.getSmqCode());
-							HierarchyNode node = this.createSmqBaseNode(smqBase);
 							TreeNode treeNode = new DefaultTreeNode(node, expandedTreeNode);
 						}
 					}
@@ -1122,36 +1226,6 @@ public class SearchController extends BaseController<CmqBase190> {
 					null);
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}
-	}
-
-	private void addTreeNode(CmqRelation190 relation, TreeNode root) {
-		/*
-		 * if (relation.getChildren() != null &&
-		 * !relation.getChildren().isEmpty()) { for (CmqRelation190 r :
-		 * relation.getChildren()) { TreeNode node = new DefaultTreeNode(new
-		 * RelationTreeNode( r.getId(), r.getTermName(), r.getCmqLevel(),
-		 * r.getPtTermScope(), r.getPtTermCategory(), r.getPtTermWeight(),
-		 * false), root); addTreeNode(r, node); } }
-		 */
-	}
-
-	public void onRowEdit(RowEditEvent event) {
-		/*
-		 * TreeNode node = (DefaultTreeNode) event.getObject(); RelationTreeNode
-		 * relationNode = (RelationTreeNode) node.getData();
-		 * log.debug("update tree node scope#{},category#{},weigth#{}",
-		 * relationNode.getScope(), relationNode.getCategory(),
-		 * relationNode.getWeight()); try { if (relationNode.getRoot()) {
-		 * CmqBase190 base = cmqBaseService.findById(relationNode .getCode());
-		 * base.setScope(relationNode.getScope()); cmqBaseService.update(base);
-		 * } else { CmqRelation190 relation = cmqRelationService
-		 * .findById(relationNode.getCode());
-		 * relation.setPtTermScope(relationNode.getScope());
-		 * relation.setPtTermCategory(relationNode.getCategory());
-		 * relation.setPtTermWeight(relationNode.getWeight());
-		 * cmqRelationService.update(relation); } } catch (Exception e) {
-		 * log.error("Error when update tree!", e); }
-		 */
 	}
 
 	public String[] getSelectedSOCs() {

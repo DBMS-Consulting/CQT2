@@ -1,6 +1,7 @@
 package com.dbms.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.dbms.entity.cqt.CmqBase190;
 import com.dbms.service.base.ICqtPersistenceService;
@@ -34,4 +35,7 @@ public interface ICmqBase190Service extends ICqtPersistenceService<CmqBase190> {
 	List<CmqBase190> findParentCmqsByCodes(List<Long> codes);
 	
 	Long findCmqCountByCmqNameAndExtension(String extension, String cmqName);
+	
+	List<Map<String, Object>> findCmqChildCountForParentCmqCode(List<Long> cmqCodes);
+	
 }

@@ -8,6 +8,8 @@ public interface IMeddraDictService {
 
 	List<MeddraDictHierarchySearchDto> findByLevelAndTerm(String searchColumnType, String searchTerm);
 	
+	List<MeddraDictHierarchySearchDto> findByCodes(String searchColumnTypePrefix, List<Long> codes);
+	
 	MeddraDictHierarchySearchDto findByCode(String searchColumnTypePrefix, Long code);
 	
 	Long findChldrenCountByParentCode(String searchColumnTypePrefix,

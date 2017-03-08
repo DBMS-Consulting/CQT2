@@ -12,10 +12,15 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.SQLQuery;
+import org.hibernate.Session;
+import org.hibernate.transform.Transformers;
+import org.hibernate.type.StandardBasicTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.dbms.entity.cqt.CmqBase190;
+import com.dbms.entity.cqt.dtos.MeddraDictHierarchySearchDto;
 import com.dbms.service.base.CqtPersistenceService;
 import com.dbms.util.exceptions.CqtServiceException;
 
@@ -264,6 +269,35 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190> impleme
 					.append("' ")
 					.append("Query used was ->")
 					.append(queryString);
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Map<String, Object>> findCmqChildCountForParentCmqCode(List<Long> cmqCodes) {
+		List<Map<String, Object>>  retVal = null;
+		StringBuilder sb = new StringBuilder();
+		sb.append("select CMQ_CODE, count(*) as COUNT from CMQ_BASE_CURRENT where CMQ_PARENT_CODE in :cmqCodes group by CMQ_CODE");
+		
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		Session session = entityManager.unwrap(Session.class);
+		try {
+			SQLQuery query = session.createSQLQuery(sb.toString());
+			query.addScalar("CMQ_CODE", StandardBasicTypes.LONG);
+			query.addScalar("COUNT", StandardBasicTypes.LONG);
+			query.setParameterList("cmqCodes", cmqCodes);
+			query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+			retVal = query.list();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg
+					.append("An error occurred while findCmqChildCountForParentCmqCode ")
+					.append(cmqCodes)
+					.append(" Query used was ->")
+					.append(sb.toString());
 			LOG.error(msg.toString(), e);
 		} finally {
 			this.cqtEntityManagerFactory.closeEntityManager(entityManager);

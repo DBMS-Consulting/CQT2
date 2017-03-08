@@ -1,6 +1,7 @@
 package com.dbms.service;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
@@ -8,11 +9,13 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Query;
 
-import org.apache.commons.lang3.StringUtils;
+import org.hibernate.SQLQuery;
+import org.hibernate.Session;
+import org.hibernate.transform.Transformers;
+import org.hibernate.type.StandardBasicTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.dbms.entity.cqt.CmqBase190;
 import com.dbms.entity.cqt.CmqRelation190;
 import com.dbms.service.base.CqtPersistenceService;
 import com.dbms.util.exceptions.CqtServiceException;
@@ -64,6 +67,59 @@ public class CmqRelation190Service extends CqtPersistenceService<CmqRelation190>
 			StringBuilder msg = new StringBuilder();
 			msg
 					.append("An error occurred while fetching types from CmqRelation190 on cmqCode ")
+					.append(cmqCode)
+					.append(" Query used was ->")
+					.append(sb.toString());
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Map<String, Object>> findCountByCmqCodes(List<Long> cmqCodes) {
+		List<Map<String, Object>>  retVal = null;
+		StringBuilder sb = new StringBuilder();
+		sb.append("select CMQ_CODE, count(*) as COUNT from CMQ_RELATIONS_CURRENT where CMQ_CODE in :cmqCodes group by CMQ_CODE");
+		
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		Session session = entityManager.unwrap(Session.class);
+		try {
+			SQLQuery query = session.createSQLQuery(sb.toString());
+			query.addScalar("CMQ_CODE", StandardBasicTypes.LONG);
+			query.addScalar("COUNT", StandardBasicTypes.LONG);
+			query.setParameterList("cmqCodes", cmqCodes);
+			query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+			retVal = query.list();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg
+					.append("An error occurred while findCountByCmqCodes ")
+					.append(cmqCodes)
+					.append(" Query used was ->")
+					.append(sb.toString());
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
+	
+	public Long findCountByCmqCode(Long cmqCode) {
+		Long retVal = null;
+		StringBuilder sb = new StringBuilder();
+		sb.append("select count(*) from CmqRelation190 c where c.cmqCode = :cmqCode");
+		
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		try {
+			Query query = entityManager.createQuery(sb.toString());
+			query.setParameter("cmqCode", cmqCode);
+			retVal = (Long)query.getSingleResult();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg
+					.append("An error occurred while findCountByCmqCode ")
 					.append(cmqCode)
 					.append(" Query used was ->")
 					.append(sb.toString());
