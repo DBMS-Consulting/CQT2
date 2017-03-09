@@ -298,10 +298,8 @@ public class CreateController implements Serializable {
 			
 			if(count < 2) {
 				//we should have atmost 1
-				CmqBase190 existingCmqBase = this.cmqBaseService.findByCode(selectedData.getCmqCode());
-				
-				detailsFormModel.saveToCmqBase190(existingCmqBase);
-				cmqBaseService.update(existingCmqBase);
+				prepareDetailsFormSave();
+				cmqBaseService.update(selectedData);
 				
 				// retrieve the saved cmq base
 				CmqBase190 savedEntity = cmqBaseService.findByCode(selectedData.getCmqCode());		
@@ -446,7 +444,7 @@ public class CreateController implements Serializable {
 
 				return null;
 			} else {
-				detailsFormModel.saveToCmqBase190(selectedData);
+				prepareDetailsFormSave();
 				cmqBaseService.create(selectedData);
 
 				// retrieve the saved cmq base
