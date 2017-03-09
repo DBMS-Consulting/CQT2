@@ -2,7 +2,6 @@ package com.dbms.service.base;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.TypeVariable;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -18,7 +17,6 @@ import org.slf4j.LoggerFactory;
 import com.dbms.entity.IEntity;
 import com.dbms.entity.cqt.CmqBase190;
 import com.dbms.entity.cqt.CmqRelation190;
-import com.dbms.entity.cqt.SmqBase190;
 import com.dbms.util.ICqtEntityManagerFactory;
 import com.dbms.util.OrderBy;
 import com.dbms.util.exceptions.CqtServiceException;

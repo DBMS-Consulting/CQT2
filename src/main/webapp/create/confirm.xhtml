@@ -201,19 +201,19 @@
 			<tbody>
 				<tr>
 					<td class="label-cell"><p:outputLabel styleClass="label-right" value="Reason for Request:" /></td>
-					<td class="value-cell"><p:inputText value="#{dummyView.value}" /></td>
+					<td class="value-cell"><p:inputText value="#{createController.workflowFormModel.requestReason}" /></td>
 				</tr>
 				<tr>
 					<td class="label-cell"><p:outputLabel styleClass="label-right" value="Due Date:" /></td>
 					<td class="value-cell">
-						<p:calendar value="#{createController.dueDate}" id="dueDate" mode="popup" pattern="dd-MMM-yyyy" >
-							<p:ajax event="dateSelect" listener="#{createController.onDueDateSelect}" />
+						<p:calendar value="#{createController.workflowFormModel.dueDate}" id="dueDate" mode="popup" pattern="dd-MMM-yyyy" >
+							<p:ajax event="dateSelect" listener="#{createController.workflowFormModel.onDueDateSelect}" />
 						</p:calendar>
 					</td>
 				</tr>
 				<tr>
 					<td class="label-cell"><p:outputLabel styleClass="label-right" value="Reason for Approval:" /></td>
-					<td class="value-cell"><p:inputText value="#{dummyView.value}" id="reason_approval"
+					<td class="value-cell"><p:inputText value="#{createController.workflowFormModel.approvalReason}" id="reason_approval"
 							disabled="#{createController.selectedData.cmqState ne 'Reviewed'}" /></td>
 				</tr>
 			</tbody>

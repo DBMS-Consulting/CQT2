@@ -41,7 +41,6 @@ import com.dbms.service.ICmqRelation190Service;
 import com.dbms.service.IMeddraDictService;
 import com.dbms.service.IRefCodeListService;
 import com.dbms.service.ISmqBaseService;
-import com.dbms.util.CqtConstants;
 import com.dbms.util.exceptions.CqtServiceException;
 import com.dbms.web.dto.CodelistDTO;
 
@@ -1181,7 +1180,6 @@ public class SearchController extends BaseController<CmqBase190> {
 			TreeNode childTreeNode = treeNodeIterator.next();
 			// HierarchyNode childNode = (HierarchyNode)
 			// childTreeNode.getData();
-			int i = relationsSelectedInRelationsTableList.indexOf(childTreeNode);
 			if (relationsSelectedInRelationsTableList.contains(childTreeNode)) {
 				treeNodeIterator.remove(); // remove it from the root node
 				// break;

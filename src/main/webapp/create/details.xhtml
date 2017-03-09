@@ -5,13 +5,17 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:p="http://primefaces.org/ui">
+	
+	
+	<p:remoteCommand name="saveDetailsAndGoToNextStep" update="@form:m1 @form:codeValue" actionListener="#{createController.saveDetailsAndNextStep}" />
+	<p:remoteCommand name="resetDetailsAndGoToNextStep" update="@form:m1 @form:codeValue" actionListener="#{createController.cancelDetailsAndNextStep}" />
 
 	<!-- <p:growl id="messages" /> -->
 	<h:panelGrid columns="3" cellpadding="5" id="detailsPanel">
 
 		<h:panelGrid columns="2" columnClasses="label, value">
 			<p:outputLabel value="* Extension" styleClass="label-right" />
-			<p:selectOneMenu value="#{createController.extension}"
+			<p:selectOneMenu value="#{createController.detailsFormModel.extension}"
 				disabled="#{createController.readOnlyState}" required="true"
 				requiredMessage="The extension is required">
 				<f:selectItems value="#{configMB.extensionList}" var="extension"
@@ -26,17 +30,15 @@
 			<p:outputLabel value="* Name" styleClass="label-right" />
 			<p:inputText required="true" requiredMessage="The name is required"
 				disabled="#{createController.readOnlyState}" maxlength="200"
-				value="#{createController.selectedData.cmqName}"
+				value="#{createController.detailsFormModel.name}"
 				style="width: 300px !important" />
 
 			<p:outputLabel id="lDrug"
-				value="#{createController.extension eq 'TME' or 
-			createController.extension eq 'TR1' or createController.extension eq 'PRO' ? '* Drug Program' : 'Drug Program'}"
+				value="#{createController.detailsFormModel.drugProgramRequired ? '* Drug Program' : 'Drug Program'}"
 				styleClass="label-right" />
-			<p:selectOneMenu value="#{createController.drugProgram}" id="drug"
+			<p:selectOneMenu value="#{createController.detailsFormModel.drugProgram}" id="drug"
 				disabled="#{createController.readOnlyState}"
-				required="#{createController.extension eq 'TME' or 
-				createController.extension eq 'TR1' or createController.extension eq 'PRO'}"
+				required="#{createController.detailsFormModel.drugProgramRequired}"
 				requiredMessage="The Drug Program is required">
 				<f:selectItem itemValue="" itemLabel="" />
 				<f:selectItems value="#{configMB.programList}" var="program"
@@ -45,12 +47,12 @@
 			</p:selectOneMenu>
 
 			<p:outputLabel id="lProtocol"
-				value="#{createController.extension eq 'PRO' ? '* Protocol' : 'Protocol'}"
+				value="#{createController.detailsFormModel.protocolRequired ? '* Protocol' : 'Protocol'}"
 				styleClass="label-right" />
-			<p:selectOneMenu value="#{createController.protocol}" id="protocol"
+			<p:selectOneMenu value="#{createController.detailsFormModel.protocol}" id="protocol"
 				disabled="#{createController.readOnlyState}"
 				requiredMessage="The Protocol is required"
-				required="#{createController.extension eq 'PRO'}">
+				required="#{createController.detailsFormModel.protocolRequired}">
 				<f:selectItem itemValue="" itemLabel="" />
 				<f:selectItems value="#{configMB.protocolList}" var="protocol"
 					itemLabel="#{protocol.value}"
@@ -58,13 +60,11 @@
 			</p:selectOneMenu>
 
 			<p:outputLabel id="lProduct"
-				value="#{createController.extension eq 'TME' or 
-			createController.extension eq 'TR1' or createController.extension eq 'PRO' ? '* Product' : 'Product'}"
+				value="#{createController.detailsFormModel.productRequired ? '* Product' : 'Product'}"
 				rendered="true" styleClass="label-right" />
-			<p:selectOneMenu value="#{createController.product}"
+			<p:selectOneMenu value="#{createController.detailsFormModel.product}"
 				disabled="#{createController.readOnlyState}"
-				required="#{createController.extension eq 'TME' or 
-			createController.extension eq 'TR1' or createController.extension eq 'PRO'}"
+				required="#{createController.detailsFormModel.productRequired}"
 				requiredMessage="The Product is required" id="product">
 				<f:selectItem itemValue="" itemLabel="" />
 				<f:selectItems value="#{configMB.productList}" var="product"
@@ -73,7 +73,7 @@
 			</p:selectOneMenu>
 
 			<p:outputLabel value="* Designee" styleClass="label-right" />
-			<p:selectOneMenu value="#{createController.selectedData.cmqDesignee}"
+			<p:selectOneMenu value="#{createController.detailsFormModel.designee}"
 				rendered="true" disabled="#{createController.readOnlyState}"
 				requiredMessage="The Designee is required" required="true">
 				<f:selectItem itemLabel="" itemValue=""></f:selectItem>
@@ -86,7 +86,7 @@
 			style="min-width: 300px">
 
 			<p:outputLabel value="* Level" styleClass="label-right" />
-			<p:selectOneMenu value="#{createController.level}" rendered="true"
+			<p:selectOneMenu value="#{createController.detailsFormModel.level}" rendered="true"
 				requiredMessage="The level is required"
 				disabled="#{createController.readOnlyState}" id="level"
 				required="true">
@@ -98,16 +98,14 @@
 			</p:selectOneMenu>
 
 			<p:outputLabel value="* Algorithm" styleClass="label-right" />
-			<p:inputText value="#{createController.algorithm}"
+			<p:inputText value="#{createController.detailsFormModel.algorithm}"
 				disabled="#{createController.readOnlyState}" />
-
-
 
 			<h:panelGrid columns="1" styleClass="grid-right">
 				<p:outputLabel value="* Status" />
 			</h:panelGrid>
 			<h:panelGrid columns="1">
-				<h:outputText value="#{createController.status}"
+				<h:outputText value="#{createController.detailsFormModel.status}"
 					style="height: 30px !important"></h:outputText>
 			</h:panelGrid>
 
@@ -115,7 +113,7 @@
 				<p:outputLabel value="* State" />
 			</h:panelGrid>
 			<h:panelGrid columns="1">
-				<h:outputText value="#{createController.state}"
+				<h:outputText value="#{createController.detailsFormModel.state}"
 					styleClass="uppercase"></h:outputText>
 			</h:panelGrid>
 
@@ -124,7 +122,7 @@
 				<p:outputLabel value="Group" />
 			</h:panelGrid>
 			<h:panelGrid columns="1">
-				<h:outputText value="#{createController.group}" />
+				<h:outputText value="#{createController.detailsFormModel.group}" />
 			</h:panelGrid>
 
 
@@ -183,6 +181,13 @@
 			</h:panelGrid>
 		</h:panelGrid>
 	</h:panelGrid>
+	
+	<p:confirmDialog widgetVar="confirmSaveDetailsDlg" showEffect="fade" hideEffect="fade"
+		header="Confirm about Unsaved Changes"
+		message="There are some unsaved changes. Do you want to save them before you continue?">
+        <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" onclick="saveDetailsAndGoToNextStep()" />
+        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"  onclick="resetDetailsAndGoToNextStep()" />
+    </p:confirmDialog>
 
 	<style>
 .label-right {

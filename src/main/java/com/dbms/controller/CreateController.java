@@ -3,7 +3,6 @@ package com.dbms.controller;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -24,7 +23,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.primefaces.component.wizard.Wizard;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.FlowEvent;
-import org.primefaces.event.SelectEvent;
 import org.primefaces.model.TreeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +39,10 @@ import com.dbms.service.ICmqBase190Service;
 import com.dbms.service.ICmqRelation190Service;
 import com.dbms.service.IRefCodeListService;
 import com.dbms.util.exceptions.CqtServiceException;
+import com.dbms.view.ListDetailsFormModel;
+import com.dbms.view.ListDetailsFormModel.WizardType;
+import com.dbms.view.ListNotesFormModel;
+import com.dbms.view.ListWorkflowFormModel;
 
 /**
  * @author Jay G.(jayshanchn@hotmail.com)
@@ -62,66 +64,49 @@ public class CreateController implements Serializable {
 
 	@ManagedProperty("#{RefCodeListService}")
 	private IRefCodeListService refCodeListService;
+	
+	private ListDetailsFormModel detailsFormModel = new ListDetailsFormModel();
+	private ListNotesFormModel notesFormModel = new ListNotesFormModel();
+	private ListWorkflowFormModel workflowFormModel = new ListWorkflowFormModel(); 
 
-	private String extension;
-	private String drugProgram;
-	private String protocol;
-	private String state;
-	private Integer level;
-	private String status;
-	private String critical;
-	private String scope;
-	private String product;
-	private String group;
-	private String history;
-	private String algorithm;
 	private boolean maintainDesigBtn;
 
-	private String description;
-	private String notes;
-	private String source;
-
 	private Wizard updateWizard, copyWizard, browseWizard, createWizard;
+	private String createWizardNextStep, copyWizardNextStep, updateWizardNextStep;
+	
 	private Long codeSelected;
 
 	private TreeNode relationsRoot;
 	private String[] selectedDesignees;
 
 	private Long codevalue;
-	
 	private CmqBase190 selectedData;
-	
-	private Date dueDate;
 	
 	private HtmlInputText dictionaryName;
 
+
+	public CreateController() {
+		this.selectedData = new CmqBase190();
+	}
+	
 	@PostConstruct
 	public void init() {
 		initAll();
 	}
 
 	private void initAll() {
-		this.state = "Draft";
-		this.status = "Pending";
-		this.description = "*** Description ****";
-		this.notes = "";
-		this.source = "";
-
+		detailsFormModel.init();
+		notesFormModel.init();
+		workflowFormModel.init();
 		maintainDesigBtn = false;
-		level = 1;
-		critical = "No";
-		group = "No Group";
-		drugProgram = "";
-		product = "";
-		protocol = "999999";
-		extension = "TME";
-		algorithm = "N";
 	}
 
 	public void initCreateForm() {
 		this.selectedData = new CmqBase190();
 		selectedData.setCmqDescription("*** Description ****");
 	}
+	
+	//----------------------- Browse Wizard ------------------------
 
 	/**
 	 * FlowListener of Browse Wizard Component
@@ -138,14 +123,105 @@ public class CreateController implements Serializable {
 	}
 
 	public boolean isBrowseWizardNavbarShown() {
-		return !browseWizard.getStep().equals("searchBrowse");
+		return !"searchBrowse".equals(browseWizard.getStep());
 	}
 	public boolean isBrowseWizardNavbarNextShown() {
-		return isBrowseWizardNavbarShown() && !browseWizard.getStep().equals("relations");
+		return isBrowseWizardNavbarShown() && !"relations".equals(browseWizard.getStep());
 	}
 	public boolean isBrowseWizardNavbarBackShown() {
-		return !browseWizard.getStep().equals("searchBrowse");
+		return !"searchBrowse".equals(browseWizard.getStep());
 	}
+	
+	//----------------------- Common to Create/Copy/Update Wizard ------------------------
+	
+	private void goToWizardNextStep() {
+		if(createWizard != null)
+			createWizard.setStep(createWizardNextStep);
+		else if(copyWizard != null)
+			copyWizard.setStep(copyWizardNextStep);
+		else if(updateWizard != null)
+			updateWizard.setStep(updateWizardNextStep);
+	}
+
+	public void cancelDetailsAndNextStep() {
+		cancel();
+		goToWizardNextStep();
+	}
+	
+	/**
+	 * Reset the "Details" form
+	 * @return
+	 */
+	public String cancel() {
+		detailsFormModel.loadFromCmqBase190(selectedData);
+
+		FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Form canceled", "");
+		FacesContext.getCurrentInstance().addMessage(null, msg);
+		return "";
+	}
+	
+	public void saveDetailsAndNextStep() {
+		if(createWizard != null)
+			save();
+		else if(copyWizard != null)
+			copy();
+		else if(updateWizard != null)
+			update();
+		
+		goToWizardNextStep();
+	}
+
+
+	/**
+	 * Reset the "Informative Notes" form
+	 * @return
+	 */
+	public String cancelNotes() {
+		notesFormModel.loadFromCmqBase190(selectedData);
+		
+		FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Form canceled", "");
+		FacesContext.getCurrentInstance().addMessage(null, msg);
+		return "";
+	}
+
+	public void cancelNotesAndNextStep() {
+		cancelNotes();
+		goToWizardNextStep();
+	}
+	
+
+	/**
+	 * Save "Informative Notes" form
+	 * @return
+	 */
+	public String saveInformativeNotes() {
+		notesFormModel.saveToCmqBase190(selectedData);
+		
+		try {
+			this.cmqBaseService.update(selectedData);
+
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Informative Notes are successfully saved for '" + selectedData.getCmqName() + "'", "");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		} catch (CqtServiceException e) {
+			LOG.error("Exception occurred while updating CmqBase190 for add informative notes.", e);
+
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"An error occurred while trying to save Informative Notes.", "");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+
+			return null;
+		}
+		return "";
+	}
+
+	public void saveNotesAndNextStep() {
+		saveInformativeNotes();
+		goToWizardNextStep();
+	}
+
+	
+	//----------------------- Update Wizard ------------------------
 
 	/**
 	 * FlowListener of Update Wizard Component
@@ -153,157 +229,210 @@ public class CreateController implements Serializable {
 	 * @return
 	 */
 	public String onUpdateWizardFlowProcess(FlowEvent event) {
-		String nextStep = event.getOldStep();
+		String oldStep, nextStep;
+		oldStep = nextStep = event.getOldStep();
 		if (codeSelected != null) {
-			nextStep = event.getNewStep();
+			if("details".equalsIgnoreCase(oldStep) && detailsFormModel.isModelChanged()) {
+				// current step is "Details" and the form has some unsaved changes
+				
+				//----Confirmation on unsaved changes
+				// 1. here in CreateController.onUpdateWizardFlowProcess(), check if the Details form model has been modified
+				
+				// 2. if modified, execute the client side javascript that will show the confirmation dialog
+				updateWizardNextStep = event.getNewStep();
+				RequestContext.getCurrentInstance().execute("PF('confirmSaveDetailsDlg').show();");
+				
+				// 3. if client clicks on yes, it will call PF:RemoteCommand - updateDetailsAndGoToNextStep(), which will
+				//	further call server side CreateController.updateDetailsAndNextStep()
+				
+				// 4. if client clicks on no, it will call PF:RemoteCommand - cancelDetailsAndGoToNextStep(), which will
+				//	further call server side CreateController.cancelDetailsAndNextStep()
+			} else if("contact".equalsIgnoreCase(oldStep) && notesFormModel.isModelChanged()) {
+				// current step is "Informative Notes" and the form has some unsaved changes
+				
+				//----Confirmation on unsaved changes
+				// 1. here in CreateController.onUpdateWizardFlowProcess(), check if the Notes form model has been modified
+				
+				// 2. if modified, execute the client side javascript that will show the confirmation dialog
+				updateWizardNextStep = event.getNewStep();
+				RequestContext.getCurrentInstance().execute("PF('confirmSaveNotesDlg').show();");
+				
+				// 3. if client clicks on yes, it will call PF:RemoteCommand - saveNotesAndGoToNextStep(), which will
+				//	further call server side CreateController.saveNotesAndNextStep()
+				
+				// 4. if client clicks on no, it will call PF:RemoteCommand - cancelNotesAndGoToNextStep(), which will
+				//	further call server side CreateController.cancelNotesAndNextStep()
+			} else if("relations".equalsIgnoreCase(oldStep) && notesFormModel.isModelChanged()) {
+				// current step is "Relations" and the form has some unsaved changes
+				updateWizardNextStep = event.getNewStep();
+			} else {
+				nextStep = event.getNewStep();
+			}
 		}
 		RequestContext.getCurrentInstance().update("fUpdate:wizardNavbar");
 		return nextStep;
 	}
 
 	public boolean isUpdateWizardNavbarShown() {
-		return !updateWizard.getStep().equals("searchUpdate");
+		return !"searchUpdate".equals(updateWizard.getStep());
 	}
 	public boolean isUpdateWizardNavbarNextShown() {
-		return isUpdateWizardNavbarShown() && !updateWizard.getStep().equals("confirmPanel");
+		return isUpdateWizardNavbarShown() && !"confirmPanel".equals(updateWizard.getStep());
 	}
 	public boolean isUpdateWizardNavbarBackShown() {
-		return !updateWizard.getStep().equals("searchUpdate");
+		return !"searchUpdate".equals(updateWizard.getStep());
+	}
+	
+	/**
+	 * "Update" module -> saving CMQ List record Details
+	 * 
+	 * @return
+	 */
+	public String update() {
+		try {
+			
+			Long count = this.cmqBaseService.findCmqCountByCmqNameAndExtension(detailsFormModel.getExtension(), detailsFormModel.getName());
+			
+			if(count < 2) {
+				//we should have atmost 1
+				CmqBase190 existingCmqBase = this.cmqBaseService.findByCode(selectedData.getCmqCode());
+				
+				detailsFormModel.saveToCmqBase190(existingCmqBase);
+				cmqBaseService.update(existingCmqBase);
+				
+				// retrieve the saved cmq base
+				CmqBase190 savedEntity = cmqBaseService.findByCode(selectedData.getCmqCode());		
+				selectedData = savedEntity;
+				detailsFormModel.loadFromCmqBase190(selectedData);
+
+				// // save the cmq code to session
+				FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("NEW-CMQ_BASE-ID",
+						savedEntity.getId());
+
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+						"List '" + selectedData.getCmqName() + "' is successfully saved.", "");
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+			} else {
+				String errorMsg = "Duplicate CMQ name ('"
+						+ selectedData.getCmqName() + "') and extention ('"
+						+ detailsFormModel.getExtension()
+						+ "') found in db.";
+				
+				LOG.error(errorMsg);
+
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, errorMsg, "");
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+
+				return null;
+			}
+		} catch (CqtServiceException e) {
+			LOG.error("Exception occurred while updating CmqBase190.", e);
+
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"An error occurred while trying to update the details.", "");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+
+			return null;
+		}
+		return "";
 	}
 
+	//----------------------- Copy Wizard ------------------------
 	/**
 	 * FlowListener of Update Wizard Component
 	 * @param event
 	 * @return
 	 */
 	public String onCopyWizardFlowProcess(FlowEvent event) {
-		String nextStep = event.getOldStep();
+		String oldStep, nextStep;
+		oldStep = nextStep = event.getOldStep();
 		if (codeSelected != null) {
-			nextStep = event.getNewStep();
+			if("details".equalsIgnoreCase(oldStep) && detailsFormModel.isModelChanged()) {
+				// current step is "Details" and the form has some unsaved changes
+				
+				//----Confirmation on unsaved changes: see onUpdateWizardFlowProcess's "details" step
+				copyWizardNextStep = event.getNewStep();
+				RequestContext.getCurrentInstance().execute("PF('confirmSaveDetailsDlg').show();");
+			} else if("contact".equalsIgnoreCase(oldStep) && notesFormModel.isModelChanged()) {
+				// current step is "Informative Notes" and the form has some unsaved changes
+				//----Confirmation on unsaved changes: see onUpdateWizardFlowProcess's "contact" step
+				copyWizardNextStep = event.getNewStep();
+				RequestContext.getCurrentInstance().execute("PF('confirmSaveNotesDlg').show();");
+			} else if("relations".equalsIgnoreCase(oldStep) && notesFormModel.isModelChanged()) {
+				// current step is "Relations" and the form has some unsaved changes
+				copyWizardNextStep = event.getNewStep();
+			} else {
+				nextStep = event.getNewStep();
+			}
 		}
 		RequestContext.getCurrentInstance().update("fCopy:wizardNavbar");
 		return nextStep;
 	}
 
 	public boolean isCopyWizardNavbarShown() {
-		return !copyWizard.getStep().equals("searchCopy");
+		return !"searchCopy".equals(copyWizard.getStep());
 	}
 	public boolean isCopyWizardNavbarNextShown() {
-		return isCopyWizardNavbarShown() && !copyWizard.getStep().equals("confirmPanel");
+		return isCopyWizardNavbarShown() && !"confirmPanel".equals(copyWizard.getStep());
 	}
 	public boolean isCopyWizardNavbarBackShown() {
-		return !copyWizard.getStep().equals("searchCopy");
-	}
-
-	public CreateController() {
-		this.selectedData = new CmqBase190();
-	}
-
-	/**
-	 * Bool when State is 'Draft' or 'Reviewed'.
-	 * @return boolean
-	 */
-	public boolean isReadOnlyState() {
-		if(copyWizard != null) {
-			return false;
-		} else if (updateWizard != null) {
-			if ((selectedData != null) && (selectedData.getCmqState() != null) 
-					&& (selectedData.getCmqState().equals("Draft") || selectedData.getCmqState().equals("Reviewed"))){
-				return false;
-			} else if (selectedData != null && selectedData.getCmqState() == null) {
-				return false;	
-			} else {
-				return true;
-			}
-		} 
-		return false;
+		return !"searchCopy".equals(copyWizard.getStep());
 	}
 	
-	public String loadCmqBaseByCode(Long code) {
-		codeSelected = null;
-		CmqBase190 cmq = new CmqBase190();
-		cmq = this.cmqBaseService.findByCode(code);
-
-		if (cmq != null) {
-
-			codeSelected = cmq.getCmqCode();
-
-			selectedData = cmq;
-			this.extension = selectedData.getCmqTypeCd();
-			this.state = selectedData.getCmqState();
+	/**
+	 * "Copy" module -> saving CMQ List record Details
+	 * 
+	 * @return
+	 */
+	public String copy() {
+		try {
+			prepareDetailsFormSave();
 			
-			if(selectedData.getCmqStatus().equalsIgnoreCase("p")) {
-				this.status = "Pending";
-			} else if (selectedData.getCmqStatus().equalsIgnoreCase("a")) {
-				this.status = "Active";
-			} else {
-				this.status = "Inactive";
-			}
-			this.description = selectedData.getCmqDescription();
-			this.notes = selectedData.getCmqNote();
-			this.source = selectedData.getCmqSource();
+			cmqBaseService.create(selectedData);
 
-			level = selectedData.getCmqLevel();
-			critical = selectedData.getCmqCriticalEvent();
-			group = selectedData.getCmqGroup();
-			algorithm = selectedData.getCmqAlgorithm();
+			// retrieve the saved cmq base
+			CmqBase190 savedEntity = cmqBaseService.findByCode(selectedData.getCmqCode());
 
-			protocol = selectedData.getCmqProtocolCd();
-			drugProgram = selectedData.getCmqProgramCd();
-			product = selectedData.getCmqProductCd();
-		}
+			// save the cmq code to session
+			FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("NEW-CMQ_BASE-ID",
+					savedEntity.getId());
 
-		if (browseWizard != null) {
-			browseWizard.setStep("details");
-			if(RequestContext.getCurrentInstance() != null) {
-				// UI: force update the custom wizard navbar area
-				RequestContext.getCurrentInstance().update("fBrowse:wizardNavbar");
-			}
-		}
-		
-		if (updateWizard != null) {
-			updateWizard.setStep("details");
-			if(RequestContext.getCurrentInstance() != null) {
-				// UI: force update the custom wizard navbar area
-				RequestContext.getCurrentInstance().update("fUpdate:wizardNavbar");
-			}
-			// selectedData = new CmqBase190();
-			// setSelectedData(cmq);
-		}
-		
-		if (copyWizard != null) {
-			//reset the values which are not supposed to be copied.
-			selectedData.setId(null);//need to set since we may need to create a new cmq
-			selectedData.setCmqCode(null);//need to set since we may need to create a new cmq
-			selectedData.setCmqStatus("P");
-			selectedData.setCmqState("Draft");
-			this.state = "Draft";
-			this.status = "Pending";
-			selectedData.setCmqGroup(null);
-			selectedData.setCreationDate(null);
-			selectedData.setCreatedBy(null);
-			selectedData.setCmqDescription("");
-			selectedData.setCmqNote("");
-			selectedData.setCmqSource("");
-			copyWizard.setStep("details");
-			if(RequestContext.getCurrentInstance() != null) {
-				// UI: force update the custom wizard navbar area
-				RequestContext.getCurrentInstance().update("fCopy:wizardNavbar");
-			}
-		}
-		dueDate = selectedData.getCmqDueDate();
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"List '" + selectedData.getCmqName() + "' is successfully saved.", "");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
 
+			if (selectedData.getCmqDescription().equals("*** Description ****"))
+				selectedData.setCmqDescription("");
+		} catch (CqtServiceException e) {
+			LOG.error("Exception occurred while creating CmqBase190.", e);
+
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"An error occurred while trying to save the details.", "");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+
+			return null;
+		}
 		return "";
 	}
-
+	
+	//----------------------- Create Wizard ------------------------
+	
+	/**
+	 * "Create" module -> saving CMQ List record Details
+	 * 
+	 * @return
+	 */
 	public String save() {
 		try {
 
-			Long count = this.cmqBaseService.findCmqCountByCmqNameAndExtension(extension, selectedData.getCmqName());
+			Long count = this.cmqBaseService.findCmqCountByCmqNameAndExtension(detailsFormModel.getExtension(), detailsFormModel.getName());
 
 			if (count > 0) {
-				String errorMsg = "Duplicate CMQ name ('" + selectedData.getCmqName() + "')and extention ('" + extension
+				String errorMsg = "Duplicate CMQ name ('"
+						+ selectedData.getCmqName() + "') and extention ('"
+						+ detailsFormModel.getExtension()
 						+ "') found in db.";
+				
 				LOG.error(errorMsg);
 
 				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, errorMsg, "");
@@ -311,8 +440,7 @@ public class CreateController implements Serializable {
 
 				return null;
 			} else {
-				setDatas();
-
+				detailsFormModel.saveToCmqBase190(selectedData);
 				cmqBaseService.create(selectedData);
 
 				// retrieve the saved cmq base
@@ -344,204 +472,132 @@ public class CreateController implements Serializable {
 		}
 		return "";
 	}
+	
 
-	public String copy() {
-		try {
-			setDatas();
-			
-			cmqBaseService.create(selectedData);
-
-			// retrieve the saved cmq base
-			CmqBase190 savedEntity = cmqBaseService.findByCode(selectedData.getCmqCode());
-
-			// save the cmq code to session
-			FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("NEW-CMQ_BASE-ID",
-					savedEntity.getId());
-
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"List '" + selectedData.getCmqName() + "' is successfully saved.", "");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-
-			if (selectedData.getCmqDescription().equals("*** Description ****"))
-				selectedData.setCmqDescription("");
-		} catch (CqtServiceException e) {
-			LOG.error("Exception occurred while creating CmqBase190.", e);
-
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"An error occurred while trying to save the details.", "");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-
-			return null;
-		}
-		return "";
+	/**
+	 * Bool when State is 'Draft' or 'Reviewed'.
+	 * @return boolean
+	 */
+	public boolean isReadOnlyState() {
+		if(copyWizard != null) {
+			return false;
+		} else if (updateWizard != null) {
+			if (selectedData != null && selectedData.getCmqState() != null 
+					&& ("Draft".equalsIgnoreCase(selectedData.getCmqState())
+							|| "Reviewed".equalsIgnoreCase(selectedData.getCmqState()))){
+				return false;
+			} else if (selectedData != null && selectedData.getCmqState() == null) {
+				return false;
+			} else {
+				return true;
+			}
+		} 
+		return false;
 	}
+	
+	
+	/**
+	 * Load a single CMQ List record for "Details/Informative Notes/Relations/Confirm" tabs
+	 * 
+	 * @param code
+	 * @return
+	 */
+	public String loadCmqBaseByCode(Long code) {
+		codeSelected = null;
+		CmqBase190 cmq = new CmqBase190();
+		cmq = this.cmqBaseService.findByCode(code);
 
-	private void setDatas() throws CqtServiceException {
-		// get the next value of code
-		codevalue = this.cmqBaseService.getNextCodeValue();
-		RefConfigCodeList currentMeddraVersionCodeList = this.refCodeListService.getCurrentMeddraVersion();
+		if (cmq != null) {
+			codeSelected = cmq.getCmqCode();
+			selectedData = cmq;
+		}
 
-		// fill data
-		selectedData.setCreationDate(new Date());
-		selectedData.setCmqGroup(group);
-		selectedData.setCmqTypeCd(extension);
-		if ((status == null) || status.equals("Pending"))
+		if (browseWizard != null) {
+			browseWizard.setStep("details");
+			if(RequestContext.getCurrentInstance() != null) {
+				// UI: force update the custom wizard navbar area
+				RequestContext.getCurrentInstance().update("fBrowse:wizardNavbar");
+			}
+		}
+		
+		if (updateWizard != null) {
+			updateWizard.setStep("details");
+			if(RequestContext.getCurrentInstance() != null) {
+				// UI: force update the custom wizard navbar area
+				RequestContext.getCurrentInstance().update("fUpdate:wizardNavbar");
+			}
+			// selectedData = new CmqBase190();
+			// setSelectedData(cmq);
+		}
+		
+		if (copyWizard != null) {
+			//reset the values which are not supposed to be copied.
+			selectedData.setId(null);//need to set since we may need to create a new cmq
+			selectedData.setCmqCode(null);//need to set since we may need to create a new cmq
 			selectedData.setCmqStatus("P");
-		if (status.equals("Active"))
-			selectedData.setCmqStatus("A");
-		if (status.equals("Inactive"))
-			selectedData.setCmqStatus("I");
-		selectedData.setCmqState(state);
-		selectedData.setCmqAlgorithm(algorithm);
-		selectedData.setCmqProductCd(product);
-		selectedData.setCmqLevel(level);
-		selectedData.setCmqProtocolCd(protocol);
-		selectedData.setCmqProgramCd(drugProgram);
-		selectedData.setCmqGroup(group);
-		selectedData.setCmqCode(codevalue);
-		selectedData.setCmqDescription(description);
-		selectedData.setDictionaryVersion(currentMeddraVersionCodeList.getValue());
-
-		// hard coded for now
-		selectedData.setCreatedBy("Test user");
-		if (dictionaryName != null && dictionaryName.getValue() != null)
-			selectedData.setDictionaryName((String) dictionaryName.getValue());
-		else
-			selectedData.setDictionaryName("");
-		selectedData.setCmqSubversion(new BigDecimal(0.23d));
-	}
-
-	public String cancel() {
-		selectedData = new CmqBase190();
-		initAll();
-
-		FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Form canceled", "");
-		FacesContext.getCurrentInstance().addMessage(null, msg);
-		return "";
-	}
-
-	public String cancelNotes() {
-		selectedData.setCmqDescription("");
-		selectedData.setCmqNote("");
-		selectedData.setCmqSource("");
-
-		if (selectedData.getId() == null) {
-			selectedData = new CmqBase190();
+			selectedData.setCmqState("Draft");
+			selectedData.setCmqGroup(null);
+			selectedData.setCreationDate(null);
+			selectedData.setCreatedBy(null);
+			selectedData.setCmqDescription("");
+			selectedData.setCmqNote("");
+			selectedData.setCmqSource("");
+			copyWizard.setStep("details");
+			
+			if(RequestContext.getCurrentInstance() != null) {
+				// UI: force update the custom wizard navbar area
+				RequestContext.getCurrentInstance().update("fCopy:wizardNavbar");
+			}
 		}
+		
+		detailsFormModel.loadFromCmqBase190(selectedData);
+		notesFormModel.loadFromCmqBase190(selectedData);
+		workflowFormModel.loadFromCmqBase190(selectedData);
 
-		FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Form canceled", "");
-		FacesContext.getCurrentInstance().addMessage(null, msg);
 		return "";
 	}
+	
+	/**
+	 * Sets the selectedData from ListDetailsFormModel
+	 * @throws CqtServiceException
+	 */
+	private void prepareDetailsFormSave() throws CqtServiceException {
+		// fill data
+		if(createWizard != null) {
+			// get the next value of code
+			codevalue = this.cmqBaseService.getNextCodeValue();
+			RefConfigCodeList currentMeddraVersionCodeList = this.refCodeListService.getCurrentMeddraVersion();
+			
+			detailsFormModel.setWizardType(WizardType.CreateWizard);
+			
+			selectedData.setCmqCode(codevalue);
+			selectedData.setDictionaryVersion(currentMeddraVersionCodeList.getValue());
+			// hard coded for now
+			selectedData.setCreatedBy("Test user");
+			if (dictionaryName != null && dictionaryName.getValue() != null)
+				selectedData.setDictionaryName((String) dictionaryName.getValue());
+			else
+				selectedData.setDictionaryName("");
+			selectedData.setCmqSubversion(new BigDecimal(0.23d));
+		} else if(copyWizard != null) {
+			detailsFormModel.setWizardType(WizardType.CopyWizard);
+		} else if(updateWizard != null) {
+			detailsFormModel.setWizardType(WizardType.UpdateWizard);
+		}
+		
+		detailsFormModel.saveToCmqBase190(selectedData);
+	}
 
+	/**
+	 * Reset the "Relations" tab
+	 * @return
+	 */
 	public String cancelRelations() {
 		if (selectedData.getId() == null) {
 			selectedData = new CmqBase190();
 		}
 		FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Form canceled", "");
 		FacesContext.getCurrentInstance().addMessage(null, msg);
-		return "";
-	}
-
-	/**
-	 * Update for details.
-	 * 
-	 * @return String
-	 */
-	public String update() {
-		try {
-			
-			Long count = this.cmqBaseService.findCmqCountByCmqNameAndExtension(extension, selectedData.getCmqName());
-			
-			if(count < 2) {
-				//we should have atmost 1
-				CmqBase190 existingCmqBase = this.cmqBaseService.findByCode(selectedData.getCmqCode());
-				
-				existingCmqBase.setCmqTypeCd(extension);
-				existingCmqBase.setCmqName(selectedData.getCmqName());
-				existingCmqBase.setCmqProgramCd(drugProgram);
-				existingCmqBase.setCmqProtocolCd(protocol);
-				existingCmqBase.setCmqProductCd(product);
-				if (selectedData.getCmqDesignee() == null){
-					existingCmqBase.setCmqDesignee("NONE");
-				}
-				existingCmqBase.setCmqLevel(level);
-				existingCmqBase.setCmqAlgorithm(algorithm);
-				
-				existingCmqBase.setLastModifiedDate(new Date());
-				existingCmqBase.setLastModifiedBy("test-user");
-
-				cmqBaseService.update(existingCmqBase);
-
-				// retrieve the saved cmq base
-				CmqBase190 savedEntity = cmqBaseService.findByCode(selectedData.getCmqCode());
-				
-				// update the selectedData with saved one
-				// we do not simply assign selectedData = savedEntity,
-				// because selectedData might contain other unsaved changes like description
-				selectedData.setCmqTypeCd(savedEntity.getCmqTypeCd());
-				selectedData.setCmqName(savedEntity.getCmqName());
-				selectedData.setCmqProgramCd(savedEntity.getCmqProgramCd());
-				selectedData.setCmqProtocolCd(savedEntity.getCmqProtocolCd());		
-				selectedData.setCmqProductCd(savedEntity.getCmqProductCd());
-				selectedData.setCmqDesignee(savedEntity.getCmqDesignee());
-				selectedData.setCmqLevel(savedEntity.getCmqLevel());
-				selectedData.setCmqAlgorithm(savedEntity.getCmqAlgorithm());
-				selectedData.setLastModifiedDate(savedEntity.getLastModifiedDate());
-				selectedData.setLastModifiedBy(savedEntity.getLastModifiedBy());			
-
-				// // save the cmq code to session
-				FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("NEW-CMQ_BASE-ID",
-						savedEntity.getId());
-
-				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-						"List '" + selectedData.getCmqName() + "' is successfully saved.", "");
-				FacesContext.getCurrentInstance().addMessage(null, msg);
-			} else {
-				String errorMsg = "Duplicate CMQ name ('" + selectedData.getCmqName() + "')and exteion ('" + extension
-						+ "') found in db.";
-				LOG.error(errorMsg);
-
-				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, errorMsg, "");
-				FacesContext.getCurrentInstance().addMessage(null, msg);
-
-				return null;
-			}
-		} catch (CqtServiceException e) {
-			LOG.error("Exception occurred while updating CmqBase190.", e);
-
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"An error occurred while trying to update the details.", "");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-
-			return null;
-		}
-		return "";
-	}
-
-	public String saveInformativeNotes() {
-		Long cmqId = (Long) (FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
-				.get("NEW-CMQ_BASE-ID"));
-
-		CmqBase190 savedEntity = cmqBaseService.findById(cmqId);
-		savedEntity.setCmqDescription(selectedData.getCmqDescription());
-		savedEntity.setCmqNote(selectedData.getCmqNote());
-		savedEntity.setCmqSource(selectedData.getCmqSource());
-		try {
-			this.cmqBaseService.update(savedEntity);
-
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Informative Notes are successfully saved for '" + selectedData.getCmqName() + "'", "");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		} catch (CqtServiceException e) {
-			LOG.error("Exception occurred while updating CmqBase190 for add informative notes.", e);
-
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"An error occurred while trying to save Informative Notes.", "");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-
-			return null;
-		}
 		return "";
 	}
 
@@ -886,12 +942,12 @@ public class CreateController implements Serializable {
 				selectedData.setCmqStatus("I");
 			}
 		} else {
-			setState(state);
+			detailsFormModel.setState(state);
 			selectedData.setCmqState(state);
 		}
 		
 		//Adding the due date to be updated
-		selectedData.setCmqDueDate(dueDate);
+		workflowFormModel.saveToCmqBase190(selectedData);
 		
 		// Update
 		try {
@@ -913,132 +969,54 @@ public class CreateController implements Serializable {
 
 		return state;
 	}
-
-	/**
-	 * Method to change Level value on extention selection.
-	 * 
-	 * @param event
-	 *            AjaxBehaviour
-	 */
+	
 	public void changeLevel(AjaxBehaviorEvent event) {
-		if (extension.equals("PRO")) {
-			setLevel(2);
-		} else {
-			setLevel(1);
+		if(createWizard != null) {
+			detailsFormModel.setWizardType(WizardType.CreateWizard);
+		} else if(copyWizard != null) {
+			detailsFormModel.setWizardType(WizardType.CopyWizard);
+		} else if(updateWizard != null) {
+			detailsFormModel.setWizardType(WizardType.UpdateWizard);
 		}
-		
-		if(copyWizard == null) {
-			//we are not doing copy so change others.
-			
-			/**
-			 * Getting code internal value from now on
-			 */
-			if (extension.equals("CPT") || extension.equals("DME"))
-				setDrugProgram("420001");
-			else
-				setDrugProgram("");
-		
-			if (extension.equals("CPT") || extension.equals("DME") || extension.equals("TME") || extension.equals("TR1"))
-				setProtocol("999999");
-			else
-				setProtocol("");
-			
-			if (extension.equals("CPT") || extension.equals("DME"))
-				setProduct("99999");
-			else
-				setProduct(""); 
-		}
+		detailsFormModel.changeLevel(event);
 	}
 
-
-	public String getExtension() {
-		return extension;
+	
+	//--------------------- Getters and Setters -----------------------
+	
+	/**
+	 * Details form Model
+	 * @return
+	 */
+	public ListDetailsFormModel getDetailsFormModel() {
+		return this.detailsFormModel;
 	}
-
-	public void setExtension(String extension) {
-		this.extension = extension;
+	public void setDetailsFormModel(ListDetailsFormModel model) {
+		this.detailsFormModel = model;
 	}
-
-	public String getDrugProgram() {
-		return drugProgram;
+	
+	/**
+	 * "Informative Notes" form model
+	 * @return
+	 */
+	public ListNotesFormModel getNotesFormModel() {
+		return this.notesFormModel;
 	}
-
-	public void setDrugProgram(String drugProgram) {
-		this.drugProgram = drugProgram;
+	public void setNotesFormModel(ListNotesFormModel model) {
+		this.notesFormModel = model;
 	}
-
-	public String getProtocol() {
-		return protocol;
+	
+	/**
+	 * "Confirm / Workflow" form model
+	 * @return
+	 */
+	public ListWorkflowFormModel getWorkflowFormModel() {
+		return this.workflowFormModel;
 	}
-
-	public void setProtocol(String protocol) {
-		this.protocol = protocol;
+	public void setWorkflowFormModel(ListWorkflowFormModel model) {
+		this.workflowFormModel = model;
 	}
-
-	public String getState() {
-		return state;
-	}
-
-	public void setState(String state) {
-		this.state = state;
-	}
-
-	public Integer getLevel() {
-		return level;
-	}
-
-	public void setLevel(Integer level) {
-		this.level = level;
-	}
-
-	public String getStatus() {
-		return status;
-	}
-
-	public void setStatus(String status) {
-		this.status = status;
-	}
-
-	public String getCritical() {
-		return critical;
-	}
-
-	public void setCritical(String critical) {
-		this.critical = critical;
-	}
-
-	public String getScope() {
-		return scope;
-	}
-
-	public void setScope(String scope) {
-		this.scope = scope;
-	}
-
-	public String getProduct() {
-		return product;
-	}
-
-	public void setProduct(String product) {
-		this.product = product;
-	}
-
-	public String getGroup() {
-		return group;
-	}
-
-	public void setGroup(String group) {
-		this.group = group;
-	}
-
-	public String getHistory() {
-		return history;
-	}
-
-	public void setHistory(String history) {
-		this.history = history;
-	}
-
+	
 	public CmqBase190 getSelectedData() {
 		return selectedData;
 	}
@@ -1049,14 +1027,6 @@ public class CreateController implements Serializable {
 
 	public void setCmqBaseService(ICmqBase190Service cmqBaseService) {
 		this.cmqBaseService = cmqBaseService;
-	}
-
-	public String getAlgorithm() {
-		return algorithm;
-	}
-
-	public void setAlgorithm(String algorithm) {
-		this.algorithm = algorithm;
 	}
 
 	public ICmqBase190Service getCmqBaseService() {
@@ -1077,30 +1047,6 @@ public class CreateController implements Serializable {
 
 	public void setMaintainDesigBtn(boolean maintainDesigBtn) {
 		this.maintainDesigBtn = maintainDesigBtn;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public String getNotes() {
-		return notes;
-	}
-
-	public void setNotes(String notes) {
-		this.notes = notes;
-	}
-
-	public String getSource() {
-		return source;
-	}
-
-	public void setSource(String source) {
-		this.source = source;
 	}
 
 	public Wizard getUpdateWizard() {
@@ -1165,8 +1111,12 @@ public class CreateController implements Serializable {
 		return true;
 	}
 
-	// returns if the retire button should be disabled or not. (true for disabled)
-	// The retire button will be enabled only when lists Status is A (active).
+	/**
+	 * returns if the retire button should be disabled or not. (true for disabled)
+	 * The retire button will be enabled only when lists Status is A (active).
+	 * 
+	 * @return true if it is available for retire
+	 */
 	public boolean isRetire() {
 		if (selectedData != null && "A".equals(selectedData.getCmqStatus()))
 			return false;
@@ -1213,19 +1163,6 @@ public class CreateController implements Serializable {
 
 	public void setCreateWizard(Wizard createWizard) {
 		this.createWizard = createWizard;
-	}
-
-	public Date getDueDate() {
-		return dueDate;
-	}
-
-	public void setDueDate(Date dueDate) {
-		this.dueDate = dueDate;
-	}
-	
-	public void onDueDateSelect(SelectEvent event) {
-		if(event.getObject() instanceof Date)
-			setDueDate((Date)event.getObject());
 	}
 
 	public HtmlInputText getDictionaryName() {

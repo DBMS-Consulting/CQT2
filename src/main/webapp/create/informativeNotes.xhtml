@@ -10,23 +10,27 @@
 
 	<p:panel id="panelNotes"
 		header="Informative Notes for #{createController.selectedData.cmqName}">
+		
+		<p:remoteCommand name="saveNotesAndGoToNextStep" update="@form:m1" actionListener="#{createController.saveNotesAndNextStep}" />
+		<p:remoteCommand name="resetNotesAndGoToNextStep" update="@form:m1 @form:panelNotes @form" actionListener="#{createController.cancelNotesAndNextStep}" />
+						
 		<p:tabView>
 			<p:tab title="Description">
 				<p:inputTextarea required="true"
 					readonly="#{createController.readOnlyState}"
 					placeholder="Please Enter Description"
-					value="#{createController.selectedData.cmqDescription}"
+					value="#{createController.notesFormModel.description}"
 					requiredMessage="A description is required"
 					style="width: 100%; min-height: 250px" autoResize="true" />
 				<!-- <h:inputTextarea required="true" value="###"   /> -->
 			</p:tab>
 			<p:tab title="Notes">
-				<p:inputTextarea value="#{createController.selectedData.cmqNote}"
+				<p:inputTextarea value="#{createController.notesFormModel.notes}"
 					readonly="#{createController.readOnlyState}"
 					style="width: 100%; min-height: 250px" autoResize="true" />
 			</p:tab>
 			<p:tab title="Source">
-				<p:inputTextarea value="#{createController.selectedData.cmqSource}"
+				<p:inputTextarea value="#{createController.notesFormModel.source}"
 					readonly="#{createController.readOnlyState}"
 					style="width: 100%; min-height: 250px" autoResize="true" />
 			</p:tab>
@@ -47,6 +51,14 @@
 			</p:commandButton>
 
 		</h:panelGrid>
+		
+		<p:confirmDialog widgetVar="confirmSaveNotesDlg" showEffect="fade" hideEffect="fade"
+			header="Confirm about Unsaved Changes"
+			message="There are some unsaved changes. Do you want to save them before you continue?">
+	        <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" onclick="saveNotesAndGoToNextStep()" />
+	        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"  onclick="resetNotesAndGoToNextStep()" />
+	    </p:confirmDialog>
+					    
 	</p:panel>
 
 	<style>

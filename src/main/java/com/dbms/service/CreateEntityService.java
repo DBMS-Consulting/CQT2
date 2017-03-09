@@ -4,15 +4,10 @@ import java.util.List;
 
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.dbms.entity.cqt.CreateEntity;
-import com.dbms.util.CqtEntityManagerFactory;
 
 /**
  * @date Feb 6, 2017 9:53:07 AM
@@ -43,7 +38,6 @@ public class CreateEntityService {
 		return null;
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<CreateEntity> findAll() {
 		/*EntityManager entityManager = HibernateUtil.openEntityManager();
 		List<CreateEntity> entities = entityManager.createQuery("from CreateEntity c").getResultList();
@@ -61,7 +55,6 @@ public class CreateEntityService {
 		return sb;
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<CreateEntity> findByCriterias(String extension, String drugProgram, String protocol) {
 		/*StringBuilder sb = new StringBuilder("from CreateEntity c");
 		boolean first = true;

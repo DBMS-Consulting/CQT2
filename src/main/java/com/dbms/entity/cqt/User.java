@@ -6,8 +6,6 @@ import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-import com.dbms.entity.AuditableEntity;
-
 /**
  * @date Feb 6, 2017 5:54:27 PM
  **/
