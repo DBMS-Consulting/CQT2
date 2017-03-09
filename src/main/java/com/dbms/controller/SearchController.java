@@ -786,9 +786,13 @@ public class SearchController extends BaseController<CmqBase190> {
 				
 				for (MeddraDictHierarchySearchDto childDto : childDtos) {
 					HierarchyNode childNode = this.createMeddraNode(childDto, childLevel);
-					if(!StringUtils.isBlank(childDto.getPrimaryPathFlag()) 
-							&& (childDto.getPrimaryPathFlag().equalsIgnoreCase("Y"))){
-						childNode.setPrimaryPathFlag(true);
+					if(!childLevel.equalsIgnoreCase("LLT")){//add in all except in LLT children
+						if(!StringUtils.isBlank(childDto.getPrimaryPathFlag()) 
+								&& (childDto.getPrimaryPathFlag().equalsIgnoreCase("Y"))){
+							childNode.setPrimaryPathFlag(true);
+						} else {
+							childNode.setPrimaryPathFlag(false);
+						}
 					} else {
 						childNode.setPrimaryPathFlag(false);
 					}
