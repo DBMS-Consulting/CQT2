@@ -87,7 +87,8 @@
 					update="resultHier" />
 
 				<p:column headerText="Level">
-					<h:outputText value="#{node.level}" />
+					<h:outputText value="'P' #{node.level}" rendered="#{node.primaryPathFlag}" />
+					<h:outputText value="#{node.level}" rendered="#{not node.primaryPathFlag}"  />
 				</p:column>
 
 				<p:column headerText="Term">

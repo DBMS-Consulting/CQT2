@@ -25,6 +25,8 @@ public class HierarchyNode implements Serializable, Comparable<HierarchyNode> {
 	private String weight;
 
 	private String scope;
+	
+	private boolean primaryPathFlag;
 
 	public HierarchyNode() {
 	}
@@ -166,5 +168,13 @@ public class HierarchyNode implements Serializable, Comparable<HierarchyNode> {
 
 	public void setScope(String scope) {
 		this.scope = scope;
+	}
+
+	public boolean isPrimaryPathFlag() {
+		return primaryPathFlag;
+	}
+
+	public void setPrimaryPathFlag(boolean primaryPathFlag) {
+		this.primaryPathFlag = primaryPathFlag;
 	}
 }

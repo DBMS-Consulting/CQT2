@@ -61,6 +61,7 @@ public class MeddraDictService extends CqtPersistenceService<MeddraDict190> impl
 			query.addScalar("term", StandardBasicTypes.STRING);
 			query.addScalar("code", StandardBasicTypes.STRING);
 			query.addScalar("primaryPathFlag", StandardBasicTypes.STRING);
+			query.setFetchSize(400);
 			if (!StringUtils.isBlank(searchTerm)) {
 				query.setParameter("searchTerm", searchTerm.toUpperCase());
 			}
@@ -98,6 +99,7 @@ public class MeddraDictService extends CqtPersistenceService<MeddraDict190> impl
 			query.addScalar("term", StandardBasicTypes.STRING);
 			query.addScalar("code", StandardBasicTypes.STRING);
 			query.addScalar("primaryPathFlag", StandardBasicTypes.STRING);
+			query.setFetchSize(400);
 			query.setParameter("code", code);
 			query.setResultTransformer(Transformers.aliasToBean(MeddraDictHierarchySearchDto.class));
 
@@ -148,6 +150,7 @@ public class MeddraDictService extends CqtPersistenceService<MeddraDict190> impl
 			query.addScalar("term", StandardBasicTypes.STRING);
 			query.addScalar("code", StandardBasicTypes.STRING);
 			query.addScalar("primaryPathFlag", StandardBasicTypes.STRING);
+			query.setFetchSize(400);
 			//query.setParameterList("codeList", codes);
 			query.setResultTransformer(Transformers.aliasToBean(MeddraDictHierarchySearchDto.class));
 
@@ -161,7 +164,6 @@ public class MeddraDictService extends CqtPersistenceService<MeddraDict190> impl
 		} finally {
 			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
 		}
-		session.close();
 		return retVal;
 	}
 
@@ -182,7 +184,7 @@ public class MeddraDictService extends CqtPersistenceService<MeddraDict190> impl
 		try {
 			SQLQuery query = session.createSQLQuery(queryString);
 			query.setParameter("code", parentCode);
-
+			query.setFetchSize(400);
 			retVal = ((Number)query.uniqueResult()).longValue();
 		} catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
@@ -218,6 +220,7 @@ public class MeddraDictService extends CqtPersistenceService<MeddraDict190> impl
 			query.addScalar("term", StandardBasicTypes.STRING);
 			query.addScalar("code", StandardBasicTypes.STRING);
 			query.addScalar("primaryPathFlag", StandardBasicTypes.STRING);
+			query.setFetchSize(400);
 			query.setParameter("code", parentCode);
 			query.setResultTransformer(Transformers.aliasToBean(MeddraDictHierarchySearchDto.class));
 
