@@ -396,7 +396,8 @@ public class CreateController implements Serializable {
 
 			// retrieve the saved cmq base
 			CmqBase190 savedEntity = cmqBaseService.findByCode(selectedData.getCmqCode());
-
+			selectedData = savedEntity;
+			codeSelected = selectedData.getCmqCode();
 			// save the cmq code to session
 			FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("NEW-CMQ_BASE-ID",
 					savedEntity.getId());
@@ -446,6 +447,8 @@ public class CreateController implements Serializable {
 
 				// retrieve the saved cmq base
 				CmqBase190 savedEntity = cmqBaseService.findByCode(codevalue);
+				selectedData = savedEntity;
+				codeSelected = selectedData.getCmqCode();
 
 				// save the cmq code to session
 				FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("NEW-CMQ_BASE-ID",
@@ -530,6 +533,7 @@ public class CreateController implements Serializable {
 		
 		if (copyWizard != null) {
 			//reset the values which are not supposed to be copied.
+			codeSelected = null;
 			selectedData.setId(null);//need to set since we may need to create a new cmq
 			selectedData.setCmqCode(null);//need to set since we may need to create a new cmq
 			selectedData.setCmqStatus("P");
