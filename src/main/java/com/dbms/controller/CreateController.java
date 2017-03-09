@@ -1108,6 +1108,22 @@ public class CreateController implements Serializable {
 	public void setSelectedDesignees(String[] selectedDesignees) {
 		this.selectedDesignees = selectedDesignees;
 	}
+	
+	/**
+	 * returns if relations can be added/removed in "Relations" tab
+	 * @return
+	 */
+	public boolean isRelationsReadonly() {
+		return (!"Draft".equalsIgnoreCase(selectedData.getCmqState()) && !"Reviewed".equalsIgnoreCase(selectedData.getCmqState()));
+	}
+	
+	/**
+	 * returns if the current list is a child list and has a viewable parent list.
+	 * @return
+	 */
+	public boolean isParentViewable() {
+		return selectedData.getCmqLevel() > 1;
+	}
 
 	public boolean isReactivate() {
 		if (selectedData != null && "I".equals(selectedData.getCmqStatus()))

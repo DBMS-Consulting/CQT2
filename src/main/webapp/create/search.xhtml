@@ -145,7 +145,7 @@
 					action="#{createController.loadCmqBaseByCode(value.cmqCode)}"
 					value="#{value.cmqCode}">
 
-					<p:ajax update="@form:wizardId @form:relations @form:confirmPan" />
+					<p:ajax update="@form:wizardId @form:relations" />
 
 					<f:setPropertyActionListener
 						target="#{searchController.clickedCmqCode}"

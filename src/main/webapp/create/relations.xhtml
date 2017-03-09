@@ -91,13 +91,22 @@
 					icon="fa fa-file-excel-o">
 					<p:fileDownload value="#{null}"></p:fileDownload>
 				</p:commandButton>
+				
 				<p:spacer width="10" />
 				<p:commandButton value="Hierarchy Search" id="ctb13"
-					styleClass="#{(createController.selectedData.cmqState ne 'Draft' and createController.selectedData.cmqState ne 'Reviewed') ? 'btn-disabled' : ''}" update="@form:hierarchy-modal"
-					disabled="#{(createController.selectedData.cmqState ne 'Draft' and createController.selectedData.cmqState ne 'Reviewed') ? true : false}"
+					styleClass="#{createController.relationsReadonly ? 'btn-disabled' : ''}" update="@form:hierarchy-modal"
+					disabled="#{createController.relationsReadonly ? true : false}"
 					oncomplete="PF('search').show();" icon="fa fa-search">
 				</p:commandButton>
 
+				<p:spacer width="10" />
+				
+				<p:commandButton value="Parent List" id="ctb15"
+					styleClass="#{createController.parentViewable ? '' : 'btn-disabled'}" update="@form:hierarchy-modal"
+					disabled="#{createController.parentViewable ? false : true}"
+					oncomplete="PF('search').show();" icon="fa fa-search">
+				</p:commandButton>
+				
 				<p:spacer width="10" />
 			</f:facet>
 		</p:toolbar>
