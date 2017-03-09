@@ -6,9 +6,10 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:p="http://primefaces.org/ui">
 
-
+	<p:ajax event="close" listener="#{searchController.onCloseHierarchySearch}" update="@form:hierarchySearchGrid"/>
+	
 	<p:panel header="Relations" style="width:700px; height:560px; overflow: auto" id="hierarchy-modal">
-		<h:panelGrid columns="6">
+		<h:panelGrid id="hierarchySearchGrid" columns="6">
 			<p:outputLabel value="Level" for="levelH" />
 			<p:selectOneMenu id="levelH" label="Level"  rendered="#{createController.selectedData.cmqTypeCd ne 'PRO'}"
 				value="#{searchController.levelH}">

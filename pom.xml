@@ -36,7 +36,11 @@
 			<artifactId>commons-lang3</artifactId>
 			<version>3.5</version>
 		</dependency>
-
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-collections4</artifactId>
+			<version>4.1</version>
+		</dependency>
 		<!-- Mojarra JSF -->
 		<dependency>
 			<groupId>com.sun.faces</groupId>
@@ -87,12 +91,9 @@
 			<artifactId>hibernate-ehcache</artifactId>
 			<version>${hibernate.version}</version>
 		</dependency>
-		<!-- <dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-search-orm</artifactId>
-			<version>4.6.0.Final-redhat-2</version>
-		</dependency> -->
-		
+		<!-- <dependency> <groupId>org.hibernate</groupId> <artifactId>hibernate-search-orm</artifactId> 
+			<version>4.6.0.Final-redhat-2</version> </dependency> -->
+
 		<!-- oracle -->
 		<!-- <dependency> <groupId>com.oracle</groupId> <artifactId>ojdbc7</artifactId> 
 			<version>12.1.0.2</version> </dependency> <dependency> <groupId>com.oracle</groupId> 

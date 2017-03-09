@@ -1,18 +1,10 @@
 package com.dbms.entity.cqt;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -39,6 +31,9 @@ public class SmqBase190 extends BaseEntity {
 	@Column(name = "SMQ_NAME", nullable = false, length = 100)
 	private String smqName;
 
+	@Column(name = "SMQ_PARENT_CODE", nullable = false, precision = 38)
+	private Long smqParentCode;
+
 	@Column(name = "SMQ_PARENT_NAME", length = 100)
 	private String smqParentName;
 
@@ -63,18 +58,19 @@ public class SmqBase190 extends BaseEntity {
 	@Column(name = "DICTIONARY_VERSION", nullable = false, length = 5)
 	private String dictionaryVersion;
 
-	@OneToMany(mappedBy = "parentSmq", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	private Set<SmqBase190> smqBaseChildres = new HashSet<>();
-
-	@ManyToOne
-	@JoinColumn(name = "SMQ_PARENT_CODE", referencedColumnName = "SMQ_CODE")
-	private SmqBase190 parentSmq;
-
 	public Long getId() {
 		return smqId;
 	}
 
 	public void setId(Long smqId) {
+		this.smqId = smqId;
+	}
+
+	public Long getSmqId() {
+		return smqId;
+	}
+
+	public void setSmqId(Long smqId) {
 		this.smqId = smqId;
 	}
 
@@ -92,6 +88,14 @@ public class SmqBase190 extends BaseEntity {
 
 	public void setSmqName(String smqName) {
 		this.smqName = smqName;
+	}
+
+	public Long getSmqParentCode() {
+		return smqParentCode;
+	}
+
+	public void setSmqParentCode(Long smqParentCode) {
+		this.smqParentCode = smqParentCode;
 	}
 
 	public String getSmqParentName() {
@@ -158,19 +162,4 @@ public class SmqBase190 extends BaseEntity {
 		this.dictionaryVersion = dictionaryVersion;
 	}
 
-	public Set<SmqBase190> getSmqBaseChildres() {
-		return smqBaseChildres;
-	}
-
-	public void setSmqBaseChildres(Set<SmqBase190> smqBaseChildres) {
-		this.smqBaseChildres = smqBaseChildres;
-	}
-
-	public SmqBase190 getParentSmq() {
-		return parentSmq;
-	}
-
-	public void setParentSmq(SmqBase190 parentSmq) {
-		this.parentSmq = parentSmq;
-	}
 }
