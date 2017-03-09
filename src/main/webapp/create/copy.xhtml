@@ -87,6 +87,11 @@
 				        styleClass="ui-wizard-nav-next" rendered="#{createController.copyWizardNavbarNextShown}" /> 
 			</h:panelGroup>
 			
+			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+		        <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+		        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+		    </p:confirmDialog>
+			
 			<p:spacer width="10" height="10" id="s6" />
 			<h:panelGrid id="pgl2" columns="5"
 				style="padding:3px; font-size: 10px !important">

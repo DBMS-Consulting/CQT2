@@ -75,11 +75,13 @@
 				</p:tab>
 			</p:wizard>
 
+			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+				<p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
 
 			<p:spacer width="10" height="10" id="s6" />
-			<h:panelGrid id="pgl2" columns="6"
-				style="padding:3px; font-size: 10px !important">
-
+			<h:panelGrid id="pgl2" columns="6" style="padding:3px; font-size: 10px !important">
 
 				<p:outputLabel for="it1aw" value="Dictionary Version:"></p:outputLabel>
 				<h:inputText id="it1aw"
@@ -91,15 +93,8 @@
 					binding="#{createController.dictionaryName}" readOnly="true"
 					disabled="true" />
 			</h:panelGrid>
-			<f:attribute name="currentPage"
-				value="Create New #{applicationScope.CSMQBean.customMQName} Wizard" />
+			<f:attribute name="currentPage" value="Create New #{applicationScope.CSMQBean.customMQName} Wizard" />
 
-			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
-				<p:commandButton value="Yes" type="button"
-					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
-				<p:commandButton value="No" type="button"
-					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-			</p:confirmDialog>
 		</h:form>
 
 		<style>
