@@ -53,28 +53,50 @@ public class AdminController implements Serializable {
 	@PostConstruct
 	public void init() {
 		codelist = "EXTENSION";
-//		getExtensionList();
-//		getProductList();
-//		getProgramList();
-//		getProtocolList();
+		getExtensionList();
+		getProductList();
+		getProgramList();
+		getProtocolList();
+		getMeddraList();
+		getWorkflowList();
 	}
 	
 	public String initAddCodelist() {
+		BigDecimal lastSerial = new BigDecimal(0);
 		ref = new RefConfigCodeList();
-		if (codelist.equals("EXTENSION"))
+		if (codelist.equals("EXTENSION")) {
 			ref.setCodelistConfigType(CqtConstants.CODE_LIST_TYPE_EXTENSION); 
-		if (codelist.equals("PRODUCT"))
+			if (extensions != null && !extensions.isEmpty())
+				lastSerial = extensions.get(extensions.size() - 1).getSerialNum();
+		}
+		if (codelist.equals("PRODUCT")) {
 			ref.setCodelistConfigType(CqtConstants.CODE_LIST_TYPE_PRODUCT); 
-		if (codelist.equals("PROGRAM"))
+			if (products != null && !products.isEmpty())
+				lastSerial = products.get(products.size() - 1).getSerialNum();
+		}
+		if (codelist.equals("PROGRAM")) {
 			ref.setCodelistConfigType(CqtConstants.CODE_LIST_TYPE_PROGRAM); 
-		if (codelist.equals("PROTOCOL"))
+			if (programs != null && !programs.isEmpty())
+				lastSerial = programs.get(programs.size() - 1).getSerialNum();
+		}
+		if (codelist.equals("PROTOCOL")) {
 			ref.setCodelistConfigType(CqtConstants.CODE_LIST_TYPE_PROTOCOL); 
-		if (codelist.equals("MEDDRA"))
+			if (protocols != null && !protocols.isEmpty())
+				lastSerial = protocols.get(protocols.size() - 1).getSerialNum();
+		}
+		if (codelist.equals("MEDDRA")) {
 			ref.setCodelistConfigType(CqtConstants.CODE_LIST_TYPE_MEDDRA_VERSIONS); 
-		if (codelist.equals("WORKFLOW"))
+			if (meddras != null && !meddras.isEmpty())
+				lastSerial = meddras.get(meddras.size() - 1).getSerialNum();
+		}
+		if (codelist.equals("WORKFLOW")) {
 			ref.setCodelistConfigType(CqtConstants.CODE_LIST_TYPE_WORKFLOW_STATES); 
+			if (workflows != null && !workflows.isEmpty())
+				lastSerial = workflows.get(workflows.size() - 1).getSerialNum();
+		}
 		ref.setCreationDate(new Date());
 		ref.setLastModificationDate(new Date()); 
+		ref.setSerialNum(lastSerial.add(new BigDecimal(1)));
 		
 		return "";
 	}
@@ -100,6 +122,7 @@ public class AdminController implements Serializable {
 	}
 
 	public List<RefConfigCodeList> getExtensionList() {
+		System.out.println("\n\n ************** extensionLIST");
 		extensions = refCodeListService.findAllByConfigType(
 				CqtConstants.CODE_LIST_TYPE_EXTENSION, OrderBy.ASC);
 		if (extensions == null) {
@@ -114,6 +137,7 @@ public class AdminController implements Serializable {
 	 * @return
 	 */
 	public List<RefConfigCodeList> getProgramList() {
+		System.out.println("\n\n ************** programLIST");
 		programs = refCodeListService.findAllByConfigType(
 				CqtConstants.CODE_LIST_TYPE_PROGRAM, OrderBy.ASC);
 		if (programs == null) {
@@ -190,23 +214,34 @@ public class AdminController implements Serializable {
 				refCodeListService.update(ref);
 			else {
 				refCodeListService.create(ref);
-				
-				updateSerialNumbers(ref.getCodelistConfigType(), ref.getSerialNum());
 			}
+			updateSerialNumbers(ref.getCodelistConfigType(), ref.getSerialNum());
 			String type = "";
 			
-			if (ref.getCodelistConfigType().equals(CqtConstants.CODE_LIST_TYPE_EXTENSION))
+			if (ref.getCodelistConfigType().equals(CqtConstants.CODE_LIST_TYPE_EXTENSION)) {
 				type = "Extension";
-			if (ref.getCodelistConfigType().equals(CqtConstants.CODE_LIST_TYPE_MEDDRA_VERSIONS))
+				getExtensionList();
+			}
+			if (ref.getCodelistConfigType().equals(CqtConstants.CODE_LIST_TYPE_MEDDRA_VERSIONS)) {
 				type = "MedDRA Dictionary";
-			if (ref.getCodelistConfigType().equals(CqtConstants.CODE_LIST_TYPE_PRODUCT))
+				getMeddraList();
+			}
+			if (ref.getCodelistConfigType().equals(CqtConstants.CODE_LIST_TYPE_PRODUCT)) {
 				type = "Product";
-			if (ref.getCodelistConfigType().equals(CqtConstants.CODE_LIST_TYPE_PROGRAM))
+				getProductList();
+			}
+			if (ref.getCodelistConfigType().equals(CqtConstants.CODE_LIST_TYPE_PROGRAM)) {
 				type = "Program";
-			if (ref.getCodelistConfigType().equals(CqtConstants.CODE_LIST_TYPE_PROTOCOL))
-				type = "Protocol";
-			if (ref.getCodelistConfigType().equals(CqtConstants.CODE_LIST_TYPE_WORKFLOW_STATES))
+				getProgramList();
+			}
+			if (ref.getCodelistConfigType().equals(CqtConstants.CODE_LIST_TYPE_PROTOCOL)) {
+				type = "Protocol"; 
+				getProtocolList();
+			}
+			if (ref.getCodelistConfigType().equals(CqtConstants.CODE_LIST_TYPE_WORKFLOW_STATES)) {
 				type = "Workflow State";
+				getWorkflowList();
+			}
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					type + " '" + ref.getCodelistInternalValue() + "' is successfully saved.", "");
 			FacesContext.getCurrentInstance().addMessage(null, msg);

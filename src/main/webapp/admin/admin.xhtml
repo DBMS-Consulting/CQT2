@@ -21,10 +21,9 @@
 					</p:breadCrumb>
 				</h:panelGrid>
 			</h:panelGrid>
-
+ 
 			<p:tabView id="pb1">
 				<p:tab title="Codelist Configurations">
-
 					<h:panelGrid columns="2">
 						<p:outputLabel value="Codelist Type" />
 						<p:selectOneMenu label="Codelist Type" autoSubmit="true"
@@ -41,29 +40,29 @@
 					</h:panelGrid>
 					<p:spacer height="10" />
 
-					<h:panelGrid rendered="#{adminController.codelist eq 'EXTENSION'}">
+					<ui:fragment rendered="#{adminController.codelist eq 'EXTENSION'}">
 						<ui:include src="extensionTable.xhtml"></ui:include>
-					</h:panelGrid>
+					</ui:fragment>
 
-					<h:panelGrid rendered="#{adminController.codelist eq 'PRODUCT'}">
+					<ui:fragment rendered="#{adminController.codelist eq 'PRODUCT'}">
 						<ui:include src="productTable.xhtml"></ui:include>
-					</h:panelGrid>
+					</ui:fragment>
 
-					<h:panelGrid rendered="#{adminController.codelist eq 'PROGRAM'}">
+					<ui:fragment rendered="#{adminController.codelist eq 'PROGRAM'}">
 						<ui:include src="programTable.xhtml"></ui:include>
-					</h:panelGrid>
+					</ui:fragment>
 
-					<h:panelGrid rendered="#{adminController.codelist eq 'PROTOCOL'}">
+					<ui:fragment rendered="#{adminController.codelist eq 'PROTOCOL'}">
 						<ui:include src="protocolsTable.xhtml"></ui:include>
-					</h:panelGrid>
+					</ui:fragment>
 					
-					<h:panelGrid rendered="#{adminController.codelist eq 'MEDDRA'}">
+					<ui:fragment rendered="#{adminController.codelist eq 'MEDDRA'}">
 						<ui:include src="meddraTable.xhtml"></ui:include>
-					</h:panelGrid>
+					</ui:fragment>
 					
-					<h:panelGrid rendered="#{adminController.codelist eq 'WORKFLOW'}">
+					<ui:fragment rendered="#{adminController.codelist eq 'WORKFLOW'}">
 						<ui:include src="workflowStateTable.xhtml"></ui:include>
-					</h:panelGrid>
+					</ui:fragment>
 
 				</p:tab>
 
