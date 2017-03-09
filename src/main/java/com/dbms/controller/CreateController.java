@@ -404,9 +404,6 @@ public class CreateController implements Serializable {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"List '" + selectedData.getCmqName() + "' is successfully saved.", "");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-
-			if (selectedData.getCmqDescription().equals("*** Description ****"))
-				selectedData.setCmqDescription("");
 		} catch (CqtServiceException e) {
 			LOG.error("Exception occurred while creating CmqBase190.", e);
 
@@ -457,9 +454,6 @@ public class CreateController implements Serializable {
 				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 						"List '" + selectedData.getCmqName() + "' is successfully saved.", "");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
-
-				if (selectedData.getCmqDescription().equals("*** Description ****"))
-					selectedData.setCmqDescription("");
 			}
 		} catch (CqtServiceException e) {
 			LOG.error("Exception occurred while creating CmqBase190.", e);
@@ -540,10 +534,10 @@ public class CreateController implements Serializable {
 			selectedData.setCmqCode(null);//need to set since we may need to create a new cmq
 			selectedData.setCmqStatus("P");
 			selectedData.setCmqState("Draft");
-			selectedData.setCmqGroup(null);
+			selectedData.setCmqGroup("No Group");
 			selectedData.setCreationDate(null);
 			selectedData.setCreatedBy(null);
-			selectedData.setCmqDescription("");
+			selectedData.setCmqDescription("*** Description ****");
 			selectedData.setCmqNote("");
 			selectedData.setCmqSource("");
 			copyWizard.setStep("details");
@@ -567,12 +561,15 @@ public class CreateController implements Serializable {
 	 */
 	private void prepareDetailsFormSave() throws CqtServiceException {
 		// fill data
-		if(createWizard != null) {
+		if(createWizard != null || copyWizard != null) {
 			// get the next value of code
 			codevalue = this.cmqBaseService.getNextCodeValue();
 			RefConfigCodeList currentMeddraVersionCodeList = this.refCodeListService.getCurrentMeddraVersion();
 			
-			detailsFormModel.setWizardType(WizardType.CreateWizard);
+			if(createWizard != null)
+				detailsFormModel.setWizardType(WizardType.CreateWizard);
+			else if(copyWizard != null)
+				detailsFormModel.setWizardType(WizardType.CopyWizard);
 			
 			selectedData.setCmqCode(codevalue);
 			selectedData.setDictionaryVersion(currentMeddraVersionCodeList.getValue());
@@ -583,8 +580,7 @@ public class CreateController implements Serializable {
 			else
 				selectedData.setDictionaryName("");
 			selectedData.setCmqSubversion(new BigDecimal(0.23d));
-		} else if(copyWizard != null) {
-			detailsFormModel.setWizardType(WizardType.CopyWizard);
+			notesFormModel.saveToCmqBase190(selectedData);
 		} else if(updateWizard != null) {
 			detailsFormModel.setWizardType(WizardType.UpdateWizard);
 		}

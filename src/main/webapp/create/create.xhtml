@@ -20,7 +20,7 @@
 			</h:panelGrid>
 
 			<p:wizard flowListener="#{wizard.onFlowProcess}" widgetVar="wizard"
-				id="wizardC">
+				id="wizardC" binding="#{createController.createWizard}">
 				<p:tab id="details" title="Add Details" disabled="false"
 					closable="true">
 					<p:panel header="Details">

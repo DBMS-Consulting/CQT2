@@ -103,8 +103,11 @@ public class ListDetailsFormModel {
 		cmq.setLastModifiedDate(new Date());
 		cmq.setLastModifiedBy("test-user");
 		
-		if(wizardType == WizardType.CreateWizard) {
+		if(wizardType == WizardType.CreateWizard || wizardType == WizardType.CopyWizard) {
 			cmq.setCreationDate(new Date());
+			cmq.setCmqStatus("P");
+			cmq.setCmqState("Draft");
+			cmq.setCmqGroup("No Group");
 		}
 	}
 	

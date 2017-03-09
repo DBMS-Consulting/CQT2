@@ -9,6 +9,8 @@ import com.dbms.entity.cqt.CmqBase190;
  *
  */
 public class ListNotesFormModel {
+	private final String emptyDescription = "*** Description ****";
+	
 	private boolean modelChanged = false;
 	
 	private String description;
@@ -20,7 +22,7 @@ public class ListNotesFormModel {
 	}
 	
 	public void init() {
-		this.description = "*** Description ****";
+		this.description = emptyDescription;
 		this.notes = "";
 		this.source = "";
 	}
@@ -40,6 +42,8 @@ public class ListNotesFormModel {
 	 * @param cmq
 	 */
 	public void saveToCmqBase190(CmqBase190 cmq) {
+		if(this.description == null || "".equals(this.description))
+			cmq.setCmqDescription(emptyDescription);
 		cmq.setCmqDescription(this.description);
 		cmq.setCmqNote(this.notes);
 		cmq.setCmqSource(this.source);
@@ -59,7 +63,10 @@ public class ListNotesFormModel {
 	}
 	
 	public String getDescription() {
-		return this.description;
+		if(emptyDescription.equals(this.description))
+			return "";
+		else
+			return this.description;
 	}
 
 	public void setDescription(String description) {
