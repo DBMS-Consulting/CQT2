@@ -232,6 +232,7 @@ public class CreateController implements Serializable {
 		String oldStep, nextStep;
 		oldStep = nextStep = event.getOldStep();
 		if (codeSelected != null) {
+			/*
 			if("details".equalsIgnoreCase(oldStep) && detailsFormModel.isModelChanged()) {
 				// current step is "Details" and the form has some unsaved changes
 				
@@ -268,6 +269,8 @@ public class CreateController implements Serializable {
 			} else {
 				nextStep = event.getNewStep();
 			}
+			*/
+			nextStep = event.getNewStep();
 		}
 		RequestContext.getCurrentInstance().update("fUpdate:wizardNavbar");
 		return nextStep;
@@ -347,6 +350,7 @@ public class CreateController implements Serializable {
 		String oldStep, nextStep;
 		oldStep = nextStep = event.getOldStep();
 		if (codeSelected != null) {
+			/*
 			if("details".equalsIgnoreCase(oldStep) && detailsFormModel.isModelChanged()) {
 				// current step is "Details" and the form has some unsaved changes
 				
@@ -364,6 +368,8 @@ public class CreateController implements Serializable {
 			} else {
 				nextStep = event.getNewStep();
 			}
+			*/
+			nextStep = event.getNewStep();
 		}
 		RequestContext.getCurrentInstance().update("fCopy:wizardNavbar");
 		return nextStep;
