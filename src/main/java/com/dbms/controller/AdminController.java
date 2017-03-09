@@ -1,6 +1,7 @@
 package com.dbms.controller;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -11,6 +12,8 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+
+
 
 
 import com.dbms.entity.cqt.RefConfigCodeList;
@@ -185,8 +188,11 @@ public class AdminController implements Serializable {
 		try {
 			if (ref.getId() != null)
 				refCodeListService.update(ref);
-			else
+			else {
 				refCodeListService.create(ref);
+				
+				updateSerialNumbers(ref.getCodelistConfigType(), ref.getSerialNum());
+			}
 			String type = "";
 			
 			if (ref.getCodelistConfigType().equals(CqtConstants.CODE_LIST_TYPE_EXTENSION))
@@ -211,6 +217,39 @@ public class AdminController implements Serializable {
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}
 		ref = new RefConfigCodeList();
+	}
+
+	private void updateSerialNumbers(String codelistConfigType, BigDecimal serialSaved) {
+		double val = 0;
+		System.out.println("\n\n ********************* serialSaved :  " + serialSaved);
+ 		List<RefConfigCodeList> refList = refCodeListService.findAllByConfigType(codelistConfigType, OrderBy.ASC);
+		List<RefConfigCodeList> refListToSave = new ArrayList<RefConfigCodeList>();
+		if (refList != null && !refList.isEmpty()) {
+			for (RefConfigCodeList ref : refList) {
+				
+				if (serialSaved.doubleValue() > ref.getSerialNum().doubleValue()) {
+					val = serialSaved.doubleValue();
+				}
+				if (ref.getSerialNum().doubleValue() >= serialSaved.doubleValue()) {
+					System.out.println("\n\n ref.getSerialNum() :  " + ref.getSerialNum().doubleValue());
+					ref.setSerialNum(new BigDecimal(val)); 
+					refListToSave.add(ref);
+					val++;
+				}
+					
+				
+			}
+			
+			if (!refListToSave.isEmpty())
+				try {
+					refCodeListService.update(refListToSave);
+				} catch (CqtServiceException e) {
+					e.printStackTrace();
+					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+							"An error occurred while saving the codelist", "");
+					FacesContext.getCurrentInstance().addMessage(null, msg);
+				}
+		}
 	}
 
 	public String getCodelistType() {
