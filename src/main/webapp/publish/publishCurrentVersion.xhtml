@@ -35,14 +35,15 @@
 					</p:panel>
 				</p:tab>
 
-				<p:tab id="demote" title="Demote to Draft">
+				
+				<!-- <p:tab id="demote" title="Demote to Draft">
 					<p:panel header="Demote to Draft">
 						<h:panelGrid columns="2">
 							<p:pickList id="pickList2" value="#{demoteToDraftController.demoteToDraftDualListModel}"
 								var="pick" converter="#{demoteToDraftController.cmqBaseDualListConverter}" 
 								itemLabel="#{pick.cmqName}" itemValue="#{pick.cmqCode}" />
 
-							<!-- <p:commandButton value="Demote" onclick="PF('confirm2').show();" /> -->
+							<p:commandButton value="Demote" onclick="PF('confirm2').show();" />
 							
 							<p:commandButton value="Demote" action="#{demoteToDraftController.demote}" update="@form m1" />
 						</h:panelGrid>
@@ -54,9 +55,9 @@
 						<h:panelGrid id="pgl3">
 							<p:toolbar id="t4">
 								<f:facet name="left">
-									<!-- <p:commandButton value="Demote Selected"
+									<p:commandButton value="Demote Selected"
 										onclick="PF('confirm2').show();" id="ctb1">
-									</p:commandButton> -->
+									</p:commandButton>
 									<p:commandButton value="Validate Group" id="ctb2"
 										onclick="PF('confirmActivate').show();" />
 									<p:commandButton value="Activate Group" id="ctb3"
@@ -70,20 +71,20 @@
 								<p:dataTable value="#{null}">
 									<p:column headerText="Term" id="c1" width="240">
 										<p:inputText value="#####">
-											<!-- <f:validator binding="#{row.bindings.Term.validator}" /> -->
+											<f:validator binding="#{row.bindings.Term.validator}" />
 										</p:inputText>
 									</p:column>
 
 									<p:column width="330" headerText="Error">
 										<p:inputText value="######" id="it2">
-											<!-- <f:validator binding="#{row.bindings.ErrorMsg.validator}" /> -->
+											<f:validator binding="#{row.bindings.ErrorMsg.validator}" />
 										</p:inputText>
 									</p:column>
 
 									<p:column headerText="####" id="c3" width="0" rendered="true">
 										<p:inputText value="#######" id="it3">
-											<!-- <f:validator
-												binding="#{row.bindings.PredictContentId.validator}" /> -->
+											<f:validator
+												binding="#{row.bindings.PredictContentId.validator}" />
 											<f:convertNumber />
 										</p:inputText>
 									</p:column>
@@ -96,13 +97,13 @@
 									<p:column sortable="false" headerText="Term" id="c6"
 										width="240">
 										<p:inputText value="#######" required="true" id="it5">
-											<!-- <f:validator binding="#{row.bindings.Term.validator}" /> -->
+											<f:validator binding="#{row.bindings.Term.validator}" />
 										</p:inputText>
 									</p:column>
 									<p:column filterable="false" sortable="true"
 										headerText="Relation Errors" id="c4" width="330">
 										<p:inputText value="######" required="true" id="it4">
-											<!-- <f:validator binding="#{row.bindings.ErrorMsg.validator}" /> -->
+											<f:validator binding="#{row.bindings.ErrorMsg.validator}" />
 										</p:inputText>
 									</p:column>
 								</p:dataTable>
@@ -118,7 +119,7 @@
 						</h:panelGrid>
 					</p:panel>
 				</p:tab>
-
+ -->
 
 			</p:wizard>
 
