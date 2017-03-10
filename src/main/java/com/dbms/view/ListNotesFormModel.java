@@ -9,7 +9,7 @@ import com.dbms.entity.cqt.CmqBase190;
  *
  */
 public class ListNotesFormModel {
-	private final String emptyDescription = "*** Description ****";
+	private final String emptyDescription = "Please enter the description";
 	
 	private boolean modelChanged = false;
 	

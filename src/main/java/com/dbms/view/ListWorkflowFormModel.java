@@ -33,6 +33,8 @@ public class ListWorkflowFormModel {
 	
 	public void saveToCmqBase190(CmqBase190 cmq) {
 		cmq.setCmqDueDate(this.dueDate);
+		cmq.setCmqWfDesc(requestReason);
+	//	cmq.setCmqReasonApproval(approvalReason); 
 	}
 	
 	public void onDueDateSelect(SelectEvent event) {

@@ -86,8 +86,17 @@ public class CmqBase190 extends BaseEntity {
 	@Column(name = "CMQ_DUE_DATE", length = 7)
 	private Date cmqDueDate;
 
+	/**
+	 * Request for reason.
+	 */
 	@Column(name = "CMQ_WF_DESC", length = 200)
 	private String cmqWfDesc;
+	
+	/**
+	 * Reason for approval.
+	 */
+//	@Column(name = "CMQ_APPROVE_REASON", length = 200)
+//	private String cmqReasonApproval;
 
 	@Column(name = "IMPACT_TYPE", length = 15)
 	private String impactType;
@@ -373,5 +382,13 @@ public class CmqBase190 extends BaseEntity {
 	public void setCmqParentCode(Long cmqParentCode) {
 		this.cmqParentCode = cmqParentCode;
 	}
+
+//	public String getCmqReasonApproval() {
+//		return cmqReasonApproval;
+//	}
+//
+//	public void setCmqReasonApproval(String cmqReasonApproval) {
+//		this.cmqReasonApproval = cmqReasonApproval;
+//	}
 
 }

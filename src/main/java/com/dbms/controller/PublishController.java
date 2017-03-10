@@ -134,9 +134,22 @@ public class PublishController implements Serializable {
 				return "";
 			} else {
 				boolean hasErrorOccured = false;
+				boolean hasParentError = false;
 				//success
 				for (CmqBase190 cmqBase190 : targetCmqsSelected) {
-					cmqBase190.setCmqState("Published");
+					cmqBase190.setCmqState("PUBLISHED");
+					//Pending to Active 'A'
+					cmqBase190.setCmqStatus("A"); 
+					
+					if ((cmqBase190.getCmqParentCode() != null && cmqBase190.getCmqParentCode().equals("")) &&(cmqBase190.getCmqParentName() != null && cmqBase190.getCmqParentName().equals("")))
+						hasParentError = true;
+				}
+				if (hasParentError) {
+					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+							"The List does not have an associated parent list, hence cannot be Published", "");
+					FacesContext.getCurrentInstance().addMessage(null, msg);
+					
+					return "";
 				}
 				
 				try {

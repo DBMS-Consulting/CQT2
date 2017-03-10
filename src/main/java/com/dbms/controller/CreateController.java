@@ -103,7 +103,7 @@ public class CreateController implements Serializable {
 
 	public void initCreateForm() {
 		this.selectedData = new CmqBase190();
-		selectedData.setCmqDescription("*** Description ****");
+		selectedData.setCmqDescription("Please enter the description");
 	}
 	
 	//----------------------- Browse Wizard ------------------------
@@ -962,6 +962,9 @@ public class CreateController implements Serializable {
 					"");
 			FacesContext ctx = FacesContext.getCurrentInstance();
 			ctx.addMessage(null, msg);
+			
+			//Clearing workflow attributes : due date, reason for request, reason for approval
+			this.workflowFormModel = new ListWorkflowFormModel();
 
 		} catch (CqtServiceException e) {
 			e.printStackTrace();
