@@ -6,7 +6,7 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:p="http://primefaces.org/ui">
 
-	<p:ajax event="close" listener="#{searchController.onCloseHierarchySearch}" update="@form:hierarchySearchGrid"/>
+	<!-- <p:ajax event="close" listener="#{searchController.onCloseHierarchySearch}" update="@form:hierarchySearchGrid"/> -->
 	
 	<p:panel header="Relations" style="width:700px; height:560px; overflow: auto" id="hierarchy-modal">
 		<h:panelGrid id="hierarchySearchGrid" columns="6">
@@ -83,9 +83,12 @@
 				paginator="true" paginatorPosition="bottom"
 				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 				rowsPerPageTemplate="5,10,25,30">
-
+	
+				<f:attribute name="uiEventSourceName" value="hierarchy-search" />
 				<p:ajax event="expand" listener="#{searchController.onNodeExpand}"
-					update="resultHier" />
+					update="resultHier">
+						
+				</p:ajax>
 
 				<p:column headerText="Level">
 					<h:outputText value="'P' #{node.level}" rendered="#{node.primaryPathFlag}" />

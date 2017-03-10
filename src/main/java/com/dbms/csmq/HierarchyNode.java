@@ -1,6 +1,9 @@
 package com.dbms.csmq;
 
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
+
+import org.apache.commons.beanutils.BeanUtils;
 
 import com.dbms.entity.IEntity;
 
@@ -17,15 +20,23 @@ public class HierarchyNode implements Serializable, Comparable<HierarchyNode> {
 	private IEntity entity;
 
 	private boolean isDataFetchCompleted;
-	
+
 	private boolean isDummyNode;
-	
+
+	private boolean hideCategory;
+
 	private String category;
+
+	private boolean hideWeight;
 
 	private String weight;
 
+	private boolean hideScope;
+
 	private String scope;
-	
+
+	private boolean hideDelete;
+
 	private boolean primaryPathFlag;
 
 	public HierarchyNode() {
@@ -37,8 +48,9 @@ public class HierarchyNode implements Serializable, Comparable<HierarchyNode> {
 		this.code = code;
 		this.entity = entity;
 	}
-	
-	public HierarchyNode(String level, String term, String code, String category, String weight, String scope, IEntity entity) {
+
+	public HierarchyNode(String level, String term, String code, String category, String weight, String scope,
+			IEntity entity) {
 		this.level = level;
 		this.term = term;
 		this.code = code;
@@ -103,7 +115,7 @@ public class HierarchyNode implements Serializable, Comparable<HierarchyNode> {
 	public void setDummyNode(boolean isDummyNode) {
 		this.isDummyNode = isDummyNode;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -140,7 +152,20 @@ public class HierarchyNode implements Serializable, Comparable<HierarchyNode> {
 			return false;
 		return true;
 	}
+	
+	public HierarchyNode copy() throws IllegalAccessException, InvocationTargetException {
+		HierarchyNode target = new HierarchyNode();
+		BeanUtils.copyProperties(target, this);
+		return target;
+	}
 
+	public void markNotEditableInRelationstable() {
+		this.hideCategory = true;
+		this.hideDelete = true;
+		this.hideScope = true;
+		this.hideWeight = true;
+	}
+	
 	@Override
 	public String toString() {
 		return term;
@@ -155,7 +180,7 @@ public class HierarchyNode implements Serializable, Comparable<HierarchyNode> {
 	}
 
 	public String getWeight() {
-		return weight==null?"":weight;
+		return weight == null ? "" : weight;
 	}
 
 	public void setWeight(String weight) {
@@ -176,5 +201,37 @@ public class HierarchyNode implements Serializable, Comparable<HierarchyNode> {
 
 	public void setPrimaryPathFlag(boolean primaryPathFlag) {
 		this.primaryPathFlag = primaryPathFlag;
+	}
+
+	public boolean isHideCategory() {
+		return hideCategory;
+	}
+
+	public void setHideCategory(boolean hideCategory) {
+		this.hideCategory = hideCategory;
+	}
+
+	public boolean isHideWeight() {
+		return hideWeight;
+	}
+
+	public void setHideWeight(boolean hideWeight) {
+		this.hideWeight = hideWeight;
+	}
+
+	public boolean isHideScope() {
+		return hideScope;
+	}
+
+	public void setHideScope(boolean hideScope) {
+		this.hideScope = hideScope;
+	}
+
+	public boolean isHideDelete() {
+		return hideDelete;
+	}
+
+	public void setHideDelete(boolean hideDelete) {
+		this.hideDelete = hideDelete;
 	}
 }

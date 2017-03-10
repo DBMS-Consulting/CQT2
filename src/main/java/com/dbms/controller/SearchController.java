@@ -104,7 +104,7 @@ public class SearchController extends BaseController<CmqBase190> {
 
 	private String[] selectedSOCs;
 	private TreeNode hierarchyRoot;
-
+	private TreeNode hierarchyRootCopy;
 	private CmqBase190 selctedData;
 
 	private List<HierarchySearchResultBean> hierarchySearchResults;
@@ -687,7 +687,10 @@ public class SearchController extends BaseController<CmqBase190> {
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
+	//uiEventSourceName is either relations or hierarchy
 	public void onNodeExpand(NodeExpandEvent event) {
+		//event source attriute from the ui
+		String uiSourceOfEvent =  (String) event.getComponent().getAttributes().get("uiEventSourceName");
 		TreeNode expandedTreeNode = event.getTreeNode();
 		HierarchyNode hierarchyNode = (HierarchyNode) expandedTreeNode
 				.getData();
@@ -726,6 +729,9 @@ public class SearchController extends BaseController<CmqBase190> {
 						childNode.setTerm(childSmqBase.getSmqName());
 						childNode.setCode(childSmqBase.getSmqCode().toString());
 						childNode.setEntity(childSmqBase);
+						if("RELATIONS".equalsIgnoreCase(uiSourceOfEvent)) {
+							childNode.markNotEditableInRelationstable();
+						}
 
 						// add child to parent
 						TreeNode childTreeNode = new DefaultTreeNode(childNode, expandedTreeNode);
@@ -793,6 +799,9 @@ public class SearchController extends BaseController<CmqBase190> {
 						childRelationNode.setCode(childRelation.getPtCode()
 								.toString());
 						childRelationNode.setEntity(childRelation);
+						if("RELATIONS".equalsIgnoreCase(uiSourceOfEvent)) {
+							childRelationNode.markNotEditableInRelationstable();
+						}
 
 						new DefaultTreeNode(childRelationNode, expandedTreeNode);
 					}
@@ -846,6 +855,11 @@ public class SearchController extends BaseController<CmqBase190> {
 					} else {
 						childNode.setPrimaryPathFlag(false);
 					}
+					
+					if("RELATIONS".equalsIgnoreCase(uiSourceOfEvent)) {
+						childNode.markNotEditableInRelationstable();
+					}
+					
 					TreeNode childTreeNode = new DefaultTreeNode(childNode, expandedTreeNode);
 					
 					//fetch children count of this iterating child node by code of child
@@ -876,6 +890,9 @@ public class SearchController extends BaseController<CmqBase190> {
 						node.setTerm(childCmqBase.getCmqName());
 						node.setCode(childCmqBase.getCmqCode().toString());
 						node.setEntity(childCmqBase);
+						if("RELATIONS".equalsIgnoreCase(uiSourceOfEvent)) {
+							node.markNotEditableInRelationstable();
+						}
 						TreeNode cmqBaseChildNode = new DefaultTreeNode(node, expandedTreeNode);
 						
 						childTreeNodes.put(childCmqBase.getCmqCode(), cmqBaseChildNode);
@@ -957,6 +974,9 @@ public class SearchController extends BaseController<CmqBase190> {
 						} else if((cmqRelation.getSmqCode() != null) && (cmqRelation.getSmqCode().longValue() > 0)) {
 							SmqBase190 smqBase = this.smqBaseService.findByCode(cmqRelation.getSmqCode());
 							HierarchyNode node = this.createSmqBaseNode(smqBase);
+							if("RELATIONS".equalsIgnoreCase(uiSourceOfEvent)) {
+								node.markNotEditableInRelationstable();
+							}
 							TreeNode treeNode = new DefaultTreeNode(node, expandedTreeNode);
 							
 							//add a dummy node for either of the cases, expansion will handle the actuals later
@@ -987,6 +1007,9 @@ public class SearchController extends BaseController<CmqBase190> {
 						List<MeddraDictHierarchySearchDto> socDtos = this.meddraDictService.findByCodes("SOC_", socCodesList);
 						for (MeddraDictHierarchySearchDto meddraDictHierarchySearchDto : socDtos) {
 							HierarchyNode node = this.createMeddraNode(meddraDictHierarchySearchDto, "SOC");
+							if("RELATIONS".equalsIgnoreCase(uiSourceOfEvent)) {
+								node.markNotEditableInRelationstable();
+							}
 							TreeNode treeNode = new DefaultTreeNode(node, expandedTreeNode);
 							
 							Long countOfChildren = this.meddraDictService.findChldrenCountByParentCode("HLGT_",
@@ -1005,6 +1028,9 @@ public class SearchController extends BaseController<CmqBase190> {
 						List<MeddraDictHierarchySearchDto> socDtos = this.meddraDictService.findByCodes("HLGT_", hlgtCodesList);
 						for (MeddraDictHierarchySearchDto meddraDictHierarchySearchDto : socDtos) {
 							HierarchyNode node = this.createMeddraNode(meddraDictHierarchySearchDto, "HLGT");
+							if("RELATIONS".equalsIgnoreCase(uiSourceOfEvent)) {
+								node.markNotEditableInRelationstable();
+							}
 							TreeNode treeNode = new DefaultTreeNode(node, expandedTreeNode);
 							
 							Long countOfChildren = this.meddraDictService.findChldrenCountByParentCode("HLT_",
@@ -1023,6 +1049,9 @@ public class SearchController extends BaseController<CmqBase190> {
 						List<MeddraDictHierarchySearchDto> socDtos = this.meddraDictService.findByCodes("HLT_", hltCodesList);
 						for (MeddraDictHierarchySearchDto meddraDictHierarchySearchDto : socDtos) {
 							HierarchyNode node = this.createMeddraNode(meddraDictHierarchySearchDto, "HLT");
+							if("RELATIONS".equalsIgnoreCase(uiSourceOfEvent)) {
+								node.markNotEditableInRelationstable();
+							}
 							TreeNode treeNode = new DefaultTreeNode(node, expandedTreeNode);
 							
 							Long countOfChildren = this.meddraDictService.findChldrenCountByParentCode("PT_",
@@ -1041,6 +1070,9 @@ public class SearchController extends BaseController<CmqBase190> {
 						List<MeddraDictHierarchySearchDto> socDtos = this.meddraDictService.findByCodes("PT_", ptCodesList);
 						for (MeddraDictHierarchySearchDto meddraDictHierarchySearchDto : socDtos) {
 							HierarchyNode node = this.createMeddraNode(meddraDictHierarchySearchDto, "PT");
+							if("RELATIONS".equalsIgnoreCase(uiSourceOfEvent)) {
+								node.markNotEditableInRelationstable();
+							}
 							TreeNode treeNode = new DefaultTreeNode(node, expandedTreeNode);
 							
 							Long countOfChildren = this.meddraDictService.findChldrenCountByParentCode("LLT_",
@@ -1059,6 +1091,9 @@ public class SearchController extends BaseController<CmqBase190> {
 						List<MeddraDictHierarchySearchDto> socDtos = this.meddraDictService.findByCodes("LLT_", lltCodesList);
 						for (MeddraDictHierarchySearchDto meddraDictHierarchySearchDto : socDtos) {
 							HierarchyNode node = this.createMeddraNode(meddraDictHierarchySearchDto, "LLT");
+							if("RELATIONS".equalsIgnoreCase(uiSourceOfEvent)) {
+								node.markNotEditableInRelationstable();
+							}
 							TreeNode treeNode = new DefaultTreeNode(node, expandedTreeNode);
 						}
 					}
@@ -1072,34 +1107,60 @@ public class SearchController extends BaseController<CmqBase190> {
 	 * Add the selected hierarchy details to the relation list.
 	 */
 	public void addSelectedToRelation(TreeNode[] nodes) {
-		if (nodes != null && nodes.length > 0) {
-			List<TreeNode> nodesList = Arrays.asList(nodes);
-			for (TreeNode treeNode : nodesList) {
-				HierarchyNode hierarchyNode = (HierarchyNode) treeNode
-						.getData();
-				if ((null != hierarchyNode) && !hierarchyNode.isDummyNode()) {
-					TreeNode parentNode = treeNode.getParent();
-					if (!nodesList.contains(parentNode)) {
-						// remove the first dummy node placeholder
-						List<TreeNode> childTreeNodes = treeNode.getChildren();
-						if ((null != childTreeNodes)
-								&& (childTreeNodes.size() > 0)) {
-							HierarchyNode dummyChildData = (HierarchyNode) childTreeNodes
-									.get(0).getData();
-							if (dummyChildData.isDummyNode()) {
-								treeNode.getChildren().remove(0);
+		try{
+			if (nodes != null && nodes.length > 0) {
+				List<TreeNode> nodesList = Arrays.asList(nodes);
+				List<String> existingNodeTerms = new ArrayList<>();
+				for (TreeNode treeNode : nodesList) {
+					HierarchyNode hierarchyNode = (HierarchyNode) treeNode.getData();
+					if ((null != hierarchyNode) && !hierarchyNode.isDummyNode()) {
+						//first check if this node is already added ot relations tree
+						boolean exists = false;
+						List<TreeNode> existingRelationsTreeNodes = this.relationsRoot.getChildren();
+						if (CollectionUtils.isNotEmpty(existingRelationsTreeNodes)) {
+							for (TreeNode existingRelationsTreeNode : existingRelationsTreeNodes) {
+								HierarchyNode existingHierarchyNode = (HierarchyNode) existingRelationsTreeNode.getData();
+								if(hierarchyNode.getCode().equalsIgnoreCase(existingHierarchyNode.getCode())
+										&& hierarchyNode.getLevel().equalsIgnoreCase(existingHierarchyNode.getLevel())) {
+									exists = true;
+									existingNodeTerms.add(existingHierarchyNode.getTerm());
+									break;
+								}
 							}
 						}
-						// now add it to the parent
-						treeNode.setParent(relationsRoot);
-						relationsRoot.getChildren().add(treeNode);
+					
+						if(!exists) {
+							TreeNode parentNode = treeNode.getParent();
+							if (!nodesList.contains(parentNode)) {
+								HierarchyNode relationsHierarchyNode = hierarchyNode.copy();
+								relationsHierarchyNode.setDataFetchCompleted(false);
+							
+								TreeNode relationsTreeNode = new DefaultTreeNode(relationsHierarchyNode, relationsRoot);
+								List<TreeNode> childTreeNodes = treeNode.getChildren();
+								if(CollectionUtils.isNotEmpty(childTreeNodes)) {
+									HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
+									dummyNode.setDummyNode(true);
+									new DefaultTreeNode(dummyNode, relationsTreeNode);
+								}
+							}
+						}
 					}
 				}
+				// setRelationSelected(nodes);
+				if(CollectionUtils.isNotEmpty(existingNodeTerms)) {
+					FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,
+							existingNodeTerms + " skipped as they are already added to relations. Remaining relations added succesfully.", "");
+					FacesContext.getCurrentInstance().addMessage(null, message);
+				} else {
+					FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,
+							"Selected relations added sucessfully.", "");
+					FacesContext.getCurrentInstance().addMessage(null, message);
+				}
 			}
-			// setRelationSelected(nodes);
-
-			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"Relations selected", "");
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_FATAL,
+					"An error occured while adding relations.", e.getMessage());
 			FacesContext.getCurrentInstance().addMessage(null, message);
 		}
 	}
@@ -1309,6 +1370,7 @@ public class SearchController extends BaseController<CmqBase190> {
 	}
 	
 	public void onCloseHierarchySearch(CloseEvent event) {
+		this.hierarchyRootCopy = this.hierarchyRoot;
 		this.hierarchyRoot = new DefaultTreeNode("root", new HierarchyNode(
 				"LEVEL", "NAME", "CODE", null), null);
 		this.levelH = null;

@@ -126,6 +126,7 @@
 			
 			<script>initRelationDND()</script>
 					
+			<f:attribute name="uiEventSourceName" value="relations" />
 			<p:ajax event="expand" listener="#{searchController.onNodeExpand}" update="resultRelations" />
 
 			<p:columnGroup type="header">
@@ -157,7 +158,9 @@
 			</p:column>
 
 			<p:column>
-				<p:selectOneMenu id="soc3" value="#{node.scope}" disabled="#{createController.readOnlyState || createController.detailsFormModel.algorithm eq 'N'}">
+				<p:selectOneMenu id="soc3" value="#{node.scope}" 
+						disabled="#{createController.readOnlyState || createController.detailsFormModel.algorithm eq 'N'}"
+						 rendered="#{not node.hideScope}" >
 					<f:selectItem itemLabel="" itemValue="" />
 					<f:selectItem itemLabel="Narrow" itemValue="2" id="si13d" />
 					<f:selectItem itemLabel="Broad" itemValue="1" id="si13s" />
@@ -166,7 +169,9 @@
 			</p:column>
 
 			<p:column>
-				<p:selectOneMenu id="soc2" value="#{node.category}" disabled="#{createController.readOnlyState || createController.detailsFormModel.algorithm eq 'N'}">
+				<p:selectOneMenu id="soc2" value="#{node.category}" 
+						disabled="#{createController.readOnlyState || createController.detailsFormModel.algorithm eq 'N'}"
+						rendered="#{not node.hideCategory}" >
 					<f:selectItem itemLabel="" itemValue="" />
 					<f:selectItem itemLabel="A" itemValue="A" id="si3" />
 					<f:selectItem itemLabel="S" itemValue="S" id="si33" />
@@ -182,11 +187,13 @@
 			</p:column>
 
 			<p:column>
-				<p:spinner value="#{node.weight}" id="ot6" disabled="#{createController.readOnlyState || createController.detailsFormModel.algorithm eq 'N'}" />
+				<p:spinner value="#{node.weight}" id="ot6" 
+					disabled="#{createController.readOnlyState || createController.detailsFormModel.algorithm eq 'N'}" 
+					rendered="#{not node.hideWeight}" />
 			</p:column>
 
 			<p:column>
-				<p:commandButton disabled="#{createController.readOnlyState}"
+				<p:commandButton disabled="#{createController.readOnlyState}" rendered="#{not node.hideDelete}"
 					action="#{searchController.deleteRelation(searchController.relationsRoot, node, createController.selectedData.cmqCode)}"
 					update="resultRelations" value="Delete">
 
