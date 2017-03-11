@@ -24,6 +24,8 @@
         	        ,{name: 'code', value: $('td:nth-child(4)', dndRow).text()}
         	        ,{name: 'entityId', value: $('.data-entity-id', dndRow).text()}
         	    ]);
+        	    
+        	    notifyCreateControllerRelationsModify();
            }
         });
 
@@ -35,6 +37,15 @@
 	}
 </script>
 
+	<p:remoteCommand name="notifyCreateControllerRelationsModify" actionListener="#{createController.notifyRelationsUpdate}" />
+	<p:remoteCommand name="notifyCreateControllerRelationsReset" actionListener="#{createController.notifyRelationsReset}" />
+	
+	<p:remoteCommand name="saveRelationsAndGoToNextStep" actionListener="#{createController.updateRelationsAndNextStep(searchController.relationsRoot)}" oncomplete="PF('confirmSaveRelationsDlg').hide()" />
+	<p:remoteCommand name="resetRelationsAndGoToNextStep" oncomplete="PF('confirmSaveRelationsDlg').hide()" >
+		<f:actionListener binding="#{searchController.resetRelations()}" />
+		<f:actionListener binding="#{createController.resetRelationsAndNextStep()}" />
+	</p:remoteCommand>
+	
 	<h:panelGrid>
 		<p:toolbar>
 			<f:facet name="left">
@@ -68,7 +79,7 @@
 					disabled="#{(createController.selectedData.cmqState ne 'Draft' and createController.selectedData.cmqState ne 'Reviewed') ? true : false}"
 					action="#{searchController.deleteRelations(null)}"
 					update="resultRelations"
-					oncomplete="initRelationDND()">
+					oncomplete="initRelationDND();notifyCreateControllerRelationsModify()">
 					<p:confirm header="Confirm Delete"
 						message="Delete all selected terms?" icon="ui-icon-alert" />
 				</p:commandButton>
@@ -102,9 +113,10 @@
 				<p:spacer width="10" />
 				
 				<p:commandButton value="Parent List" id="ctb15"
-					styleClass="#{createController.parentViewable ? '' : 'btn-disabled'}" update="@form:hierarchy-modal"
+                    styleClass="#{createController.parentViewable ? '' : 'btn-disabled'}" update="@form:parent-modal"
+                    actionListener="#{parentListController.setChildCmqEntity(createController.selectedData)}"
 					disabled="#{createController.parentViewable ? false : true}"
-					oncomplete="PF('search').show();" icon="fa fa-search">
+                    oncomplete="PF('parentDlg').show()" icon="fa fa-level-up">
 				</p:commandButton>
 				
 				<p:spacer width="10" />
@@ -195,6 +207,7 @@
 			<p:column>
 				<p:commandButton disabled="#{createController.readOnlyState}" rendered="#{not node.hideDelete}"
 					action="#{searchController.deleteRelation(searchController.relationsRoot, node, createController.selectedData.cmqCode)}"
+					oncomplete="notifyCreateControllerRelationsModify()"
 					update="resultRelations" value="Delete">
 
 					<p:confirm header="Delete relation"
@@ -217,6 +230,23 @@
 			<p:commandButton value="Cancel" onclick="PF('search').hide()" immediate="true" />
 		</h:panelGrid>
 	</p:dialog>
+    
+    <p:dialog widgetVar="parentDlg" modal="false" header="Parent List">
+        <ui:include src="parent.xhtml"></ui:include>
+
+        <p:spacer height="10"></p:spacer>
+        <h:panelGrid style="float: right" columns="2">
+            <p:commandButton value="Cancel" onclick="PF('parentDlg').hide()" immediate="true" />
+        </h:panelGrid>
+    </p:dialog>
+    
+    <p:confirmDialog widgetVar="confirmSaveRelationsDlg" showEffect="fade" hideEffect="fade"
+		header="Confirm about Unsaved Changes"
+		message="There are some unsaved changes. Do you want to save them before you continue?">
+        <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" onclick="saveRelationsAndGoToNextStep()" />
+        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"  onclick="resetRelationsAndGoToNextStep()" />
+    </p:confirmDialog>
+    
 
 	<style>
 .ui-state-disabled {

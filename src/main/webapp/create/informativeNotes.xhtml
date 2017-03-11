@@ -11,8 +11,8 @@
 	<p:panel id="panelNotes"
 		header="Informative Notes for #{createController.selectedData.cmqName}">
 		
-		<p:remoteCommand name="saveNotesAndGoToNextStep" update="@form:m1" actionListener="#{createController.saveNotesAndNextStep}" />
-		<p:remoteCommand name="resetNotesAndGoToNextStep" update="@form:m1 @form:panelNotes @form" actionListener="#{createController.cancelNotesAndNextStep}" />
+		<p:remoteCommand name="saveNotesAndGoToNextStep" update="@form:m1" actionListener="#{createController.saveNotesAndNextStep}" oncomplete="PF('confirmSaveNotesDlg').hide()" />
+		<p:remoteCommand name="resetNotesAndGoToNextStep" update="@form:m1 @form:panelNotes @form" actionListener="#{createController.cancelNotesAndNextStep}" oncomplete="PF('confirmSaveNotesDlg').hide()" />
 						
 		<p:tabView>
 			<p:tab title="Description">

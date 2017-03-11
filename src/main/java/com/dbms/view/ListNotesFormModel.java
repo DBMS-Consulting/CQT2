@@ -35,6 +35,7 @@ public class ListNotesFormModel {
 		this.description = cmq.getCmqDescription();
 		this.notes = cmq.getCmqNote();
 		this.source = cmq.getCmqSource();
+		this.modelChanged = false;
 	}
 	
 	/**
@@ -58,37 +59,37 @@ public class ListNotesFormModel {
 	public boolean isModelChanged() {
 		return this.modelChanged;
 	}
-	public void setModelChanged(boolean detailsFormChanged) {
-		this.modelChanged = detailsFormChanged;
+	public void setModelChanged(boolean notesFormChanged) {
+		this.modelChanged = notesFormChanged;
 	}
 	
 	public String getDescription() {
-		if(emptyDescription.equals(this.description))
-			return "";
-		else
-			return this.description;
+		return (emptyDescription.equals(this.description) || this.description == null) ? "" : this.description;
 	}
 
 	public void setDescription(String description) {
+		if(!this.getDescription().equals(description))
+			this.modelChanged = true;
 		this.description = description;
-		this.modelChanged = true;
 	}
 
 	public String getNotes() {
-		return this.notes;
+		return this.notes == null ? "" : this.notes;
 	}
 
 	public void setNotes(String notes) {
+		if(!this.getNotes().equals(notes))
+			this.modelChanged = true;
 		this.notes = notes;
-		this.modelChanged = true;
 	}
 
 	public String getSource() {
-		return this.source;
+		return this.source == null ? "" : this.source;
 	}
 
 	public void setSource(String source) {
+		if(!this.getSource().equals(source))
+			this.modelChanged = true;
 		this.source = source;
-		this.modelChanged = true;
 	}
 }

@@ -41,15 +41,16 @@ public class ListDetailsFormModel {
 	public void init() {
 		this.extension = "TME";
 		this.name = "";
-		this.drugProgram = "";
+		this.drugProgram = "420001";
 		this.protocol = "999999";
-		this.product = "";
+		this.product = "99999";
 		this.level = 1;
 		this.algorithm = "N";
 		this.critical = "No";
 		this.group = "No Group";
 		this.state = "Draft";
-		status = "Pending";
+		this.status = "Pending";
+		this.designee = "NONE";
 		this.modelChanged = false;
 	}
 	
@@ -178,8 +179,9 @@ public class ListDetailsFormModel {
 		return extension;
 	}
 	public void setExtension(String extension) {
+		if(this.extension == null || !this.extension.equals(extension))
+			this.modelChanged = true;
 		this.extension = extension;
-		this.modelChanged = true;
 	}
 	
 	/**
@@ -191,8 +193,9 @@ public class ListDetailsFormModel {
 		return name;
 	}
 	public void setName(String name) {
+		if(this.name == null || !this.name.equals(name))
+			this.modelChanged = true;
 		this.name = name;
-		this.modelChanged = true;
 	}
 
 	/**
@@ -204,8 +207,9 @@ public class ListDetailsFormModel {
 		return drugProgram;
 	}
 	public void setDrugProgram(String drugProgram) {
+		if(this.drugProgram == null || !this.drugProgram.equals(drugProgram))
+			this.modelChanged = true;
 		this.drugProgram = drugProgram;
-		this.modelChanged = true;
 	}
 
 	/**
@@ -218,8 +222,9 @@ public class ListDetailsFormModel {
 	}
 
 	public void setProtocol(String protocol) {
+		if(this.protocol == null || !this.protocol.equals(protocol))
+			this.modelChanged = true;
 		this.protocol = protocol;
-		this.modelChanged = true;
 	}
 	
 	/**
@@ -231,8 +236,9 @@ public class ListDetailsFormModel {
 		return product;
 	}
 	public void setProduct(String product) {
+		if(this.product== null || !this.product.equals(product))
+			this.modelChanged = true;
 		this.product = product;
-		this.modelChanged = true;
 	}
 	
 	/**
@@ -244,8 +250,9 @@ public class ListDetailsFormModel {
 		return designee;
 	}
 	public void setDesignee(String designee) {
+		if(this.designee == null || !this.designee.equals(designee))
+			this.modelChanged = true;
 		this.designee = designee;
-		this.modelChanged = true;
 	}
 
 	/**
@@ -258,8 +265,9 @@ public class ListDetailsFormModel {
 	}
 
 	public void setLevel(Integer level) {
+		if(this.level == null || !this.level.equals(level))
+			this.modelChanged = true;
 		this.level = level;
-		this.modelChanged = true;
 	}
 	
 	/**
@@ -272,8 +280,9 @@ public class ListDetailsFormModel {
 	}
 
 	public void setAlgorithm(String algorithm) {
+		if(this.algorithm == null || !this.algorithm.equals(algorithm))
+			this.modelChanged = true;
 		this.algorithm = algorithm;
-		this.modelChanged = true;
 	}
 
 	/**

@@ -67,27 +67,23 @@ public class CreateController implements Serializable {
 	
 	private ListDetailsFormModel detailsFormModel = new ListDetailsFormModel();
 	private ListNotesFormModel notesFormModel = new ListNotesFormModel();
-	private ListWorkflowFormModel workflowFormModel = new ListWorkflowFormModel(); 
+	private ListWorkflowFormModel workflowFormModel = new ListWorkflowFormModel();
+	private boolean relationsModified;
 
 	private boolean maintainDesigBtn;
 
 	private Wizard updateWizard, copyWizard, browseWizard, createWizard;
 	private String createWizardNextStep, copyWizardNextStep, updateWizardNextStep;
 	
-	private Long codeSelected;
+	private Long codeSelected = null;
 
 	private TreeNode relationsRoot;
 	private String[] selectedDesignees;
 
 	private Long codevalue;
-	private CmqBase190 selectedData;
+	private CmqBase190 selectedData = new CmqBase190();
 	
 	private HtmlInputText dictionaryName;
-
-
-	public CreateController() {
-		this.selectedData = new CmqBase190();
-	}
 	
 	@PostConstruct
 	public void init() {
@@ -98,6 +94,7 @@ public class CreateController implements Serializable {
 		detailsFormModel.init();
 		notesFormModel.init();
 		workflowFormModel.init();
+		relationsModified = false;
 		maintainDesigBtn = false;
 	}
 
@@ -199,6 +196,7 @@ public class CreateController implements Serializable {
 		
 		try {
 			this.cmqBaseService.update(selectedData);
+			this.notesFormModel.loadFromCmqBase190(selectedData);
 
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					"Informative Notes are successfully saved for '" + selectedData.getCmqName() + "'", "");
@@ -219,6 +217,192 @@ public class CreateController implements Serializable {
 		saveInformativeNotes();
 		goToWizardNextStep();
 	}
+	
+	public void notifyRelationsUpdate() {
+		relationsModified = true;
+	}
+	
+	public void notifyRelationsReset() {
+		relationsModified = false;
+	}
+	
+	/**
+	 * Update relations on a list.
+	 * 
+	 * @return
+	 */
+	public String updateRelations(TreeNode relationsRoot) {
+		if ((relationsRoot != null) && (relationsRoot.getChildCount() > 0)) {
+			List<CmqRelation190> cmqRelationsList = new ArrayList<>();
+			List<CmqBase190> cmqBaseChildrenList = new ArrayList<>();
+			List<TreeNode> childTreeNodes = relationsRoot.getChildren();
+			//TEST laster if we really need this call.
+			CmqBase190 cmqBase = this.cmqBaseService.findByCode(selectedData.getCmqCode());
+			
+			List<CmqRelation190> existingRelation = this.cmqRelationService.findByCmqCode(selectedData.getCmqCode());
+			for (TreeNode childTreeNode : childTreeNodes) {
+				boolean matchFound = false;
+				boolean updateNeeded = false;
+				Map<String, Object> matchingMap = null;
+				HierarchyNode hierarchyNode = (HierarchyNode) childTreeNode.getData();
+				if (null != hierarchyNode) {
+					IEntity entity = hierarchyNode.getEntity();
+					if (entity instanceof CmqBase190) {
+						CmqBase190 cmqEntity = (CmqBase190) entity;
+						cmqEntity.setCmqParentCode(cmqBase.getCmqCode());
+						cmqEntity.setCmqParentName(cmqBase.getCmqName());
+						cmqBaseChildrenList.add(cmqEntity);
+					} else {
+						CmqRelation190 cmqRelation = null;						
+						if (entity instanceof MeddraDictHierarchySearchDto) {
+							MeddraDictHierarchySearchDto meddraDictHierarchySearchDto = (MeddraDictHierarchySearchDto) entity;
+							String level = hierarchyNode.getLevel();
+							long meddraDictCode = Long.parseLong(meddraDictHierarchySearchDto.getCode());
+							matchingMap = this.checkIfMeddraRelationExists(existingRelation, level, hierarchyNode);
+							matchFound = (boolean) matchingMap.get("MATCH_FOUND");
+							updateNeeded = (boolean) matchingMap.get("UPDATE_NEEDED");
+							
+							if(updateNeeded) {
+								cmqRelation = (CmqRelation190) matchingMap.get("TARGET_CMQ_RELATION_FOR_UPDATE");
+							} else {
+								cmqRelation = new CmqRelation190();
+								cmqRelation.setCmqCode(selectedData.getCmqCode());
+								cmqRelation.setCmqId(cmqBase.getId());
+								
+								// set the code first if needed
+								if (level.equalsIgnoreCase("SOC") && !matchFound) {
+									cmqRelation.setSocCode(meddraDictCode);
+								} else if (level.equalsIgnoreCase("HLGT") && !matchFound) {
+									cmqRelation.setHlgtCode(meddraDictCode);
+								} else if (level.equalsIgnoreCase("HLT") && !matchFound) {
+									cmqRelation.setHltCode(meddraDictCode);
+								} else if (level.equalsIgnoreCase("PT") && !matchFound) {
+									cmqRelation.setPtCode(meddraDictCode);
+								} else if (level.equalsIgnoreCase("LLT") && !matchFound) {
+									cmqRelation.setLltCode(meddraDictCode);
+								}
+							}
+						} else if (entity instanceof SmqBase190) {
+							SmqBase190 smqBase = (SmqBase190) entity;
+							matchingMap = this.checkIfSmqBaseOrSmqRelationExists(existingRelation, smqBase.getSmqCode(), hierarchyNode);
+							matchFound = (boolean) matchingMap.get("MATCH_FOUND");
+							updateNeeded = (boolean) matchingMap.get("UPDATE_NEEDED");
+							if(updateNeeded) {
+								cmqRelation = (CmqRelation190) matchingMap.get("TARGET_CMQ_RELATION_FOR_UPDATE");
+							} else if(!matchFound) {
+								cmqRelation = new CmqRelation190();
+								cmqRelation.setCmqCode(selectedData.getCmqCode());
+								cmqRelation.setCmqId(cmqBase.getId());
+								cmqRelation.setSmqCode(smqBase.getSmqCode());
+							}
+						} else if (entity instanceof SmqRelation190) {
+							SmqRelation190 smqRelation = (SmqRelation190) entity;
+							matchingMap = this.checkIfSmqBaseOrSmqRelationExists(existingRelation, smqRelation.getSmqCode(), hierarchyNode);
+							matchFound = (boolean) matchingMap.get("MATCH_FOUND");
+							updateNeeded = (boolean) matchingMap.get("UPDATE_NEEDED");
+							if(updateNeeded) {
+								cmqRelation = (CmqRelation190) matchingMap.get("TARGET_CMQ_RELATION_FOR_UPDATE");
+							} else if(!matchFound) {
+								cmqRelation = new CmqRelation190();
+								cmqRelation.setCmqCode(selectedData.getCmqCode());
+								cmqRelation.setCmqId(cmqBase.getId());
+								cmqRelation.setSmqCode(smqRelation.getSmqCode());
+							}
+						}
+						
+						if(!matchFound || updateNeeded) {
+							cmqRelation.setTermWeight((!StringUtils.isBlank(hierarchyNode.getWeight()) 
+															&& !hierarchyNode.getWeight().equalsIgnoreCase("null"))
+														? Long.parseLong(hierarchyNode.getWeight()) : null);
+							cmqRelation.setTermScope(hierarchyNode.getScope());
+							cmqRelation.setTermCategory(hierarchyNode.getCategory());
+							cmqRelation.setDictionaryName(cmqBase.getDictionaryName());
+							cmqRelation.setDictionaryVersion(cmqBase.getDictionaryVersion());
+							cmqRelation.setCmqSubversion(cmqBase.getCmqSubversion());
+							if(updateNeeded) {
+								cmqRelation.setLastModifiedDate(new Date());
+								cmqRelation.setLastModifiedBy("test-user");
+							} else {
+								cmqRelation.setCreationDate(new Date());
+								cmqRelation.setCreatedBy("test-user");
+							}
+							cmqRelationsList.add(cmqRelation);
+						}
+					}
+				}//end of if (null != hierarchyNode)
+			}
+			
+			if (!cmqRelationsList.isEmpty() || !cmqBaseChildrenList.isEmpty()) {
+				try {
+					if(!cmqRelationsList.isEmpty()) {
+						this.cmqRelationService.update(cmqRelationsList);
+					}
+					if(!cmqBaseChildrenList.isEmpty()) {
+						this.cmqBaseService.update(cmqBaseChildrenList);
+					}
+					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+							"Relations are successfully updated for '" + cmqBase.getCmqName() + "'", "");
+					FacesContext.getCurrentInstance().addMessage(null, msg);
+				} catch (CqtServiceException e) {
+					LOG.error("Exception occurred while updated the list of CmqRelations for CMQ base code "
+							+ cmqBase.getCmqCode(), e);
+
+					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+							"An error occurred while updated the list of CmqRelations for CMQ base code "
+									+ cmqBase.getCmqCode(),
+							"");
+					FacesContext.getCurrentInstance().addMessage(null, msg);
+				}
+			}
+		}
+		relationsModified = false;
+		return "";
+	}
+	
+	public void updateRelationsAndNextStep(TreeNode relationsRoot) {
+		updateRelations(relationsRoot);
+		goToWizardNextStep();
+	}
+	
+	public void resetRelationsAndNextStep() {
+		relationsModified = false;
+		goToWizardNextStep();
+	}
+	
+	//----------------------- Create Wizard ------------------------
+
+	/**
+	 * FlowListener of Create Wizard Component
+	 * @param event
+	 * @return
+	 */
+	public String onCreateWizardFlowProcess(FlowEvent event) {
+		String oldStep, nextStep;
+		oldStep = nextStep = event.getOldStep();
+		if (codeSelected != null) {
+			if("details".equalsIgnoreCase(oldStep) && detailsFormModel.isModelChanged()) {
+				// current step is "Details" and the form has some unsaved changes
+				
+				//----Confirmation on unsaved changes: see onUpdateWizardFlowProcess's "details" step
+				createWizardNextStep = event.getNewStep();
+				RequestContext.getCurrentInstance().execute("PF('confirmSaveDetailsDlg').show();");
+			} else if("contact".equalsIgnoreCase(oldStep) && notesFormModel.isModelChanged()) {
+				// current step is "Informative Notes" and the form has some unsaved changes			
+				//----Confirmation on unsaved changes: see onUpdateWizardFlowProcess's "contact" step
+				createWizardNextStep = event.getNewStep();
+				RequestContext.getCurrentInstance().execute("PF('confirmSaveNotesDlg').show();");
+			} else if("relations".equalsIgnoreCase(oldStep) && relationsModified) {
+				// current step is "Relations" and the form has some unsaved changes
+				createWizardNextStep = event.getNewStep();
+				RequestContext.getCurrentInstance().execute("PF('confirmSaveRelationsDlg').show();");
+			} else {
+				nextStep = event.getNewStep();
+			}
+		} else {
+			nextStep = "details";
+		}
+		return nextStep;
+	}
 
 	
 	//----------------------- Update Wizard ------------------------
@@ -232,7 +416,6 @@ public class CreateController implements Serializable {
 		String oldStep, nextStep;
 		oldStep = nextStep = event.getOldStep();
 		if (codeSelected != null) {
-			/*
 			if("details".equalsIgnoreCase(oldStep) && detailsFormModel.isModelChanged()) {
 				// current step is "Details" and the form has some unsaved changes
 				
@@ -263,14 +446,15 @@ public class CreateController implements Serializable {
 				
 				// 4. if client clicks on no, it will call PF:RemoteCommand - cancelNotesAndGoToNextStep(), which will
 				//	further call server side CreateController.cancelNotesAndNextStep()
-			} else if("relations".equalsIgnoreCase(oldStep) && notesFormModel.isModelChanged()) {
+			} else if("relations".equalsIgnoreCase(oldStep) && relationsModified) {
 				// current step is "Relations" and the form has some unsaved changes
 				updateWizardNextStep = event.getNewStep();
+				RequestContext.getCurrentInstance().execute("PF('confirmSaveRelationsDlg').show();");
 			} else {
 				nextStep = event.getNewStep();
 			}
-			*/
-			nextStep = event.getNewStep();
+		} else {
+			nextStep = "searchUpdate";
 		}
 		RequestContext.getCurrentInstance().update("fUpdate:wizardNavbar");
 		return nextStep;
@@ -348,7 +532,6 @@ public class CreateController implements Serializable {
 		String oldStep, nextStep;
 		oldStep = nextStep = event.getOldStep();
 		if (codeSelected != null) {
-			/*
 			if("details".equalsIgnoreCase(oldStep) && detailsFormModel.isModelChanged()) {
 				// current step is "Details" and the form has some unsaved changes
 				
@@ -360,14 +543,13 @@ public class CreateController implements Serializable {
 				//----Confirmation on unsaved changes: see onUpdateWizardFlowProcess's "contact" step
 				copyWizardNextStep = event.getNewStep();
 				RequestContext.getCurrentInstance().execute("PF('confirmSaveNotesDlg').show();");
-			} else if("relations".equalsIgnoreCase(oldStep) && notesFormModel.isModelChanged()) {
+			} else if("relations".equalsIgnoreCase(oldStep) && relationsModified) {
 				// current step is "Relations" and the form has some unsaved changes
 				copyWizardNextStep = event.getNewStep();
+				RequestContext.getCurrentInstance().execute("PF('confirmSaveRelationsDlg').show();");
 			} else {
 				nextStep = event.getNewStep();
 			}
-			*/
-			nextStep = event.getNewStep();
 		}
 		RequestContext.getCurrentInstance().update("fCopy:wizardNavbar");
 		return nextStep;
@@ -397,6 +579,7 @@ public class CreateController implements Serializable {
 			// retrieve the saved cmq base
 			CmqBase190 savedEntity = cmqBaseService.findByCode(selectedData.getCmqCode());
 			selectedData = savedEntity;
+			this.detailsFormModel.loadFromCmqBase190(selectedData);
 			codeSelected = selectedData.getCmqCode();
 			// save the cmq code to session
 			FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("NEW-CMQ_BASE-ID",
@@ -448,6 +631,7 @@ public class CreateController implements Serializable {
 				// retrieve the saved cmq base
 				CmqBase190 savedEntity = cmqBaseService.findByCode(codevalue);
 				selectedData = savedEntity;
+				this.detailsFormModel.loadFromCmqBase190(selectedData);
 				codeSelected = selectedData.getCmqCode();
 
 				// save the cmq code to session
@@ -681,138 +865,6 @@ public class CreateController implements Serializable {
 
 					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 							"An error occurred while saving the list of CmqRelations for CMQ base code "
-									+ cmqBase.getCmqCode(),
-							"");
-					FacesContext.getCurrentInstance().addMessage(null, msg);
-				}
-			}
-		}
-		return "";
-	}
-
-	/**
-	 * Update relations on a list.
-	 * 
-	 * @return
-	 */
-	public String updateRelations(TreeNode relationsRoot) {
-		if ((relationsRoot != null) && (relationsRoot.getChildCount() > 0)) {
-			List<CmqRelation190> cmqRelationsList = new ArrayList<>();
-			List<CmqBase190> cmqBaseChildrenList = new ArrayList<>();
-			List<TreeNode> childTreeNodes = relationsRoot.getChildren();
-			//TEST laster if we really need this call.
-			CmqBase190 cmqBase = this.cmqBaseService.findByCode(selectedData.getCmqCode());
-			
-			List<CmqRelation190> existingRelation = this.cmqRelationService.findByCmqCode(selectedData.getCmqCode());
-			for (TreeNode childTreeNode : childTreeNodes) {
-				boolean matchFound = false;
-				boolean updateNeeded = false;
-				Map<String, Object> matchingMap = null;
-				HierarchyNode hierarchyNode = (HierarchyNode) childTreeNode.getData();
-				if (null != hierarchyNode) {
-					IEntity entity = hierarchyNode.getEntity();
-					if (entity instanceof CmqBase190) {
-						CmqBase190 cmqEntity = (CmqBase190) entity;
-						cmqEntity.setCmqParentCode(cmqBase.getCmqCode());
-						cmqEntity.setCmqParentName(cmqBase.getCmqName());
-						cmqBaseChildrenList.add(cmqEntity);
-					} else {
-						CmqRelation190 cmqRelation = null;						
-						if (entity instanceof MeddraDictHierarchySearchDto) {
-							MeddraDictHierarchySearchDto meddraDictHierarchySearchDto = (MeddraDictHierarchySearchDto) entity;
-							String level = hierarchyNode.getLevel();
-							long meddraDictCode = Long.parseLong(meddraDictHierarchySearchDto.getCode());
-							matchingMap = this.checkIfMeddraRelationExists(existingRelation, level, hierarchyNode);
-							matchFound = (boolean) matchingMap.get("MATCH_FOUND");
-							updateNeeded = (boolean) matchingMap.get("UPDATE_NEEDED");
-							
-							if(updateNeeded) {
-								cmqRelation = (CmqRelation190) matchingMap.get("TARGET_CMQ_RELATION_FOR_UPDATE");
-							} else {
-								cmqRelation = new CmqRelation190();
-								cmqRelation.setCmqCode(selectedData.getCmqCode());
-								cmqRelation.setCmqId(cmqBase.getId());
-								
-								// set the code first if needed
-								if (level.equalsIgnoreCase("SOC") && !matchFound) {
-									cmqRelation.setSocCode(meddraDictCode);
-								} else if (level.equalsIgnoreCase("HLGT") && !matchFound) {
-									cmqRelation.setHlgtCode(meddraDictCode);
-								} else if (level.equalsIgnoreCase("HLT") && !matchFound) {
-									cmqRelation.setHltCode(meddraDictCode);
-								} else if (level.equalsIgnoreCase("PT") && !matchFound) {
-									cmqRelation.setPtCode(meddraDictCode);
-								} else if (level.equalsIgnoreCase("LLT") && !matchFound) {
-									cmqRelation.setLltCode(meddraDictCode);
-								}
-							}
-						} else if (entity instanceof SmqBase190) {
-							SmqBase190 smqBase = (SmqBase190) entity;
-							matchingMap = this.checkIfSmqBaseOrSmqRelationExists(existingRelation, smqBase.getSmqCode(), hierarchyNode);
-							matchFound = (boolean) matchingMap.get("MATCH_FOUND");
-							updateNeeded = (boolean) matchingMap.get("UPDATE_NEEDED");
-							if(updateNeeded) {
-								cmqRelation = (CmqRelation190) matchingMap.get("TARGET_CMQ_RELATION_FOR_UPDATE");
-							} else if(!matchFound) {
-								cmqRelation = new CmqRelation190();
-								cmqRelation.setCmqCode(selectedData.getCmqCode());
-								cmqRelation.setCmqId(cmqBase.getId());
-								cmqRelation.setSmqCode(smqBase.getSmqCode());
-							}
-						} else if (entity instanceof SmqRelation190) {
-							SmqRelation190 smqRelation = (SmqRelation190) entity;
-							matchingMap = this.checkIfSmqBaseOrSmqRelationExists(existingRelation, smqRelation.getSmqCode(), hierarchyNode);
-							matchFound = (boolean) matchingMap.get("MATCH_FOUND");
-							updateNeeded = (boolean) matchingMap.get("UPDATE_NEEDED");
-							if(updateNeeded) {
-								cmqRelation = (CmqRelation190) matchingMap.get("TARGET_CMQ_RELATION_FOR_UPDATE");
-							} else if(!matchFound) {
-								cmqRelation = new CmqRelation190();
-								cmqRelation.setCmqCode(selectedData.getCmqCode());
-								cmqRelation.setCmqId(cmqBase.getId());
-								cmqRelation.setSmqCode(smqRelation.getSmqCode());
-							}
-						}
-						
-						if(!matchFound || updateNeeded) {
-							cmqRelation.setTermWeight((!StringUtils.isBlank(hierarchyNode.getWeight()) 
-															&& !hierarchyNode.getWeight().equalsIgnoreCase("null"))
-														? Long.parseLong(hierarchyNode.getWeight()) : null);
-							cmqRelation.setTermScope(hierarchyNode.getScope());
-							cmqRelation.setTermCategory(hierarchyNode.getCategory());
-							cmqRelation.setDictionaryName(cmqBase.getDictionaryName());
-							cmqRelation.setDictionaryVersion(cmqBase.getDictionaryVersion());
-							cmqRelation.setCmqSubversion(cmqBase.getCmqSubversion());
-							if(updateNeeded) {
-								cmqRelation.setLastModifiedDate(new Date());
-								cmqRelation.setLastModifiedBy("test-user");
-							} else {
-								cmqRelation.setCreationDate(new Date());
-								cmqRelation.setCreatedBy("test-user");
-							}
-							cmqRelationsList.add(cmqRelation);
-						}
-					}
-				}//end of if (null != hierarchyNode)
-			}
-			
-			if (!cmqRelationsList.isEmpty() || !cmqBaseChildrenList.isEmpty()) {
-				try {
-					if(!cmqRelationsList.isEmpty()) {
-						this.cmqRelationService.update(cmqRelationsList);
-					}
-					if(!cmqBaseChildrenList.isEmpty()) {
-						this.cmqBaseService.update(cmqBaseChildrenList);
-					}
-					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-							"Relations are successfully updated for '" + cmqBase.getCmqName() + "'", "");
-					FacesContext.getCurrentInstance().addMessage(null, msg);
-				} catch (CqtServiceException e) {
-					LOG.error("Exception occurred while updated the list of CmqRelations for CMQ base code "
-							+ cmqBase.getCmqCode(), e);
-
-					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-							"An error occurred while updated the list of CmqRelations for CMQ base code "
 									+ cmqBase.getCmqCode(),
 							"");
 					FacesContext.getCurrentInstance().addMessage(null, msg);
@@ -1125,7 +1177,8 @@ public class CreateController implements Serializable {
 	 * @return
 	 */
 	public boolean isParentViewable() {
-		return selectedData.getCmqLevel() > 1;
+        return (selectedData.getCmqLevel() > 1
+                && selectedData.getCmqParentCode()!=null);
 	}
 
 	public boolean isReactivate() {

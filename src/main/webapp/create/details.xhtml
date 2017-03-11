@@ -7,8 +7,8 @@
 	xmlns:p="http://primefaces.org/ui">
 	
 	
-	<p:remoteCommand name="saveDetailsAndGoToNextStep" update="@form:m1 @form:codeValue" actionListener="#{createController.saveDetailsAndNextStep}" />
-	<p:remoteCommand name="resetDetailsAndGoToNextStep" update="@form:m1 @form:codeValue" actionListener="#{createController.cancelDetailsAndNextStep}" />
+	<p:remoteCommand name="saveDetailsAndGoToNextStep" update="@form:m1 @form:codeValue" actionListener="#{createController.saveDetailsAndNextStep}" oncomplete="PF('confirmSaveDetailsDlg').hide()" />
+	<p:remoteCommand name="resetDetailsAndGoToNextStep" update="@form:m1 @form:codeValue" actionListener="#{createController.cancelDetailsAndNextStep}" oncomplete="PF('confirmSaveDetailsDlg').hide()" />
 
 	<!-- <p:growl id="messages" /> -->
 	<h:panelGrid columns="3" cellpadding="5" id="detailsPanel">
