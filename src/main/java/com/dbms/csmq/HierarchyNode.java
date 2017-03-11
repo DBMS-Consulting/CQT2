@@ -39,6 +39,9 @@ public class HierarchyNode implements Serializable, Comparable<HierarchyNode> {
 
 	private boolean primaryPathFlag;
 
+	// for green colored primary rows
+	private String rowStyleClass;
+
 	public HierarchyNode() {
 	}
 
@@ -152,7 +155,7 @@ public class HierarchyNode implements Serializable, Comparable<HierarchyNode> {
 			return false;
 		return true;
 	}
-	
+
 	public HierarchyNode copy() throws IllegalAccessException, InvocationTargetException {
 		HierarchyNode target = new HierarchyNode();
 		BeanUtils.copyProperties(target, this);
@@ -165,7 +168,7 @@ public class HierarchyNode implements Serializable, Comparable<HierarchyNode> {
 		this.hideScope = true;
 		this.hideWeight = true;
 	}
-	
+
 	@Override
 	public String toString() {
 		return term;
@@ -233,5 +236,13 @@ public class HierarchyNode implements Serializable, Comparable<HierarchyNode> {
 
 	public void setHideDelete(boolean hideDelete) {
 		this.hideDelete = hideDelete;
+	}
+
+	public String getRowStyleClass() {
+		return rowStyleClass;
+	}
+
+	public void setRowStyleClass(String rowStyleClass) {
+		this.rowStyleClass = rowStyleClass;
 	}
 }

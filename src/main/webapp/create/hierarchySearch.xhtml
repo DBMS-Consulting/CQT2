@@ -82,7 +82,7 @@
 				styleClass="ui-treetable-resultHier" 
 				paginator="true" paginatorPosition="bottom"
 				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-				rowsPerPageTemplate="5,10,25,30">
+				rowsPerPageTemplate="5,10,25,30" rowStyleClass="#{node.rowStyleClass}">
 	
 				<f:attribute name="uiEventSourceName" value="hierarchy-search" />
 				<p:ajax event="expand" listener="#{searchController.onNodeExpand}"
@@ -91,8 +91,7 @@
 				</p:ajax>
 
 				<p:column headerText="Level">
-					<h:outputText value="'P' #{node.level}" rendered="#{node.primaryPathFlag}" />
-					<h:outputText value="#{node.level}" rendered="#{not node.primaryPathFlag}"  />
+					<h:outputText value="#{node.level}" />
 				</p:column>
 
 				<p:column headerText="Term">
@@ -125,6 +124,12 @@
 		}
 		.ui-hidden {
 			display: none;
+		}
+		.green-colored {
+			color: #00c119;
+		}
+		.green-colored:HOVER {
+			color: #009912;
 		}
 	</style>
 

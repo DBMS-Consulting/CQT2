@@ -35,6 +35,7 @@ import com.dbms.entity.cqt.RefConfigCodeList;
 import com.dbms.entity.cqt.SmqBase190;
 import com.dbms.entity.cqt.SmqRelation190;
 import com.dbms.entity.cqt.dtos.MeddraDictHierarchySearchDto;
+import com.dbms.entity.cqt.dtos.MeddraDictReverseHierarchySearchDto;
 import com.dbms.service.ICmqBase190Service;
 import com.dbms.service.ICmqRelation190Service;
 import com.dbms.service.IRefCodeListService;
@@ -280,6 +281,31 @@ public class CreateController implements Serializable {
 									cmqRelation.setPtCode(meddraDictCode);
 								} else if (level.equalsIgnoreCase("LLT") && !matchFound) {
 									cmqRelation.setLltCode(meddraDictCode);
+								}
+							}
+						} else if (entity instanceof MeddraDictReverseHierarchySearchDto) {
+							MeddraDictReverseHierarchySearchDto searchDto = (MeddraDictReverseHierarchySearchDto)entity;
+							Long code = null;
+							if("PT".equalsIgnoreCase(hierarchyNode.getLevel())) {
+								code = Long.parseLong(searchDto.getPtCode());
+								matchingMap = this.checkIfReverseMeddraRelationExists(existingRelation, code, hierarchyNode);
+							} else if ("LLT".equalsIgnoreCase(hierarchyNode.getLevel())) {
+								code = Long.parseLong(searchDto.getLltCode());
+								matchingMap = this.checkIfReverseMeddraRelationExists(existingRelation, code, hierarchyNode);
+							}
+							
+							matchFound = (boolean) matchingMap.get("MATCH_FOUND");
+							updateNeeded = (boolean) matchingMap.get("UPDATE_NEEDED");
+							if(updateNeeded) {
+								cmqRelation = (CmqRelation190) matchingMap.get("TARGET_CMQ_RELATION_FOR_UPDATE");
+							} else if(!matchFound) {
+								cmqRelation = new CmqRelation190();
+								cmqRelation.setCmqCode(selectedData.getCmqCode());
+								cmqRelation.setCmqId(cmqBase.getId());
+								if("PT".equalsIgnoreCase(hierarchyNode.getLevel())) {
+									cmqRelation.setPtCode(code);
+								} else if ("LLT".equalsIgnoreCase(hierarchyNode.getLevel())) {
+									cmqRelation.setLltCode(code);
 								}
 							}
 						} else if (entity instanceof SmqBase190) {
@@ -924,6 +950,30 @@ public class CreateController implements Serializable {
 		
 		for (CmqRelation190 cmqRelation190 : existingRelation) {
 			if((null != cmqRelation190.getSmqCode()) && (cmqRelation190.getSmqCode().longValue() == smqCode.longValue())){
+				matchingMap.put("MATCH_FOUND", true);
+			}
+			
+			Boolean matchFound = (Boolean) matchingMap.get("MATCH_FOUND");
+			if(matchFound) {
+				matchingMap.put("UPDATE_NEEDED", this.checkIfExistingRelationNeedsUpdate(cmqRelation190, hierarchyNode));
+				matchingMap.put("TARGET_CMQ_RELATION_FOR_UPDATE", cmqRelation190);
+				break;
+			}
+		}
+		return matchingMap;
+	}
+	
+	private Map<String, Object> checkIfReverseMeddraRelationExists(List<CmqRelation190> existingRelation, Long code, HierarchyNode hierarchyNode) {
+		Map<String, Object> matchingMap = new HashMap<String, Object>(3);
+		matchingMap.put("MATCH_FOUND", false);
+		matchingMap.put("UPDATE_NEEDED", false);
+		matchingMap.put("TARGET_CMQ_RELATION_FOR_UPDATE", null);
+		
+		for (CmqRelation190 cmqRelation190 : existingRelation) {
+			//check for PT or LLT
+			if((null != cmqRelation190.getPtCode()) && (cmqRelation190.getPtCode().longValue() == code.longValue())){
+				matchingMap.put("MATCH_FOUND", true);
+			} else if ((null != cmqRelation190.getLltCode()) && (cmqRelation190.getLltCode().longValue() == code.longValue())) {
 				matchingMap.put("MATCH_FOUND", true);
 			}
 			
