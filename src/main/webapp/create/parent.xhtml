@@ -6,39 +6,64 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:p="http://primefaces.org/ui">
 
-	<p:panel header="Relations" style="width:700px; height:560px; overflow: auto" id="parent-modal">
-		<h:panelGrid columns="4">
-			<h:outputText value="Parent Code:" />
-			<h:outputText value="#{parentListController.parentCmqCode}" />
-			<p:spacer />
-			<p:spacer />
+	<p:panel style="width:700px; height:560px; overflow: auto" id="parent-modal">
+		<h:panelGrid columns="4" style="width:100%;" styleClass="parent-list-detail-grid" columnClasses="label-cell, value-cell, label-cell, value-cell">
+			<h:outputText value="List Name:" />
+			<h:outputText value="#{parentListController.parentCmqEntity.cmqName}" />
+			<h:outputText value="List Code:" />
+			<h:outputText value="#{parentListController.parentCmqEntity.cmqCode}" />
+			<h:outputText value="Level:" />
+			<h:outputText value="#{parentListController.parentCmqEntity.cmqLevel}" />
+			<p:spacer></p:spacer>
+			<p:spacer></p:spacer>
+			
+			<p:spacer height="10px"></p:spacer>
+			<p:spacer height="10px"></p:spacer>
+			<p:spacer height="10px"></p:spacer>
+			<p:spacer height="10px"></p:spacer>
 		</h:panelGrid>
-		<h:panelGrid styleClass="AFStretchWidth">
-			<p:treeTable value="#{parentListController.parentRelationsRoot}" var="node"
-				rows="20"
-				styleClass="ui-treetable-resultHier" 
-				paginator="true" paginatorPosition="bottom"
-				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-				rowsPerPageTemplate="5,10,25,30">
-
-				<p:ajax event="expand" listener="#{parentListController.onNodeExpand}"
-					 />
-
-				<p:column headerText="Level">
-					<h:outputText value="'P' #{node.level}" rendered="#{node.primaryPathFlag}" />
-					<h:outputText value="#{node.level}" rendered="#{not node.primaryPathFlag}"  />
-				</p:column>
-
-				<p:column headerText="Term">
-					<h:outputText value="#{node.term}" />
-				</p:column>
-
-				<p:column headerText="Code" sortBy="#{node.code}" filterBy="#{node.code}">
-					<h:outputText value="#{node.code}" />
-					<h:outputText value="#{node.entity.id}" styleClass="ui-hidden data-entity-id" />
-				</p:column>
-			</p:treeTable>
-		</h:panelGrid>
+		
+		<p:accordionPanel activeIndex="null">
+			<p:tab title="Relations">
+				<p:treeTable value="#{parentListController.parentRelationsRoot}" var="node"
+					rows="20"
+					styleClass="ui-treetable-resultHier" 
+					paginator="true" paginatorPosition="bottom"
+					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					rowsPerPageTemplate="5,10,25,30">
+	
+					<p:ajax event="expand" listener="#{parentListController.onNodeExpand}"
+						 />
+	
+					<p:column headerText="Level">
+						<h:outputText value="'P' #{node.level}" rendered="#{node.primaryPathFlag}" />
+						<h:outputText value="#{node.level}" rendered="#{not node.primaryPathFlag}"  />
+					</p:column>
+	
+					<p:column headerText="Term">
+						<h:outputText value="#{node.term}" />
+					</p:column>
+	
+					<p:column headerText="Code" sortBy="#{node.code}" filterBy="#{node.code}">
+						<h:outputText value="#{node.code}" />
+						<h:outputText value="#{node.entity.id}" styleClass="ui-hidden data-entity-id" />
+					</p:column>
+				</p:treeTable>
+			</p:tab>
+		</p:accordionPanel>
+		<style>
+			.parent-list-detail-grid .label-cell {
+				width: 15%;
+				font-weight: 600;
+				line-height: 2;
+			}
+			.parent-list-detail-grid .value-cell {
+				line-height: 2;
+			}
+			.ui-accordion .ui-accordion-content {
+				padding: 1px 0 5px 0px;
+			}
+		</style>
 	</p:panel>
 
 </ui:composition>

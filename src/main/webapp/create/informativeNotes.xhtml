@@ -11,8 +11,14 @@
 	<p:panel id="panelNotes"
 		header="Informative Notes for #{createController.selectedData.cmqName}">
 		
-		<p:remoteCommand name="saveNotesAndGoToNextStep" update="@form:m1" actionListener="#{createController.saveNotesAndNextStep}" oncomplete="PF('confirmSaveNotesDlg').hide()" />
-		<p:remoteCommand name="resetNotesAndGoToNextStep" update="@form:m1 @form:panelNotes @form" actionListener="#{createController.cancelNotesAndNextStep}" oncomplete="PF('confirmSaveNotesDlg').hide()" />
+		<p:remoteCommand name="saveNotesAndGoToNextStep"
+				update="@form:m1 @form:wizardId"
+				actionListener="#{createController.saveNotesAndNextStep}"
+				onstart="PF('confirmSaveNotesDlg').hide()" />
+		<p:remoteCommand name="resetNotesAndGoToNextStep"
+				update="@form:m1 @form:wizardId @form:panelNotes"
+				actionListener="#{createController.cancelNotesAndNextStep}"
+				onstart="PF('confirmSaveNotesDlg').hide()" />
 						
 		<p:tabView>
 			<p:tab title="Description">
@@ -43,11 +49,9 @@
 
 			<p:commandButton value="Cancel" icon="ui-icon-close" process="@this"
 				disabled="#{createController.readOnlyState}"
-				update="m1 @form:panelNotes @form" style="float: right"
+				update="@form:m1 @form:panelNotes" style="float: right"
 				action="#{createController.cancelNotes}">
-				<p:confirm header="Confirm"
-					message="Are you sure you want to erase these fields?"
-					icon="ui-icon-alert" />
+				<p:confirm header="Confirm" message="Are you sure you want to erase these fields?" icon="ui-icon-alert" />
 			</p:commandButton>
 
 		</h:panelGrid>

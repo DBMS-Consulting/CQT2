@@ -29,19 +29,41 @@
 				</p:tab>
 				<p:tab id="details" title="Details">
 					<p:panel header="Details">
+						<script>
+							//<![CDATA[
+							(function($) {
+								$('.ui-wizard.update-list-wiz .ui-wizard-step-title a').off('click');
+								$('.ui-wizard.update-list-wiz .ui-wizard-step-title a').click(function(event) {
+									var curStepA = $('.ui-wizard.update-list-wiz .ui-wizard-step-title.ui-state-highlight a')[0];
+									var clickStepA = $(this)[0];
+									var curStepIdx = 0;
+									var clickStepIdx = 0;
+									var stepsA = $('.ui-wizard.update-list-wiz .ui-wizard-step-title a');
+									for(var i=0;i<5;i++) {
+										if(stepsA[i] == curStepA)
+											curStepIdx = i;
+										if(stepsA[i] == clickStepA)
+											clickStepIdx = i;
+									}
+									if(clickStepIdx + 1 == curStepIdx) {
+										event.preventDefault();
+										$('.ui-wizard-nav-back.update-list-wiz-back').trigger('click');
+									}
+								});
+							})(jQuery);
+							//]]>
+						</script>
+						
 						<ui:include src="details.xhtml" />
 
 						<h:panelGrid columns="2">
-							<p:commandButton value="Save" icon="ui-icon-disk"
-								update="@form:m1 @form:codeValue"
-								action="#{createController.copy}"></p:commandButton>
+							<p:commandButton value="Save" icon="ui-icon-disk" update="@form:m1 @form:detailsPanel @form:codeValue" action="#{createController.copy}"></p:commandButton>
 
 							<p:commandButton value="Cancel" icon="ui-icon-close"
-								update="@form"
+								update="@form:m1 @form:detailsPanel"
 								action="#{createController.cancel}">
-								<p:confirm header="Confirm"
-									message="Are you sure you want to erase these fields?"
-									icon="ui-icon-alert" />
+								<p:confirm icon="ui-icon-alert" header="Confirm"
+										message="Are you sure you want to erase these fields?" />
 							</p:commandButton>
 
 						</h:panelGrid>
@@ -63,7 +85,7 @@
 							<p:commandButton value="Save" id="cb3"
 								action="#{createController.saveRelations(searchController.relationsRoot)}" icon="ui-icon-disk" />
 							<p:commandButton value="Cancel" icon="ui-icon-close"
-								process="@this" update="m1 resultRelations" style="float: right"
+								process="@this" update="@form:m1 @form:resultRelations" style="float: right"
 								action="#{searchController.resetRelations}">
 								<p:confirm header="Confirm"
 									message="Are you sure you want to erase these fields?"

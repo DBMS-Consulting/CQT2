@@ -26,7 +26,8 @@
 
 			<p:wizard flowListener="#{createController.onUpdateWizardFlowProcess}" widgetVar="wizard" 
 				id="wizardId" binding="#{createController.updateWizard}"
-				showNavBar="false">
+				styleClass="update-list-wiz" showNavBar="false">
+
 				<!-- Search -->
 				<p:tab id="searchUpdate" title="Search">
 					<p:panel header="Search">
@@ -37,16 +38,39 @@
 				<!-- Details -->
 				<p:tab id="details" title="Update Details">
 					<p:panel header="Details">
+						<script>
+							//<![CDATA[
+							(function($) {
+								$('.ui-wizard.update-list-wiz .ui-wizard-step-title a').off('click');
+								$('.ui-wizard.update-list-wiz .ui-wizard-step-title a').click(function(event) {
+									var curStepA = $('.ui-wizard.update-list-wiz .ui-wizard-step-title.ui-state-highlight a')[0];
+									var clickStepA = $(this)[0];
+									var curStepIdx = 0;
+									var clickStepIdx = 0;
+									var stepsA = $('.ui-wizard.update-list-wiz .ui-wizard-step-title a');
+									for(var i=0;i<5;i++) {
+										if(stepsA[i] == curStepA)
+											curStepIdx = i;
+										if(stepsA[i] == clickStepA)
+											clickStepIdx = i;
+									}
+									if(clickStepIdx + 1 == curStepIdx) {
+										event.preventDefault();
+										$('.ui-wizard-nav-back.update-list-wiz-back').trigger('click');
+									}
+								});
+							})(jQuery);
+							//]]>
+						</script>
 						<ui:include src="details.xhtml" />
 						
 						<h:panelGrid columns="2">
 							<p:commandButton value="Save" icon="ui-icon-disk" update="@form:m1 @form:codeValue @form:detailsPanel" actionListener="#{createController.update}"></p:commandButton>
 							
 							<p:commandButton value="Cancel" icon="ui-icon-close" disabled="#{createController.readOnlyState}"
-								update="@form" action="#{createController.cancel}">
-								<p:confirm header="Confirm"
-									message="Are you sure you want to erase these fields?"
-									icon="ui-icon-alert" />
+								update="@form:detailsPanel" action="#{createController.cancel}">
+								<p:confirm icon="ui-icon-alert" header="Confirm"
+										message="Are you sure you want to erase these fields?" />
 							</p:commandButton>
 						</h:panelGrid>
 						
@@ -70,9 +94,7 @@
 							<p:commandButton value="Cancel" icon="ui-icon-close" disabled="#{createController.readOnlyState}"
 								process="@this" update="m1 resultRelations" style="float: right"
 								action="#{searchController.resetRelations}">
-								<p:confirm header="Confirm"
-									message="Are you sure you want to erase these fields?"
-									icon="ui-icon-alert" />
+								<p:confirm header="Confirm" message="Are you sure you want to erase these fields?" icon="ui-icon-alert" />
 							</p:commandButton>
 						</h:panelGrid>
 
@@ -88,7 +110,7 @@
 			
 			<h:panelGroup id="wizardNavbar" layout="block" styleClass="ui-wizard-navbar ui-helper-clearfix">
 				<p:commandButton value="Back" onclick="PF('wizard').back();" icon="ui-icon-arrowthick-1-w"
-	        			styleClass="ui-wizard-nav-back" rendered="#{createController.updateWizardNavbarBackShown}" />
+	        			styleClass="ui-wizard-nav-back update-list-wiz-back" rendered="#{createController.updateWizardNavbarBackShown}" />
 				<p:commandButton value="Next" onclick="PF('wizard').next();" icon="ui-icon-arrowthick-1-e"
 				        styleClass="ui-wizard-nav-next" rendered="#{createController.updateWizardNavbarNextShown}" /> 
 			</h:panelGroup>

@@ -40,8 +40,13 @@
 	<p:remoteCommand name="notifyCreateControllerRelationsModify" actionListener="#{createController.notifyRelationsUpdate}" />
 	<p:remoteCommand name="notifyCreateControllerRelationsReset" actionListener="#{createController.notifyRelationsReset}" />
 	
-	<p:remoteCommand name="saveRelationsAndGoToNextStep" actionListener="#{createController.updateRelationsAndNextStep(searchController.relationsRoot)}" oncomplete="PF('confirmSaveRelationsDlg').hide()" />
-	<p:remoteCommand name="resetRelationsAndGoToNextStep" oncomplete="PF('confirmSaveRelationsDlg').hide()" >
+	<p:remoteCommand name="saveRelationsAndGoToNextStep"
+			update="@form:m1 @form:wizardId"
+			actionListener="#{createController.updateRelationsAndNextStep(searchController.relationsRoot)}"
+			onstart="PF('confirmSaveRelationsDlg').hide()" />
+	<p:remoteCommand name="resetRelationsAndGoToNextStep"
+			update="@form:m1 @form:wizardId @form:resultRelations"
+			onstart="PF('confirmSaveRelationsDlg').hide()" >
 		<f:actionListener binding="#{searchController.resetRelations()}" />
 		<f:actionListener binding="#{createController.resetRelationsAndNextStep()}" />
 	</p:remoteCommand>
@@ -49,8 +54,7 @@
 	<h:panelGrid>
 		<p:toolbar>
 			<f:facet name="left">
-				<p:commandButton id="filter" value="Filter and Sort" type="button"
-					icon="ui-icon-triangle-1-s" />
+				<p:commandButton id="filter" value="Filter and Sort" type="button" icon="ui-icon-triangle-1-s" />
 				<p:overlayPanel id="filterPanel" for="filter">
 					<h:panelGrid columns="2">
 						<p:outputLabel value="Sort" />

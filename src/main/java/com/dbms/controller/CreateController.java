@@ -478,6 +478,10 @@ public class CreateController implements Serializable {
 				RequestContext.getCurrentInstance().execute("PF('confirmSaveRelationsDlg').show();");
 			} else {
 				nextStep = event.getNewStep();
+				if("details".equalsIgnoreCase(oldStep) && "searchUpdate".equalsIgnoreCase(nextStep) && !updateWizard.isBackRequest(FacesContext.getCurrentInstance())) {
+					RequestContext.getCurrentInstance().execute("setTimeout(function(){PF('wizard').back();},100)");
+					return oldStep;
+				}
 			}
 		} else {
 			nextStep = "searchUpdate";
@@ -690,7 +694,7 @@ public class CreateController implements Serializable {
 	 * @return boolean
 	 */
 	public boolean isReadOnlyState() {
-		if(copyWizard != null) {
+		if(copyWizard != null) {	
 			return false;
 		} else if (updateWizard != null) {
 			if (selectedData != null && selectedData.getCmqState() != null 
@@ -1297,6 +1301,16 @@ public class CreateController implements Serializable {
 
 	public void setDictionaryName(HtmlInputText dictionaryName) {
 		this.dictionaryName = dictionaryName;
+	}
+	
+	private Wizard getActiveWizard() {
+		if(createWizard != null)
+			return createWizard;
+		else if(copyWizard != null)
+			return copyWizard;
+		else if(updateWizard != null)
+			return updateWizard;
+		return null;
 	}
 
 }

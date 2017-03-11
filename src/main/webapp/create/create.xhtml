@@ -29,11 +29,10 @@
 							<p:commandButton value="Save" icon="ui-icon-disk"
 								update="m1 @form:detailsPanel" action="#{createController.save}"></p:commandButton>
 							<p:commandButton value="Cancel" icon="ui-icon-close"
-								update="@form" process="@this"
+								update="@form:m1 @form:detailsPanel" process="@this"
 								action="#{createController.cancel}">
-								<p:confirm header="Confirm"
-									message="Are you sure you want to erase these fields?"
-									icon="ui-icon-alert" />
+								<p:confirm icon="ui-icon-alert" header="Confirm"
+										message="Are you sure you want to erase these fields?" />
 							</p:commandButton>
 						</h:panelGrid>
 					</p:panel>
@@ -59,11 +58,10 @@
 							</p:commandButton>
 
 							<p:commandButton value="Cancel" icon="ui-icon-close"
-								process="@this" update="@form resultRelations"
+								process="@this" update="@form @form:resultRelations"
 								action="#{searchController.resetRelations}">
-								<p:confirm header="Confirm"
-									message="Are you sure you want to erase these fields?"
-									icon="ui-icon-alert" />
+								<p:confirm icon="ui-icon-alert" header="Confirm"
+										message="Are you sure you want to erase these fields?" />
 							</p:commandButton>
 						</h:panelGrid>
 					</p:panel>

@@ -173,6 +173,7 @@ public class ParentListController extends BaseController<CmqBase190> {
 		this.childCmqEntity = childCmqEntity;
 		this.childCmqCode = this.childCmqEntity.getCmqCode();
 		this.parentCmqCode = this.childCmqEntity.getCmqParentCode();
+		this.parentCmqEntity = this.cmqBaseService.findByCode(this.parentCmqCode);
 
 		RelationsSearchHelper relationsSearchHelper = new RelationsSearchHelper(cmqBaseService, smqBaseService, meddraDictService, cmqRelationService);
 		parentRelationsRoot = relationsSearchHelper.getRelationsRootHierarchy(parentCmqCode);

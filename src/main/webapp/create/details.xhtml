@@ -7,8 +7,14 @@
 	xmlns:p="http://primefaces.org/ui">
 	
 	
-	<p:remoteCommand name="saveDetailsAndGoToNextStep" update="@form:m1 @form:codeValue" actionListener="#{createController.saveDetailsAndNextStep}" oncomplete="PF('confirmSaveDetailsDlg').hide()" />
-	<p:remoteCommand name="resetDetailsAndGoToNextStep" update="@form:m1 @form:codeValue" actionListener="#{createController.cancelDetailsAndNextStep}" oncomplete="PF('confirmSaveDetailsDlg').hide()" />
+	<p:remoteCommand name="saveDetailsAndGoToNextStep"
+			update="@form:m1 @form:wizardId @form:codeValue"
+			actionListener="#{createController.saveDetailsAndNextStep}"
+			onstart="PF('confirmSaveDetailsDlg').hide()" />
+	<p:remoteCommand name="resetDetailsAndGoToNextStep"
+			update="@form:wizardId @form:detailsPanel"
+			actionListener="#{createController.cancelDetailsAndNextStep}"
+			onstart="PF('confirmSaveDetailsDlg').hide()" />
 
 	<!-- <p:growl id="messages" /> -->
 	<h:panelGrid columns="3" cellpadding="5" id="detailsPanel">
@@ -16,8 +22,8 @@
 		<h:panelGrid columns="2" columnClasses="label, value">
 			<p:outputLabel value="* Extension" styleClass="label-right" />
 			<p:selectOneMenu value="#{createController.detailsFormModel.extension}"
-				disabled="#{createController.readOnlyState}" required="true"
-				requiredMessage="The extension is required">
+				disabled="#{createController.readOnlyState}"
+				required="#{!createController.readOnlyState}" requiredMessage="The extension is required">
 				<f:selectItems value="#{configMB.extensionList}" var="extension"
 					itemLabel="#{extension.value}"
 					itemValue="#{extension.codelistInternalValue}" />
@@ -28,7 +34,7 @@
 			</p:selectOneMenu>
 
 			<p:outputLabel value="* Name" styleClass="label-right" />
-			<p:inputText required="true" requiredMessage="The name is required"
+			<p:inputText required="#{!createController.readOnlyState}" requiredMessage="The name is required"
 				disabled="#{createController.readOnlyState}" maxlength="200"
 				value="#{createController.detailsFormModel.name}"
 				style="width: 300px !important" />
@@ -38,7 +44,7 @@
 				styleClass="label-right" />
 			<p:selectOneMenu value="#{createController.detailsFormModel.drugProgram}" id="drug"
 				disabled="#{createController.readOnlyState}"
-				required="#{createController.detailsFormModel.drugProgramRequired}"
+				required="#{createController.detailsFormModel.drugProgramRequired and not createController.readOnlyState}"
 				requiredMessage="The Drug Program is required">
 				<f:selectItem itemValue="" itemLabel="" />
 				<f:selectItems value="#{configMB.programList}" var="program"
@@ -51,8 +57,8 @@
 				styleClass="label-right" />
 			<p:selectOneMenu value="#{createController.detailsFormModel.protocol}" id="protocol"
 				disabled="#{createController.readOnlyState}"
+				required="#{createController.detailsFormModel.protocolRequired and not createController.readOnlyState}">
 				requiredMessage="The Protocol is required"
-				required="#{createController.detailsFormModel.protocolRequired}">
 				<f:selectItem itemValue="" itemLabel="" />
 				<f:selectItems value="#{configMB.protocolList}" var="protocol"
 					itemLabel="#{protocol.value}"
@@ -64,7 +70,7 @@
 				rendered="true" styleClass="label-right" />
 			<p:selectOneMenu value="#{createController.detailsFormModel.product}"
 				disabled="#{createController.readOnlyState}"
-				required="#{createController.detailsFormModel.productRequired}"
+				required="#{createController.detailsFormModel.productRequired and not createController.readOnlyState}" 
 				requiredMessage="The Product is required" id="product">
 				<f:selectItem itemValue="" itemLabel="" />
 				<f:selectItems value="#{configMB.productList}" var="product"
@@ -74,8 +80,9 @@
 
 			<p:outputLabel value="* Designee" styleClass="label-right" />
 			<p:selectOneMenu value="#{createController.detailsFormModel.designee}"
-				rendered="true" disabled="#{createController.readOnlyState}"
-				requiredMessage="The Designee is required" required="true">
+				disabled="#{createController.readOnlyState}"
+				rendered="true"
+				requiredMessage="The Designee is required" required="#{!createController.readOnlyState}">
 				<f:selectItem itemLabel="" itemValue=""></f:selectItem>
 				<f:selectItem itemLabel="NONE" itemValue="NONE"></f:selectItem>
 				<!-- <f:selectItems></f:selectItems> -->
@@ -87,9 +94,8 @@
 
 			<p:outputLabel value="* Level" styleClass="label-right" />
 			<p:selectOneMenu value="#{createController.detailsFormModel.level}" rendered="true"
-				requiredMessage="The level is required"
-				disabled="#{createController.readOnlyState}" id="level"
-				required="true">
+				required="#{!createController.readOnlyState}" requiredMessage="The level is required"
+				disabled="#{createController.readOnlyState}" id="level">
 				<f:selectItem itemValue="1" itemLabel="1" />
 				<f:selectItem itemValue="2" itemLabel="2" />
 				<f:selectItem itemValue="3" itemLabel="3" />
