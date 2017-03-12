@@ -602,6 +602,9 @@ public class CreateController implements Serializable {
 	 * @return
 	 */
 	public String copy() {
+		if(selectedData.getId() != null) { // if already saved
+			return update();
+		}
 		try {
 			prepareDetailsFormSave();
 			
@@ -645,8 +648,10 @@ public class CreateController implements Serializable {
 	 * @return
 	 */
 	public String save() {
+		if(selectedData.getId() != null) { // if already saved
+			return update();
+		}
 		try {
-
 			Long count = this.cmqBaseService.findCmqCountByCmqNameAndExtension(detailsFormModel.getExtension(), detailsFormModel.getName());
 
 			if (count > 0) {
