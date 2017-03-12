@@ -19,45 +19,37 @@
 
 				<p:tabView id="pb1"
 					inlineStyle="width:1195px; padding:5px; height:448px;">
-					<p:tab id="sdi1" title="Reports">
+					<p:tab id="sdi1" title="Lists">
 						<p:panel header="Internal" id="ph1" style=" padding:5px;">
 							<h:panelGrid columns="2">
 								<p:outputLabel value="Report" styleClass="label-right" />
-								<p:selectOneMenu id="soc1" value="#{reportBean.reportName}">
-									<!-- binding="#{reportBean.cntrlReportList}"> -->
+								<p:selectOneMenu id="soc1" value="#{reportController.genReportType}">
 									<f:selectItem itemValue="#{null}"
 										itemLabel="--Select a report--" id="si48" />
-									<f:selectItems value="1" id="si2a" />
+									<f:selectItems value="#{reportController.reportTypes}" var="reportType"
+										itemValue="#{reportType}" itemLabel="#{reportType.label}" />
 									<p:ajax />
 								</p:selectOneMenu>
 
 								<p:outputLabel value="Start Date" styleClass="label-right" />
-								<p:calendar id="id1" navigator="true" mode="popup" pattern="dd/MM/yyyy"
-									value="#{projetMB.projetDTO.dateDebut}">
-									<!-- binding="#{reportBean.cntrlStartDate}" -->
-								</p:calendar>
+								<p:calendar id="id1" label="Start Date" navigator="true" mode="popup" pattern="dd/MM/yyyy"
+									value="#{reportController.reportStartDate}" />
 
 								<p:outputLabel value="End Date" styleClass="label-right" />
-								<p:calendar id="id2" label="End Date" navigator="true" pattern="dd/MM/yyyy"
-									mode="popup" value="#{projetMB.projetDTO.dateDebut}">
-									<!-- binding="#{reportBean.cntrlEndDate}" -->
-
-								</p:calendar>
+								<p:calendar id="id2" label="End Date" navigator="true" mode="popup" pattern="dd/MM/yyyy"
+									value="#{reportController.reportEndDate}" />
 
 								<p:outputLabel value="Format" styleClass="label-right" />
-								<p:selectOneMenu id="soc3" label="Format" immediate="true"
-									value="XLS">
-									<!-- binding="#{reportBean.cntrlFormatList}"  -->
-									<f:selectItem itemLabel="Excel" itemValue="XLS" id="si5" />
-									<f:selectItem itemLabel="PDF" itemValue="PDF" id="si6" />
+								<p:selectOneMenu id="soc3" label="Format" immediate="true" value="#{reportController.genReportFormat}">
+									<f:selectItems value="#{reportController.reportFormats}" var="reportType"
+										itemValue="#{reportFormat}" itemLabel="#{reportFormat.label}" />
 									<p:ajax />
 								</p:selectOneMenu>
 
 							</h:panelGrid>
 							<h:panelGrid columns="1">
-								<p:commandButton value="Generate" id="commandButton1"
+								<p:commandButton value="Generate" id="btn-generate-report"
 									partialSubmit="true">
-									<!-- binding="#{reportBean.generateReportButton}" -->
 									<p:ajax listener="#{reportBean.printReport}"></p:ajax>
 									<p:fileDownload value="#{reportBean.generatedReport}"></p:fileDownload>
 
@@ -92,7 +84,7 @@
 							<p:toolbar id="t1" />
 						</f:facet>
 					</p:tab>
-					<p:tab title="Lists" id="sdi2">
+					<p:tab title="Administration Report" id="sdi2">
 						<h:panelGrid columns="1">
 							<h:panelGrid columns="2">
 								<p:commandButton value="Export 1"
