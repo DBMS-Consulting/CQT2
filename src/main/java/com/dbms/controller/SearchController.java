@@ -96,6 +96,7 @@ public class SearchController extends BaseController<CmqBase190> {
 	private String levelH;
 
 	private boolean maintainDesigBtn;
+	private boolean dataModified = false;
 
 	private List<CreateEntity> values, vals;
 
@@ -153,6 +154,7 @@ public class SearchController extends BaseController<CmqBase190> {
 
 	public void initSearch() {
 		this.datas = new ArrayList<CmqBase190>();
+		this.dataModified = false;
 		if (selctedData == null) {
 			selctedData = new CmqBase190();
 			RefConfigCodeList currentMeddraVersionCodeList = this.refCodeListService
@@ -210,6 +212,7 @@ public class SearchController extends BaseController<CmqBase190> {
 		this.drugProgram = "";
 		this.termName = "";
 		this.code = null;
+		this.dataModified = false;
 	}
 
 	/**
@@ -298,6 +301,8 @@ public class SearchController extends BaseController<CmqBase190> {
 	}
 
 	public List<CmqBase190> getDatas() {
+		if(this.dataModified)
+			search();
 		return datas;
 	}
 
@@ -458,6 +463,7 @@ public class SearchController extends BaseController<CmqBase190> {
 	public void search() {
 		log.debug("search by{}", extension);
 
+		dataModified = false;
 		// Item label is 'All' but value is empty string
 		if (StringUtils.isBlank(status)) {
 			status = null;
@@ -1736,6 +1742,14 @@ public class SearchController extends BaseController<CmqBase190> {
 		}
 	}
 	
+	public boolean isDataModified() {
+		return dataModified;
+	}
+
+	public void setDataModified(boolean dataModified) {
+		this.dataModified = dataModified;
+	}
+
 	/**
 	 * Event handler for drag-and-drop from "Hierarchy Search" treetable to "Result Relations" treetable
 	 */

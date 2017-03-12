@@ -1026,7 +1026,8 @@ public class CreateController implements Serializable {
 				for(CmqRelation190 r: existingRelation) {
 					ids.add(r.getId());
 				}
-				this.cmqRelationService.remove(ids);
+				if(!ids.isEmpty())
+					this.cmqRelationService.remove(ids);
 				
 				// delete the record
 				cmqBaseService.remove(selectedData.getCmqId());

@@ -18,6 +18,10 @@
 					</p:breadCrumb>
 				</h:panelGrid>
 			</h:panelGrid>
+			
+			<p:remoteCommand name="notifySearchControllerDataChange">
+	            <f:setPropertyActionListener target="#{searchController.dataModified}" value="true" />
+		    </p:remoteCommand>
 
 			<p:wizard flowListener="#{createController.onCreateWizardFlowProcess}" widgetVar="wizard"
 				id="wizardId" binding="#{createController.createWizard}">

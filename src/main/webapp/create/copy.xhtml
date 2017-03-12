@@ -17,6 +17,10 @@
 					</p:breadCrumb>
 				</h:panelGrid>
 			</h:panelGrid>
+			
+			<p:remoteCommand name="notifySearchControllerDataChange">
+	            <f:setPropertyActionListener target="#{searchController.dataModified}" value="true" />
+		    </p:remoteCommand>
 
 			<p:wizard flowListener="#{createController.onCopyWizardFlowProcess}" widgetVar="wizard"
 				id="wizardId" binding="#{createController.copyWizard}"
@@ -57,7 +61,9 @@
 						<ui:include src="details.xhtml" />
 
 						<h:panelGrid columns="2">
-							<p:commandButton value="Save" icon="ui-icon-disk" update="@form:m1 @form:detailsPanel @form:codeValue" action="#{createController.copy}"></p:commandButton>
+							<p:commandButton value="Save" icon="ui-icon-disk"
+								update="@form:m1 @form:detailsPanel @form:codeValue" action="#{createController.copy}"
+								oncomplete="notifySearchControllerDataChange()" />
 
 							<p:commandButton value="Cancel" icon="ui-icon-close"
 								update="@form:m1 @form:detailsPanel"

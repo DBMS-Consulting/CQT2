@@ -23,6 +23,10 @@
 						style="text-align: center" /> -->
 				</h:panelGrid>
 			</h:panelGrid>
+			
+			<p:remoteCommand name="notifySearchControllerDataChange">
+	            <f:setPropertyActionListener target="#{searchController.dataModified}" value="true" />
+		    </p:remoteCommand>
 
 			<p:wizard flowListener="#{createController.onUpdateWizardFlowProcess}" widgetVar="wizard" 
 				id="wizardId" binding="#{createController.updateWizard}"
@@ -65,7 +69,9 @@
 						<ui:include src="details.xhtml" />
 						
 						<h:panelGrid columns="2">
-							<p:commandButton value="Save" icon="ui-icon-disk" update="@form:m1 @form:codeValue @form:detailsPanel" actionListener="#{createController.update}"></p:commandButton>
+							<p:commandButton value="Save" icon="ui-icon-disk"
+								update="@form:m1 @form:codeValue @form:detailsPanel" actionListener="#{createController.update}"
+								oncomplete="notifySearchControllerDataChange()" />
 							
 							<p:commandButton value="Cancel" icon="ui-icon-close" disabled="#{createController.readOnlyState}"
 								update="@form:detailsPanel" action="#{createController.cancel}">
