@@ -20,7 +20,7 @@
         	    
         		relationSearchToResult([
         	         {name: 'level', value:  $('td:nth-child(2)', dndRow).text()}
-        	        ,{name: 'name', value: $('td:nth-child(3)', dndRow).text()}
+        	        ,{name: 'name', value: $('td:nth-child(3)', dndRow).text()}	
         	        ,{name: 'code', value: $('td:nth-child(4)', dndRow).text()}
         	        ,{name: 'entityId', value: $('.data-entity-id', dndRow).text()}
         	    ]);
@@ -117,7 +117,7 @@
 				<p:spacer width="10" />
 				
 				<p:commandButton value="Parent List" id="ctb15"
-                    styleClass="#{createController.parentViewable ? '' : 'btn-disabled'}" update="@form:parent-modal"
+                    styleClass="#{createController.parentViewable ? '' : 'btn-disabled'}" update="@form:parent-list-modal"
                     actionListener="#{parentListController.setChildCmqEntity(createController.selectedData)}"
 					disabled="#{createController.parentViewable ? false : true}"
                     oncomplete="PF('parentDlg').show()" icon="fa fa-level-up">
@@ -240,7 +240,7 @@
 
         <p:spacer height="10"></p:spacer>
         <h:panelGrid style="float: right" columns="2">
-            <p:commandButton value="Cancel" onclick="PF('parentDlg').hide()" immediate="true" />
+            <p:commandButton value="Close" onclick="PF('parentDlg').hide()" immediate="true" />
         </h:panelGrid>
     </p:dialog>
     
@@ -253,13 +253,13 @@
     
 
 	<style>
-.ui-state-disabled {
-	opacity: 0.7 !important;
-}
-
-.btn-disabled {
-	opacity: .50 !important;
-}
-</style>
+		.ui-state-disabled {
+			opacity: 0.7 !important;
+		}
+		
+		.btn-disabled {
+			opacity: .50 !important;
+		}
+	</style>
 
 </ui:composition>

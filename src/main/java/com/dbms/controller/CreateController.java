@@ -1037,6 +1037,7 @@ public class CreateController implements Serializable {
 				ctx.addMessage(null, msg);
 
 				selectedData = new CmqBase190();
+				codeSelected = null;
 				initAll();
 
 			} catch (CqtServiceException e) {

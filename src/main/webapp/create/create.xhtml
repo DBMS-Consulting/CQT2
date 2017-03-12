@@ -31,7 +31,7 @@
 						<ui:include src="details.xhtml" />
 						<h:panelGrid columns="2">
 							<p:commandButton value="Save" icon="ui-icon-disk"
-								update="m1 @form:detailsPanel" action="#{createController.save}"></p:commandButton>
+								update="@form:m1 @form:detailsPanel" action="#{createController.save}"></p:commandButton>
 							<p:commandButton value="Cancel" icon="ui-icon-close"
 								update="@form:m1 @form:detailsPanel" process="@this"
 								action="#{createController.cancel}">
@@ -54,9 +54,8 @@
 
 						<h:panelGrid columns="2">
 
-							<p:commandButton value="Save" id="cb3" update="m1"
-								action="#{createController.updateRelations(searchController.relationsRoot)}"
-								disabled="false" icon="ui-icon-disk">
+							<p:commandButton value="Save" id="cb3" disabled="false" icon="ui-icon-disk"
+								action="#{createController.updateRelations(searchController.relationsRoot)}" update="@form:m1">
 								<f:param name="relationsRoot"
 									value="#{searchController.relationsRoot}"></f:param>
 							</p:commandButton>
