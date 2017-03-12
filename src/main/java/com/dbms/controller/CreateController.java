@@ -76,6 +76,7 @@ public class CreateController implements Serializable {
 	private Wizard updateWizard, copyWizard, browseWizard, createWizard;
 	private String createWizardNextStep, copyWizardNextStep, updateWizardNextStep;
 	
+	private Long copyingCmqCode = null;
 	private Long codeSelected = null;
 
 	private TreeNode relationsRoot;
@@ -619,6 +620,12 @@ public class CreateController implements Serializable {
 					"List '" + selectedData.getCmqName() + "' is successfully saved.", "");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		} catch (CqtServiceException e) {
+			// roll back the selectedData
+			selectedData = cmqBaseService.findByCode(copyingCmqCode);
+			if(selectedData == null)
+				selectedData = new CmqBase190();
+			setCopiedCmq(selectedData);
+			//
 			LOG.error("Exception occurred while creating CmqBase190.", e);
 
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -710,7 +717,6 @@ public class CreateController implements Serializable {
 		return false;
 	}
 	
-	
 	/**
 	 * Load a single CMQ List record for "Details/Informative Notes/Relations/Confirm" tabs
 	 * 
@@ -747,17 +753,9 @@ public class CreateController implements Serializable {
 		
 		if (copyWizard != null) {
 			//reset the values which are not supposed to be copied.
+			copyingCmqCode = codeSelected;
 			codeSelected = null;
-			selectedData.setId(null);//need to set since we may need to create a new cmq
-			selectedData.setCmqCode(null);//need to set since we may need to create a new cmq
-			selectedData.setCmqStatus("P");
-			selectedData.setCmqState("Draft");
-			selectedData.setCmqGroup("No Group");
-			selectedData.setCreationDate(null);
-			selectedData.setCreatedBy(null);
-			selectedData.setCmqDescription("*** Description ****");
-			selectedData.setCmqNote("");
-			selectedData.setCmqSource("");
+			setCopiedCmq(selectedData);
 			copyWizard.setStep("details");
 			
 			if(RequestContext.getCurrentInstance() != null) {
@@ -1313,6 +1311,19 @@ public class CreateController implements Serializable {
 		else if(updateWizard != null)
 			return updateWizard;
 		return null;
+	}
+
+	private void setCopiedCmq(CmqBase190 cmq) {
+		cmq.setId(null);//need to set since we may need to create a new cmq
+		cmq.setCmqCode(null);//need to set since we may need to create a new cmq
+		cmq.setCmqStatus("P");
+		cmq.setCmqState("Draft");
+		cmq.setCmqGroup("No Group");
+		cmq.setCreationDate(null);
+		cmq.setCreatedBy(null);
+		cmq.setCmqDescription("*** Description ****");
+		cmq.setCmqNote("");
+		cmq.setCmqSource("");
 	}
 
 }
