@@ -2,6 +2,7 @@ package com.dbms.controller;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -145,6 +146,8 @@ public class ReactivateController implements Serializable {
 				for (CmqBase190 cmqBase190 : targetCmqParents) {
 					cmqBase190.setCmqState("DRAFT");
 					cmqBase190.setCmqStatus("P"); 
+					cmqBase190.setActivatedBy("NONE");
+					cmqBase190.setActivationDate(new Date());
 				}
 				try {
 					this.cmqBaseService.update(targetCmqParents);
@@ -157,6 +160,8 @@ public class ReactivateController implements Serializable {
  			for (CmqBase190 cmqBase190 : targetCmqsSelected) {
 				cmqBase190.setCmqState("DRAFT");
 				cmqBase190.setCmqStatus("P"); 
+				cmqBase190.setActivatedBy("NONE");
+				cmqBase190.setActivationDate(new Date());
 			}
 
 			try {
