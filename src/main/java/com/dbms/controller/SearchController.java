@@ -1806,6 +1806,9 @@ public class SearchController extends BaseController<CmqBase190> {
 
 	public void setDataModified(boolean dataModified) {
 		this.dataModified = dataModified;
+		if(this.dataModified == true) {
+			search();
+		}
 	}
 
 	/**
