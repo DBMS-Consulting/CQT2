@@ -13,7 +13,7 @@ import com.dbms.entity.cqt.CmqBase190;
  *
  */
 public class ListDetailsFormModel {
-	public enum WizardType { CreateWizard, UpdateWizard, CopyWizard };
+	public enum WizardType { BrowseWizard, CreateWizard, UpdateWizard, CopyWizard };
 	
 	private WizardType wizardType = WizardType.CreateWizard;
 	private boolean modelChanged = false;
@@ -81,7 +81,10 @@ public class ListDetailsFormModel {
 			this.status = "Unknown";
 		}
 		
-		this.modelChanged = false;
+		if(this.wizardType == WizardType.CopyWizard)
+			this.modelChanged = true;
+		else 
+			this.modelChanged = false;
 	}
 	
 	/**

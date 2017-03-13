@@ -1806,6 +1806,9 @@ public class SearchController extends BaseController<CmqBase190> {
 
 	public void setDataModified(boolean dataModified) {
 		this.dataModified = dataModified;
+		if(this.dataModified == true) {
+			search();
+		}
 	}
 
 	/**
@@ -1827,6 +1830,8 @@ public class SearchController extends BaseController<CmqBase190> {
 //			setRelationSelected(new TreeNode[] {treeNode});
 //			
 //			addSelectedToRelation(relationSelected);
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "No relation is selected to add", "");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}
 	}
 	

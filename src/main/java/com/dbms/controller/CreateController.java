@@ -143,8 +143,12 @@ public class CreateController implements Serializable {
 	}
 
 	public void cancelDetailsAndNextStep() {
-		cancel();
-		goToWizardNextStep();
+		if(createWizard != null && codeSelected == null) {
+			createWizard.setStep("details");
+		} else {
+			cancel();
+			goToWizardNextStep();
+		}
 	}
 	
 	/**
@@ -406,25 +410,26 @@ public class CreateController implements Serializable {
 	public String onCreateWizardFlowProcess(FlowEvent event) {
 		String oldStep, nextStep;
 		oldStep = nextStep = event.getOldStep();
-		if (codeSelected != null) {
-			if("details".equalsIgnoreCase(oldStep) && detailsFormModel.isModelChanged()) {
-				// current step is "Details" and the form has some unsaved changes
-				
-				//----Confirmation on unsaved changes: see onUpdateWizardFlowProcess's "details" step
+		if("details".equalsIgnoreCase(oldStep) && detailsFormModel.isModelChanged()) {
+			// current step is "Details" and the form has some unsaved changes
+			
+			//----Confirmation on unsaved changes: see onUpdateWizardFlowProcess's "details" step
+			if(codeSelected != null)
 				createWizardNextStep = event.getNewStep();
-				RequestContext.getCurrentInstance().execute("PF('confirmSaveDetailsDlg').show();");
-			} else if("contact".equalsIgnoreCase(oldStep) && notesFormModel.isModelChanged()) {
-				// current step is "Informative Notes" and the form has some unsaved changes			
-				//----Confirmation on unsaved changes: see onUpdateWizardFlowProcess's "contact" step
-				createWizardNextStep = event.getNewStep();
-				RequestContext.getCurrentInstance().execute("PF('confirmSaveNotesDlg').show();");
-			} else if("relations".equalsIgnoreCase(oldStep) && relationsModified) {
-				// current step is "Relations" and the form has some unsaved changes
-				createWizardNextStep = event.getNewStep();
-				RequestContext.getCurrentInstance().execute("PF('confirmSaveRelationsDlg').show();");
-			} else {
-				nextStep = event.getNewStep();
-			}
+			else
+				createWizardNextStep = "details";
+			RequestContext.getCurrentInstance().execute("PF('confirmSaveDetailsDlg').show();");
+		} else if(codeSelected != null && "contact".equalsIgnoreCase(oldStep) && notesFormModel.isModelChanged()) {
+			// current step is "Informative Notes" and the form has some unsaved changes			
+			//----Confirmation on unsaved changes: see onUpdateWizardFlowProcess's "contact" step
+			createWizardNextStep = event.getNewStep();
+			RequestContext.getCurrentInstance().execute("PF('confirmSaveNotesDlg').show();");
+		} else if(codeSelected != null && "relations".equalsIgnoreCase(oldStep) && relationsModified) {
+			// current step is "Relations" and the form has some unsaved changes
+			createWizardNextStep = event.getNewStep();
+			RequestContext.getCurrentInstance().execute("PF('confirmSaveRelationsDlg').show();");
+		} else if(codeSelected != null){
+			nextStep = event.getNewStep();
 		} else {
 			nextStep = "details";
 		}
@@ -562,25 +567,27 @@ public class CreateController implements Serializable {
 	public String onCopyWizardFlowProcess(FlowEvent event) {
 		String oldStep, nextStep;
 		oldStep = nextStep = event.getOldStep();
-		if (codeSelected != null) {
-			if("details".equalsIgnoreCase(oldStep) && detailsFormModel.isModelChanged()) {
-				// current step is "Details" and the form has some unsaved changes
-				
-				//----Confirmation on unsaved changes: see onUpdateWizardFlowProcess's "details" step
+
+		if("details".equalsIgnoreCase(oldStep) && detailsFormModel.isModelChanged()) {
+			// current step is "Details" and the form has some unsaved changes
+			
+			//----Confirmation on unsaved changes: see onUpdateWizardFlowProcess's "details" step
+			if (codeSelected != null)
 				copyWizardNextStep = event.getNewStep();
-				RequestContext.getCurrentInstance().execute("PF('confirmSaveDetailsDlg').show();");
-			} else if("contact".equalsIgnoreCase(oldStep) && notesFormModel.isModelChanged()) {
-				// current step is "Informative Notes" and the form has some unsaved changes
-				//----Confirmation on unsaved changes: see onUpdateWizardFlowProcess's "contact" step
-				copyWizardNextStep = event.getNewStep();
-				RequestContext.getCurrentInstance().execute("PF('confirmSaveNotesDlg').show();");
-			} else if("relations".equalsIgnoreCase(oldStep) && relationsModified) {
-				// current step is "Relations" and the form has some unsaved changes
-				copyWizardNextStep = event.getNewStep();
-				RequestContext.getCurrentInstance().execute("PF('confirmSaveRelationsDlg').show();");
-			} else {
-				nextStep = event.getNewStep();
-			}
+			else
+				copyWizardNextStep = "details";
+			RequestContext.getCurrentInstance().execute("PF('confirmSaveDetailsDlg').show();");
+		} else if(codeSelected != null && "contact".equalsIgnoreCase(oldStep) && notesFormModel.isModelChanged()) {
+			// current step is "Informative Notes" and the form has some unsaved changes
+			//----Confirmation on unsaved changes: see onUpdateWizardFlowProcess's "contact" step
+			copyWizardNextStep = event.getNewStep();
+			RequestContext.getCurrentInstance().execute("PF('confirmSaveNotesDlg').show();");
+		} else if(codeSelected != null && "relations".equalsIgnoreCase(oldStep) && relationsModified) {
+			// current step is "Relations" and the form has some unsaved changes
+			copyWizardNextStep = event.getNewStep();
+			RequestContext.getCurrentInstance().execute("PF('confirmSaveRelationsDlg').show();");
+		} else {
+			nextStep = event.getNewStep();
 		}
 		RequestContext.getCurrentInstance().update("fCopy:wizardNavbar");
 		return nextStep;
@@ -737,8 +744,12 @@ public class CreateController implements Serializable {
 			codeSelected = cmq.getCmqCode();
 			selectedData = cmq;
 		}
+		if(createWizard != null) {
+			detailsFormModel.setWizardType(WizardType.CreateWizard);
+		}
 
 		if (browseWizard != null) {
+			detailsFormModel.setWizardType(WizardType.BrowseWizard);
 			browseWizard.setStep("details");
 			if(RequestContext.getCurrentInstance() != null) {
 				// UI: force update the custom wizard navbar area
@@ -747,6 +758,7 @@ public class CreateController implements Serializable {
 		}
 		
 		if (updateWizard != null) {
+			detailsFormModel.setWizardType(WizardType.UpdateWizard);
 			updateWizard.setStep("details");
 			if(RequestContext.getCurrentInstance() != null) {
 				// UI: force update the custom wizard navbar area
@@ -757,10 +769,12 @@ public class CreateController implements Serializable {
 		}
 		
 		if (copyWizard != null) {
+			detailsFormModel.setWizardType(WizardType.CopyWizard);
 			//reset the values which are not supposed to be copied.
 			copyingCmqCode = codeSelected;
 			codeSelected = null;
 			setCopiedCmq(selectedData);
+			// set the details form model changed status to true
 			copyWizard.setStep("details");
 			
 			if(RequestContext.getCurrentInstance() != null) {
@@ -1268,9 +1282,6 @@ public class CreateController implements Serializable {
 		cmq.setCmqGroup("No Group");
 		cmq.setCreationDate(null);
 		cmq.setCreatedBy(null);
-		cmq.setCmqDescription("*** Description ****");
-		cmq.setCmqNote("");
-		cmq.setCmqSource("");
 	}
 
 }

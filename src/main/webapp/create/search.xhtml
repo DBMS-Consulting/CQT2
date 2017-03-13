@@ -109,8 +109,8 @@
 			<f:selectItem itemLabel="NONE" itemValue="NONE"></f:selectItem>
 		</p:selectCheckboxMenu>
 
-		<p:commandButton value="Search" action="#{searchController.search()}"
-			update="result" />
+		<p:commandButton value="Search" action="#{searchController.search}"
+			update="@form:result" />
 		<p:commandButton action="#{searchController.reset}" value="Reset"
 			update="@form:result @form:searchPanel termSearch codeSearch" />
 	</h:panelGrid>
