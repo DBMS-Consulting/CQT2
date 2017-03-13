@@ -406,25 +406,26 @@ public class CreateController implements Serializable {
 	public String onCreateWizardFlowProcess(FlowEvent event) {
 		String oldStep, nextStep;
 		oldStep = nextStep = event.getOldStep();
-		if (codeSelected != null) {
-			if("details".equalsIgnoreCase(oldStep) && detailsFormModel.isModelChanged()) {
-				// current step is "Details" and the form has some unsaved changes
-				
-				//----Confirmation on unsaved changes: see onUpdateWizardFlowProcess's "details" step
+		if("details".equalsIgnoreCase(oldStep) && detailsFormModel.isModelChanged()) {
+			// current step is "Details" and the form has some unsaved changes
+			
+			//----Confirmation on unsaved changes: see onUpdateWizardFlowProcess's "details" step
+			if(codeSelected != null)
 				createWizardNextStep = event.getNewStep();
-				RequestContext.getCurrentInstance().execute("PF('confirmSaveDetailsDlg').show();");
-			} else if("contact".equalsIgnoreCase(oldStep) && notesFormModel.isModelChanged()) {
-				// current step is "Informative Notes" and the form has some unsaved changes			
-				//----Confirmation on unsaved changes: see onUpdateWizardFlowProcess's "contact" step
-				createWizardNextStep = event.getNewStep();
-				RequestContext.getCurrentInstance().execute("PF('confirmSaveNotesDlg').show();");
-			} else if("relations".equalsIgnoreCase(oldStep) && relationsModified) {
-				// current step is "Relations" and the form has some unsaved changes
-				createWizardNextStep = event.getNewStep();
-				RequestContext.getCurrentInstance().execute("PF('confirmSaveRelationsDlg').show();");
-			} else {
-				nextStep = event.getNewStep();
-			}
+			else
+				createWizardNextStep = "details";
+			RequestContext.getCurrentInstance().execute("PF('confirmSaveDetailsDlg').show();");
+		} else if(codeSelected != null && "contact".equalsIgnoreCase(oldStep) && notesFormModel.isModelChanged()) {
+			// current step is "Informative Notes" and the form has some unsaved changes			
+			//----Confirmation on unsaved changes: see onUpdateWizardFlowProcess's "contact" step
+			createWizardNextStep = event.getNewStep();
+			RequestContext.getCurrentInstance().execute("PF('confirmSaveNotesDlg').show();");
+		} else if(codeSelected != null && "relations".equalsIgnoreCase(oldStep) && relationsModified) {
+			// current step is "Relations" and the form has some unsaved changes
+			createWizardNextStep = event.getNewStep();
+			RequestContext.getCurrentInstance().execute("PF('confirmSaveRelationsDlg').show();");
+		} else if(codeSelected != null){
+			nextStep = event.getNewStep();
 		} else {
 			nextStep = "details";
 		}
@@ -1268,9 +1269,6 @@ public class CreateController implements Serializable {
 		cmq.setCmqGroup("No Group");
 		cmq.setCreationDate(null);
 		cmq.setCreatedBy(null);
-		cmq.setCmqDescription("*** Description ****");
-		cmq.setCmqNote("");
-		cmq.setCmqSource("");
 	}
 
 }

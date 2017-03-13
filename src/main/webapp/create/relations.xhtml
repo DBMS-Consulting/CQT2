@@ -129,7 +129,7 @@
 
 		<br />
 		
-		<p:remoteCommand name="relationSearchToResult" actionListener="#{searchController.onRelationDrop}" update="resultRelations resultHier" oncomplete="initRelationDND()"/>
+		<p:remoteCommand name="relationSearchToResult" actionListener="#{searchController.onRelationDrop}" update="@form:m1 @form:resultRelations @form:resultHier" oncomplete="initRelationDND()"/>
 
 		<p:treeTable value="#{searchController.relationsRoot}" var="node"
 			selectionMode="checkbox" id="resultRelations" rows="20"
