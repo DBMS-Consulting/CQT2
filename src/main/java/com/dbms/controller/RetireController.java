@@ -111,16 +111,6 @@ public class RetireController implements Serializable {
 					"Please select at least 1 list to retire.", "");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		} else {
-			for (CmqBase190 cmqBase : targetCmqsSelected) {
-				targetCmqCodes.add(cmqBase.getCmqCode());
-				if(null != cmqBase.getCmqParentCode()) {
-					CmqBase190 parent = cmqBaseService.findByCode(cmqBase.getCmqParentCode());
-					if (parent != null && parent.getCmqStatus().equals("A") && parent.getCmqState().equalsIgnoreCase("published"))
-						targetCmqParents.add(parent);
-				}
-			}
-			
-			//List<CmqBase190> faultyCmqs = new ArrayList<>();
 			
 			//now get the children
 			//If a parent is retire, then child must be retire 
@@ -136,21 +126,6 @@ public class RetireController implements Serializable {
 				}
  			}
 			
-			//If a child is being retire, and the parent is NOT selected, it SHOULD retire parent as well
-			//it should also prints messages to show the multiple retire
-			//and continue forward
-			if(targetCmqParents.size() > 0) {
-				//we need to show message that parent is retire
-				for (CmqBase190 cmqBase190 : targetCmqParents) {
- 					cmqBase190.setCmqStatus("I"); 
-				}
-				try {
-					this.cmqBaseService.update(targetCmqParents);
-				} catch (CqtServiceException e) {
-					LOG.error(e.getMessage(), e);
- 				}
-			} 
-
 			//continue
  			for (CmqBase190 cmqBase190 : targetCmqsSelected) {
  				cmqBase190.setCmqStatus("I"); 
