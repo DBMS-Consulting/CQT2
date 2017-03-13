@@ -137,7 +137,7 @@
 			</f:facet>
 			
 			<f:facet name="right">
-				<p:commandButton value="Reactivate" id="reactivateBtn"
+				<!-- <p:commandButton value="Reactivate" id="reactivateBtn"
 					disabled="#{createController.reactivate}"
 					action="#{createController.workflowState('Reactivate')}"
 					process="@this" update="m1 @form:confirmPan @form"
@@ -154,7 +154,7 @@
 					<p:confirm header="Confirm Retire"
 						message="Are you sure you want to retire this MedDRA Query?"
 						icon="ui-icon-alert" />
-				</p:commandButton>
+				</p:commandButton> -->
 
 				<p:commandButton value="Demote to Draft" id="demoteBtn"
 					disabled="#{createController.selectedData.cmqState eq 'Reviewed' ||  createController.selectedData.cmqState eq 'Approved' ? false : true}"
