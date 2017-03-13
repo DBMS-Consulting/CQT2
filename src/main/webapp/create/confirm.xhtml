@@ -8,10 +8,10 @@
 	xmlns:p="http://primefaces.org/ui">
 
 
-	<p:panel header="Details" id="confirmPan">
-		<h:panelGrid columns="4" cellpadding="30">
+	<p:panel header="Details" id="confirmPan" >
+		<h:panelGrid columns="4" cellpadding="30" style="min-width: 1000px">
 
-			<h:panelGrid columns="2" columnClasses="label-cell, value-cell">
+			<h:panelGrid columns="2" columnClasses="label-cell, value-cell" style="min-width: 350px">
 				<p:outputLabel styleClass="label-right" value="Extension:" />
 				<h:panelGroup>
 					<h:outputText rendered="#{createController.selectedData.cmqTypeCd eq 'PRO'}"
@@ -41,7 +41,7 @@
 				<h:outputText value="#{RefCodeListService.findCodeByInternalCode('PRODUCT', createController.selectedData.cmqProductCd)}" />
 			</h:panelGrid>
 
-			<h:panelGrid columns="2" columnClasses="label-cell, value-cell" style="min-width: 300px;">
+			<h:panelGrid columns="2" columnClasses="label-cell, value-cell" style="min-width: 350px;">
 				<p:outputLabel styleClass="label-right" value="Level:" />
 				<h:outputText value="#{createController.selectedData.cmqLevel}" />
 
@@ -58,7 +58,7 @@
 				<p:spacer />
 			</h:panelGrid>
 
-			<h:panelGrid columns="2" columnClasses="label-cell, value-cell" style="min-width: 300px;">
+			<h:panelGrid columns="2" columnClasses="label-cell, value-cell" style="min-width: 350px;">
 
 				<p:outputLabel styleClass="label-right" value="Status:" />
 				<h:panelGroup>
@@ -87,7 +87,7 @@
 			</h:panelGrid>
 
 
-			<h:panelGrid columns="2" columnClasses="label-cell, value-cell" style="min-width: 300px;">
+			<h:panelGrid columns="2" columnClasses="label-cell, value-cell" style="min-width: 350px;">
 
 				<p:outputLabel styleClass="label-right" value="Creation Date: " />
 				<h:outputText value="#{createController.selectedData.creationDate}">

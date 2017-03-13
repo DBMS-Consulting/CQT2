@@ -92,7 +92,7 @@ public class RetireController implements Serializable {
 				}
 			}
 		}
-		if (childCmqsOftargets != null && !childCmqsOftargets.isEmpty() && !childNotSelected)
+		if (childCmqsOftargets != null && !childCmqsOftargets.isEmpty() && childNotSelected)
 			this.confirmMessage = "Not all associate child lists are selected for inactivation. Do you want to continue?";
 
 		else

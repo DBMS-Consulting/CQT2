@@ -13,8 +13,7 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
-
-
+import org.primefaces.model.StreamedContent;
 
 import com.dbms.entity.cqt.RefConfigCodeList;
 import com.dbms.service.IRefCodeListService;
@@ -45,6 +44,7 @@ public class AdminController implements Serializable {
 	private List<RefConfigCodeList> extensions, programs, protocols, products, meddras, workflows;
 	
 	private RefConfigCodeList selectedRow, ref;
+	private StreamedContent excelFile;
 
 	public AdminController() {
 
@@ -286,6 +286,11 @@ public class AdminController implements Serializable {
 				}
 		}
 	}
+	
+	public void generateConfigReport() {
+		StreamedContent content = refCodeListService.generateReport(this.codelist);
+		setExcelFile(content);
+	}
 
 	public String getCodelistType() {
 		return codelistType;
@@ -381,6 +386,14 @@ public class AdminController implements Serializable {
 
 	public void setWorkflows(List<RefConfigCodeList> workflows) {
 		this.workflows = workflows;
+	}
+
+	public StreamedContent getExcelFile() {
+		return excelFile;
+	}
+
+	public void setExcelFile(StreamedContent excelFile) {
+		this.excelFile = excelFile;
 	}
 
 }

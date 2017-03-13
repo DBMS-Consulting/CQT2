@@ -1,9 +1,13 @@
 package com.dbms.service;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -13,6 +17,12 @@ import javax.faces.bean.ManagedProperty;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -277,6 +287,76 @@ public class RefCodeListService extends CqtPersistenceService<RefConfigCodeList>
 
 	public void setCqtCacheManager(ICqtCacheManager cqtCacheManager) {
 		this.cqtCacheManager = cqtCacheManager;
+	}
+
+	@Override
+	public StreamedContent generateReport(String codelistType) {
+		XSSFWorkbook workbook = new XSSFWorkbook();
+		XSSFSheet worksheet = null;
+		
+		Calendar cal = Calendar.getInstance();
+
+		worksheet = workbook.createSheet("Report " + codelistType);
+		XSSFRow row = null;
+		int rowCount = 0;
+
+		/**
+		 * Première ligne - entêtes
+		 */
+		row = worksheet.createRow(rowCount);
+		XSSFCell cell = row.createCell(0);
+		cell.setCellValue("Administration Report : [" + codelistType + "]");
+		rowCount++;
+		row = worksheet.createRow(rowCount);
+		cell = row.createCell(0);
+		cell.setCellValue("Report Date:");
+		cell = row.createCell(1);
+		cell.setCellValue(cal.get(Calendar.DATE) + "-" + cal.get(Calendar.MONTH) + "-" + cal.get(Calendar.YEAR));
+		rowCount+=2;
+		
+		row = worksheet.createRow(rowCount);
+		cell = row.createCell(0);
+		cell.setCellValue("Internal Value");
+		cell = row.createCell(1);
+		cell.setCellValue("Value");
+		cell = row.createCell(2);
+		cell.setCellValue("Active");
+		rowCount +=2;
+ 		
+		//Retrieval of ConfigList - Loop
+		List<RefConfigCodeList> list = findAllByConfigType(codelistType, OrderBy.ASC);
+		for (RefConfigCodeList ref : list) {
+			row = worksheet.createRow(rowCount);
+			// Cell 0
+			cell = row.createCell(0);
+			cell.setCellValue(ref.getCodelistInternalValue());
+
+			// Cell 1
+			cell = row.createCell(1);
+			cell.setCellValue(ref.getValue());
+
+			// Cell 2
+			cell = row.createCell(2);
+			cell.setCellValue(ref.getActiveFlag());
+
+			rowCount++;
+		}
+		
+		StreamedContent content = null;
+		try {
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			workbook.write(baos);
+			byte[] xls = baos.toByteArray();
+			ByteArrayInputStream bais = new ByteArrayInputStream(xls);
+			content = new DefaultStreamedContent(
+					bais,
+					"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+					codelistType + "_report" + ".xlsx");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return content;
 	}
 
 }

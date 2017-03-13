@@ -24,7 +24,7 @@
 							<h:panelGrid columns="2">
 								<p:outputLabel value="Report" styleClass="label-right" />
 								<p:selectOneMenu id="soc1" value="#{reportController.genReportType}">
-									<f:selectItem itemValue="#{null}"
+									<f:selectItem itemValue="#{dummyView.value}"
 										itemLabel="--Select a report--" id="si48" />
 									<f:selectItems value="#{reportController.reportTypes}" var="reportType"
 										itemValue="#{reportType}" itemLabel="#{reportType.label}" />
@@ -61,10 +61,10 @@
 							style=" padding:5px;">
 							<h:panelGrid columns="1">
 								<!-- binding="#{pageFlowScope.reportDownloadBean.cntrlReportList}" -->
-								<p:selectOneMenu label="Report" id="soc2" value="#{null}"
+								<p:selectOneMenu label="Report" id="soc2" value="#{dummyView.value}"
 									valueChangeListener="#{reportDownloadBean.reportNameChanged}">
 									<f:selectItem itemLabel="--Select a report--"
-										itemValue="#{null}" id="si2" />
+										itemValue="#{dummyView.value}" id="si2" />
 
 									<!-- <f:selectItems value="#{reportDownloadBean.reportList}"></f:selectItems> -->
 								</p:selectOneMenu>
@@ -72,11 +72,7 @@
 								<p:commandButton value="Generate" id="cb2"
 									actionListener="#{reportDownloadBean.reportDownloadAction}">
 									<p:fileDownload value="#{reportDownloadBean.fileName}" />
-									<!-- <af:fileDownloadActionListener
-									contentType="application/x-download"
-									method="#{pageFlowScope.reportDownloadBean.reportDownloadAction}"
-									filename="#{pageFlowScope.reportDownloadBean.fileName}" /> -->
-
+									 
 								</p:commandButton>
 							</h:panelGrid>
 						</p:panel>
@@ -84,47 +80,26 @@
 							<p:toolbar id="t1" />
 						</f:facet>
 					</p:tab>
-					<p:tab title="Administration Report" id="sdi2">
-						<h:panelGrid columns="1">
-							<h:panelGrid columns="2">
-								<p:commandButton value="Export 1"
-									actionListener="#{reportBean.exportProducts}" id="b1"
-									icon="fa fa-file-excel-o" styleClass="AFStretchWidth">
-									<p:fileDownload value="Products.xls" />
+					<p:tab title="Administration Report" id="admin-tab">
 
-									<!-- <af:fileDownloadActionListener
-									contentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-									filename="Products.xls" method="#{reportBean.exportProducts}" /> -->
-								</p:commandButton>
-								<p:commandButton value="Export 2" id="b11"
-									icon="fa fa-file-excel-o" styleClass="AFStretchWidth">
-									<p:fileDownload value="Products.xls" />
-									<!-- <af:fileDownloadActionListener
-									contentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-									filename="Groups.xls" method="#{reportBean.exportGroups}" /> -->
-								</p:commandButton>
+						<h:panelGrid columns="2">
+							<p:outputLabel value="Codelist Type" />
+							<p:selectOneMenu label="Codelist Type" autoSubmit="true"
+								value="#{adminController.codelist}">
+								<f:selectItem itemLabel="PROGRAM" itemValue="PROGRAM" />
+								<f:selectItem itemLabel="PROTOCOL" itemValue="PROTOCOL" />
+								<f:selectItem itemLabel="PRODUCT" itemValue="PRODUCT" />
 
-							</h:panelGrid>
-							<h:panelGrid columns="4" id="pgl3">
-								<p:outputLabel value="Products" id="ot6"
-									style="font-weight:bold;" />
-								<p:selectOneMenu
-									value="#{bindings.ViewObj_ProductList1.inputValue}"
-									required="#{bindings.ViewObj_ProductList1.hints.mandatory}"
-									shortDesc="#{bindings.ViewObj_ProductList1.hints.tooltip}"
-									id="sol2" simple="true" size="20" label="Products">
-									<f:selectItems value="#{bindings.ViewObj_ProductList1.items}"
-										id="si4" />
-								</p:selectOneMenu>
+							</p:selectOneMenu>
 
-								<p:outputLabel value="Groups" id="ot7" style="font-weight:bold;" />
-								<p:selectOneMenu value="#{bindings.MQGroupsVO1.inputValue}"
-									required="#{bindings.MQGroupsVO1.hints.mandatory}"
-									shortDesc="#{bindings.MQGroupsVO1.hints.tooltip}" id="sol1"
-									size="20" simple="true">
-									<f:selectItems value="#{bindings.MQGroupsVO1.items}" id="si3" />
-								</p:selectOneMenu>
-							</h:panelGrid>
+							<h:commandLink id="generate" value="[Export]" type="button"
+								onclick="PF('statusDialog').show()"
+								onfocus="PF('statusDialog').hide()"
+								actionListener="#{adminController.generateConfigReport}">
+
+								<p:fileDownload value="#{adminController.excelFile}" />
+							</h:commandLink>
+
 						</h:panelGrid>
 					</p:tab>
 				</p:tabView>
