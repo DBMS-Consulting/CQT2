@@ -37,5 +37,9 @@ public interface ICmqBase190Service extends ICqtPersistenceService<CmqBase190> {
 	Long findCmqCountByCmqNameAndExtension(String extension, String cmqName);
 	
 	List<Map<String, Object>> findCmqChildCountForParentCmqCode(List<Long> cmqCodes);
+
+	List<CmqBase190> findCmqsToReactivate();
+
+	List<CmqBase190> findCmqsToRetire(); 
 	
 }

@@ -155,6 +155,20 @@
 						style="font-weight:#{userBean.currentMenu eq 'IMPACT_PUBLISH' ? 'bold' : 'normal'};"
 						url="/publish/publishPreviousVersion.xhtml" />
 				</p:submenu>
+				
+				<p:submenu label="Reactivate/Retire" icon="ui-icon-document"
+					style="font-weight:#{userBean.currentMenu eq 'NON_IMPACT_PUBLISH' or userBean.currentMenu eq 'IMPACT_PUBLISH' ? 'bold' : 'normal'};"
+					rendered="true">
+					<p:menuitem value="Reactivate" id="reactivate-menu"
+						action="NON_IMPACT_PUBLISH" rendered="true"
+						styleClass="#{view.viewId == '/create/reactivate.xhtml' ? 'ui-state-active2' : ''}"
+ 						url="/create/reactivate.xhtml" />
+					<p:menuitem value="Retire" id="retire-menu"
+						action="IMPACT_PUBLISH" rendered="true"
+						styleClass="#{view.viewId == '/create/retire.xhtml' ? 'ui-state-active2' : ''}"
+ 						url="/create/retire.xhtml" />
+				</p:submenu>
+				
 				<p:menuitem value="Reports" id="pt_cmi4" action="REPORTS"
 					styleClass="#{view.viewId == '/report/reports.xhtml' ? 'ui-state-active2' : ''}"
 					style="font-weight:#{userBean.currentMenu eq 'REPORTS' ? 'bold' : 'normal'};"

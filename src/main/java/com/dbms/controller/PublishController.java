@@ -141,7 +141,7 @@ public class PublishController implements Serializable {
 					//Pending to Active 'A'
 					cmqBase190.setCmqStatus("A"); 
 					
-					if ((cmqBase190.getCmqParentCode() != null && cmqBase190.getCmqParentCode().equals("")) &&(cmqBase190.getCmqParentName() != null && cmqBase190.getCmqParentName().equals("")))
+					if (cmqBase190.getCmqLevel().equals(2L) && (cmqBase190.getCmqParentCode() != null && cmqBase190.getCmqParentCode().equals("")) &&(cmqBase190.getCmqParentName() != null && cmqBase190.getCmqParentName().equals("")))
 						hasParentError = true;
 				}
 				if (hasParentError) {

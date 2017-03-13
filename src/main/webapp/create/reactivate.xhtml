@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" template="../CSMQ.xhtml">
+
+	<ui:define name="page-content">
+		<h:form id="f1">
+			<p:growl id="m1" />
+
+			<h:panelGrid columns="1" style="width: 100% !important">
+				<p:breadCrumb styleClass="breadcrumb">
+					<p:menuitem value="Home" url="/index.xhtml" />
+					<p:menuitem value="Reactivate List" />
+				</p:breadCrumb>
+			</h:panelGrid>
+
+			<p:tabView>
+				<p:tab title="Reactivate">
+					<h:panelGrid columns="2">
+						<p:pickList id="pickList"
+							value="#{reactivateController.reactivateDualListModel}"
+							var="pick"
+							converter="#{reactivateController.cmqBaseDualListConverter}"
+							itemLabel="#{pick.cmqName}" itemValue="#{pick.cmqCode}" />
+							
+							<p:commandButton id="reactivate-btn" value="Reactivate"
+ 								action="#{reactivateController.pickList}"
+	 							update="@form">
+							</p:commandButton>
+					</h:panelGrid>
+				</p:tab>
+			</p:tabView>
+			
+			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+				<p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+
+			 <p:remoteCommand name="confirmYes" update="@form" 
+			 actionListener="#{reactivateController.reactivateTargetList}" 
+				
+				onstart="PF('confirmReactivation').hide()" />
+
+			<p:confirmDialog widgetVar="confirmReactivation" showEffect="fade"
+				hideEffect="fade" header="Confirm Reactivation"
+				message="#{reactivateController.confirmMessage}">
+				<p:commandButton value="Yes" type="button" process="@this"
+					update="@form" styleClass="ui-confirmdialog-yes"
+					icon="ui-icon-check" onclick="confirmYes()" />
+
+<!-- message="Not all associate child lists are selected for reactivation. Do you want to continue?" -->
+
+				<p:commandButton value="No" type="button"
+					onclick="PF('confirmReactivation').hide();" update="@form"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog> 
+		</h:form>
+	</ui:define>
+</ui:composition>

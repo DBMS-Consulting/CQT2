@@ -457,4 +457,44 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190> impleme
 		}
 		return retVal;
 	}
+	
+	public List<CmqBase190> findCmqsToReactivate() {
+		List<CmqBase190> retVal = null;
+		String queryString = "from CmqBase190 c where upper(c.cmqState) = upper('Published') and c.cmqStatus = 'I' ";
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		try {
+			Query query = entityManager.createQuery(queryString);
+			retVal = query.getResultList();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg
+					.append("findApprovedCmqs failed ")
+					.append("Query used was ->")
+					.append(queryString);
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
+	
+	public List<CmqBase190> findCmqsToRetire() {
+		List<CmqBase190> retVal = null;
+		String queryString = "from CmqBase190 c where upper(c.cmqState) = upper('Published') and c.cmqStatus = 'A' ";
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		try {
+			Query query = entityManager.createQuery(queryString);
+			retVal = query.getResultList();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg
+					.append("findApprovedCmqs failed ")
+					.append("Query used was ->")
+					.append(queryString);
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
 }
