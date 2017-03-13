@@ -621,7 +621,6 @@ public class SearchController extends BaseController<CmqBase190> {
 					.findFullReverseHierarchyByLevelAndTerm(levelH, levelH, termNameOfHierarchySearch);
 			this.hierarchyRoot = new DefaultTreeNode("root", new HierarchyNode("LEVEL", "NAME", "CODE", null), null);
 			
-			
 			for (MeddraDictReverseHierarchySearchDto meddraDictReverseDto : meddraDictDtoList) {
 				HierarchyNode node = this.createMeddraReverseNode(meddraDictReverseDto, levelH, true);
 				TreeNode parentTreeNode = new DefaultTreeNode(node, this.hierarchyRoot);
@@ -1341,6 +1340,36 @@ public class SearchController extends BaseController<CmqBase190> {
 								} else if(level.equalsIgnoreCase("LLT")) {
 									if((null != cmqRelation190.getLltCode()) 
 											&& (cmqRelation190.getLltCode().longValue() == nodeCode)){
+										matchFound = true;
+									}
+								}
+								if(matchFound) {
+									cmqRelationIdToDelete = cmqRelation190.getId();
+									break;
+								}
+							}//end of for (CmqRelation190 cmqRelation190 : existingRelation)
+						} else if(entity instanceof MeddraDictReverseHierarchySearchDto) {
+							MeddraDictReverseHierarchySearchDto reverseSearchDto = (MeddraDictReverseHierarchySearchDto) hierarchyNode.getEntity();
+							String level = hierarchyNode.getLevel();
+							for (CmqRelation190 cmqRelation190 : existingRelation) {
+								if(level.equalsIgnoreCase("PT") && (cmqRelation190.getPtCode() != null)) {
+									Long relationPtCode = cmqRelation190.getPtCode();
+									Long reverseSearchDtoPtCode = null;
+									if(null != reverseSearchDto.getPtCode()) {
+										reverseSearchDtoPtCode = Long.valueOf(reverseSearchDto.getPtCode());
+									}
+									if((reverseSearchDtoPtCode != null) 
+											&& (relationPtCode.longValue() == reverseSearchDtoPtCode.longValue())) {
+										matchFound = true;
+									}
+								} else if(level.equalsIgnoreCase("LLT") && (null != cmqRelation190.getLltCode())) {
+									Long relationLltCode = cmqRelation190.getLltCode();
+									Long reverseSearchDtoLltCode = null;
+									if(null != reverseSearchDto.getLltCode()) {
+										reverseSearchDtoLltCode = Long.valueOf(reverseSearchDto.getLltCode());
+									}
+									if((reverseSearchDtoLltCode != null) 
+											&& (relationLltCode.longValue() == reverseSearchDtoLltCode.longValue())) {
 										matchFound = true;
 									}
 								}

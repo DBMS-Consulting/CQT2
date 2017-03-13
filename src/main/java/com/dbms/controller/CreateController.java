@@ -996,22 +996,40 @@ public class CreateController implements Serializable {
 	
 	private boolean checkIfExistingRelationNeedsUpdate(CmqRelation190 cmqRelation190, HierarchyNode hierarchyNode) {
 		boolean needsUpdate = false;
-		if(!StringUtils.isBlank(hierarchyNode.getScope()) && !StringUtils.isBlank(cmqRelation190.getTermScope())
-				&& !hierarchyNode.getScope().equals(cmqRelation190.getTermScope())) {
+		//first match scope
+		if(StringUtils.isBlank(hierarchyNode.getScope()) && !StringUtils.isBlank(cmqRelation190.getTermScope())) {
+			needsUpdate = true;
+		} else if(!StringUtils.isBlank(hierarchyNode.getScope()) && StringUtils.isBlank(cmqRelation190.getTermScope())) {
+			needsUpdate = true;
+		} else if(!StringUtils.isBlank(hierarchyNode.getScope()) && !StringUtils.isBlank(cmqRelation190.getTermScope())
+				&& !hierarchyNode.getScope().equals(cmqRelation190.getTermScope())){
+			needsUpdate = true;
+		}
+		
+		//now so category
+		if(StringUtils.isBlank(hierarchyNode.getCategory()) && !StringUtils.isBlank(cmqRelation190.getTermCategory())) {
+			needsUpdate = true;
+		} else if(!StringUtils.isBlank(hierarchyNode.getCategory()) && StringUtils.isBlank(cmqRelation190.getTermCategory())) {
 			needsUpdate = true;
 		} else if(!StringUtils.isBlank(hierarchyNode.getCategory()) && !StringUtils.isBlank(cmqRelation190.getTermCategory())
-				&& !hierarchyNode.getCategory().equals(cmqRelation190.getTermCategory())) {
+				&& !hierarchyNode.getCategory().equals(cmqRelation190.getTermCategory())){
 			needsUpdate = true;
-		} else {
-			long nodeWeight = 0;
-			if((null != cmqRelation190.getTermWeight()) && !StringUtils.isBlank(hierarchyNode.getWeight()) 
-					&& StringUtils.isNumeric(hierarchyNode.getWeight())) {
-				nodeWeight = Long.parseLong(hierarchyNode.getWeight());
-				if(nodeWeight != cmqRelation190.getTermWeight().longValue()) {
-					needsUpdate = true;
-				}
-			} 
 		}
+		
+		//now weight
+		
+		if(StringUtils.isBlank(hierarchyNode.getWeight()) && (null != cmqRelation190.getTermWeight())) {
+			needsUpdate = true;
+		} else if(!StringUtils.isBlank(hierarchyNode.getWeight()) && (null == cmqRelation190.getTermWeight())) {
+			needsUpdate = true;
+		} else if(!StringUtils.isBlank(hierarchyNode.getWeight()) && (null != cmqRelation190.getTermWeight()) 
+				&& StringUtils.isNumeric(hierarchyNode.getWeight())) {
+			long nodeWeight = Long.parseLong(hierarchyNode.getWeight());
+			if(nodeWeight != cmqRelation190.getTermWeight().longValue()) {
+				needsUpdate = true;
+			}
+		}
+		
 		return needsUpdate;
 	}
 	
