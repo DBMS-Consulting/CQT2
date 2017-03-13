@@ -618,11 +618,12 @@ public class SearchController extends BaseController<CmqBase190> {
 			}
 		} else if (searchMeddraBaseReverse) {
 			List<MeddraDictReverseHierarchySearchDto> meddraDictDtoList = meddraDictService
-					.findFullReverseHierarchyByLevelAndTerm(levelH, termNameOfHierarchySearch);
+					.findFullReverseHierarchyByLevelAndTerm(levelH, levelH, termNameOfHierarchySearch);
 			this.hierarchyRoot = new DefaultTreeNode("root", new HierarchyNode("LEVEL", "NAME", "CODE", null), null);
 			
+			
 			for (MeddraDictReverseHierarchySearchDto meddraDictReverseDto : meddraDictDtoList) {
-				HierarchyNode node = this.createMeddraReverseNode(meddraDictReverseDto, levelH);
+				HierarchyNode node = this.createMeddraReverseNode(meddraDictReverseDto, levelH, true);
 				TreeNode parentTreeNode = new DefaultTreeNode(node, this.hierarchyRoot);
 				
 				// add a dummmy node to show expand arrow
@@ -902,48 +903,76 @@ public class SearchController extends BaseController<CmqBase190> {
 				MeddraDictReverseHierarchySearchDto reverseSearchDto = (MeddraDictReverseHierarchySearchDto)entity;
 				String levelOfExpandedNode = hierarchyNode.getLevel();
 				if("LLT".equalsIgnoreCase(levelOfExpandedNode)) {
-					HierarchyNode childNode = this.createMeddraReverseNode(reverseSearchDto, "PT");
-					if("RELATIONS".equalsIgnoreCase(uiSourceOfEvent)) {
-						childNode.markNotEditableInRelationstable();
-					}
-					TreeNode childTreeNode = new DefaultTreeNode(childNode, expandedTreeNode);
-					if(StringUtils.isNotBlank(reverseSearchDto.getHltTerm())) {
-						// add a dummmy node to show expand arrow
-						HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
-						dummyNode.setDummyNode(true);
-						new DefaultTreeNode(dummyNode, childTreeNode);
+					Long lltCode = Long.valueOf(reverseSearchDto.getLltCode());
+					List<MeddraDictReverseHierarchySearchDto> childReverseSearchDtos = this.meddraDictService.findReverseByCode("LLT_", "PT_", lltCode);
+					if(CollectionUtils.isNotEmpty(childReverseSearchDtos)) {
+						for (MeddraDictReverseHierarchySearchDto childReverseSearchDto : childReverseSearchDtos) {
+							HierarchyNode childNode = this.createMeddraReverseNode(childReverseSearchDto, "PT", hierarchyNode.isPrimaryPathFlag());
+							if("RELATIONS".equalsIgnoreCase(uiSourceOfEvent)) {
+								childNode.markNotEditableInRelationstable();
+							}
+							TreeNode childTreeNode = new DefaultTreeNode(childNode, expandedTreeNode);
+							if(StringUtils.isNotBlank(reverseSearchDto.getHltTerm())) {
+								// add a dummmy node to show expand arrow
+								HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
+								dummyNode.setDummyNode(true);
+								new DefaultTreeNode(dummyNode, childTreeNode);
+							}
+						}
 					}
 				} else if ("PT".equalsIgnoreCase(levelOfExpandedNode)) {
-					HierarchyNode childNode = this.createMeddraReverseNode(reverseSearchDto, "HLT");
-					if("RELATIONS".equalsIgnoreCase(uiSourceOfEvent)) {
-						childNode.markNotEditableInRelationstable();
-					}
-					TreeNode childTreeNode = new DefaultTreeNode(childNode, expandedTreeNode);
-					if(StringUtils.isNotBlank(reverseSearchDto.getHlgtCode())) {
-						// add a dummmy node to show expand arrow
-						HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
-						dummyNode.setDummyNode(true);
-						new DefaultTreeNode(dummyNode, childTreeNode);
+					Long ptCode = Long.valueOf(reverseSearchDto.getPtCode());
+					List<MeddraDictReverseHierarchySearchDto> childReverseSearchDtos = this.meddraDictService.findReverseByCode("PT_", "HLT_", ptCode);
+					if(CollectionUtils.isNotEmpty(childReverseSearchDtos)) {
+						for (MeddraDictReverseHierarchySearchDto childReverseSearchDto : childReverseSearchDtos) {
+							boolean isPrimary = false;
+							if("Y".equalsIgnoreCase(childReverseSearchDto.getPrimaryPathFlag())) {
+								isPrimary = true;
+							}
+							HierarchyNode childNode = this.createMeddraReverseNode(childReverseSearchDto, "HLT", isPrimary);
+							if("RELATIONS".equalsIgnoreCase(uiSourceOfEvent)) {
+								childNode.markNotEditableInRelationstable();
+							}
+							TreeNode childTreeNode = new DefaultTreeNode(childNode, expandedTreeNode);
+							if(StringUtils.isNotBlank(reverseSearchDto.getHltTerm())) {
+								// add a dummmy node to show expand arrow
+								HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
+								dummyNode.setDummyNode(true);
+								new DefaultTreeNode(dummyNode, childTreeNode);
+							}
+						}
 					}
 				} else if ("HLT".equalsIgnoreCase(levelOfExpandedNode)) {
-					HierarchyNode childNode = this.createMeddraReverseNode(reverseSearchDto, "HLGT");
-					if("RELATIONS".equalsIgnoreCase(uiSourceOfEvent)) {
-						childNode.markNotEditableInRelationstable();
-					}
-					TreeNode childTreeNode = new DefaultTreeNode(childNode, expandedTreeNode);
-					if(StringUtils.isNotBlank(reverseSearchDto.getSocCode())) {
-						// add a dummmy node to show expand arrow
-						HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
-						dummyNode.setDummyNode(true);
-						new DefaultTreeNode(dummyNode, childTreeNode);
+					Long hltCode = Long.valueOf(reverseSearchDto.getHltCode());
+					List<MeddraDictReverseHierarchySearchDto> childReverseSearchDtos = this.meddraDictService.findReverseByCode("HLT_", "HLGT_", hltCode);
+					if(CollectionUtils.isNotEmpty(childReverseSearchDtos)) {
+						for (MeddraDictReverseHierarchySearchDto childReverseSearchDto : childReverseSearchDtos) {
+							HierarchyNode childNode = this.createMeddraReverseNode(childReverseSearchDto, "HLGT", hierarchyNode.isPrimaryPathFlag());
+							if("RELATIONS".equalsIgnoreCase(uiSourceOfEvent)) {
+								childNode.markNotEditableInRelationstable();
+							}
+							TreeNode childTreeNode = new DefaultTreeNode(childNode, expandedTreeNode);
+							if(StringUtils.isNotBlank(reverseSearchDto.getHltTerm())) {
+								// add a dummmy node to show expand arrow
+								HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
+								dummyNode.setDummyNode(true);
+								new DefaultTreeNode(dummyNode, childTreeNode);
+							}
+						}
 					}
 				} else if ("HLGT".equalsIgnoreCase(levelOfExpandedNode)) {
-					HierarchyNode childNode = this.createMeddraReverseNode(reverseSearchDto, "SOC");
-					if("RELATIONS".equalsIgnoreCase(uiSourceOfEvent)) {
-						childNode.markNotEditableInRelationstable();
+					Long hlgtCode = Long.valueOf(reverseSearchDto.getHlgtCode());
+					List<MeddraDictReverseHierarchySearchDto> childReverseSearchDtos = this.meddraDictService.findReverseByCode("HLGT_", "SOC_", hlgtCode);
+					if(CollectionUtils.isNotEmpty(childReverseSearchDtos)) {
+						for (MeddraDictReverseHierarchySearchDto childReverseSearchDto : childReverseSearchDtos) {
+							HierarchyNode childNode = this.createMeddraReverseNode(childReverseSearchDto, "SOC", hierarchyNode.isPrimaryPathFlag());
+							if("RELATIONS".equalsIgnoreCase(uiSourceOfEvent)) {
+								childNode.markNotEditableInRelationstable();
+							}
+							new DefaultTreeNode(childNode, expandedTreeNode);
+						}
 					}
-					new DefaultTreeNode(childNode, expandedTreeNode);
-				} 				
+				}				
 			} else if (entity instanceof CmqBase190) {
 				CmqBase190 cmqBase = (CmqBase190) entity;
 				Long cmqCode = cmqBase.getCmqCode();
@@ -1707,7 +1736,7 @@ public class SearchController extends BaseController<CmqBase190> {
 			} else if ((cmqRelation.getPtCode() != null)
 					&& (cmqRelation.getPtCode() > 0)) {
 				MeddraDictReverseHierarchySearchDto searchDto = this.meddraDictService.findByPtOrLltCode("PT_", cmqRelation.getPtCode());
-				node = this.createMeddraReverseNode(searchDto, "PT");
+				node = this.createMeddraReverseNode(searchDto, "PT", false);
 				node.setCategory((cmqRelation.getTermCategory() == null) ? "" : cmqRelation.getTermCategory());
 				node.setScope((cmqRelation.getTermScope() == null) ? "" : cmqRelation.getTermScope());
 				node.setWeight((cmqRelation.getTermWeight() == null) ? "" : cmqRelation.getTermWeight() + "");
@@ -1715,7 +1744,7 @@ public class SearchController extends BaseController<CmqBase190> {
 			} else if ((cmqRelation.getLltCode() != null)
 					&& (cmqRelation.getLltCode() > 0)) {
 				MeddraDictReverseHierarchySearchDto searchDto = this.meddraDictService.findByPtOrLltCode("LLT_", cmqRelation.getLltCode());
-				node = this.createMeddraReverseNode(searchDto, "LLT");
+				node = this.createMeddraReverseNode(searchDto, "LLT", false);
 				node.setCategory((cmqRelation.getTermCategory() == null) ? "" : cmqRelation.getTermCategory());
 				node.setScope((cmqRelation.getTermScope() == null) ? "" : cmqRelation.getTermScope());
 				node.setWeight((cmqRelation.getTermWeight() == null) ? "" : cmqRelation.getTermWeight() + "");
@@ -1848,7 +1877,7 @@ public class SearchController extends BaseController<CmqBase190> {
 	}
 	
 	private HierarchyNode createMeddraReverseNode(
-			MeddraDictReverseHierarchySearchDto searchDto, String level) {
+			MeddraDictReverseHierarchySearchDto searchDto, String level, boolean isPrimary) {
 		HierarchyNode node = new HierarchyNode();
 		node.setLevel(level);
 		if("LLT".equalsIgnoreCase(level)) {
@@ -1868,7 +1897,7 @@ public class SearchController extends BaseController<CmqBase190> {
 			node.setCode(searchDto.getSocCode());
 		}
 		
-		if("Y".equalsIgnoreCase(searchDto.getPrimaryPathFlag())) {
+		if(isPrimary) {
 			node.setPrimaryPathFlag(true);
 			node.setRowStyleClass("green-colored");
 		} else {

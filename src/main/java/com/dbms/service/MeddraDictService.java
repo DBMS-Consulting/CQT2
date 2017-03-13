@@ -30,14 +30,11 @@ public class MeddraDictService extends CqtPersistenceService<MeddraDict190> impl
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public List<MeddraDictReverseHierarchySearchDto> findFullReverseHierarchyByLevelAndTerm(String searchType, String searchTerm) {
+	public List<MeddraDictReverseHierarchySearchDto> findFullReverseHierarchyByLevelAndTerm(String searchColumnPrefix
+															, String partitionColumnPrefix, String searchTerm) {
 		List<MeddraDictReverseHierarchySearchDto> retVal = null;
-		String termColumnName = null;
-		if("PT".equalsIgnoreCase(searchType)) {
-			termColumnName = "PT_TERM";
-		} else {
-			termColumnName = "LLT_TERM";
-		}
+		String termSearchColumnName = (searchColumnPrefix.endsWith("_") ? searchColumnPrefix : searchColumnPrefix +"_") + "TERM";
+		String codePartitionColumnName = (partitionColumnPrefix.endsWith("_") ? partitionColumnPrefix : partitionColumnPrefix +"_") + "CODE";
 		String queryString = "";
 		if (StringUtils.isBlank(searchTerm)) {
 			queryString = "select MEDDRA_DICT_ID as meddraDictId, LLT_TERM as lltTerm, LLT_CODE as lltCode"
@@ -46,7 +43,7 @@ public class MeddraDictService extends CqtPersistenceService<MeddraDict190> impl
 								+ ", SOC_CODE as socCode, PRIMARY_PATH_FLAG as primaryPathFlag "
 							+ "from (select MEDDRA_DICT_ID, LLT_TERM, LLT_CODE, PT_TERM, PT_CODE, HLT_TERM, HLT_CODE, "
 										+ "HLGT_TERM, HLGT_CODE, SOC_TERM, SOC_CODE, PRIMARY_PATH_FLAG, row_number() "
-									+ "over (partition by PT_CODE order by MEDDRA_DICT_ID) rn "
+									+ "over (partition by " + codePartitionColumnName + " order by MEDDRA_DICT_ID) rn "
 								+ "from MEDDRA_DICT_CURRENT) where rn = 1";
 		} else {
 			queryString = "select MEDDRA_DICT_ID as meddraDictId, LLT_TERM as lltTerm, LLT_CODE as lltCode"
@@ -55,8 +52,8 @@ public class MeddraDictService extends CqtPersistenceService<MeddraDict190> impl
 								+ ", SOC_CODE as socCode, PRIMARY_PATH_FLAG as primaryPathFlag "
 							+ "from (select MEDDRA_DICT_ID, LLT_TERM, LLT_CODE, PT_TERM, PT_CODE, HLT_TERM, HLT_CODE, "
 										+ "HLGT_TERM, HLGT_CODE, SOC_TERM, SOC_CODE, PRIMARY_PATH_FLAG, row_number() "
-									+ "over (partition by PT_CODE order by MEDDRA_DICT_ID) rn "
-								+ "from MEDDRA_DICT_CURRENT	where upper(" + termColumnName + ") like :searchTerm ) where rn = 1";
+									+ "over (partition by " + codePartitionColumnName + " order by MEDDRA_DICT_ID) rn "
+								+ "from MEDDRA_DICT_CURRENT	where upper(" + termSearchColumnName + ") like :searchTerm ) where rn = 1";
 		}
 
 		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
@@ -84,8 +81,8 @@ public class MeddraDictService extends CqtPersistenceService<MeddraDict190> impl
 			retVal = query.list();
 		} catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
-			msg.append("An error occurred while fetching types from MeddraDict190 on searchColumnType ")
-					.append(termColumnName).append(" with value like ").append(searchTerm).append(" Query used was ->")
+			msg.append("An error occurred while executing findFullReverseHierarchyByLevelAndTerm.  Search Term was ")
+					.append(searchTerm).append(" and partition column was ").append(codePartitionColumnName).append(" Query used was ->")
 					.append(queryString);
 			LOG.error(msg.toString(), e);
 		} finally {
@@ -94,6 +91,54 @@ public class MeddraDictService extends CqtPersistenceService<MeddraDict190> impl
 		return retVal;
 	}
 
+	@SuppressWarnings("unchecked")
+	public List<MeddraDictReverseHierarchySearchDto> findReverseByCode(String searchColumnTypePrefix, String partitionColumnPrefix, Long code) {
+		List<MeddraDictReverseHierarchySearchDto> retVal = null;
+		String codeSearchColumnName = searchColumnTypePrefix + "CODE";
+		String codePartitionColumnName = partitionColumnPrefix + "CODE";
+		String queryString = "select MEDDRA_DICT_ID as meddraDictId, LLT_TERM as lltTerm, LLT_CODE as lltCode"
+				+ ", PT_TERM as ptTerm, PT_CODE as ptCode, HLT_TERM as hltTerm, HLT_CODE as hltCode"
+				+ ", HLGT_TERM as hlgtTerm, HLGT_CODE as hlgtCode, SOC_TERM as socTerm"
+				+ ", SOC_CODE as socCode, PRIMARY_PATH_FLAG as primaryPathFlag "
+			+ "from (select MEDDRA_DICT_ID, LLT_TERM, LLT_CODE, PT_TERM, PT_CODE, HLT_TERM, HLT_CODE, "
+						+ "HLGT_TERM, HLGT_CODE, SOC_TERM, SOC_CODE, PRIMARY_PATH_FLAG, row_number() "
+					+ "over (partition by " + codePartitionColumnName + " order by MEDDRA_DICT_ID) rn "
+				+ "from MEDDRA_DICT_CURRENT	where " + codeSearchColumnName + " = :code ) where rn = 1";
+
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		Session session = entityManager.unwrap(Session.class);
+		try {
+			SQLQuery query = session.createSQLQuery(queryString);
+			query.addScalar("meddraDictId", StandardBasicTypes.LONG);
+			query.addScalar("lltTerm", StandardBasicTypes.STRING);
+			query.addScalar("lltCode", StandardBasicTypes.STRING);
+			query.addScalar("ptTerm", StandardBasicTypes.STRING);
+			query.addScalar("ptCode", StandardBasicTypes.STRING);
+			query.addScalar("hltTerm", StandardBasicTypes.STRING);
+			query.addScalar("hltCode", StandardBasicTypes.STRING);
+			query.addScalar("hlgtTerm", StandardBasicTypes.STRING);
+			query.addScalar("hlgtCode", StandardBasicTypes.STRING);
+			query.addScalar("socTerm", StandardBasicTypes.STRING);
+			query.addScalar("socCode", StandardBasicTypes.STRING);
+			query.addScalar("primaryPathFlag", StandardBasicTypes.STRING);
+			query.setFetchSize(400);
+			query.setParameter("code", code);
+			query.setResultTransformer(Transformers.aliasToBean(MeddraDictReverseHierarchySearchDto.class));
+
+			retVal = query.list();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg.append("An error occurred while fetching findReverseByCode on searchColumnType ")
+					.append(searchColumnTypePrefix).append(" with code equal to ").append(code).append(" Query used was ->")
+					.append(queryString);
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
+	
+	
 	@Override
 	@SuppressWarnings("unchecked")
 	public List<MeddraDictHierarchySearchDto> findByLevelAndTerm(String searchColumnTypePrefix, String searchTerm) {

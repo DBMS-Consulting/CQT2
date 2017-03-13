@@ -13,6 +13,8 @@ public interface IMeddraDictService {
 	
 	MeddraDictHierarchySearchDto findByCode(String searchColumnTypePrefix, Long code);
 	
+	List<MeddraDictReverseHierarchySearchDto> findReverseByCode(String searchColumnTypePrefix, String partitionColumnPrefix, Long code);
+	
 	MeddraDictReverseHierarchySearchDto findByPtOrLltCode(String searchColumnTypePrefix, Long code);
 	
 	Long findChldrenCountByParentCode(String searchColumnTypePrefix,
@@ -21,6 +23,6 @@ public interface IMeddraDictService {
 	List<MeddraDictHierarchySearchDto> findChildrenByParentCode(String searchColumnTypePrefix,
 			String parentCodeColumnPrefix, Long parentCode);
 
-	List<MeddraDictReverseHierarchySearchDto> findFullReverseHierarchyByLevelAndTerm(String searchColumnTypePrefix,
-			String searchTerm);
+	List<MeddraDictReverseHierarchySearchDto> findFullReverseHierarchyByLevelAndTerm(String searchColumnPrefix
+			, String partitionColumnPrefix, String searchTerm);
 }
