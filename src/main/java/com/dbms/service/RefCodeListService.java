@@ -56,7 +56,7 @@ public class RefCodeListService extends CqtPersistenceService<RefConfigCodeList>
 
 			StringBuilder queryString = new StringBuilder("from RefConfigCodeList a");
 			queryString.append(
-					" where a.codelistConfigType = :codelistConfigType and a.activeFlag = 'Y' order by a.serialNum ");
+					" where a.codelistConfigType = :codelistCType and a.activeFlag = 'Y' order by a.serialNum ");
 			queryString.append(orderBy.name());
 			try {
 				Query query = entityManager.createQuery(queryString.toString());

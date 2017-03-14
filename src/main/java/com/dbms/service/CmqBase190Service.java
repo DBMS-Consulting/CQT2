@@ -1,6 +1,7 @@
 package com.dbms.service;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,7 @@ import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import javax.persistence.TemporalType;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.SQLQuery;
@@ -20,7 +22,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.dbms.entity.cqt.CmqBase190;
-import com.dbms.entity.cqt.dtos.MeddraDictHierarchySearchDto;
 import com.dbms.service.base.CqtPersistenceService;
 import com.dbms.util.exceptions.CqtServiceException;
 
@@ -495,6 +496,39 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190> impleme
 		} finally {
 			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
 		}
+		return retVal;
+	}
+
+	@Override
+	public List<CmqBase190> getPublishedListsReportData(Date filterPublishedBetweenFrom,
+			Date filterPublishedBetweenTo) {
+
+		StringBuilder queryStrB = new StringBuilder("from CmqBase190 c where c.cmqStatus=:cmqStatus and lower(c.cmqState)=lower(:cmqState)");
+
+		// TODO Auto-generated method stub
+//		if(filterPublishedBetweenFrom != null)
+//			queryStrB.append(" and > :pubBtwFrom");
+//		if(filterPublishedBetweenTo != null)
+//			queryStrB.append(" and < :pubBtwTo");
+		
+		List<CmqBase190> retVal = null;
+		
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		try {
+			Query query = entityManager.createQuery(queryStrB.toString());
+			query.setParameter("cmqStatus", "A");
+			query.setParameter("cmqState", "Published");
+//			if(filterPublishedBetweenFrom != null)
+//				query.setParameter("pubBtwFrom", filterPublishedBetweenFrom, TemporalType.TIMESTAMP);
+//			if(filterPublishedBetweenTo != null)
+//				query.setParameter("pubBtwTo", filterPublishedBetweenFrom, TemporalType.TIMESTAMP);
+			retVal = query.getResultList();
+		} catch (Exception e) {
+			LOG.error("An error occurred while fetching data from CmqBase190. Query used was->" + queryStrB.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		
 		return retVal;
 	}
 }

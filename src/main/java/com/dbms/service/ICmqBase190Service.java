@@ -1,5 +1,6 @@
 package com.dbms.service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -41,5 +42,11 @@ public interface ICmqBase190Service extends ICqtPersistenceService<CmqBase190> {
 	List<CmqBase190> findCmqsToReactivate();
 
 	List<CmqBase190> findCmqsToRetire(); 
+	
+	/**
+	 * 
+	 * @return
+	 */
+	List<CmqBase190> getPublishedListsReportData(Date filterPublishedBetweenFrom, Date filterPublishedBetweenTo);
 	
 }

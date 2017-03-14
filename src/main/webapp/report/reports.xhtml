@@ -9,38 +9,39 @@
 	<c:set var="viewcontrollerBundle"
 		value="#{adfBundle['viewcontroller.report.reportsBundle']}" />
 	<ui:define name="page-content">
-
 		<p:messages id="m1" />
-		<h:form id="f1">
-			<p:panel id="pbl1">
-				<f:facet name="bottom">
-					<p:commandButton text="Cancel" id="cb1" action="CANCEL" />
-				</f:facet>
+		
+		<p:panel id="pbl1">
+			<f:facet name="bottom">
+				<p:commandButton text="Cancel" id="cb1" action="CANCEL" />
+			</f:facet>
 
-				<p:tabView id="pb1"
-					inlineStyle="width:1195px; padding:5px; height:448px;">
-					<p:tab id="sdi1" title="Lists">
+			<p:tabView id="pb1"
+				inlineStyle="width:1195px; padding:5px; height:448px;">
+				<p:tab id="sdi1" title="Lists">
+					<h:form id="frm-reports-lists-internal">
 						<p:panel header="Internal" id="ph1" style=" padding:5px;">
 							<h:panelGrid columns="2">
 								<p:outputLabel value="Report" styleClass="label-right" />
-								<p:selectOneMenu id="soc1" value="#{reportController.genReportType}">
-									<f:selectItem itemValue="#{dummyView.value}"
-										itemLabel="--Select a report--" id="si48" />
+								<p:selectOneMenu value="#{reportController.genReportType}"
+									required="true" requiredMessage="Please choose Report type to generate.">
+									<f:selectItem itemValue="#{null}" itemLabel="--Select a report--" />
 									<f:selectItems value="#{reportController.reportTypes}" var="reportType"
 										itemValue="#{reportType}" itemLabel="#{reportType.label}" />
 									<p:ajax />
 								</p:selectOneMenu>
 
 								<p:outputLabel value="Start Date" styleClass="label-right" />
-								<p:calendar id="id1" label="Start Date" navigator="true" mode="popup" pattern="dd/MM/yyyy"
+								<p:calendar label="Start Date" navigator="true" mode="popup" pattern="dd/MM/yyyy"
 									value="#{reportController.reportStartDate}" />
 
 								<p:outputLabel value="End Date" styleClass="label-right" />
-								<p:calendar id="id2" label="End Date" navigator="true" mode="popup" pattern="dd/MM/yyyy"
+								<p:calendar label="End Date" navigator="true" mode="popup" pattern="dd/MM/yyyy"
 									value="#{reportController.reportEndDate}" />
 
 								<p:outputLabel value="Format" styleClass="label-right" />
-								<p:selectOneMenu id="soc3" label="Format" immediate="true" value="#{reportController.genReportFormat}">
+								<p:selectOneMenu label="Format" value="#{reportController.genReportFormat}"
+									required="true" requiredMessage="Please choose a file format of the report.">
 									<f:selectItems value="#{reportController.reportFormats}" var="reportType"
 										itemValue="#{reportFormat}" itemLabel="#{reportFormat.label}" />
 									<p:ajax />
@@ -48,15 +49,12 @@
 
 							</h:panelGrid>
 							<h:panelGrid columns="1">
-								<p:commandButton value="Generate" id="btn-generate-report"
-									partialSubmit="true">
-									<p:ajax listener="#{reportBean.printReport}"></p:ajax>
-									<p:fileDownload value="#{reportBean.generatedReport}"></p:fileDownload>
-
-								</p:commandButton>
+								<p:commandButton value="Generate" ajax="false" update="m1" action="#{reportController.generateReport}" />
 							</h:panelGrid>
 						</p:panel>
-						<p:spacer height="10"></p:spacer>
+					</h:form>
+					<p:spacer height="10"></p:spacer>
+					<h:form id="frm-report-lists-medra">
 						<p:panel header="MedDRA Versioning Reports" id="ph2"
 							style=" padding:5px;">
 							<h:panelGrid columns="1">
@@ -76,42 +74,64 @@
 								</p:commandButton>
 							</h:panelGrid>
 						</p:panel>
-						<f:facet name="toolbar">
-							<p:toolbar id="t1" />
-						</f:facet>
-					</p:tab>
-					<p:tab title="Administration Report" id="admin-tab">
+					</h:form>
+					
+					<f:facet name="toolbar">
+						<p:toolbar id="t1" />
+					</f:facet>
+			</p:tab>
+				<p:tab title="Administration Report" id="sdi2">
+					<h:form id="frm-report-admin">
+						<h:panelGrid columns="1">
+							<h:panelGrid columns="2">
+								<p:commandButton value="Export 1"
+									actionListener="#{reportBean.exportProducts}" id="b1"
+									icon="fa fa-file-excel-o" styleClass="AFStretchWidth">
+									<p:fileDownload value="Products.xls" />
 
-						<h:panelGrid columns="2">
-							<p:outputLabel value="Codelist Type" />
-							<p:selectOneMenu label="Codelist Type" autoSubmit="true"
-								value="#{adminController.codelist}">
-								<f:selectItem itemLabel="PROGRAM" itemValue="PROGRAM" />
-								<f:selectItem itemLabel="PROTOCOL" itemValue="PROTOCOL" />
-								<f:selectItem itemLabel="PRODUCT" itemValue="PRODUCT" />
-
-							</p:selectOneMenu>
-
-							<h:commandLink id="generate" value="[Export]" type="button"
-								onclick="PF('statusDialog').show()"
-								onfocus="PF('statusDialog').hide()"
-								actionListener="#{adminController.generateConfigReport}">
-
-								<p:fileDownload value="#{adminController.excelFile}" />
-							</h:commandLink>
-
+									<!-- <af:fileDownloadActionListener
+									contentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+									filename="Products.xls" method="#{reportBean.exportProducts}" /> -->
+								</p:commandButton>
+								<p:commandButton value="Export 2" id="b11"
+									icon="fa fa-file-excel-o" styleClass="AFStretchWidth">
+									<p:fileDownload value="Products.xls" />
+									<!-- <af:fileDownloadActionListener
+									contentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+									filename="Groups.xls" method="#{reportBean.exportGroups}" /> -->
+								</p:commandButton>
+							</h:panelGrid>
+								
+							<h:panelGrid columns="2">
+								<p:outputLabel value="Codelist Type" />
+								<p:selectOneMenu label="Codelist Type" autoSubmit="true"
+									value="#{adminController.codelist}">
+									<f:selectItem itemLabel="PROGRAM" itemValue="PROGRAM" />
+									<f:selectItem itemLabel="PROTOCOL" itemValue="PROTOCOL" />
+									<f:selectItem itemLabel="PRODUCT" itemValue="PRODUCT" />
+	
+								</p:selectOneMenu>
+	
+								<h:commandLink id="generate" value="[Export]" type="button"
+									onclick="PF('statusDialog').show()"
+									onfocus="PF('statusDialog').hide()"
+									actionListener="#{adminController.generateConfigReport}">
+	
+									<p:fileDownload value="#{adminController.excelFile}" />
+								</h:commandLink>
+							</h:panelGrid>
+							
 						</h:panelGrid>
-					</p:tab>
-				</p:tabView>
-			</p:panel>
-		</h:form>
-
+					</h:form>
+				</p:tab>
+			</p:tabView>
+		</p:panel>
 		<style>
-.label-right {
-	float: right;
-	margin-right: 20px;
-	font-size: 14px !important;
-}
-</style>
+			.label-right {
+				float: right;
+				margin-right: 20px;
+				font-size: 14px !important;
+			}
+		</style>
 	</ui:define>
 </ui:composition>
