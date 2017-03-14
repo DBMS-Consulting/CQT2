@@ -19,7 +19,7 @@
 				</h:panelGrid>
 			</h:panelGrid>
 			
-			<p:remoteCommand name="notifySearchControllerDataChange">
+			<p:remoteCommand name="notifySearchControllerDataChange" update="@form">
 	            <f:setPropertyActionListener target="#{searchController.dataModified}" value="true" />
 		    </p:remoteCommand>
 

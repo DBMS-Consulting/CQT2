@@ -10,7 +10,8 @@
 	<p:remoteCommand name="saveDetailsAndGoToNextStep"
 			update="@form:m1 @form:wizardId @form:codeValue"
 			actionListener="#{createController.saveDetailsAndNextStep}"
-			onstart="PF('confirmSaveDetailsDlg').hide()" />
+			onstart="PF('confirmSaveDetailsDlg').hide()"
+			oncomplete="notifySearchControllerDataChange()"  />
 	<p:remoteCommand name="resetDetailsAndGoToNextStep"
 			update="@form:wizardId @form:detailsPanel"
 			actionListener="#{createController.cancelDetailsAndNextStep}"
