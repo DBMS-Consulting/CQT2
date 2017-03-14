@@ -105,7 +105,7 @@ public class ReportController extends BaseController<CmqBase190> {
 		    if(genReportType == ReportType.GEN_LIST_DETAILS) {
 
 		    	// TODO: generate report data using filter
-		    	List<CmqBase190> reportData = cmqBaseService.getPublishedListsReportData(null,null);
+		    	List<CmqBase190> reportData = cmqBaseService.getPublishedListsReportData(reportStartDate, reportEndDate);
 		    	if(!reportData.isEmpty()) {
 		    		switch(genReportFormat) {
 		    		case XLS: 
@@ -137,11 +137,10 @@ public class ReportController extends BaseController<CmqBase190> {
 				            getOrCreateHSSFCell(row, 4).setCellValue(refCodeListService.interpretInternalCodeToValue(CqtConstants.CODE_LIST_TYPE_PROTOCOL, dr.getCmqProtocolCd()));
 				            getOrCreateHSSFCell(row, 5).setCellValue(refCodeListService.interpretInternalCodeToValue(CqtConstants.CODE_LIST_TYPE_PRODUCT, dr.getCmqProductCd()));
 				            getOrCreateHSSFCell(row, 6).setCellValue(dr.getCmqLevel());
-				            getOrCreateHSSFCell(row, 7).setCellValue("");
-				            getOrCreateHSSFCell(row, 8).setCellValue(dr.getDictionaryVersion());
-				            getOrCreateHSSFCell(row, 9).setCellValue(dr.getCmqStatus());
-				            getOrCreateHSSFCell(row, 10).setCellValue(dr.getCmqAlgorithm());
-				            getOrCreateHSSFCell(row, 11).setCellValue(dr.getCmqGroup());
+				            getOrCreateHSSFCell(row, 7).setCellValue(dr.getDictionaryVersion());
+				            getOrCreateHSSFCell(row, 8).setCellValue(dr.getCmqStatus());
+				            getOrCreateHSSFCell(row, 9).setCellValue(dr.getCmqAlgorithm());
+				            getOrCreateHSSFCell(row, 10).setCellValue(dr.getCmqGroup());
 				            rowIdx ++;
 				    	}
 				    	

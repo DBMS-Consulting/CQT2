@@ -506,10 +506,10 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190> impleme
 		StringBuilder queryStrB = new StringBuilder("from CmqBase190 c where c.cmqStatus=:cmqStatus and lower(c.cmqState)=lower(:cmqState)");
 
 		// TODO Auto-generated method stub
-//		if(filterPublishedBetweenFrom != null)
-//			queryStrB.append(" and > :pubBtwFrom");
-//		if(filterPublishedBetweenTo != null)
-//			queryStrB.append(" and < :pubBtwTo");
+		if(filterPublishedBetweenFrom != null)
+			queryStrB.append(" and activationDate > :pubBtwFrom");
+		if(filterPublishedBetweenTo != null)
+			queryStrB.append(" and activationDate < :pubBtwTo");
 		
 		List<CmqBase190> retVal = null;
 		
@@ -518,10 +518,10 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190> impleme
 			Query query = entityManager.createQuery(queryStrB.toString());
 			query.setParameter("cmqStatus", "A");
 			query.setParameter("cmqState", "Published");
-//			if(filterPublishedBetweenFrom != null)
-//				query.setParameter("pubBtwFrom", filterPublishedBetweenFrom, TemporalType.TIMESTAMP);
-//			if(filterPublishedBetweenTo != null)
-//				query.setParameter("pubBtwTo", filterPublishedBetweenFrom, TemporalType.TIMESTAMP);
+			if(filterPublishedBetweenFrom != null)
+				query.setParameter("pubBtwFrom", filterPublishedBetweenFrom, TemporalType.TIMESTAMP);
+			if(filterPublishedBetweenTo != null)
+				query.setParameter("pubBtwTo", filterPublishedBetweenFrom, TemporalType.TIMESTAMP);
 			retVal = query.getResultList();
 		} catch (Exception e) {
 			LOG.error("An error occurred while fetching data from CmqBase190. Query used was->" + queryStrB.toString(), e);
