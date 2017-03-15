@@ -693,7 +693,7 @@ public class CreateController implements Serializable {
 			}
 
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"An error occurred while trying to save the details.", e.getMessage());
+					"An error occurred while trying to save the details. Exception is [" + e.getMessage() + "]", "");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
 			return null;

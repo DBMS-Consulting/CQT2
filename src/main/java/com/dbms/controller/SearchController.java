@@ -491,7 +491,7 @@ public class SearchController extends BaseController<CmqBase190> {
 		log.debug("found values {}", datas == null ? 0 : datas.size());
 
 		// Relations retrieval
-		buildRelationsRoot();
+		//buildRelationsRoot();
 	}
 
 	/**
@@ -1576,7 +1576,8 @@ public class SearchController extends BaseController<CmqBase190> {
 
 	public void buildRelationsRoot() {
 		if ((null != clickedCmqCode) && clickedCmqCode.longValue() != 0) {
-			this.selctedData = this.cmqBaseService.findByCode(clickedCmqCode);
+			this.setClickedCmqCode(clickedCmqCode);
+			/*this.selctedData = this.cmqBaseService.findByCode(clickedCmqCode);
 			List<CmqRelation190> cmqRelationList = this.cmqRelationService
 					.findByCmqCode(clickedCmqCode);
 			relationsRoot = new DefaultTreeNode("root", new HierarchyNode(
@@ -1652,7 +1653,7 @@ public class SearchController extends BaseController<CmqBase190> {
 					node.setWeight(cmqRelation.getTermWeight() + "");
 					new DefaultTreeNode(node, this.relationsRoot);
 				}
-			}
+			}*/
 		}
 	}
 
