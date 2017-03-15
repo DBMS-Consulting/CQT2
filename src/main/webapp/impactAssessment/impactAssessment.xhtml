@@ -93,7 +93,7 @@
 							<p:panel style="width: 100%; font-size: 12px !important">
 								<p:toolbar>
 									<f:facet name="left">
-										<p:commandButton id="filter" value="Filter and Sort"
+										<!-- <p:commandButton id="filter" value="Filter and Sort"
 											type="button" icon="ui-icon-triangle-1-s" />
 										<p:overlayPanel id="filterPanel" for="filter"
 											showCloseIcon="true">
@@ -123,7 +123,7 @@
 											</h:panelGrid>
 										</p:overlayPanel>
 
-										<p:spacer width="5" />
+										<p:spacer width="5" /> -->
 
 										<p:submenu label="View" icon="fa fa-wrench">
 											<p:menuButton value="View">
@@ -135,7 +135,7 @@
 
 										<p:spacer width="5" />
 
-										<p:commandButton value="Select MQs" actionListener="#"
+										<p:commandButton value="Select Lists/SMQs" actionListener="#"
 											icon="fa fa-search" onclick="PF('select_mq').show();" />
 									</f:facet>
 								</p:toolbar>
@@ -181,7 +181,7 @@
 							<p:panel style="width: 100%; font-size: 12px !important">
 								<p:toolbar>
 									<f:facet name="left">
-										<p:commandButton id="filter-b" value="Filter and Sort"
+										<!-- <p:commandButton id="filter-b" value="Filter and Sort"
 											type="button" icon="ui-icon-triangle-1-s" />
 										<p:overlayPanel id="filterPanel-b" for="filter-b"
 											showCloseIcon="true">
@@ -211,7 +211,7 @@
 											</h:panelGrid>
 										</p:overlayPanel>
 
-										<p:spacer width="5" />
+										<p:spacer width="5" />  -->
 
 										<p:submenu label="View" icon="fa fa-wrench">
 											<p:menuButton value="View">
@@ -227,12 +227,12 @@
 										<p:commandButton value="New PTs" actionListener="#"
 											onclick="PF('new_pt').show();" icon="fa fa-book" />
 
-										<p:commandButton value="Deleted selected" actionListener="#"
+										<!-- <p:commandButton value="Deleted selected" actionListener="#"
 											icon="fa fa-trash-o">
 											<p:confirm header="Confirm Delete"
 												message="Are you sure you want to delete the selected items?"
 												icon="ui-icon-alert" />
-										</p:commandButton>
+										</p:commandButton>  -->
 										<!-- <p:commandButton value="Delete selected" actionListener="#"
 											icon="fa fa-trash-o" onclick="PF('delete').show();" /> -->
 										<p:commandButton value="Refresh" actionListener="#"
