@@ -289,7 +289,7 @@ public class AdminController implements Serializable {
 	
 	public void generateConfigReport() {
 		StreamedContent content = refCodeListService.generateReport(this.codelist);
-		setExcelFile(content);
+		setExcelFile(content); 
 	}
 
 	public String getCodelistType() {

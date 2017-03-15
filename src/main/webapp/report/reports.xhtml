@@ -10,128 +10,149 @@
 		value="#{adfBundle['viewcontroller.report.reportsBundle']}" />
 	<ui:define name="page-content">
 		<p:messages id="m1" />
-		
-		<p:panel id="pbl1">
-			<f:facet name="bottom">
-				<p:commandButton text="Cancel" id="cb1" action="CANCEL" />
-			</f:facet>
 
-			<p:tabView id="pb1"
-				inlineStyle="width:1195px; padding:5px; height:448px;">
-				<p:tab id="sdi1" title="Lists">
-					<h:form id="frm-reports-lists-internal">
-						<p:panel header="Internal" id="ph1" style=" padding:5px;">
-							<h:panelGrid columns="2">
-								<p:outputLabel value="Report" styleClass="label-right" />
-								<p:selectOneMenu value="#{reportController.genReportType}"
-									required="true" requiredMessage="Please choose Report type to generate.">
-									<f:selectItem itemValue="#{null}" itemLabel="--Select a report--" />
-									<f:selectItems value="#{reportController.reportTypes}" var="reportType"
-										itemValue="#{reportType}" itemLabel="#{reportType.label}" />
-									<p:ajax />
-								</p:selectOneMenu>
+		<f:facet name="bottom">
+			<p:commandButton text="Cancel" id="cb1" action="CANCEL" />
+		</f:facet>
 
-								<p:outputLabel value="Start Date" styleClass="label-right" />
-								<p:calendar label="Start Date" navigator="true" mode="popup" pattern="dd/MM/yyyy"
-									value="#{reportController.reportStartDate}" />
+		<h:form>
+			<h:panelGrid columns="2" style="width: 100% !important">
+				<h:panelGrid>
+					<p:breadCrumb styleClass="breadcrumb">
+						<p:menuitem value="Home" url="/index.xhtml" />
+						<p:menuitem value="Report" />
+					</p:breadCrumb>
+				</h:panelGrid>
+			</h:panelGrid>
+		</h:form>
 
-								<p:outputLabel value="End Date" styleClass="label-right" />
-								<p:calendar label="End Date" navigator="true" mode="popup" pattern="dd/MM/yyyy"
-									value="#{reportController.reportEndDate}" />
+		<p:tabView id="pb1"
+			inlineStyle="width:1195px; padding:5px; height:448px;">
+			<p:tab id="sdi1" title="Lists">
+				<h:form id="frm-reports-lists-internal">
+					<p:panel header="Internal" id="ph1" style=" padding:5px;">
+						<h:panelGrid columns="2">
+							<p:outputLabel value="Report" styleClass="label-right" />
+							<p:selectOneMenu value="#{reportController.genReportType}"
+								required="true"
+								requiredMessage="Please choose Report type to generate.">
+								<f:selectItem itemValue="#{null}"
+									itemLabel="--Select a report--" />
+								<f:selectItems value="#{reportController.reportTypes}"
+									var="reportType" itemValue="#{reportType}"
+									itemLabel="#{reportType.label}" />
+								<p:ajax />
+							</p:selectOneMenu>
 
-								<p:outputLabel value="Format" styleClass="label-right" />
-								<p:selectOneMenu label="Format" value="#{reportController.genReportFormat}"
-									required="true" requiredMessage="Please choose a file format of the report.">
-									<f:selectItems value="#{reportController.reportFormats}" var="reportType"
-										itemValue="#{reportFormat}" itemLabel="#{reportFormat.label}" />
-									<p:ajax />
-								</p:selectOneMenu>
+							<p:outputLabel value="Start Date" styleClass="label-right" />
+							<p:calendar label="Start Date" navigator="true" mode="popup"
+								pattern="dd/MM/yyyy" value="#{reportController.reportStartDate}" />
 
-							</h:panelGrid>
-							<h:panelGrid columns="1">
-								<p:commandButton value="Generate" ajax="false" update="m1" action="#{reportController.generateReport}" />
-							</h:panelGrid>
-						</p:panel>
-					</h:form>
-					<p:spacer height="10"></p:spacer>
-					<h:form id="frm-report-lists-medra">
-						<p:panel header="MedDRA Versioning Reports" id="ph2"
-							style=" padding:5px;">
-							<h:panelGrid columns="1">
-								<!-- binding="#{pageFlowScope.reportDownloadBean.cntrlReportList}" -->
-								<p:selectOneMenu label="Report" id="soc2" value="#{dummyView.value}"
-									valueChangeListener="#{reportDownloadBean.reportNameChanged}">
-									<f:selectItem itemLabel="--Select a report--"
-										itemValue="#{dummyView.value}" id="si2" />
+							<p:outputLabel value="End Date" styleClass="label-right" />
+							<p:calendar label="End Date" navigator="true" mode="popup"
+								pattern="dd/MM/yyyy" value="#{reportController.reportEndDate}" />
 
-									<!-- <f:selectItems value="#{reportDownloadBean.reportList}"></f:selectItems> -->
-								</p:selectOneMenu>
+							<p:outputLabel value="Format" styleClass="label-right" />
+							<p:selectOneMenu label="Format"
+								value="#{reportController.genReportFormat}" required="true"
+								requiredMessage="Please choose a file format of the report.">
+								<f:selectItems value="#{reportController.reportFormats}"
+									var="reportType" itemValue="#{reportFormat}"
+									itemLabel="#{reportFormat.label}" />
+								<p:ajax />
+							</p:selectOneMenu>
 
-								<p:commandButton value="Generate" id="cb2"
-									actionListener="#{reportDownloadBean.reportDownloadAction}">
-									<p:fileDownload value="#{reportDownloadBean.fileName}" />
-									 
-								</p:commandButton>
-							</h:panelGrid>
-						</p:panel>
-					</h:form>
-					
-					<f:facet name="toolbar">
-						<p:toolbar id="t1" />
-					</f:facet>
-			</p:tab>
-				<p:tab title="Administration Report" id="sdi2">
-					<h:form id="frm-report-admin">
-						<h:panelGrid columns="1">
-							<h:panelGrid columns="2">
-								<p:commandButton value="Export 1"
-									actionListener="#{reportBean.exportProducts}" id="b1"
-									icon="fa fa-file-excel-o" styleClass="AFStretchWidth">
-									<p:fileDownload value="Products.xls" />
-
-									<!-- <af:fileDownloadActionListener
-									contentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-									filename="Products.xls" method="#{reportBean.exportProducts}" /> -->
-								</p:commandButton>
-								<p:commandButton value="Export 2" id="b11"
-									icon="fa fa-file-excel-o" styleClass="AFStretchWidth">
-									<p:fileDownload value="Products.xls" />
-									<!-- <af:fileDownloadActionListener
-									contentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-									filename="Groups.xls" method="#{reportBean.exportGroups}" /> -->
-								</p:commandButton>
-							</h:panelGrid>
-								
-							<h:panelGrid columns="2">
-								<p:outputLabel value="Codelist Type" />
-								<p:selectOneMenu label="Codelist Type" autoSubmit="true"
-									value="#{adminController.codelist}">
-									<f:selectItem itemLabel="PROGRAM" itemValue="PROGRAM" />
-									<f:selectItem itemLabel="PROTOCOL" itemValue="PROTOCOL" />
-									<f:selectItem itemLabel="PRODUCT" itemValue="PRODUCT" />
-	
-								</p:selectOneMenu>
-	
-								<h:commandLink id="generate" value="[Export]" type="button"
-									onclick="PF('statusDialog').show()"
-									onfocus="PF('statusDialog').hide()"
-									actionListener="#{adminController.generateConfigReport}">
-	
-									<p:fileDownload value="#{adminController.excelFile}" />
-								</h:commandLink>
-							</h:panelGrid>
-							
 						</h:panelGrid>
-					</h:form>
-				</p:tab>
-			</p:tabView>
-		</p:panel>
+						<h:panelGrid columns="1">
+							<p:commandButton value="Generate" ajax="false" update="m1"
+								action="#{reportController.generateReport}" />
+						</h:panelGrid>
+					</p:panel>
+				</h:form>
+				<p:spacer height="10"></p:spacer>
+				<h:form id="frm-report-lists-medra">
+					<p:panel header="MedDRA Versioning Reports" id="ph2"
+						style=" padding:5px;">
+						<h:panelGrid columns="1">
+							<!-- binding="#{pageFlowScope.reportDownloadBean.cntrlReportList}" -->
+							<p:selectOneMenu label="Report" id="soc2"
+								value="#{dummyView.value}"
+								valueChangeListener="#{reportDownloadBean.reportNameChanged}">
+								<f:selectItem itemLabel="--Select a report--"
+									itemValue="#{dummyView.value}" id="si2" />
+
+								<!-- <f:selectItems value="#{reportDownloadBean.reportList}"></f:selectItems> -->
+							</p:selectOneMenu>
+
+							<p:commandButton value="Generate" id="cb2"
+								actionListener="#{reportDownloadBean.reportDownloadAction}">
+								<p:fileDownload value="#{reportDownloadBean.fileName}" />
+
+							</p:commandButton>
+						</h:panelGrid>
+					</p:panel>
+				</h:form>
+
+				<f:facet name="toolbar">
+					<p:toolbar id="t1" />
+				</f:facet>
+			</p:tab>
+			<p:tab title="Administration Report" id="sdi2">
+				<h:form id="frm-report-admin">
+
+					<h:panelGrid columns="2">
+						<p:outputLabel value="Codelist Type" />
+						<p:selectOneMenu label="Codelist Type" autoSubmit="true"
+							value="#{adminController.codelist}">
+							<f:selectItem itemLabel="PROGRAM" itemValue="PROGRAM" />
+							<f:selectItem itemLabel="PROTOCOL" itemValue="PROTOCOL" />
+							<f:selectItem itemLabel="PRODUCT" itemValue="PRODUCT" />
+
+						</p:selectOneMenu>
+
+
+					</h:panelGrid>
+<br />
+					<i class="fa fa-file-excel-o"
+						style="position: absolute; margin-top: 2px; margin-left: 5px"></i>
+					<h:commandLink id="generate" value="Export" type="button"
+						styleClass="generate"
+						actionListener="#{adminController.generateConfigReport}">
+
+						<p:fileDownload value="#{adminController.excelFile}" />
+					</h:commandLink>
+
+				</h:form>
+			</p:tab>
+		</p:tabView>
 		<style>
-			.label-right {
-				float: right;
-				margin-right: 20px;
-				font-size: 14px !important;
-			}
-		</style>
+.label-right {
+	float: right;
+	margin-right: 20px;
+	font-size: 14px !important;
+}
+
+.generate {
+	border: 1px solid #8c8c8c !important;
+	border-radius: 4px;
+	padding: 8px;
+	padding-left: 20px;
+	color: #000;
+	font-weight: bold;
+	ackground-color: #cccccc;
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #ececec),
+		color-stop(100%, #cccccc));
+	background: -webkit-linear-gradient(#ececec, #cccccc);
+	background: -moz-linear-gradient(#ececec, #cccccc);
+	background: -ms-linear-gradient(#ececec, #cccccc);
+	background: -o-linear-gradient(#ececec, #cccccc);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ececec',
+		endColorstr='#cccccc');
+	-ms-filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ececec',
+		endColorstr='#cccccc');
+	background: linear-gradient(#ececec, #cccccc);
+	text-decoration: none;
+}
+</style>
 	</ui:define>
 </ui:composition>
