@@ -64,17 +64,17 @@
 				<h:panelGroup>
 					<h:outputText
 						rendered="#{createController.selectedData.cmqStatus eq 'P'}"
-						value="Pending" />
+						value="PENDING" />
 					<h:outputText
 						rendered="#{createController.selectedData.cmqStatus eq 'I'}"
-						value="Inactive" />
+						value="INACTIVE" />
 					<h:outputText
 						rendered="#{createController.selectedData.cmqStatus eq 'A'}"
-						value="Active" />
+						value="ACTIVE" />
 				</h:panelGroup>
 
 				<p:outputLabel styleClass="label-right" value="State:" />
-				<h:outputText value="#{createController.selectedData.cmqState}" />
+				<h:outputText styleClass="uppercase" value="#{createController.selectedData.cmqState}" />
 
 				<p:outputLabel styleClass="label-right" value="Group:" />
 				<h:outputText value="#{createController.selectedData.cmqGroup}" />
@@ -258,6 +258,10 @@
   			-webkit-hyphens: auto;
   			hyphens: auto;
    		}
+   		
+   		.uppercase {
+			text-transform: uppercase !important;
+		}
 	</style>
 
 </ui:composition>

@@ -133,12 +133,12 @@
 				<h:outputText value="#{value.cmqLevel}" />
 			</p:column>
 			<p:column headerText="Status" width="80">
-				<h:outputText rendered="#{value.cmqStatus eq 'P'}" value="Pending" />
-				<h:outputText rendered="#{value.cmqStatus eq 'I'}" value="Inactive" />
-				<h:outputText rendered="#{value.cmqStatus eq 'A'}" value="Active" />
+				<h:outputText rendered="#{value.cmqStatus eq 'P'}" value="PENDING" />
+				<h:outputText rendered="#{value.cmqStatus eq 'I'}" value="INACTIVE" />
+				<h:outputText rendered="#{value.cmqStatus eq 'A'}" value="ACTIVE" />
 			</p:column>
 			<p:column headerText="State" width="80">
-				<h:outputText value="#{value.cmqState}" />
+				<h:outputText style="text-transform: uppercase;" value="#{value.cmqState}" />
 			</p:column>
 			<p:column headerText="Code" width="100">
 				<h:commandLink partialSubmit="true"
