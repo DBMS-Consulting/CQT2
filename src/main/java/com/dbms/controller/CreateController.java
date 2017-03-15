@@ -611,24 +611,59 @@ public class CreateController implements Serializable {
 	public String copy() {
 		if(selectedData.getId() != null) { // if already saved
 			return update();
-		}
+		} 
+		
+		boolean cmqSaved = false;
+		boolean savedRelations = false;
+		Long savedCmqId = null;
+		Long savedCmqCode = null;
 		try {
 			prepareDetailsFormSave();
 			
 			cmqBaseService.create(selectedData);
-
+			
 			// retrieve the saved cmq base
 			CmqBase190 savedEntity = cmqBaseService.findByCode(selectedData.getCmqCode());
+			cmqSaved = true;
+			savedCmqId = selectedData.getId();
+			savedCmqCode = selectedData.getCmqCode();
+			
+			LOG.info("Successfully saved new cmq with cmq id " + savedCmqId + " and cmq_code " + savedCmqCode);
+			
+			long copiedCode = copyingCmqCode;
+
+			this.copyRelationsToNewCmq(copiedCode, savedEntity);
+			savedRelations = true;
+			
+			this.copyChildCmqsToNewCmq(copiedCode, savedEntity);
+			
+			LOG.info("All updates completed.");		
+			
 			selectedData = savedEntity;
 			this.detailsFormModel.loadFromCmqBase190(selectedData);
+			this.detailsFormModel.setModelChanged(false);//model is saved now
 			codeSelected = selectedData.getCmqCode();
 			// save the cmq code to session
 			FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("NEW-CMQ_BASE-ID",
 					savedEntity.getId());
 
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-					"List '" + selectedData.getCmqName() + "' is successfully saved.", "");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
+			LOG.info("populating relations table for new cmq with code " + savedCmqCode);
+			
+			FacesContext context = FacesContext.getCurrentInstance();
+			SearchController searchController = context.getApplication()
+															.evaluateExpressionGet(context, "#{searchController}", SearchController.class);
+			if(null != searchController) {
+				searchController.setClickedCmqCode(savedCmqCode);
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+						"List '" + selectedData.getCmqName() + "', its relations and children are successfully saved.", "");
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+			} else {
+				LOG.error("Failed to get reference of SearchController to populate the realtions table.");
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+						"List '" + selectedData.getCmqName() + "', its relations and children are successfully saved "
+								+ "but Failed to get reference of SearchController to populate the realtions table.", "");
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+			}
 		} catch (CqtServiceException e) {
 			// roll back the selectedData
 			selectedData = cmqBaseService.findByCode(copyingCmqCode);
@@ -637,9 +672,28 @@ public class CreateController implements Serializable {
 			setCopiedCmq(selectedData);
 			//
 			LOG.error("Exception occurred while creating CmqBase190.", e);
+			//delete the saves if any
+			if(savedRelations) {
+				List<CmqRelation190> cmqRelationList = this.cmqRelationService.findByCmqCode(savedCmqCode);
+				for (CmqRelation190 cmqRelation190 : cmqRelationList) {
+					try {
+						this.cmqRelationService.remove(cmqRelation190);
+					} catch (CqtServiceException e1) {
+						LOG.error("Exception occurred while deleting relation with relation id " + cmqRelation190.getId(), e);
+					}
+				}
+			}
+			
+			if(cmqSaved) {
+				try {
+					this.cmqBaseService.remove(savedCmqId);
+				} catch (CqtServiceException e1) {
+					LOG.error("Exception occurred while deleting cmq with id " + savedCmqId, e);
+				}
+			}
 
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"An error occurred while trying to save the details.", "");
+					"An error occurred while trying to save the details.", e.getMessage());
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
 			return null;
@@ -774,6 +828,20 @@ public class CreateController implements Serializable {
 			copyingCmqCode = codeSelected;
 			codeSelected = null;
 			setCopiedCmq(selectedData);
+			
+			String name = selectedData.getCmqName();
+			if(name.contains("-Copy-")) {
+				String num = name.substring(name.lastIndexOf("-") + 1);
+				int i = Integer.valueOf(num);
+				name = name.substring(0, name.lastIndexOf("-"));
+				name += "-" + (++i);
+			} else if(name.endsWith("-Copy")) {
+				name += "-1";
+			} else {
+				name += "-Copy";
+			}
+			
+			selectedData.setCmqName(name);
 			// set the details form model changed status to true
 			copyWizard.setStep("details");
 			
@@ -788,6 +856,56 @@ public class CreateController implements Serializable {
 		workflowFormModel.loadFromCmqBase190(selectedData);
 
 		return "";
+	}
+	
+	private void copyRelationsToNewCmq(Long copiedCode, CmqBase190 savedEntity) throws CqtServiceException {
+		LOG.info("Saving relations for the new cmq.");
+		//copy relations now
+		List<CmqRelation190> cmqRelationList = this.cmqRelationService.findByCmqCode(copiedCode);
+		Date creationDate = new Date();
+		for (CmqRelation190 cmqRelation190 : cmqRelationList) {
+			cmqRelation190.setCmqRelationId(null);
+			cmqRelation190.setCmqCode(savedEntity.getCmqCode());
+			cmqRelation190.setCmqId(savedEntity.getCmqId());
+			cmqRelation190.setLastModifiedDate(null);
+			cmqRelation190.setLastModifiedBy(null);
+			cmqRelation190.setCreationDate(creationDate);
+			cmqRelation190.setCreatedBy("Test-User");
+		}
+		//save relations
+		this.cmqRelationService.update(cmqRelationList);
+		LOG.info("Cmq relations saved.");
+	}
+	
+	private void copyChildCmqsToNewCmq(Long copiedCode, CmqBase190 savedEntity) throws CqtServiceException{
+		LOG.info("Saving child cmqs for the new cmq.");
+		//save the children now
+		List<CmqBase190> childCmqs = this.cmqBaseService.findChildCmqsByParentCode(copiedCode);
+		Date creationDate = new Date();
+		for (CmqBase190 childCmq : childCmqs) {
+			childCmq.setId(null);
+			String name = childCmq.getCmqName();
+			if(name.contains("-Copy-")) {
+				String num = name.substring(name.lastIndexOf("-") + 1);
+				int i = Integer.valueOf(num);
+				name = name.substring(0, name.lastIndexOf("-"));
+				name += "-" + (++i);
+			} else if(name.endsWith("-Copy")) {
+				name += "-1";
+			} else {
+				name += "-Copy";
+			}
+			childCmq.setCmqName(name);
+			childCmq.setCmqParentCode(savedEntity.getCmqCode());
+			childCmq.setCmqName(savedEntity.getCmqName());
+			childCmq.setCreatedBy("Test-User");
+			childCmq.setCreationDate(creationDate);
+			childCmq.setLastModifiedBy(null);
+			childCmq.setLastModifiedDate(null);
+		}
+		//save children
+		this.cmqBaseService.update(childCmqs);
+		LOG.info("Cmq children saved.");
 	}
 	
 	/**
@@ -1282,6 +1400,8 @@ public class CreateController implements Serializable {
 		cmq.setCmqGroup("No Group");
 		cmq.setCreationDate(null);
 		cmq.setCreatedBy(null);
+		cmq.setLastModifiedBy(null);
+		cmq.setLastModifiedDate(null);
 	}
 
 }
