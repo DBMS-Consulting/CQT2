@@ -42,14 +42,15 @@
 					</p:overlayPanel>
 					<p:spacer width="10" /> -->
 					
-					<p:submenu label="View" icon="fa fa-wrench">
+					<!-- <p:submenu label="View" icon="fa fa-wrench">
 						<p:menuButton value="View">
 							<p:menuitem value="View 1" actionListener="#" ajax="false"
 								icon="ui-icon-close" />
 							<p:menuitem value="View 2" url="#" icon="ui-icon-extlink" />
 						</p:menuButton>
 					</p:submenu>
-					<p:spacer width="10" />
+					<p:spacer width="10" /> -->
+					
 					<p:commandButton value="Select Lists/SMQs" icon="fa fa-search"
 						onclick="PF('select_mq').show();" id="ctb111">
 					</p:commandButton>
@@ -60,7 +61,7 @@
 			<p:dataTable value="#{null}">
 				<p:columnGroup type="header">
 					<p:row>
-						<p:column rowspan="2" headerText="Previous CMQ / SMQ" />
+						<p:column rowspan="2" headerText="Previous Lists/SMQs" />
 						<p:column colspan="3" headerText="Hierarchy Details" />
 					</p:row>
 
@@ -147,7 +148,7 @@
 			<p:dataTable value="#{null}" style="">
 				<p:columnGroup type="header">
 					<p:row>
-						<p:column rowspan="2" headerText="Current CMQ / SMQ" />
+						<p:column rowspan="2" headerText="Current Lists/SMQs" />
 						<p:column colspan="5" headerText="Hierarchy Details" />
 					</p:row>
 

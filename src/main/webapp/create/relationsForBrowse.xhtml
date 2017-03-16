@@ -13,7 +13,7 @@
 
 			<f:facet name="left">
 
-				<p:commandButton id="filter" value="Filter and Sort" type="button"
+				 <!-- <p:commandButton id="filter" value="Filter and Sort" type="button"
 					icon="ui-icon-triangle-1-s" />
 				<p:overlayPanel id="filterPanel" for="filter">
 					<h:panelGrid columns="2">
@@ -34,7 +34,7 @@
 							rendered="true" />
 					</h:panelGrid>
 				</p:overlayPanel>
-				<p:spacer width="10" />
+				<p:spacer width="10" /> -->
 				 	
 				<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
 					<p:commandButton value="Yes" type="button"
@@ -54,7 +54,13 @@
 					<!-- <p:fileDownload value="#{null}"></p:fileDownload> -->
 				</p:commandButton>
 				<p:spacer width="10" />
-				 
+				 				
+				<p:commandButton value="Parent List" id="ctb15"
+                    styleClass="#{createController.parentViewable ? '' : 'btn-disabled'}" update="@form:parent-list-modal"
+                    actionListener="#{parentListController.setChildCmqEntity(createController.selectedData)}"
+					disabled="#{createController.parentViewable ? false : true}"
+                    oncomplete="PF('parentDlg').show()" icon="fa fa-level-up">
+				</p:commandButton>
 			</f:facet>
 		</p:toolbar>
 
@@ -123,15 +129,15 @@
 			 
 		</p:treeTable>
 	</h:panelGrid>
+	
+	<p:dialog widgetVar="parentDlg" modal="false" header="Parent List">
+        <ui:include src="parent.xhtml"></ui:include>
 
-	<p:dialog widgetVar="search" modal="false" header="Hierarchy search">
-		<ui:include src="hierarchySearch.xhtml"></ui:include>
-
-		<p:spacer height="10"></p:spacer>
-		<h:panelGrid style="float: right">
-			<p:commandButton value="Cancel" onclick="PF('search').hide()" />
-		</h:panelGrid>
-	</p:dialog>
+        <p:spacer height="10"></p:spacer>
+        <h:panelGrid style="float: right" columns="2">
+            <p:commandButton value="Close" onclick="PF('parentDlg').hide()" immediate="true" />
+        </h:panelGrid>
+    </p:dialog>
 
 
 </ui:composition>

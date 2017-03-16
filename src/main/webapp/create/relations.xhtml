@@ -54,7 +54,7 @@
 	<h:panelGrid>
 		<p:toolbar>
 			<f:facet name="left">
-				<p:commandButton id="filter" value="Filter and Sort" type="button" icon="ui-icon-triangle-1-s" />
+				<!--  <p:commandButton id="filter" value="Filter and Sort" type="button" icon="ui-icon-triangle-1-s" />
 				<p:overlayPanel id="filterPanel" for="filter">
 					<h:panelGrid columns="2">
 						<p:outputLabel value="Sort" />
@@ -76,8 +76,8 @@
 
 					</h:panelGrid>
 				</p:overlayPanel>
-
-				<p:spacer width="10" />
+				<p:spacer width="10" /> -->
+				
 				<p:commandButton value="Delete selected" icon="fa fa-trash-o"
 					styleClass="#{(createController.selectedData.cmqState ne 'Draft' and createController.selectedData.cmqState ne 'Reviewed') ? 'btn-disabled' : ''}" id="ctb2"
 					disabled="#{(createController.selectedData.cmqState ne 'Draft' and createController.selectedData.cmqState ne 'Reviewed') ? true : false}"
