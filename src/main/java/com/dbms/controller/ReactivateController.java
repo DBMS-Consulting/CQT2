@@ -148,6 +148,7 @@ public class ReactivateController implements Serializable {
 					cmqBase190.setCmqStatus("P"); 
 					cmqBase190.setActivatedBy("NONE");
 					cmqBase190.setActivationDate(new Date());
+					cmqBase190.setLastModifiedDate(new Date()); 
 				}
 				try {
 					this.cmqBaseService.update(targetCmqParents);
@@ -162,6 +163,7 @@ public class ReactivateController implements Serializable {
 				cmqBase190.setCmqStatus("P"); 
 				cmqBase190.setActivatedBy("NONE");
 				cmqBase190.setActivationDate(new Date());
+				cmqBase190.setLastModifiedDate(new Date()); 
 			}
 
 			try {

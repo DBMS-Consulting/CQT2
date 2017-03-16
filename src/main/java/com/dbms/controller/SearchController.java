@@ -194,7 +194,7 @@ public class SearchController extends BaseController<CmqBase190> {
 
 	private void resetSearch() {
 		this.extension = "";
-		this.state = "Published";
+		this.state = "PUBLISHED";
 		this.status = "Active";
 		this.level = 1;
 		// this.critical = "No";

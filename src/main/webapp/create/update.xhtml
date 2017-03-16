@@ -69,7 +69,7 @@
 						<ui:include src="details.xhtml" />
 						
 						<h:panelGrid columns="2">
-							<p:commandButton value="Save" icon="ui-icon-disk"
+							<p:commandButton value="Save" icon="ui-icon-disk" disabled="#{createController.readOnlyState}"
 								update="@form:m1 @form:codeValue @form:detailsPanel" actionListener="#{createController.update}"
 								oncomplete="notifySearchControllerDataChange()" />
 							

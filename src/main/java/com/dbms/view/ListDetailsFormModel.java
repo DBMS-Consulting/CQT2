@@ -41,15 +41,15 @@ public class ListDetailsFormModel {
 	public void init() {
 		this.extension = "TME";
 		this.name = "";
-		this.drugProgram = "420001";
-		this.protocol = "999999";
+		this.drugProgram = "";
+		this.protocol = "";
 		this.product = "99999";
 		this.level = 1;
 		this.algorithm = "N";
 		this.critical = "No";
 		this.group = "No Group";
-		this.state = "Draft";
-		this.status = "Pending";
+		this.state = "DRAFT";
+		this.status = "PENDING";
 		this.designee = "NONE";
 		this.modelChanged = false;
 	}

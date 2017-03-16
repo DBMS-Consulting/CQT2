@@ -774,8 +774,8 @@ public class CreateController implements Serializable {
 			return false;
 		} else if (updateWizard != null) {
 			if (selectedData != null && selectedData.getCmqState() != null 
-					&& ("Draft".equalsIgnoreCase(selectedData.getCmqState())
-							|| "Reviewed".equalsIgnoreCase(selectedData.getCmqState()))){
+					&& ("DRAFT".equalsIgnoreCase(selectedData.getCmqState())
+							|| "REVIEWED".equalsIgnoreCase(selectedData.getCmqState()))){
 				return false;
 			} else if (selectedData != null && selectedData.getCmqState() == null) {
 				return false;
