@@ -22,7 +22,7 @@ public abstract class BaseController<T extends IEntity> implements Serializable 
 	protected List<T> datas;
 	protected T selectedData;
 	
-	abstract void search();
+	abstract String search();
 
 	public List<T> getDatas() {
 		return datas;

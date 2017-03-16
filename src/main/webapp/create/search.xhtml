@@ -5,7 +5,6 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:p="http://primefaces.org/ui">
-
 	<h:panelGrid columns="2" cellpadding="10" id="searchPanel">
 		<h:panelGrid columns="2" columnClasses="label, value">
 			<p:outputLabel value="Extension" styleClass="label-right" />
@@ -76,7 +75,6 @@
  			<p:outputLabel value="State" styleClass="label-right" />
 			<p:selectOneMenu value="#{searchController.state}" id="state">
 				<f:selectItem itemValue="" itemLabel="All" />
-				<f:selectItems></f:selectItems>	
 				<f:selectItems value="#{configMB.workflowStateList}" var="wk"
 					itemLabel="#{wk.value}" itemValue="#{wk.codelistInternalValue}" />
 			</p:selectOneMenu>
@@ -85,7 +83,6 @@
 			<p:selectOneMenu value="#{searchController.group}" id="group" disabled="false">
 				<f:selectItem itemLabel="All" itemValue=""></f:selectItem>
 				<f:selectItem itemLabel="No Group" itemValue="No Group"></f:selectItem>
-				<f:selectItems></f:selectItems>
 			</p:selectOneMenu>
 		</h:panelGrid>
 	</h:panelGrid>
@@ -97,12 +94,6 @@
 		<p:inputText id="termSearch" value="#{searchController.termName}" />
 		<p:outputLabel value="Code" />
 		<p:inputText id="codeSearch" value="#{searchController.code}" />
-
-		<!-- <p:outputLabel value="Designee" /> -->
-		<!-- <p:selectOneMenu value="#{createController.selectedData.cmqDesignee}">
-			<f:selectItem itemLabel="" itemValue=""></f:selectItem>
-			<f:selectItem itemLabel="NONE" itemValue="NONE"></f:selectItem>
-		</p:selectOneMenu> -->
 		<p:selectCheckboxMenu value="#{createController.selectedDesignees}"
 			label="Designees">
 			<f:selectItem itemLabel="" itemValue=""></f:selectItem>
@@ -110,9 +101,9 @@
 		</p:selectCheckboxMenu>
 
 		<p:commandButton value="Search" action="#{searchController.search}"
-			update="@form:result" />
+			process="@form:searchPanel termSearch codeSearch @this" update="@form:result" />
 		<p:commandButton action="#{searchController.reset}" value="Reset"
-			update="@form:result @form:searchPanel termSearch codeSearch" />
+			update="@form:result @form:searchPanel termSearch codeSearch" process="@this" />
 	</h:panelGrid>
 
 	<p:spacer />
@@ -255,7 +246,6 @@
 	<p:dialog widgetVar="confirm" header="Confirm">
 		<h:commandButton value="Delete all selected terms?" />
 	</p:dialog>
-
 	<style>
 .label-right {
 	float: right;

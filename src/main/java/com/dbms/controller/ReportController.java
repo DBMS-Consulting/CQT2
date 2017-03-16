@@ -74,9 +74,9 @@ public class ReportController extends BaseController<CmqBase190> {
 	}
 	
 	@Override
-	void search() {
+	public String search() {
 		// TODO Auto-generated method stub
-		
+		return null;
 	}
 	
 	public HSSFRow getOrCreateHSSFRow(HSSFSheet sheet, int rowIdx) {

@@ -124,15 +124,7 @@ public class SearchController extends BaseController<CmqBase190> {
 	@PostConstruct
 	public void init() {
 		this.maintainDesigBtn = false;
-		this.state = ""; // default is "All"
-		this.status = ""; // default is "All"
-		this.level = 1;
-		this.critical = null;
-		this.group = ""; // default is "All"
-		this.extension = ""; // default is "All"
-		drugProgram = ""; // default is "All"
-		product = ""; // default is "All"
-		protocol = ""; // default is "All"
+		resetSearch();
 
 		hierarchyRoot = new DefaultTreeNode("root", new HierarchyNode("LEVEL",
 				"NAME", "CODE", null), null);
@@ -167,11 +159,12 @@ public class SearchController extends BaseController<CmqBase190> {
 		}
 	}
 
-	public void reset() {
+	public String reset() {
 		this.datas = new ArrayList<CmqBase190>();
 
 		resetSearch();
 		changeLevel();
+		return "";
 	}
 
 	public TreeNode getHierarchyRoot() {
@@ -460,7 +453,7 @@ public class SearchController extends BaseController<CmqBase190> {
 		this.cmqRelationService = cmqRelationService;
 	}
 
-	public void search() {
+	public String search() {
 		log.debug("search by{}", extension);
 
 		dataModified = false;
@@ -492,6 +485,7 @@ public class SearchController extends BaseController<CmqBase190> {
 
 		// Relations retrieval
 		//buildRelationsRoot();
+		return "";
 	}
 
 	/**
@@ -1864,7 +1858,9 @@ public class SearchController extends BaseController<CmqBase190> {
 	 * Reset relations
 	 */
 	public String resetRelations() {
-		buildRelationsRoot();
+		if(isDataModified()) {
+			buildRelationsRoot();
+		}
 		FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Form canceled", "");
 		FacesContext.getCurrentInstance().addMessage(null, msg);
 		return "";

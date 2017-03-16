@@ -105,9 +105,9 @@ public class ParentListController extends BaseController<CmqBase190> {
 	}
 	
 	@Override
-	void search() {
+	String search() {
 		// TODO Auto-generated method stub
-		
+		return null;
 	}
 
 	/**
