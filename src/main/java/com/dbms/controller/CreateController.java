@@ -884,20 +884,25 @@ public class CreateController implements Serializable {
 		Date creationDate = new Date();
 		for (CmqBase190 childCmq : childCmqs) {
 			childCmq.setId(null);
-			String name = childCmq.getCmqName();
-			if(name.contains("-Copy-")) {
-				String num = name.substring(name.lastIndexOf("-") + 1);
+			//get and set new code value
+			Long codeValue = this.cmqBaseService.getNextCodeValue();
+			childCmq.setCmqCode(codeValue);
+			
+			//set new child name
+			String newChildCmqName = childCmq.getCmqName();
+			if(newChildCmqName.contains("-Copy-")) {
+				String num = newChildCmqName.substring(newChildCmqName.lastIndexOf("-") + 1);
 				int i = Integer.valueOf(num);
-				name = name.substring(0, name.lastIndexOf("-"));
-				name += "-" + (++i);
-			} else if(name.endsWith("-Copy")) {
-				name += "-1";
+				newChildCmqName = newChildCmqName.substring(0, newChildCmqName.lastIndexOf("-"));
+				newChildCmqName += "-" + (++i);
+			} else if(newChildCmqName.endsWith("-Copy")) {
+				newChildCmqName += "-1";
 			} else {
-				name += "-Copy";
+				newChildCmqName += "-Copy";
 			}
-			childCmq.setCmqName(name);
+			childCmq.setCmqName(newChildCmqName);
 			childCmq.setCmqParentCode(savedEntity.getCmqCode());
-			childCmq.setCmqName(savedEntity.getCmqName());
+			childCmq.setCmqParentName(savedEntity.getCmqName());
 			childCmq.setCreatedBy("Test-User");
 			childCmq.setCreationDate(creationDate);
 			childCmq.setLastModifiedBy(null);
