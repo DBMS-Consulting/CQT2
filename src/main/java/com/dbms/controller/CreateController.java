@@ -315,7 +315,7 @@ public class CreateController implements Serializable {
 							}
 						} else if (entity instanceof SmqBase190) {
 							SmqBase190 smqBase = (SmqBase190) entity;
-							matchingMap = this.checkIfSmqBaseOrSmqRelationExists(existingRelation, smqBase.getSmqCode(), hierarchyNode);
+							matchingMap = this.checkIfSmqBaseOrSmqRelationExists(existingRelation, smqBase.getSmqCode(), null, hierarchyNode);
 							matchFound = (boolean) matchingMap.get("MATCH_FOUND");
 							updateNeeded = (boolean) matchingMap.get("UPDATE_NEEDED");
 							if(updateNeeded) {
@@ -328,7 +328,8 @@ public class CreateController implements Serializable {
 							}
 						} else if (entity instanceof SmqRelation190) {
 							SmqRelation190 smqRelation = (SmqRelation190) entity;
-							matchingMap = this.checkIfSmqBaseOrSmqRelationExists(existingRelation, smqRelation.getSmqCode(), hierarchyNode);
+							matchingMap = this.checkIfSmqBaseOrSmqRelationExists(existingRelation, smqRelation.getSmqCode()
+																					, smqRelation.getPtCode(), hierarchyNode);
 							matchFound = (boolean) matchingMap.get("MATCH_FOUND");
 							updateNeeded = (boolean) matchingMap.get("UPDATE_NEEDED");
 							if(updateNeeded) {
@@ -337,7 +338,9 @@ public class CreateController implements Serializable {
 								cmqRelation = new CmqRelation190();
 								cmqRelation.setCmqCode(selectedData.getCmqCode());
 								cmqRelation.setCmqId(cmqBase.getId());
+								//we set both smqcode and pt code to show that this is an smq relation
 								cmqRelation.setSmqCode(smqRelation.getSmqCode());
+								cmqRelation.setPtCode(smqRelation.getPtCode().longValue());
 							}
 						}
 						
@@ -1010,14 +1013,20 @@ public class CreateController implements Serializable {
 		return matchingMap;
 	}
 	
-	private Map<String, Object> checkIfSmqBaseOrSmqRelationExists(List<CmqRelation190> existingRelation, Long smqCode, HierarchyNode hierarchyNode) {
+	private Map<String, Object> checkIfSmqBaseOrSmqRelationExists(List<CmqRelation190> existingRelation, Long smqCode, Integer ptCode
+																		, HierarchyNode hierarchyNode) {
 		Map<String, Object> matchingMap = new HashMap<String, Object>(3);
 		matchingMap.put("MATCH_FOUND", false);
 		matchingMap.put("UPDATE_NEEDED", false);
 		matchingMap.put("TARGET_CMQ_RELATION_FOR_UPDATE", null);
 		
 		for (CmqRelation190 cmqRelation190 : existingRelation) {
-			if((null != cmqRelation190.getSmqCode()) && (cmqRelation190.getSmqCode().longValue() == smqCode.longValue())){
+			if((null != ptCode) && (null != cmqRelation190.getSmqCode()) && (cmqRelation190.getSmqCode().longValue() == smqCode.longValue())
+						&& (null != cmqRelation190.getPtCode()) && (cmqRelation190.getPtCode().longValue() == ptCode.longValue())){
+				//its an smqrelation and not an smqbase
+				matchingMap.put("MATCH_FOUND", true);
+			} else if((null != cmqRelation190.getSmqCode()) && (cmqRelation190.getSmqCode().longValue() == smqCode.longValue())){
+				//its an smqbase
 				matchingMap.put("MATCH_FOUND", true);
 			}
 			

@@ -1695,24 +1695,48 @@ public class SearchController extends BaseController<CmqBase190> {
 			HierarchyNode node = null;
 			if ((cmqRelation.getSmqCode() != null)
 					&& (cmqRelation.getSmqCode() > 0)) {
-				SmqBase190 smqBase190 = this.smqBaseService
-						.findByCode(cmqRelation.getSmqCode());
-				if (null != smqBase190) {
-					node = this.createSmqBaseNode(smqBase190);
-					node.setCategory((cmqRelation.getTermCategory() == null) ? "" : cmqRelation.getTermCategory());
-					node.setScope((cmqRelation.getTermScope() == null) ? "" : cmqRelation.getTermScope());
-					node.setWeight((cmqRelation.getTermWeight() == null) ? "" : cmqRelation.getTermWeight() + "");
-					TreeNode smqBaseTreeNode = new DefaultTreeNode(node,
-							this.relationsRoot);
-					long childSmqrelationsCount = this.smqBaseService
-							.findSmqRelationsCountForSmqCode(smqBase190
-									.getSmqCode());
-					if (childSmqrelationsCount > 0) {
-						// add a dummmy node to show expand arrow
-						HierarchyNode dummyNode = new HierarchyNode(null, null,
-								null, null);
-						dummyNode.setDummyNode(true);
-						new DefaultTreeNode(dummyNode, smqBaseTreeNode);
+				if((cmqRelation.getPtCode() != null)
+						&& (cmqRelation.getPtCode() > 0)) {
+					//this is an smq relation
+					SmqRelation190 childRelation = this.smqBaseService.findSmqRelationBySmqAndPtCode(cmqRelation.getSmqCode()
+																										, cmqRelation.getPtCode().intValue());
+					HierarchyNode childRelationNode = new HierarchyNode();
+					if (childRelation.getSmqLevel() == 1) {
+						childRelationNode.setLevel("SMQ1");
+					} else if (childRelation.getSmqLevel() == 2) {
+						childRelationNode.setLevel("SMQ2");
+					} else if (childRelation.getSmqLevel() == 3) {
+						childRelationNode.setLevel("SMQ3");
+					} else if ((childRelation.getSmqLevel() == 4)
+							|| (childRelation.getSmqLevel() == 0)
+							|| (childRelation.getSmqLevel() == 5)) {
+						childRelationNode.setLevel("PT");
+					}
+					childRelationNode.setTerm(childRelation.getPtName());
+					childRelationNode.setCode(childRelation.getPtCode().toString());
+					childRelationNode.setEntity(childRelation);
+					new DefaultTreeNode(childRelationNode, this.relationsRoot);
+				} else {
+					//this is an smq base 
+					SmqBase190 smqBase190 = this.smqBaseService
+							.findByCode(cmqRelation.getSmqCode());
+					if (null != smqBase190) {
+						node = this.createSmqBaseNode(smqBase190);
+						node.setCategory((cmqRelation.getTermCategory() == null) ? "" : cmqRelation.getTermCategory());
+						node.setScope((cmqRelation.getTermScope() == null) ? "" : cmqRelation.getTermScope());
+						node.setWeight((cmqRelation.getTermWeight() == null) ? "" : cmqRelation.getTermWeight() + "");
+						TreeNode smqBaseTreeNode = new DefaultTreeNode(node,
+								this.relationsRoot);
+						long childSmqrelationsCount = this.smqBaseService
+								.findSmqRelationsCountForSmqCode(smqBase190
+										.getSmqCode());
+						if (childSmqrelationsCount > 0) {
+							// add a dummmy node to show expand arrow
+							HierarchyNode dummyNode = new HierarchyNode(null, null,
+									null, null);
+							dummyNode.setDummyNode(true);
+							new DefaultTreeNode(dummyNode, smqBaseTreeNode);
+						}
 					}
 				}
 			} else if ((cmqRelation.getSocCode() != null)

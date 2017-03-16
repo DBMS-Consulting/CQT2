@@ -26,4 +26,6 @@ public interface ISmqBaseService {
 
 	Long findChildSmqCountByParentSmqCode(Long smqCode);
 
+	SmqRelation190 findSmqRelationBySmqAndPtCode(Long smqCode, Integer ptCode);
+
 }

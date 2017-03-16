@@ -160,6 +160,33 @@ public class SmqBaseService extends CqtPersistenceService<SmqBase190> implements
 		return retVal;
 	}
 	
+	@Override
+	@SuppressWarnings("unchecked")
+	public SmqRelation190 findSmqRelationBySmqAndPtCode(Long smqCode, Integer ptCode) {
+		SmqRelation190 retVal = null;
+		StringBuilder sb = new StringBuilder();
+		sb.append("from SmqRelation190 c where c.smqCode = :smqCode and c.ptCode = :ptCode");
+		
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		try {
+			Query query = entityManager.createQuery(sb.toString());
+			query.setParameter("smqCode", smqCode);
+			query.setParameter("ptCode", ptCode);
+			retVal = (SmqRelation190) query.getSingleResult();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg
+					.append("An error occurred while findSmqRelationsForSmqCode ")
+					.append(smqCode)
+					.append(" Query used was ->")
+					.append(sb.toString());
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
+	
 	/* (non-Javadoc)
 	 * @see com.dbms.service.ISmqBaseService#findSmqRelationsForSmqCodes(java.util.List)
 	 */
