@@ -41,7 +41,7 @@
 			</p:selectOneMenu>
 			<p:spacer width="10" />
 			<p:outputLabel value="Term" for="termH" />
-			<p:inputText id="termH" style="text-transform:uppercase"
+			<p:inputText id="termH" style="text-transform:uppercase" onkeypress="if (event.keyCode == 13) { return false; }"
 				value="#{searchController.termNameOfHierarchySearch}" />
 			<p:commandButton value="Search" update="resultHier" action="#{searchController.hierarchySearch}" oncomplete="initRelationDND()"/>
 		</h:panelGrid>
