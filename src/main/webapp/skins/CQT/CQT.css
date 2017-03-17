@@ -200,3 +200,101 @@ af |inputText:disabled::content {
 	border: none !important;
 }
 
+/*=======================================*/
+/*====         Custom Styles         ====*/
+/*=======================================*/
+
+.full-width {
+	width: 100%;
+}
+.col-25p {
+	width: 25%;
+}
+.label-right {
+	float: right;
+	margin-right: 20px;
+	font-size: 14px !important;
+}
+
+.ui-column-filter {
+	width: 60px !important;
+	height: 10px !important;
+	margin-top: 5px;
+}
+
+td.label-cell, td.value-cell {
+	vertical-align: top;
+}
+
+td.label-cell label {
+	line-height: 1.4;
+	font-weight: 600;
+}
+td.value-cell {
+	line-height: 1.4;
+}
+td .bordered {
+	display: block;
+	padding: 10px;
+	border: solid 1px #bbb;
+	margin-bottom: 10px;
+}
+.ui-text-wrap {
+ 	white-space: pre-wrap;      /* CSS3 */   
+	white-space: -moz-pre-wrap; /* Firefox */    
+	white-space: -pre-wrap;     /* Opera lt 7 */   
+	white-space: -o-pre-wrap;   /* Opera 7 */    
+	word-wrap: break-word;      /* IE */
+	overflow-wrap: break-word;
+   	-ms-word-break: break-all;
+   	word-break: break-word;	   
+   	-ms-hyphens: auto;
+   	-moz-hyphens: auto;
+	-webkit-hyphens: auto;
+	hyphens: auto;
+}
+ 		
+ .uppercase {
+	text-transform: uppercase !important;
+}
+
+.label-right {
+	float: right;
+	margin-right: 20px;
+	font-size: 14px !important;
+}
+
+.grid-right {
+	float: right;
+	margin-right: 20px;
+	font-size: 14px !important;
+	height: 30px !important;
+}
+
+.ui-state-disabled {
+	opacity: 0.7 !important;
+}
+
+.ui-hidden {
+	display: none;
+}
+.green-colored {
+	color: #00c119;
+}
+.green-colored:HOVER {
+	color: #009912;
+}
+
+/**================= Relations Tree Table ======================**/
+.ui-treetable.ui-treetable-resultRelations .ui-treetable-selectable-node .ui-chkbox.ui-selection {
+	display: none;
+}
+
+/**================= Relations/Hierarchy Search Form ==============**/
+#termH {
+	text-transform: uppercase;
+}
+
+.ui-treetable.ui-treetable-resultHier .ui-treetable-selectable-node .ui-chkbox.ui-selection {
+	display: none;
+}

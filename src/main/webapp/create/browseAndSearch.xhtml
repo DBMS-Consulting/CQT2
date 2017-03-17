@@ -51,9 +51,9 @@
 						*** Adding details body directly inside this tab to deal with read-only property 
 						***
 						-->
-						<h:panelGrid columns="4" cellpadding="30">
+						<h:panelGrid columns="4" cellpadding="30" style="width: 100%" columnClasses="col-25p,col-25p,col-25p,col-25p">
 
-							<h:panelGrid columns="2" columnClasses="label, value">
+							<h:panelGrid columns="2" columnClasses="label-cell, value-cell">
 								<p:outputLabel styleClass="label-right" value="Extension:" />
 								<h:panelGrid>
 									<h:outputText
@@ -94,8 +94,7 @@
 
 							</h:panelGrid>
 
-							<h:panelGrid columns="2" columnClasses="label, value"
-								style="min-width: 300px;">
+							<h:panelGrid columns="2" columnClasses="label-cell, value-cell">
 								<p:outputLabel styleClass="label-right" value="Level:" />
 								<h:outputText value="#{createController.selectedData.cmqLevel}" />
 
@@ -113,8 +112,7 @@
 								<p:spacer />
 							</h:panelGrid>
 
-							<h:panelGrid columns="2" columnClasses="label, value"
-								style="min-width: 300px;">
+							<h:panelGrid columns="2" columnClasses="label-cell, value-cell">
 
 								<p:outputLabel styleClass="label-right" value="Status:" />
 								<!-- <h:outputText value="#{createController.selectedData.cmqStatus}" /> -->
@@ -145,8 +143,7 @@
 							</h:panelGrid>
 
 
-							<h:panelGrid columns="2" columnClasses="label, value"
-								style="min-width: 300px;">
+							<h:panelGrid columns="2" columnClasses="label-cell, value-cell">
 
 								<p:outputLabel styleClass="label-right" value="Creation Date:" />
 								<h:outputText
@@ -215,21 +212,6 @@
 				value="Create New #{applicationScope.CSMQBean.customMQName} Wizard" />
 
 		</h:form>
-
-
-		<style>
-		.label-right {
-			float: right;
-			margin-right: 20px;
-			font-size: 14px !important;
-		}
-		
-		.ui-column-filter {
-			width: 60px !important;
-			height: 10px !important;
-			margin-top: 5px;
-		}
-		</style>
 
 	</ui:define>
 </ui:composition>

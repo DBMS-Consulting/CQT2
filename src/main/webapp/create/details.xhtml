@@ -8,23 +8,25 @@
 	
 	
 	<p:remoteCommand name="saveDetailsAndGoToNextStep"
-			update="@form:m1 @form:wizardId @form:codeValue"
-			actionListener="#{createController.saveDetailsAndNextStep}"
-			onstart="PF('confirmSaveDetailsDlg').hide()"
-			oncomplete="notifySearchControllerDataChange()"  />
+		update="@form:m1 @form:wizardId @form:codeValue"
+		actionListener="#{createController.saveDetailsAndNextStep}"
+		onstart="PF('confirmSaveDetailsDlg').hide()"
+		oncomplete="notifySearchControllerDataChange()" />
 	<p:remoteCommand name="resetDetailsAndGoToNextStep"
-			update="@form:wizardId @form:detailsPanel"
-			actionListener="#{createController.cancelDetailsAndNextStep}"
-			onstart="PF('confirmSaveDetailsDlg').hide()" />
+		update="@form:wizardId @form:detailsPanel"
+		actionListener="#{createController.cancelDetailsAndNextStep}"
+		onstart="PF('confirmSaveDetailsDlg').hide()" />
 
 	<!-- <p:growl id="messages" /> -->
-	<h:panelGrid columns="3" cellpadding="5" id="detailsPanel">
+	<h:panelGrid columns="3" cellpadding="5" id="detailsPanel" styleClass="full-width">
 
 		<h:panelGrid columns="2" columnClasses="label, value">
 			<p:outputLabel value="* Extension" styleClass="label-right" />
-			<p:selectOneMenu value="#{createController.detailsFormModel.extension}"
+			<p:selectOneMenu
+				value="#{createController.detailsFormModel.extension}"
 				disabled="#{createController.readOnlyState}"
-				required="#{!createController.readOnlyState}" requiredMessage="The extension is required">
+				required="#{!createController.readOnlyState}"
+				requiredMessage="The extension is required">
 				<f:selectItems value="#{configMB.extensionList}" var="extension"
 					itemLabel="#{extension.value}"
 					itemValue="#{extension.codelistInternalValue}" />
@@ -35,7 +37,8 @@
 			</p:selectOneMenu>
 
 			<p:outputLabel value="* Name" styleClass="label-right" />
-			<p:inputText required="#{!createController.readOnlyState}" requiredMessage="The name is required"
+			<p:inputText required="#{!createController.readOnlyState}"
+				requiredMessage="The name is required"
 				disabled="#{createController.readOnlyState}" maxlength="200"
 				value="#{createController.detailsFormModel.name}"
 				style="width: 300px !important" />
@@ -43,7 +46,8 @@
 			<p:outputLabel id="lDrug"
 				value="#{createController.detailsFormModel.drugProgramRequired ? '* Drug Program' : 'Drug Program'}"
 				styleClass="label-right" />
-			<p:selectOneMenu value="#{createController.detailsFormModel.drugProgram}" id="drug"
+			<p:selectOneMenu
+				value="#{createController.detailsFormModel.drugProgram}" id="drug"
 				disabled="#{createController.readOnlyState}"
 				required="#{createController.detailsFormModel.drugProgramRequired and not createController.readOnlyState}"
 				requiredMessage="The Drug Program is required">
@@ -56,7 +60,8 @@
 			<p:outputLabel id="lProtocol"
 				value="#{createController.detailsFormModel.protocolRequired ? '* Protocol' : 'Protocol'}"
 				styleClass="label-right" />
-			<p:selectOneMenu value="#{createController.detailsFormModel.protocol}" id="protocol"
+			<p:selectOneMenu
+				value="#{createController.detailsFormModel.protocol}" id="protocol"
 				disabled="#{createController.readOnlyState}"
 				required="#{createController.detailsFormModel.protocolRequired and not createController.readOnlyState}">
 				requiredMessage="The Protocol is required"
@@ -71,7 +76,7 @@
 				rendered="true" styleClass="label-right" />
 			<p:selectOneMenu value="#{createController.detailsFormModel.product}"
 				disabled="#{createController.readOnlyState}"
-				required="#{createController.detailsFormModel.productRequired and not createController.readOnlyState}" 
+				required="#{createController.detailsFormModel.productRequired and not createController.readOnlyState}"
 				requiredMessage="The Product is required" id="product">
 				<f:selectItem itemValue="" itemLabel="" />
 				<f:selectItems value="#{configMB.productList}" var="product"
@@ -80,22 +85,23 @@
 			</p:selectOneMenu>
 
 			<p:outputLabel value="* Designee" styleClass="label-right" />
-			<p:selectOneMenu value="#{createController.detailsFormModel.designee}"
-				disabled="#{createController.readOnlyState}"
-				rendered="true"
-				requiredMessage="The Designee is required" required="#{!createController.readOnlyState}">
+			<p:selectOneMenu
+				value="#{createController.detailsFormModel.designee}"
+				disabled="#{createController.readOnlyState}" rendered="true"
+				requiredMessage="The Designee is required"
+				required="#{!createController.readOnlyState}">
 				<f:selectItem itemLabel="" itemValue=""></f:selectItem>
 				<f:selectItem itemLabel="NONE" itemValue="NONE"></f:selectItem>
 				<!-- <f:selectItems></f:selectItems> -->
 			</p:selectOneMenu>
 		</h:panelGrid>
 
-		<h:panelGrid columns="2" columnClasses="label, value"
-			style="min-width: 300px">
+		<h:panelGrid columns="2" columnClasses="label, value">
 
 			<p:outputLabel value="* Level" styleClass="label-right" />
-			<p:selectOneMenu value="#{createController.detailsFormModel.level}" rendered="true"
-				required="#{!createController.readOnlyState}" requiredMessage="The level is required"
+			<p:selectOneMenu value="#{createController.detailsFormModel.level}"
+				rendered="true" required="#{!createController.readOnlyState}"
+				requiredMessage="The level is required"
 				disabled="#{createController.readOnlyState}" id="level">
 				<f:selectItem itemValue="1" itemLabel="1" />
 				<f:selectItem itemValue="2" itemLabel="2" />
@@ -106,7 +112,7 @@
 
 			<p:outputLabel value="* Algorithm" styleClass="label-right" />
 			<p:inputText value="#{createController.detailsFormModel.algorithm}"
-				disabled="#{createController.readOnlyState}" />
+				disabled="#{true or createController.readOnlyState}" />
 
 			<h:panelGrid columns="1" styleClass="grid-right">
 				<p:outputLabel value="* Status" />
@@ -188,34 +194,16 @@
 			</h:panelGrid>
 		</h:panelGrid>
 	</h:panelGrid>
-	
-	<p:confirmDialog widgetVar="confirmSaveDetailsDlg" showEffect="fade" hideEffect="fade"
-		header="Confirm about Unsaved Changes"
+
+	<p:confirmDialog widgetVar="confirmSaveDetailsDlg" showEffect="fade"
+		hideEffect="fade" header="Confirm about Unsaved Changes"
 		message="There are some unsaved changes. Do you want to save them before you continue?">
-        <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" onclick="saveDetailsAndGoToNextStep()" />
-        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"  onclick="resetDetailsAndGoToNextStep()" />
-    </p:confirmDialog>
+		<p:commandButton value="Yes" type="button"
+			styleClass="ui-confirmdialog-yes" icon="ui-icon-check"
+			onclick="saveDetailsAndGoToNextStep()" />
+		<p:commandButton value="No" type="button"
+			styleClass="ui-confirmdialog-no" icon="ui-icon-close"
+			onclick="resetDetailsAndGoToNextStep()" />
+	</p:confirmDialog>
 
-	<style>
-.label-right {
-	float: right;
-	margin-right: 20px;
-	font-size: 14px !important;
-}
-
-.grid-right {
-	float: right;
-	margin-right: 20px;
-	font-size: 14px !important;
-	height: 30px !important;
-}
-
-.ui-state-disabled {
-	opacity: 0.7 !important;
-}
-
-.uppercase {
-	text-transform: uppercase !important;
-}
-</style>
 </ui:composition>
