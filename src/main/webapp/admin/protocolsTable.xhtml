@@ -23,7 +23,7 @@
 			<h:outputText value="#{val.codelistInternalValue}" />
 		</p:column>
 
-		<p:column headerText="Protocol Name" style="text-align: center">
+		<p:column headerText="Protocol Name" style="text-align: center" filterBy="#{val.value}" filterMatchMode="contains">
 			<h:outputText value="#{val.value}" />
 		</p:column>
 

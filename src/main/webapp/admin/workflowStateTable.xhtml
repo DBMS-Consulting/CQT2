@@ -9,7 +9,7 @@
 	<p:growl id="msgW" />
 
 	<h3 style="text-align: center">Workflow State CodeList</h3>
-	<p:dataTable id="workflowTable" var="val" rows="10" lazy="true"
+	<p:dataTable id="workflowTable" var="val" rows="10"
 		value="#{adminController.workflows}" style="margin-bottom:20px"
 		paginator="true" paginatorPosition="bottom"
 		paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
@@ -23,7 +23,7 @@
 			<h:outputText value="#{val.codelistInternalValue}" />
 		</p:column>
 
-		<p:column headerText="Workflow State Name" style="text-align: center">
+		<p:column headerText="Workflow State Name" style="text-align: center" filterBy="#{val.value}" filterMatchMode="contains">
 			<h:outputText value="#{val.value}" />
 		</p:column>
 
