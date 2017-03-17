@@ -70,11 +70,11 @@
 						
 						<h:panelGrid columns="2">
 							<p:commandButton value="Save" icon="ui-icon-disk" disabled="#{createController.readOnlyState}"
-								update="@form:m1 @form:codeValue @form:detailsPanel" actionListener="#{createController.update}"
+								update="@form:m1 @form:codeValue @form:detailsPanel" action="#{createController.update}"
 								oncomplete="notifySearchControllerDataChange()" />
 							
 							<p:commandButton value="Cancel" icon="ui-icon-close" disabled="#{createController.readOnlyState}"
-								update="@form:detailsPanel" action="#{createController.cancel}">
+								process="@this" update="@form:m1 @form:detailsPanel" actionListener="#{createController.cancel}">
 								<p:confirm icon="ui-icon-alert" header="Confirm"
 										message="Are you sure you want to erase these fields?" />
 							</p:commandButton>
@@ -97,7 +97,7 @@
 							<p:commandButton value="Save" id="cb3" disabled="#{createController.readOnlyState}"  icon="ui-icon-disk"
 								action="#{createController.updateRelations(searchController.relationsRoot)}" update="@form:m1"/>
 
-							<p:commandButton value="Cancel" icon="ui-icon-close" disabled="#{createController.readOnlyState}"
+							<p:commandButton type="button" value="Cancel" icon="ui-icon-close" disabled="#{createController.readOnlyState}"
 								process="@this" update="@form:m1 @form:resultRelations" style="float: right"
 								action="#{searchController.resetRelations}">
 								<p:confirm header="Confirm" message="Are you sure you want to erase these fields?" icon="ui-icon-alert" />
@@ -116,9 +116,11 @@
 			
 			<h:panelGroup id="wizardNavbar" layout="block" styleClass="ui-wizard-navbar ui-helper-clearfix">
 				<p:commandButton value="Back" onclick="PF('wizard').back();" icon="ui-icon-arrowthick-1-w"
-	        			styleClass="ui-wizard-nav-back update-list-wiz-back" rendered="#{createController.updateWizardNavbarBackShown}" />
+	        			styleClass="ui-wizard-nav-back update-list-wiz-back" rendered="#{createController.updateWizardNavbarBackShown}"
+	        			update="@form:m1" />
 				<p:commandButton value="Next" onclick="PF('wizard').next();" icon="ui-icon-arrowthick-1-e"
-				        styleClass="ui-wizard-nav-next" rendered="#{createController.updateWizardNavbarNextShown}" /> 
+				        styleClass="ui-wizard-nav-next" rendered="#{createController.updateWizardNavbarNextShown}"
+				        update="@form:m1" /> 
 			</h:panelGroup>
 			
 			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">

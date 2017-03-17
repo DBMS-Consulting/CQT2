@@ -47,10 +47,10 @@
 				disabled="#{createController.readOnlyState}"
 				action="#{createController.saveInformativeNotes}"></p:commandButton>
 
-			<p:commandButton value="Cancel" icon="ui-icon-close" process="@this"
+			<p:commandButton value="Cancel" icon="ui-icon-close"
 				disabled="#{createController.readOnlyState}"
-				update="@form:m1 @form:panelNotes" style="float: right"
-				action="#{createController.cancelNotes}">
+				process="@this" update="@form:m1 @form:panelNotes" style="float: right"
+				actionListener="#{createController.cancelNotes}">
 				<p:confirm header="Confirm" message="Are you sure you want to erase these fields?" icon="ui-icon-alert" />
 			</p:commandButton>
 
