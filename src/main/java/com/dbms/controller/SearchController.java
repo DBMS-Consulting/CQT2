@@ -195,7 +195,7 @@ public class SearchController extends BaseController<CmqBase190> {
 	private void resetSearch() {
 		this.extension = "";
 		this.state = "PUBLISHED";
-		this.status = "Active";
+		this.status = "A";
 		this.level = 1;
 		// this.critical = "No";
 		this.group = "No Group";
@@ -215,14 +215,12 @@ public class SearchController extends BaseController<CmqBase190> {
 	 *            AjaxBehaviour
 	 */
 	public void changeState(AjaxBehaviorEvent event) {		
-		if (status.equals("P"))
-			setState("Draft");
-		if (status.equals("A"))
-			setState("Published");
-		
-		if (status.equals(""))
+		if ("P".equalsIgnoreCase(status))
+			setState("DRAFT");
+		if ("A".equalsIgnoreCase(status))
+			setState("PUBLISHED");
+		else if("".equals(status))
 			setState("");
-		 
 	}
 
 	public void changeTabUpdate() {
