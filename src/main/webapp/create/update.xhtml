@@ -11,17 +11,12 @@
 			<p:growl id="m1" />
 
 			<h:panelGrid columns="2" style="width: 100% !important">
-				<h:panelGrid>
-					<p:breadCrumb>
+ 					<p:breadCrumb styleClass="breadcrumb">
 						<p:menuitem value="Home" url="/index.xhtml" />
 						<p:menuitem value="Update" />
 					</p:breadCrumb>
 
-				</h:panelGrid>
-				<h:panelGrid columns="1" style="text-align: center">
-					<!-- <p:outputLabel value="Historic View as of 05-Feb 2017"
-						style="text-align: center" /> -->
-				</h:panelGrid>
+ 
 			</h:panelGrid>
 			
 			<p:remoteCommand name="notifySearchControllerDataChange" update="@form">

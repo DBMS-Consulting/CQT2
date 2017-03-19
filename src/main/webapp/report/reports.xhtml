@@ -11,19 +11,13 @@
 	<ui:define name="page-content">
 		<p:messages id="m1" />
 
-		<f:facet name="bottom">
-			<p:commandButton text="Cancel" id="cb1" action="CANCEL" />
-		</f:facet>
-
 		<h:form>
 			<h:panelGrid columns="2" style="width: 100% !important">
-				<h:panelGrid>
-					<p:breadCrumb styleClass="breadcrumb">
+ 					<p:breadCrumb styleClass="breadcrumb">
 						<p:menuitem value="Home" url="/index.xhtml" />
 						<p:menuitem value="Report" />
 					</p:breadCrumb>
-				</h:panelGrid>
-			</h:panelGrid>
+ 			</h:panelGrid>
 		</h:form>
 
 		<p:tabView id="pb1"
