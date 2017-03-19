@@ -32,6 +32,7 @@ public class ListDetailsFormModel {
 	private String state;
 	private String status;
 	private String history;
+	private Long code;
 	
 	
 	public ListDetailsFormModel() {
@@ -72,11 +73,11 @@ public class ListDetailsFormModel {
 
 		this.state = cmq.getCmqState();
 		if("P".equalsIgnoreCase(cmq.getCmqStatus())) {
-			this.status = "Pending";
+			this.status = "PENDING";
 		} else if ("A".equalsIgnoreCase(cmq.getCmqStatus())) {
-			this.status = "Active";
+			this.status = "ACTIVE";
 		} else if ("I".equalsIgnoreCase(cmq.getCmqStatus())){
-			this.status = "Inactive";
+			this.status = "INACTIVE";
 		} else {
 			this.status = "Unknown";
 		}
@@ -85,6 +86,8 @@ public class ListDetailsFormModel {
 			this.modelChanged = true;
 		else 
 			this.modelChanged = false;
+		
+		this.code = cmq.getCmqCode();
 	}
 	
 	/**
@@ -384,6 +387,14 @@ public class ListDetailsFormModel {
 		return ("TME".equalsIgnoreCase(extension)
 				|| "TR1".equalsIgnoreCase(extension)
 				|| "PRO".equalsIgnoreCase(extension));
+	}
+
+	public Long getCode() {
+		return code;
+	}
+
+	public void setCode(Long code) {
+		this.code = code;
 	}
 
 }

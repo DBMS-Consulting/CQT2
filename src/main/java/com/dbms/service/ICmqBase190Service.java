@@ -4,9 +4,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.primefaces.model.StreamedContent;
+import org.primefaces.model.TreeNode;
+
 import com.dbms.entity.cqt.CmqBase190;
 import com.dbms.service.base.ICqtPersistenceService;
 import com.dbms.util.exceptions.CqtServiceException;
+import com.dbms.view.ListDetailsFormModel;
 
 public interface ICmqBase190Service extends ICqtPersistenceService<CmqBase190> {
 
@@ -48,5 +52,7 @@ public interface ICmqBase190Service extends ICqtPersistenceService<CmqBase190> {
 	 * @return
 	 */
 	List<CmqBase190> getPublishedListsReportData(Date filterPublishedBetweenFrom, Date filterPublishedBetweenTo);
+
+	StreamedContent generateExcelReport(ListDetailsFormModel details, String dictionaryVersion, TreeNode relationsRoot); 
 	
 }

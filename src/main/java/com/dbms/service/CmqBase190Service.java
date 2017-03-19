@@ -1,5 +1,9 @@
 package com.dbms.service;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
@@ -9,21 +13,42 @@ import java.util.Set;
 
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.persistence.TemporalType;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.usermodel.ClientAnchor;
+import org.apache.poi.ss.usermodel.CreationHelper;
+import org.apache.poi.ss.usermodel.Drawing;
+import org.apache.poi.ss.usermodel.Picture;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.transform.Transformers;
 import org.hibernate.type.StandardBasicTypes;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
+import org.primefaces.model.TreeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.dbms.csmq.HierarchyNode;
 import com.dbms.entity.cqt.CmqBase190;
+import com.dbms.entity.cqt.CmqRelation190;
+import com.dbms.entity.cqt.SmqBase190;
+import com.dbms.entity.cqt.SmqRelation190;
+import com.dbms.entity.cqt.dtos.MeddraDictHierarchySearchDto;
 import com.dbms.service.base.CqtPersistenceService;
 import com.dbms.util.exceptions.CqtServiceException;
+import com.dbms.view.ListDetailsFormModel;
 
 /**
  * @author Jay G.(jayshanchn@hotmail.com)
@@ -34,6 +59,15 @@ import com.dbms.util.exceptions.CqtServiceException;
 public class CmqBase190Service extends CqtPersistenceService<CmqBase190> implements ICmqBase190Service {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CmqBase190Service.class);
+	
+	@ManagedProperty("#{CmqRelation190Service}")
+	private ICmqRelation190Service cmqRelationService;
+	
+	@ManagedProperty("#{SmqBaseService}")
+	private ISmqBaseService smqBaseService;
+	
+	@ManagedProperty("#{MeddraDictService}")
+	private IMeddraDictService meddraDictService;
 
 	private StringBuilder appendClause(StringBuilder sb, boolean first) {
 		if (first) {
@@ -530,5 +564,221 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190> impleme
 		}
 		
 		return retVal;
+	}
+	
+	
+	/**
+	 * Excel Report.
+	 */
+	@Override
+	public StreamedContent generateExcelReport(ListDetailsFormModel details, String dictionaryVersion, TreeNode relationsRoot) {
+		XSSFWorkbook workbook = new XSSFWorkbook();
+		XSSFSheet worksheet = null;
+ 
+		worksheet = workbook.createSheet("List Report");
+		XSSFRow row = null;
+		int rowCount = 4;
+		
+		try {
+			insertExporLogoImage(worksheet, workbook);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+
+		/**
+		 * Première ligne - entêtes
+		 */
+		row = worksheet.createRow(rowCount);
+		XSSFCell cell = row.createCell(0);
+		
+		//Term name 
+		cell.setCellValue("MedDRA Dictionary Version: " + dictionaryVersion);
+		
+		rowCount++;
+		row = worksheet.createRow(rowCount);
+		cell = row.createCell(0);
+		cell.setCellValue("Status: " + details.getStatus());
+		
+		rowCount++;
+		row = worksheet.createRow(rowCount);
+		cell = row.createCell(0);
+		cell.setCellValue("Term Name: " + details.getName());
+		
+		rowCount++;
+		row = worksheet.createRow(rowCount);
+		cell = row.createCell(0);
+		cell.setCellValue("Code: " + details.getCode());
+		
+		rowCount++;
+		row = worksheet.createRow(rowCount);
+		cell = row.createCell(0);
+		cell.setCellValue("Extension: " + details.getExtension());
+		
+		rowCount++;
+		row = worksheet.createRow(rowCount);
+		cell = row.createCell(0);
+		cell.setCellValue("Report Date/Time: " + new Date().toString());
+		cell = row.createCell(1);
+	 
+		
+		rowCount += 2;
+		row = worksheet.createRow(rowCount);
+		cell = row.createCell(0);
+		cell.setCellValue("Term");
+		cell = row.createCell(1);
+		cell.setCellValue("Code");
+		cell = row.createCell(2);
+		cell.setCellValue("Level");
+		cell = row.createCell(3);
+		cell.setCellValue("Category");
+		cell = row.createCell(4);
+		cell.setCellValue("Weight");
+		cell = row.createCell(5);
+		cell.setCellValue("Scope");
+		rowCount++;
+
+		// Retrieval of relations - Loop
+		List<CmqRelation190> relations = cmqRelationService.findByCmqCode(details.getCode());
+		System.out.println("\n\n ****************** relations SIZE for export " + relations.size()); 
+		Long code = null;
+		MeddraDictHierarchySearchDto searchDto = null;
+		String level = "";
+ 		
+		if (relations != null) {
+			for (CmqRelation190 relation : relations) {
+				//System.out.println("\n\n ****************** relation PT CODE : " + relation.getPtCode());
+				
+				if (relation.getPtCode() != null)
+					code = relation.getPtCode();
+				
+				else if (relation.getHlgtCode() != null) {
+					code = relation.getHlgtCode();
+					searchDto = this.meddraDictService.findByCode("HLGT_", code);
+					level = "HLGT";
+				}
+				else if (relation.getHltCode() != null) {
+					code = relation.getHltCode();
+					searchDto = this.meddraDictService.findByCode("HLT_", code);
+					level = "HLT";
+				}
+				else if (relation.getSocCode() != null) {
+					code = relation.getSocCode();
+					searchDto = this.meddraDictService.findByCode("SOC_", code);
+					level = "SOC";
+				}
+			
+				//SmqRelation190 child = null;
+				SmqRelation190 child = null;
+				if(code != null) 
+ 					child = smqBaseService.findSmqRelationBySmqAndPtCode(relation.getSmqCode(), code.intValue());
+				 
+				//if (child != null) {
+				row = worksheet.createRow(rowCount);
+				// Cell 0
+				cell = row.createCell(0);
+				if (child != null)
+					cell.setCellValue(child.getPtName());
+				if (searchDto != null)
+					cell.setCellValue(searchDto.getTerm());
+
+				// Cell 1
+				cell = row.createCell(1);
+				if (child != null)
+					cell.setCellValue(child.getPtCode());
+				if (searchDto != null)
+					cell.setCellValue(searchDto.getCode());
+
+				// Cell 2
+				cell = row.createCell(2);
+				if (child != null)
+					cell.setCellValue(child.getSmqLevel());
+				if (searchDto != null)
+					cell.setCellValue(level);
+
+				// Cell 3
+				cell = row.createCell(3);
+				cell.setCellValue(relation.getTermCategory() != null ? relation
+						.getTermCategory() : "");
+
+				// Cell 4
+				cell = row.createCell(4);
+				cell.setCellValue(relation.getTermWeight() != null ? relation
+						.getTermWeight() : 0);
+
+				// Cell 5
+				cell = row.createCell(5);
+				cell.setCellValue(relation.getTermScope() != null ? relation
+						.getTermScope() : "");
+
+				rowCount++;
+				//}
+			}
+		}
+
+		worksheet.autoSizeColumn(0);
+		worksheet.autoSizeColumn(1);
+		worksheet.autoSizeColumn(2);
+		worksheet.autoSizeColumn(3);
+		worksheet.autoSizeColumn(4);
+		worksheet.autoSizeColumn(5);
+ 
+		StreamedContent content = null;
+		try {
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			workbook.write(baos);
+			byte[] xls = baos.toByteArray();
+			ByteArrayInputStream bais = new ByteArrayInputStream(xls);
+			content = new DefaultStreamedContent(
+					bais,
+					"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+					"Report_" + details.getName() + ".xlsx");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return content;
+	}
+	
+	private void insertExporLogoImage(XSSFSheet sheet, XSSFWorkbook wb) throws IOException {
+		FacesContext fc = FacesContext.getCurrentInstance();
+		ExternalContext ec = fc.getExternalContext();
+		final FileInputStream stream = new FileInputStream(ec.getRealPath("/image/logo.png"));
+		final CreationHelper helper = wb.getCreationHelper();
+		final Drawing drawing = sheet.createDrawingPatriarch();
+
+		final ClientAnchor anchor = helper.createClientAnchor();
+		anchor.setAnchorType(ClientAnchor.MOVE_AND_RESIZE);
+
+		final int pictureIndex = wb.addPicture(stream,
+				Workbook.PICTURE_TYPE_PNG);
+
+		anchor.setCol1(0);
+		anchor.setRow1(0); // same row is okay
+  		final Picture pict = drawing.createPicture(anchor, pictureIndex);
+		pict.resize();
+	}
+
+	public ICmqRelation190Service getCmqRelationService() {
+		return cmqRelationService;
+	}
+
+	public void setCmqRelationService(ICmqRelation190Service cmqRelationService) {
+		this.cmqRelationService = cmqRelationService;
+	}
+
+	public ISmqBaseService getSmqBaseService() {
+		return smqBaseService;
+	}
+
+	public void setSmqBaseService(ISmqBaseService smqBaseService) {
+		this.smqBaseService = smqBaseService;
+	}
+
+	public IMeddraDictService getMeddraDictService() {
+		return meddraDictService;
+	}
+
+	public void setMeddraDictService(IMeddraDictService meddraDictService) {
+		this.meddraDictService = meddraDictService;
 	}
 }

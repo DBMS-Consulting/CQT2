@@ -23,16 +23,20 @@ import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.primefaces.model.StreamedContent;
+import org.primefaces.model.TreeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.dbms.entity.cqt.CmqBase190;
+import com.dbms.entity.cqt.RefConfigCodeList;
 import com.dbms.service.ICmqBase190Service;
 import com.dbms.service.ICmqRelation190Service;
 import com.dbms.service.IMeddraDictService;
 import com.dbms.service.IRefCodeListService;
 import com.dbms.service.ISmqBaseService;
 import com.dbms.util.CqtConstants;
+import com.dbms.view.ListDetailsFormModel;
 
 /**
  * @date Feb 7, 2017 7:39:34 AM
@@ -65,6 +69,8 @@ public class ReportController extends BaseController<CmqBase190> {
 	private Date reportEndDate = null;
 	private ReportType genReportType = null;
 	private ReportFormat genReportFormat = null;
+	
+	private StreamedContent excelFile;
 
 	public ReportController() {
 	}
@@ -175,6 +181,16 @@ public class ReportController extends BaseController<CmqBase190> {
 			fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "There was an error while generating the report!", ""));
 	    }
 	}
+	
+	/**
+	 * Generate Excel report on relations tab.
+	 */
+	public void generateExcelReport(ListDetailsFormModel details, TreeNode relationsRoot) {
+		RefConfigCodeList currentMeddraVersionCodeList = this.refCodeListService.getCurrentMeddraVersion();
+		StreamedContent content = cmqBaseService.generateExcelReport(details, (currentMeddraVersionCodeList != null ? currentMeddraVersionCodeList.getValue() : ""), relationsRoot);
+		setExcelFile(content); 
+	}
+
 
 	//-------------------------- Getters and Setters -------------------------------
 	
@@ -288,5 +304,13 @@ public class ReportController extends BaseController<CmqBase190> {
 	    public String getLabel() {
 	        return label;
 	    }
+	}
+
+	public StreamedContent getExcelFile() {
+		return excelFile;
+	}
+
+	public void setExcelFile(StreamedContent excelFile) {
+		this.excelFile = excelFile;
 	}
 }

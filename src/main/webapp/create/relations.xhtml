@@ -96,10 +96,19 @@
 				</p:confirmDialog>
 
 				<p:spacer width="10" />
-				<p:commandButton value="Export" id="ctb11a" disabled="false"
+				<!-- <p:commandButton value="Export" id="ctb11a" disabled="false"
 					icon="fa fa-file-excel-o">
 					<p:fileDownload value="#{null}"></p:fileDownload>
-				</p:commandButton>
+				</p:commandButton> -->
+
+				<i class="fa fa-file-excel-o"
+					style="position: absolute; margin-top: 2px; margin-left: 5px"></i>
+				<h:commandLink id="generate" value="Export" type="button"
+					styleClass="generate"
+					actionListener="#{reportController.generateExcelReport(createController.detailsFormModel, searchController.relationsRoot)}">
+
+					<p:fileDownload value="#{reportController.excelFile}" />
+				</h:commandLink>
 
 				<p:spacer width="10" />
 				<p:commandButton value="MQ Detailed Report" id="ctb1"
@@ -250,16 +259,40 @@
         <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" onclick="saveRelationsAndGoToNextStep()" />
         <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"  onclick="resetRelationsAndGoToNextStep()" />
     </p:confirmDialog>
-    
+
 
 	<style>
-		.ui-state-disabled {
-			opacity: 0.7 !important;
-		}
-		
-		.btn-disabled {
-			opacity: .50 !important;
-		}
-	</style>
+.ui-state-disabled {
+	opacity: 0.7 !important;
+}
+
+.btn-disabled {
+	opacity: .50 !important;
+}
+
+.generate {
+	border: 1px solid #8c8c8c !important;
+	border-radius: 4px;
+	padding: 8px;
+	padding-left: 20px;
+	color: #000;
+	font-weight: bold;
+	ackground-color: #cccccc;
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #ececec),
+		color-stop(100%, #cccccc));
+	background: -webkit-linear-gradient(#ececec, #cccccc);
+	background: -moz-linear-gradient(#ececec, #cccccc);
+	background: -ms-linear-gradient(#ececec, #cccccc);
+	background: -o-linear-gradient(#ececec, #cccccc);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ececec',
+		endColorstr='#cccccc');
+	-ms-filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ececec',
+		endColorstr='#cccccc');
+	background: linear-gradient(#ececec, #cccccc);
+	text-decoration: none;
+}
+</style>
+
+
 
 </ui:composition>
