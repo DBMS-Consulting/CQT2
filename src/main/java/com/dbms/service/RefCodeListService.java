@@ -349,7 +349,6 @@ public class RefCodeListService extends
 		try {
 			insertExporLogoImage(worksheet, workbook);
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 
@@ -396,6 +395,9 @@ public class RefCodeListService extends
 
 			rowCount++;
 		}
+		worksheet.autoSizeColumn(0);
+		worksheet.autoSizeColumn(1);
+		worksheet.autoSizeColumn(2);
 
 		StreamedContent content = null;
 		try {
