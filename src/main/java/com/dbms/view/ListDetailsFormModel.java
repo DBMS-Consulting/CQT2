@@ -42,8 +42,8 @@ public class ListDetailsFormModel {
 		this.extension = "TME";
 		this.name = "";
 		this.drugProgram = "";
-		this.protocol = "";
-		this.product = "99999";
+		this.protocol = "999999";
+		this.product = "";
 		this.level = 1;
 		this.algorithm = "N";
 		this.critical = "No";
@@ -133,20 +133,19 @@ public class ListDetailsFormModel {
 			/**
 			 * Getting code internal value from now on
 			 */
-			if (extension.equals("CPT") || extension.equals("DME"))
+			if (extension.equals("CPT") || extension.equals("DME")) {
 				setDrugProgram("420001");
-			else
+				setProduct("99999");
+			}
+			else {
 				setDrugProgram("");
+				setProduct(""); 
+			}
 		
-			if (extension.equals("CPT") || extension.equals("DME") || extension.equals("TME") || extension.equals("TR1"))
+			if (extension.equals("TME") || extension.equals("TR1") || extension.equals("CPT") || extension.equals("DME"))
 				setProtocol("999999");
 			else
 				setProtocol("");
-			
-			if (extension.equals("CPT") || extension.equals("DME"))
-				setProduct("99999");
-			else
-				setProduct(""); 
 		}
 	}
 	//--------------------------- Getters & Setters ---------------------------
