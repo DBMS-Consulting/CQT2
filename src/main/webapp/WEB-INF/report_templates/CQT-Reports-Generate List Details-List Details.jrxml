@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report1" pageWidth="1190" pageHeight="842" orientation="Landscape" columnWidth="1150" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="5fdc5201-3e8e-4967-99e0-e03778d41859">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="285"/>
+	<property name="ireport.y" value="0"/>
+	<style name="table">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TH" mode="Opaque" backcolor="#F0F8FF" hAlign="Center" vAlign="Middle" fontSize="14">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TD" mode="Opaque" backcolor="#FFFFFF" fill="Solid" hAlign="Center" vAlign="Middle" fontSize="12">
+		<box>
+			<pen lineWidth="0.5" lineColor="#CCCCCC"/>
+			<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#CCCCCC"/>
+			<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#CCCCCC"/>
+			<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#CCCCCC"/>
+			<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#CCCCCC"/>
+		</box>
+	</style>
+	<style name="summary_label" fontSize="14"/>
+	<subDataset name="cmqListTableDataset" uuid="fcf67773-7726-4616-82c3-4834a9ea944e">
+		<field name="cmqCode" class="java.lang.String"/>
+		<field name="cmqName" class="java.lang.String"/>
+		<field name="cmqType" class="java.lang.String"/>
+		<field name="cmqProgram" class="java.lang.String"/>
+		<field name="cmqProtocol" class="java.lang.String"/>
+		<field name="cmqProduct" class="java.lang.String"/>
+		<field name="cmqLevel" class="java.lang.String"/>
+		<field name="dictionaryVersion" class="java.lang.String"/>
+		<field name="cmqStatus" class="java.lang.String"/>
+		<field name="cmqAlgorithm" class="java.lang.String"/>
+		<field name="cmqGroup" class="java.lang.String"/>
+	</subDataset>
+	<parameter name="reportDatetime" class="java.lang.String"/>
+	<parameter name="cmqListTotal" class="java.lang.Integer"/>
+	<parameter name="cmqLists" class="net.sf.jasperreports.engine.JRDataSource"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="88" splitType="Stretch">
+			<image>
+				<reportElement x="0" y="1" width="179" height="73" uuid="34732f0a-8b6c-4d50-bba8-39f791c920f1"/>
+				<imageExpression><![CDATA["C:\\Users\\Bora-3\\Pictures\\Screenshots\\logo.jpg"]]></imageExpression>
+			</image>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="71" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="169" height="31" uuid="0c7bb793-95a6-41d0-bd98-c0be6386a2cd"/>
+				<textElement>
+					<font size="24"/>
+				</textElement>
+				<text><![CDATA[List Details]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="summary_label" x="0" y="31" width="126" height="20" uuid="3f5ac525-b3f3-412b-a6ef-bb8257749e90"/>
+				<text><![CDATA[Report Date/Time: ]]></text>
+			</staticText>
+			<textField>
+				<reportElement style="summary_label" x="126" y="31" width="197" height="20" uuid="636ea985-b414-4cd9-85c4-9c70265bc4ca"/>
+				<textFieldExpression><![CDATA[$P{reportDatetime}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="summary_label" x="0" y="51" width="37" height="20" uuid="7ac8e3bc-f09d-4f41-926b-1a32fa862a86"/>
+				<text><![CDATA[Total:]]></text>
+			</staticText>
+			<textField>
+				<reportElement style="summary_label" x="37" y="51" width="155" height="20" uuid="c1635a45-9d9b-4a03-8764-c729e3a747d1"/>
+				<textFieldExpression><![CDATA[$P{cmqListTotal}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="241" splitType="Stretch">
+			<printWhenExpression><![CDATA[$P{cmqListTotal}>0]]></printWhenExpression>
+			<componentElement>
+				<reportElement key="table" style="table" x="0" y="0" width="1150" height="241" uuid="3401d615-d4d4-43ce-ab4b-fd263aa2728b"/>
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<datasetRun subDataset="cmqListTableDataset" uuid="2e3821c5-a0f6-427b-919d-0cfd03f12099">
+						<dataSourceExpression><![CDATA[$P{cmqLists}]]></dataSourceExpression>
+					</datasetRun>
+					<jr:column width="90" uuid="1766283e-7842-48e8-aa3a-69019901d418">
+						<jr:tableHeader style="table_TH" height="56" rowSpan="1">
+							<staticText>
+								<reportElement style="table_TH" x="0" y="0" width="90" height="56" uuid="da233ae9-739d-4223-b14d-ba8c5b0682c0"/>
+								<text><![CDATA[Code]]></text>
+							</staticText>
+						</jr:tableHeader>
+						<jr:tableFooter style="table_TH" height="0" rowSpan="1"/>
+						<jr:columnHeader style="table_CH" height="0" rowSpan="1"/>
+						<jr:columnFooter style="table_CH" height="0" rowSpan="1"/>
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
+							<textField isStretchWithOverflow="true">
+								<reportElement style="table_TD" stretchType="RelativeToBandHeight" x="0" y="0" width="90" height="20" uuid="4e1ca151-a9c5-4f27-811e-29b2da4a4a09"/>
+								<textFieldExpression><![CDATA[$F{cmqCode}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="231" uuid="111929f7-acc7-4603-aeef-c7dbb9d80d64">
+						<jr:tableHeader style="table_TH" height="56" rowSpan="1">
+							<staticText>
+								<reportElement style="table_TH" x="0" y="0" width="231" height="56" uuid="e6db11b7-8c98-4e69-9e4a-727248459be1"/>
+								<text><![CDATA[Name]]></text>
+							</staticText>
+						</jr:tableHeader>
+						<jr:tableFooter style="table_TH" height="0" rowSpan="1"/>
+						<jr:columnHeader style="table_CH" height="0" rowSpan="1"/>
+						<jr:columnFooter style="table_CH" height="0" rowSpan="1"/>
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
+							<textField isStretchWithOverflow="true">
+								<reportElement style="table_TD" stretchType="RelativeToBandHeight" x="0" y="0" width="231" height="20" uuid="bc035d24-cf34-407c-ac76-d4cb19acc87b"/>
+								<textFieldExpression><![CDATA[$F{cmqName}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="72" uuid="14e0edb4-2b39-4b99-853e-e1ced91a5b38">
+						<jr:tableHeader style="table_TH" height="56" rowSpan="1">
+							<staticText>
+								<reportElement style="table_TH" x="0" y="0" width="72" height="56" uuid="d057327a-b70a-48d0-ad26-6a5fb7584613"/>
+								<text><![CDATA[Extension]]></text>
+							</staticText>
+						</jr:tableHeader>
+						<jr:tableFooter style="table_TH" height="0" rowSpan="1"/>
+						<jr:columnHeader style="table_CH" height="0" rowSpan="1"/>
+						<jr:columnFooter style="table_CH" height="0" rowSpan="1"/>
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
+							<textField isStretchWithOverflow="true">
+								<reportElement style="table_TD" stretchType="RelativeToBandHeight" x="0" y="0" width="72" height="20" uuid="20f8786e-fe7f-4aa3-9176-4df141a710e3"/>
+								<textFieldExpression><![CDATA[$F{cmqType}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="68" uuid="b43277db-64f7-4dd1-a4c0-a3556bc77a3a">
+						<jr:tableHeader style="table_TH" height="56" rowSpan="1">
+							<staticText>
+								<reportElement style="table_TH" x="0" y="0" width="68" height="56" uuid="c17fff79-de32-41c7-bb8f-3a830206f581"/>
+								<text><![CDATA[Drug Program]]></text>
+							</staticText>
+						</jr:tableHeader>
+						<jr:tableFooter style="table_TH" height="0" rowSpan="1"/>
+						<jr:columnHeader style="table_CH" height="0" rowSpan="1"/>
+						<jr:columnFooter style="table_CH" height="0" rowSpan="1"/>
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
+							<textField isStretchWithOverflow="true">
+								<reportElement style="table_TD" stretchType="RelativeToBandHeight" x="0" y="0" width="68" height="20" uuid="5af14a25-5b6f-4ccc-8c31-61f60058a317"/>
+								<textFieldExpression><![CDATA[$F{cmqProgram}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="90" uuid="f9b505c7-f97d-44e3-a852-210ffa285b4c">
+						<jr:tableHeader style="table_TH" height="56" rowSpan="1">
+							<staticText>
+								<reportElement style="table_TH" x="0" y="0" width="90" height="56" uuid="84777fdb-7778-4827-978a-63495a739285"/>
+								<text><![CDATA[Protocol]]></text>
+							</staticText>
+						</jr:tableHeader>
+						<jr:tableFooter style="table_TH" height="0" rowSpan="1"/>
+						<jr:columnHeader style="table_CH" height="0" rowSpan="1"/>
+						<jr:columnFooter style="table_CH" height="0" rowSpan="1"/>
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
+							<textField isStretchWithOverflow="true">
+								<reportElement style="table_TD" stretchType="RelativeToBandHeight" x="0" y="0" width="90" height="20" uuid="082d5c90-12d0-461a-ad36-2e20a428f49e"/>
+								<textFieldExpression><![CDATA[$F{cmqProtocol}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="122" uuid="bd2200e1-be86-4758-a1fc-83061b8056ba">
+						<jr:tableHeader style="table_TH" height="56" rowSpan="1">
+							<staticText>
+								<reportElement style="table_TH" x="0" y="0" width="122" height="56" uuid="083dc59a-6da1-47d1-b6d3-4804cb42423f"/>
+								<text><![CDATA[Product]]></text>
+							</staticText>
+						</jr:tableHeader>
+						<jr:tableFooter style="table_TH" height="0" rowSpan="1"/>
+						<jr:columnHeader style="table_CH" height="0" rowSpan="1"/>
+						<jr:columnFooter style="table_CH" height="0" rowSpan="1"/>
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
+							<textField isStretchWithOverflow="true">
+								<reportElement style="table_TD" stretchType="RelativeToBandHeight" x="0" y="0" width="122" height="20" uuid="40b70d92-fae1-49aa-8567-a315308f9c0e"/>
+								<textFieldExpression><![CDATA[$F{cmqProduct}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="40" uuid="6bf31287-4eb0-4bac-858b-1df3f86b3adc">
+						<jr:tableHeader style="table_TH" height="56" rowSpan="1">
+							<staticText>
+								<reportElement style="table_TH" x="0" y="0" width="40" height="56" uuid="7c482214-7887-4af3-8ef0-a04944e294db"/>
+								<text><![CDATA[Level]]></text>
+							</staticText>
+						</jr:tableHeader>
+						<jr:tableFooter style="table_TH" height="0" rowSpan="1"/>
+						<jr:columnHeader style="table_CH" height="0" rowSpan="1"/>
+						<jr:columnFooter style="table_CH" height="0" rowSpan="1"/>
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
+							<textField isStretchWithOverflow="true">
+								<reportElement style="table_TD" stretchType="RelativeToBandHeight" x="0" y="0" width="40" height="20" uuid="3cbb2343-2fe7-48d7-af57-ad4c54661d86"/>
+								<textFieldExpression><![CDATA[$F{cmqLevel}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="68" uuid="59061d20-f57b-4a58-9221-ed9798771889">
+						<jr:tableHeader style="table_TH" height="56" rowSpan="1">
+							<staticText>
+								<reportElement style="table_TH" x="0" y="0" width="68" height="56" uuid="6e8db5af-a1f5-4926-9995-0b0903c0af85"/>
+								<text><![CDATA[Dictionary Version]]></text>
+							</staticText>
+						</jr:tableHeader>
+						<jr:tableFooter style="table_TH" height="0" rowSpan="1"/>
+						<jr:columnHeader style="table_CH" height="0" rowSpan="1"/>
+						<jr:columnFooter style="table_CH" height="0" rowSpan="1"/>
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
+							<textField isStretchWithOverflow="true">
+								<reportElement style="table_TD" stretchType="RelativeToBandHeight" x="0" y="0" width="68" height="20" uuid="6bab8fe7-0c97-4c50-894d-047a8232a80b"/>
+								<textFieldExpression><![CDATA[$F{dictionaryVersion}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="47" uuid="e4c2a20f-f8ab-40b0-a4cc-9b6ac6c730be">
+						<jr:tableHeader style="table_TH" height="56" rowSpan="1">
+							<staticText>
+								<reportElement style="table_TH" x="0" y="0" width="47" height="56" uuid="ad81534d-286f-44a8-b1ab-0107f5d35353"/>
+								<text><![CDATA[Status]]></text>
+							</staticText>
+						</jr:tableHeader>
+						<jr:tableFooter style="table_TH" height="0" rowSpan="1"/>
+						<jr:columnHeader style="table_CH" height="0" rowSpan="1"/>
+						<jr:columnFooter style="table_CH" height="0" rowSpan="1"/>
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
+							<textField isStretchWithOverflow="true">
+								<reportElement style="table_TD" stretchType="RelativeToBandHeight" x="0" y="0" width="47" height="20" uuid="d07ec6e7-0fd9-4f83-9725-edb68ab452ee"/>
+								<textFieldExpression><![CDATA[$F{cmqStatus}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="64" uuid="92b049ac-4bc7-4f3f-9178-bdbb9972f0a4">
+						<jr:tableHeader style="table_TH" height="56" rowSpan="1">
+							<staticText>
+								<reportElement style="table_TH" x="0" y="0" width="64" height="56" uuid="eb0b9b12-18d8-4372-a843-aaee436a9401"/>
+								<text><![CDATA[Algorithm]]></text>
+							</staticText>
+						</jr:tableHeader>
+						<jr:tableFooter style="table_TH" height="0" rowSpan="1"/>
+						<jr:columnHeader style="table_CH" height="0" rowSpan="1"/>
+						<jr:columnFooter style="table_CH" height="0" rowSpan="1"/>
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
+							<textField isStretchWithOverflow="true">
+								<reportElement style="table_TD" stretchType="RelativeToBandHeight" x="0" y="0" width="64" height="20" uuid="0753f310-82e2-4bf0-8b91-a16a38792bc1"/>
+								<textFieldExpression><![CDATA[$F{cmqAlgorithm}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="257" uuid="71544c92-320e-4b1a-8365-6867cf0ddf96">
+						<jr:tableHeader style="table_TH" height="56" rowSpan="1">
+							<staticText>
+								<reportElement style="table_TH" x="0" y="0" width="257" height="56" uuid="03d9d09b-854e-4500-a885-8ad0bd3302a4"/>
+								<text><![CDATA[Group]]></text>
+							</staticText>
+						</jr:tableHeader>
+						<jr:tableFooter style="table_TH" height="0" rowSpan="1"/>
+						<jr:columnHeader style="table_CH" height="0" rowSpan="1"/>
+						<jr:columnFooter style="table_CH" height="0" rowSpan="1"/>
+						<jr:detailCell style="table_TD" height="21" rowSpan="1">
+							<textField isStretchWithOverflow="true">
+								<reportElement style="table_TD" stretchType="RelativeToBandHeight" x="0" y="0" width="257" height="20" uuid="bd387ee5-97e3-4671-94a6-e06b6c96e803"/>
+								<textFieldExpression><![CDATA[$F{cmqGroup}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+				</jr:table>
+			</componentElement>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

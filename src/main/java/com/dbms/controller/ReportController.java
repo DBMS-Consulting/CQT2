@@ -7,8 +7,12 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -18,6 +22,7 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
+import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -37,6 +42,21 @@ import com.dbms.service.ISmqBaseService;
 import com.dbms.util.CqtConstants;
 import com.dbms.view.ListDetailsFormModel;
 import com.dbms.view.ListNotesFormModel;
+
+import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JREmptyDataSource;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JRMapArrayDataSource;
+import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
+import net.sf.jasperreports.engine.design.JasperDesign;
+import net.sf.jasperreports.engine.util.JRDataUtils;
+import net.sf.jasperreports.engine.util.JRSaver;
+import net.sf.jasperreports.engine.xml.JRDatasetFactory;
+import net.sf.jasperreports.engine.xml.JRXmlLoader;
 
 /**
  * @date Feb 7, 2017 7:39:34 AM
@@ -112,6 +132,8 @@ public class ReportController extends BaseController<CmqBase190> {
 
 		    	// TODO: generate report data using filter
 		    	List<CmqBase190> reportData = cmqBaseService.getPublishedListsReportData(reportStartDate, reportEndDate);
+		    	String datetimeStr = new SimpleDateFormat("d-MMM-yyyy h:mm a z").format(new Date());
+		    	
 		    	if(!reportData.isEmpty()) {
 		    		switch(genReportFormat) {
 		    		case XLS: 
@@ -127,8 +149,7 @@ public class ReportController extends BaseController<CmqBase190> {
 			            
 			            // Create a row and put some cells in it. Rows are 0 based.
 			            HSSFRow row;
-			            String datetimeStr = new SimpleDateFormat("d-MMM-yyyy h:mm a z").format(new Date());
-			            
+
 			            // Write summary cells
 			            getOrCreateHSSFCell(getOrCreateHSSFRow(sheet, 2), 0).setCellValue("Report Date/Time: " + datetimeStr);
 			            getOrCreateHSSFCell(getOrCreateHSSFRow(sheet, 3), 0).setCellValue("Total: " + reportData.size());
@@ -154,6 +175,45 @@ public class ReportController extends BaseController<CmqBase190> {
 				    	wb.write(new FileOutputStream(tempFile));
 				    	break;
 		    		case PDF:
+		    			
+		    			tempFile = File.createTempFile(RandomStringUtils.randomAlphabetic(5), ".pdf");
+		    			outputFileName = "list-details-report.pdf";
+		    			tempFile.deleteOnExit();
+		    			Map<String, Object> parameters = new HashMap<String, Object>();
+	    			
+		    			// Summary data
+		    			parameters.put("reportDatetime", datetimeStr);
+		    			parameters.put("cmqListTotal", reportData.size());
+		    			
+		    			// list data
+		    			Collection<Map<String, ?>> listData = new LinkedList<Map<String, ?>>();
+		    			for(CmqBase190 dr: reportData) {
+		    				Map<String, Object> rowData= new HashMap<String, Object>();
+		    				rowData.put("cmqCode", dr.getCmqCode().toString());
+		    				rowData.put("cmqName", dr.getCmqName());
+		    				rowData.put("cmqType", refCodeListService.interpretInternalCodeToValue(CqtConstants.CODE_LIST_TYPE_EXTENSION, dr.getCmqTypeCd()));
+		    				rowData.put("cmqProgram", refCodeListService.interpretInternalCodeToValue(CqtConstants.CODE_LIST_TYPE_PROGRAM, dr.getCmqProgramCd()));
+		    				rowData.put("cmqProtocol", refCodeListService.interpretInternalCodeToValue(CqtConstants.CODE_LIST_TYPE_PROTOCOL, dr.getCmqProtocolCd()));
+		    				rowData.put("cmqProduct", refCodeListService.interpretInternalCodeToValue(CqtConstants.CODE_LIST_TYPE_PRODUCT, dr.getCmqProductCd()));
+		    				rowData.put("cmqLevel", dr.getCmqLevel().toString());
+		    				rowData.put("dictionaryVersion", dr.getDictionaryVersion());
+		    				rowData.put("cmqStatus", dr.getCmqStatus());
+		    				rowData.put("cmqAlgorithm", dr.getCmqAlgorithm());
+		    				rowData.put("cmqGroup", dr.getCmqGroup());
+		    				listData.add(rowData);
+		    			}
+		    			parameters.put("cmqLists", new JRMapCollectionDataSource(listData));
+		    			
+//		    			templateFile = new File(ec.getRealPath("/WEB-INF/report_templates/CQT-Reports-Generate List Details-List Details.jrxml"));
+//		    			JasperDesign jasperDesign = JRXmlLoader.load(templateFile);
+//		    			JasperReport jasperReport = JasperCompileManager.compileReport(jasperDesign);
+//		    			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters);
+		    			
+		    			//or
+		    			templateFile = new File(ec.getRealPath("/WEB-INF/report_templates/CQT-Reports-Generate List Details-List Details.jasper"));	    			
+		    			JasperPrint jasperPrint = JasperFillManager.fillReport(new FileInputStream(templateFile), parameters, new JREmptyDataSource());
+		    				    			
+		    			JasperExportManager.exportReportToPdfStream(jasperPrint, new FileOutputStream(tempFile));
 		    			break;
 		    		}
 		    	}
