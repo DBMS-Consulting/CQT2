@@ -1495,6 +1495,9 @@ public class SearchController extends BaseController<CmqBase190> {
 		}
 	}
 	
+	/**
+	 * Reset Search form/results of hierarchy select dialog
+	 */
 	public void resetHierarchySearch() {
 		this.hierarchyRoot = new DefaultTreeNode("root", new HierarchyNode(
 				"LEVEL", "NAME", "CODE", null), null);
@@ -1605,6 +1608,7 @@ public class SearchController extends BaseController<CmqBase190> {
 	}
 
 	public void setClickedCmqCode(Long clickedCmqCode) {
+		resetHierarchySearch();
 		this.clickedCmqCode = clickedCmqCode;
 		this.selctedData = this.cmqBaseService.findByCode(clickedCmqCode);
 		List<CmqRelation190> cmqRelationList = this.cmqRelationService
