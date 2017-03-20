@@ -5,29 +5,7 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:p="http://primefaces.org/ui">
-
-	<h:panelGrid columns="2" cellpadding="5">
-		<p:outputLabel value="Level" />
-		<p:selectOneMenu value="#{dummyView.value}" id="level">
-			<f:selectItem itemValue="All" itemLabel="All" />
-			<f:selectItem itemValue="1" itemLabel="1" />
-			<f:selectItem itemValue="2" itemLabel="2" />
-			<f:selectItem itemValue="3" itemLabel="3" />
-			<f:selectItem itemValue="4" itemLabel="4" />
-			<f:selectItem itemValue="5" itemLabel="5" />
-		</p:selectOneMenu>
-	</h:panelGrid>
-	<h:panelGrid columns="5" cellpadding="5">
-		<p:outputLabel value="Term" />
-		<p:inputText value="#{dummyView.value}" />
-
-		<p:outputLabel value="Code" />
-		<p:inputText value="#{dummyView.value}" />
-
-		<p:commandButton value="Search" action="#{searchController.search()}" />
-
-	</h:panelGrid>
-
+ 
 	<p:tabView id="pt2" style="width:800px; height:381px;">
 
 		<p:tab title="Impacted SMQs" id="sdi5" styleClass="AFStretchWidth">
