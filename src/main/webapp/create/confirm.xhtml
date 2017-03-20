@@ -140,7 +140,7 @@
 			
 			<f:facet name="right">
 				<!-- <p:commandButton value="Reactivate" id="reactivateBtn"
-					disabled="#{createController.reactivate}"
+					disabled="#{createController.reactivateDisabled}"
 					action="#{createController.workflowState('Reactivate')}"
 					process="@this" update="m1 @form:confirmPan @form"
 					oncomplete="notifySearchControllerDataChange()">
@@ -149,7 +149,7 @@
 						icon="ui-icon-alert" />
 				</p:commandButton>
 				<p:commandButton value="Retire"
-					disabled="#{createController.retire}" id="retireBtn"
+					disabled="#{createController.retireDisabled}" id="retireBtn"
 					action="#{createController.workflowState('Retire')}"
 					process="@this" update="m1 @form:confirmPan @form"
 					oncomplete="notifySearchControllerDataChange()">
@@ -159,7 +159,7 @@
 				</p:commandButton> -->
 
 				<p:commandButton value="Demote to Draft" id="demoteBtn"
-					disabled="#{createController.selectedData.cmqState eq 'Reviewed' ||  createController.selectedData.cmqState eq 'Approved' ? false : true}"
+					disabled="#{createController.demoteDisabled}"
 					action="#{createController.workflowState('Draft')}"
 					process="@this" update="m1 @form:confirmPan @form"
 					oncomplete="notifySearchControllerDataChange()">
@@ -169,7 +169,7 @@
 				</p:commandButton>
 
 				<p:commandButton value="Reviewed" id="reviewedBtn"
-					disabled="#{createController.reviewed}"
+					disabled="#{createController.reviewedDisabled}"
 					action="#{createController.workflowState('Reviewed')}"
 					process="@this" update="m1 @form:confirmPan @form"
 					oncomplete="notifySearchControllerDataChange()">
@@ -179,7 +179,7 @@
 				</p:commandButton>
 
 				<p:commandButton value="Approve" id="approveBtn"
-					disabled="#{createController.selectedData.cmqState eq 'Reviewed' ? false : true}"
+					disabled="#{createController.approveDisabled}"
 					action="#{createController.workflowState('Approved')}"
 					process="@this" update="m1 @form:confirmPan @form"
 					oncomplete="notifySearchControllerDataChange()">
@@ -189,7 +189,7 @@
 				</p:commandButton>
 
 				<p:commandButton value="Delete" id="deleteBtn"
-					disabled="#{createController.delete}"
+					disabled="#{createController.deleteDisabled}"
 					action="#{createController.workflowState('Delete')}"
 					process="@this" update="m1 @form:confirmPan @form"
 					oncomplete="notifySearchControllerDataChange()">

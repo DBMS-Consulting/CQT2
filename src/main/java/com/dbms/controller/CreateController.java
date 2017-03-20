@@ -1328,7 +1328,7 @@ public class CreateController implements Serializable {
                 && selectedData.getCmqParentCode()!=null);
 	}
 
-	public boolean isReactivate() {
+	public boolean isReactivateDisabled() {
 		if (selectedData != null && "I".equals(selectedData.getCmqStatus()))
 			return false;
 		return true;
@@ -1338,36 +1338,38 @@ public class CreateController implements Serializable {
 	 * returns if the retire button should be disabled or not. (true for disabled)
 	 * The retire button will be enabled only when lists Status is A (active).
 	 * 
-	 * @return true if it is available for retire
+	 * @return true if it is UNAVAILABLE for retire
 	 */
-	public boolean isRetire() {
+	public boolean isRetireDisabled() {
 		if (selectedData != null && "A".equals(selectedData.getCmqStatus()))
 			return false;
 		return true;
 	}
 
-	public boolean isDemote() {
-		if (selectedData != null && selectedData.getCmqStatus() != null
+	public boolean isDemoteDisabled() {
+		if (selectedData != null
 				&& ("Reviewed".equalsIgnoreCase(selectedData.getCmqState()) || "Approved".equalsIgnoreCase(selectedData.getCmqState())))
 			return false;
 		return true;
 	}
 
-	public boolean isDelete() {
-		if (selectedData != null && selectedData.getCmqStatus() != null && "Draft".equalsIgnoreCase(selectedData.getCmqState()))
-			return false;
-		return true;
+	public boolean isDeleteDisabled() {
+		if (selectedData == null
+				|| !"Draft".equalsIgnoreCase(selectedData.getCmqState())
+				|| selectedData.getActivationDate() != null)
+			return true;
+		return false;
 	}
 
-	public boolean isApprove() {
+	public boolean isApproveDisabled() {
 		if (selectedData != null && selectedData.getCmqStatus() != null
 				&& "Reviewed".equalsIgnoreCase(selectedData.getCmqState()))
 			return false;
 		return true;
 	}
 
-	public boolean isReviewed() {
-		if (selectedData != null && selectedData.getCmqStatus() != null && "Draft".equalsIgnoreCase(selectedData.getCmqState()))
+	public boolean isReviewedDisabled() {
+		if (selectedData != null && "Draft".equalsIgnoreCase(selectedData.getCmqState()))
 			return false;
 		return true;
 	}
