@@ -96,25 +96,30 @@
 				</p:confirmDialog>
 
 				<p:spacer width="10" />
-				<!-- <p:commandButton value="Export" id="ctb11a" disabled="false"
-					icon="fa fa-file-excel-o">
-					<p:fileDownload value="#{null}"></p:fileDownload>
-				</p:commandButton> -->
 
 				<i class="fa fa-file-excel-o"
-					style="position: absolute; margin-top: 2px; margin-left: 5px"></i>
+					style="position: absolute; margin-top: 8px; margin-left: 5px"></i>
 				<h:commandLink id="generate" value="Export" type="button"
 					styleClass="generate"
-					actionListener="#{reportController.generateExcelReport(createController.detailsFormModel, searchController.relationsRoot)}">
+					actionListener="#{reportController.generateExcelReport(createController.detailsFormModel)}">
 
 					<p:fileDownload value="#{reportController.excelFile}" />
 				</h:commandLink>
 
 				<p:spacer width="10" />
-				<p:commandButton value="MQ Detailed Report" id="ctb1"
+				<!-- <p:commandButton value="MQ Detailed Report" id="ctb1"
 					icon="fa fa-file-excel-o">
 					<p:fileDownload value="#{null}"></p:fileDownload>
-				</p:commandButton>
+				</p:commandButton> -->
+				
+				<i class="fa fa-file-excel-o"
+					style="position: absolute; margin-top: 8px; margin-left: 5px"></i>
+				<h:commandLink id="generate_MQ" value="MQ Detailed Report" type="button"
+					styleClass="generate"
+					actionListener="#{reportController.generateMQReport(createController.detailsFormModel, createController.notesFormModel)}">
+
+					<p:fileDownload value="#{reportController.excelFile}" />
+				</h:commandLink>
 				
 				<p:spacer width="10" />
 				<p:commandButton value="Hierarchy Search" id="ctb13"
@@ -273,11 +278,11 @@
 .generate {
 	border: 1px solid #8c8c8c !important;
 	border-radius: 4px;
-	padding: 8px;
+	padding: 4px;
 	padding-left: 20px;
 	color: #000;
 	font-weight: bold;
-	ackground-color: #cccccc;
+	background-color: #cccccc;
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #ececec),
 		color-stop(100%, #cccccc));
 	background: -webkit-linear-gradient(#ececec, #cccccc);

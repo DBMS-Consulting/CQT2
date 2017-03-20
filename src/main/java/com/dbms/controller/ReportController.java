@@ -37,6 +37,7 @@ import com.dbms.service.IRefCodeListService;
 import com.dbms.service.ISmqBaseService;
 import com.dbms.util.CqtConstants;
 import com.dbms.view.ListDetailsFormModel;
+import com.dbms.view.ListNotesFormModel;
 
 /**
  * @date Feb 7, 2017 7:39:34 AM
@@ -185,9 +186,18 @@ public class ReportController extends BaseController<CmqBase190> {
 	/**
 	 * Generate Excel report on relations tab.
 	 */
-	public void generateExcelReport(ListDetailsFormModel details, TreeNode relationsRoot) {
+	public void generateExcelReport(ListDetailsFormModel details) {
 		RefConfigCodeList currentMeddraVersionCodeList = this.refCodeListService.getCurrentMeddraVersion();
-		StreamedContent content = cmqBaseService.generateExcelReport(details, (currentMeddraVersionCodeList != null ? currentMeddraVersionCodeList.getValue() : ""), relationsRoot);
+		StreamedContent content = cmqBaseService.generateExcelReport(details, (currentMeddraVersionCodeList != null ? currentMeddraVersionCodeList.getValue() : ""));
+		setExcelFile(content); 
+	}
+	
+	/**
+	 * Generate MQ report on relations tab.
+	 */
+	public void generateMQReport(ListDetailsFormModel details, ListNotesFormModel notes) {
+		RefConfigCodeList currentMeddraVersionCodeList = this.refCodeListService.getCurrentMeddraVersion();
+		StreamedContent content = cmqBaseService.generateMQReport(details, notes, (currentMeddraVersionCodeList != null ? currentMeddraVersionCodeList.getValue() : ""));
 		setExcelFile(content); 
 	}
 

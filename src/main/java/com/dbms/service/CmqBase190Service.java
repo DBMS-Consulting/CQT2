@@ -21,12 +21,18 @@ import javax.persistence.Query;
 import javax.persistence.TemporalType;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.ClientAnchor;
 import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.Drawing;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Picture;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -36,19 +42,17 @@ import org.hibernate.transform.Transformers;
 import org.hibernate.type.StandardBasicTypes;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
-import org.primefaces.model.TreeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.dbms.csmq.HierarchyNode;
 import com.dbms.entity.cqt.CmqBase190;
 import com.dbms.entity.cqt.CmqRelation190;
-import com.dbms.entity.cqt.SmqBase190;
 import com.dbms.entity.cqt.SmqRelation190;
 import com.dbms.entity.cqt.dtos.MeddraDictHierarchySearchDto;
 import com.dbms.service.base.CqtPersistenceService;
 import com.dbms.util.exceptions.CqtServiceException;
 import com.dbms.view.ListDetailsFormModel;
+import com.dbms.view.ListNotesFormModel;
 
 /**
  * @author Jay G.(jayshanchn@hotmail.com)
@@ -571,7 +575,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190> impleme
 	 * Excel Report.
 	 */
 	@Override
-	public StreamedContent generateExcelReport(ListDetailsFormModel details, String dictionaryVersion, TreeNode relationsRoot) {
+	public StreamedContent generateExcelReport(ListDetailsFormModel details, String dictionaryVersion) {
 		XSSFWorkbook workbook = new XSSFWorkbook();
 		XSSFSheet worksheet = null;
  
@@ -591,7 +595,15 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190> impleme
 		row = worksheet.createRow(rowCount);
 		XSSFCell cell = row.createCell(0);
 		
+		row = worksheet.createRow(rowCount);
+		cell = row.createCell(0);
+		cell.setCellValue(details.getName());
+		setCellStyleTitre(workbook, cell); 
+		
 		//Term name 
+		rowCount += 2;
+		row = worksheet.createRow(rowCount);
+		cell = row.createCell(0);
 		cell.setCellValue("MedDRA Dictionary Version: " + dictionaryVersion);
 		
 		rowCount++;
@@ -625,16 +637,22 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190> impleme
 		row = worksheet.createRow(rowCount);
 		cell = row.createCell(0);
 		cell.setCellValue("Term");
+		setCellStyleColumn(workbook, cell); 
 		cell = row.createCell(1);
 		cell.setCellValue("Code");
+		setCellStyleColumn(workbook, cell); 
 		cell = row.createCell(2);
 		cell.setCellValue("Level");
+		setCellStyleColumn(workbook, cell); 
 		cell = row.createCell(3);
 		cell.setCellValue("Category");
+		setCellStyleColumn(workbook, cell); 
 		cell = row.createCell(4);
 		cell.setCellValue("Weight");
+		setCellStyleColumn(workbook, cell); 
 		cell = row.createCell(5);
 		cell.setCellValue("Scope");
+		setCellStyleColumn(workbook, cell); 
 		rowCount++;
 
 		// Retrieval of relations - Loop
@@ -672,7 +690,6 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190> impleme
 				if(code != null) 
  					child = smqBaseService.findSmqRelationBySmqAndPtCode(relation.getSmqCode(), code.intValue());
 				 
-				//if (child != null) {
 				row = worksheet.createRow(rowCount);
 				// Cell 0
 				cell = row.createCell(0);
@@ -685,8 +702,8 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190> impleme
 				cell = row.createCell(1);
 				if (child != null)
 					cell.setCellValue(child.getPtCode());
-				if (searchDto != null)
-					cell.setCellValue(searchDto.getCode());
+				if (searchDto != null && searchDto.getCode() != null)
+					cell.setCellValue(Integer.parseInt(searchDto.getCode())); 
 
 				// Cell 2
 				cell = row.createCell(2);
@@ -711,7 +728,6 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190> impleme
 						.getTermScope() : "");
 
 				rowCount++;
-				//}
 			}
 		}
 
@@ -737,6 +753,303 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190> impleme
 		}
 
 		return content;
+	}
+	
+	/**
+	 * MQ Report.
+	 */
+	@Override
+	public StreamedContent generateMQReport(ListDetailsFormModel details, ListNotesFormModel notes, String dictionaryVersion) {
+		XSSFWorkbook workbook = new XSSFWorkbook();
+		XSSFSheet worksheet = null;
+ 
+		worksheet = workbook.createSheet("MQ Report");
+		XSSFRow row = null;
+		int rowCount = 4;
+		
+		try {
+			insertExporLogoImage(worksheet, workbook);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+
+		/**
+		 * Première ligne - entêtes
+		 */
+		row = worksheet.createRow(rowCount);
+		XSSFCell cell = row.createCell(0);
+		
+		row = worksheet.createRow(rowCount);
+		cell = row.createCell(0);
+		cell.setCellValue(details.getName());
+		setCellStyleTitre(workbook, cell); 
+		
+		//Term name 
+		rowCount += 2;
+		row = worksheet.createRow(rowCount);
+		cell = row.createCell(0);
+		cell.setCellValue("MedDRA Dictionary Version: " + dictionaryVersion);
+		
+		rowCount++;
+		row = worksheet.createRow(rowCount);
+		cell = row.createCell(0);
+		cell.setCellValue("Term: " + details.getName());
+		rowCount++;
+		row = worksheet.createRow(rowCount);
+		cell = row.createCell(0);
+		cell.setCellValue("Drug Program: " + details.getDrugProgram());
+		rowCount++;
+		row = worksheet.createRow(rowCount);
+		cell = row.createCell(0);
+		cell.setCellValue("Protocol: " + details.getProtocol());
+		rowCount++;
+		row = worksheet.createRow(rowCount);
+		cell = row.createCell(0);
+		cell.setCellValue("Product List: " + details.getProduct());
+		rowCount++;
+		row = worksheet.createRow(rowCount);
+		cell = row.createCell(0);
+		cell.setCellValue("Designee: " + details.getDesignee());
+		rowCount++;
+		row = worksheet.createRow(rowCount);
+		cell = row.createCell(0);
+		cell.setCellValue("Level: " + details.getLevel());
+		rowCount++;
+		row = worksheet.createRow(rowCount);
+		cell = row.createCell(0);
+		cell.setCellValue("Code: " + details.getCode());
+		rowCount++;
+		row = worksheet.createRow(rowCount);
+		cell = row.createCell(0);
+		cell.setCellValue("Algorithm: " + details.getAlgorithm());
+		rowCount++;
+		row = worksheet.createRow(rowCount);
+		cell = row.createCell(0);
+		cell.setCellValue("Level Extension: " + details.getExtension());
+		rowCount++;
+		row = worksheet.createRow(rowCount);
+		cell = row.createCell(0);
+		cell.setCellValue("Group: " + details.getGroup());
+		rowCount++;
+		row = worksheet.createRow(rowCount);
+		cell = row.createCell(0);
+		cell.setCellValue("Status: " + details.getStatus());
+		rowCount++;
+		row = worksheet.createRow(rowCount);
+		cell = row.createCell(0);
+		cell.setCellValue("State: " + details.getState());
+		rowCount++;
+		row = worksheet.createRow(rowCount);
+		cell = row.createCell(0);
+		cell.setCellValue("Initial Creation By: " + details.getCreatedBy());
+		rowCount++;
+		row = worksheet.createRow(rowCount);
+		cell = row.createCell(0);
+		cell.setCellValue("Initial Creation Date: " + details.getCreationDate());
+		rowCount++;
+		row = worksheet.createRow(rowCount);
+		cell = row.createCell(0);
+		cell.setCellValue("Last Creation By: " + details.getLastModifiedBy());
+		rowCount++;
+		row = worksheet.createRow(rowCount);
+		cell = row.createCell(0);
+		cell.setCellValue("Last Creation Date: " + details.getLastModifiedDate());
+		
+		rowCount++;
+		row = worksheet.createRow(rowCount);
+		cell = row.createCell(0);
+		cell.setCellValue("Report Date/Time: " + new Date().toString());
+
+		rowCount += 2;
+		row = worksheet.createRow(rowCount);
+		cell = row.createCell(0);
+		cell.setCellValue("Description: ");
+		setCellStyleTitre(workbook, cell); 
+		rowCount++;
+		row = worksheet.createRow(rowCount);
+		cell = row.createCell(0);
+		cell.setCellValue(notes.getDescription());
+		
+		rowCount += 2;
+		row = worksheet.createRow(rowCount);
+		cell = row.createCell(0);
+		cell.setCellValue("Source:");
+		setCellStyleTitre(workbook, cell); 
+		rowCount++;
+		row = worksheet.createRow(rowCount);
+		cell = row.createCell(0);
+		cell.setCellValue(notes.getSource());
+		
+		rowCount += 2;
+		row = worksheet.createRow(rowCount);
+		cell = row.createCell(0);
+		cell.setCellValue("Note: ");
+		setCellStyleTitre(workbook, cell); 
+		rowCount++;
+		row = worksheet.createRow(rowCount);
+		cell = row.createCell(0);
+		cell.setCellValue(notes.getNotes());
+		
+		rowCount += 2;
+		row = worksheet.createRow(rowCount);
+		cell = row.createCell(0);
+		cell.setCellValue("Term");
+		setCellStyleColumn(workbook, cell); 
+		cell = row.createCell(1);
+		cell.setCellValue("Code");
+		setCellStyleColumn(workbook, cell); 
+		cell = row.createCell(2);
+		cell.setCellValue("Level");
+		setCellStyleColumn(workbook, cell); 
+		cell = row.createCell(3);
+		cell.setCellValue("Category");
+		setCellStyleColumn(workbook, cell); 
+		cell = row.createCell(4);
+		cell.setCellValue("Weight");
+		setCellStyleColumn(workbook, cell); 
+		cell = row.createCell(5);
+		cell.setCellValue("Scope");
+		setCellStyleColumn(workbook, cell); 
+		rowCount++;
+
+		// Retrieval of relations - Loop
+		List<CmqRelation190> relations = cmqRelationService.findByCmqCode(details.getCode());
+		System.out.println("\n\n ****************** relations SIZE for export " + relations.size()); 
+		Long code = null;
+		MeddraDictHierarchySearchDto searchDto = null;
+		String level = "";
+ 		
+		if (relations != null) {
+			for (CmqRelation190 relation : relations) {
+				System.out.println("\n\n ****************** relation PT CODE : " + relation.getPtCode());
+				
+				if (relation.getPtCode() != null)
+					code = relation.getPtCode();
+				
+				else if (relation.getHlgtCode() != null) {
+					code = relation.getHlgtCode();
+					searchDto = this.meddraDictService.findByCode("HLGT_", code);
+					level = "HLGT";
+				}
+				else if (relation.getHltCode() != null) {
+					code = relation.getHltCode();
+					searchDto = this.meddraDictService.findByCode("HLT_", code);
+					level = "HLT";
+				}
+				else if (relation.getSocCode() != null) {
+					code = relation.getSocCode();
+					searchDto = this.meddraDictService.findByCode("SOC_", code);
+					level = "SOC";
+				}
+				
+
+			
+				//SmqRelation190 child = null;
+				SmqRelation190 child = null;
+				if(code != null) 
+ 					child = smqBaseService.findSmqRelationBySmqAndPtCode(relation.getSmqCode(), code.intValue());
+				 
+				
+				if (searchDto != null) {
+					Long smqBaseChildrenCount = this.smqBaseService.findChildSmqCountByParentSmqCode(Long.parseLong(searchDto.getCode()));
+
+					System.out.println("\n\n ****************** relation smqBaseChildrenCount : " + smqBaseChildrenCount);
+				}
+				
+				row = worksheet.createRow(rowCount);
+				// Cell 0
+				cell = row.createCell(0);
+				if (child != null)
+					cell.setCellValue(child.getPtName());
+				if (searchDto != null)
+					cell.setCellValue(searchDto.getTerm());
+
+				// Cell 1
+				cell = row.createCell(1);
+				if (child != null)
+					cell.setCellValue(child.getPtCode());
+				if (searchDto != null && searchDto.getCode() != null)
+					cell.setCellValue(Integer.parseInt(searchDto.getCode())); 
+
+				// Cell 2
+				cell = row.createCell(2);
+				if (child != null)
+					cell.setCellValue(child.getSmqLevel());
+				if (searchDto != null)
+					cell.setCellValue(level);
+
+				// Cell 3
+				cell = row.createCell(3);
+				cell.setCellValue(relation.getTermCategory() != null ? relation
+						.getTermCategory() : "");
+
+				// Cell 4
+				cell = row.createCell(4);
+				cell.setCellValue(relation.getTermWeight() != null ? relation
+						.getTermWeight() : 0);
+
+				// Cell 5
+				cell = row.createCell(5);
+				cell.setCellValue(relation.getTermScope() != null ? relation
+						.getTermScope() : "");
+
+				rowCount++;
+			}
+		}
+
+		worksheet.autoSizeColumn(0);
+		worksheet.autoSizeColumn(1);
+		worksheet.autoSizeColumn(2);
+		worksheet.autoSizeColumn(3);
+		worksheet.autoSizeColumn(4);
+		worksheet.autoSizeColumn(5);
+ 
+		StreamedContent content = null;
+		try {
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			workbook.write(baos);
+			byte[] xls = baos.toByteArray();
+			ByteArrayInputStream bais = new ByteArrayInputStream(xls);
+			content = new DefaultStreamedContent(
+					bais,
+					"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+					"Relations_MQ_Detailed_Report_" + details.getName() + ".xlsx");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return content;
+	}
+	
+	private void setCellStyleTitre(XSSFWorkbook wb, XSSFCell cell) {
+		XSSFCellStyle cellStyle = wb.createCellStyle();
+		
+		XSSFFont defaultFont = wb.createFont();
+		defaultFont.setFontHeightInPoints((short) 14);
+		defaultFont.setFontName("Arial");
+		defaultFont.setColor(IndexedColors.BLACK.getIndex());
+		defaultFont.setBold(true);
+		defaultFont.setItalic(false);
+
+		cellStyle.setFont(defaultFont);
+		cell.setCellStyle(cellStyle);
+	}
+	
+	private void setCellStyleColumn(XSSFWorkbook wb, XSSFCell cell) {
+		XSSFCellStyle cellStyle = wb.createCellStyle();
+		cellStyle.setFillBackgroundColor(IndexedColors.AQUA.getIndex());
+		cellStyle.setFillPattern(XSSFCellStyle.SOLID_FOREGROUND);
+		cellStyle.setFillForegroundColor(HSSFColor.GREY_40_PERCENT.index);
+ 		
+		XSSFFont defaultFont = wb.createFont();
+		defaultFont.setFontHeightInPoints((short) 12);
+		defaultFont.setFontName("Arial");
+		defaultFont.setColor(IndexedColors.BLACK.getIndex());
+		defaultFont.setBold(true);
+		defaultFont.setItalic(false);
+
+		cellStyle.setFont(defaultFont);
+		cell.setCellStyle(cellStyle);
 	}
 	
 	private void insertExporLogoImage(XSSFSheet sheet, XSSFWorkbook wb) throws IOException {

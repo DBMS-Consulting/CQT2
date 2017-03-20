@@ -33,6 +33,10 @@ public class ListDetailsFormModel {
 	private String status;
 	private String history;
 	private Long code;
+	private String createdBy;
+	private Date creationDate;
+	private String lastModifiedBy;
+	private Date lastModifiedDate;
 	
 	
 	public ListDetailsFormModel() {
@@ -88,6 +92,10 @@ public class ListDetailsFormModel {
 			this.modelChanged = false;
 		
 		this.code = cmq.getCmqCode();
+		this.createdBy = cmq.getCreatedBy();
+		this.creationDate = cmq.getCreationDate();
+		this.lastModifiedBy = cmq.getLastModifiedBy();
+		this.lastModifiedDate = cmq.getLastModifiedDate();
 	}
 	
 	/**
@@ -395,6 +403,38 @@ public class ListDetailsFormModel {
 
 	public void setCode(Long code) {
 		this.code = code;
+	}
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public Date getCreationDate() {
+		return creationDate;
+	}
+
+	public void setCreationDate(Date creationDate) {
+		this.creationDate = creationDate;
+	}
+
+	public String getLastModifiedBy() {
+		return lastModifiedBy;
+	}
+
+	public void setLastModifiedBy(String lastModifiedBy) {
+		this.lastModifiedBy = lastModifiedBy;
+	}
+
+	public Date getLastModifiedDate() {
+		return lastModifiedDate;
+	}
+
+	public void setLastModifiedDate(Date lastModifiedDate) {
+		this.lastModifiedDate = lastModifiedDate;
 	}
 
 }
