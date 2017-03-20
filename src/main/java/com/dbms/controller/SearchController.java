@@ -206,6 +206,8 @@ public class SearchController extends BaseController<CmqBase190> {
 		this.termName = "";
 		this.code = null;
 		this.dataModified = false;
+		
+		resetHierarchySearch();
 	}
 
 	/**
@@ -1493,12 +1495,16 @@ public class SearchController extends BaseController<CmqBase190> {
 		}
 	}
 	
-	public void onCloseHierarchySearch(CloseEvent event) {
-		this.hierarchyRootCopy = this.hierarchyRoot;
+	public void resetHierarchySearch() {
 		this.hierarchyRoot = new DefaultTreeNode("root", new HierarchyNode(
 				"LEVEL", "NAME", "CODE", null), null);
 		this.levelH = null;
-		this.termNameOfHierarchySearch = null;
+		this.termNameOfHierarchySearch = "";
+	}
+	
+	public void onCloseHierarchySearch(CloseEvent event) {
+		this.hierarchyRootCopy = this.hierarchyRoot;
+		resetHierarchySearch();
 	}
 
 	public String[] getSelectedSOCs() {

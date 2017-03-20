@@ -68,6 +68,13 @@ public class ReportController extends BaseController<CmqBase190> {
 	private static final long serialVersionUID = 52332344344651662L;
 
 	private static final Logger log = LoggerFactory.getLogger(ReportController.class);
+	
+	private static final String REPORT_TEMPLATE_PATH_LIST_DETAILS_XLS = "/WEB-INF/report_templates/CQT-Reports-Generate List Details-List Details.xls";
+	private static final String REPORT_TEMPLATE_PATH_LIST_DETAILS_JRXML = "/WEB-INF/report_templates/CQT-Reports-Generate List Details-List Details.jrxml";
+	private static final String REPORT_TEMPLATE_PATH_LIST_DETAILS_JASPER = "/WEB-INF/report_templates/CQT-Reports-Generate List Details-List Details.jasper";
+	
+	private static final String REPORT_DOWNLOAD_FILENAME_LIST_DETAILS_XLS = "list-details-report.xls";
+	private static final String REPORT_DOWNLOAD_FILENAME_LIST_DETAILS_PDF = "list-details-report.pdf";
 
 	@ManagedProperty("#{CmqBase190Service}")
 	private ICmqBase190Service cmqBaseService;
@@ -137,8 +144,8 @@ public class ReportController extends BaseController<CmqBase190> {
 		    	if(!reportData.isEmpty()) {
 		    		switch(genReportFormat) {
 		    		case XLS: 
-		    			outputFileName = "list-details-report.xls";
-		    			templateFile = new File(ec.getRealPath("/WEB-INF/report_templates/CQT-Reports-Generate List Details-List Details.xls"));
+		    			outputFileName = REPORT_DOWNLOAD_FILENAME_LIST_DETAILS_XLS;
+		    			templateFile = new File(ec.getRealPath(REPORT_TEMPLATE_PATH_LIST_DETAILS_XLS));
 		    			tempFile = File.createTempFile(RandomStringUtils.randomAlphabetic(5), ".xls");
 		    			tempFile.deleteOnExit();
 
@@ -175,9 +182,8 @@ public class ReportController extends BaseController<CmqBase190> {
 				    	wb.write(new FileOutputStream(tempFile));
 				    	break;
 		    		case PDF:
-		    			
+		    			outputFileName = REPORT_DOWNLOAD_FILENAME_LIST_DETAILS_PDF;
 		    			tempFile = File.createTempFile(RandomStringUtils.randomAlphabetic(5), ".pdf");
-		    			outputFileName = "list-details-report.pdf";
 		    			tempFile.deleteOnExit();
 		    			Map<String, Object> parameters = new HashMap<String, Object>();
 	    			
@@ -204,13 +210,13 @@ public class ReportController extends BaseController<CmqBase190> {
 		    			}
 		    			parameters.put("cmqLists", new JRMapCollectionDataSource(listData));
 		    			
-//		    			templateFile = new File(ec.getRealPath("/WEB-INF/report_templates/CQT-Reports-Generate List Details-List Details.jrxml"));
+//		    			templateFile = new File(ec.getRealPath(REPORT_TEMPLATE_PATH_LIST_DETAILS_JRXML));
 //		    			JasperDesign jasperDesign = JRXmlLoader.load(templateFile);
 //		    			JasperReport jasperReport = JasperCompileManager.compileReport(jasperDesign);
 //		    			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters);
 		    			
 		    			//or
-		    			templateFile = new File(ec.getRealPath("/WEB-INF/report_templates/CQT-Reports-Generate List Details-List Details.jasper"));	    			
+		    			templateFile = new File(ec.getRealPath(REPORT_TEMPLATE_PATH_LIST_DETAILS_JASPER));	    			
 		    			JasperPrint jasperPrint = JasperFillManager.fillReport(new FileInputStream(templateFile), parameters, new JREmptyDataSource());
 		    				    			
 		    			JasperExportManager.exportReportToPdfStream(jasperPrint, new FileOutputStream(tempFile));
