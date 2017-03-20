@@ -13,10 +13,8 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
-import javax.faces.event.AjaxBehaviorEvent;
 
 import org.primefaces.context.RequestContext;
-import org.primefaces.event.TransferEvent;
 import org.primefaces.model.DualListModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,6 +56,8 @@ public class RetireController implements Serializable {
 	
 	private String confirmMessage;
 	
+	private boolean childNotSelected;
+	
 	@PostConstruct
 	public void init() {
 		sourceListToRetire = this.cmqBaseService.findCmqsToRetire();
@@ -72,29 +72,30 @@ public class RetireController implements Serializable {
 	 * @param event
 	 */
 	public void pickList() {
-		boolean childNotSelected = false;
+		childNotSelected = true;
+		int cpt = 0;
 		List<CmqBase190> targetCmqsSelected = new ArrayList<CmqBase190>(this.retireDualListModel.getTarget());
 		List<Long> targetCmqCodes = new ArrayList<>();
 		LOG.info("\n\n **********************   targetCmqsSelected size " + targetCmqsSelected.size());
 		
-		for (CmqBase190 cmqBase : targetCmqsSelected) {
+		for (CmqBase190 cmqBase : targetCmqsSelected)
 			targetCmqCodes.add(cmqBase.getCmqCode());
-		}
 		
 		List<CmqBase190> childCmqsOftargets = this.cmqBaseService.findChildCmqsByCodes(targetCmqCodes);
 		if((null != childCmqsOftargets) && (childCmqsOftargets.size() > 0)) {
 			//add them to the selected cmqs list
 			for (CmqBase190 childCmq : childCmqsOftargets) {
-				for (CmqBase190 srcCmq : sourceListToRetire) {
-					if (childCmq.getCmqCode().equals(srcCmq.getCmqCode())) {
-						childNotSelected = true;
-						break;
-					}
+				for (CmqBase190 srcCmq : targetCmqsSelected) {
+					if (!srcCmq.getCmqCode().equals(childCmq.getCmqParentCode()))
+						if (childCmq.getCmqCode().equals(srcCmq.getCmqCode())) 
+							cpt++;
 				}
 			}
+			if (cpt == childCmqsOftargets.size())
+				childNotSelected = false;
 		}
 		if (childCmqsOftargets != null && !childCmqsOftargets.isEmpty() && childNotSelected)
-			this.confirmMessage = "Not all associate child lists are selected for inactivation. Do you want to continue?";
+			this.confirmMessage = "Not all associate child lists are selected for inactivation.";
 
 		else
 			this.confirmMessage = "Are you sure you want to retire this list?";
@@ -104,6 +105,8 @@ public class RetireController implements Serializable {
 	 
 
 	public String retireTargetList() {
+		if (childNotSelected)
+			return "";
 		List<Long> targetCmqCodes = new ArrayList<>();
 		List<CmqBase190> targetCmqParents = new ArrayList<CmqBase190>();
 		List<CmqBase190> targetCmqsSelected = new ArrayList<CmqBase190>(this.retireDualListModel.getTarget());
@@ -112,6 +115,10 @@ public class RetireController implements Serializable {
 					"Please select at least 1 list to retire.", "");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		} else {
+			for (CmqBase190 cmqBase : targetCmqsSelected) {
+				targetCmqCodes.add(cmqBase.getCmqCode());
+			}
+			
 			
 			//now get the children
 			//If a parent is retire, then child must be retire 
@@ -122,7 +129,7 @@ public class RetireController implements Serializable {
 				//add them to the selected cmqs list
 				for (CmqBase190 childCmq : childCmqsOftargets) {
 					if(childCmq.getCmqState().equalsIgnoreCase("published") && childCmq.getCmqStatus().equalsIgnoreCase("A")) {
-						targetCmqsSelected.add(childCmq);//we need to retire these
+						targetCmqsSelected.add(childCmq);//we need to retire these if selected
 					}
 				}
  			}
@@ -263,5 +270,13 @@ public class RetireController implements Serializable {
 
 	public void setRetireDualListModel(DualListModel<CmqBase190> retireDualListModel) {
 		this.retireDualListModel = retireDualListModel;
+	}
+
+	public boolean isChildNotSelected() {
+		return childNotSelected;
+	}
+
+	public void setChildNotSelected(boolean childNotSelected) {
+		this.childNotSelected = childNotSelected;
 	} 
 }

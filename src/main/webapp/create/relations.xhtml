@@ -78,15 +78,7 @@
 				</p:overlayPanel>
 				<p:spacer width="10" /> -->
 				
-				<p:commandButton value="Delete selected" icon="fa fa-trash-o"
-					styleClass="#{(createController.selectedData.cmqState ne 'Draft' and createController.selectedData.cmqState ne 'Reviewed') ? 'btn-disabled' : ''}" id="ctb2"
-					disabled="#{(createController.selectedData.cmqState ne 'Draft' and createController.selectedData.cmqState ne 'Reviewed') ? true : false}"
-					action="#{searchController.deleteRelations(null)}"
-					update="resultRelations"
-					oncomplete="initRelationDND();notifyCreateControllerRelationsModify()">
-					<p:confirm header="Confirm Delete"
-						message="Delete all selected terms?" icon="ui-icon-alert" />
-				</p:commandButton>
+				 
 
 				<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
 					<p:commandButton value="Yes" type="button"
