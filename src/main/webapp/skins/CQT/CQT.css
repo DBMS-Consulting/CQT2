@@ -285,6 +285,11 @@ td .bordered {
 	color: #009912;
 }
 
+/**================= Details form ======================**/
+.pad-lr30 {
+	padding: 0 30px;
+}
+
 /**================= Relations Tree Table ======================**/
 .ui-treetable.ui-treetable-resultRelations .ui-treetable-selectable-node .ui-chkbox.ui-selection {
 	display: none;
