@@ -173,7 +173,9 @@
 
 			<h:panelGrid columns="1">
 				<h:outputText
-					value="#{createController.selectedData.activationDate}" />
+					value="#{createController.selectedData.activationDate}">
+					<f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss"/>
+				</h:outputText>
 			</h:panelGrid>
 
 			<h:panelGrid columns="1" styleClass="grid-right">

@@ -56,6 +56,14 @@
 					onclick="PF('confirmRetire').hide();" update="@form"
 					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
 			</p:confirmDialog>
+			
+			<p:confirmDialog widgetVar="confirmRetireOK" showEffect="fade"
+				hideEffect="fade" header="Confirm Inactivation"
+				message="#{retireController.confirmMessage}">
+				<p:commandButton value="OK" type="button"
+					onclick="PF('confirmRetireOK').hide();" update="@form"
+					styleClass="ui-confirmdialog-no" />
+			</p:confirmDialog>
 		</h:form>
 	</ui:define>
 
