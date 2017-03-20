@@ -146,9 +146,10 @@ public class ReactivateController implements Serializable {
 				for (CmqBase190 cmqBase190 : targetCmqParents) {
 					cmqBase190.setCmqState("DRAFT");
 					cmqBase190.setCmqStatus("P"); 
-					cmqBase190.setActivatedBy("NONE");
-					cmqBase190.setActivationDate(new Date());
-					cmqBase190.setLastModifiedDate(new Date()); 
+//					cmqBase190.setActivatedBy("NONE");
+//					cmqBase190.setActivationDate(new Date());
+					cmqBase190.setLastModifiedDate(new Date());
+					cmqBase190.setLastModifiedBy("NONE");
 				}
 				try {
 					this.cmqBaseService.update(targetCmqParents);
@@ -161,9 +162,10 @@ public class ReactivateController implements Serializable {
  			for (CmqBase190 cmqBase190 : targetCmqsSelected) {
 				cmqBase190.setCmqState("DRAFT");
 				cmqBase190.setCmqStatus("P"); 
-				cmqBase190.setActivatedBy("NONE");
-				cmqBase190.setActivationDate(new Date());
-				cmqBase190.setLastModifiedDate(new Date()); 
+//				cmqBase190.setActivatedBy("NONE");
+//				cmqBase190.setActivationDate(new Date());
+				cmqBase190.setLastModifiedDate(new Date());
+				cmqBase190.setLastModifiedBy("NONE");
 			}
 
 			try {

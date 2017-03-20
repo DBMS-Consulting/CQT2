@@ -2,6 +2,7 @@ package com.dbms.controller;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -129,6 +130,8 @@ public class RetireController implements Serializable {
 			//continue
  			for (CmqBase190 cmqBase190 : targetCmqsSelected) {
  				cmqBase190.setCmqStatus("I"); 
+ 				cmqBase190.setLastModifiedDate(new Date());
+				cmqBase190.setLastModifiedBy("NONE");
 			}
 			try {
 				this.cmqBaseService.update(targetCmqsSelected);

@@ -2,6 +2,7 @@ package com.dbms.controller;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -144,6 +145,10 @@ public class PublishController implements Serializable {
 						cmqBase190.setCmqState("PUBLISHED");
 						//Pending to Active 'A'
 						cmqBase190.setCmqStatus("A");
+						cmqBase190.setActivatedBy("NONE");
+						cmqBase190.setActivationDate(new Date());
+						cmqBase190.setLastModifiedDate(new Date());
+						cmqBase190.setLastModifiedBy("NONE");
 					}
 
 					if (hasParentError) {
