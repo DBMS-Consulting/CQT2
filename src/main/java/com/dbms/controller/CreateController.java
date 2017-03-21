@@ -436,9 +436,19 @@ public class CreateController implements Serializable {
 		} else {
 			nextStep = "details";
 		}
+		
+		RequestContext.getCurrentInstance().update("fCreate:wizardNavbar");
 		return nextStep;
 	}
-
+	public boolean isCreateWizardNavbarShown() {
+		return true;
+	}
+	public boolean isCreateWizardNavbarNextShown() {
+		return isCreateWizardNavbarShown() && !"confirmPanel".equals(createWizard.getStep());
+	}
+	public boolean isCreateWizardNavbarBackShown() {
+		return !"details".equals(createWizard.getStep());
+	}
 	
 	//----------------------- Update Wizard ------------------------
 

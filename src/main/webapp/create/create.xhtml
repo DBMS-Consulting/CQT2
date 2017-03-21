@@ -22,7 +22,8 @@
 		    </p:remoteCommand>
 
 			<p:wizard flowListener="#{createController.onCreateWizardFlowProcess}" widgetVar="wizard"
-				id="wizardId" binding="#{createController.createWizard}">
+				id="wizardId" binding="#{createController.createWizard}"
+				 showNavBar="false">
 				<p:tab id="details" title="Add Details" disabled="false"
 					closable="true">
 					<p:panel header="Details">
@@ -32,7 +33,7 @@
 								update="@form:m1 @form:detailsPanel" action="#{createController.save}"></p:commandButton>
 							<p:commandButton value="Cancel" icon="ui-icon-close"
 								update="@form:m1 @form:detailsPanel" process="@this"
-								action="#{createController.cancel}">
+								actionListener="#{createController.cancel}">
 								<p:confirm icon="ui-icon-alert" header="Confirm"
 										message="Are you sure you want to erase these fields?" />
 							</p:commandButton>
@@ -73,6 +74,15 @@
 					<ui:include src="confirm.xhtml"></ui:include>
 				</p:tab>
 			</p:wizard>
+			
+			<h:panelGroup id="wizardNavbar" layout="block" styleClass="ui-wizard-navbar ui-helper-clearfix">
+				<p:commandButton value="Back" onclick="PF('wizard').back();" icon="ui-icon-arrowthick-1-w"
+	        			styleClass="ui-wizard-nav-back update-list-wiz-back" rendered="#{createController.createWizardNavbarBackShown}"
+	        			update="@form:m1" />
+				<p:commandButton value="Next" onclick="PF('wizard').next();" icon="ui-icon-arrowthick-1-e"
+				        styleClass="ui-wizard-nav-next" rendered="#{createController.createWizardNavbarNextShown}"
+				        update="@form:m1" /> 
+			</h:panelGroup>
 
 			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
 				<p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
