@@ -221,6 +221,15 @@ public class ReportController extends BaseController<CmqBase190> {
 		    				    			
 		    			JasperExportManager.exportReportToPdfStream(jasperPrint, new FileOutputStream(tempFile));
 		    			break;
+		    			/**
+		    			 * This is a tip for future coder: HOW TO EMBED AN IMAGE TO JASPER REPORT
+		    			 * Step 1: Encode your image in base64. Copy string except "data:image/jpeg;base64, -" part
+		    			 * Step 2: Put the base64 image data into a report variable
+		    			 * Step 3: Add image to the report:
+		    			 * 		new ByteArrayInputStream(Base64.decodeBase64($V{CSpaceLogo}.getBytes()))
+		    			 * Step 4: Add Base64 class import to the report:
+		    			 * 		<import value="org.apache.commons.codec.binary.Base64"></import>
+		    			 */
 		    		}
 		    	}
 		    }
@@ -244,6 +253,7 @@ public class ReportController extends BaseController<CmqBase190> {
 		    	fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "The report type or format not supported yet!", ""));
 		    }
 	    } catch(Exception e) {
+	    	log.error("Error while generating report: ", e);
 			fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "There was an error while generating the report!", ""));
 	    }
 	}
