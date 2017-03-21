@@ -66,7 +66,7 @@
 				<p:spacer width="10" />
 				 				
 				<p:commandButton value="Parent List" id="ctb15"
-                    styleClass="#{createController.parentViewable ? '' : 'btn-disabled'}" update="@form:parent-list-modal"
+                    styleClass="#{createController.parentViewable ? '' : 'btn-disabled'}" update="@form"
                     actionListener="#{parentListController.setChildCmqEntity(createController.selectedData)}"
 					disabled="#{createController.parentViewable ? false : true}"
                     oncomplete="PF('parentDlg').show()" icon="fa fa-level-up">
@@ -140,7 +140,7 @@
 		</p:treeTable>
 	</h:panelGrid>
 	
-	<p:dialog widgetVar="parentDlg" modal="false" header="Parent List">
+	<p:dialog widgetVar="parentDlg" modal="false" header="Parent List" height="auto" width="auto">
         <ui:include src="parent.xhtml"></ui:include>
 
         <p:spacer height="10"></p:spacer>
