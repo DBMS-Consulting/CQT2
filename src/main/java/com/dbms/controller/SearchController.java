@@ -1785,8 +1785,15 @@ public class SearchController extends BaseController<CmqBase190> {
 				this.parentListRoot = new DefaultTreeNode("root"
 						, new HierarchyNode("LEVEL", "NAME", "CODE", "SCOPE", "CATEGORY", "WEIGHT", null)
 						, null);
-				HierarchyNode node = this.createCmqBaseNode(parentCmqEntity);
+				HierarchyNode node = new HierarchyNode();
+				node.setLevel(parentCmqEntity.getCmqTypeCd());
+				node.setCode(parentCmqEntity.getCmqCode().toString());
+				node.setTerm(parentCmqEntity.getCmqName());
+				node.setCategory("");
+				node.setWeight("");
+				node.setScope("");
 				node.setEntity(parentCmqEntity);
+				
 				TreeNode treeNode = new DefaultTreeNode(node, this.parentListRoot);
 			
 				Long childCount = this.cmqRelationService.findCountByCmqCode(childCmq.getCmqParentCode());

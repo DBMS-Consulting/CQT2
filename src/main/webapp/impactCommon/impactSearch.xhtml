@@ -50,19 +50,22 @@
 			</p:dataTable>
 		</p:tab>
 		<p:tab title="Impacted Lists" id="sdi2" inlineStyle="height:335px;">
-			<p:dataTable var="var" value="#{null}">
+			<p:dataTable id="impactedCmqList" value="#{impactSearchController.impactedCmqBaseLazyDataModel}" var="cmqList" paginator="true" rows="10"
+                selection="#{impactSearchController.selectedImpactedCmqList}" selectionMode="single" lazy="true"
+                paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                rowsPerPageTemplate="5,10,15,20">
 				<p:column sortable="false" headerText="Term" id="c52"
 					filterable="true">
-					<h:outputText value="###" id="ot54" />
+					<h:outputText value="#{cmqList.cmqName}" id="ot54" />
 				</p:column>
 				<p:column sortable="false" headerText="Code" width="50" id="c53">
-					<h:outputText value="###" id="ot55" />
+					<h:outputText value="#{cmqList.cmqCode}" id="ot55" />
 				</p:column>
 				<p:column sortable="false" headerText="Status" width="45" id="c54">
-					<h:outputText value="###" id="ot56" />
+					<h:outputText value="#{cmqList.cmqStatus}" id="ot56" />
 				</p:column>
 				<p:column sortable="false" headerText="State" width="50" id="c55">
-					<h:outputText value="###" id="ot57" />
+					<h:outputText value="#{cmqList.cmqState}" id="ot57" />
 				</p:column>
 				<p:column sortable="false" rendered="false" headerText="ID"
 					width="50" id="c57">
@@ -74,19 +77,22 @@
 		</p:tab>
 		<p:tab title="Non-Impacted Lists" id="sdi6"
 			styleClass="AFStretchWidth">
-			<p:dataTable var="var" value="#{null}">
+			<p:dataTable id="notImpactedCmqList" value="#{impactSearchController.notImpactedCmqBaseLazyDataModel}" var="cmqList" paginator="true" rows="10"
+                selection="#{impactSearchController.selectedNotImpactedCmqList}" selectionMode="single" lazy="true"
+                paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                rowsPerPageTemplate="5,10,15,20">
 				<p:column sortable="false" headerText="Term" id="c52"
 					filterable="true">
-					<h:outputText value="###" id="ot54" />
+					<h:outputText value="#{cmqList.cmqName}" id="ot54" />
 				</p:column>
 				<p:column sortable="false" headerText="Code" width="50" id="c53">
-					<h:outputText value="###" id="ot55" />
+					<h:outputText value="#{cmqList.cmqCode}" id="ot55" />
 				</p:column>
 				<p:column sortable="false" headerText="Status" width="45" id="c54">
-					<h:outputText value="###" id="ot56" />
+					<h:outputText value="#{cmqList.cmqStatus}" id="ot56" />
 				</p:column>
 				<p:column sortable="false" headerText="State" width="50" id="c55">
-					<h:outputText value="###" id="ot57" />
+					<h:outputText value="#{cmqList.cmqState}" id="ot57" />
 				</p:column>
 				<p:column sortable="false" rendered="false" headerText="ID"
 					width="50" id="c57">
