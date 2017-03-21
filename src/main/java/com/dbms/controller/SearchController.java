@@ -114,7 +114,10 @@ public class SearchController extends BaseController<CmqBase190> {
 	private TreeNode[] relationSelected;
 	private TreeNode[] relationSelectedInRelationsTable;
 	private TreeNode relationsRoot;
-
+	
+	private TreeNode parentListRoot;
+	private CmqBase190 parentCmqEntity;
+	
 	private Long clickedCmqCode;
 
 	public SearchController() {
@@ -125,7 +128,9 @@ public class SearchController extends BaseController<CmqBase190> {
 	public void init() {
 		this.maintainDesigBtn = false;
 		resetSearch();
-
+		parentListRoot = new DefaultTreeNode("root"
+				, new HierarchyNode("LEVEL", "NAME", "CODE", "SCOPE", "CATEGORY", "WEIGHT", null)
+				, null);
 		hierarchyRoot = new DefaultTreeNode("root", new HierarchyNode("LEVEL",
 				"NAME", "CODE", null), null);
 		relationsRoot = new DefaultTreeNode("root", new HierarchyNode("LEVEL",
@@ -915,23 +920,33 @@ public class SearchController extends BaseController<CmqBase190> {
 					}
 				} else if ("PT".equalsIgnoreCase(levelOfExpandedNode)) {
 					Long ptCode = Long.valueOf(reverseSearchDto.getPtCode());
-					List<MeddraDictReverseHierarchySearchDto> childReverseSearchDtos = this.meddraDictService.findReverseByCode("PT_", "HLT_", ptCode);
-					if(CollectionUtils.isNotEmpty(childReverseSearchDtos)) {
-						for (MeddraDictReverseHierarchySearchDto childReverseSearchDto : childReverseSearchDtos) {
-							boolean isPrimary = false;
-							if("Y".equalsIgnoreCase(childReverseSearchDto.getPrimaryPathFlag())) {
-								isPrimary = true;
-							}
-							HierarchyNode childNode = this.createMeddraReverseNode(childReverseSearchDto, "HLT", isPrimary);
-							if("RELATIONS".equalsIgnoreCase(uiSourceOfEvent)) {
-								childNode.markNotEditableInRelationstable();
-							}
-							TreeNode childTreeNode = new DefaultTreeNode(childNode, expandedTreeNode);
-							if(StringUtils.isNotBlank(reverseSearchDto.getHltTerm())) {
-								// add a dummmy node to show expand arrow
-								HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
-								dummyNode.setDummyNode(true);
-								new DefaultTreeNode(dummyNode, childTreeNode);
+					if("RELATIONS".equalsIgnoreCase(uiSourceOfEvent)) {
+						//fetch children of parent node by code of parent
+						List<MeddraDictHierarchySearchDto> childDtos = this.meddraDictService.findChildrenByParentCode("LLT_", "PT_", ptCode);
+						for (MeddraDictHierarchySearchDto childDto : childDtos) {
+							HierarchyNode childNode = this.createMeddraNode(childDto, "LLT");
+							childNode.markNotEditableInRelationstable();
+							new DefaultTreeNode(childNode, expandedTreeNode);
+						}
+					} else {
+						List<MeddraDictReverseHierarchySearchDto> childReverseSearchDtos = this.meddraDictService.findReverseByCode("PT_", "HLT_", ptCode);
+						if(CollectionUtils.isNotEmpty(childReverseSearchDtos)) {
+							for (MeddraDictReverseHierarchySearchDto childReverseSearchDto : childReverseSearchDtos) {
+								boolean isPrimary = false;
+								if("Y".equalsIgnoreCase(childReverseSearchDto.getPrimaryPathFlag())) {
+									isPrimary = true;
+								}
+								HierarchyNode childNode = this.createMeddraReverseNode(childReverseSearchDto, "HLT", isPrimary);
+								if("RELATIONS".equalsIgnoreCase(uiSourceOfEvent)) {
+									childNode.markNotEditableInRelationstable();
+								}
+								TreeNode childTreeNode = new DefaultTreeNode(childNode, expandedTreeNode);
+								if(StringUtils.isNotBlank(reverseSearchDto.getHltTerm())) {
+									// add a dummmy node to show expand arrow
+									HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
+									dummyNode.setDummyNode(true);
+									new DefaultTreeNode(dummyNode, childTreeNode);
+								}
 							}
 						}
 					}
@@ -977,7 +992,11 @@ public class SearchController extends BaseController<CmqBase190> {
 				if ((null != childCmqBaseList) && (childCmqBaseList.size() > 0)) {
 					for (CmqBase190 childCmqBase : childCmqBaseList) {
 						HierarchyNode node = new HierarchyNode();
-						node.setLevel(levelH);
+						if("PARENT-LIST".equalsIgnoreCase(uiSourceOfEvent)) {
+							node.setLevel(childCmqBase.getCmqTypeCd());
+						} else {
+							node.setLevel(levelH);
+						}
 						node.setTerm(childCmqBase.getCmqName());
 						node.setCode(childCmqBase.getCmqCode().toString());
 						node.setEntity(childCmqBase);
@@ -1225,18 +1244,12 @@ public class SearchController extends BaseController<CmqBase190> {
 							if (!nodesList.contains(parentNode)) {
 								HierarchyNode relationsHierarchyNode = hierarchyNode.copy();
 								TreeNode relationsTreeNode = new DefaultTreeNode(relationsHierarchyNode, relationsRoot);
-							
-								//no drill down for MeddraDictReverseHierarchySearchDto node types
-								if(!(relationsHierarchyNode.getEntity() instanceof MeddraDictReverseHierarchySearchDto)) {
-									relationsHierarchyNode.setDataFetchCompleted(false);
-									List<TreeNode> childTreeNodes = treeNode.getChildren();
-									if(CollectionUtils.isNotEmpty(childTreeNodes)) {
-										HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
-										dummyNode.setDummyNode(true);
-										new DefaultTreeNode(dummyNode, relationsTreeNode);
-									}
-								} else {
-									relationsHierarchyNode.setDataFetchCompleted(true);
+								relationsHierarchyNode.setDataFetchCompleted(false);
+								List<TreeNode> childTreeNodes = treeNode.getChildren();
+								if(CollectionUtils.isNotEmpty(childTreeNodes)) {
+									HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
+									dummyNode.setDummyNode(true);
+									new DefaultTreeNode(dummyNode, relationsTreeNode);
 								}
 							}
 						}
@@ -1720,7 +1733,16 @@ public class SearchController extends BaseController<CmqBase190> {
 				node.setCategory((cmqRelation.getTermCategory() == null) ? "" : cmqRelation.getTermCategory());
 				node.setScope((cmqRelation.getTermScope() == null) ? "" : cmqRelation.getTermScope());
 				node.setWeight((cmqRelation.getTermWeight() == null) ? "" : cmqRelation.getTermWeight() + "");
-				new DefaultTreeNode(node, this.relationsRoot);
+				TreeNode treeNode = new DefaultTreeNode(node, this.relationsRoot);
+				//check for children now
+				Long countOfChildren = this.meddraDictService.findChldrenCountByParentCode("LLT_"
+						, "PT_", cmqRelation.getPtCode());
+				if(countOfChildren > 0) {
+					// add a dummmy node to show expand arrow
+					HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
+					dummyNode.setDummyNode(true);
+					new DefaultTreeNode(dummyNode, treeNode);
+				}
 			} else if ((cmqRelation.getLltCode() != null)
 					&& (cmqRelation.getLltCode() > 0)) {
 				MeddraDictReverseHierarchySearchDto searchDto = this.meddraDictService.findByPtOrLltCode("LLT_", cmqRelation.getLltCode());
@@ -1732,14 +1754,18 @@ public class SearchController extends BaseController<CmqBase190> {
 			}
 		}
 		
-		log.info("Populating cmq base children for cmq parent code " + clickedCmqCode);
+		this.populateChildCmqsByParent(clickedCmqCode, this.relationsRoot);
+	}
+	
+	public void populateChildCmqsByParent(Long parentCmqCode, TreeNode rootTreeNode) {
+		log.info("Populating cmq base children for cmq parent code " + parentCmqCode);
 		//now process the cmq parent child relations
-		List<CmqBase190> childCmqs = this.cmqBaseService.findChildCmqsByParentCode(clickedCmqCode);
+		List<CmqBase190> childCmqs = this.cmqBaseService.findChildCmqsByParentCode(parentCmqCode);
 		if((null != childCmqs) && (childCmqs.size() > 0)) {
 			for (CmqBase190 childCmq : childCmqs) {
 				HierarchyNode node = this.createCmqBaseNode(childCmq);
 				node.setEntity(childCmq);
-				TreeNode treeNode = new DefaultTreeNode(node, this.relationsRoot);
+				TreeNode treeNode = new DefaultTreeNode(node, rootTreeNode);
 			
 				Long childCount = this.cmqRelationService.findCountByCmqCode(childCmq.getCmqCode());
 				if((null != childCount) && (childCount > 0)) {
@@ -1748,6 +1774,37 @@ public class SearchController extends BaseController<CmqBase190> {
 					new DefaultTreeNode(dummyNode, treeNode);
 				}
 			}
+		}
+	}
+	
+	public void populateParentCmqByChild(CmqBase190 childCmq) {
+		if(childCmq.getCmqParentCode() != null) {
+			log.info("Populating cmq base parent for cmq child code " + childCmq.getCmqCode());
+			this.parentCmqEntity = this.cmqBaseService.findByCode(childCmq.getCmqParentCode());
+			if(null != parentCmqEntity) {
+				this.parentListRoot = new DefaultTreeNode("root"
+						, new HierarchyNode("LEVEL", "NAME", "CODE", "SCOPE", "CATEGORY", "WEIGHT", null)
+						, null);
+				HierarchyNode node = new HierarchyNode();
+				node.setLevel(parentCmqEntity.getCmqTypeCd());
+				node.setCode(parentCmqEntity.getCmqCode().toString());
+				node.setTerm(parentCmqEntity.getCmqName());
+				node.setCategory("");
+				node.setWeight("");
+				node.setScope("");
+				node.setEntity(parentCmqEntity);
+				
+				TreeNode treeNode = new DefaultTreeNode(node, this.parentListRoot);
+			
+				Long childCount = this.cmqRelationService.findCountByCmqCode(childCmq.getCmqParentCode());
+				if((null != childCount) && (childCount > 0)) {
+					HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
+					dummyNode.setDummyNode(true);
+					new DefaultTreeNode(dummyNode, treeNode);
+				}
+			}
+		} else {
+			log.info("No parent exists for cmq child code " + childCmq.getCmqCode());
 		}
 	}
 	
@@ -1892,5 +1949,21 @@ public class SearchController extends BaseController<CmqBase190> {
 		}
 		node.setEntity(searchDto);
 		return node;
+	}
+
+	public TreeNode getParentListRoot() {
+		return parentListRoot;
+	}
+
+	public void setParentListRoot(TreeNode parentListRoot) {
+		this.parentListRoot = parentListRoot;
+	}
+
+	public CmqBase190 getParentCmqEntity() {
+		return parentCmqEntity;
+	}
+
+	public void setParentCmqEntity(CmqBase190 parentCmqEntity) {
+		this.parentCmqEntity = parentCmqEntity;
 	}
 }

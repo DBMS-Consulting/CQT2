@@ -5,12 +5,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -22,6 +19,10 @@ import javax.faces.context.FacesContext;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.persistence.TemporalType;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.util.HSSFColor;
@@ -42,13 +43,11 @@ import org.hibernate.Session;
 import org.hibernate.transform.Transformers;
 import org.hibernate.type.StandardBasicTypes;
 import org.primefaces.model.DefaultStreamedContent;
-import org.primefaces.model.DefaultTreeNode;
+import org.primefaces.model.SortOrder;
 import org.primefaces.model.StreamedContent;
-import org.primefaces.model.TreeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.dbms.csmq.HierarchyNode;
 import com.dbms.entity.cqt.CmqBase190;
 import com.dbms.entity.cqt.CmqRelation190;
 import com.dbms.entity.cqt.SmqBase190;
@@ -80,7 +79,114 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 
 	@ManagedProperty("#{MeddraDictService}")
 	private IMeddraDictService meddraDictService;
+	
+	public List<CmqBase190> findImpactedWithPaginated(int first, int pageSize, String sortField
+														, SortOrder sortOrder, Map<String, Object> filters) {
+		List<CmqBase190> retVal = null;
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		try {
+			CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+			CriteriaQuery<CmqBase190> cq = cb.createQuery(CmqBase190.class);
+			Root<CmqBase190> cmqRoot = cq.from(CmqBase190.class);
+			cq.where(cmqRoot.get("cmqId").isNotNull());
+			cq.orderBy(cb.asc(cmqRoot.get("cmqName")));
+			TypedQuery<CmqBase190> tq = entityManager.createQuery(cq);
+			
+			if (pageSize >= 0){
+	            tq.setMaxResults(pageSize);
+	        }
+	        if (first >= 0){
+	            tq.setFirstResult(first);
+	        }
+			
+			retVal = tq.getResultList();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg.append("An error occurred while fetching paginated impacted CmqBase190.");
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
+	
+	@Override
+	public Long findImpactedCount() {
+		Long retVal = null;
+		StringBuilder sb = new StringBuilder();
+		sb.append("select count(*) from CmqBase190 c where c.cmqId is not null");
+		
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		try {
+			Query query = entityManager.createQuery(sb.toString());
+			retVal = (Long)query.getSingleResult();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg
+					.append("An error occurred in findImpactedCount ")
+					.append(" Query used was ->")
+					.append(sb.toString());
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
+	
+	@Override
+	public List<CmqBase190> findNotImpactedWithPaginated(int first, int pageSize, String sortField
+			, SortOrder sortOrder, Map<String, Object> filters) {
+		List<CmqBase190> retVal = null;
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		try {
+			CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+			CriteriaQuery<CmqBase190> cq = cb.createQuery(CmqBase190.class);
+			Root<CmqBase190> cmqRoot = cq.from(CmqBase190.class);
+			cq.where(cmqRoot.get("cmqId").isNotNull());
+			cq.orderBy(cb.asc(cmqRoot.get("cmqName")));
+			TypedQuery<CmqBase190> tq = entityManager.createQuery(cq);
+			
+			if (pageSize >= 0){
+			tq.setMaxResults(pageSize);
+			}
+			if (first >= 0){
+			tq.setFirstResult(first);
+			}
+			
+			retVal = tq.getResultList();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg.append("An error occurred while fetching paginated impacted CmqBase190.");
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
 
+	@Override
+	public Long findNotImpactedCount() {
+		Long retVal = null;
+		StringBuilder sb = new StringBuilder();
+		sb.append("select count(*) from CmqBase190 c where c.cmqId is not null");
+	
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		try {
+			Query query = entityManager.createQuery(sb.toString());
+			retVal = (Long)query.getSingleResult();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg
+			.append("An error occurred in findImpactedCount ")
+			.append(" Query used was ->")
+			.append(sb.toString());
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
+	
 	private StringBuilder appendClause(StringBuilder sb, boolean first) {
 		if (first) {
 			sb.append(" where");

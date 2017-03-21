@@ -6,14 +6,14 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:p="http://primefaces.org/ui">
 
-	<p:panel style="width:700px; height:560px; overflow: auto" id="parent-list-modal">
+	<p:panel style="min-width:700px; min-height:560px; overflow: auto" id="parent-list-modal">
 		<h:panelGrid columns="4" style="width:100%;" styleClass="parent-list-detail-grid" columnClasses="label-cell, value-cell, label-cell, value-cell">
 			<h:outputText value="List Name:" />
-			<h:outputText value="#{parentListController.parentCmqEntity.cmqName}" />
+			<h:outputText value="#{searchController.parentCmqEntity.cmqName}" />
 			<h:outputText value="List Code:" />
-			<h:outputText value="#{parentListController.parentCmqEntity.cmqCode}" />
+			<h:outputText value="#{searchController.parentCmqEntity.cmqCode}" />
 			<h:outputText value="Level:" />
-			<h:outputText value="#{parentListController.parentCmqEntity.cmqLevel}" />
+			<h:outputText value="#{searchController.parentCmqEntity.cmqLevel}" />
 			<p:spacer></p:spacer>
 			<p:spacer></p:spacer>
 			
@@ -25,19 +25,18 @@
 		
 		<p:accordionPanel activeIndex="null">
 			<p:tab title="Relations">
-				<p:treeTable value="#{parentListController.parentRelationsRoot}" var="node"
-					rows="20"
+				<p:treeTable value="#{searchController.parentListRoot}" var="node"
+					rows="20" resizableColumns="true"
 					styleClass="ui-treetable-resultHier" 
 					paginator="true" paginatorPosition="bottom"
 					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 					rowsPerPageTemplate="5,10,25,30">
-	
-					<p:ajax event="expand" listener="#{parentListController.onNodeExpand}"
-						 />
+					
+					<f:attribute name="uiEventSourceName" value="parent-List" />
+					<p:ajax event="expand" listener="#{searchController.onNodeExpand}" />
 	
 					<p:column headerText="Level">
-						<h:outputText value="'P' #{node.level}" rendered="#{node.primaryPathFlag}" />
-						<h:outputText value="#{node.level}" rendered="#{not node.primaryPathFlag}"  />
+						<h:outputText value="#{node.level}" />
 					</p:column>
 	
 					<p:column headerText="Term">

@@ -122,8 +122,8 @@
 				<p:spacer width="10" />
 				
 				<p:commandButton value="Parent List" id="ctb15"
-                    styleClass="#{createController.parentViewable ? '' : 'btn-disabled'}" update="@form:parent-list-modal"
-                    actionListener="#{parentListController.setChildCmqEntity(createController.selectedData)}"
+                    styleClass="#{createController.parentViewable ? '' : 'btn-disabled'}" update="@form"
+                    actionListener="#{searchController.populateParentCmqByChild(createController.selectedData)}"
 					disabled="#{createController.parentViewable ? false : true}"
                     oncomplete="PF('parentDlg').show()" icon="fa fa-level-up">
 				</p:commandButton>
@@ -228,7 +228,7 @@
 		
 	</h:panelGrid>
 
-	<p:dialog widgetVar="search" modal="false" header="Hierarchy search" onShow="initRelationDND()">
+	<p:dialog widgetVar="search" modal="false" header="Hierarchy search" onShow="initRelationDND()" height="auto" width="auto">
 		<ui:include src="hierarchySearch.xhtml"></ui:include>
 
 		<p:spacer height="10"></p:spacer>
@@ -240,7 +240,7 @@
 		</h:panelGrid>
 	</p:dialog>
     
-    <p:dialog widgetVar="parentDlg" modal="false" header="Parent List">
+    <p:dialog widgetVar="parentDlg" modal="false" header="Parent List" height="auto" width="auto">
         <ui:include src="parent.xhtml"></ui:include>
 
         <p:spacer height="10"></p:spacer>

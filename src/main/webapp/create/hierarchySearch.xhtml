@@ -8,7 +8,7 @@
 
 	<!-- <p:ajax event="close" listener="#{searchController.onCloseHierarchySearch}" update="@form:hierarchySearchGrid"/> -->
 	
-	<p:panel header="Relations" style="width:700px; height:560px; overflow: auto" id="hierarchy-modal">
+	<p:panel header="Relations" style="min-width:700px; min-height:560px; overflow: auto" id="hierarchy-modal">
 		<h:panelGrid id="hierarchySearchGrid" columns="6">
 			<p:outputLabel value="Level" for="levelH" />
 			<p:selectOneMenu id="levelH" label="Level"  rendered="#{createController.detailsFormModel.extension ne 'PRO' and createController.detailsFormModel.extension ne 'CPT' and createController.detailsFormModel.extension ne 'DME'}"
