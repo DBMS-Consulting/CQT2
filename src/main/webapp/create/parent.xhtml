@@ -36,8 +36,7 @@
 					<p:ajax event="expand" listener="#{searchController.onNodeExpand}" />
 	
 					<p:column headerText="Level">
-						<h:outputText value="'P' #{node.level}" rendered="#{node.primaryPathFlag}" />
-						<h:outputText value="#{node.level}" rendered="#{not node.primaryPathFlag}"  />
+						<h:outputText value="#{node.level}" />
 					</p:column>
 	
 					<p:column headerText="Term">
