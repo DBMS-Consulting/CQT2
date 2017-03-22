@@ -6,7 +6,42 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:p="http://primefaces.org/ui" template="../CSMQ.xhtml">
 
+
+
 	<ui:define name="page-content">
+	<script>
+	function initRelationDND() {
+		// define the droppable area on the treetable
+		$('.ui-treetable.ui-treetable-currentListsAndSmqs').droppable({
+           activeClass: 'ui-state-active',
+           hoverClass: 'ui-state-highlight',
+           tolerance: 'pointer',
+           scope: 'selRelationDnd',
+           drop: function(event, ui) {
+        	    var dndRow = $(ui.draggable).closest('tr');
+        	    
+        	    impactSearchToResult([
+        	         {name: 'term', value:  $('td:nth-child(2)', dndRow).text()}
+        	        ,{name: 'code', value: $('td:nth-child(3)', dndRow).text()}	
+        	        ,{name: 'status', value: $('td:nth-child(4)', dndRow).text()}
+        	        ,{name: 'state', value: $('td:nth-child(5)', dndRow).text()}
+        	        ,{name: 'entityId', value: $('.data-entity-id', dndRow).text()}
+        	        ,{name: 'entityType', value: $('.data-entity-type', dndRow).text()}
+        	    ]);
+        	    
+        	    //notifyCreateControllerRelationsModify();
+           }
+        });
+
+		$('.ui-datatable.ui-datatable-impactedCmqList tr').draggable({
+			helper: 'clone',
+			scope: 'selRelationDnd',
+            zIndex: 10000
+		});
+		
+	}
+</script>
+<script>initRelationDND()</script>
 		<h:form id="impactAssessment">
 			<p:growl id="messages" />
 
@@ -93,56 +128,25 @@
 							<p:panel style="width: 100%; font-size: 12px !important">
 								<p:toolbar>
 									<f:facet name="left">
-										<!-- <p:commandButton id="filter" value="Filter and Sort"
-											type="button" icon="ui-icon-triangle-1-s" />
-										<p:overlayPanel id="filterPanel" for="filter"
-											showCloseIcon="true">
-											<h:panelGrid columns="2">
-												<p:outputLabel value="Sort" />
-												<p:selectOneMenu value="TERM">
-													<f:selectItem itemValue="TERM" itemLabel="Term name"></f:selectItem>
-													<f:selectItem itemValue="DEF_LEVEL_REF_SHORT_NAME"
-														itemLabel="Level"></f:selectItem>
-													<f:selectItem itemValue="SCOPE" itemLabel="Scope"></f:selectItem>
-												</p:selectOneMenu>
-
-												<p:outputLabel for="show" value="Show Primary Only"
-													style="min-width: 100px !important" />
-												<p:selectBooleanCheckbox value="false" id="show"
-													label="Show Primary Only"></p:selectBooleanCheckbox>
-
-												<p:outputLabel value="Scope" />
-												<p:selectOneMenu value="0">
-													<f:selectItem itemValue="0" itemLabel="Full /SMQ"></f:selectItem>
-													<f:selectItem itemValue="3" itemLabel="Child Narrow"></f:selectItem>
-												</p:selectOneMenu>
-
-												<p:spacer />
-												<p:commandButton value="Refresh" id="cb7"
-													icon="fa fa-refresh" rendered="true" />
-											</h:panelGrid>
-										</p:overlayPanel>
-
-										<p:spacer width="5" /> -->
-
-										<!-- <p:submenu label="View" icon="fa fa-wrench">
-											<p:menuButton value="View">
-												<p:menuitem value="View 1" actionListener="#" ajax="false"
-													icon="ui-icon-close" />
-												<p:menuitem value="View 2" url="#" icon="ui-icon-extlink" />
-											</p:menuButton>
-										</p:submenu>
-
-										<p:spacer width="5" /> -->
-
 										<p:commandButton value="Select Lists/SMQs" actionListener="#"
 											icon="fa fa-search" onclick="PF('select_mq').show();" />
 									</f:facet>
 								</p:toolbar>
-
-								<p:treeTable value="#{userBean.root}" var="node"
-									rowSelection="multiple" id="hierSrc2">
-
+								
+								<p:remoteCommand name="impactSearchToResult" 
+										actionListener="#{impactSearchController.onRelationDrop}" 
+										update="@form" 
+										oncomplete="initRelationDND()" />
+								
+								<p:treeTable value="#{impactSearchController.currentTableRootTreeNode}" var="node"
+									id="currentListsAndSmqs" rows="30" selectionMode="single" styleClass="ui-treetable-currentListsAndSmqs"
+									paginator="true" paginatorPosition="bottom"
+									paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+									rowsPerPageTemplate="10,20,30,40,50" >
+	
+									<f:attribute name="uiEventSourceName" value="current-table" />
+									<p:ajax event="expand" listener="#{impactSearchController.onNodeExpandCurrentTable}" update="currentListsAndSmqs" />
+									
 									<p:columnGroup type="header">
 										<p:row>
 											<p:column rowspan="2" headerText="Existing Lists/SMQ" />
@@ -157,23 +161,22 @@
 									</p:columnGroup>
 
 									<p:column id="c8" width="200" noWrap="false">
-										<h:panelGrid id="pgl5" halign="left">
-											<h:outputText value="#{node.term}" id="ot1"
-												styleClass="#{node.style}"
-												rendered="#{!node.showHasChildrenButton}" />
+										<!-- <h:panelGrid id="pgl5" halign="left">
+											<h:outputText value="#{node.term}" />
 											<p:commandLink value="#####" id="cl2" rendered="true"
 												partialSubmit="true" />
-										</h:panelGrid>
+										</h:panelGrid> -->
+										<h:outputText value="#{node.term}" />
 									</p:column>
 
-									<p:column id="c26" width="50" sortable="true" filterable="true">
-										<h:outputText value="#{node.dictContentCode}" id="ot7" />
+									<p:column id="c26" width="50">
+										<h:outputText value="#{node.code}" id="ot7" />
 									</p:column>
-									<p:column id="c18" width="50" sortable="true" filterable="true">
-										<h:outputText value="#{node.levelName}" id="ot14" />
+									<p:column id="c18" width="50">
+										<h:outputText value="#{node.level}" id="ot14" />
 									</p:column>
-									<p:column id="c17" width="50" sortable="true" filterable="true">
-										<h:outputText value="#{node.scopeName}" id="ot13" />
+									<p:column id="c17" width="50">
+										<h:outputText value="#{node.scope}" id="ot13" />
 									</p:column>
 								</p:treeTable>
 							</p:panel>
@@ -181,66 +184,18 @@
 							<p:panel style="width: 100%; font-size: 12px !important">
 								<p:toolbar>
 									<f:facet name="left">
-										<!-- <p:commandButton id="filter-b" value="Filter and Sort"
-											type="button" icon="ui-icon-triangle-1-s" />
-										<p:overlayPanel id="filterPanel-b" for="filter-b"
-											showCloseIcon="true">
-											<h:panelGrid columns="2">
-												<p:outputLabel value="Sort" />
-												<p:selectOneMenu value="TERM">
-													<f:selectItem itemValue="TERM" itemLabel="Term name"></f:selectItem>
-													<f:selectItem itemValue="DEF_LEVEL_REF_SHORT_NAME"
-														itemLabel="Level"></f:selectItem>
-													<f:selectItem itemValue="SCOPE" itemLabel="Scope"></f:selectItem>
-												</p:selectOneMenu>
-
-												<p:outputLabel for="show-b" value="Show Primary Only"
-													style="min-width: 100px !important" />
-												<p:selectBooleanCheckbox value="false" id="show-b"
-													label="Show Primary Only"></p:selectBooleanCheckbox>
-
-												<p:outputLabel value="Scope" />
-												<p:selectOneMenu value="0">
-													<f:selectItem itemValue="0" itemLabel="Full /SMQ"></f:selectItem>
-													<f:selectItem itemValue="3" itemLabel="Child Narrow"></f:selectItem>
-												</p:selectOneMenu>
-
-												<p:spacer />
-												<p:commandButton value="Refresh" id="cb7-b"
-													icon="fa fa-refresh" rendered="true" />
-											</h:panelGrid>
-										</p:overlayPanel>
-
-										<p:spacer width="5" />  -->
-
-										<!-- <p:submenu label="View" icon="fa fa-wrench">
-											<p:menuButton value="View">
-												<p:menuitem value="View 1" actionListener="#" ajax="false"
-													icon="ui-icon-close" />
-												<p:menuitem value="View 2" url="#" icon="ui-icon-extlink" />
-											</p:menuButton>
-										</p:submenu>
-										<p:spacer width="5" /> -->
-
 										<p:commandButton value="Hierarchy Search" actionListener="#"
 											icon="fa fa-search" onclick="PF('search').show();" />
 										<p:commandButton value="New PTs" actionListener="#"
 											onclick="PF('new_pt').show();" icon="fa fa-book" />
 
-										<!-- <p:commandButton value="Deleted selected" actionListener="#"
-											icon="fa fa-trash-o">
-											<p:confirm header="Confirm Delete"
-												message="Are you sure you want to delete the selected items?"
-												icon="ui-icon-alert" />
-										</p:commandButton>  -->
-										<!-- <p:commandButton value="Delete selected" actionListener="#"
-											icon="fa fa-trash-o" onclick="PF('delete').show();" /> -->
 										<p:commandButton value="Refresh" actionListener="#"
 											icon="fa fa-refresh" onclick="PF('select_mq').show();" />
 									</f:facet>
 								</p:toolbar>
 
-								<p:treeTable value="#{userBean.root}" var="row">
+								<p:treeTable value="#{userBean.root}" var="row" id="futureListsAndSmqs" 
+									styleClass="ui-treetable-futureListsAndSmqs">
 									<p:columnGroup type="header">
 										<p:row>
 											<p:column rowspan="2" headerText="Future Lists/SMQ"
@@ -330,11 +285,16 @@
 
 
 
-			<p:dialog header="Impact Search" widgetVar="select_mq">
+			<p:dialog header="Impact Search" widgetVar="select_mq" onShow="initRelationDND()">
 				<ui:include src="../impactCommon/impactSearch.xhtml"></ui:include>
 
 				<p:spacer height="10"></p:spacer>
 				<h:panelGrid style="float: right">
+					<p:commandButton value="Add selected" onclick="PF('select_mq').hide()"
+						update="currentListsAndSmqs futureListsAndSmqs">
+						<f:actionListener binding="#{impactSearchController.updateCurrentTable()}"/>
+    					<f:actionListener binding="#{impactSearchController.updateTargetTable()}"/>	
+					</p:commandButton>
 					<p:commandButton value="Cancel" onclick="PF('select_mq').hide()" />
 				</h:panelGrid>
 				<f:facet name="buttonBar">

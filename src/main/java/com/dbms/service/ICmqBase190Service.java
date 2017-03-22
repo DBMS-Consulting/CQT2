@@ -15,9 +15,6 @@ import com.dbms.view.ListNotesFormModel;
 
 public interface ICmqBase190Service extends ICqtPersistenceService<CmqBase190> {
 
-	List<CmqBase190> findImpactedWithPaginated(int first, int pageSize, String sortField, SortOrder sortOrder,
-			Map<String, Object> filters);
-
 	List<CmqBase190> findByCriterias(String extension, String drugProgramCd, String protocolCd, String productCd,
 			Integer level, String status, String state, String criticalEvent, String group, String termName, Long code);
 
@@ -60,12 +57,5 @@ public interface ICmqBase190Service extends ICqtPersistenceService<CmqBase190> {
 	StreamedContent generateExcelReport(ListDetailsFormModel details, String dictionaryVersion);
 
 	StreamedContent generateMQReport(ListDetailsFormModel details, ListNotesFormModel notes, String dictionaryVersion);
-
-	Long findImpactedCount();
-
-	List<CmqBase190> findNotImpactedWithPaginated(int first, int pageSize, String sortField, SortOrder sortOrder,
-			Map<String, Object> filters);
-
-	Long findNotImpactedCount();
 
 }

@@ -50,10 +50,11 @@
 			</p:dataTable>
 		</p:tab>
 		<p:tab title="Impacted Lists" id="sdi2" inlineStyle="height:335px;">
-			<p:dataTable id="impactedCmqList" value="#{impactSearchController.impactedCmqBaseLazyDataModel}" var="cmqList" paginator="true" rows="10"
-                selection="#{impactSearchController.selectedImpactedCmqList}" selectionMode="single" lazy="true"
-                paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                rowsPerPageTemplate="5,10,15,20">
+			<p:dataTable id="impactedCmqList" styleClass="ui-datatable-impactedCmqList" 
+					value="#{impactSearchController.impactedCmqBaseLazyDataModel}" var="cmqList" paginator="true" rows="10"
+                	selection="#{impactSearchController.selectedImpactedCmqList}" selectionMode="single" lazy="true"
+                	paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                	rowsPerPageTemplate="5,10,15,20">
 				<p:column sortable="false" headerText="Term" id="c52"
 					filterable="true">
 					<h:outputText value="#{cmqList.cmqName}" id="ot54" />
@@ -66,12 +67,8 @@
 				</p:column>
 				<p:column sortable="false" headerText="State" width="50" id="c55">
 					<h:outputText value="#{cmqList.cmqState}" id="ot57" />
-				</p:column>
-				<p:column sortable="false" rendered="false" headerText="ID"
-					width="50" id="c57">
-					<h:outputText value="####" id="ot59">
-
-					</h:outputText>
+					<h:outputText value="#{cmqList.cmqId}" styleClass="ui-hidden data-entity-id" />
+					<h:outputText value="impacted-cmq-list" styleClass="ui-hidden data-entity-type" />
 				</p:column>
 			</p:dataTable>
 		</p:tab>
