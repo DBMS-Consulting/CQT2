@@ -290,12 +290,14 @@
 
 				<p:spacer height="10"></p:spacer>
 				<h:panelGrid style="float: right">
-					<p:commandButton value="Add selected" onclick="PF('select_mq').hide()"
-						update="currentListsAndSmqs futureListsAndSmqs">
-						<f:actionListener binding="#{impactSearchController.updateCurrentTable()}"/>
-    					<f:actionListener binding="#{impactSearchController.updateTargetTable()}"/>	
-					</p:commandButton>
-					<p:commandButton value="Cancel" onclick="PF('select_mq').hide()" />
+					<h:panelGrid columns="2">
+						<p:commandButton value="Add selected" onclick="PF('select_mq').hide()"
+							update="currentListsAndSmqs futureListsAndSmqs">
+							<f:actionListener binding="#{impactSearchController.updateCurrentTable()}"/>
+	    					<f:actionListener binding="#{impactSearchController.updateTargetTable()}"/>	
+						</p:commandButton>
+						<p:commandButton value="Cancel" onclick="PF('select_mq').hide()" />
+					</h:panelGrid>
 				</h:panelGrid>
 				<f:facet name="buttonBar">
 					<p:outputLabel value="Last Updated:" id="plam1" />
