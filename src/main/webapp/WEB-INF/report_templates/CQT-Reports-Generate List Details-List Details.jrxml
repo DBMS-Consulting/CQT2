@@ -132,10 +132,10 @@
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="72" uuid="14e0edb4-2b39-4b99-853e-e1ced91a5b38">
+					<jr:column width="182" uuid="14e0edb4-2b39-4b99-853e-e1ced91a5b38">
 						<jr:tableHeader style="table_TH" height="56" rowSpan="1">
 							<staticText>
-								<reportElement style="table_TH" x="0" y="0" width="72" height="56" uuid="d057327a-b70a-48d0-ad26-6a5fb7584613"/>
+								<reportElement style="table_TH" x="0" y="0" width="182" height="56" uuid="d057327a-b70a-48d0-ad26-6a5fb7584613"/>
 								<text><![CDATA[Extension]]></text>
 							</staticText>
 						</jr:tableHeader>
@@ -144,7 +144,7 @@
 						<jr:columnFooter style="table_CH" height="0" rowSpan="1"/>
 						<jr:detailCell style="table_TD" height="21" rowSpan="1">
 							<textField isStretchWithOverflow="true">
-								<reportElement style="table_TD" stretchType="RelativeToBandHeight" x="0" y="0" width="72" height="20" uuid="20f8786e-fe7f-4aa3-9176-4df141a710e3"/>
+								<reportElement style="table_TD" stretchType="RelativeToBandHeight" x="0" y="0" width="182" height="20" uuid="20f8786e-fe7f-4aa3-9176-4df141a710e3"/>
 								<textFieldExpression><![CDATA[$F{cmqType}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
@@ -268,10 +268,10 @@
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="257" uuid="71544c92-320e-4b1a-8365-6867cf0ddf96">
+					<jr:column width="147" uuid="71544c92-320e-4b1a-8365-6867cf0ddf96">
 						<jr:tableHeader style="table_TH" height="56" rowSpan="1">
 							<staticText>
-								<reportElement style="table_TH" x="0" y="0" width="257" height="56" uuid="03d9d09b-854e-4500-a885-8ad0bd3302a4"/>
+								<reportElement style="table_TH" x="0" y="0" width="147" height="56" uuid="03d9d09b-854e-4500-a885-8ad0bd3302a4"/>
 								<text><![CDATA[Group]]></text>
 							</staticText>
 						</jr:tableHeader>
@@ -280,7 +280,7 @@
 						<jr:columnFooter style="table_CH" height="0" rowSpan="1"/>
 						<jr:detailCell style="table_TD" height="21" rowSpan="1">
 							<textField isStretchWithOverflow="true">
-								<reportElement style="table_TD" stretchType="RelativeToBandHeight" x="0" y="0" width="257" height="20" uuid="bd387ee5-97e3-4671-94a6-e06b6c96e803"/>
+								<reportElement style="table_TD" stretchType="RelativeToBandHeight" x="0" y="0" width="147" height="20" uuid="bd387ee5-97e3-4671-94a6-e06b6c96e803"/>
 								<textFieldExpression><![CDATA[$F{cmqGroup}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>

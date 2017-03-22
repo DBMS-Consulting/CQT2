@@ -40,6 +40,7 @@ import com.dbms.service.IMeddraDictService;
 import com.dbms.service.IRefCodeListService;
 import com.dbms.service.ISmqBaseService;
 import com.dbms.util.CqtConstants;
+import com.dbms.util.exceptions.ReportGenerationException;
 import com.dbms.view.ListDetailsFormModel;
 import com.dbms.view.ListNotesFormModel;
 
@@ -141,117 +142,122 @@ public class ReportController extends BaseController<CmqBase190> {
 		    	List<CmqBase190> reportData = cmqBaseService.getPublishedListsReportData(reportStartDate, reportEndDate);
 		    	String datetimeStr = new SimpleDateFormat("d-MMM-yyyy h:mm a z").format(new Date());
 		    	
-		    	if(!reportData.isEmpty()) {
-		    		switch(genReportFormat) {
-		    		case XLS: 
-		    			outputFileName = REPORT_DOWNLOAD_FILENAME_LIST_DETAILS_XLS;
-		    			templateFile = new File(ec.getRealPath(REPORT_TEMPLATE_PATH_LIST_DETAILS_XLS));
-		    			tempFile = File.createTempFile(RandomStringUtils.randomAlphabetic(5), ".xls");
-		    			tempFile.deleteOnExit();
+		    	if(reportData.isEmpty()) {
+		    		throw new ReportGenerationException("No matching record found");
+		    	}
+		    	
+	    		switch(genReportFormat) {
+	    		case XLS: 
+	    			outputFileName = REPORT_DOWNLOAD_FILENAME_LIST_DETAILS_XLS;
+	    			templateFile = new File(ec.getRealPath(REPORT_TEMPLATE_PATH_LIST_DETAILS_XLS));
+	    			tempFile = File.createTempFile(RandomStringUtils.randomAlphabetic(5), ".xls");
+	    			tempFile.deleteOnExit();
 
-		    			// Read workbook from template file
-			    		HSSFWorkbook wb = new HSSFWorkbook(new FileInputStream(templateFile));
-			            HSSFSheet sheet = wb.getSheetAt(0);
-			            int rowIdx = 5; // this 0-based index of the first data row
-			            
-			            // Create a row and put some cells in it. Rows are 0 based.
-			            HSSFRow row;
+	    			// Read workbook from template file
+		    		HSSFWorkbook wb = new HSSFWorkbook(new FileInputStream(templateFile));
+		            HSSFSheet sheet = wb.getSheetAt(0);
+		            int rowIdx = 5; // this 0-based index of the first data row
+		            
+		            // Create a row and put some cells in it. Rows are 0 based.
+		            HSSFRow row;
 
-			            // Write summary cells
-			            getOrCreateHSSFCell(getOrCreateHSSFRow(sheet, 2), 0).setCellValue("Report Date/Time: " + datetimeStr);
-			            getOrCreateHSSFCell(getOrCreateHSSFRow(sheet, 3), 0).setCellValue("Total: " + reportData.size());
-			            
-			            // Write data cells
-				    	for(CmqBase190 dr: reportData) {
-				    		row = getOrCreateHSSFRow(sheet, rowIdx);
-				            getOrCreateHSSFCell(row, 0).setCellValue(dr.getCmqCode());
-				            getOrCreateHSSFCell(row, 1).setCellValue(dr.getCmqName());
-				            getOrCreateHSSFCell(row, 2).setCellValue(refCodeListService.interpretInternalCodeToValue(CqtConstants.CODE_LIST_TYPE_EXTENSION, dr.getCmqTypeCd()));
-				            getOrCreateHSSFCell(row, 3).setCellValue(refCodeListService.interpretInternalCodeToValue(CqtConstants.CODE_LIST_TYPE_PROGRAM, dr.getCmqProgramCd()));
-				            getOrCreateHSSFCell(row, 4).setCellValue(refCodeListService.interpretInternalCodeToValue(CqtConstants.CODE_LIST_TYPE_PROTOCOL, dr.getCmqProtocolCd()));
-				            getOrCreateHSSFCell(row, 5).setCellValue(refCodeListService.interpretInternalCodeToValue(CqtConstants.CODE_LIST_TYPE_PRODUCT, dr.getCmqProductCd()));
-				            getOrCreateHSSFCell(row, 6).setCellValue(dr.getCmqLevel());
-				            getOrCreateHSSFCell(row, 7).setCellValue(dr.getDictionaryVersion());
-				            getOrCreateHSSFCell(row, 8).setCellValue(dr.getCmqStatus());
-				            getOrCreateHSSFCell(row, 9).setCellValue(dr.getCmqAlgorithm());
-				            getOrCreateHSSFCell(row, 10).setCellValue(dr.getCmqGroup());
-				            rowIdx ++;
-				    	}
-				    	
-				    	// Write back to the temp file
-				    	wb.write(new FileOutputStream(tempFile));
-				    	break;
-		    		case PDF:
-		    			outputFileName = REPORT_DOWNLOAD_FILENAME_LIST_DETAILS_PDF;
-		    			tempFile = File.createTempFile(RandomStringUtils.randomAlphabetic(5), ".pdf");
-		    			tempFile.deleteOnExit();
-		    			Map<String, Object> parameters = new HashMap<String, Object>();
+		            // Write summary cells
+		            getOrCreateHSSFCell(getOrCreateHSSFRow(sheet, 2), 0).setCellValue("Report Date/Time: " + datetimeStr);
+		            getOrCreateHSSFCell(getOrCreateHSSFRow(sheet, 3), 0).setCellValue("Total: " + reportData.size());
+		            
+		            // Write data cells
+			    	for(CmqBase190 dr: reportData) {
+			    		row = getOrCreateHSSFRow(sheet, rowIdx);
+			            getOrCreateHSSFCell(row, 0).setCellValue(dr.getCmqCode());
+			            getOrCreateHSSFCell(row, 1).setCellValue(dr.getCmqName());
+			            getOrCreateHSSFCell(row, 2).setCellValue(refCodeListService.interpretInternalCodeToValue(CqtConstants.CODE_LIST_TYPE_EXTENSION, dr.getCmqTypeCd()));
+			            getOrCreateHSSFCell(row, 3).setCellValue(refCodeListService.interpretInternalCodeToValue(CqtConstants.CODE_LIST_TYPE_PROGRAM, dr.getCmqProgramCd()));
+			            getOrCreateHSSFCell(row, 4).setCellValue(refCodeListService.interpretInternalCodeToValue(CqtConstants.CODE_LIST_TYPE_PROTOCOL, dr.getCmqProtocolCd()));
+			            getOrCreateHSSFCell(row, 5).setCellValue(refCodeListService.interpretInternalCodeToValue(CqtConstants.CODE_LIST_TYPE_PRODUCT, dr.getCmqProductCd()));
+			            getOrCreateHSSFCell(row, 6).setCellValue(dr.getCmqLevel());
+			            getOrCreateHSSFCell(row, 7).setCellValue(dr.getDictionaryVersion());
+			            getOrCreateHSSFCell(row, 8).setCellValue(dr.getCmqStatus());
+			            getOrCreateHSSFCell(row, 9).setCellValue(dr.getCmqAlgorithm());
+			            getOrCreateHSSFCell(row, 10).setCellValue(dr.getCmqGroup());
+			            rowIdx ++;
+			    	}
+			    	
+			    	// Write back to the temp file
+			    	wb.write(new FileOutputStream(tempFile));
+			    	break;
+	    		case PDF:
+	    			outputFileName = REPORT_DOWNLOAD_FILENAME_LIST_DETAILS_PDF;
+	    			tempFile = File.createTempFile(RandomStringUtils.randomAlphabetic(5), ".pdf");
+	    			tempFile.deleteOnExit();
+	    			Map<String, Object> parameters = new HashMap<String, Object>();
+    			
+	    			// Summary data
+	    			parameters.put("reportDatetime", datetimeStr);
+	    			parameters.put("cmqListTotal", reportData.size());
 	    			
-		    			// Summary data
-		    			parameters.put("reportDatetime", datetimeStr);
-		    			parameters.put("cmqListTotal", reportData.size());
-		    			
-		    			// list data
-		    			Collection<Map<String, ?>> listData = new LinkedList<Map<String, ?>>();
-		    			for(CmqBase190 dr: reportData) {
-		    				Map<String, Object> rowData= new HashMap<String, Object>();
-		    				rowData.put("cmqCode", dr.getCmqCode().toString());
-		    				rowData.put("cmqName", dr.getCmqName());
-		    				rowData.put("cmqType", refCodeListService.interpretInternalCodeToValue(CqtConstants.CODE_LIST_TYPE_EXTENSION, dr.getCmqTypeCd()));
-		    				rowData.put("cmqProgram", refCodeListService.interpretInternalCodeToValue(CqtConstants.CODE_LIST_TYPE_PROGRAM, dr.getCmqProgramCd()));
-		    				rowData.put("cmqProtocol", refCodeListService.interpretInternalCodeToValue(CqtConstants.CODE_LIST_TYPE_PROTOCOL, dr.getCmqProtocolCd()));
-		    				rowData.put("cmqProduct", refCodeListService.interpretInternalCodeToValue(CqtConstants.CODE_LIST_TYPE_PRODUCT, dr.getCmqProductCd()));
-		    				rowData.put("cmqLevel", dr.getCmqLevel().toString());
-		    				rowData.put("dictionaryVersion", dr.getDictionaryVersion());
-		    				rowData.put("cmqStatus", dr.getCmqStatus());
-		    				rowData.put("cmqAlgorithm", dr.getCmqAlgorithm());
-		    				rowData.put("cmqGroup", dr.getCmqGroup());
-		    				listData.add(rowData);
-		    			}
-		    			parameters.put("cmqLists", new JRMapCollectionDataSource(listData));
-		    			
+	    			// list data
+	    			Collection<Map<String, ?>> listData = new LinkedList<Map<String, ?>>();
+	    			for(CmqBase190 dr: reportData) {
+	    				Map<String, Object> rowData= new HashMap<String, Object>();
+	    				rowData.put("cmqCode", dr.getCmqCode().toString());
+	    				rowData.put("cmqName", dr.getCmqName());
+	    				rowData.put("cmqType", refCodeListService.interpretInternalCodeToValue(CqtConstants.CODE_LIST_TYPE_EXTENSION, dr.getCmqTypeCd()));
+	    				rowData.put("cmqProgram", refCodeListService.interpretInternalCodeToValue(CqtConstants.CODE_LIST_TYPE_PROGRAM, dr.getCmqProgramCd()));
+	    				rowData.put("cmqProtocol", refCodeListService.interpretInternalCodeToValue(CqtConstants.CODE_LIST_TYPE_PROTOCOL, dr.getCmqProtocolCd()));
+	    				rowData.put("cmqProduct", refCodeListService.interpretInternalCodeToValue(CqtConstants.CODE_LIST_TYPE_PRODUCT, dr.getCmqProductCd()));
+	    				rowData.put("cmqLevel", dr.getCmqLevel().toString());
+	    				rowData.put("dictionaryVersion", dr.getDictionaryVersion());
+	    				rowData.put("cmqStatus", dr.getCmqStatus());
+	    				rowData.put("cmqAlgorithm", dr.getCmqAlgorithm());
+	    				rowData.put("cmqGroup", dr.getCmqGroup());
+	    				listData.add(rowData);
+	    			}
+	    			parameters.put("cmqLists", new JRMapCollectionDataSource(listData));
+	    			
 //		    			templateFile = new File(ec.getRealPath(REPORT_TEMPLATE_PATH_LIST_DETAILS_JRXML));
 //		    			JasperDesign jasperDesign = JRXmlLoader.load(templateFile);
 //		    			JasperReport jasperReport = JasperCompileManager.compileReport(jasperDesign);
 //		    			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters);
-		    			
-		    			//or
-		    			templateFile = new File(ec.getRealPath(REPORT_TEMPLATE_PATH_LIST_DETAILS_JASPER));	    			
-		    			JasperPrint jasperPrint = JasperFillManager.fillReport(new FileInputStream(templateFile), parameters, new JREmptyDataSource());
-		    				    			
-		    			JasperExportManager.exportReportToPdfStream(jasperPrint, new FileOutputStream(tempFile));
-		    			break;
-		    			/**
-		    			 * This is a tip for future coder: HOW TO EMBED AN IMAGE TO JASPER REPORT
-		    			 * Step 1: Encode your image in base64. Copy string except "data:image/jpeg;base64, -" part
-		    			 * Step 2: Put the base64 image data into a report variable
-		    			 * Step 3: Add image to the report:
-		    			 * 		new ByteArrayInputStream(Base64.decodeBase64($V{CSpaceLogo}.getBytes()))
-		    			 * Step 4: Add Base64 class import to the report:
-		    			 * 		<import value="org.apache.commons.codec.binary.Base64"></import>
-		    			 */
-		    		}
-		    	}
+	    			
+	    			//or
+	    			templateFile = new File(ec.getRealPath(REPORT_TEMPLATE_PATH_LIST_DETAILS_JASPER));	    			
+	    			JasperPrint jasperPrint = JasperFillManager.fillReport(new FileInputStream(templateFile), parameters, new JREmptyDataSource());
+	    				    			
+	    			JasperExportManager.exportReportToPdfStream(jasperPrint, new FileOutputStream(tempFile));
+	    			break;
+	    			/**
+	    			 * This is a tip for future coder: HOW TO EMBED AN IMAGE TO JASPER REPORT
+	    			 * Step 1: Encode your image in base64. Copy string except "data:image/jpeg;base64, -" part
+	    			 * Step 2: Put the base64 image data into a report variable
+	    			 * Step 3: Add image to the report:
+	    			 * 		new ByteArrayInputStream(Base64.decodeBase64($V{CSpaceLogo}.getBytes()))
+	    			 * Step 4: Add Base64 class import to the report:
+	    			 * 		<import value="org.apache.commons.codec.binary.Base64"></import>
+	    			 */
+	    		}
+	    	}
+		    
+		    if (tempFile == null) {
+		    	throw new ReportGenerationException("Failed to create temporary file for report generation!");
 		    }
 		    
-		    if(tempFile != null) {
-			    int contentLength = (int) tempFile.length();
-			    String contentType = ec.getMimeType(outputFileName);
-			    
-			    ec.responseReset(); // Some JSF component library or some Filter might have set some headers in the buffer beforehand. We want to get rid of them, else it may collide.
-			    ec.setResponseContentType(contentType); // Check http://www.iana.org/assignments/media-types for all types. Use if necessary ExternalContext#getMimeType() for auto-detection based on filename.
-			    ec.setResponseContentLength(contentLength); // Set it with the file size. This header is optional. It will work if it's omitted, but the download progress will be unknown.
-			    ec.setResponseHeader("Content-Disposition", "attachment; filename=\"" + outputFileName + "\""); // The Save As popup magic is done here. You can give it any file name you want, this only won't work in MSIE, it will use current request URL as file name instead.
-		
-			    OutputStream output = ec.getResponseOutputStream();
-			    Files.copy(tempFile.toPath(), output);
-		
-			    fc.responseComplete(); // Important! Otherwise JSF will attempt to render the response which obviously will fail since it's already written with a file and closed.
-			    // erase temp file
-			    tempFile.delete();
-		    } else {
-		    	fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "The report type or format not supported yet!", ""));
-		    }
+		    int contentLength = (int) tempFile.length();
+		    String contentType = ec.getMimeType(outputFileName);
+		    
+		    ec.responseReset(); // Some JSF component library or some Filter might have set some headers in the buffer beforehand. We want to get rid of them, else it may collide.
+		    ec.setResponseContentType(contentType); // Check http://www.iana.org/assignments/media-types for all types. Use if necessary ExternalContext#getMimeType() for auto-detection based on filename.
+		    ec.setResponseContentLength(contentLength); // Set it with the file size. This header is optional. It will work if it's omitted, but the download progress will be unknown.
+		    ec.setResponseHeader("Content-Disposition", "attachment; filename=\"" + outputFileName + "\""); // The Save As popup magic is done here. You can give it any file name you want, this only won't work in MSIE, it will use current request URL as file name instead.
+	
+		    OutputStream output = ec.getResponseOutputStream();
+		    Files.copy(tempFile.toPath(), output);
+	
+		    fc.responseComplete(); // Important! Otherwise JSF will attempt to render the response which obviously will fail since it's already written with a file and closed.
+		    // erase temp file
+		    tempFile.delete();
+	    } catch (ReportGenerationException e) {
+	    	log.error("Error while generating report: ", e.getMessage());
+			fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(), ""));
 	    } catch(Exception e) {
 	    	log.error("Error while generating report: ", e);
 			fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "There was an error while generating the report!", ""));

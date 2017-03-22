@@ -660,9 +660,9 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 
 		// TODO Auto-generated method stub
 		if (filterPublishedBetweenFrom != null)
-			queryStrB.append(" and activationDate > :pubBtwFrom");
+			queryStrB.append(" and activationDate >= :pubBtwFrom");
 		if (filterPublishedBetweenTo != null)
-			queryStrB.append(" and activationDate < :pubBtwTo");
+			queryStrB.append(" and activationDate <= :pubBtwTo");
 
 		List<CmqBase190> retVal = null;
 
@@ -676,7 +676,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 				query.setParameter("pubBtwFrom", filterPublishedBetweenFrom,
 						TemporalType.TIMESTAMP);
 			if (filterPublishedBetweenTo != null)
-				query.setParameter("pubBtwTo", filterPublishedBetweenFrom,
+				query.setParameter("pubBtwTo", filterPublishedBetweenTo,
 						TemporalType.TIMESTAMP);
 			retVal = query.getResultList();
 		} catch (Exception e) {
