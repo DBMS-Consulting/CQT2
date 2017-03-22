@@ -8,7 +8,7 @@
 
 	<!-- <p:ajax event="close" listener="#{searchController.onCloseHierarchySearch}" update="@form:hierarchySearchGrid"/> -->
 	
-	<p:panel header="Relations" style="min-width:700px; min-height:560px; overflow: auto" id="hierarchy-modal">
+	<p:panel header="Relations" id="hierarchy-modal" style="min-width:700px; min-height:400px; overflow: auto">
 		<h:panelGrid id="hierarchySearchGrid" columns="6">
 			<p:outputLabel value="Level" for="levelH" />
 			<p:selectOneMenu id="levelH" label="Level"  rendered="#{createController.detailsFormModel.extension ne 'PRO' and createController.detailsFormModel.extension ne 'CPT' and createController.detailsFormModel.extension ne 'DME'}"
@@ -47,7 +47,8 @@
 		</h:panelGrid>
 
 		<br />
-		<h:panelGrid id="pc3" styleClass="AFStretchWidth">
+		
+		<h:panelGrid id="pc3" styleClass="AFStretchWidth" >
 			<p:toolbar id="t4">
 				<f:facet name="left">
 					<p:commandButton id="filterH" value="Filter and Sort" type="button"
@@ -76,34 +77,33 @@
 
 				</f:facet>
 			</p:toolbar>
-
-			<p:treeTable value="#{searchController.hierarchyRoot}" var="node"
-				id="resultHier" rows="20" selectionMode="checkbox" selection="#{searchController.relationSelected}"
-				styleClass="ui-treetable-resultHier" 
-				paginator="true" paginatorPosition="bottom"
-				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-				rowsPerPageTemplate="5,10,25,30" rowStyleClass="#{node.rowStyleClass}">
+  				<p:treeTable value="#{searchController.hierarchyRoot}" var="node"
+					id="resultHier" rows="20" selectionMode="checkbox" selection="#{searchController.relationSelected}"
+					styleClass="ui-treetable-resultHier" style="width:700px; height:560px; overflow: auto"
+					paginator="true" paginatorPosition="bottom"
+					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					rowsPerPageTemplate="5,10,25,30" rowStyleClass="#{node.rowStyleClass}">
+		
+					<f:attribute name="uiEventSourceName" value="hierarchy-search" />
+					<p:ajax event="expand" listener="#{searchController.onNodeExpand}"
+						update="resultHier">
+							
+					</p:ajax>
 	
-				<f:attribute name="uiEventSourceName" value="hierarchy-search" />
-				<p:ajax event="expand" listener="#{searchController.onNodeExpand}"
-					update="resultHier">
-						
-				</p:ajax>
-
-				<p:column headerText="Level">
-					<h:outputText value="#{node.level}" />
-				</p:column>
-
-				<p:column headerText="Term">
-					<h:outputText value="#{node.term}" />
-				</p:column>
-
-				<p:column headerText="Code" sortBy="#{node.code}" filterBy="#{node.code}">
-					<h:outputText value="#{node.code}" />
-					<h:outputText value="#{node.entity.id}" styleClass="ui-hidden data-entity-id" />
-				</p:column>
-			</p:treeTable>
-		</h:panelGrid>
+					<p:column headerText="Level">
+						<h:outputText value="#{node.level}" />
+					</p:column>
+	
+					<p:column headerText="Term">
+						<h:outputText value="#{node.term}" />
+					</p:column>
+	
+					<p:column headerText="Code" sortBy="#{node.code}" filterBy="#{node.code}">
+						<h:outputText value="#{node.code}" />
+						<h:outputText value="#{node.entity.id}" styleClass="ui-hidden data-entity-id" />
+					</p:column>
+				</p:treeTable>
+  		</h:panelGrid>
 	</p:panel>
 
 	<!-- <p:ajaxStatus onstart="PF('statusDialog').show()"

@@ -23,10 +23,11 @@
 			<p:spacer height="10px"></p:spacer>
 		</h:panelGrid>
 		
-		<p:accordionPanel activeIndex="null">
-			<p:tab title="Relations">
+		<h:panelGrid style="min-width:700px; min-height:560px; overflow: auto">
+			<p:accordionPanel activeIndex="null" >
+			<p:tab title="Relations" >
 				<p:treeTable value="#{searchController.parentListRoot}" var="node"
-					rows="20" resizableColumns="true"
+					rows="20" resizableColumns="true" 
 					styleClass="ui-treetable-resultHier" 
 					paginator="true" paginatorPosition="bottom"
 					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
@@ -50,6 +51,9 @@
 				</p:treeTable>
 			</p:tab>
 		</p:accordionPanel>
+		</h:panelGrid>
+		
+		
 		<style>
 			.parent-list-detail-grid .label-cell {
 				width: 15%;

@@ -71,7 +71,9 @@ public class ReactivateController implements Serializable {
 	 * @param event
 	 */
 	public void pickList() {
-		boolean childNotSelected = false;
+		int cpt = 0;
+		int cptChild = 0;
+		boolean childNotSelected = true;
 		List<CmqBase190> targetCmqsSelected = new ArrayList<CmqBase190>(this.reactivateDualListModel.getTarget());
 		List<Long> targetCmqCodes = new ArrayList<>();
 		LOG.info("\n\n **********************   targetCmqsSelected size " + targetCmqsSelected.size());
@@ -83,14 +85,27 @@ public class ReactivateController implements Serializable {
 		List<CmqBase190> childCmqsOftargets = this.cmqBaseService.findChildCmqsByCodes(targetCmqCodes);
 		if((null != childCmqsOftargets) && (childCmqsOftargets.size() > 0)) {
 			//add them to the selected cmqs list
+//			for (CmqBase190 childCmq : childCmqsOftargets) {
+//				for (CmqBase190 srcCmq : sourceListToReactivate) {
+//					if (childCmq.getCmqCode().equals(srcCmq.getCmqCode())) {
+//						childNotSelected = true;
+//						break;
+//					}
+//				}
+//			}
+			
+			
 			for (CmqBase190 childCmq : childCmqsOftargets) {
-				for (CmqBase190 srcCmq : sourceListToReactivate) {
-					if (childCmq.getCmqCode().equals(srcCmq.getCmqCode())) {
-						childNotSelected = true;
-						break;
-					}
+				if (childCmq.getCmqStatus().equals("I") && childCmq.getCmqState().equalsIgnoreCase("published"))
+					cptChild++;
+				for (CmqBase190 srcCmq : targetCmqsSelected) {
+					if (!srcCmq.getCmqCode().equals(childCmq.getCmqParentCode()))
+						if (childCmq.getCmqCode().equals(srcCmq.getCmqCode())) 
+							cpt++;
 				}
 			}
+			if (cpt == cptChild) //if (cpt == childCmqsOftargets.size())
+				childNotSelected = false;
 		}
 		if (childCmqsOftargets != null && !childCmqsOftargets.isEmpty() && childNotSelected)
 			this.confirmMessage = "Not all associate child lists are selected for reactivation. Do you want to continue?";
@@ -106,6 +121,7 @@ public class ReactivateController implements Serializable {
 		List<Long> targetCmqCodes = new ArrayList<>();
 		List<CmqBase190> targetCmqParents = new ArrayList<CmqBase190>();
 		List<CmqBase190> targetCmqsSelected = new ArrayList<CmqBase190>(this.reactivateDualListModel.getTarget());
+		List<CmqBase190> targetCmqsToReactivate = new ArrayList<CmqBase190>();
 		if((targetCmqsSelected == null) || (targetCmqsSelected.size() == 0)) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Please select at least 1 list to reactivate.", "");
@@ -131,11 +147,10 @@ public class ReactivateController implements Serializable {
 			if((null != childCmqsOftargets) && (childCmqsOftargets.size() > 0)) {
 				//add them to the selected cmqs list
 				for (CmqBase190 childCmq : childCmqsOftargets) {
-					if(childCmq.getCmqState().equalsIgnoreCase("published") && childCmq.getCmqStatus().equalsIgnoreCase("I")) {
-						targetCmqsSelected.add(childCmq);//we need to reactivate these
+					if(childCmq.getCmqState().equalsIgnoreCase("published") && childCmq.getCmqStatus().equalsIgnoreCase("I") && isSelected(childCmq.getCmqCode(), targetCmqsSelected)) {
+						targetCmqsToReactivate.add(childCmq);//we need to reactivate these
 					}
 				}
-				
  			}
 			
 			//If a child is being reactivated, and the parent is NOT selected, it SHOULD reactivate parent as well
@@ -146,8 +161,6 @@ public class ReactivateController implements Serializable {
 				for (CmqBase190 cmqBase190 : targetCmqParents) {
 					cmqBase190.setCmqState("DRAFT");
 					cmqBase190.setCmqStatus("P"); 
-//					cmqBase190.setActivatedBy("NONE");
-//					cmqBase190.setActivationDate(new Date());
 					cmqBase190.setLastModifiedDate(new Date());
 					cmqBase190.setLastModifiedBy("NONE");
 				}
@@ -159,7 +172,7 @@ public class ReactivateController implements Serializable {
 			} 
 
 			//continue
- 			for (CmqBase190 cmqBase190 : targetCmqsSelected) {
+ 			for (CmqBase190 cmqBase190 : targetCmqsToReactivate) {
 				cmqBase190.setCmqState("DRAFT");
 				cmqBase190.setCmqStatus("P"); 
 //				cmqBase190.setActivatedBy("NONE");
@@ -170,7 +183,7 @@ public class ReactivateController implements Serializable {
 
 			try {
 				
-				this.cmqBaseService.update(targetCmqsSelected);
+				this.cmqBaseService.update(targetCmqsToReactivate);
 				
 				//update the dualListModel source and target
 				init();
@@ -203,6 +216,16 @@ public class ReactivateController implements Serializable {
 		}
 		
 		return "";
+	}
+
+	private boolean isSelected(Long cmqCode, List<CmqBase190> targetCmqsSelected) {
+		int cpt = 0;
+		for (CmqBase190 cmq : targetCmqsSelected)
+			if (cmq.getCmqCode().equals(cmqCode)) 
+				cpt++;
+		if (cpt > 0)
+			return true;
+		return false;
 	}
 
 	private class CmqBaseDualListConverter implements Converter {

@@ -80,6 +80,10 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 	@ManagedProperty("#{MeddraDictService}")
 	private IMeddraDictService meddraDictService;
 	
+	@ManagedProperty("#{RefCodeListService}")
+	private IRefCodeListService refCodeListService;
+	
+	
 	public List<CmqBase190> findImpactedWithPaginated(int first, int pageSize, String sortField
 														, SortOrder sortOrder, Map<String, Object> filters) {
 		List<CmqBase190> retVal = null;
@@ -1008,15 +1012,15 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		rowCount++;
 		row = worksheet.createRow(rowCount);
 		cell = row.createCell(0);
-		cell.setCellValue("Drug Program: " + details.getDrugProgram());
+		cell.setCellValue("Drug Program: " + refCodeListService.findCodeByInternalCode("PROGRAM", details.getDrugProgram()));
 		rowCount++;
 		row = worksheet.createRow(rowCount);
 		cell = row.createCell(0);
-		cell.setCellValue("Protocol: " + details.getProtocol());
+		cell.setCellValue("Protocol: " + refCodeListService.findCodeByInternalCode("PROTOCOL", details.getProtocol()));
 		rowCount++;
 		row = worksheet.createRow(rowCount);
 		cell = row.createCell(0);
-		cell.setCellValue("Product List: " + details.getProduct());
+		cell.setCellValue("Product List: " + refCodeListService.findCodeByInternalCode("PRODUCT", details.getProduct()));
 		rowCount++;
 		row = worksheet.createRow(rowCount);
 		cell = row.createCell(0);
@@ -1060,11 +1064,11 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		rowCount++;
 		row = worksheet.createRow(rowCount);
 		cell = row.createCell(0);
-		cell.setCellValue("Last Creation By: " + details.getLastModifiedBy());
+		cell.setCellValue("Last Modified By: " + details.getLastModifiedBy());
 		rowCount++;
 		row = worksheet.createRow(rowCount);
 		cell = row.createCell(0);
-		cell.setCellValue("Last Creation Date: "
+		cell.setCellValue("Last Modification Date: "
 				+ details.getLastModifiedDate());
 
 		rowCount++;
@@ -1412,5 +1416,13 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 
 	public void setMeddraDictService(IMeddraDictService meddraDictService) {
 		this.meddraDictService = meddraDictService;
+	}
+
+	public IRefCodeListService getRefCodeListService() {
+		return refCodeListService;
+	}
+
+	public void setRefCodeListService(IRefCodeListService refCodeListService) {
+		this.refCodeListService = refCodeListService;
 	}
 }
