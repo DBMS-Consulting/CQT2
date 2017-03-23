@@ -20,4 +20,12 @@ public interface ICmqBaseTargetService  extends ICqtPersistenceService<CmqBaseTa
 
 	Long findNotImpactedCount();
 
+	CmqBaseTarget findByCode(Long cmqCode);
+
+	List<Map<String, Object>> findCmqChildCountForParentCmqCode(List<Long> cmqCodes);
+
+	Long findCmqChildCountForParentCmqCode(Long cmqCode);
+
+	List<CmqBaseTarget> findChildCmqsByParentCode(Long code);
+
 }

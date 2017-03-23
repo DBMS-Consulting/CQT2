@@ -193,9 +193,16 @@
 											icon="fa fa-refresh" onclick="PF('select_mq').show();" />
 									</f:facet>
 								</p:toolbar>
-
-								<p:treeTable value="#{userBean.root}" var="row" id="futureListsAndSmqs" 
-									styleClass="ui-treetable-futureListsAndSmqs">
+								
+								<p:treeTable value="#{impactSearchController.targetTableRootTreeNode}" var="node"
+									id="futureListsAndSmqs" rows="30" selectionMode="single" styleClass="ui-treetable-futureListsAndSmqs"
+									paginator="true" paginatorPosition="bottom"
+									paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+									rowsPerPageTemplate="10,20,30,40,50" >
+								
+									<f:attribute name="uiEventSourceName" value="target-table" />
+									<p:ajax event="expand" listener="#{impactSearchController.onNodeExpandTargetTable}" update="futureListsAndSmqs" />
+								
 									<p:columnGroup type="header">
 										<p:row>
 											<p:column rowspan="2" headerText="Future Lists/SMQ"
@@ -213,24 +220,24 @@
 									</p:columnGroup>
 
 									<p:column>
-										<h:panelGrid columns="1">
+										<!-- <h:panelGrid columns="1">
 											<h:outputText value="ABC" id="ot5" rendered="true"
 												shortDesc="#{node.path}" style="white-space:pre-wrap"
 												noWrap="false" />
 											<h:commandLink value="abc" id="cl1" rendered="true" />
-										</h:panelGrid>
+										</h:panelGrid> -->
+										<h:outputText value="#{node.term}" />
 									</p:column>
 
 									<p:column>
-										<h:outputText value="#" rendered="true" />
+										<h:outputText value="#{node.code}" rendered="true" />
 									</p:column>
 									<p:column headerText="Level" style="width: 50px !important">
-										<h:outputText value="#" rendered="true" />
+										<h:outputText value="#{node.level}" rendered="true" />
 									</p:column>
 
 									<p:column>
-										<p:selectOneMenu id="soc3" value="Narrow">
-
+										<p:selectOneMenu id="soc3" value="#{node.scope}">
 											<f:selectItem itemLabel="Broad" itemValue="1" id="si13s" />
 											<f:selectItem itemLabel="Narrow" itemValue="2" id="si13d" />
 											<f:selectItem itemLabel="Child Narrow" itemValue="3" id="si4" />
@@ -238,7 +245,7 @@
 									</p:column>
 
 									<p:column>
-										<p:selectOneMenu id="soc2" value="S" rendered="true">
+										<p:selectOneMenu id="soc2" value="#{node.category}" rendered="true">
 											<f:selectItem itemLabel="A" itemValue="A" id="si3" />
 											<f:selectItem itemLabel="S" itemValue="S" id="si33" />
 											<f:selectItem itemLabel="B" itemValue="B" id="si8" />
@@ -253,7 +260,7 @@
 									</p:column>
 
 									<p:column>
-										<p:spinner value="2" id="ot6" />
+										<p:spinner value="#{node.weight}" id="ot6" />
 									</p:column>
 								</p:treeTable>
 							</p:panel>
