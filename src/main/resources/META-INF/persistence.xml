@@ -4,10 +4,15 @@
 	<persistence-unit name="cqtJPA">
 		<provider>org.hibernate.ejb.HibernatePersistence</provider>
 		<class>com.dbms.entity.cqt.CmqBase190</class>
+		<class>com.dbms.entity.cqt.CmqBaseTarget</class>
 		<class>com.dbms.entity.cqt.CmqRelation190</class>
+		<class>com.dbms.entity.cqt.CmqRelationTarget</class>
 		<class>com.dbms.entity.cqt.SmqBase190</class>
+		<class>com.dbms.entity.cqt.SmqBaseTarget</class>
 		<class>com.dbms.entity.cqt.SmqRelation190</class>
+		<class>com.dbms.entity.cqt.SmqRelationTarget</class>
 		<class>com.dbms.entity.cqt.MeddraDict190</class>
+		<class>com.dbms.entity.cqt.MeddraDictTarget</class>
 		<class>com.dbms.entity.cqt.RefConfigCodeList</class>
 		<class>com.dbms.entity.meddra.HlgtPrefTerm</class>
 		<class>com.dbms.entity.meddra.HltPrefTerm</class>
