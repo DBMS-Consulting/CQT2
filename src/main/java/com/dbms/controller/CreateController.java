@@ -932,7 +932,7 @@ public class CreateController implements Serializable {
 	 */
 	private void prepareDetailsFormSave() throws CqtServiceException {
 		// fill data
-		if(createWizard != null || copyWizard != null) {
+		if((createWizard != null || copyWizard != null) && selectedData.getId() != null) {
 			// get the next value of code
 			codevalue = this.cmqBaseService.getNextCodeValue();
 			RefConfigCodeList currentMeddraVersionCodeList = this.refCodeListService.getCurrentMeddraVersion();
@@ -1133,7 +1133,7 @@ public class CreateController implements Serializable {
 				// delete the record
 				cmqBaseService.remove(selectedData.getCmqId());
 
-				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Record deleted!'" + state + "'", "");
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Record has been deleted!", "");
 				FacesContext ctx = FacesContext.getCurrentInstance();
 				ctx.addMessage(null, msg);
 
