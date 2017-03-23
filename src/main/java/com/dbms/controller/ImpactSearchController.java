@@ -160,8 +160,7 @@ public class ImpactSearchController implements Serializable {
 			IEntity entity = hierarchyNode.getEntity();
 
 			// remove the first dummy node placeholder
-			HierarchyNode dummyChildData = (HierarchyNode) expandedTreeNode
-					.getChildren().get(0).getData();
+			HierarchyNode dummyChildData = (HierarchyNode) expandedTreeNode.getChildren().get(0).getData();
 			if (dummyChildData.isDummyNode()) {
 				expandedTreeNode.getChildren().remove(0);
 			}
@@ -187,24 +186,24 @@ public class ImpactSearchController implements Serializable {
 	public void updateCurrentTable() {
 		LOG.info("current called");	
 		if(this.selectedImpactedCmqList != null) {
-			this.updateCurrentTableForImpactedCmqList();
+			this.updateCurrentTableForCmqList(this.selectedImpactedCmqList);
 		} else if(this.selectedNotImpactedCmqList != null) {
-			
+			this.updateCurrentTableForCmqList(this.selectedNotImpactedCmqList);
 		}
 	}
 
 	public void updateTargetTable() {
 		LOG.info("target called");
 		if(this.selectedImpactedCmqList != null) {
-			this.updateTargetTableForImpactedCmqList();
+			this.updateTargetTableForCmqList(this.selectedImpactedCmqList);
 		} else if(this.selectedNotImpactedCmqList != null) {
-			
+			this.updateTargetTableForCmqList(this.selectedNotImpactedCmqList);
 		}
 	}
 
-	private void updateCurrentTableForImpactedCmqList() {
+	private void updateCurrentTableForCmqList(CmqBaseTarget selectedCmqList) {
 		//TODO: check if the currentTableRootTreeNode already has this tree node
-		CmqBase190 cmqBaseCurrent = this.cmqBaseCurrentService.findByCode(this.selectedImpactedCmqList.getCmqCode());
+		CmqBase190 cmqBaseCurrent = this.cmqBaseCurrentService.findByCode(selectedCmqList.getCmqCode());
 		HierarchyNode node = this.createCmqBaseCurrentHierarchyNode(cmqBaseCurrent);
 		TreeNode cmqBaseTreeNode = new DefaultTreeNode(node, currentTableRootTreeNode);
 		
@@ -228,14 +227,14 @@ public class ImpactSearchController implements Serializable {
 		}
 	}
 	
-	private void updateTargetTableForImpactedCmqList() {
+	private void updateTargetTableForCmqList(CmqBaseTarget selectedCmqList) {
 		//TODO: check if the targetTableRootTreeNode already has this tree node
-		CmqBaseTarget cmqBaseTarget = this.cmqBaseTargetService.findByCode(this.selectedImpactedCmqList.getCmqCode());
-		HierarchyNode node = this.createCmqBaseTargetHierarchyNode(cmqBaseTarget);
+		//CmqBaseTarget cmqBaseTarget = this.cmqBaseTargetService.findByCode(this.selectedImpactedCmqList.getCmqCode());
+		HierarchyNode node = this.createCmqBaseTargetHierarchyNode(selectedCmqList);
 		TreeNode cmqBaseTreeNode = new DefaultTreeNode(node, targetTableRootTreeNode);
 		
 		boolean dummyNodeAdded = false;
-		Long count = this.cmqBaseTargetService.findCmqChildCountForParentCmqCode(cmqBaseTarget.getCmqCode());
+		Long count = this.cmqBaseTargetService.findCmqChildCountForParentCmqCode(selectedCmqList.getCmqCode());
 		if((count != null) && (count > 0)) {
 			HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
 			dummyNode.setDummyNode(true);
@@ -245,7 +244,7 @@ public class ImpactSearchController implements Serializable {
 		
 		//check for relations now
 		if(!dummyNodeAdded) {
-			count = this.cmqRelationTargetService.findCountByCmqCode(cmqBaseTarget.getCmqCode());
+			count = this.cmqRelationTargetService.findCountByCmqCode(selectedCmqList.getCmqCode());
 			if((count != null) && (count > 0)) {
 				HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
 				dummyNode.setDummyNode(true);
@@ -334,7 +333,7 @@ public class ImpactSearchController implements Serializable {
 		if("current".equalsIgnoreCase(smqType)) {
 			childSmqBaseList = this.smqBaseCurrentService.findChildSmqByParentSmqCode(smqCode);
 		} else {
-			//childSmqBaseList = this.smqBaseTargetService.findChildSmqByParentSmqCode(smqBase.getSmqCode());
+			childSmqBaseList = this.smqBaseTargetService.findChildSmqByParentSmqCode(smqCode);
 		}
 		if(CollectionUtils.isNotEmpty(childSmqBaseList)) {
 			Map<Long, TreeNode> smqTreeNodeMap = new HashMap<>();
@@ -713,7 +712,7 @@ public class ImpactSearchController implements Serializable {
 	
 	private HierarchyNode createCmqBaseCurrentHierarchyNode(CmqBase190 cmqBaseCurrent) {
 		HierarchyNode node = new HierarchyNode();
-		node.setLevel(cmqBaseCurrent.getCmqLevel().toString());
+		node.setLevel(cmqBaseCurrent.getCmqTypeCd());
 		node.setTerm(cmqBaseCurrent.getCmqName());
 		node.setCode(cmqBaseCurrent.getCmqCode().toString());
 		node.setCategory("");
@@ -725,7 +724,7 @@ public class ImpactSearchController implements Serializable {
 	
 	private HierarchyNode createCmqBaseTargetHierarchyNode(CmqBaseTarget cmqBaseTarget) {
 		HierarchyNode node = new HierarchyNode();
-		node.setLevel(cmqBaseTarget.getCmqLevel().toString());
+		node.setLevel(cmqBaseTarget.getCmqTypeCd());
 		node.setTerm(cmqBaseTarget.getCmqName());
 		node.setCode(cmqBaseTarget.getCmqCode().toString());
 		node.setCategory("");

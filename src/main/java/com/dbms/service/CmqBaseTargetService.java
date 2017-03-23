@@ -10,6 +10,7 @@ import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.hibernate.SQLQuery;
@@ -46,7 +47,8 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 			CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 			CriteriaQuery<CmqBaseTarget> cq = cb.createQuery(CmqBaseTarget.class);
 			Root<CmqBaseTarget> cmqRoot = cq.from(CmqBaseTarget.class);
-			cq.where(cmqRoot.get("cmqId").isNotNull());
+			Predicate equalsPredicate = cb.equal(cmqRoot.get("impactType"), "IMPACTED");
+			cq.where(equalsPredicate);
 			cq.orderBy(cb.asc(cmqRoot.get("cmqName")));
 			TypedQuery<CmqBaseTarget> tq = entityManager.createQuery(cq);
 			
@@ -75,7 +77,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 	public Long findImpactedCount() {
 		Long retVal = null;
 		StringBuilder sb = new StringBuilder();
-		sb.append("select count(*) from CmqBaseTarget c where c.cmqId is not null");
+		sb.append("select count(*) from CmqBaseTarget c where c.impactType = 'IMPACTED'");
 		
 		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
 		try {
@@ -106,7 +108,8 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 			CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 			CriteriaQuery<CmqBaseTarget> cq = cb.createQuery(CmqBaseTarget.class);
 			Root<CmqBaseTarget> cmqRoot = cq.from(CmqBaseTarget.class);
-			cq.where(cmqRoot.get("cmqId").isNotNull());
+			Predicate equalsPredicate = cb.equal(cmqRoot.get("impactType"), "NON-IMPACTED");
+			cq.where(equalsPredicate);
 			cq.orderBy(cb.asc(cmqRoot.get("cmqName")));
 			TypedQuery<CmqBaseTarget> tq = entityManager.createQuery(cq);
 			
@@ -135,7 +138,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 	public Long findNotImpactedCount() {
 		Long retVal = null;
 		StringBuilder sb = new StringBuilder();
-		sb.append("select count(*) from CmqBaseTarget c where c.cmqId is not null");
+		sb.append("select count(*) from CmqBaseTarget c where c.impactType = 'NON-IMPACTED'");
 	
 		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
 		try {
