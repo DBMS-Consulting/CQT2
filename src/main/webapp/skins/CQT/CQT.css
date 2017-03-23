@@ -303,3 +303,11 @@ td .bordered {
 .ui-treetable.ui-treetable-resultHier .ui-treetable-selectable-node .ui-chkbox.ui-selection {
 	display: none;
 }
+
+/**============Impact assessment ======**/
+.v-align-middle {
+	vertical-align: middel;
+}
+.v-align-top {
+	vertical-align: top;
+}

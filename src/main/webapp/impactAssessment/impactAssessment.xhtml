@@ -124,8 +124,8 @@
 
 					<!-- PANEL -->
 					<p:panel>
-						<h:panelGrid columns="2">
-							<p:panel style="width: 100%; font-size: 12px !important">
+						<h:panelGrid columns="2" columnClasses="ui-grid-col-6 v-align-top, ui-grid-col-6 v-align-top">
+							<p:panel style="width: 100%; font-size: 12px !important; padding: 0;">
 								<p:toolbar>
 									<f:facet name="left">
 										<p:commandButton value="Select Lists/SMQs" actionListener="#"
@@ -142,7 +142,7 @@
 									id="currentListsAndSmqs" rows="30" selectionMode="single" styleClass="ui-treetable-currentListsAndSmqs"
 									paginator="true" paginatorPosition="bottom"
 									paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-									rowsPerPageTemplate="10,20,30,40,50" >
+									rowsPerPageTemplate="10,20,30,40,50" resizableColumns="true">
 	
 									<f:attribute name="uiEventSourceName" value="current-table" />
 									<p:ajax event="expand" listener="#{impactSearchController.onNodeExpandCurrentTable}" update="currentListsAndSmqs" />
@@ -181,7 +181,7 @@
 								</p:treeTable>
 							</p:panel>
 
-							<p:panel style="width: 100%; font-size: 12px !important">
+							<p:panel style="width: 100%; font-size: 12px !important; padding: 0;">
 								<p:toolbar>
 									<f:facet name="left">
 										<p:commandButton value="Hierarchy Search" actionListener="#"
@@ -198,7 +198,7 @@
 									id="futureListsAndSmqs" rows="30" selectionMode="single" styleClass="ui-treetable-futureListsAndSmqs"
 									paginator="true" paginatorPosition="bottom"
 									paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-									rowsPerPageTemplate="10,20,30,40,50" >
+									rowsPerPageTemplate="10,20,30,40,50" resizableColumns="true">
 								
 									<f:attribute name="uiEventSourceName" value="target-table" />
 									<p:ajax event="expand" listener="#{impactSearchController.onNodeExpandTargetTable}" update="futureListsAndSmqs" />
