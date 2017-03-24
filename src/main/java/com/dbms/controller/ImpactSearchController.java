@@ -93,6 +93,7 @@ public class ImpactSearchController implements Serializable {
 	private TreeNode currentTableRootTreeNode;
 	
 	private TreeNode targetTableRootTreeNode;
+	private boolean reviewEnabled, demoteEnabled, approveEnabled;
 	
 	public ImpactSearchController() {
 		
@@ -106,6 +107,10 @@ public class ImpactSearchController implements Serializable {
 				"LEVEL", "SCOPE", null), null);
 		targetTableRootTreeNode = new DefaultTreeNode("root", new HierarchyNode("CODE",
 				"LEVEL", "SCOPE", "CATEGORY", "WEIGHT", null, null), null);
+		
+		setReviewEnabled(true);
+		setApproveEnabled(true);
+		setDemoteEnabled(true); 
 	}
 
 	public void onRelationDrop() {
@@ -1007,5 +1012,29 @@ public class ImpactSearchController implements Serializable {
 
 	public void setSmqBaseTargetService(ISmqBaseTargetService smqBaseTargetService) {
 		this.smqBaseTargetService = smqBaseTargetService;
+	}
+
+	public boolean isReviewEnabled() {
+		return reviewEnabled;
+	}
+
+	public void setReviewEnabled(boolean reviewEnabled) {
+		this.reviewEnabled = reviewEnabled;
+	}
+
+	public boolean isDemoteEnabled() {
+		return demoteEnabled;
+	}
+
+	public void setDemoteEnabled(boolean demoteEnabled) {
+		this.demoteEnabled = demoteEnabled;
+	}
+
+	public boolean isApproveEnabled() {
+		return approveEnabled;
+	}
+
+	public void setApproveEnabled(boolean approveEnabled) {
+		this.approveEnabled = approveEnabled;
 	}
 }
