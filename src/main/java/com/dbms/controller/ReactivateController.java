@@ -96,7 +96,8 @@ public class ReactivateController implements Serializable {
 			
 			
 			for (CmqBase190 childCmq : childCmqsOftargets) {
-				if (childCmq.getCmqStatus().equals("I") && childCmq.getCmqState().equalsIgnoreCase("published"))
+				if (childCmq.getCmqStatus().equals(CmqBase190.CMQ_STATUS_VALUE_INACTIVE)
+						&& childCmq.getCmqState().equalsIgnoreCase(CmqBase190.CMQ_STATE_VALUE_PUBLISHED))
 					cptChild++;
 				for (CmqBase190 srcCmq : targetCmqsSelected) {
 					if (!srcCmq.getCmqCode().equals(childCmq.getCmqParentCode()))
@@ -131,7 +132,8 @@ public class ReactivateController implements Serializable {
 				targetCmqCodes.add(cmqBase.getCmqCode());
 				if(null != cmqBase.getCmqParentCode()) {
 					CmqBase190 parent = cmqBaseService.findByCode(cmqBase.getCmqParentCode());
-					if (parent != null && parent.getCmqStatus().equals("I") && parent.getCmqState().equalsIgnoreCase("published"))
+					if (parent != null && parent.getCmqStatus().equals(CmqBase190.CMQ_STATUS_VALUE_INACTIVE)
+							&& parent.getCmqState().equalsIgnoreCase(CmqBase190.CMQ_STATE_VALUE_PUBLISHED))
 						targetCmqParents.add(parent);
 				}
 			}
@@ -147,7 +149,9 @@ public class ReactivateController implements Serializable {
 			if((null != childCmqsOftargets) && (childCmqsOftargets.size() > 0)) {
 				//add them to the selected cmqs list
 				for (CmqBase190 childCmq : childCmqsOftargets) {
-					if(childCmq.getCmqState().equalsIgnoreCase("published") && childCmq.getCmqStatus().equalsIgnoreCase("I") && isSelected(childCmq.getCmqCode(), targetCmqsSelected)) {
+					if(childCmq.getCmqState().equalsIgnoreCase(CmqBase190.CMQ_STATE_VALUE_PUBLISHED)
+							&& childCmq.getCmqStatus().equalsIgnoreCase(CmqBase190.CMQ_STATUS_VALUE_INACTIVE)
+							&& isSelected(childCmq.getCmqCode(), targetCmqsSelected)) {
 						targetCmqsToReactivate.add(childCmq);//we need to reactivate these
 					}
 				}
@@ -159,8 +163,8 @@ public class ReactivateController implements Serializable {
 			if(targetCmqParents.size() > 0) {
 				//we need to show message that parent is Reactivated
 				for (CmqBase190 cmqBase190 : targetCmqParents) {
-					cmqBase190.setCmqState("DRAFT");
-					cmqBase190.setCmqStatus("P"); 
+					cmqBase190.setCmqState(CmqBase190.CMQ_STATE_VALUE_DRAFT);
+					cmqBase190.setCmqStatus(CmqBase190.CMQ_STATUS_VALUE_PENDING); 
 					cmqBase190.setLastModifiedDate(new Date());
 					cmqBase190.setLastModifiedBy("NONE");
 				}
@@ -173,8 +177,8 @@ public class ReactivateController implements Serializable {
 
 			//continue
  			for (CmqBase190 cmqBase190 : targetCmqsToReactivate) {
-				cmqBase190.setCmqState("DRAFT");
-				cmqBase190.setCmqStatus("P"); 
+				cmqBase190.setCmqState(CmqBase190.CMQ_STATE_VALUE_DRAFT);
+				cmqBase190.setCmqStatus(CmqBase190.CMQ_STATUS_VALUE_PENDING); 
 //				cmqBase190.setActivatedBy("NONE");
 //				cmqBase190.setActivationDate(new Date());
 				cmqBase190.setLastModifiedDate(new Date());

@@ -32,6 +32,8 @@ public class CmqBase190 extends BaseEntity {
 	public static final String CMQ_STATUS_DISP_LABEL_PENDING = "PENDING";
 	
 	public static final String CMQ_STATE_VALUE_DRAFT = "DRAFT";
+	public static final String CMQ_STATE_VALUE_REVIEWED = "REVIEWED";
+	public static final String CMQ_STATE_VALUE_APPROVED = "APPROVED";
 	public static final String CMQ_STATE_VALUE_PUBLISHED = "PUBLISHED";
 	
 	

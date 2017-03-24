@@ -79,7 +79,8 @@ public class PublishController implements Serializable {
 			for (CmqBase190 cmqBase190 : childCmqsOftargets) {
 				//if child is not in the target list then check if its publisher or not
 				if(!targetCmqCodes.contains(cmqBase190.getCmqCode())) {
-					if(!cmqBase190.getCmqState().equalsIgnoreCase("published") && cmqBase190.getCmqStatus().equalsIgnoreCase("P")) {
+					if(!cmqBase190.getCmqState().equalsIgnoreCase(CmqBase190.CMQ_STATE_VALUE_PUBLISHED)
+							&& cmqBase190.getCmqStatus().equalsIgnoreCase(CmqBase190.CMQ_STATUS_VALUE_PENDING)) {
 						isListPublishable = false;
 						faultyCmqs.add(cmqBase190);
 					}
@@ -109,7 +110,8 @@ public class PublishController implements Serializable {
 					for (CmqBase190 cmqBase190 : parentCmqsList) {
 						//if parent is not in the target list then check if its publisher or not
 						if(!targetCmqCodes.contains(cmqBase190.getCmqCode())) {
-							if(!cmqBase190.getCmqState().equalsIgnoreCase("published") && cmqBase190.getCmqStatus().equalsIgnoreCase("P")) {
+							if(!cmqBase190.getCmqState().equalsIgnoreCase(CmqBase190.CMQ_STATE_VALUE_PUBLISHED)
+									&& cmqBase190.getCmqStatus().equalsIgnoreCase(CmqBase190.CMQ_STATUS_VALUE_PENDING)) {
 								isListPublishable = false;
 								faultyCmqs.add(cmqBase190);
 							}
@@ -142,9 +144,9 @@ public class PublishController implements Serializable {
 					if (cmqBase190.getCmqLevel() == 2 && cmqBase190.getCmqParentCode() == null && cmqBase190.getCmqParentName() == null)
 						hasParentError = true;
 					else {
-						cmqBase190.setCmqState("PUBLISHED");
+						cmqBase190.setCmqState(CmqBase190.CMQ_STATE_VALUE_PUBLISHED);
 						//Pending to Active 'A'
-						cmqBase190.setCmqStatus("A");
+						cmqBase190.setCmqStatus(CmqBase190.CMQ_STATUS_VALUE_ACTIVE);
 						cmqBase190.setActivatedBy("NONE");
 						cmqBase190.setActivationDate(new Date());
 						cmqBase190.setLastModifiedDate(new Date());

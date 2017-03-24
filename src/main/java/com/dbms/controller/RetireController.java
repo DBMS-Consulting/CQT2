@@ -87,7 +87,8 @@ public class RetireController implements Serializable {
 		if((null != childCmqsOftargets) && (childCmqsOftargets.size() > 0)) {
 			//add them to the selected cmqs list
 			for (CmqBase190 childCmq : childCmqsOftargets) {
-				if (childCmq.getCmqStatus().equals("A") && childCmq.getCmqState().equalsIgnoreCase("published"))
+				if (childCmq.getCmqStatus().equals(CmqBase190.CMQ_STATUS_VALUE_ACTIVE)
+						&& childCmq.getCmqState().equalsIgnoreCase(CmqBase190.CMQ_STATE_VALUE_PUBLISHED))
 					cptChild++;
 				for (CmqBase190 srcCmq : targetCmqsSelected) {
 					if (!srcCmq.getCmqCode().equals(childCmq.getCmqParentCode()))
@@ -134,7 +135,8 @@ public class RetireController implements Serializable {
 			if((null != childCmqsOftargets) && (childCmqsOftargets.size() > 0)) {
 				//add them to the selected cmqs list
 				for (CmqBase190 childCmq : childCmqsOftargets) {
-					if(childCmq.getCmqState().equalsIgnoreCase("published") && childCmq.getCmqStatus().equalsIgnoreCase("A")) {
+					if(childCmq.getCmqState().equalsIgnoreCase(CmqBase190.CMQ_STATE_VALUE_PUBLISHED)
+							&& childCmq.getCmqStatus().equalsIgnoreCase(CmqBase190.CMQ_STATUS_VALUE_ACTIVE)) {
 						targetCmqsSelected.add(childCmq);//we need to retire these if selected
 					}
 				}
@@ -142,7 +144,7 @@ public class RetireController implements Serializable {
 			
 			//continue
  			for (CmqBase190 cmqBase190 : targetCmqsSelected) {
- 				cmqBase190.setCmqStatus("I"); 
+ 				cmqBase190.setCmqStatus(CmqBase190.CMQ_STATUS_VALUE_INACTIVE); 
  				cmqBase190.setLastModifiedDate(new Date());
 				cmqBase190.setLastModifiedBy("NONE");
 			}

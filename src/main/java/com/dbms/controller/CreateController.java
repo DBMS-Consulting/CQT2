@@ -1332,7 +1332,8 @@ public class CreateController implements Serializable {
 	 * @return
 	 */
 	public boolean isRelationsReadonly() {
-		return (!"Draft".equalsIgnoreCase(selectedData.getCmqState()) && !"Reviewed".equalsIgnoreCase(selectedData.getCmqState()));
+		return (!CmqBase190.CMQ_STATE_VALUE_DRAFT.equalsIgnoreCase(selectedData.getCmqState())
+				&& !CmqBase190.CMQ_STATE_VALUE_REVIEWED.equalsIgnoreCase(selectedData.getCmqState()));
 	}
 	
 	/**
@@ -1345,7 +1346,8 @@ public class CreateController implements Serializable {
 	}
 
 	public boolean isReactivateDisabled() {
-		if (selectedData != null && "I".equals(selectedData.getCmqStatus()))
+		if (selectedData != null
+				&& CmqBase190.CMQ_STATUS_VALUE_INACTIVE.equals(selectedData.getCmqStatus()))
 			return false;
 		return true;
 	}
@@ -1357,21 +1359,23 @@ public class CreateController implements Serializable {
 	 * @return true if it is UNAVAILABLE for retire
 	 */
 	public boolean isRetireDisabled() {
-		if (selectedData != null && "A".equals(selectedData.getCmqStatus()))
+		if (selectedData != null
+				&& CmqBase190.CMQ_STATUS_VALUE_ACTIVE.equals(selectedData.getCmqStatus()))
 			return false;
 		return true;
 	}
 
 	public boolean isDemoteDisabled() {
 		if (selectedData != null
-				&& ("Reviewed".equalsIgnoreCase(selectedData.getCmqState()) || "Approved".equalsIgnoreCase(selectedData.getCmqState())))
+				&& (CmqBase190.CMQ_STATE_VALUE_REVIEWED.equalsIgnoreCase(selectedData.getCmqState())
+						|| CmqBase190.CMQ_STATE_VALUE_APPROVED.equalsIgnoreCase(selectedData.getCmqState())))
 			return false;
 		return true;
 	}
 
 	public boolean isDeleteDisabled() {
 		if (selectedData == null
-				|| !"Draft".equalsIgnoreCase(selectedData.getCmqState())
+				|| !CmqBase190.CMQ_STATE_VALUE_DRAFT.equalsIgnoreCase(selectedData.getCmqState())
 				|| selectedData.getActivationDate() != null)
 			return true;
 		return false;
@@ -1379,13 +1383,14 @@ public class CreateController implements Serializable {
 
 	public boolean isApproveDisabled() {
 		if (selectedData != null && selectedData.getCmqStatus() != null
-				&& "Reviewed".equalsIgnoreCase(selectedData.getCmqState()))
+				&& CmqBase190.CMQ_STATE_VALUE_REVIEWED.equalsIgnoreCase(selectedData.getCmqState()))
 			return false;
 		return true;
 	}
 
 	public boolean isReviewedDisabled() {
-		if (selectedData != null && "Draft".equalsIgnoreCase(selectedData.getCmqState()))
+		if (selectedData != null
+				&& CmqBase190.CMQ_STATE_VALUE_DRAFT.equalsIgnoreCase(selectedData.getCmqState()))
 			return false;
 		return true;
 	}
@@ -1427,8 +1432,8 @@ public class CreateController implements Serializable {
 	private void setCopiedCmq(CmqBase190 cmq) {
 		cmq.setId(null);//need to set since we may need to create a new cmq
 		cmq.setCmqCode(null);//need to set since we may need to create a new cmq
-		cmq.setCmqStatus("P");
-		cmq.setCmqState("Draft");
+		cmq.setCmqStatus(CmqBase190.CMQ_STATUS_VALUE_PENDING);
+		cmq.setCmqState(CmqBase190.CMQ_STATE_VALUE_DRAFT);
 		cmq.setCmqGroup("No Group");
 		cmq.setCreationDate(null);
 		cmq.setCreatedBy(null);
