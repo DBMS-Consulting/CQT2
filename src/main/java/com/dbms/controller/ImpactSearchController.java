@@ -148,6 +148,7 @@ public class ImpactSearchController implements Serializable {
 				Long dtoCode = Long.valueOf(meddraDictHierarchySearchDto.getCode());
 				this.populateMeddraDictHierarchySearchDtoChildren(parentLevel, dtoCode, expandedTreeNode, "current");
 			}
+			hierarchyNode.setDataFetchCompleted(true);
 		}
 	}
 	
@@ -180,6 +181,7 @@ public class ImpactSearchController implements Serializable {
 				Long dtoCode = Long.valueOf(meddraDictHierarchySearchDto.getCode());
 				this.populateMeddraDictHierarchySearchDtoChildren(parentLevel, dtoCode, expandedTreeNode, "target");
 			}
+			hierarchyNode.setDataFetchCompleted(true);
 		}
 	}
 	
