@@ -14,6 +14,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.dbms.entity.BaseEntity;
 
 @Entity
@@ -191,11 +193,11 @@ public class CmqBaseTarget extends BaseEntity {
 	}
 
 	public String getCmqState() {
-		return cmqState;
+		return StringUtils.upperCase(cmqState);
 	}
 
 	public void setCmqState(String cmqState) {
-		this.cmqState = cmqState;
+		this.cmqState = StringUtils.upperCase(cmqState);
 	}
 
 	public String getCmqCriticalEvent() {

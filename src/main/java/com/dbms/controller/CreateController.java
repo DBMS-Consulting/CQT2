@@ -1156,8 +1156,9 @@ public class CreateController implements Serializable {
 
 			return "";
 		} else if (state.equals("Retire")) { // Retires a record
-			if(selectedData.getCmqStatus().equals("A") && selectedData.getCmqState().equalsIgnoreCase("Published")) {
-				selectedData.setCmqStatus("I");
+			if(selectedData.getCmqStatus().equals(CmqBase190.CMQ_STATUS_VALUE_ACTIVE)
+					&& selectedData.getCmqState().equalsIgnoreCase(CmqBase190.CMQ_STATE_VALUE_PUBLISHED)) {
+				selectedData.setCmqStatus(CmqBase190.CMQ_STATUS_VALUE_INACTIVE);
 			}
 		} else {
 			detailsFormModel.setState(state);

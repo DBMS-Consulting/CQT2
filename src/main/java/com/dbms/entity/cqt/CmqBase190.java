@@ -14,6 +14,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.dbms.entity.BaseEntity;
 
 @Entity
@@ -21,6 +23,18 @@ import com.dbms.entity.BaseEntity;
 public class CmqBase190 extends BaseEntity {
 
 	private static final long serialVersionUID = 6648403063564315829L;
+	
+	public static final String CMQ_STATUS_VALUE_ACTIVE = "A";
+	public static final String CMQ_STATUS_DISP_LABEL_ACTIVE = "ACTIVE";
+	public static final String CMQ_STATUS_VALUE_INACTIVE = "I";
+	public static final String CMQ_STATUS_DISP_LABEL_INACTIVE = "INACTIVE";
+	public static final String CMQ_STATUS_VALUE_PENDING = "P";
+	public static final String CMQ_STATUS_DISP_LABEL_PENDING = "PENDING";
+	
+	public static final String CMQ_STATE_VALUE_DRAFT = "DRAFT";
+	public static final String CMQ_STATE_VALUE_PUBLISHED = "PUBLISHED";
+	
+	
 	@Id
 	@GeneratedValue(generator = "CMQ_ID_SEQ", strategy = GenerationType.SEQUENCE)
 	@SequenceGenerator(name = "CMQ_ID_SEQ", sequenceName = "CMQ_ID_SEQ", allocationSize = 1)
@@ -196,11 +210,11 @@ public class CmqBase190 extends BaseEntity {
 	}
 
 	public String getCmqState() {
-		return cmqState;
+		return StringUtils.upperCase(cmqState);
 	}
 
 	public void setCmqState(String cmqState) {
-		this.cmqState = cmqState;
+		this.cmqState = StringUtils.upperCase(cmqState);
 	}
 
 	public String getCmqCriticalEvent() {

@@ -53,8 +53,8 @@ public class ListDetailsFormModel {
 		this.algorithm = "N";
 		this.critical = "No";
 		this.group = "No Group";
-		this.state = "DRAFT";
-		this.status = "PENDING";
+		this.state = CmqBase190.CMQ_STATE_VALUE_DRAFT;
+		this.status = CmqBase190.CMQ_STATUS_DISP_LABEL_PENDING;
 		this.designee = "NONE";
 		this.modelChanged = false;
 	}
@@ -76,14 +76,14 @@ public class ListDetailsFormModel {
 		this.algorithm = cmq.getCmqAlgorithm();
 
 		this.state = cmq.getCmqState();
-		if("P".equalsIgnoreCase(cmq.getCmqStatus())) {
-			this.status = "PENDING";
-		} else if ("A".equalsIgnoreCase(cmq.getCmqStatus())) {
-			this.status = "ACTIVE";
-		} else if ("I".equalsIgnoreCase(cmq.getCmqStatus())){
-			this.status = "INACTIVE";
+		if(CmqBase190.CMQ_STATUS_VALUE_PENDING.equalsIgnoreCase(cmq.getCmqStatus())) {
+			this.status = CmqBase190.CMQ_STATUS_DISP_LABEL_PENDING;
+		} else if (CmqBase190.CMQ_STATUS_VALUE_ACTIVE.equalsIgnoreCase(cmq.getCmqStatus())) {
+			this.status = CmqBase190.CMQ_STATUS_DISP_LABEL_ACTIVE;
+		} else if (CmqBase190.CMQ_STATUS_VALUE_INACTIVE.equalsIgnoreCase(cmq.getCmqStatus())){
+			this.status = CmqBase190.CMQ_STATUS_DISP_LABEL_INACTIVE;
 		} else {
-			this.status = "Unknown";
+			this.status = "UNKNOWN";
 		}
 		
 		if(this.wizardType == WizardType.CopyWizard)
@@ -120,8 +120,8 @@ public class ListDetailsFormModel {
 		
 		if(wizardType == WizardType.CreateWizard || wizardType == WizardType.CopyWizard) {
 			cmq.setCreationDate(new Date());
-			cmq.setCmqStatus("P");
-			cmq.setCmqState("Draft");
+			cmq.setCmqStatus(CmqBase190.CMQ_STATUS_VALUE_PENDING);
+			cmq.setCmqState(CmqBase190.CMQ_STATE_VALUE_DRAFT);
 			cmq.setCmqGroup("No Group");
 		}
 	}
