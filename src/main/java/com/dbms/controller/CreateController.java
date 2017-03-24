@@ -562,6 +562,11 @@ public class CreateController implements Serializable {
 		} catch (CqtServiceException e) {
 			LOG.error("Exception occurred while updating CmqBase190.", e);
 
+			// rollback the data changes to the db's state
+			selectedData = cmqBaseService.findByCode(selectedData.getCmqCode());
+			if(selectedData == null)
+				selectedData = new CmqBase190();
+			
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"An error occurred while trying to update the details.", "");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
@@ -760,10 +765,10 @@ public class CreateController implements Serializable {
 			}
 		} catch (CqtServiceException e) {
 			LOG.error("Exception occurred while creating CmqBase190.", e);
-			
-			// since it failed to save the record, clear the creation date/user info 
-			selectedData.setCreationDate(null);
-			selectedData.setCreatedBy(null);
+			if(selectedData.getId() == null) {
+				// since it failed to save the record, clear the creation date/user info
+				selectedData = new CmqBase190();
+			}
 
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"An error occurred while trying to save the details.", "");

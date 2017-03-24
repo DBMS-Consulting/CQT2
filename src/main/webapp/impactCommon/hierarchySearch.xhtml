@@ -7,7 +7,7 @@
 	xmlns:p="http://primefaces.org/ui">
 
 
-	<p:panel header="Relations" style="width:700px; height:560px;">
+	<p:panel header="Relations" style="min-height:560px;">
 		<h:panelGrid columns="6">
 			<p:outputLabel value="Level" for="levelH" />
 			<p:selectOneMenu id="levelH" label="Level" partialTriggers="soc9"
@@ -65,7 +65,8 @@
 				selectionMode="multiple" id="resultHier" rows="10" paginator="true"
 				paginatorPosition="bottom"
 				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-				rowsPerPageTemplate="5,10,25,30">
+				rowsPerPageTemplate="5,10,25,30"
+				style="overflow: auto; max-height: 380px; padding-bottom: 5px;">
 				
 				<p:ajax event="expand" listener="#{searchController.onNodeExpandListener}" update="resultHier" />
 				<p:ajax event="collapse" listener="#{searchController.onNodeExpandListener}" update="resultHier" />
