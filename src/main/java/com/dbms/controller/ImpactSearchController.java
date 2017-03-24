@@ -333,7 +333,7 @@ public class ImpactSearchController implements Serializable {
 		if("current".equalsIgnoreCase(smqType)) {
 			childSmqBaseList = this.smqBaseCurrentService.findChildSmqByParentSmqCode(smqCode);
 		} else {
-			childSmqBaseList = this.smqBaseTargetService.findChildSmqByParentSmqCode(smqCode);
+			//childSmqBaseList = this.smqBaseTargetService.findChildSmqByParentSmqCode(smqCode);
 		}
 		if(CollectionUtils.isNotEmpty(childSmqBaseList)) {
 			Map<Long, TreeNode> smqTreeNodeMap = new HashMap<>();
