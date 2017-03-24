@@ -937,7 +937,7 @@ public class CreateController implements Serializable {
 	 */
 	private void prepareDetailsFormSave() throws CqtServiceException {
 		// fill data
-		if((createWizard != null || copyWizard != null) && selectedData.getId() != null) {
+		if((createWizard != null || copyWizard != null) && selectedData.getId() == null) {
 			// get the next value of code
 			codevalue = this.cmqBaseService.getNextCodeValue();
 			RefConfigCodeList currentMeddraVersionCodeList = this.refCodeListService.getCurrentMeddraVersion();

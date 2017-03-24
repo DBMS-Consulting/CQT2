@@ -311,3 +311,13 @@ td .bordered {
 .v-align-top {
 	vertical-align: top;
 }
+
+.ui-treetable-currentListsAndSmqs table td>span,
+.ui-treetable-futureListsAndSmqs table td>span{
+	line-height: 28px;
+}
+
+.ui-treetable-currentListsAndSmqs table td .ui-treetable-toggler,
+.ui-treetable-futureListsAndSmqs table td .ui-treetable-toggler{
+	margin-top: 6px;
+}
