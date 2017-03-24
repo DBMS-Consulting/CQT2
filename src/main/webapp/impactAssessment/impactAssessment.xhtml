@@ -65,34 +65,42 @@
 
 						<f:facet name="right">
 
-							<p:commandButton value="Review" actionListener="#"
+							<!-- <p:commandButton value="Review" actionListener="#"
 								onclick="PF('review').show();" icon="ui-icon-disk">
 								<p:confirm header="Confirm Reviewed"
-									message="Are you sure you want to confirm this MedDRA Query as reviewed?"
+									message="Are you sure you want to confirm this List as reviewed?"
 									icon="ui-icon-alert" />
 
+							</p:commandButton> -->
+							<p:commandButton value="Review" id="reviewedBtn"
+								disabled="#{impactSearchController.reviewEnabled}"
+								action="#" icon="ui-icon-disk"
+								process="@this" update="@form">
+								<p:confirm header="Confirm Review"
+									message="Are you sure you want to confirm this List as reviewed?"
+									icon="ui-icon-alert" />
 							</p:commandButton>
 							<p:spacer width="5" />
 
-							<p:commandButton value="Approve" actionListener="#"
-								onclick="PF('approve').show();" icon="ui-icon-arrowthick-1-n">
+							<p:commandButton value="Approve" disabled="#{impactSearchController.approveEnabled}"
+								 icon="ui-icon-arrowthick-1-n">
 								<p:confirm header="Confirm Approve"
-									message="Are you sure you want to approve this MedDRA Query?"
+									message="Are you sure you want to approve this List?"
 									icon="ui-icon-alert" />
 
 							</p:commandButton>
 							<p:spacer width="5" />
-							<p:commandButton value="Demote" actionListener="#"
-								onclick="PF('demote').show();" icon="ui-icon-arrowthick-1-s">
+							<p:commandButton value="Demote" action="#"
+								disabled="#{impactSearchController.demoteEnabled}" icon="ui-icon-arrowthick-1-s">
 								<p:confirm header="Confirm Demote"
-									message="Are you sure you want to demote this MedDRA Query?"
+									message="Are you sure you want to demote this List?"
 									icon="ui-icon-alert" />
 							</p:commandButton>
 							<p:spacer width="5" />
 							<p:commandButton value="Delete" actionListener="#"
 								onclick="PF('delete').show();" icon="fa fa-trash-o">
 								<p:confirm header="Confirm Delete"
-									message="Are you sure you want to delete this MedDRA Query?"
+									message="Are you sure you want to delete this List?"
 									icon="ui-icon-alert" />
 							</p:commandButton>
 							<p:spacer width="5" />

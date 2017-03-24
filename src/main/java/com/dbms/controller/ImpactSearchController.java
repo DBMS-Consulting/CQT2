@@ -34,6 +34,7 @@ import com.dbms.entity.cqt.CmqRelationTarget;
 import com.dbms.entity.cqt.SmqBase190;
 import com.dbms.entity.cqt.SmqBaseTarget;
 import com.dbms.entity.cqt.SmqRelation190;
+import com.dbms.entity.cqt.SmqRelationTarget;
 import com.dbms.entity.cqt.dtos.MeddraDictHierarchySearchDto;
 import com.dbms.entity.cqt.dtos.MeddraDictReverseHierarchySearchDto;
 import com.dbms.service.ICmqBase190Service;
@@ -93,6 +94,7 @@ public class ImpactSearchController implements Serializable {
 	private TreeNode currentTableRootTreeNode;
 	
 	private TreeNode targetTableRootTreeNode;
+	private boolean reviewEnabled, demoteEnabled, approveEnabled;
 	
 	public ImpactSearchController() {
 		
@@ -106,6 +108,10 @@ public class ImpactSearchController implements Serializable {
 				"LEVEL", "SCOPE", null), null);
 		targetTableRootTreeNode = new DefaultTreeNode("root", new HierarchyNode("CODE",
 				"LEVEL", "SCOPE", "CATEGORY", "WEIGHT", null, null), null);
+		
+		setReviewEnabled(true);
+		setApproveEnabled(true);
+		setDemoteEnabled(true); 
 	}
 
 	public void onRelationDrop() {
@@ -148,6 +154,7 @@ public class ImpactSearchController implements Serializable {
 				Long dtoCode = Long.valueOf(meddraDictHierarchySearchDto.getCode());
 				this.populateMeddraDictHierarchySearchDtoChildren(parentLevel, dtoCode, expandedTreeNode, "current");
 			}
+			hierarchyNode.setDataFetchCompleted(true);
 		}
 	}
 	
@@ -180,6 +187,7 @@ public class ImpactSearchController implements Serializable {
 				Long dtoCode = Long.valueOf(meddraDictHierarchySearchDto.getCode());
 				this.populateMeddraDictHierarchySearchDtoChildren(parentLevel, dtoCode, expandedTreeNode, "target");
 			}
+			hierarchyNode.setDataFetchCompleted(true);
 		}
 	}
 	
@@ -289,7 +297,7 @@ public class ImpactSearchController implements Serializable {
 			childDtos = this.meddraDictCurrentService.findChildrenByParentCode(childSearchColumnTypePrefix
 																					, parentCodeColumnPrefix, dtoCode);
 		} else {
-			//childDtos = this.meddraDictService.findChildrenByParentCode(childSearchColumnTypePrefix, parentCodeColumnPrefix, dtoCode);
+			childDtos = this.meddraDictTargetService.findChildrenByParentCode(childSearchColumnTypePrefix, parentCodeColumnPrefix, dtoCode);
 		}
 		for (MeddraDictHierarchySearchDto childDto : childDtos) {
 			HierarchyNode childNode = this.createMeddraNode(childDto, childLevel);
@@ -314,10 +322,10 @@ public class ImpactSearchController implements Serializable {
 					countOfChildrenOfChild = this.meddraDictCurrentService.findChldrenCountByParentCode(childchildOfChildSearchColumnTypePrefix
 																					, childSearchColumnTypePrefix, Long.valueOf(childDto.getCode()));
 				} else {
-					//countOfChildrenOfChild = this.meddraDictCurrentService.findChldrenCountByParentCode(childchildOfChildSearchColumnTypePrefix
-					//																, childSearchColumnTypePrefix, Long.valueOf(childDto.getCode()));
+					countOfChildrenOfChild = this.meddraDictTargetService.findChldrenCountByParentCode(childchildOfChildSearchColumnTypePrefix
+																					, childSearchColumnTypePrefix, Long.valueOf(childDto.getCode()));
 				}
-				if(countOfChildrenOfChild > 0) {
+				if((countOfChildrenOfChild != null) && (countOfChildrenOfChild > 0)) {
 					// add a dummmy node to show expand arrow
 					HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
 					dummyNode.setDummyNode(true);
@@ -329,19 +337,21 @@ public class ImpactSearchController implements Serializable {
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void populateSmqBaseChildren(Long smqCode, TreeNode expandedTreeNode, String smqType) {
-		List<SmqBase190> childSmqBaseList = null;
+		List<? extends IEntity> childSmqBaseList = null;
 		if("current".equalsIgnoreCase(smqType)) {
 			childSmqBaseList = this.smqBaseCurrentService.findChildSmqByParentSmqCode(smqCode);
 		} else {
-			//childSmqBaseList = this.smqBaseTargetService.findChildSmqByParentSmqCode(smqCode);
+			childSmqBaseList = this.smqBaseTargetService.findChildSmqByParentSmqCode(smqCode);
 		}
 		if(CollectionUtils.isNotEmpty(childSmqBaseList)) {
 			Map<Long, TreeNode> smqTreeNodeMap = new HashMap<>();
 			List<Long> smqChildCodeList = new ArrayList<>();
 			for (IEntity entity : childSmqBaseList) {
 				HierarchyNode childNode = new HierarchyNode();
+				Long childSmqCode = null;
 				if("current".equalsIgnoreCase(smqType)) {
 					SmqBase190 childSmqBase = (SmqBase190) entity;
+					childSmqCode = childSmqBase.getSmqCode();
 					if (childSmqBase.getSmqLevel() == 1) {
 						childNode.setLevel("SMQ1");
 					} else if (childSmqBase.getSmqLevel() == 2) {
@@ -357,12 +367,29 @@ public class ImpactSearchController implements Serializable {
 					childNode.setCode(childSmqBase.getSmqCode().toString());
 					childNode.setEntity(childSmqBase);
 					smqChildCodeList.add(childSmqBase.getSmqCode());
-					// add child to parent
-					TreeNode childTreeNode = new DefaultTreeNode(childNode, expandedTreeNode);
-					smqTreeNodeMap.put(childSmqBase.getSmqCode(), childTreeNode);
 				} else {
 					//for target here
+					SmqBaseTarget childSmqBase = (SmqBaseTarget) entity;
+					childSmqCode = childSmqBase.getSmqCode();
+					if (childSmqBase.getSmqLevel() == 1) {
+						childNode.setLevel("SMQ1");
+					} else if (childSmqBase.getSmqLevel() == 2) {
+						childNode.setLevel("SMQ2");
+					} else if (childSmqBase.getSmqLevel() == 3) {
+						childNode.setLevel("SMQ3");
+					} else if (childSmqBase.getSmqLevel() == 4) {
+						childNode.setLevel("SMQ4");
+					} else if (childSmqBase.getSmqLevel() == 5) {
+						childNode.setLevel("SMQ5");
+					}
+					childNode.setTerm(childSmqBase.getSmqName());
+					childNode.setCode(childSmqBase.getSmqCode().toString());
+					childNode.setEntity(childSmqBase);
+					smqChildCodeList.add(childSmqBase.getSmqCode());
 				}
+				// add child to parent
+				TreeNode childTreeNode = new DefaultTreeNode(childNode, expandedTreeNode);
+				smqTreeNodeMap.put(childSmqCode, childTreeNode);
 			} // end of for
 			
 			//find smqrelations of all child smqs
@@ -381,7 +408,7 @@ public class ImpactSearchController implements Serializable {
 				if("current".equalsIgnoreCase(smqType)) {
 					childSmqRelationsCountList = this.smqBaseCurrentService.findSmqRelationsCountForSmqCodes(subList);
 				} else {
-					//childSmqRelationsCountList = this.smqBaseTargetService.findSmqRelationsCountForSmqCodes(subList);
+					childSmqRelationsCountList = this.smqBaseTargetService.findSmqRelationsCountForSmqCodes(subList);
 				}
 				if((null != childSmqRelationsCountList) && (childSmqRelationsCountList.size() > 0)) {
 					ListIterator li = childSmqRelationsCountList.listIterator();
@@ -406,11 +433,11 @@ public class ImpactSearchController implements Serializable {
 	}
 	
 	private void populateSmqRelations(Long smqCode, TreeNode expandedTreeNode, String smqType) {
-		List<SmqRelation190> childRelations = null;
+		List<? extends IEntity> childRelations = null;
 		if("current".equalsIgnoreCase(smqType)) {
 			childRelations = this.smqBaseCurrentService.findSmqRelationsForSmqCode(smqCode);
 		} else {
-			//childRelations = this.smqBaseTargetService.findSmqRelationsForSmqCode(smqCode);
+			childRelations = this.smqBaseTargetService.findSmqRelationsForSmqCode(smqCode);
 		}
 		if (null != childRelations) {
 			for (IEntity entity : childRelations) {
@@ -429,11 +456,25 @@ public class ImpactSearchController implements Serializable {
 						childRelationNode.setLevel("PT");
 					}
 					childRelationNode.setTerm(childRelation.getPtName());
-					childRelationNode.setCode(childRelation.getPtCode()
-							.toString());
+					childRelationNode.setCode(childRelation.getPtCode().toString());
 					childRelationNode.setEntity(childRelation);
 				} else {
 					//for target here
+					SmqRelationTarget childRelation = (SmqRelationTarget) entity;
+					if (childRelation.getSmqLevel() == 1) {
+						childRelationNode.setLevel("SMQ1");
+					} else if (childRelation.getSmqLevel() == 2) {
+						childRelationNode.setLevel("SMQ2");
+					} else if (childRelation.getSmqLevel() == 3) {
+						childRelationNode.setLevel("SMQ3");
+					} else if ((childRelation.getSmqLevel() == 4)
+							|| (childRelation.getSmqLevel() == 0)
+							|| (childRelation.getSmqLevel() == 5)) {
+						childRelationNode.setLevel("PT");
+					}
+					childRelationNode.setTerm(childRelation.getPtName());
+					childRelationNode.setCode(childRelation.getPtCode().toString());
+					childRelationNode.setEntity(childRelation);
 				}
 				new DefaultTreeNode(childRelationNode, expandedTreeNode);
 			}
@@ -708,6 +749,16 @@ public class ImpactSearchController implements Serializable {
 				new DefaultTreeNode(dummyNode, treeNode);
 			}
 		}
+	}
+	
+	private boolean selectedCmqNodeExistsInAssessment(TreeNode rootTreeNode, CmqBaseTarget selectedCmqList) {
+		boolean retVal = false;
+		List<TreeNode> children = rootTreeNode.getChildren();
+		for (TreeNode child : children) {
+			HierarchyNode hierarchyNode = (HierarchyNode) child.getData();
+			
+		}
+		return retVal;
 	}
 	
 	private HierarchyNode createCmqBaseCurrentHierarchyNode(CmqBase190 cmqBaseCurrent) {
@@ -1005,5 +1056,29 @@ public class ImpactSearchController implements Serializable {
 
 	public void setSmqBaseTargetService(ISmqBaseTargetService smqBaseTargetService) {
 		this.smqBaseTargetService = smqBaseTargetService;
+	}
+
+	public boolean isReviewEnabled() {
+		return reviewEnabled;
+	}
+
+	public void setReviewEnabled(boolean reviewEnabled) {
+		this.reviewEnabled = reviewEnabled;
+	}
+
+	public boolean isDemoteEnabled() {
+		return demoteEnabled;
+	}
+
+	public void setDemoteEnabled(boolean demoteEnabled) {
+		this.demoteEnabled = demoteEnabled;
+	}
+
+	public boolean isApproveEnabled() {
+		return approveEnabled;
+	}
+
+	public void setApproveEnabled(boolean approveEnabled) {
+		this.approveEnabled = approveEnabled;
 	}
 }
