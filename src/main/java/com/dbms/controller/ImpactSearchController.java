@@ -3,15 +3,19 @@ package com.dbms.controller;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.ListUtils;
@@ -46,6 +50,7 @@ import com.dbms.service.IMeddraDictTargetService;
 import com.dbms.service.IRefCodeListService;
 import com.dbms.service.ISmqBaseService;
 import com.dbms.service.ISmqBaseTargetService;
+import com.dbms.util.exceptions.CqtServiceException;
 
 /**
  * @date Feb 7, 2017 7:39:34 AM
@@ -109,9 +114,9 @@ public class ImpactSearchController implements Serializable {
 		targetTableRootTreeNode = new DefaultTreeNode("root", new HierarchyNode("CODE",
 				"LEVEL", "SCOPE", "CATEGORY", "WEIGHT", null, null), null);
 		
-		setReviewEnabled(true);
-		setApproveEnabled(true);
-		setDemoteEnabled(true); 
+		setReviewEnabled(false);
+		setApproveEnabled(false);
+		setDemoteEnabled(false); 
 	}
 
 	public void onRelationDrop() {
@@ -194,10 +199,11 @@ public class ImpactSearchController implements Serializable {
 	public void updateCurrentTable() {
 		LOG.info("current called");	
 		if(this.selectedImpactedCmqList != null) {
-			this.updateCurrentTableForCmqList(this.selectedImpactedCmqList);
+			this.updateCurrentTableForCmqList(this.selectedImpactedCmqList);			
 		} else if(this.selectedNotImpactedCmqList != null) {
 			this.updateCurrentTableForCmqList(this.selectedNotImpactedCmqList);
 		}
+		
 	}
 
 	public void updateTargetTable() {
@@ -207,6 +213,8 @@ public class ImpactSearchController implements Serializable {
 		} else if(this.selectedNotImpactedCmqList != null) {
 			this.updateTargetTableForCmqList(this.selectedNotImpactedCmqList);
 		}
+		updateWorkflowButtonStates(this.selectedImpactedCmqList);
+		updateWorkflowButtonStates(this.selectedNotImpactedCmqList);
 	}
 
 	private void updateCurrentTableForCmqList(CmqBaseTarget selectedCmqList) {
@@ -261,6 +269,72 @@ public class ImpactSearchController implements Serializable {
 		}
 	}
 	
+	/**
+	 * Workflow States update.
+	 * @param state String
+	 * @return String
+	 */
+	public String workflowIAState(String state) {
+		updateWorkflowStates(this.selectedImpactedCmqList, state);
+		updateWorkflowStates(this.selectedNotImpactedCmqList, state);
+		
+		//Update of target
+		try {
+			if (selectedImpactedCmqList != null)
+				cmqBaseTargetService.update(selectedImpactedCmqList);
+			if (selectedNotImpactedCmqList != null)
+				cmqBaseTargetService.update(selectedNotImpactedCmqList);
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Workflow state has been updated", "");
+			FacesContext ctx = FacesContext.getCurrentInstance();
+			ctx.addMessage(null, msg);
+		} catch (CqtServiceException e) {
+			e.printStackTrace();
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"An error occurred while updating the state of the List", "");
+			FacesContext ctx = FacesContext.getCurrentInstance();
+			ctx.addMessage(null, msg);
+		}
+		
+		updateWorkflowButtonStates(this.selectedImpactedCmqList);
+		updateWorkflowButtonStates(this.selectedNotImpactedCmqList);
+		
+		return "";
+	}
+	
+	private void updateWorkflowStates(CmqBaseTarget target, String state) {
+		if (target != null) {
+			if (state.equals("review")) {
+				// Pending IA to Reviewed IA
+				if (target.getCmqState().equals("PENDING IA"))
+					target.setCmqState("REVIEWED IA");
+			} else if (state.equals("approve")) {
+				// Review IA to Approved IA
+				if (target.getCmqState().equals("REVIEWED IA"))
+					target.setCmqState("APPROVED IA");
+			} else if (state.equals("demote")) {
+				// Review IA/APPROVED IA to Pending IA
+				if (target.getCmqState().equals("REVIEWED IA")
+						|| target.getCmqState().equals("APPROVED IA"))
+					target.setCmqState("PENDING IA");
+			}
+
+		}
+	}
+
+	private void updateWorkflowButtonStates(CmqBaseTarget target) {
+		/**
+		 * Update on workflow buttons
+		 */
+		if (target != null) {
+			if (target.getCmqState().equals("PENDING IA"))
+				setReviewEnabled(true);
+			if (target.getCmqState().equals("REVIEWED IA"))
+				setApproveEnabled(true);
+			if (target.getCmqState().equals("REVIEWED IA") || target.getCmqState().equals("APPROVED IA"))
+				setDemoteEnabled(true);
+		}
+	}
+
 	private void populateMeddraDictHierarchySearchDtoChildren(String parentLevel, Long dtoCode, TreeNode expandedTreeNode, String meddraType) {
 		//child code and term type prefix for the parent i.e: node that was expanded in ui
 		String childLevel = null;
