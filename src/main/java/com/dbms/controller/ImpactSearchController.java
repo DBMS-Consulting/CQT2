@@ -3,12 +3,10 @@ package com.dbms.controller;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -21,6 +19,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.primefaces.event.NodeExpandEvent;
+import org.primefaces.event.NodeSelectEvent;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortMeta;
@@ -128,6 +127,27 @@ public class ImpactSearchController implements Serializable {
 		 * FacesContext.getCurrentInstance().addMessage(null, msg); }
 		 */
 	}
+	
+	/**
+	 * Event fired on the selection of a row.
+	 * @param event NodeSelectEvent
+	 */
+	public void onSelectCurrentRowTreeTable(NodeSelectEvent event) {
+		//Updating the worflow buttons
+		setReviewEnabled(false);
+		setApproveEnabled(false);
+		setDemoteEnabled(false); 
+	}
+	
+	/**
+	 * Event fired on the selection of a row.
+	 * @param event NodeSelectEvent
+	 */
+	public void onSelectTargetRowTreeTable(NodeSelectEvent event) {
+		//Updating the worflow buttons
+		updateWorkflowButtonStates(this.selectedImpactedCmqList);
+		updateWorkflowButtonStates(this.selectedNotImpactedCmqList);		
+	}
 
 	public void onNodeExpandCurrentTable(NodeExpandEvent event) {
 		LOG.info("onNodeExpandCurrentTable");
@@ -197,24 +217,29 @@ public class ImpactSearchController implements Serializable {
 	}
 	
 	public void updateCurrentTable() {
+		//Init of the treenode to print only one selected list
+		currentTableRootTreeNode = new DefaultTreeNode("root", new HierarchyNode("CODE",
+				"LEVEL", "SCOPE", null), null);
+		
 		LOG.info("current called");	
 		if(this.selectedImpactedCmqList != null) {
 			this.updateCurrentTableForCmqList(this.selectedImpactedCmqList);			
 		} else if(this.selectedNotImpactedCmqList != null) {
 			this.updateCurrentTableForCmqList(this.selectedNotImpactedCmqList);
-		}
-		
+		}		
 	}
 
 	public void updateTargetTable() {
+		//Init of the treenode to print only one selected list
+		targetTableRootTreeNode = new DefaultTreeNode("root", new HierarchyNode("CODE",
+				"LEVEL", "SCOPE", "CATEGORY", "WEIGHT", null, null), null);
+				
 		LOG.info("target called");
 		if(this.selectedImpactedCmqList != null) {
 			this.updateTargetTableForCmqList(this.selectedImpactedCmqList);
 		} else if(this.selectedNotImpactedCmqList != null) {
 			this.updateTargetTableForCmqList(this.selectedNotImpactedCmqList);
 		}
-		updateWorkflowButtonStates(this.selectedImpactedCmqList);
-		updateWorkflowButtonStates(this.selectedNotImpactedCmqList);
 	}
 
 	private void updateCurrentTableForCmqList(CmqBaseTarget selectedCmqList) {
@@ -295,8 +320,12 @@ public class ImpactSearchController implements Serializable {
 			ctx.addMessage(null, msg);
 		}
 		
-		updateWorkflowButtonStates(this.selectedImpactedCmqList);
-		updateWorkflowButtonStates(this.selectedNotImpactedCmqList);
+//		updateWorkflowButtonStates(this.selectedImpactedCmqList);
+//		updateWorkflowButtonStates(this.selectedNotImpactedCmqList);
+		
+		setReviewEnabled(false);
+		setApproveEnabled(false);
+		setDemoteEnabled(false); 
 		
 		return "";
 	}
