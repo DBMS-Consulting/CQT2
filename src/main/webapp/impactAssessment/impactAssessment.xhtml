@@ -126,7 +126,7 @@
 					<!-- PANEL -->
 					<p:panel>
 						<h:panelGrid columns="2" columnClasses="ui-grid-col-6 v-align-top, ui-grid-col-6 v-align-top">
-							<p:panel style="width: 100%; font-size: 12px !important; padding: 0;">
+							<p:panel style="width: 100%; font-size: 12px !important; padding: 0">
 								<p:toolbar>
 									<f:facet name="left">
 										<p:commandButton value="Select Lists/SMQs" actionListener="#" update=""
@@ -140,8 +140,8 @@
 										oncomplete="initRelationDND()" />
 								
 								<p:treeTable value="#{impactSearchController.currentTableRootTreeNode}" var="node"
-									id="currentListsAndSmqs" rows="30" selectionMode="single" styleClass="ui-treetable-currentListsAndSmqs"
-									paginator="true" paginatorPosition="bottom"
+									id="currentListsAndSmqs" rows="30" styleClass="ui-treetable-currentListsAndSmqs"
+									paginator="true" paginatorPosition="bottom" selectionMode="checkbox" style=" overflow: auto"
 									paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 									rowsPerPageTemplate="10,20,30,40,50" resizableColumns="true">
 	
@@ -182,7 +182,7 @@
 								</p:treeTable>
 							</p:panel>
 
-							<p:panel style="width: 100%; font-size: 12px !important; padding: 0;">
+							<p:panel style="width: 100%; font-size: 12px !important; padding: 0">
 								<p:toolbar>
 									<f:facet name="left">
 										<p:commandButton value="Hierarchy Search" actionListener="#"
@@ -196,8 +196,8 @@
 								</p:toolbar>
 								
 								<p:treeTable value="#{impactSearchController.targetTableRootTreeNode}" var="node"
-									id="futureListsAndSmqs" rows="30" selectionMode="single" styleClass="ui-treetable-futureListsAndSmqs"
-									paginator="true" paginatorPosition="bottom"
+									id="futureListsAndSmqs" rows="30" selectionMode="checkbox" styleClass="ui-treetable-futureListsAndSmqs"
+									paginator="true" paginatorPosition="bottom" style=" overflow: auto"
 									paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 									rowsPerPageTemplate="10,20,30,40,50" resizableColumns="true">
 								
@@ -425,5 +425,11 @@
 				</h:panelGrid>
 			</p:dialog>
 		</h:form>
+		
+		<style>
+			.ui-chkbox-box {
+				display: none !important;
+			}
+		</style>
 	</ui:define>
 </ui:composition>
