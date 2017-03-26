@@ -3,6 +3,8 @@ package com.dbms.service;
 import java.util.List;
 import java.util.Map;
 
+import org.primefaces.model.SortOrder;
+
 import com.dbms.entity.cqt.SmqBaseTarget;
 import com.dbms.entity.cqt.SmqRelationTarget;
 
@@ -27,5 +29,15 @@ public interface ISmqBaseTargetService {
 	Long findChildSmqCountByParentSmqCode(Long smqCode);
 
 	SmqBaseTarget findByCode(Long smqCode);
+
+	List<SmqBaseTarget> findImpactedWithPaginated(int first, int pageSize, String sortField, SortOrder sortOrder,
+			Map<String, Object> filters);
+
+	Long findImpactedCount();
+
+	List<SmqBaseTarget> findNotImpactedWithPaginated(int first, int pageSize, String sortField, SortOrder sortOrder,
+			Map<String, Object> filters);
+
+	Long findNotImpactedCount();
 
 }

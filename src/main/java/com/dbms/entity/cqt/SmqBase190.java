@@ -58,6 +58,9 @@ public class SmqBase190 extends BaseEntity {
 	@Column(name = "DICTIONARY_VERSION", nullable = false, length = 5)
 	private String dictionaryVersion;
 
+	@Column(name = "IMPACT_TYPE", nullable = true, length = 15)
+	private String impactType;
+	
 	public Long getId() {
 		return smqId;
 	}
@@ -160,6 +163,14 @@ public class SmqBase190 extends BaseEntity {
 
 	public void setDictionaryVersion(String dictionaryVersion) {
 		this.dictionaryVersion = dictionaryVersion;
+	}
+
+	public String getImpactType() {
+		return impactType;
+	}
+
+	public void setImpactType(String impactType) {
+		this.impactType = impactType;
 	}
 
 }

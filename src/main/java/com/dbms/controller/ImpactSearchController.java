@@ -20,6 +20,7 @@ import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.primefaces.event.NodeExpandEvent;
 import org.primefaces.event.NodeSelectEvent;
+import org.primefaces.event.SelectEvent;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortMeta;
@@ -94,11 +95,19 @@ public class ImpactSearchController implements Serializable {
 
 	private LazyDataModel<CmqBaseTarget> notImpactedCmqBaseLazyDataModel;
 	private CmqBaseTarget selectedNotImpactedCmqList;
+	
+	private LazyDataModel<SmqBaseTarget> impactedSmqBaseLazyDataModel;
+	private SmqBaseTarget selectedImpactedSmqList;
+
+	private LazyDataModel<SmqBaseTarget> notImpactedSmqBaseLazyDataModel;
+	private SmqBaseTarget selectedNotImpactedSmqList;
 
 	private TreeNode currentTableRootTreeNode;
 	
 	private TreeNode targetTableRootTreeNode;
 	private boolean reviewEnabled, demoteEnabled, approveEnabled;
+	
+	private boolean isImpactedCmqSelected, isNonImpactedCmqSelected, isImpactedSmqSelected, isNonImpactedSmqSelected;
 	
 	public ImpactSearchController() {
 		
@@ -108,6 +117,8 @@ public class ImpactSearchController implements Serializable {
 	public void init() {
 		this.impactedCmqBaseLazyDataModel = new CmqLazyDataModel(true);
 		this.notImpactedCmqBaseLazyDataModel = new CmqLazyDataModel(false);
+		this.impactedSmqBaseLazyDataModel = new SmqLazyDataModel(true);
+		this.notImpactedSmqBaseLazyDataModel = new SmqLazyDataModel(false);
 		currentTableRootTreeNode = new DefaultTreeNode("root", new HierarchyNode("CODE",
 				"LEVEL", "SCOPE", null), null);
 		targetTableRootTreeNode = new DefaultTreeNode("root", new HierarchyNode("CODE",
@@ -128,6 +139,41 @@ public class ImpactSearchController implements Serializable {
 		 */
 	}
 	
+	public void onRowSelect(SelectEvent event) {
+		Object obj = event.getObject();
+		if(obj instanceof CmqBaseTarget) {
+			CmqBaseTarget cmqBase = (CmqBaseTarget) obj;
+			if("IMPACTED".equalsIgnoreCase(cmqBase.getImpactType())){
+				this.isImpactedCmqSelected = true;
+				this.isNonImpactedCmqSelected = false;
+				this.isImpactedSmqSelected = false;
+				this.isNonImpactedSmqSelected = false;
+			} else {
+				this.isImpactedCmqSelected = false;
+				this.isNonImpactedCmqSelected = true;
+				this.isImpactedSmqSelected = false;
+				this.isNonImpactedSmqSelected = false;
+			}
+		} else if(obj instanceof SmqBaseTarget) {
+			SmqBaseTarget smqBase = (SmqBaseTarget) obj;
+			if("IMPACTED".equalsIgnoreCase(smqBase.getImpactType())){
+				this.isImpactedCmqSelected = false;
+				this.isNonImpactedCmqSelected = false;
+				this.isImpactedSmqSelected = true;
+				this.isNonImpactedSmqSelected = false;
+			} else {
+				this.isImpactedCmqSelected = false;
+				this.isNonImpactedCmqSelected = false;
+				this.isImpactedSmqSelected = false;
+				this.isNonImpactedSmqSelected = true;
+			}
+		}
+	}
+	
+	public void onRowUnselect(SelectEvent event) {
+		
+	}
+	
 	/**
 	 * Event fired on the selection of a row.
 	 * @param event NodeSelectEvent
@@ -145,8 +191,11 @@ public class ImpactSearchController implements Serializable {
 	 */
 	public void onSelectTargetRowTreeTable(NodeSelectEvent event) {
 		//Updating the worflow buttons
-		updateWorkflowButtonStates(this.selectedImpactedCmqList);
-		updateWorkflowButtonStates(this.selectedNotImpactedCmqList);		
+		if(this.isImpactedCmqSelected) {
+			updateWorkflowButtonStates(this.selectedImpactedCmqList);
+		} else if(this.isNonImpactedCmqSelected) {
+			updateWorkflowButtonStates(this.selectedNotImpactedCmqList);
+		}
 	}
 
 	public void onNodeExpandCurrentTable(NodeExpandEvent event) {
@@ -222,11 +271,15 @@ public class ImpactSearchController implements Serializable {
 				"LEVEL", "SCOPE", null), null);
 		
 		LOG.info("current called");	
-		if(this.selectedImpactedCmqList != null) {
-			this.updateCurrentTableForCmqList(this.selectedImpactedCmqList);			
-		} else if(this.selectedNotImpactedCmqList != null) {
+		if (this.isImpactedCmqSelected) {
+			this.updateCurrentTableForCmqList(this.selectedImpactedCmqList);
+		} else if (this.isNonImpactedCmqSelected) {
 			this.updateCurrentTableForCmqList(this.selectedNotImpactedCmqList);
-		}		
+		} else if (this.isImpactedSmqSelected) {
+			this.updateCurrentTableForSmqList(this.selectedImpactedSmqList);
+		} else if (this.isNonImpactedSmqSelected) {
+			this.updateCurrentTableForSmqList(this.selectedNotImpactedSmqList);
+		}
 	}
 
 	public void updateTargetTable() {
@@ -235,15 +288,18 @@ public class ImpactSearchController implements Serializable {
 				"LEVEL", "SCOPE", "CATEGORY", "WEIGHT", null, null), null);
 				
 		LOG.info("target called");
-		if(this.selectedImpactedCmqList != null) {
+		if(this.isImpactedCmqSelected) {
 			this.updateTargetTableForCmqList(this.selectedImpactedCmqList);
-		} else if(this.selectedNotImpactedCmqList != null) {
+		} else if(this.isNonImpactedCmqSelected) {
 			this.updateTargetTableForCmqList(this.selectedNotImpactedCmqList);
+		} else if (this.isImpactedSmqSelected) {
+			this.updateTargetTableForSmqList(this.selectedImpactedSmqList);
+		} else if (this.isNonImpactedSmqSelected) {
+			this.updateTargetTableForSmqList(this.selectedNotImpactedSmqList);
 		}
 	}
 
 	private void updateCurrentTableForCmqList(CmqBaseTarget selectedCmqList) {
-		//TODO: check if the currentTableRootTreeNode already has this tree node
 		CmqBase190 cmqBaseCurrent = this.cmqBaseCurrentService.findByCode(selectedCmqList.getCmqCode());
 		HierarchyNode node = this.createCmqBaseCurrentHierarchyNode(cmqBaseCurrent);
 		TreeNode cmqBaseTreeNode = new DefaultTreeNode(node, currentTableRootTreeNode);
@@ -269,8 +325,6 @@ public class ImpactSearchController implements Serializable {
 	}
 	
 	private void updateTargetTableForCmqList(CmqBaseTarget selectedCmqList) {
-		//TODO: check if the targetTableRootTreeNode already has this tree node
-		//CmqBaseTarget cmqBaseTarget = this.cmqBaseTargetService.findByCode(this.selectedImpactedCmqList.getCmqCode());
 		HierarchyNode node = this.createCmqBaseTargetHierarchyNode(selectedCmqList);
 		TreeNode cmqBaseTreeNode = new DefaultTreeNode(node, targetTableRootTreeNode);
 		
@@ -294,20 +348,79 @@ public class ImpactSearchController implements Serializable {
 		}
 	}
 	
+	private void updateCurrentTableForSmqList(SmqBaseTarget selectedSmqList) {
+		SmqBase190 smqBaseCurrent = this.smqBaseCurrentService.findByCode(selectedSmqList.getSmqCode());
+		if(null != smqBaseCurrent) {
+			HierarchyNode node = this.createSmqBaseCurrrentNode(smqBaseCurrent);
+			TreeNode cmqBaseTreeNode = new DefaultTreeNode(node, currentTableRootTreeNode);
+			
+			boolean dummyNodeAdded = false;
+			Long count = this.smqBaseCurrentService.findChildSmqCountByParentSmqCode(smqBaseCurrent.getSmqCode());
+			if((count != null) && (count > 0)) {
+				HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
+				dummyNode.setDummyNode(true);
+				new DefaultTreeNode(dummyNode, cmqBaseTreeNode);
+				dummyNodeAdded = true;
+			}
+			
+			//check for relations now
+			if(!dummyNodeAdded) {
+				count = this.smqBaseCurrentService.findSmqRelationsCountForSmqCode(smqBaseCurrent.getSmqCode());
+				if((count != null) && (count > 0)) {
+					HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
+					dummyNode.setDummyNode(true);
+					new DefaultTreeNode(dummyNode, cmqBaseTreeNode);
+				}
+			}
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "No Current SQM found with code '" 
+																				+ selectedSmqList.getSmqCode() + "'", "");
+			FacesContext ctx = FacesContext.getCurrentInstance();
+			ctx.addMessage(null, msg);
+		}
+	}
+	
+	private void updateTargetTableForSmqList(SmqBaseTarget selectedSmqList) {
+		HierarchyNode node = this.createSmqBaseTargetNode(selectedSmqList);
+		TreeNode cmqBaseTreeNode = new DefaultTreeNode(node, targetTableRootTreeNode);
+		
+		boolean dummyNodeAdded = false;
+		Long count = this.smqBaseCurrentService.findChildSmqCountByParentSmqCode(selectedSmqList.getSmqCode());
+		if((count != null) && (count > 0)) {
+			HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
+			dummyNode.setDummyNode(true);
+			new DefaultTreeNode(dummyNode, cmqBaseTreeNode);
+			dummyNodeAdded = true;
+		}
+		
+		//check for relations now
+		if(!dummyNodeAdded) {
+			count = this.smqBaseCurrentService.findSmqRelationsCountForSmqCode(selectedSmqList.getSmqCode());
+			if((count != null) && (count > 0)) {
+				HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
+				dummyNode.setDummyNode(true);
+				new DefaultTreeNode(dummyNode, cmqBaseTreeNode);
+			}
+		}
+	}
+	
 	/**
 	 * Workflow States update.
 	 * @param state String
 	 * @return String
 	 */
 	public String workflowIAState(String state) {
-		updateWorkflowStates(this.selectedImpactedCmqList, state);
-		updateWorkflowStates(this.selectedNotImpactedCmqList, state);
+		if(this.isImpactedCmqSelected) {
+			updateWorkflowStates(this.selectedImpactedCmqList, state);
+		} else if(this.isNonImpactedCmqSelected){
+			updateWorkflowStates(this.selectedNotImpactedCmqList, state);
+		}
 		
 		//Update of target
 		try {
-			if (selectedImpactedCmqList != null)
+			if (this.isImpactedCmqSelected)
 				cmqBaseTargetService.update(selectedImpactedCmqList);
-			if (selectedNotImpactedCmqList != null)
+			if (this.isNonImpactedCmqSelected)
 				cmqBaseTargetService.update(selectedNotImpactedCmqList);
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Workflow state has been updated", "");
 			FacesContext ctx = FacesContext.getCurrentInstance();
@@ -319,9 +432,6 @@ public class ImpactSearchController implements Serializable {
 			FacesContext ctx = FacesContext.getCurrentInstance();
 			ctx.addMessage(null, msg);
 		}
-		
-//		updateWorkflowButtonStates(this.selectedImpactedCmqList);
-//		updateWorkflowButtonStates(this.selectedNotImpactedCmqList);
 		
 		setReviewEnabled(false);
 		setApproveEnabled(false);
@@ -1040,6 +1150,74 @@ public class ImpactSearchController implements Serializable {
 		}
 
 	}
+	
+	private class SmqLazyDataModel extends LazyDataModel<SmqBaseTarget> {
+
+		private static final long serialVersionUID = -8027413902738365916L;
+
+		private List<SmqBaseTarget> smqBaseList = new ArrayList<>();
+
+		private boolean manageImpactedList;
+
+		public SmqLazyDataModel(boolean manageImpactedList) {
+			this.manageImpactedList = manageImpactedList;
+		}
+
+		@Override
+		public List<SmqBaseTarget> load(int first, int pageSize, List<SortMeta> multiSortMeta,
+				Map<String, Object> filters) {
+			List<SmqBaseTarget> fetchedSmqBaseList = null;
+			if (this.manageImpactedList) {
+				LOG.info("Loading more impacted list smqs starting from " + first + " with page size of " + pageSize);
+				fetchedSmqBaseList = smqBaseTargetService.findImpactedWithPaginated(first, pageSize, null, null, filters);
+				this.setRowCount(smqBaseTargetService.findImpactedCount().intValue());
+			} else {
+				LOG.info("Loading more not impacted list smqs starting from " + first + " with page size of "
+						+ pageSize);
+				fetchedSmqBaseList = smqBaseTargetService.findNotImpactedWithPaginated(first, pageSize, null, null, filters);
+				this.setRowCount(smqBaseTargetService.findNotImpactedCount().intValue());
+			}
+
+			this.smqBaseList.addAll(fetchedSmqBaseList);
+			return fetchedSmqBaseList;
+		}
+
+		@Override
+		public List<SmqBaseTarget> load(int first, int pageSize, String sortField, SortOrder sortOrder,
+				Map<String, Object> filters) {
+			List<SmqBaseTarget> fetchedSmqBaseList = null;
+			if (this.manageImpactedList) {
+				LOG.info("Loading more impacted list cmqs starting from " + first + " with page size of " + pageSize);
+				fetchedSmqBaseList = smqBaseTargetService.findImpactedWithPaginated(first, pageSize, null, null, filters);
+				this.setRowCount(smqBaseTargetService.findImpactedCount().intValue());
+			} else {
+				LOG.info("Loading more not impacted list cmqs starting from " + first + " with page size of "
+						+ pageSize);
+				fetchedSmqBaseList = smqBaseTargetService.findNotImpactedWithPaginated(first, pageSize, null, null, filters);
+				this.setRowCount(smqBaseTargetService.findNotImpactedCount().intValue());
+			}
+
+			this.smqBaseList.addAll(fetchedSmqBaseList);
+			return fetchedSmqBaseList;
+		}
+
+		@Override
+		public SmqBaseTarget getRowData(String rowKey) {
+			long rowKeyLong = Long.parseLong(rowKey);
+			for (SmqBaseTarget smqBaseTarget : smqBaseList) {
+				if (smqBaseTarget.getId().longValue() == rowKeyLong) {
+					return smqBaseTarget;
+				}
+			}
+			return null;
+		}
+
+		@Override
+		public Object getRowKey(SmqBaseTarget object) {
+			return object.getId();
+		}
+
+	}
 
 	public IMeddraDictService getMeddraDictCurrentService() {
 		return meddraDictCurrentService;
@@ -1183,5 +1361,37 @@ public class ImpactSearchController implements Serializable {
 
 	public void setApproveEnabled(boolean approveEnabled) {
 		this.approveEnabled = approveEnabled;
+	}
+
+	public LazyDataModel<SmqBaseTarget> getImpactedSmqBaseLazyDataModel() {
+		return impactedSmqBaseLazyDataModel;
+	}
+
+	public void setImpactedSmqBaseLazyDataModel(LazyDataModel<SmqBaseTarget> impactedSmqBaseLazyDataModel) {
+		this.impactedSmqBaseLazyDataModel = impactedSmqBaseLazyDataModel;
+	}
+
+	public SmqBaseTarget getSelectedImpactedSmqList() {
+		return selectedImpactedSmqList;
+	}
+
+	public void setSelectedImpactedSmqList(SmqBaseTarget selectedImpactedSmqList) {
+		this.selectedImpactedSmqList = selectedImpactedSmqList;
+	}
+
+	public LazyDataModel<SmqBaseTarget> getNotImpactedSmqBaseLazyDataModel() {
+		return notImpactedSmqBaseLazyDataModel;
+	}
+
+	public void setNotImpactedSmqBaseLazyDataModel(LazyDataModel<SmqBaseTarget> notImpactedSmqBaseLazyDataModel) {
+		this.notImpactedSmqBaseLazyDataModel = notImpactedSmqBaseLazyDataModel;
+	}
+
+	public SmqBaseTarget getSelectedNotImpactedSmqList() {
+		return selectedNotImpactedSmqList;
+	}
+
+	public void setSelectedNotImpactedSmqList(SmqBaseTarget selectedNotImpactedSmqList) {
+		this.selectedNotImpactedSmqList = selectedNotImpactedSmqList;
 	}
 }

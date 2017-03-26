@@ -7,15 +7,22 @@ import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.transform.Transformers;
 import org.hibernate.type.StandardBasicTypes;
+import org.primefaces.model.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.dbms.entity.cqt.SmqBaseTarget;
 import com.dbms.entity.cqt.SmqBaseTarget;
 import com.dbms.entity.cqt.SmqRelationTarget;
 import com.dbms.service.base.CqtPersistenceService;
@@ -289,6 +296,125 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 					.append(smqCode)
 					.append(" Query used was ->")
 					.append(queryString);
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
+	
+	@Override
+	public List<SmqBaseTarget> findImpactedWithPaginated(int first, int pageSize, String sortField
+														, SortOrder sortOrder, Map<String, Object> filters) {
+		List<SmqBaseTarget> retVal = null;
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		try {
+			CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+			CriteriaQuery<SmqBaseTarget> cq = cb.createQuery(SmqBaseTarget.class);
+			Root<SmqBaseTarget> smqRoot = cq.from(SmqBaseTarget.class);
+			Predicate equalsPredicate = cb.equal(smqRoot.get("impactType"), "IMPACTED");
+			cq.where(equalsPredicate);
+			cq.orderBy(cb.asc(smqRoot.get("smqName")));
+			TypedQuery<SmqBaseTarget> tq = entityManager.createQuery(cq);
+			
+			if (pageSize >= 0){
+	            tq.setMaxResults(pageSize);
+	        }
+	        if (first >= 0){
+	            tq.setFirstResult(first);
+	        }
+			
+			retVal = tq.getResultList();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg.append("An error occurred while fetching paginated impacted SmqBaseTarget.");
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.dbms.service.ISmqBaseTargetService#findImpactedCount()
+	 */
+	@Override
+	public Long findImpactedCount() {
+		Long retVal = null;
+		StringBuilder sb = new StringBuilder();
+		sb.append("select count(*) from SmqBaseTarget c where c.impactType = 'IMPACTED'");
+		
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		try {
+			Query query = entityManager.createQuery(sb.toString());
+			retVal = (Long)query.getSingleResult();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg
+					.append("An error occurred in findImpactedCount ")
+					.append(" Query used was ->")
+					.append(sb.toString());
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.dbms.service.ISmqBaseTargetService#findNotImpactedWithPaginated(int, int, java.lang.String, org.primefaces.model.SortOrder, java.util.Map)
+	 */
+	@Override
+	public List<SmqBaseTarget> findNotImpactedWithPaginated(int first, int pageSize, String sortField
+			, SortOrder sortOrder, Map<String, Object> filters) {
+		List<SmqBaseTarget> retVal = null;
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		try {
+			CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+			CriteriaQuery<SmqBaseTarget> cq = cb.createQuery(SmqBaseTarget.class);
+			Root<SmqBaseTarget> smqRoot = cq.from(SmqBaseTarget.class);
+			Predicate equalsPredicate = cb.equal(smqRoot.get("impactType"), "NON-IMPACTED");
+			cq.where(equalsPredicate);
+			cq.orderBy(cb.asc(smqRoot.get("smqName")));
+			TypedQuery<SmqBaseTarget> tq = entityManager.createQuery(cq);
+			
+			if (pageSize >= 0){
+			tq.setMaxResults(pageSize);
+			}
+			if (first >= 0){
+			tq.setFirstResult(first);
+			}
+			
+			retVal = tq.getResultList();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg.append("An error occurred while fetching paginated impacted SmqBaseTarget.");
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.dbms.service.ISmqBaseTargetService#findNotImpactedCount()
+	 */
+	@Override
+	public Long findNotImpactedCount() {
+		Long retVal = null;
+		StringBuilder sb = new StringBuilder();
+		sb.append("select count(*) from SmqBaseTarget c where c.impactType = 'NON-IMPACTED'");
+	
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		try {
+			Query query = entityManager.createQuery(sb.toString());
+			retVal = (Long)query.getSingleResult();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg
+			.append("An error occurred in findImpactedCount ")
+			.append(" Query used was ->")
+			.append(sb.toString());
 			LOG.error(msg.toString(), e);
 		} finally {
 			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
