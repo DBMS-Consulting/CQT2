@@ -146,7 +146,7 @@
 									
 									<!-- Selection of the list fr workflow states -->
 									<p:ajax event="select" listener="#{impactSearchController.onSelectCurrentRowTreeTable}" 
-										update="@form:reviewBtn @form:approveBtn @form:demoteBtn @form:deleteBtn" />
+										update="@form:reviewBtn @form:approveBtn @form:demoteBtn @form:deleteBtn @form:futureListsAndSmqs" />
 																		
 									<p:columnGroup type="header">
 										<p:row>
@@ -201,7 +201,7 @@
 									
 									<!-- Selection of the list fr workflow states -->
 									<p:ajax event="select" listener="#{impactSearchController.onSelectTargetRowTreeTable}" 
-										update="@form:messages @form:reviewBtn @form:approveBtn @form:demoteBtn @form:deleteBtn" />
+										update="@form:messages @form:reviewBtn @form:approveBtn @form:demoteBtn @form:deleteBtn @form:currentListsAndSmqs" />
 									
 									<p:columnGroup type="header">
 										<p:row>
