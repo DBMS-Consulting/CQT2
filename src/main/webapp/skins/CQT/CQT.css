@@ -285,6 +285,11 @@ td .bordered {
 	color: #009912;
 }
 
+/* Styles for primefaces:selectOneMenu */
+.ui-selectonemenu.hide-disabled .ui-selectonemenu-item.ui-state-disabled {
+    display: none;
+}
+
 /**================= Details form ======================**/
 .pad-lr30 {
 	padding: 0 30px;

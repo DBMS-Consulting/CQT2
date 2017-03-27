@@ -74,11 +74,11 @@
  			</p:selectOneMenu> -->
  			
  			<p:outputLabel value="State" styleClass="label-right" />
-			<p:selectOneMenu value="#{searchController.state}" id="state">
+			<p:selectOneMenu value="#{searchController.state}" id="state" styleClass="hide-disabled">
 				<f:selectItem itemValue="" itemLabel="All" />
 				<f:selectItems></f:selectItems>	
 				<f:selectItems value="#{configMB.workflowStateList}" var="wk"
-					itemLabel="#{wk.value}" itemValue="#{wk.codelistInternalValue}" />
+					itemLabel="#{wk.value}" itemValue="#{wk.codelistInternalValue}" itemDisabled="#{wk.activeFlag eq 'N'}"/>
 			</p:selectOneMenu>
 
 			<p:outputLabel value="Group" styleClass="label-right" />
