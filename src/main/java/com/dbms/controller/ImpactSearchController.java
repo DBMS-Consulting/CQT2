@@ -109,6 +109,16 @@ public class ImpactSearchController implements Serializable {
 	
 	private boolean isImpactedCmqSelected, isNonImpactedCmqSelected, isImpactedSmqSelected, isNonImpactedSmqSelected;
 	
+	private String levelH;
+	
+	private TreeNode hierarchyRoot;
+	
+	private String termNameOfHierarchySearch;
+	
+	private TreeNode[] relationSelected;
+	private TreeNode[] relationSelectedInRelationsTable;
+	private TreeNode relationsRoot;
+	
 	public ImpactSearchController() {
 		
 	}
@@ -123,7 +133,10 @@ public class ImpactSearchController implements Serializable {
 				"LEVEL", "SCOPE", null), null);
 		targetTableRootTreeNode = new DefaultTreeNode("root", new HierarchyNode("CODE",
 				"LEVEL", "SCOPE", "CATEGORY", "WEIGHT", null, null), null);
-		
+		this.hierarchyRoot = new DefaultTreeNode("root", new HierarchyNode(
+				"LEVEL", "NAME", "CODE", null), null);
+		relationsRoot = new DefaultTreeNode("root", new HierarchyNode("LEVEL",
+				"NAME", "CODE", "SCOPE", "CATEGORY", "WEIGHT", null), null);
 		setReviewEnabled(false);
 		setApproveEnabled(false);
 		setDemoteEnabled(false); 
@@ -260,6 +273,26 @@ public class ImpactSearchController implements Serializable {
 				MeddraDictHierarchySearchDto meddraDictHierarchySearchDto = (MeddraDictHierarchySearchDto)entity;
 				Long dtoCode = Long.valueOf(meddraDictHierarchySearchDto.getCode());
 				this.populateMeddraDictHierarchySearchDtoChildren(parentLevel, dtoCode, expandedTreeNode, "target");
+			} else if(entity instanceof MeddraDictReverseHierarchySearchDto) {
+				MeddraDictReverseHierarchySearchDto reverseSearchDto = (MeddraDictReverseHierarchySearchDto)entity;
+				String levelOfExpandedNode = hierarchyNode.getLevel();
+				if("LLT".equalsIgnoreCase(levelOfExpandedNode)) {
+					Long lltCode = Long.valueOf(reverseSearchDto.getLltCode());
+					this.populateMeddraDictReverseHierarchySearchDtoChildren("LLT_", "PT", lltCode, hierarchyNode
+																				, expandedTreeNode, reverseSearchDto, false);	
+				} else if ("PT".equalsIgnoreCase(levelOfExpandedNode)) {
+					Long ptCode = Long.valueOf(reverseSearchDto.getPtCode());
+					this.populateMeddraDictReverseHierarchySearchDtoChildren("PT_", "HLT", ptCode, hierarchyNode
+																				, expandedTreeNode, reverseSearchDto, true);		
+				} else if ("HLT".equalsIgnoreCase(levelOfExpandedNode)) {
+					Long hltCode = Long.valueOf(reverseSearchDto.getHltCode());
+					this.populateMeddraDictReverseHierarchySearchDtoChildren("HLT_", "HLGT", hltCode, hierarchyNode
+																				, expandedTreeNode, reverseSearchDto, false);	
+				} else if ("HLGT".equalsIgnoreCase(levelOfExpandedNode)) {
+					Long hlgtCode = Long.valueOf(reverseSearchDto.getHlgtCode());
+					this.populateMeddraDictReverseHierarchySearchDtoChildren("HLGT_", "SOC", hlgtCode, hierarchyNode
+																				, expandedTreeNode, reverseSearchDto, false);	
+				}
 			}
 			hierarchyNode.setDataFetchCompleted(true);
 		}
@@ -299,6 +332,229 @@ public class ImpactSearchController implements Serializable {
 		}
 	}
 
+	public void hierarchySearch() {
+		int level = 0;
+		String meddraSearchTermPrefix = null;
+		boolean searchSmqBase = false;
+		boolean searchMeddraBase = false;
+		boolean searchMeddraBaseReverse = false;
+		boolean searchCmqBase = false;
+		
+		if ("SMQ1".equalsIgnoreCase(levelH)) {
+			level = 1;
+			searchSmqBase = true;
+		} else if ("SMQ2".equalsIgnoreCase(levelH)) {
+			level = 2;
+			searchSmqBase = true;
+		} else if ("SMQ3".equalsIgnoreCase(levelH)) {
+			level = 3;
+			searchSmqBase = true;
+		} else if ("SMQ4".equalsIgnoreCase(levelH)) {
+			level = 4;
+			searchSmqBase = true;
+		} else if ("SMQ5".equalsIgnoreCase(levelH)) {
+			level = 5;
+			searchSmqBase = true;
+		} else if ("SOC".equalsIgnoreCase(levelH)) {
+			meddraSearchTermPrefix = "SOC_";
+			searchMeddraBase = true;
+		} else if ("HLGT".equalsIgnoreCase(levelH)) {
+			meddraSearchTermPrefix = "HLGT_";
+			searchMeddraBase = true;
+		} else if ("HLT".equalsIgnoreCase(levelH)) {
+			meddraSearchTermPrefix = "HLT_";
+			searchMeddraBase = true;
+		} else if ("PT".equalsIgnoreCase(levelH)) {
+			meddraSearchTermPrefix = "PT_";
+			searchMeddraBaseReverse = true;
+		} else if ("LLT".equalsIgnoreCase(levelH)) {
+			meddraSearchTermPrefix = "LLT_";
+			searchMeddraBaseReverse = true;
+		} else if ("PRO".equalsIgnoreCase(levelH)) {
+			searchCmqBase = true;
+		}
+	
+		if (searchSmqBase) {
+			List<SmqBaseTarget> smqBaseList = this.smqBaseTargetService.findByLevelAndTerm(
+					level, termNameOfHierarchySearch);
+			LOG.info("smqBaseList values {}", smqBaseList == null ? 0 : smqBaseList.size());
+
+			this.hierarchyRoot = new DefaultTreeNode("root", new HierarchyNode(
+					"LEVEL", "NAME", "CODE", null), null);
+			for (SmqBaseTarget smqBaseTarget : smqBaseList) {
+				this.updateHierarchySearchForSmqTaget(smqBaseTarget);
+			}
+		} else if (searchMeddraBase) {
+			List<MeddraDictHierarchySearchDto> meddraDictDtoList = this.meddraDictTargetService
+					.findByLevelAndTerm(meddraSearchTermPrefix.toUpperCase(),
+							termNameOfHierarchySearch);
+			this.hierarchyRoot = new DefaultTreeNode("root", new HierarchyNode(
+					"LEVEL", "NAME", "CODE", null), null);
+			
+			String childSearchColumnTypePrefix = null;
+			String parentCodeColumnPrefix = levelH + "_";
+			if ("SOC".equalsIgnoreCase(levelH)) {
+				childSearchColumnTypePrefix = "HLGT_";
+			} else if ("HLGT".equalsIgnoreCase(levelH)) {
+				childSearchColumnTypePrefix = "HLT_";
+			} else if ("HLT".equalsIgnoreCase(levelH)) {
+				childSearchColumnTypePrefix = "PT_";
+			} else if ("PT".equalsIgnoreCase(levelH)) {
+				childSearchColumnTypePrefix = "LLT_";
+			}
+			
+			for (MeddraDictHierarchySearchDto meddraDictDto : meddraDictDtoList) {
+				this.updateHierarchySearchForMeddraDict(meddraDictDto, childSearchColumnTypePrefix, parentCodeColumnPrefix);
+			}
+			
+		} else if (searchMeddraBaseReverse) {
+			List<MeddraDictReverseHierarchySearchDto> meddraDictDtoList = this.meddraDictTargetService
+					.findFullReverseHierarchyByLevelAndTerm(levelH, levelH, termNameOfHierarchySearch);
+			this.hierarchyRoot = new DefaultTreeNode("root", new HierarchyNode("LEVEL", "NAME", "CODE", null), null);
+			
+			for (MeddraDictReverseHierarchySearchDto meddraDictReverseDto : meddraDictDtoList) {
+				HierarchyNode node = this.createMeddraReverseNode(meddraDictReverseDto, levelH, true);
+				TreeNode parentTreeNode = new DefaultTreeNode(node, this.hierarchyRoot);
+				
+				// add a dummmy node to show expand arrow
+				HierarchyNode dummyNode = new HierarchyNode(null, null,
+						null, null);
+				dummyNode.setDummyNode(true);
+				new DefaultTreeNode(dummyNode, parentTreeNode);
+			}
+		} else if (searchCmqBase) {
+			List<CmqBaseTarget> cmqBaseList = this.cmqBaseTargetService.findByLevelAndTerm(2,
+					termNameOfHierarchySearch);
+			this.hierarchyRoot = new DefaultTreeNode("root", new HierarchyNode(
+					"LEVEL", "NAME", "CODE", null), null);
+			
+			List<Long> parentCmqCodeList = new ArrayList<>();
+			Map<Long, TreeNode> parentTreeNodes = new HashMap<Long, TreeNode>();
+			
+			this.updateParentCodesAndParentTreeNodesForCmqTaget(cmqBaseList, parentCmqCodeList, parentTreeNodes);
+			
+			if(CollectionUtils.isNotEmpty(parentCmqCodeList)) {
+				this.updateHierarchySearchCmqChildNodes(parentCmqCodeList, parentTreeNodes);
+				this.updateHierarchySearchCmqRelationChildNodes(parentCmqCodeList, parentTreeNodes);
+			}
+		}
+		
+	}
+	
+	private void updateParentCodesAndParentTreeNodesForCmqTaget(List<CmqBaseTarget> cmqBaseList
+																	, List<Long> parentCmqCodeList
+																	, Map<Long, TreeNode> parentTreeNodes) {
+		for (CmqBaseTarget cmqBase : cmqBaseList) {
+			HierarchyNode node = new HierarchyNode();
+			node.setLevel(levelH);
+			node.setTerm(cmqBase.getCmqName());
+			node.setCode(cmqBase.getCmqCode().toString());
+			node.setEntity(cmqBase);
+
+			TreeNode cmqBaseTreeNode = new DefaultTreeNode(node,
+					hierarchyRoot);
+			parentTreeNodes.put(cmqBase.getCmqCode(), cmqBaseTreeNode);
+			parentCmqCodeList.add(cmqBase.getCmqCode());
+		}
+	}
+	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private void updateHierarchySearchCmqChildNodes(List<Long> parentCmqCodeList, Map<Long, TreeNode> parentTreeNodes) {
+		List<Map<String, Object>> childCountsList = this.cmqBaseTargetService.findCmqChildCountForParentCmqCode(parentCmqCodeList);
+		if((null != childCountsList) && (childCountsList.size() > 0)) {
+			//first find and fix child nodes stuff
+			for (Iterator<Long> it = parentCmqCodeList.iterator(); it.hasNext();) {
+				ListIterator li = childCountsList.listIterator();
+				Long parentCmqCode = it.next();
+				while(li.hasNext()) {
+					Map<String, Object> map = (Map<String, Object>) li.next();
+					if(map.get("CMQ_CODE") != null) {
+						Long cmqCode = (Long)map.get("CMQ_CODE");
+						if(cmqCode.longValue() == parentCmqCode.longValue()) {
+							Long count = (Long)map.get("COUNT");
+							if(count > 0) {
+								it.remove();//remove it from parentCmqCodeList
+								
+								//add a dummy node for this child in parent
+								TreeNode parentTreeNode = parentTreeNodes.get(parentCmqCode);
+								HierarchyNode dummyNode = new HierarchyNode(null, null,
+										null, null);
+								dummyNode.setDummyNode(true);
+								new DefaultTreeNode(dummyNode, parentTreeNode);
+							}
+							break;
+						}//end of if(cmqCode.longValue() == parentCmqCode.longValue())
+					}
+				}
+			}
+		}
+	}
+	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private void updateHierarchySearchCmqRelationChildNodes(List<Long> parentCmqCodeList, Map<Long, TreeNode> parentTreeNodes) {
+		//now find relations for those who don't have children
+		List<Map<String, Object>> relationsCountsList = this.cmqRelationTargetService.findCountByCmqCodes(parentCmqCodeList);	
+		if((null != relationsCountsList) && (relationsCountsList.size() > 0)) {
+			ListIterator li = relationsCountsList.listIterator();
+			while(li.hasNext()) {
+				Map<String, Object> map = (Map<String, Object>) li.next();
+				if(map.get("CMQ_CODE") != null) {
+					Long cmqCode = (Long)map.get("CMQ_CODE");
+					Long count = (Long)map.get("COUNT");
+					if(count > 0) {
+						//add a dummy node for this child in parent
+						TreeNode parentTreeNode = parentTreeNodes.get(cmqCode);
+						HierarchyNode dummyNode = new HierarchyNode(null, null,
+								null, null);
+						dummyNode.setDummyNode(true);
+						new DefaultTreeNode(dummyNode, parentTreeNode);
+					}
+				}
+			}
+		}
+	}
+	
+	private void updateHierarchySearchForSmqTaget(SmqBaseTarget smqBaseTarget) {
+		HierarchyNode node = this.createSmqBaseTargetNode(smqBaseTarget);
+		TreeNode smqBaseTreeNode = new DefaultTreeNode(node, this.hierarchyRoot);
+		
+		boolean dummyNodeAdded = false;
+		Long count = this.smqBaseTargetService.findChildSmqCountByParentSmqCode(smqBaseTarget.getSmqCode());
+		if((count != null) && (count > 0)) {
+			HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
+			dummyNode.setDummyNode(true);
+			new DefaultTreeNode(dummyNode, smqBaseTreeNode);
+			dummyNodeAdded = true;
+		}
+		
+		//check for relations now
+		if(!dummyNodeAdded) {
+			count = this.smqBaseTargetService.findSmqRelationsCountForSmqCode(smqBaseTarget.getSmqCode());
+			if((count != null) && (count > 0)) {
+				HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
+				dummyNode.setDummyNode(true);
+				new DefaultTreeNode(dummyNode, smqBaseTreeNode);
+			}
+		}
+	}
+	
+	private void updateHierarchySearchForMeddraDict(MeddraDictHierarchySearchDto meddraDictDto
+														, String childSearchColumnTypePrefix
+														, String parentCodeColumnPrefix) {
+		HierarchyNode node = this.createMeddraNode(meddraDictDto, levelH);
+		TreeNode parentTreeNode = new DefaultTreeNode(node, this.hierarchyRoot);
+		
+		Long countOfChildren = this.meddraDictTargetService.findChldrenCountByParentCode(childSearchColumnTypePrefix,
+				parentCodeColumnPrefix, Long.valueOf(meddraDictDto.getCode()));
+		if((null != countOfChildren) && (countOfChildren > 0)) {
+			// add a dummmy node to show expand arrow
+			HierarchyNode dummyNode = new HierarchyNode(null, null,
+					null, null);
+			dummyNode.setDummyNode(true);
+			new DefaultTreeNode(dummyNode, parentTreeNode);
+		}
+	}
+	
 	private void updateCurrentTableForCmqList(CmqBaseTarget selectedCmqList) {
 		CmqBase190 cmqBaseCurrent = this.cmqBaseCurrentService.findByCode(selectedCmqList.getCmqCode());
 		HierarchyNode node = this.createCmqBaseCurrentHierarchyNode(cmqBaseCurrent);
@@ -474,6 +730,41 @@ public class ImpactSearchController implements Serializable {
 		}
 	}
 
+	private void populateMeddraDictReverseHierarchySearchDtoChildren(String searchColumnTypePrefix, String partitionColumn
+																		, Long code, HierarchyNode hierarchyNode, TreeNode expandedTreeNode
+																		, MeddraDictReverseHierarchySearchDto reverseSearchDto
+																		, boolean chekcForPrimaryPath) {
+		String partitionColumnPrefix = partitionColumn +"_";
+		List<MeddraDictReverseHierarchySearchDto> childReverseSearchDtos = this.meddraDictTargetService.findReverseByCode(searchColumnTypePrefix
+																															, partitionColumnPrefix, code);
+		if(CollectionUtils.isNotEmpty(childReverseSearchDtos)) {
+			for (MeddraDictReverseHierarchySearchDto childReverseSearchDto : childReverseSearchDtos) {
+				HierarchyNode childNode = null;
+				if(chekcForPrimaryPath) {
+					boolean isPrimary = false;
+					if("Y".equalsIgnoreCase(childReverseSearchDto.getPrimaryPathFlag())) {
+						isPrimary = true;
+					}
+					childNode = this.createMeddraReverseNode(childReverseSearchDto, partitionColumn, isPrimary);
+				} else {
+					childNode = this.createMeddraReverseNode(childReverseSearchDto, partitionColumn, hierarchyNode.isPrimaryPathFlag());
+				}
+				TreeNode childTreeNode = new DefaultTreeNode(childNode, expandedTreeNode);
+				
+				//dont add any child for last leaf node
+				if(!"SOC".equalsIgnoreCase(partitionColumn)) {
+					if(StringUtils.isNotBlank(reverseSearchDto.getHltTerm())) {
+						// add a dummmy node to show expand arrow
+						HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
+						dummyNode.setDummyNode(true);
+						new DefaultTreeNode(dummyNode, childTreeNode);
+					}
+				}
+			}
+		}
+	}
+	
+	
 	private void populateMeddraDictHierarchySearchDtoChildren(String parentLevel, Long dtoCode, TreeNode expandedTreeNode, String meddraType) {
 		//child code and term type prefix for the parent i.e: node that was expanded in ui
 		String childLevel = null;
@@ -1393,5 +1684,53 @@ public class ImpactSearchController implements Serializable {
 
 	public void setSelectedNotImpactedSmqList(SmqBaseTarget selectedNotImpactedSmqList) {
 		this.selectedNotImpactedSmqList = selectedNotImpactedSmqList;
+	}
+
+	public String getLevelH() {
+		return levelH;
+	}
+
+	public void setLevelH(String levelH) {
+		this.levelH = levelH;
+	}
+
+	public TreeNode getHierarchyRoot() {
+		return hierarchyRoot;
+	}
+
+	public void setHierarchyRoot(TreeNode hierarchyRoot) {
+		this.hierarchyRoot = hierarchyRoot;
+	}
+
+	public String getTermNameOfHierarchySearch() {
+		return termNameOfHierarchySearch;
+	}
+
+	public void setTermNameOfHierarchySearch(String termNameOfHierarchySearch) {
+		this.termNameOfHierarchySearch = termNameOfHierarchySearch;
+	}
+
+	public TreeNode[] getRelationSelected() {
+		return relationSelected;
+	}
+
+	public void setRelationSelected(TreeNode[] relationSelected) {
+		this.relationSelected = relationSelected;
+	}
+
+	public TreeNode[] getRelationSelectedInRelationsTable() {
+		return relationSelectedInRelationsTable;
+	}
+
+	public void setRelationSelectedInRelationsTable(TreeNode[] relationSelectedInRelationsTable) {
+		this.relationSelectedInRelationsTable = relationSelectedInRelationsTable;
+	}
+
+	public TreeNode getRelationsRoot() {
+		return relationsRoot;
+	}
+
+	public void setRelationsRoot(TreeNode relationsRoot) {
+		this.relationsRoot = relationsRoot;
 	}
 }

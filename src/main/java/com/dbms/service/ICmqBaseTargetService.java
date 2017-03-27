@@ -28,4 +28,6 @@ public interface ICmqBaseTargetService  extends ICqtPersistenceService<CmqBaseTa
 
 	List<CmqBaseTarget> findChildCmqsByParentCode(Long code);
 
+	List<CmqBaseTarget> findByLevelAndTerm(Integer level, String searchTerm);
+
 }

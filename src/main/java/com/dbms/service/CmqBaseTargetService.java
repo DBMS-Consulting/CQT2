@@ -13,6 +13,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.transform.Transformers;
@@ -249,6 +250,39 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 			StringBuilder msg = new StringBuilder();
 			msg.append("findChildCmqsByCodes failed ")
 					.append("Query used was ->").append(queryString);
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<CmqBaseTarget> findByLevelAndTerm(Integer level, String searchTerm) {
+		List<CmqBaseTarget> retVal = null;
+		StringBuilder sb = new StringBuilder();
+		sb.append("from CmqBaseTarget c where c.cmqLevel = :cmqLevel and c.cmqParentCode is null and c.cmqStatus = 'I' ");
+		if (!StringUtils.isBlank(searchTerm)) {
+			sb.append("and upper(c.cmqName) like :cmqName");
+		}
+		EntityManager entityManager = this.cqtEntityManagerFactory
+				.getEntityManager();
+		try {
+			Query query = entityManager.createQuery(sb.toString());
+			query.setParameter("cmqLevel", level);
+
+			if (!StringUtils.isBlank(searchTerm)) {
+				query.setParameter("cmqName", searchTerm.toUpperCase());
+			}
+			retVal = query.getResultList();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg.append(
+					"An error occurred while fetching types from CmqBaseTarget on cmqLevel ")
+					.append(level).append(" with cmqName like ")
+					.append("%" + searchTerm.toUpperCase() + "%")
+					.append(" Query used was ->").append(sb.toString());
 			LOG.error(msg.toString(), e);
 		} finally {
 			this.cqtEntityManagerFactory.closeEntityManager(entityManager);

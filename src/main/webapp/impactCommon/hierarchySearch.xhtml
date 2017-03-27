@@ -11,7 +11,7 @@
 		<h:panelGrid columns="6">
 			<p:outputLabel value="Level" for="levelH" />
 			<p:selectOneMenu id="levelH" label="Level" partialTriggers="soc9"
-				value="#{searchController.levelH}">
+				value="#{impactSearchController.levelH}">
 				<f:selectItem itemValue="PRO" itemLabel="PRO" />
 				<f:selectItem itemValue="SMQ1" itemLabel="SMQ1" />
 				<f:selectItem itemValue="SMQ2" itemLabel="SMQ2" />
@@ -26,50 +26,24 @@
 			<p:spacer width="10" />
 			<p:outputLabel value="Term" for="termH" />
 			<p:inputText id="termH" style="text-transform:uppercase"
-				value="#{searchController.termName}" />
+				onkeypress="if (event.keyCode == 13) { return false; }"
+				value="#{impactSearchController.termNameOfHierarchySearch}" />
 			<p:commandButton value="Search" update="resultHier"
-				action="#{searchController.hierarchySearch}" />
+				action="#{impactSearchController.hierarchySearch}" />
 		</h:panelGrid>
 
 		<br />
 		<h:panelGrid id="pc3" styleClass="AFStretchWidth">
-			<!-- <p:toolbar id="t4">
-				<f:facet name="left">
-					<p:commandButton id="filterH" value="Filter and Sort" type="button"
-						icon="ui-icon-triangle-1-s" />
-					<p:overlayPanel id="filterPanelH" for="filterH"
-						showCloseIcon="true">
-						<h:panelGrid columns="2">
-							<p:outputLabel value="Sort" />
-							<p:selectOneMenu value="TERM">
-								<f:selectItem itemValue="TERM" itemLabel="Term name"></f:selectItem>
-								<f:selectItem itemValue="DEF_LEVEL_REF_SHORT_NAME"
-									itemLabel="Level"></f:selectItem>
- 							</p:selectOneMenu>
+			<p:treeTable value="#{impactSearchController.hierarchyRoot}"  var="node"
+				id="resultHier" rows="20" selectionMode="checkbox" selection="#{impactSearchController.relationSelected}"
+				styleClass="ui-treetable-resultHier" style="width:700px; height:450px; overflow: auto" 
+				paginator="true" paginatorPosition="bottom"
+					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					rowsPerPageTemplate="5,10,25,30" rowStyleClass="#{node.rowStyleClass}">
 
-							<p:outputLabel for="showH" value="Show Primary Only"
-								style="min-width: 100px !important" />
-							<p:selectBooleanCheckbox value="false" id="showH"
-								label="Show Primary Only"></p:selectBooleanCheckbox>
-							
-							<p:spacer />
-							<p:commandButton value="Refresh" id="cbH" icon="fa fa-refresh"
-								rendered="true" />
-						</h:panelGrid>
-					</p:overlayPanel>
-					<p:spacer width="5" />
-				</f:facet>
-			</p:toolbar> -->
-
-			<p:treeTable value="#{searchController.hierarchyRoot}" var="node"
-				selectionMode="multiple" id="resultHier" rows="10" paginator="true"
-				paginatorPosition="bottom"
-				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-				rowsPerPageTemplate="5,10,25,30"
-				style="overflow: auto; max-height: 380px; padding-bottom: 5px;">
-				
-				<p:ajax event="expand" listener="#{searchController.onNodeExpandListener}" update="resultHier" />
-				<p:ajax event="collapse" listener="#{searchController.onNodeExpandListener}" update="resultHier" />
+				<p:ajax event="expand"
+					listener="#{impactSearchController.onNodeExpandTargetTable}"
+					update="resultHier" />
 
 				<p:column headerText="Level">
 					<h:outputText value="#{node.level}" />
@@ -82,80 +56,34 @@
 				<p:column headerText="Code" sortBy="#{node.code}"
 					filterBy="#{node.code}">
 					<h:outputText value="#{node.code}" />
+					<h:outputText value="#{node.entity.id}"
+						styleClass="ui-hidden data-entity-id" />
 				</p:column>
-				
+
 			</p:treeTable>
-
-
-			<!-- <p:dataTable var="node"
-				value="#{searchController.hierarchySearchResults}" id="resultHier"
-				rows="10" paginator="true" paginatorPosition="bottom"
-				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-				rowsPerPageTemplate="5,10,25">
-
-				<p:column headerText="Level">
-					<h:outputText value="#{node.level}" />
-				</p:column>
-
-				<p:column headerText="Term">
-					<h:outputText value="#{node.term}" />
-				</p:column>
-
-				<p:column headerText="Code" sortBy="#{node.code}"
-					filterBy="#{node.code}">
-					<h:outputText value="#{node.code}" />
-				</p:column>
-			</p:dataTable> -->
-
-			<!-- Leyla's code 
-			
-			<p:dataTable var="node" value="#{searchController.datas}"
-				id="resultHier" rows="10" paginator="true" paginatorPosition="bottom"
-				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-				rowsPerPageTemplate="5,10,25">
-
-				<p:column headerText="Level">
-					<h:outputText rendered="#{node.cmqLevel eq 1}" value="SMQ1" />
-					<h:outputText rendered="#{node.cmqLevel eq 2}" value="SMQ2" />
-					<h:outputText rendered="#{node.cmqLevel eq 3}" value="SMQ3" />
-					<h:outputText rendered="#{node.cmqLevel eq 4}" value="SMQ4" />
-					<h:outputText rendered="#{node.cmqLevel eq 5}" value="SMQ5" />
-				</p:column>
-
-				<p:column headerText="Term">
-					<h:outputText value="#{node.cmqName}" />
-				</p:column>
-
-				<p:column headerText="Code" sortBy="#{node.cmqCode}"
-					filterBy="#{node.cmqCode}">
-					<h:outputText value="#{node.cmqCode}" />
-				</p:column>
-			</p:dataTable>
-
-			 -->
-
-
-			<!-- <p:treeTable value="#{searchController.hierarchyRoot}" var="node"  
-				rowSelection="multiple" id="hierSrc">
-
-				<p:column headerText="Level">
-					<h:outputText value="#{node.level}" />
-				</p:column>
-				
-				<p:column headerText="Term">
-					<h:outputText value="#{node.term}" />
-				</p:column>
-				
-				<p:column headerText="Code" sortBy="#{node.code}" filterBy="#{node.code}">
-					<h:outputText value="#{node.code}" />
-				</p:column>
-			</p:treeTable> -->
 		</h:panelGrid>
 	</p:panel>
 
 	<style>
 #termH {
 	text-transform: uppercase;
+}
+
+.ui-treetable.ui-treetable-resultHier .ui-treetable-selectable-node .ui-chkbox.ui-selection
+	{
+	display: none;
+}
+
+.ui-hidden {
+	display: none;
+}
+
+.green-colored {
+	color: #00c119;
+}
+
+.green-colored:HOVER {
+	color: #009912;
 }
 </style>
 

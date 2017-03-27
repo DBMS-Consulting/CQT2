@@ -304,8 +304,10 @@
 				<ui:include src="../impactCommon/hierarchySearch.xhtml"></ui:include>
 
 				<p:spacer height="10"></p:spacer>
-				<h:panelGrid style="float: right">
-					<p:commandButton value="Cancel" onclick="PF('search').hide()" />
+				<h:panelGrid style="float: right" columns="2">
+					<p:commandButton value="Add selected" onclick="PF('search').hide()"
+						action="#" />
+					<p:commandButton value="Cancel" onclick="PF('search').hide()" immediate="true" />
 				</h:panelGrid>
 			</p:dialog>
 
