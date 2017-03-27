@@ -285,6 +285,41 @@ td .bordered {
 	color: #009912;
 }
 
+.red-colored {
+	color: red;
+}
+.red-colored:HOVER {
+	color: #ff6347;
+}
+
+.grey-colored {
+	color: grey;
+}
+.grey-colored:HOVER {
+	color: #778899;
+}
+
+.orange-colored {
+	color: orange;
+}
+.orange-colored:HOVER {
+	color: #ffa500;
+}
+
+.pink-colored {
+	color: #ffc0cb;
+}
+.pink-colored:HOVER {
+	color: #dda0dd;
+}
+
+.white-colored {
+	color: #f5f5f5;
+}
+.white-colored:HOVER {
+	color: #fffafa;
+}
+
 /* Styles for primefaces:selectOneMenu */
 .ui-selectonemenu.hide-disabled .ui-selectonemenu-item.ui-state-disabled {
     display: none;
