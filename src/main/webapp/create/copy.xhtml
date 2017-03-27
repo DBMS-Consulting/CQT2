@@ -21,7 +21,7 @@
 		    </p:remoteCommand>
 
 			<p:wizard flowListener="#{createController.onCopyWizardFlowProcess}" widgetVar="wizard"
-				id="wizardId" binding="#{createController.copyWizard}"
+				id="wizardId" binding="#{createController.copyWizard}" styleClass="copy-list-wiz"
 				showNavBar="false">
 				<!-- Search -->
 				<p:tab id="searchCopy" title="Search">
@@ -34,13 +34,13 @@
 						<script>
 							//<![CDATA[
 							(function($) {
-								$('.ui-wizard.update-list-wiz .ui-wizard-step-title a').off('click');
-								$('.ui-wizard.update-list-wiz .ui-wizard-step-title a').click(function(event) {
-									var curStepA = $('.ui-wizard.update-list-wiz .ui-wizard-step-title.ui-state-highlight a')[0];
+								$('.ui-wizard.copy-list-wiz .ui-wizard-step-title a').off('click');
+								$('.ui-wizard.copy-list-wiz .ui-wizard-step-title a').click(function(event) {
+									var curStepA = $('.ui-wizard.copy-list-wiz .ui-wizard-step-title.ui-state-highlight a')[0];
 									var clickStepA = $(this)[0];
 									var curStepIdx = 0;
 									var clickStepIdx = 0;
-									var stepsA = $('.ui-wizard.update-list-wiz .ui-wizard-step-title a');
+									var stepsA = $('.ui-wizard.copy-list-wiz .ui-wizard-step-title a');
 									for(var i=0;i<5;i++) {
 										if(stepsA[i] == curStepA)
 											curStepIdx = i;
@@ -49,7 +49,7 @@
 									}
 									if(clickStepIdx + 1 == curStepIdx) {
 										event.preventDefault();
-										$('.ui-wizard-nav-back.update-list-wiz-back').trigger('click');
+										$('.ui-wizard-nav-back.copy-list-wiz-back').trigger('click');
 									}
 								});
 							})(jQuery);
@@ -108,7 +108,7 @@
 
 			<h:panelGroup id="wizardNavbar" layout="block" styleClass="ui-wizard-navbar ui-helper-clearfix">
 				<p:commandButton value="Back" onclick="PF('wizard').back();" icon="ui-icon-arrowthick-1-w"
-	        			styleClass="ui-wizard-nav-back" rendered="#{createController.copyWizardNavbarBackShown}" />
+	        			styleClass="ui-wizard-nav-back copy-list-wiz-back" rendered="#{createController.copyWizardNavbarBackShown}" />
 				<p:commandButton value="Next" onclick="PF('wizard').next();" icon="ui-icon-arrowthick-1-e"
 				        styleClass="ui-wizard-nav-next" rendered="#{createController.copyWizardNavbarNextShown}" /> 
 			</h:panelGroup>

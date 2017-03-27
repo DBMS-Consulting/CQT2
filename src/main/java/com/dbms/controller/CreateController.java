@@ -588,13 +588,16 @@ public class CreateController implements Serializable {
 
 		if("details".equalsIgnoreCase(oldStep) && detailsFormModel.isModelChanged()) {
 			// current step is "Details" and the form has some unsaved changes
-			
-			//----Confirmation on unsaved changes: see onUpdateWizardFlowProcess's "details" step
-			if (codeSelected != null)
-				copyWizardNextStep = event.getNewStep();
-			else
-				copyWizardNextStep = "details";
-			RequestContext.getCurrentInstance().execute("PF('confirmSaveDetailsDlg').show();");
+			if("searchCopy".equals(event.getNewStep())) {
+				nextStep = event.getNewStep();
+			} else {
+				//----Confirmation on unsaved changes: see onUpdateWizardFlowProcess's "details" step
+				if (codeSelected != null)
+					copyWizardNextStep = event.getNewStep();
+				else
+					copyWizardNextStep = "details";
+				RequestContext.getCurrentInstance().execute("PF('confirmSaveDetailsDlg').show();");
+			}
 		} else if(codeSelected != null && "contact".equalsIgnoreCase(oldStep) && notesFormModel.isModelChanged()) {
 			// current step is "Informative Notes" and the form has some unsaved changes
 			//----Confirmation on unsaved changes: see onUpdateWizardFlowProcess's "contact" step
@@ -605,7 +608,10 @@ public class CreateController implements Serializable {
 			copyWizardNextStep = event.getNewStep();
 			RequestContext.getCurrentInstance().execute("PF('confirmSaveRelationsDlg').show();");
 		} else {
-			nextStep = event.getNewStep();
+			if(codeSelected == null)
+				nextStep = "searchCopy";
+			else
+				nextStep = event.getNewStep();
 		}
 		RequestContext.getCurrentInstance().update("fCopy:wizardNavbar");
 		return nextStep;
