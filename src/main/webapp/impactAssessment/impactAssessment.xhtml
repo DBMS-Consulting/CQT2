@@ -122,7 +122,7 @@
 					<!-- PANEL -->
 					<p:panel>
 						<h:panelGrid columns="2" columnClasses="ui-grid-col-6 v-align-top, ui-grid-col-6 v-align-top">
-							<p:panel style="width: 100%; font-size: 12px !important; padding: 0; overflow: auto !important">
+							<p:panel style="width: 100%; padding: 0; overflow: auto !important">
 								<p:toolbar>
 									<f:facet name="left">
 										<p:commandButton value="Select Lists/SMQs" actionListener="#" update=""
@@ -150,7 +150,7 @@
 																		
 									<p:columnGroup type="header">
 										<p:row>
-											<p:column rowspan="2" headerText="Existing Lists/SMQ" />
+											<p:column rowspan="2" headerText="Existing Lists/SMQ" width="50%"/>
 											<p:column colspan="3" headerText="Hierarchy Details" />
 										</p:row>
 
@@ -161,23 +161,23 @@
 										</p:row>
 									</p:columnGroup>
 
-									<p:column id="c8" width="200" noWrap="false">
+									<p:column id="c8" width="50%" noWrap="false">
 										<h:outputText value="#{node.term}" id="el_c1" />
 									</p:column>
 
-									<p:column id="c26" >
-										<h:outputText style="width: 30px !important" value="#{node.code}" id="ot7" />
+									<p:column id="c26" width="25%" >
+										<h:outputText value="#{node.code}" id="ot7" />
 									</p:column>
-									<p:column id="c18" style="width: 30px !important">
+									<p:column id="c18" width="15%">
 										<h:outputText value="#{node.level}" id="ot14" />
 									</p:column>
-									<p:column id="c17" style="width: 30px !important">
+									<p:column id="c17" width="10%">
 										<h:outputText value="#{node.scope}" id="ot13" />
 									</p:column>
 								</p:treeTable>
 							</p:panel>
 
-							<p:panel style="width: 100%; font-size: 12px !important; padding: 0">
+							<p:panel style="width: 100%; padding: 0">
 								<p:toolbar>
 									<f:facet name="left">
 										<p:commandButton value="Hierarchy Search" actionListener="#"
@@ -254,7 +254,7 @@
 									</p:column>
 
 									<p:column>
-										<p:spinner value="#{node.weight}" id="ot6" />
+										<p:spinner value="#{node.weight}" id="ot6" size="8" />
 									</p:column>
 								</p:treeTable>
 							</p:panel>
