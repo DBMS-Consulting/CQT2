@@ -321,6 +321,13 @@ td .bordered {
 	font-weight: bold;
 }
 
+.italic {
+	color: #000;
+	font-style: italic;
+	font-weight: bold;
+}
+
+
 .pink-colored {
 	color: #ffc0cb;
 	font-weight: bold;
