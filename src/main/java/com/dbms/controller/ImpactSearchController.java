@@ -499,14 +499,14 @@ public class ImpactSearchController implements Serializable {
 						detailsFormModel.loadFromCmqBase190((CmqBase190)d);
 						LOG.info("CmqBase190");
 					} else if(d instanceof SmqBase190) {
-						detailsFormModel.loadFromSmqBase190((SmqBase190)d);
 						LOG.info("SmqBase190");
+						nextStep = event.getOldStep();
 					} else if(d instanceof CmqBaseTarget) {
 						LOG.info("CmqBaseTarget");
 						detailsFormModel.loadFromCmqBaseTarget((CmqBaseTarget)d);
 					} else if(d instanceof SmqBaseTarget) {
 						LOG.info("SmqBaseTarget");
-						detailsFormModel.loadFromSmqBaseTarget((SmqBaseTarget)d);
+						nextStep = event.getOldStep();
 					}
 				}
 			} else if(currentOrTarget == SELECTED_TARGET_LIST && targetTableSelection != null) {
@@ -533,13 +533,13 @@ public class ImpactSearchController implements Serializable {
 						LOG.info("CmqBase190");
 						detailsFormModel.loadFromCmqBase190((CmqBase190)d);
 					} else if(d instanceof SmqBase190) {
-						detailsFormModel.loadFromSmqBase190((SmqBase190)d);
+						nextStep = event.getOldStep();
 						LOG.info("SmqBase190");
 					} else if(d instanceof CmqBaseTarget) {
 						detailsFormModel.loadFromCmqBaseTarget((CmqBaseTarget)d);
 						LOG.info("CmqBaseTarget");
 					} else if(d instanceof SmqBaseTarget) {
-						detailsFormModel.loadFromSmqBaseTarget((SmqBaseTarget)d);
+						nextStep = event.getOldStep();
 						LOG.info("SmqBaseTarget");
 					}
 				}
