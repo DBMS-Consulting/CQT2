@@ -271,6 +271,8 @@ public class ImpactSearchController implements Serializable {
 		boolean isDataFetchCompleted = hierarchyNode.isDataFetchCompleted();
 		if (!isDataFetchCompleted) {
 			IEntity entity = hierarchyNode.getEntity();
+			
+			hierarchyNode.setRowStyleClass("blue-colored");
 
 			// remove the first dummy node placeholder
 			HierarchyNode dummyChildData = (HierarchyNode) expandedTreeNode
@@ -1446,7 +1448,9 @@ public class ImpactSearchController implements Serializable {
 		}
 		if(null != node) {
 			if (cmqType.equals("current")) 
-				setSQMCurrentNodeStyle(node, parentCode); 			
+				setSQMCurrentNodeStyle(node, parentCode);
+			else
+				setSQMTargetNodeStyle(node, parentCode); 
 			
 			TreeNode treeNode = new DefaultTreeNode(node, expandedTreeNode);
 			
@@ -1486,7 +1490,9 @@ public class ImpactSearchController implements Serializable {
 			TreeNode treeNode = new DefaultTreeNode(node, expandedTreeNode);
 
 			if (cmqType.equals("current")) 
-				setCMQCurrentNodeStyle(node, parentCode, hierarchyNode); 			
+				setCMQCurrentNodeStyle(node, parentCode, hierarchyNode);
+			else
+				setCMQTargetNodeStyle(node, parentCode, hierarchyNode); 
 
 			Long countOfChildren = this.meddraDictCurrentService.findChldrenCountByParentCode(childNodeType + "_"
 					, nodeType + "_", Long.valueOf(meddraDictHierarchySearchDto.getCode()));
@@ -1509,19 +1515,19 @@ public class ImpactSearchController implements Serializable {
 	 */
 	private void setCMQCurrentNodeStyle(HierarchyNode node,	Long cmqCodeListSelected, HierarchyNode hierarchyNode) {
 		boolean changeOccur = false;
-		System.out.println("\n ================== start setCMQCurrentNodeStyle===================== ");
+		System.out.println("\n ================== start setCMQCurrentNodeStyle===================== \n");
 		//boolean added = false;
 		List<CmqRelationTarget> targetRelations = cmqRelationTargetService.findByCmqCode(cmqCodeListSelected);
 		for (CmqRelationTarget rel : targetRelations) {
 			Long code = getRelationCode(rel);
 			System.out.println("**************************** code relation : " + code);
-		//	CmqBase190 cmq = cmqBaseCurrentService.findByCode(code);
-			MeddraDictHierarchySearchDto med = meddraDictTargetService.findByCode("PT_", code);
+
+			MeddraDictHierarchySearchDto med = meddraDictTargetService.findByCode(getColumnPrefix(rel), code);
 			String termName = med != null ? med.getTerm() : null;
 			System.out.println("**************************** Current term name : " + node.getTerm());
 			System.out.println("**************************** Target term name : " + termName);
-			//Added terms
- 			if (code != null && !(code + "").equals(node.getCode())) {
+			//Merged / Deleted terms
+ 			if (termName == null || (code != null && !(code + "").equals(node.getCode()))) {
  				node.setRowStyleClass("red-colored");
  				changeOccur = true;
  			}
@@ -1533,16 +1539,88 @@ public class ImpactSearchController implements Serializable {
  			}
  			else
  				break;
- 			//Merged terms
- 			
- 			
- 			
- 			if (changeOccur)
- 				hierarchyNode.setRowStyleClass("blue-colored"); 
 		}
 		System.out.println("\n ================== end setCMQCurrentNodeStyle===================== ");
 	}
 	
+	private void setCMQTargetNodeStyle(HierarchyNode node,	Long cmqCodeListSelected, HierarchyNode hierarchyNode) {
+		boolean changeOccur = false;
+		System.out.println("\n ================== start setCMQTargetNodeStyle===================== \n");
+		//boolean added = false;
+		List<CmqRelation190> relations = cmqRelationCurrentService.findByCmqCode(cmqCodeListSelected);
+		for (CmqRelation190 rel : relations) {
+			Long code = getRelationCode(rel);
+			System.out.println("**************************** code relation : " + code);
+
+			MeddraDictHierarchySearchDto med = meddraDictCurrentService.findByCode(getColumnPrefix(rel), code);
+			String termName = med != null ? med.getTerm() : null;
+			System.out.println("**************************** Target term name : " + node.getTerm());
+			System.out.println("**************************** Current term name : " + termName);
+			//Added terms
+ 			if (code != null && !(code + "").equals(node.getCode())) {
+ 				node.setRowStyleClass("orange-colored");
+ 				changeOccur = true;
+ 			}
+ 			
+ 			//Renamed terms
+ 			if (code != null && (code + "").equals(node.getCode()) && (termName != null && !termName.equals(node.getTerm()))) {
+ 				node.setRowStyleClass("italic");
+ 				changeOccur = true;
+ 			}
+ 			else
+ 				break;
+		}
+		System.out.println("\n ================== end setCMQTargetNodeStyle===================== ");
+	}
+	
+	private String getColumnPrefix(CmqRelationTarget rel) {
+		String prefix = "";
+		if (rel.getHlgtCode() != null)
+			prefix ="HLGT_";
+		if (rel.getHltCode() != null)
+			prefix ="HLT_";
+		if (rel.getPtCode() != null)
+			prefix ="PT_";
+		if (rel.getSocCode() != null)
+			prefix ="SOC_";
+		if (rel.getLltCode() != null)
+			prefix ="LLT_";
+		return prefix;
+	}
+	
+	private String getColumnPrefix(CmqRelation190 rel) {
+		String prefix = "";
+		if (rel.getHlgtCode() != null)
+			prefix ="HLGT_";
+		if (rel.getHltCode() != null)
+			prefix ="HLT_";
+		if (rel.getPtCode() != null)
+			prefix ="PT_";
+		if (rel.getSocCode() != null)
+			prefix ="SOC_";
+		if (rel.getLltCode() != null)
+			prefix ="LLT_";	
+		return prefix;
+	}
+
+	private Long getRelationCode(CmqRelation190 rel) {
+		Long code = null;
+		if (rel.getHlgtCode() != null)
+			code = rel.getHlgtCode();
+		if (rel.getHltCode() != null)
+			code = rel.getHltCode();
+		if (rel.getPtCode() != null)
+			code = rel.getPtCode();
+		if (rel.getSmqCode() != null)
+			code = rel.getSmqCode();
+		if (rel.getSocCode() != null)
+			code = rel.getSocCode();
+		if (rel.getLltCode() != null)
+			code = rel.getLltCode();
+
+		return code;
+	}
+
 	/**
 	 * Added term style for SMQ.
 	 * 
@@ -1552,10 +1630,10 @@ public class ImpactSearchController implements Serializable {
 	 *            Long
 	 */
 	private void setSQMCurrentNodeStyle(HierarchyNode node,	Long cmqCodeListSelected) {
-		System.out.println("\n ================== start setSMQCurrentNodeStyle===================== ");
+		System.out.println("\n ================== start setSMQCurrentNodeStyle===================== \n");
 		//boolean added = false;
-		List<SmqRelation190> targetRelations = smqBaseCurrentService.findSmqRelationsForSmqCode(cmqCodeListSelected);
-		for (SmqRelation190 rel : targetRelations) {
+		List<SmqRelationTarget> targetRelations = smqBaseTargetService.findSmqRelationsForSmqCode(cmqCodeListSelected);
+		for (SmqRelationTarget rel : targetRelations) {
 			Long code = getRelationCode(rel);
 			System.out.println("**************************** code relation : " + code);
 			SmqBaseTarget smq = smqBaseTargetService.findByCode(code);
@@ -1563,7 +1641,7 @@ public class ImpactSearchController implements Serializable {
 			System.out.println("**************************** Current term name : " + node.getTerm());
 			System.out.println("**************************** Target term name : " + termName);
 			//Added terms
- 			if (termName == null)
+ 			if (termName == null  || (code != null && !(code + "").equals(node.getCode())))
  				node.setRowStyleClass("red-colored");
  			
  			//Renamed terms
@@ -1577,6 +1655,44 @@ public class ImpactSearchController implements Serializable {
 		System.out.println("\n ================== end setSMQCurrentNodeStyle===================== ");
 	}
 	
+	private void setSQMTargetNodeStyle(HierarchyNode node,	Long cmqCodeListSelected) {
+		System.out.println("\n ================== start setSQMTargetNodeStyle===================== \n");
+		//boolean added = false;
+		List<SmqRelation190> targetRelations = smqBaseCurrentService.findSmqRelationsForSmqCode(cmqCodeListSelected);
+		for (SmqRelation190 rel : targetRelations) {
+			Long code = getRelationCode(rel);
+			System.out.println("**************************** code relation : " + code);
+			SmqBase190 smq = smqBaseCurrentService.findByCode(code);
+			String termName = smq != null ? smq.getSmqName() : null;
+			System.out.println("**************************** Target term name : " + node.getTerm());
+			System.out.println("**************************** Current term name : " + termName);
+ 			//Added terms
+ 			if (code != null && !(code + "").equals(node.getCode())) {
+ 				node.setRowStyleClass("orange-colored");
+  			}
+ 			
+ 			//Renamed terms
+ 			if (code != null && (code + "").equals(node.getCode()) && (termName != null && !termName.equals(node.getTerm())))
+ 				node.setRowStyleClass("italic");
+ 			else
+ 				break;
+ 			//Merged terms
+ 			
+		}
+		System.out.println("\n ================== end setSQMTargetNodeStyle===================== ");
+	}
+	
+	
+	private Long getRelationCode(SmqRelationTarget rel) {
+		Long code = null;
+		if (rel.getPtCode() != null)
+			code = Long.parseLong(rel.getPtCode() + "");
+		if (rel.getSmqCode() != null)
+			code = rel.getSmqCode();
+
+		return code;
+	}
+
 	
 
 	private Long getRelationCode(CmqRelationTarget rel) {
