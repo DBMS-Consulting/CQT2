@@ -65,6 +65,18 @@ public class ListNotesFormModel {
 	}
 	
 	/**
+	 * Save Form data to CmqBase190 Entity
+	 * @param cmq
+	 */
+	public void saveToCmqBaseTarget(CmqBaseTarget cmq) {
+		if(this.description == null || "".equals(this.description))
+			cmq.setCmqDescription(emptyDescription);
+		cmq.setCmqDescription(this.description);
+		cmq.setCmqNote(this.notes);
+		cmq.setCmqSource(this.source);
+	}
+	
+	/**
 	 * Load Form data from SmqBase190 Entity
 	 * @param cmq
 	 */
@@ -76,6 +88,18 @@ public class ListNotesFormModel {
 	}
 	
 	/**
+	 * Save Form data to SmqBase190 Entity
+	 * @param cmq
+	 */
+	public void saveToSmqBase190(SmqBase190 smq) {
+		if(this.description == null || "".equals(this.description))
+			smq.setSmqDescription(emptyDescription);
+		smq.setSmqDescription(this.description);
+		smq.setSmqNote(this.notes);
+		smq.setSmqSource(this.source);
+	}
+	
+	/**
 	 * Load Form data from SmqBase190 Entity
 	 * @param cmq
 	 */
@@ -84,6 +108,18 @@ public class ListNotesFormModel {
 		this.notes = cmq.getSmqNote();
 		this.source = cmq.getSmqSource();
 		this.modelChanged = false;
+	}
+	
+	/**
+	 * Save Form data to SmqBaseTarget Entity
+	 * @param cmq
+	 */
+	public void saveToSmqBaseTarget(SmqBaseTarget smq) {
+		if(this.description == null || "".equals(this.description))
+			smq.setSmqDescription(emptyDescription);
+		smq.setSmqDescription(this.description);
+		smq.setSmqNote(this.notes);
+		smq.setSmqSource(this.source);
 	}
 
 	//---------------- Getters & Setters -------------------------

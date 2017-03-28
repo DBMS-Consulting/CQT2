@@ -135,19 +135,23 @@
 										update="@form" 
 										oncomplete="initRelationDND()" />
 								
-								<p:treeTable value="#{impactSearchController.currentTableRootTreeNode}" var="node"
+								<p:treeTable value="#{impactSearchController.currentTableRootTreeNode}" var="node" widgetVar="currentLists"
 									id="currentListsAndSmqs" rows="30" styleClass="ui-treetable-currentListsAndSmqs"
 									selectionMode="single" selection="${impactSearchController.currentTableSelection}"
-									paginator="true" paginatorPosition="bottom" style=" overflow: auto !important"
-									paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-									rowsPerPageTemplate="10,20,30,40,50" resizableColumns="true" rowStyleClass="#{node.rowStyleClass}">
+									style=" overflow: auto !important"
+									scrollable="true" scrollHeight="200"
+									resizableColumns="true" rowStyleClass="#{node.rowStyleClass}">
 	
 									<f:attribute name="uiEventSourceName" value="current-table" />
 									<p:ajax event="expand" listener="#{impactSearchController.onNodeExpandCurrentTable}" update="currentListsAndSmqs" />
 									
 									<!-- Selection of the list fr workflow states -->
 									<p:ajax event="select" listener="#{impactSearchController.onSelectCurrentRowTreeTable}" 
-										update="@form:reviewBtn @form:approveBtn @form:demoteBtn @form:deleteBtn @form:futureListsAndSmqs" />
+										update="@form:reviewBtn @form:approveBtn @form:demoteBtn @form:deleteBtn @form:futureListsAndSmqs"
+										oncomplete="PF('targetLists').unselectAllNodes()" />
+										
+									<p:ajax event="unselect" listener="#{impactSearchController.onUnselectCurrentRowTreeTable}" 
+										update="@form:reviewBtn @form:approveBtn @form:demoteBtn @form:deleteBtn @form:futureListsAndSmqs" />	
 																		
 									<p:columnGroup type="header">
 										<p:row>
@@ -191,20 +195,23 @@
 									</f:facet>
 								</p:toolbar>
 								
-								<p:treeTable value="#{impactSearchController.targetTableRootTreeNode}" var="node"
+								<p:treeTable value="#{impactSearchController.targetTableRootTreeNode}" var="node" widgetVar="targetLists"
 									id="futureListsAndSmqs" rows="30" styleClass="ui-treetable-futureListsAndSmqs"
 									selectionMode="single" selection="${impactSearchController.targetTableSelection}"
-									paginator="true" paginatorPosition="bottom" style="width: 100%; overflow: auto !important"
-									paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-									rowsPerPageTemplate="10,20,30,40,50" resizableColumns="true" rowStyleClass="#{node.rowStyleClass}">
+									style="width: 100%; overflow: auto !important"
+									scrollable="true" scrollHeight="200"
+									resizableColumns="true" rowStyleClass="#{node.rowStyleClass}">
 								
 									<f:attribute name="uiEventSourceName" value="target-table" />
 									<p:ajax event="expand" listener="#{impactSearchController.onNodeExpandTargetTable}" update="futureListsAndSmqs" />
 									
 									<!-- Selection of the list fr workflow states -->
 									<p:ajax event="select" listener="#{impactSearchController.onSelectTargetRowTreeTable}" 
+										update="@form:messages @form:reviewBtn @form:approveBtn @form:demoteBtn @form:deleteBtn @form:currentListsAndSmqs"
+										oncomplete="PF('currentLists').unselectAllNodes()" />
+									<p:ajax event="unselect" listener="#{impactSearchController.onUnselectTargetRowTreeTable}" 
 										update="@form:messages @form:reviewBtn @form:approveBtn @form:demoteBtn @form:deleteBtn @form:currentListsAndSmqs" />
-									
+										
 									<p:columnGroup type="header">
 										<p:row>
 											<p:column rowspan="2" headerText="Future Lists/SMQ"
@@ -269,7 +276,7 @@
 
 				<!-- Notes -->
 				<p:tab id="notes" title="Informative Notes">
-					<ui:include src="informativeNotes.xhtml"></ui:include>
+					<ui:include src="notes.xhtml"></ui:include>
 				</p:tab>
 
 				<!-- Details -->

@@ -18,10 +18,12 @@ import javax.faces.context.FacesContext;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.primefaces.component.wizard.Wizard;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.FlowEvent;
 import org.primefaces.event.NodeExpandEvent;
 import org.primefaces.event.NodeSelectEvent;
+import org.primefaces.event.NodeUnselectEvent;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.LazyDataModel;
@@ -97,6 +99,8 @@ public class ImpactSearchController implements Serializable {
 	
 	@ManagedProperty("#{RefCodeListService}")
 	private IRefCodeListService refCodeListService;
+	
+	Wizard iaWizard;
 
 	private LazyDataModel<CmqBaseTarget> impactedCmqBaseLazyDataModel;
 	private CmqBaseTarget selectedImpactedCmqList;
@@ -215,7 +219,21 @@ public class ImpactSearchController implements Serializable {
 		setReviewEnabled(false);
 		setApproveEnabled(false);
 		setDemoteEnabled(false);
+		
 		currentOrTarget = SELECTED_CURRENT_LIST;
+	}
+	/**
+	 * Event fired on the unselection of a row from current list.
+	 * @param event NodeSelectEvent
+	 */
+	public void onUnselectCurrentRowTreeTable(NodeUnselectEvent event) {
+		//Updating the worflow buttons
+		setReviewEnabled(false);
+		setApproveEnabled(false);
+		setDemoteEnabled(false);
+		
+		if(currentOrTarget == SELECTED_CURRENT_LIST)
+			currentOrTarget = SELECTED_NO_LIST;
 	}
 	
 	/**
@@ -229,8 +247,22 @@ public class ImpactSearchController implements Serializable {
 		} else if(this.isNonImpactedCmqSelected) {
 			updateWorkflowButtonStates(this.selectedNotImpactedCmqList);
 		}
+		
 		currentOrTarget = SELECTED_TARGET_LIST;
 	}
+	/**
+	 * Event fired on the unselection of a row from target list.
+	 * @param event NodeSelectEvent
+	 */
+	public void onUnselectTargetRowTreeTable(NodeUnselectEvent event) {
+		//Updating the worflow buttons
+		setReviewEnabled(false);
+		setApproveEnabled(false);
+		setDemoteEnabled(false);
+		if(currentOrTarget == SELECTED_TARGET_LIST)
+			currentOrTarget = SELECTED_NO_LIST;
+	}
+	
 
 	public void onNodeExpandCurrentTable(NodeExpandEvent event) {
 		LOG.info("onNodeExpandCurrentTable");
@@ -471,7 +503,9 @@ public class ImpactSearchController implements Serializable {
 	 */
 	public String onIaWizardFlowProcess(FlowEvent event) {
 		String nextStep = event.getOldStep();
-		if("impact".equalsIgnoreCase(event.getNewStep())) {
+		if("notes".equalsIgnoreCase(event.getOldStep()) && notesFormModel.isModelChanged()) {
+			RequestContext.getCurrentInstance().execute("PF('confirmSaveNotesDlg').show();");
+		} else if("impact".equalsIgnoreCase(event.getNewStep())) {
 			// if the target tab is "Impact Assessment", allow it always
 			nextStep = event.getNewStep();
 		} else {
@@ -495,7 +529,8 @@ public class ImpactSearchController implements Serializable {
 						LOG.info("SmqBaseTarget");
 					}
 				} else if("details".equalsIgnoreCase(nextStep)) {
-					Object d = currentTableSelection.getData();
+					HierarchyNode hn = (HierarchyNode)currentTableSelection.getData();
+					Object d = (hn != null ? hn.getEntity() : null); 
 					if(d instanceof CmqBase190) {
 						detailsFormModel.loadFromCmqBase190((CmqBase190)d);
 						LOG.info("CmqBase190");
@@ -513,7 +548,7 @@ public class ImpactSearchController implements Serializable {
 			} else if(currentOrTarget == SELECTED_TARGET_LIST && targetTableSelection != null) {
 				nextStep = event.getNewStep();
 				if("notes".equalsIgnoreCase(nextStep)) {
-					HierarchyNode hn = (HierarchyNode)currentTableSelection.getData();
+					HierarchyNode hn = (HierarchyNode)targetTableSelection.getData();
 					Object d = (hn != null ? hn.getEntity() : null); 
 					if(d instanceof CmqBase190) {
 						LOG.info("CmqBase190");
@@ -529,7 +564,8 @@ public class ImpactSearchController implements Serializable {
 						LOG.info("SmqBaseTarget");
 					}
 				} else if("details".equalsIgnoreCase(nextStep)) {
-					Object d = currentTableSelection.getData();
+					HierarchyNode hn = (HierarchyNode)targetTableSelection.getData();
+					Object d = (hn != null ? hn.getEntity() : null); 
 					if(d instanceof CmqBase190) {
 						LOG.info("CmqBase190");
 						detailsFormModel.loadFromCmqBase190((CmqBase190)d);
@@ -552,22 +588,95 @@ public class ImpactSearchController implements Serializable {
 	}
 	
 	public void saveNotesAndGoToNextStep() {
-		
+		saveInformativeNotes();
 	}
 	public void cancelNotesAndGoToNextStep() {
-		
+		cancelNotes();
 	}
 	
 	public void saveInformativeNotes() {
+		Object d = null;
+		if(currentOrTarget == SELECTED_CURRENT_LIST && currentTableSelection != null) {
+			HierarchyNode hn = (HierarchyNode)currentTableSelection.getData();
+			d = (hn != null ? hn.getEntity() : null); 
+		} else if(currentOrTarget == SELECTED_TARGET_LIST && targetTableSelection != null) {
+			HierarchyNode hn = (HierarchyNode)targetTableSelection.getData();
+			d = (hn != null ? hn.getEntity() : null); 
+		}
 		
+		try {
+			if(d != null && d instanceof CmqBase190) {
+				notesFormModel.saveToCmqBase190((CmqBase190)d);
+				cmqBaseCurrentService.update((CmqBase190)d);
+			} else if(d != null && d instanceof SmqBase190) {
+				notesFormModel.saveToSmqBase190((SmqBase190)d);
+				//
+			} else if(d != null && d instanceof CmqBaseTarget) {
+				notesFormModel.saveToCmqBaseTarget((CmqBaseTarget)d);
+				cmqBaseTargetService.update((CmqBaseTarget)d);
+			} else if(d != null && d instanceof SmqBaseTarget) {
+				notesFormModel.saveToSmqBaseTarget((SmqBaseTarget)d);
+				//
+			}
+			FacesContext.getCurrentInstance()
+				.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Successfully saved notes", ""));
+		} catch(CqtServiceException e) {
+			FacesContext.getCurrentInstance()
+				.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed to save notes", ""));
+		}
 	}
 	
 	public void cancelNotes() {
-
+		Object d = null;
+		if(currentOrTarget == SELECTED_CURRENT_LIST && currentTableSelection != null) {
+			HierarchyNode hn = (HierarchyNode)currentTableSelection.getData();
+			d = (hn != null ? hn.getEntity() : null); 
+		} else if(currentOrTarget == SELECTED_TARGET_LIST && targetTableSelection != null) {
+			HierarchyNode hn = (HierarchyNode)targetTableSelection.getData();
+			d = (hn != null ? hn.getEntity() : null); 
+		}
+		if(d != null && d instanceof CmqBase190) {
+			notesFormModel.loadFromCmqBase190((CmqBase190)d);
+		} else if(d != null && d instanceof SmqBase190) {
+			notesFormModel.loadFromSmqBase190((SmqBase190)d);
+			//
+		} else if(d != null && d instanceof CmqBaseTarget) {
+			notesFormModel.loadFromCmqBaseTarget((CmqBaseTarget)d);
+		} else if(d != null && d instanceof SmqBaseTarget) {
+			notesFormModel.loadFromSmqBaseTarget((SmqBaseTarget)d);
+			//
+		}
 	}
 	
 	public void saveDetails() {
+		Object d = null;
+		if(currentOrTarget == SELECTED_CURRENT_LIST && currentTableSelection != null) {
+			HierarchyNode hn = (HierarchyNode)currentTableSelection.getData();
+			d = (hn != null ? hn.getEntity() : null); 
+		} else if(currentOrTarget == SELECTED_TARGET_LIST && targetTableSelection != null) {
+			HierarchyNode hn = (HierarchyNode)targetTableSelection.getData();
+			d = (hn != null ? hn.getEntity() : null); 
+		}
 		
+		try {
+			if(d != null && d instanceof CmqBase190) {
+				((CmqBase190)d).setCmqDesignee(detailsFormModel.getDesignee());
+				cmqBaseCurrentService.update((CmqBase190)d);
+			} else if(d != null && d instanceof SmqBase190) {
+				//
+			} else if(d != null && d instanceof CmqBaseTarget) {
+				((CmqBaseTarget)d).setCmqDesignee(detailsFormModel.getDesignee());
+				cmqBaseTargetService.update((CmqBaseTarget)d);
+			} else if(d != null && d instanceof SmqBaseTarget) {
+				//
+			}
+			
+			FacesContext.getCurrentInstance()
+				.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Successfully saved details", ""));
+		} catch(CqtServiceException e) {
+			FacesContext.getCurrentInstance()
+				.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed to save details", ""));
+		}
 	}
 	
 	private void updateParentCodesAndParentTreeNodesForCmqTaget(List<CmqBaseTarget> cmqBaseList
