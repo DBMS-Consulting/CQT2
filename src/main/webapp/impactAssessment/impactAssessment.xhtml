@@ -139,7 +139,7 @@
 									id="currentListsAndSmqs" rows="30" styleClass="ui-treetable-currentListsAndSmqs"
 									paginator="true" paginatorPosition="bottom" selectionMode="checkbox" style=" overflow: auto !important"
 									paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-									rowsPerPageTemplate="10,20,30,40,50" resizableColumns="true">
+									rowsPerPageTemplate="10,20,30,40,50" resizableColumns="true" rowStyleClass="#{node.rowStyleClass}">
 	
 									<f:attribute name="uiEventSourceName" value="current-table" />
 									<p:ajax event="expand" listener="#{impactSearchController.onNodeExpandCurrentTable}" update="currentListsAndSmqs" />
@@ -194,7 +194,7 @@
 									id="futureListsAndSmqs" rows="30" selectionMode="checkbox" styleClass="ui-treetable-futureListsAndSmqs"
 									paginator="true" paginatorPosition="bottom" style="width: 100%; overflow: auto !important"
 									paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-									rowsPerPageTemplate="10,20,30,40,50" resizableColumns="true">
+									rowsPerPageTemplate="10,20,30,40,50" resizableColumns="true" rowStyleClass="#{node.rowStyleClass}">
 								
 									<f:attribute name="uiEventSourceName" value="target-table" />
 									<p:ajax event="expand" listener="#{impactSearchController.onNodeExpandTargetTable}" update="futureListsAndSmqs" />

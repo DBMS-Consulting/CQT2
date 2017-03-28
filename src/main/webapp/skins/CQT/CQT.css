@@ -51,7 +51,7 @@ af |inputText:disabled::content {
 
 .Impact_NMQ_1040 {
 	color: Orange;
-	font-weight: bold;;
+	font-weight: bold;
 }
 
 .Impact_NMQ_1070 {
@@ -287,37 +287,56 @@ td .bordered {
 
 .red-colored {
 	color: red;
+	font-weight: bold;
 }
 .red-colored:HOVER {
 	color: #ff6347;
+	font-weight: bold;
+}
+
+.blue-colored {
+	color: blue;
+	font-weight: bold;
+}
+.blue-colored:HOVER {
+	color: blue;
+	font-weight: bold;
 }
 
 .grey-colored {
 	color: grey;
+	font-weight: bold;
 }
 .grey-colored:HOVER {
 	color: #778899;
+	font-weight: bold;
 }
 
 .orange-colored {
 	color: orange;
+	font-weight: bold;
 }
 .orange-colored:HOVER {
 	color: #ffa500;
+	font-weight: bold;
 }
 
 .pink-colored {
 	color: #ffc0cb;
+	font-weight: bold;
 }
 .pink-colored:HOVER {
 	color: #dda0dd;
+	font-weight: bold;
 }
 
 .white-colored {
 	color: #f5f5f5;
+	font-weight: bold;
 }
 .white-colored:HOVER {
 	color: #fffafa;
+	font-weight: bold;
 }
 
 /* Styles for primefaces:selectOneMenu */
