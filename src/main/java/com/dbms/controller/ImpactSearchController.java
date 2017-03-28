@@ -1413,7 +1413,7 @@ public class ImpactSearchController implements Serializable {
 			System.out.println("**************************** Target term name : " + termName);
 			//Added terms
  			if (code != null && !(code + "").equals(node.getCode())) {
- 				node.setRowStyleClass("orange-colored");
+ 				node.setRowStyleClass("red-colored");
  				changeOccur = true;
  			}
  			
@@ -1455,7 +1455,7 @@ public class ImpactSearchController implements Serializable {
 			System.out.println("**************************** Target term name : " + termName);
 			//Added terms
  			if (termName == null)
- 				node.setRowStyleClass("orange-colored");
+ 				node.setRowStyleClass("red-colored");
  			
  			//Renamed terms
  			if (code != null && (code + "").equals(node.getCode()) && (termName != null && !termName.equals(node.getTerm())))
