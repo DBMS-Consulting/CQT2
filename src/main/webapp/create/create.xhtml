@@ -61,7 +61,7 @@
 
 							<p:commandButton value="Cancel" icon="ui-icon-close"
 								process="@this" update="@form @form:resultRelations"
-								action="#{searchController.resetRelations}">
+								actionListener="#{searchController.resetRelations}">
 								<p:confirm icon="ui-icon-alert" header="Confirm"
 										message="Are you sure you want to erase these fields?" />
 							</p:commandButton>

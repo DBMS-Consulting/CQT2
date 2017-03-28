@@ -65,7 +65,7 @@
 
 							<p:commandButton value="Cancel" icon="ui-icon-close"
 								update="@form:m1 @form:detailsPanel"
-								action="#{createController.cancel}">
+								actionListener="#{createController.cancel}">
 								<p:confirm icon="ui-icon-alert" header="Confirm"
 										message="Are you sure you want to erase these fields?" />
 							</p:commandButton>
@@ -90,7 +90,7 @@
 								action="#{createController.saveRelations(searchController.relationsRoot)}" update="@form:m1" />
 							<p:commandButton value="Cancel" icon="ui-icon-close"
 								process="@this" update="@form:m1 @form:resultRelations" style="float: right"
-								action="#{searchController.resetRelations}">
+								actionListener="#{searchController.resetRelations}">
 								<p:confirm header="Confirm"
 									message="Are you sure you want to erase these fields?"
 									icon="ui-icon-alert" />

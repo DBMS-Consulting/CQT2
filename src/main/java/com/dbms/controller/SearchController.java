@@ -97,7 +97,7 @@ public class SearchController extends BaseController<CmqBase190> {
 
 	private boolean maintainDesigBtn;
 	private boolean dataModified = false;
-
+	
 	private List<CreateEntity> values, vals;
 
 	private List<CodelistDTO> admins;
@@ -1480,34 +1480,6 @@ public class SearchController extends BaseController<CmqBase190> {
 		}
 	}
 
-	public void saveDetails() {
-		log.debug("save cmq details ... ");
-		try {
-			cmqBaseService.update(selectedData);
-			FacesMessage msg = new FacesMessage("Successful save a CMQ", null);
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		} catch (Exception e) {
-			log.error("Error when sae cmq - {}", e.getMessage(), e);
-			FacesMessage msg = new FacesMessage("Failed - " + e.getMessage(),
-					null);
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		}
-	}
-
-	public void saveInfos() {
-		log.debug("save cmq infos ... ");
-		try {
-			cmqBaseService.update(selectedData);
-			FacesMessage msg = new FacesMessage("Successful save a CMQ", null);
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		} catch (Exception e) {
-			log.error("Error when sae cmq - {}", e.getMessage(), e);
-			FacesMessage msg = new FacesMessage("Failed - " + e.getMessage(),
-					null);
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		}
-	}
-	
 	/**
 	 * Reset Search form/results of hierarchy select dialog
 	 */
@@ -1847,9 +1819,7 @@ public class SearchController extends BaseController<CmqBase190> {
 	 * Reset relations
 	 */
 	public String resetRelations() {
-		if(isDataModified()) {
-			buildRelationsRoot();
-		}
+		buildRelationsRoot();
 		FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Form canceled", "");
 		FacesContext.getCurrentInstance().addMessage(null, msg);
 		return "";
