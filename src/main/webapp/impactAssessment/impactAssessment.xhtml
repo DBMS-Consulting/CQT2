@@ -52,7 +52,7 @@
 				</p:breadCrumb>
 			</h:panelGrid>
 
-			<p:wizard flowListener="#{wizard.onFlowProcess}">
+			<p:wizard flowListener="#{impactSearchController.onIaWizardFlowProcess}">
 
 				<!-- Impact -->
 				<p:tab id="impact" title="Impact Assessment">
@@ -137,7 +137,8 @@
 								
 								<p:treeTable value="#{impactSearchController.currentTableRootTreeNode}" var="node"
 									id="currentListsAndSmqs" rows="30" styleClass="ui-treetable-currentListsAndSmqs"
-									paginator="true" paginatorPosition="bottom" selectionMode="checkbox" style=" overflow: auto !important"
+									selectionMode="single" selection="${impactSearchController.currentTableSelection}"
+									paginator="true" paginatorPosition="bottom" style=" overflow: auto !important"
 									paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 									rowsPerPageTemplate="10,20,30,40,50" resizableColumns="true" rowStyleClass="#{node.rowStyleClass}">
 	
@@ -191,7 +192,8 @@
 								</p:toolbar>
 								
 								<p:treeTable value="#{impactSearchController.targetTableRootTreeNode}" var="node"
-									id="futureListsAndSmqs" rows="30" selectionMode="checkbox" styleClass="ui-treetable-futureListsAndSmqs"
+									id="futureListsAndSmqs" rows="30" styleClass="ui-treetable-futureListsAndSmqs"
+									selectionMode="single" selection="${impactSearchController.targetTableSelection}"
 									paginator="true" paginatorPosition="bottom" style="width: 100%; overflow: auto !important"
 									paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 									rowsPerPageTemplate="10,20,30,40,50" resizableColumns="true" rowStyleClass="#{node.rowStyleClass}">
@@ -267,15 +269,16 @@
 
 				<!-- Notes -->
 				<p:tab id="notes" title="Informative Notes">
-					<ui:include src="/create/informativeNotes.xhtml"></ui:include>
-
+					<ui:include src="informativeNotes.xhtml"></ui:include>
 				</p:tab>
 
 				<!-- Details -->
 				<p:tab id="details" title="Details">
 					<p:panel header="Details">
 						<ui:include src="details.xhtml" />
-						<p:commandButton value="Save" icon="ui-icon-disk" action="SAVE"></p:commandButton>
+						<p:commandButton value="Save" icon="ui-icon-disk"
+							action="#{impactSearchController.saveDetails}"
+							disabled="#{impactSearchController.detailsFormReadonly}" />
 					</p:panel>
 				</p:tab>
 			</p:wizard>

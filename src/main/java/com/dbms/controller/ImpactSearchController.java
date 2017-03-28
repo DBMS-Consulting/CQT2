@@ -18,6 +18,8 @@ import javax.faces.context.FacesContext;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.primefaces.context.RequestContext;
+import org.primefaces.event.FlowEvent;
 import org.primefaces.event.NodeExpandEvent;
 import org.primefaces.event.NodeSelectEvent;
 import org.primefaces.event.SelectEvent;
@@ -51,6 +53,8 @@ import com.dbms.service.IRefCodeListService;
 import com.dbms.service.ISmqBaseService;
 import com.dbms.service.ISmqBaseTargetService;
 import com.dbms.util.exceptions.CqtServiceException;
+import com.dbms.view.ListDetailsFormModel;
+import com.dbms.view.ListNotesFormModel;
 
 /**
  * @date Feb 7, 2017 7:39:34 AM
@@ -62,6 +66,10 @@ public class ImpactSearchController implements Serializable {
 	private static final long serialVersionUID = 52993434344651662L;
 
 	private static final Logger LOG = LoggerFactory.getLogger(ImpactSearchController.class);
+	
+	private static final int SELECTED_NO_LIST = 0;
+	private static final int SELECTED_CURRENT_LIST = 1;
+	private static final int SELECTED_TARGET_LIST = 2;
 	
 	@ManagedProperty("#{MeddraDictService}")
 	private IMeddraDictService meddraDictCurrentService;
@@ -102,9 +110,17 @@ public class ImpactSearchController implements Serializable {
 	private LazyDataModel<SmqBaseTarget> notImpactedSmqBaseLazyDataModel;
 	private SmqBaseTarget selectedNotImpactedSmqList;
 
-	private TreeNode currentTableRootTreeNode;
+	private TreeNode currentTableRootTreeNode; // root node of current table
+	private TreeNode currentTableSelection; // selected row of current table
 	
-	private TreeNode targetTableRootTreeNode;
+	private TreeNode targetTableRootTreeNode; // root node of target table
+	private TreeNode targetTableSelection; // selected row of target table
+	
+	private int currentOrTarget = 0; // represents if viewing LIST is from current table or target table
+	
+	private ListNotesFormModel notesFormModel = new ListNotesFormModel(); // "Informative Notes" tab model
+	private ListDetailsFormModel detailsFormModel = new ListDetailsFormModel(); // "Details" tab model
+	
 	private boolean reviewEnabled, demoteEnabled, approveEnabled;
 	
 	private boolean isImpactedCmqSelected, isNonImpactedCmqSelected, isImpactedSmqSelected, isNonImpactedSmqSelected;
@@ -118,6 +134,8 @@ public class ImpactSearchController implements Serializable {
 	private TreeNode[] relationSelected;
 	private TreeNode[] relationSelectedInRelationsTable;
 	private TreeNode relationsRoot;
+	
+	
 	
 	public ImpactSearchController() {
 		
@@ -139,7 +157,8 @@ public class ImpactSearchController implements Serializable {
 				"NAME", "CODE", "SCOPE", "CATEGORY", "WEIGHT", null), null);
 		setReviewEnabled(false);
 		setApproveEnabled(false);
-		setDemoteEnabled(false); 
+		setDemoteEnabled(false);
+		currentOrTarget = SELECTED_NO_LIST;
 	}
 
 	public void onRelationDrop() {
@@ -195,7 +214,8 @@ public class ImpactSearchController implements Serializable {
 		//Updating the worflow buttons
 		setReviewEnabled(false);
 		setApproveEnabled(false);
-		setDemoteEnabled(false); 
+		setDemoteEnabled(false);
+		currentOrTarget = SELECTED_CURRENT_LIST;
 	}
 	
 	/**
@@ -209,6 +229,7 @@ public class ImpactSearchController implements Serializable {
 		} else if(this.isNonImpactedCmqSelected) {
 			updateWorkflowButtonStates(this.selectedNotImpactedCmqList);
 		}
+		currentOrTarget = SELECTED_TARGET_LIST;
 	}
 
 	public void onNodeExpandCurrentTable(NodeExpandEvent event) {
@@ -438,6 +459,113 @@ public class ImpactSearchController implements Serializable {
 				this.updateHierarchySearchCmqRelationChildNodes(parentCmqCodeList, parentTreeNodes);
 			}
 		}
+		
+	}
+	
+
+	/**
+	 * FlowListener of Browse Wizard Component
+	 * @param event
+	 * @return
+	 */
+	public String onIaWizardFlowProcess(FlowEvent event) {
+		String nextStep = event.getOldStep();
+		if("impact".equalsIgnoreCase(event.getNewStep())) {
+			// if the target tab is "Impact Assessment", allow it always
+			nextStep = event.getNewStep();
+		} else {
+			// if the target tab is NOT "Impact Assessment", allow it only when selected a list from left(current) or right(target) table.
+			if(currentOrTarget == SELECTED_CURRENT_LIST && currentTableSelection != null) {
+				nextStep = event.getNewStep();
+				if("notes".equalsIgnoreCase(nextStep)) {
+					HierarchyNode hn = (HierarchyNode)currentTableSelection.getData();
+					Object d = (hn != null ? hn.getEntity() : null); 
+					if(d instanceof CmqBase190) {
+						LOG.info("CmqBase190");
+						notesFormModel.loadFromCmqBase190((CmqBase190)d);
+					} else if(d instanceof SmqBase190) {
+						LOG.info("SmqBase190");
+						notesFormModel.loadFromSmqBase190((SmqBase190)d);
+					} else if(d instanceof CmqBaseTarget) {
+						notesFormModel.loadFromCmqBaseTarget((CmqBaseTarget)d);
+						LOG.info("CmqBaseTarget");
+					} else if(d instanceof SmqBaseTarget) {
+						notesFormModel.loadFromSmqBaseTarget((SmqBaseTarget)d);
+						LOG.info("SmqBaseTarget");
+					}
+				} else if("details".equalsIgnoreCase(nextStep)) {
+					Object d = currentTableSelection.getData();
+					if(d instanceof CmqBase190) {
+						detailsFormModel.loadFromCmqBase190((CmqBase190)d);
+						LOG.info("CmqBase190");
+					} else if(d instanceof SmqBase190) {
+						detailsFormModel.loadFromSmqBase190((SmqBase190)d);
+						LOG.info("SmqBase190");
+					} else if(d instanceof CmqBaseTarget) {
+						LOG.info("CmqBaseTarget");
+						detailsFormModel.loadFromCmqBaseTarget((CmqBaseTarget)d);
+					} else if(d instanceof SmqBaseTarget) {
+						LOG.info("SmqBaseTarget");
+						detailsFormModel.loadFromSmqBaseTarget((SmqBaseTarget)d);
+					}
+				}
+			} else if(currentOrTarget == SELECTED_TARGET_LIST && targetTableSelection != null) {
+				nextStep = event.getNewStep();
+				if("notes".equalsIgnoreCase(nextStep)) {
+					HierarchyNode hn = (HierarchyNode)currentTableSelection.getData();
+					Object d = (hn != null ? hn.getEntity() : null); 
+					if(d instanceof CmqBase190) {
+						LOG.info("CmqBase190");
+						notesFormModel.loadFromCmqBase190((CmqBase190)d);
+					} else if(d instanceof SmqBase190) {
+						notesFormModel.loadFromSmqBase190((SmqBase190)d);
+						LOG.info("SmqBase190");
+					} else if(d instanceof CmqBaseTarget) {
+						notesFormModel.loadFromCmqBaseTarget((CmqBaseTarget)d);
+						LOG.info("CmqBaseTarget");
+					} else if(d instanceof SmqBaseTarget) {
+						notesFormModel.loadFromSmqBaseTarget((SmqBaseTarget)d);
+						LOG.info("SmqBaseTarget");
+					}
+				} else if("details".equalsIgnoreCase(nextStep)) {
+					Object d = currentTableSelection.getData();
+					if(d instanceof CmqBase190) {
+						LOG.info("CmqBase190");
+						detailsFormModel.loadFromCmqBase190((CmqBase190)d);
+					} else if(d instanceof SmqBase190) {
+						detailsFormModel.loadFromSmqBase190((SmqBase190)d);
+						LOG.info("SmqBase190");
+					} else if(d instanceof CmqBaseTarget) {
+						detailsFormModel.loadFromCmqBaseTarget((CmqBaseTarget)d);
+						LOG.info("CmqBaseTarget");
+					} else if(d instanceof SmqBaseTarget) {
+						detailsFormModel.loadFromSmqBaseTarget((SmqBaseTarget)d);
+						LOG.info("SmqBaseTarget");
+					}
+				}
+			} else {
+				nextStep = event.getOldStep(); 
+			}
+		}
+		return nextStep;
+	}
+	
+	public void saveNotesAndGoToNextStep() {
+		
+	}
+	public void cancelNotesAndGoToNextStep() {
+		
+	}
+	
+	public void saveInformativeNotes() {
+		
+	}
+	
+	public void cancelNotes() {
+
+	}
+	
+	public void saveDetails() {
 		
 	}
 	
@@ -1732,5 +1860,53 @@ public class ImpactSearchController implements Serializable {
 
 	public void setRelationsRoot(TreeNode relationsRoot) {
 		this.relationsRoot = relationsRoot;
+	}
+
+	public TreeNode getCurrentTableSelection() {
+		return currentTableSelection;
+	}
+
+	public void setCurrentTableSelection(TreeNode currentTableSelection) {
+		this.currentTableSelection = currentTableSelection;
+	}
+
+	public TreeNode getTargetTableSelection() {
+		return targetTableSelection;
+	}
+
+	public void setTargetTableSelection(TreeNode targetTableSelection) {
+		this.targetTableSelection = targetTableSelection;
+	}
+
+	public ListNotesFormModel getNotesFormModel() {
+		return notesFormModel;
+	}
+
+	public void setNotesFormModel(ListNotesFormModel notesFormModel) {
+		this.notesFormModel = notesFormModel;
+	}
+
+	public ListDetailsFormModel getDetailsFormModel() {
+		return detailsFormModel;
+	}
+
+	public void setDetailsFormModel(ListDetailsFormModel detailsFormModel) {
+		this.detailsFormModel = detailsFormModel;
+	}
+	
+	public boolean isNotesFormReadonly() {
+		if (this.currentOrTarget == SELECTED_CURRENT_LIST)
+			return true;
+		if (this.currentOrTarget == SELECTED_TARGET_LIST)
+			return false;
+		return true;
+	}
+	
+	public boolean isDetailsFormReadonly() {
+		if (this.currentOrTarget == SELECTED_CURRENT_LIST)
+			return true;
+		if (this.currentOrTarget == SELECTED_TARGET_LIST)
+			return false;
+		return true;
 	}
 }

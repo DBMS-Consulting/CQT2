@@ -5,6 +5,9 @@ import java.util.Date;
 import javax.faces.event.AjaxBehaviorEvent;
 
 import com.dbms.entity.cqt.CmqBase190;
+import com.dbms.entity.cqt.CmqBaseTarget;
+import com.dbms.entity.cqt.SmqBase190;
+import com.dbms.entity.cqt.SmqBaseTarget;
 
 /**
  * "Create/Update/Browse&Search" module's "Details" tab form data 
@@ -124,6 +127,93 @@ public class ListDetailsFormModel {
 			cmq.setCmqState(CmqBase190.CMQ_STATE_VALUE_DRAFT);
 			cmq.setCmqGroup("No Group");
 		}
+	}
+	
+	/**
+	 * Load Form data from CmqBase190 Entity
+	 * @param cmq
+	 */
+	public void loadFromCmqBaseTarget(CmqBaseTarget cmq) {
+		this.extension = cmq.getCmqTypeCd();
+		this.name = cmq.getCmqName();
+		this.protocol = cmq.getCmqProtocolCd();
+		this.drugProgram = cmq.getCmqProgramCd();
+		this.product = cmq.getCmqProductCd();
+		this.designee = cmq.getCmqDesignee();
+		this.level = cmq.getCmqLevel();
+		this.critical = cmq.getCmqCriticalEvent();
+		this.group = cmq.getCmqGroup();
+		this.algorithm = cmq.getCmqAlgorithm();
+
+		this.state = cmq.getCmqState();
+		if(CmqBase190.CMQ_STATUS_VALUE_PENDING.equalsIgnoreCase(cmq.getCmqStatus())) {
+			this.status = CmqBase190.CMQ_STATUS_DISP_LABEL_PENDING;
+		} else if (CmqBase190.CMQ_STATUS_VALUE_ACTIVE.equalsIgnoreCase(cmq.getCmqStatus())) {
+			this.status = CmqBase190.CMQ_STATUS_DISP_LABEL_ACTIVE;
+		} else if (CmqBase190.CMQ_STATUS_VALUE_INACTIVE.equalsIgnoreCase(cmq.getCmqStatus())){
+			this.status = CmqBase190.CMQ_STATUS_DISP_LABEL_INACTIVE;
+		} else {
+			this.status = "UNKNOWN";
+		}
+		
+		if(this.wizardType == WizardType.CopyWizard)
+			this.modelChanged = true;
+		else 
+			this.modelChanged = false;
+		
+		this.code = cmq.getCmqCode();
+		this.createdBy = cmq.getCreatedBy();
+		this.creationDate = cmq.getCreationDate();
+		this.lastModifiedBy = cmq.getLastModifiedBy();
+		this.lastModifiedDate = cmq.getLastModifiedDate();
+	}
+	
+	/**
+	 * Load Form data from SmqBase190 Entity
+	 * @param cmq
+	 */
+	public void loadFromSmqBase190(SmqBase190 smq) {
+		this.extension = smq.getImpactType();
+		this.name = smq.getSmqName();
+		this.protocol = "";
+		this.drugProgram = "";
+		this.product = "";
+		this.designee = "";
+		this.level = smq.getSmqLevel();
+		this.critical = "";
+		this.group = "";
+		this.algorithm = smq.getSmqAlgorithm();
+		this.status = smq.getSmqStatus();
+		
+		this.code = smq.getSmqCode();
+		this.createdBy = "";
+		this.creationDate = null;
+		this.lastModifiedBy = "";
+		this.lastModifiedDate = null;
+	}
+	
+	/**
+	 * Load Form data from CmqBase190 Entity
+	 * @param cmq
+	 */
+	public void loadFromSmqBaseTarget(SmqBaseTarget smq) {
+		this.extension = smq.getImpactType();
+		this.name = smq.getSmqName();
+		this.protocol = "";
+		this.drugProgram = "";
+		this.product = "";
+		this.designee = "";
+		this.level = smq.getSmqLevel();
+		this.critical = "";
+		this.group = "";
+		this.algorithm = smq.getSmqAlgorithm();
+		this.status = smq.getSmqStatus();
+
+		this.code = smq.getSmqCode();
+		this.createdBy = "";
+		this.creationDate = null;
+		this.lastModifiedBy = "";
+		this.lastModifiedDate = null;
 	}
 	
 	/**

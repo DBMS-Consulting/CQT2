@@ -1,6 +1,9 @@
 package com.dbms.view;
 
 import com.dbms.entity.cqt.CmqBase190;
+import com.dbms.entity.cqt.CmqBaseTarget;
+import com.dbms.entity.cqt.SmqBase190;
+import com.dbms.entity.cqt.SmqBaseTarget;
 
 /**
  * "Create/Update/Browse&Search" module's "Informative Notes" tab form data 
@@ -48,6 +51,39 @@ public class ListNotesFormModel {
 		cmq.setCmqDescription(this.description);
 		cmq.setCmqNote(this.notes);
 		cmq.setCmqSource(this.source);
+	}
+	
+	/**
+	 * Load Form data from CmqBaseTarget Entity
+	 * @param cmq
+	 */
+	public void loadFromCmqBaseTarget(CmqBaseTarget cmq) {
+		this.description = cmq.getCmqDescription();
+		this.notes = cmq.getCmqNote();
+		this.source = cmq.getCmqSource();
+		this.modelChanged = false;
+	}
+	
+	/**
+	 * Load Form data from SmqBase190 Entity
+	 * @param cmq
+	 */
+	public void loadFromSmqBase190(SmqBase190 cmq) {
+		this.description = cmq.getSmqDescription();
+		this.notes = cmq.getSmqNote();
+		this.source = cmq.getSmqSource();
+		this.modelChanged = false;
+	}
+	
+	/**
+	 * Load Form data from SmqBase190 Entity
+	 * @param cmq
+	 */
+	public void loadFromSmqBaseTarget(SmqBaseTarget cmq) {
+		this.description = cmq.getSmqDescription();
+		this.notes = cmq.getSmqNote();
+		this.source = cmq.getSmqSource();
+		this.modelChanged = false;
 	}
 
 	//---------------- Getters & Setters -------------------------
