@@ -251,7 +251,7 @@ public class ImpactSearchController implements Serializable {
 				CmqBase190 cmqBase = (CmqBase190) entity;
 				Long cmqCode = cmqBase.getCmqCode();
 				this.populateCmqBaseChildren(cmqCode, expandedTreeNode, "current");
-				this.populateCmqRelations(cmqCode, expandedTreeNode, "current");
+				this.populateCmqRelations(cmqCode, expandedTreeNode, "current", hierarchyNode);
 			} else if (entity instanceof SmqBase190){
 				SmqBase190 smqBase = (SmqBase190) entity;
 				this.populateSmqBaseChildren(smqBase.getSmqCode(), expandedTreeNode, "current");
@@ -263,7 +263,6 @@ public class ImpactSearchController implements Serializable {
 				this.populateMeddraDictHierarchySearchDtoChildren(parentLevel, dtoCode, expandedTreeNode, "current");
 			}
 			hierarchyNode.setDataFetchCompleted(true);
-			hierarchyNode.setRowStyleClass("blue-colored"); 
 		}
 	}
 	
@@ -285,7 +284,7 @@ public class ImpactSearchController implements Serializable {
 				CmqBaseTarget cmqBase = (CmqBaseTarget) entity;
 				Long cmqCode = cmqBase.getCmqCode();
 				this.populateCmqBaseChildren(cmqCode, expandedTreeNode, "target");
-				this.populateCmqRelations(cmqCode, expandedTreeNode, "target");
+				this.populateCmqRelations(cmqCode, expandedTreeNode, "target", hierarchyNode);
 			} else if (entity instanceof SmqBaseTarget){
 				SmqBaseTarget smqBase = (SmqBaseTarget) entity;
 				this.populateSmqBaseChildren(smqBase.getSmqCode(), expandedTreeNode, "target");
@@ -317,6 +316,7 @@ public class ImpactSearchController implements Serializable {
 				}
 			}
 			hierarchyNode.setDataFetchCompleted(true);
+			// 
 		}
 	}
 	
@@ -1216,7 +1216,7 @@ public class ImpactSearchController implements Serializable {
 		}
 	}
 	
-	private void populateCmqRelations(Long cmqCode, TreeNode expandedTreeNode, String cmqType) {
+	private void populateCmqRelations(Long cmqCode, TreeNode expandedTreeNode, String cmqType, HierarchyNode hierarchyNode) {
 		//add cmq relations now
 		List<Long> socCodesList = new ArrayList<>();
 		List<Long> hlgtCodesList = new ArrayList<>();
@@ -1247,7 +1247,7 @@ public class ImpactSearchController implements Serializable {
 					} else if((cmqRelation.getLltCode() != null) && (cmqRelation.getLltCode().longValue() > 0)) {
 						lltCodesList.add(cmqRelation.getLltCode());
 					} else if((cmqRelation.getSmqCode() != null) && (cmqRelation.getSmqCode().longValue() > 0)) {
-						this.populateSmqTreeNode(cmqRelation, expandedTreeNode, cmqType);
+						this.populateSmqTreeNode(cmqRelation, expandedTreeNode, cmqType, cmqCode);
 					}
 				} else {
 					CmqRelationTarget cmqRelation = (CmqRelationTarget) entity;
@@ -1262,7 +1262,7 @@ public class ImpactSearchController implements Serializable {
 					} else if((cmqRelation.getLltCode() != null) && (cmqRelation.getLltCode().longValue() > 0)) {
 						lltCodesList.add(cmqRelation.getLltCode());
 					} else if((cmqRelation.getSmqCode() != null) && (cmqRelation.getSmqCode().longValue() > 0)) {
-						this.populateSmqTreeNode(cmqRelation, expandedTreeNode, cmqType);
+						this.populateSmqTreeNode(cmqRelation, expandedTreeNode, cmqType, cmqCode);
 					}
 				}
 			}
@@ -1275,7 +1275,7 @@ public class ImpactSearchController implements Serializable {
 				} else {
 					socDtos = this.meddraDictTargetService.findByCodes("SOC_", socCodesList);
 				}
-				this.populateCmqRelationTreeNodes(socDtos, expandedTreeNode, "SOC", "HLGT", cmqType, cmqCode);
+				this.populateCmqRelationTreeNodes(socDtos, expandedTreeNode, "SOC", "HLGT", cmqType, cmqCode, hierarchyNode);
 			}
 			
 			if(hlgtCodesList.size() > 0) {
@@ -1285,7 +1285,7 @@ public class ImpactSearchController implements Serializable {
 				} else {
 					hlgtDtos = this.meddraDictTargetService.findByCodes("HLGT_", hlgtCodesList);
 				}
-				this.populateCmqRelationTreeNodes(hlgtDtos, expandedTreeNode, "HLGT", "HLT", cmqType, cmqCode);
+				this.populateCmqRelationTreeNodes(hlgtDtos, expandedTreeNode, "HLGT", "HLT", cmqType, cmqCode, hierarchyNode);
 			}
 			
 			if(hltCodesList.size() > 0) {
@@ -1295,7 +1295,7 @@ public class ImpactSearchController implements Serializable {
 				} else {
 					hltDtos = this.meddraDictTargetService.findByCodes("HLT_", hltCodesList);
 				}
-				this.populateCmqRelationTreeNodes(hltDtos, expandedTreeNode, "HLT", "PT", cmqType, cmqCode);
+				this.populateCmqRelationTreeNodes(hltDtos, expandedTreeNode, "HLT", "PT", cmqType, cmqCode, hierarchyNode);
 			}
 			
 			if(ptCodesList.size() > 0) {
@@ -1305,7 +1305,7 @@ public class ImpactSearchController implements Serializable {
 				} else {
 					ptDtos = this.meddraDictTargetService.findByCodes("PT_", ptCodesList);
 				}
-				this.populateCmqRelationTreeNodes(ptDtos, expandedTreeNode, "PT", "LLT", cmqType, cmqCode);
+				this.populateCmqRelationTreeNodes(ptDtos, expandedTreeNode, "PT", "LLT", cmqType, cmqCode, hierarchyNode);
 			}
 			
 			if(lltCodesList.size() > 0) {
@@ -1323,7 +1323,7 @@ public class ImpactSearchController implements Serializable {
 		}
 	}
 	
-	private void populateSmqTreeNode(IEntity entity, TreeNode expandedTreeNode, String cmqType) {
+	private void populateSmqTreeNode(IEntity entity, TreeNode expandedTreeNode, String cmqType, Long parentCode) {
 		IEntity entity2 = null;
 		HierarchyNode node = null;
 		if("current".equalsIgnoreCase(cmqType)) {
@@ -1336,6 +1336,9 @@ public class ImpactSearchController implements Serializable {
 			node = this.createSmqBaseTargetNode((SmqBaseTarget) entity2);
 		}
 		if(null != node) {
+			if (cmqType.equals("current")) 
+				setSQMCurrentNodeStyle(node, parentCode); 			
+			
 			TreeNode treeNode = new DefaultTreeNode(node, expandedTreeNode);
 			
 			//add a dummy node for either of the cases, expansion will handle the actuals later
@@ -1368,13 +1371,13 @@ public class ImpactSearchController implements Serializable {
 	}
 	
 	private void populateCmqRelationTreeNodes(List<MeddraDictHierarchySearchDto> dtos, TreeNode expandedTreeNode
-			, String nodeType, String childNodeType, String cmqType, Long parentCode) {
+			, String nodeType, String childNodeType, String cmqType, Long parentCode, HierarchyNode hierarchyNode) {
 		for (MeddraDictHierarchySearchDto meddraDictHierarchySearchDto : dtos) {
 			HierarchyNode node = this.createMeddraNode(meddraDictHierarchySearchDto, nodeType);
 			TreeNode treeNode = new DefaultTreeNode(node, expandedTreeNode);
 
 			if (cmqType.equals("current")) 
-				setCMQCurrentNodeStyle(node, parentCode); 			
+				setCMQCurrentNodeStyle(node, parentCode, hierarchyNode); 			
 
 			Long countOfChildren = this.meddraDictCurrentService.findChldrenCountByParentCode(childNodeType + "_"
 					, nodeType + "_", Long.valueOf(meddraDictHierarchySearchDto.getCode()));
@@ -1388,33 +1391,81 @@ public class ImpactSearchController implements Serializable {
 	}
 	
 	/**
-	 * Added term style.
+	 * Added term style for CMQ.
 	 * 
 	 * @param node
 	 *            HierarchyNode
 	 * @param cmqCodeListSelected
 	 *            Long
 	 */
-	private void setCMQCurrentNodeStyle(HierarchyNode node,	Long cmqCodeListSelected) {
+	private void setCMQCurrentNodeStyle(HierarchyNode node,	Long cmqCodeListSelected, HierarchyNode hierarchyNode) {
+		boolean changeOccur = false;
+		System.out.println("\n ================== start setCMQCurrentNodeStyle===================== ");
 		//boolean added = false;
 		List<CmqRelationTarget> targetRelations = cmqRelationTargetService.findByCmqCode(cmqCodeListSelected);
 		for (CmqRelationTarget rel : targetRelations) {
 			Long code = getRelationCode(rel);
-			CmqBaseTarget cmq = cmqBaseTargetService.findByCode(code);
-			String termName = cmq != null ? cmq.getCmqName() : null;
+			System.out.println("**************************** code relation : " + code);
+		//	CmqBase190 cmq = cmqBaseCurrentService.findByCode(code);
+			MeddraDictHierarchySearchDto med = meddraDictTargetService.findByCode("PT_", code);
+			String termName = med != null ? med.getTerm() : null;
+			System.out.println("**************************** Current term name : " + node.getTerm());
+			System.out.println("**************************** Target term name : " + termName);
 			//Added terms
- 			if (code != null && !(code + "").equals(node.getCode()))
+ 			if (code != null && !(code + "").equals(node.getCode())) {
  				node.setRowStyleClass("orange-colored");
+ 				changeOccur = true;
+ 			}
+ 			
+ 			//Renamed terms
+ 			if (code != null && (code + "").equals(node.getCode()) && (termName != null && !termName.equals(node.getTerm()))) {
+ 				node.setRowStyleClass("italic");
+ 				changeOccur = true;
+ 			}
+ 			else
+ 				break;
+ 			//Merged terms
+ 			
+ 			
+ 			
+ 			if (changeOccur)
+ 				hierarchyNode.setRowStyleClass("blue-colored"); 
+		}
+		System.out.println("\n ================== end setCMQCurrentNodeStyle===================== ");
+	}
+	
+	/**
+	 * Added term style for SMQ.
+	 * 
+	 * @param node
+	 *            HierarchyNode
+	 * @param cmqCodeListSelected
+	 *            Long
+	 */
+	private void setSQMCurrentNodeStyle(HierarchyNode node,	Long cmqCodeListSelected) {
+		System.out.println("\n ================== start setSMQCurrentNodeStyle===================== ");
+		//boolean added = false;
+		List<SmqRelation190> targetRelations = smqBaseCurrentService.findSmqRelationsForSmqCode(cmqCodeListSelected);
+		for (SmqRelation190 rel : targetRelations) {
+			Long code = getRelationCode(rel);
+			System.out.println("**************************** code relation : " + code);
+			SmqBaseTarget smq = smqBaseTargetService.findByCode(code);
+			String termName = smq != null ? smq.getSmqName() : null;
+			System.out.println("**************************** Current term name : " + node.getTerm());
+			System.out.println("**************************** Target term name : " + termName);
+			//Added terms
+ 			if (termName == null)
+ 				node.setRowStyleClass("orange-colored");
+ 			
  			//Renamed terms
  			if (code != null && (code + "").equals(node.getCode()) && (termName != null && !termName.equals(node.getTerm())))
  				node.setRowStyleClass("italic");
- 			//Merged terms
- 			
- 				
  			else
  				break;
+ 			//Merged terms
  			
 		}
+		System.out.println("\n ================== end setSMQCurrentNodeStyle===================== ");
 	}
 	
 	
@@ -1434,7 +1485,13 @@ public class ImpactSearchController implements Serializable {
 		if (rel.getLltCode() != null)
 			code = rel.getLltCode();
 		
+		
 		return code;
+	}
+	private Long getRelationCode(SmqRelation190 rel) {
+		if (rel.getPtCode() != null)
+			return Long.parseLong(rel.getPtCode() + "");
+		return rel.getSmqCode();
 	}
 	
 	private boolean selectedCmqNodeExistsInAssessment(TreeNode rootTreeNode, CmqBaseTarget selectedCmqList) {
