@@ -7,68 +7,83 @@
 	xmlns:p="http://primefaces.org/ui">
 	
 	<p:panel>
+		<h:panelGrid columns="4" cellpadding="30" columnClasses="col-25p,col-25p,col-25p,col-25p">
 
-		<h:panelGrid columns="2" cellpadding="15" cellspacing="5">
-	
-			<h:panelGrid columns="2" columnClasses="label, value" style="min-width: 400px;">
-	
-				<p:outputLabel value="Name" styleClass="label-right" />
-				<h:outputText value="#{impactSearchController.detailsFormModel.name}"
-					style="min-width: 300px" />
-	
-				<p:outputLabel value="Filter Dictionary" styleClass="label-right" />
-				<h:outputText value=""
-					style="min-width: 300px" />
-	
-				<!-- <p:outputLabel value="Release Group" styleClass="label-right" />
-				<h:outputText value="#{dummyView.value}"
-					style="min-width: 300px" /> -->
-	
-				<p:outputLabel value="Product" styleClass="label-right" />
-				<h:outputText value="#{RefCodeListService.findCodeByInternalCode('PRODUCT', impactSearchController.detailsFormModel.product)}" />
-	
-				<p:outputLabel value="Designee" styleClass="label-right" />
-				<p:selectOneMenu value="#{impactSearchController.detailsFormModel.designee}" rendered="true" disabled="false" style="min-width: 300px"
-					required="true" requiredMessage="A Designee is required">
-					<f:selectItem itemLabel="" itemValue=""></f:selectItem>
-					<f:selectItem itemLabel="Jane Doe" itemValue="jane"></f:selectItem>
-					<f:selectItem itemLabel="John Doe" itemValue="john"></f:selectItem>
-				</p:selectOneMenu>
+			<h:panelGrid columns="2" columnClasses="label-cell, value-cell">
+				<p:outputLabel styleClass="label-right" value="Extension:" />
+				<h:outputText value="#{RefCodeListService.findCodeByInternalCode('EXTENSION', impactSearchController.detailsFormModel.extension)}" />
 				
+				<p:outputLabel styleClass="label-right" value="Name:" />
+				<h:outputText value="#{impactSearchController.detailsFormModel.name}" />
+
+				<p:outputLabel styleClass="label-right" value="Drug Program:" />
+				<h:outputText value="#{RefCodeListService.findCodeByInternalCode('PROGRAM', impactSearchController.detailsFormModel.drugProgram)}" />
+
+				<p:outputLabel styleClass="label-right" value="Protocol:" />
+				<h:outputText value="#{RefCodeListService.findCodeByInternalCode('PROTOCOL', impactSearchController.detailsFormModel.protocol)}" />
+
+				<p:outputLabel styleClass="label-right" value="Product:" />
+				<h:outputText value="#{RefCodeListService.findCodeByInternalCode('PRODUCT', impactSearchController.detailsFormModel.product)}" />
+			</h:panelGrid>
+
+			<h:panelGrid columns="2" columnClasses="label-cell, value-cell">
+				<p:outputLabel styleClass="label-right" value="Level:" />
+				<h:outputText value="#{impactSearchController.detailsFormModel.level}" />
+
+				<p:outputLabel styleClass="label-right" value="Code:" />
+				<h:outputText value="#{impactSearchController.detailsFormModel.code}" />
+
+				<p:outputLabel styleClass="label-right" value="Algorithm:" />
+				<h:outputText value="#{impactSearchController.detailsFormModel.algorithm}" />
+
 				<p:spacer />
 				<p:spacer />
-				<p:spacer />
-				<p:spacer />
+
 				<p:spacer />
 				<p:spacer />
 			</h:panelGrid>
-	
-			<h:panelGrid columns="2" columnClasses="label, value"
-				style="min-width: 400px">
-				<p:outputLabel value="Algorithm" styleClass="label-right" />
-				<h:outputText value="#{impactSearchController.detailsFormModel.algorithm}" />
-	
-				<p:outputLabel value="Status" styleClass="label-right" />
+
+			<h:panelGrid columns="2" columnClasses="label-cell, value-cell">
+
+				<p:outputLabel styleClass="label-right" value="Status:" />
 				<h:outputText value="#{RefCodeListService.findCodeByInternalCode('STATUS', impactSearchController.detailsFormModel.status)}" />
-	
-				<p:outputLabel value="State" styleClass="label-right" />
+
+				<p:outputLabel styleClass="label-right" value="State:" />
 				<h:outputText value="#{RefCodeListService.findCodeByInternalCode('STATE', impactSearchController.detailsFormModel.state)}" />
-	
-				<p:outputLabel value="Critical event" styleClass="label-right" />
-				<h:outputText value="#{impactSearchController.detailsFormModel.critical}" />
-	
-				<p:outputLabel value="Level" styleClass="label-right" />
-				<h:outputText value="#{impactSearchController.detailsFormModel.level}" />
-	
-				<p:outputLabel value="Scope" styleClass="label-right" />
-				<h:outputText value="#{impactSearchController.detailsFormModel.scope}" />
-	
-				<p:outputLabel value="Group" styleClass="label-right" />
+
+				<p:outputLabel styleClass="label-right" value="Group:" />
 				<h:outputText value="#{impactSearchController.detailsFormModel.group}" />
-	
-				<p:outputLabel value="Code" styleClass="label-right" />
-				<h:outputText value="#{impactSearchController.detailsFormModel.code}" />
-	
+
+				<p:outputLabel value="* Designee" styleClass="label-right" />
+				<p:selectOneMenu
+					value="#{impactSearchController.detailsFormModel.designee}"
+					disabled="#{impactSearchController.detailsFormReadonly}"
+					requiredMessage="The Designee is required" required="#{not impactSearchController.detailsFormReadonly}">
+					<f:selectItem itemLabel="" itemValue=""></f:selectItem>
+					<f:selectItem itemLabel="NONE" itemValue="NONE"></f:selectItem>
+					<!-- <f:selectItems></f:selectItems> -->
+				</p:selectOneMenu>
+
+				<p:spacer />
+				<p:spacer />
+			</h:panelGrid>
+
+
+			<h:panelGrid columns="2" columnClasses="label-cell, value-cell">
+
+				<p:outputLabel styleClass="label-right" value="Creation Date: " />
+				<h:outputText value="#{impactSearchController.detailsFormModel.creationDate}">
+					<f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss"/>
+				</h:outputText>
+
+				<p:outputLabel styleClass="label-right" value="Created By: " />
+				<h:outputText value="#{impactSearchController.detailsFormModel.createdBy}" />
+
+				<p:spacer />
+				<p:spacer />
+				
+				<p:spacer />
+				<p:spacer />
 			</h:panelGrid>
 		</h:panelGrid>
 	</p:panel>
