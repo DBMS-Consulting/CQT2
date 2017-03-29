@@ -383,6 +383,12 @@ td .bordered {
 	line-height: 28px;
 }
 
+.ui-treetable-currentListsAndSmqs .ui-treetable-scrollable-body,
+.ui-treetable-futureListsAndSmqs .ui-treetable-scrollable-body {
+	height: auto !important;
+	max-height: 400px;
+}
+
 .ui-treetable-currentListsAndSmqs table td .ui-treetable-toggler,
 .ui-treetable-futureListsAndSmqs table td .ui-treetable-toggler{
 	margin-top: 6px;

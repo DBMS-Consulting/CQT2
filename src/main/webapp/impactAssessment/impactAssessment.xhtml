@@ -138,8 +138,7 @@
 								<p:treeTable value="#{impactSearchController.currentTableRootTreeNode}" var="node" widgetVar="currentLists"
 									id="currentListsAndSmqs" rows="30" styleClass="ui-treetable-currentListsAndSmqs"
 									selectionMode="single" selection="${impactSearchController.currentTableSelection}"
-									style=" overflow: auto !important"
-									scrollable="true" scrollHeight="200"
+									scrollable="true" scrollHeight="400"
 									resizableColumns="true" rowStyleClass="#{node.rowStyleClass}">
 	
 									<f:attribute name="uiEventSourceName" value="current-table" />
@@ -155,28 +154,28 @@
 																		
 									<p:columnGroup type="header">
 										<p:row>
-											<p:column rowspan="2" headerText="Existing Lists/SMQ" width="50%"/>
+											<p:column rowspan="2" headerText="Existing Lists/SMQ" style="width:50%"/>
 											<p:column colspan="3" headerText="Hierarchy Details" />
 										</p:row>
 
 										<p:row>
-											<p:column headerText="Code" />
-											<p:column headerText="Level" />
-											<p:column headerText="Scope" />
+											<p:column headerText="Code" width="25%" />
+											<p:column headerText="Level" width="10%"/>
+											<p:column headerText="Scope" width="15%"/>
 										</p:row>
 									</p:columnGroup>
 
-									<p:column id="c8" width="50%" noWrap="false">
+									<p:column id="c8" style="width:50%" noWrap="false">
 										<h:outputText value="#{node.term}" id="el_c1" />
 									</p:column>
 
-									<p:column id="c26" width="25%" >
+									<p:column id="c26" style="width:25%" >
 										<h:outputText value="#{node.code}" id="ot7" />
 									</p:column>
-									<p:column id="c18" width="15%">
+									<p:column id="c18" style="width:10%">
 										<h:outputText value="#{node.level}" id="ot14" />
 									</p:column>
-									<p:column id="c17" width="10%">
+									<p:column id="c17" style="width:15%">
 										<h:outputText value="#{node.scope}" id="ot13" />
 									</p:column>
 								</p:treeTable>
@@ -198,8 +197,8 @@
 								<p:treeTable value="#{impactSearchController.targetTableRootTreeNode}" var="node" widgetVar="targetLists"
 									id="futureListsAndSmqs" rows="30" styleClass="ui-treetable-futureListsAndSmqs"
 									selectionMode="single" selection="${impactSearchController.targetTableSelection}"
-									style="width: 100%; overflow: auto !important"
-									scrollable="true" scrollHeight="200"
+									style="width: 100%;"
+									scrollable="true" scrollHeight="400"
 									resizableColumns="true" rowStyleClass="#{node.rowStyleClass}" >
 								
 									<f:attribute name="uiEventSourceName" value="target-table" />
@@ -214,41 +213,44 @@
 										
 									<p:columnGroup type="header">
 										<p:row>
-											<p:column rowspan="2" headerText="Future Lists/SMQ"
-												width="200" />
+											<p:column rowspan="2" headerText="Future Lists/SMQ" style="width:40%" />
 											<p:column colspan="5" headerText="Hierarchy Details" />
 										</p:row>
 
 										<p:row>
-											<p:column headerText="Code" />
-											<p:column headerText="Level" />
-											<p:column headerText="Scope" />
-											<p:column headerText="Category" />
-											<p:column headerText="Weight" />
+											<p:column headerText="Code" style="width:15%" />
+											<p:column headerText="Level"  style="width:10%" />
+											<p:column headerText="Scope"  style="width:15%" />
+											<p:column headerText="Category"  style="width:10% "/>
+											<p:column headerText="Weight"  style="width:10%" />
 										</p:row>
 									</p:columnGroup>
 
-									<p:column>
+									<p:column style="width:40%">
 										<h:outputText value="#{node.term}" id="fl_c1" />
 									</p:column>
 
-									<p:column>
+									<p:column style="width:15%">
 										<h:outputText value="#{node.code}" rendered="true" />
 									</p:column>
-									<p:column headerText="Level" style="width: 50px !important">
+									<p:column headerText="Level" style="width:10%">
 										<h:outputText value="#{node.level}" rendered="true" />
 									</p:column>
 
-									<p:column>
-										<p:selectOneMenu id="soc3" value="#{node.scope}" rendered="#{not node.hideScope}">
+									<p:column style="width:15%">
+										<p:selectOneMenu id="soc3" value="#{node.scope}" rendered="#{not node.hideScope}"
+											 autoWidth="false" disabled="#{node.algorithmN}"
+											 style="width:75%">
 											<f:selectItem itemLabel="Broad" itemValue="1" id="si13s" />
 											<f:selectItem itemLabel="Narrow" itemValue="2" id="si13d" />
 											<f:selectItem itemLabel="Child Narrow" itemValue="3" id="si4" />
 										</p:selectOneMenu>
 									</p:column>
 
-									<p:column>
-										<p:selectOneMenu id="soc2" value="#{node.category}" rendered="#{not node.hideCategory}">
+									<p:column style="width:10%">
+										<p:selectOneMenu id="soc2" value="#{node.category}" rendered="#{not node.hideCategory}"
+											autoWidth="false" disabled="#{node.algorithmN}"
+											style="width:75%">
 											<f:selectItem itemLabel="A" itemValue="A" id="si3" />
 											<f:selectItem itemLabel="S" itemValue="S" id="si33" />
 											<f:selectItem itemLabel="B" itemValue="B" id="si8" />
@@ -262,8 +264,9 @@
 										</p:selectOneMenu>
 									</p:column>
 
-									<p:column>
-										<p:spinner value="#{node.weight}" id="ot6" size="8" rendered="#{not node.hideWeight}"/>
+									<p:column style="width:10%">
+										<p:spinner value="#{node.weight}" id="ot6" size="2"
+											rendered="#{not node.hideWeight}" disabled="#{node.algorithmN}"/>
 									</p:column>
 								</p:treeTable>
 							</p:panel>

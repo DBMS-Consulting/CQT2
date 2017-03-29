@@ -6,6 +6,8 @@ import java.lang.reflect.InvocationTargetException;
 import org.apache.commons.beanutils.BeanUtils;
 
 import com.dbms.entity.IEntity;
+import com.dbms.entity.cqt.CmqBase190;
+import com.dbms.entity.cqt.CmqBaseTarget;
 
 public class HierarchyNode implements Serializable, Comparable<HierarchyNode> {
 
@@ -244,5 +246,16 @@ public class HierarchyNode implements Serializable, Comparable<HierarchyNode> {
 
 	public void setRowStyleClass(String rowStyleClass) {
 		this.rowStyleClass = rowStyleClass;
+	}
+	
+	public boolean isAlgorithmN() {
+		if(this.entity != null) {
+			if(this.entity instanceof CmqBase190) {
+				return "N".equalsIgnoreCase(((CmqBase190)this.entity).getCmqAlgorithm());
+			} else if(this.entity instanceof CmqBaseTarget) {
+				return "N".equalsIgnoreCase(((CmqBaseTarget)this.entity).getCmqAlgorithm());
+			}
+		}
+		return false;
 	}
 }
