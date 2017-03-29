@@ -1572,23 +1572,24 @@ public class ImpactSearchController implements Serializable {
 	
 	private void populateSmqRelations(Long smqCode, TreeNode expandedTreeNode, String smqType) {
 		List<? extends IEntity> childRelations = null;
-		
-		Map<Long, SmqRelationTarget> targets = new HashMap<Long, SmqRelationTarget>();
 		if("current".equalsIgnoreCase(smqType)) {
 			childRelations = this.smqBaseCurrentService.findSmqRelationsForSmqCode(smqCode);
 		} else {
 			childRelations = this.smqBaseTargetService.findSmqRelationsForSmqCode(smqCode);
-			
-			for (IEntity entity : childRelations) {
-				SmqRelationTarget smq = (SmqRelationTarget) entity;
+		}
+		
+		List<SmqRelationTarget> relationsTargets = this.smqBaseTargetService.findSmqRelationsForSmqCode(smqCode);
+		Map<Long, SmqRelationTarget> targets = new HashMap<Long, SmqRelationTarget>();
+		if (relationsTargets != null) {
+			for (SmqRelationTarget smq : relationsTargets) {
 				targets.put(smq.getPtCode() != null ? smq.getPtCode() : smq.getSmqCode(), smq);
 			}
 		}
 		
-		List<SmqRelation190> relations = this.smqBaseCurrentService.findSmqRelationsForSmqCode(smqCode);
+		List<SmqRelation190> relationsCurrents = this.smqBaseCurrentService.findSmqRelationsForSmqCode(smqCode);
 		Map<Long, SmqRelation190> currents = new HashMap<Long, SmqRelation190>();
-		if (relations != null) {
-			for (SmqRelation190 smq : relations) {
+		if (relationsCurrents != null) {
+			for (SmqRelation190 smq : relationsCurrents) {
  				currents.put(smq.getPtCode() != null ? smq.getPtCode() : smq.getSmqCode(), smq);
 			}
 		}
