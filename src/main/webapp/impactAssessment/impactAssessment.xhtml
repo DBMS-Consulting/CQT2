@@ -143,7 +143,7 @@
 									resizableColumns="true" rowStyleClass="#{node.rowStyleClass}">
 	
 									<f:attribute name="uiEventSourceName" value="current-table" />
-									<p:ajax event="expand" listener="#{impactSearchController.onNodeExpandCurrentTable}" update="currentListsAndSmqs el_c1" />
+									<p:ajax event="expand" listener="#{impactSearchController.onNodeExpandCurrentTable}" update="currentListsAndSmqs" />
 									
 									<!-- Selection of the list fr workflow states -->
 									<p:ajax event="select" listener="#{impactSearchController.onSelectCurrentRowTreeTable}" 

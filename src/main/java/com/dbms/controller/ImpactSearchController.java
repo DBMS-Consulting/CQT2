@@ -300,7 +300,7 @@ public class ImpactSearchController implements Serializable {
 			}
 			hierarchyNode.setDataFetchCompleted(true);
 		}
-		hierarchyNode.setRowStyleClass("blue-colored");
+		//hierarchyNode.setRowStyleClass("blue-colored");
 	}
 	
 	public void onNodeExpandTargetTable(NodeExpandEvent event) {
