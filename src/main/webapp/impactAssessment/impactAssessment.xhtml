@@ -52,7 +52,7 @@
 				</p:breadCrumb>
 			</h:panelGrid>
 
-			<p:wizard flowListener="#{impactSearchController.onIaWizardFlowProcess}">
+			<p:wizard flowListener="#{impactSearchController.onIaWizardFlowProcess}" binding="#{impactSearchController.iaWizard}">
 
 				<!-- Impact -->
 				<p:tab id="impact" title="Impact Assessment">
@@ -275,6 +275,21 @@
 						<p:commandButton style="margin-top: 10px;" value="Save"
 							icon="ui-icon-disk" update="messages" actionListener="#{impactSearchController.updateTargetRelations}"/>
 					</p:panel>
+					<p:remoteCommand name="saveImpactsAndGoToNextStep"
+						update="@form:messages"
+						actionListener="#{impactSearchController.updateTargetRelations}"
+						onstart="PF('confirmSaveImpactsDlg').hide()" />
+					<p:remoteCommand name="resetImpactsAndGoToNextStep"
+						update="@form:messages @form:impact"
+						onstart="PF('confirmSaveImpactsDlg').hide()" />
+						
+					<!-- Save confirmation dialog -->
+					<p:confirmDialog widgetVar="confirmSaveImpactsDlg" showEffect="fade" hideEffect="fade"
+						header="Confirm about Unsaved Changes"
+						message="There are some unsaved changes. Please save them before you leave.">
+				        <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" onclick="saveImpactsAndGoToNextStep()" />
+				        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"  onclick="resetImpactsAndGoToNextStep()" />
+				    </p:confirmDialog>
 				</p:tab>
 
 				<!-- Notes -->
@@ -286,9 +301,31 @@
 				<p:tab id="details" title="Details">
 					<p:panel header="Details">
 						<ui:include src="details.xhtml" />
+						
 						<p:commandButton value="Save" icon="ui-icon-disk"
 							action="#{impactSearchController.saveDetails}"
 							disabled="#{impactSearchController.detailsFormReadonly}" />
+						<p:commandButton value="Save" icon="ui-icon-disk" process="@this"
+							actionListner="#{impactSearchController.cancelDetails}"
+							disabled="#{impactSearchController.detailsFormReadonly}" />
+							
+							
+						<p:remoteCommand name="saveDetailsAndGoToNextStep"
+							update="@form:messages"
+							actionListener="#{impactSearchController.saveDetailsAndGoToNextStep}"
+							onstart="PF('confirmSaveDetailsDlg').hide()" />
+						<p:remoteCommand name="resetDetailsAndGoToNextStep"
+							update="@form:messages @form:details"
+							actionListener="#{impactSearchController.cancelDetailsAndGoToNextStep}"
+							onstart="PF('confirmSaveDetailsDlg').hide()" />
+							
+						<!-- Save confirmation dialog -->
+						<p:confirmDialog widgetVar="confirmSaveDetailsDlg" showEffect="fade" hideEffect="fade"
+							header="Confirm about Unsaved Changes"
+							message="There are some unsaved changes. Do you want to save them before continue.">
+					        <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" onclick="saveDetailsAndGoToNextStep()" />
+					        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"  onclick="resetDetailsAndGoToNextStep()" />
+					    </p:confirmDialog>
 					</p:panel>
 				</p:tab>
 			</p:wizard>

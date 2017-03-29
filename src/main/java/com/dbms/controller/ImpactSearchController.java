@@ -103,6 +103,7 @@ public class ImpactSearchController implements Serializable {
 	private IRefCodeListService refCodeListService;
 	
 	Wizard iaWizard;
+	private String iaWizardNextStep;
 
 	private LazyDataModel<CmqBaseTarget> impactedCmqBaseLazyDataModel;
 	private CmqBaseTarget selectedImpactedCmqList;
@@ -890,86 +891,75 @@ public class ImpactSearchController implements Serializable {
 	 * @return
 	 */
 	public String onIaWizardFlowProcess(FlowEvent event) {
-		String nextStep = event.getOldStep();
-		if("notes".equalsIgnoreCase(event.getOldStep()) && notesFormModel.isModelChanged()) {
+		String nextStep = event.getNewStep();
+		boolean unsavedRedirect = true;
+		
+		if( "impact".equalsIgnoreCase(event.getOldStep()) && (this.currentTableRootTreeNode.getChildCount() == 1) && targetRelationsUpdated) {
+			// currently opened tab is "Impact" and it contains unsaved changes;
+			iaWizardNextStep = nextStep;
+			nextStep = event.getOldStep();
+			RequestContext.getCurrentInstance().execute("PF('confirmSaveImpactsDlg').show();");
+		} else if("notes".equalsIgnoreCase(event.getOldStep()) && notesFormModel.isModelChanged()) {
+			iaWizardNextStep = nextStep;
+			nextStep = event.getOldStep();
 			RequestContext.getCurrentInstance().execute("PF('confirmSaveNotesDlg').show();");
-		} else if("impact".equalsIgnoreCase(event.getNewStep())) {
+		}  else if("details".equalsIgnoreCase(event.getOldStep()) && detailsFormModel.isModelChanged()) {
+			iaWizardNextStep = nextStep;
+			nextStep = event.getOldStep();
+			RequestContext.getCurrentInstance().execute("PF('confirmSaveDetailsDlg').show();");
+		} else 
+			unsavedRedirect = false;
+		
+		if("impact".equalsIgnoreCase(event.getNewStep())) {
 			// if the target tab is "Impact Assessment", allow it always
-			nextStep = event.getNewStep();
-		} else {
-			// if the target tab is NOT "Impact Assessment", allow it only when selected a list from left(current) or right(target) table.
+			if(unsavedRedirect)
+				iaWizardNextStep = event.getNewStep();
+			else
+				nextStep = event.getNewStep();
+		} else if("notes".equalsIgnoreCase(event.getNewStep())) {
+			// if the target tab is "notes", allow it only when there is a valid CmqBase* or SmqBase* object selected from current or target lists
+			Object d = null;
 			if(currentOrTarget == SELECTED_CURRENT_LIST && currentTableSelection != null) {
-				nextStep = event.getNewStep();
-				if("notes".equalsIgnoreCase(nextStep)) {
-					HierarchyNode hn = (HierarchyNode)currentTableSelection.getData();
-					Object d = (hn != null ? hn.getEntity() : null); 
-					if(d instanceof CmqBase190) {
-						LOG.info("CmqBase190");
-						notesFormModel.loadFromCmqBase190((CmqBase190)d);
-					} else if(d instanceof SmqBase190) {
-						LOG.info("SmqBase190");
-						notesFormModel.loadFromSmqBase190((SmqBase190)d);
-					} else if(d instanceof CmqBaseTarget) {
-						notesFormModel.loadFromCmqBaseTarget((CmqBaseTarget)d);
-						LOG.info("CmqBaseTarget");
-					} else if(d instanceof SmqBaseTarget) {
-						notesFormModel.loadFromSmqBaseTarget((SmqBaseTarget)d);
-						LOG.info("SmqBaseTarget");
-					}
-				} else if("details".equalsIgnoreCase(nextStep)) {
-					HierarchyNode hn = (HierarchyNode)currentTableSelection.getData();
-					Object d = (hn != null ? hn.getEntity() : null); 
-					if(d instanceof CmqBase190) {
-						detailsFormModel.loadFromCmqBase190((CmqBase190)d);
-						LOG.info("CmqBase190");
-					} else if(d instanceof SmqBase190) {
-						LOG.info("SmqBase190");
-						nextStep = event.getOldStep();
-					} else if(d instanceof CmqBaseTarget) {
-						LOG.info("CmqBaseTarget");
-						detailsFormModel.loadFromCmqBaseTarget((CmqBaseTarget)d);
-					} else if(d instanceof SmqBaseTarget) {
-						LOG.info("SmqBaseTarget");
-						nextStep = event.getOldStep();
-					}
-				}
+				HierarchyNode hn = (HierarchyNode)currentTableSelection.getData();
+				d = (hn != null ? hn.getEntity() : null); 
 			} else if(currentOrTarget == SELECTED_TARGET_LIST && targetTableSelection != null) {
-				nextStep = event.getNewStep();
-				if("notes".equalsIgnoreCase(nextStep)) {
-					HierarchyNode hn = (HierarchyNode)targetTableSelection.getData();
-					Object d = (hn != null ? hn.getEntity() : null); 
-					if(d instanceof CmqBase190) {
-						LOG.info("CmqBase190");
-						notesFormModel.loadFromCmqBase190((CmqBase190)d);
-					} else if(d instanceof SmqBase190) {
-						notesFormModel.loadFromSmqBase190((SmqBase190)d);
-						LOG.info("SmqBase190");
-					} else if(d instanceof CmqBaseTarget) {
-						notesFormModel.loadFromCmqBaseTarget((CmqBaseTarget)d);
-						LOG.info("CmqBaseTarget");
-					} else if(d instanceof SmqBaseTarget) {
-						notesFormModel.loadFromSmqBaseTarget((SmqBaseTarget)d);
-						LOG.info("SmqBaseTarget");
-					}
-				} else if("details".equalsIgnoreCase(nextStep)) {
-					HierarchyNode hn = (HierarchyNode)targetTableSelection.getData();
-					Object d = (hn != null ? hn.getEntity() : null); 
-					if(d instanceof CmqBase190) {
-						LOG.info("CmqBase190");
-						detailsFormModel.loadFromCmqBase190((CmqBase190)d);
-					} else if(d instanceof SmqBase190) {
-						nextStep = event.getOldStep();
-						LOG.info("SmqBase190");
-					} else if(d instanceof CmqBaseTarget) {
-						detailsFormModel.loadFromCmqBaseTarget((CmqBaseTarget)d);
-						LOG.info("CmqBaseTarget");
-					} else if(d instanceof SmqBaseTarget) {
-						nextStep = event.getOldStep();
-						LOG.info("SmqBaseTarget");
-					}
-				}
+				HierarchyNode hn = (HierarchyNode)targetTableSelection.getData();
+				d = (hn != null ? hn.getEntity() : null); 
+			}
+			
+			if(d instanceof CmqBase190) {
+				notesFormModel.loadFromCmqBase190((CmqBase190)d);
+			} else if(d instanceof SmqBase190) {
+				notesFormModel.loadFromSmqBase190((SmqBase190)d);
+			} else if(d instanceof CmqBaseTarget) {
+				notesFormModel.loadFromCmqBaseTarget((CmqBaseTarget)d);
+			} else if(d instanceof SmqBaseTarget) {
+				notesFormModel.loadFromSmqBaseTarget((SmqBaseTarget)d);
 			} else {
-				nextStep = event.getOldStep(); 
+				if(unsavedRedirect)
+					iaWizardNextStep = event.getOldStep();
+				else
+					nextStep = event.getOldStep();
+			}
+		} else if("details".equalsIgnoreCase(event.getNewStep())) {
+			// if the target tab is "details", allow it only when there is a valid CmqBase* or SmqBase* object selected from current or target lists
+			Object d = null;
+			if(currentOrTarget == SELECTED_CURRENT_LIST && currentTableSelection != null) {
+				HierarchyNode hn = (HierarchyNode)currentTableSelection.getData();
+				d = (hn != null ? hn.getEntity() : null); 					
+			} else if(currentOrTarget == SELECTED_TARGET_LIST && targetTableSelection != null) {
+				HierarchyNode hn = (HierarchyNode)targetTableSelection.getData();
+				d = (hn != null ? hn.getEntity() : null); 
+			}
+			if(d instanceof CmqBase190) {
+				detailsFormModel.loadFromCmqBase190((CmqBase190)d);
+			} else if(d instanceof CmqBaseTarget) {
+				detailsFormModel.loadFromCmqBaseTarget((CmqBaseTarget)d);
+			} else {
+				if(unsavedRedirect)
+					iaWizardNextStep = event.getOldStep();
+				else
+					nextStep = event.getOldStep();
 			}
 		}
 		return nextStep;
@@ -977,9 +967,12 @@ public class ImpactSearchController implements Serializable {
 	
 	public void saveNotesAndGoToNextStep() {
 		saveInformativeNotes();
+		iaWizard.setStep(iaWizardNextStep);
 	}
+	
 	public void cancelNotesAndGoToNextStep() {
 		cancelNotes();
+		iaWizard.setStep(iaWizardNextStep);
 	}
 	
 	public void saveInformativeNotes() {
@@ -1050,13 +1043,9 @@ public class ImpactSearchController implements Serializable {
 			if(d != null && d instanceof CmqBase190) {
 				((CmqBase190)d).setCmqDesignee(detailsFormModel.getDesignee());
 				cmqBaseCurrentService.update((CmqBase190)d);
-			} else if(d != null && d instanceof SmqBase190) {
-				//
 			} else if(d != null && d instanceof CmqBaseTarget) {
 				((CmqBaseTarget)d).setCmqDesignee(detailsFormModel.getDesignee());
 				cmqBaseTargetService.update((CmqBaseTarget)d);
-			} else if(d != null && d instanceof SmqBaseTarget) {
-				//
 			}
 			
 			FacesContext.getCurrentInstance()
@@ -1065,6 +1054,36 @@ public class ImpactSearchController implements Serializable {
 			FacesContext.getCurrentInstance()
 				.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed to save details", ""));
 		}
+	}
+	
+	public void cancelDetails() {
+		Object d = null;
+		if(currentOrTarget == SELECTED_CURRENT_LIST && currentTableSelection != null) {
+			HierarchyNode hn = (HierarchyNode)currentTableSelection.getData();
+			d = (hn != null ? hn.getEntity() : null); 
+		} else if(currentOrTarget == SELECTED_TARGET_LIST && targetTableSelection != null) {
+			HierarchyNode hn = (HierarchyNode)targetTableSelection.getData();
+			d = (hn != null ? hn.getEntity() : null); 
+		}
+		
+		if(d != null && d instanceof CmqBase190) {
+			detailsFormModel.loadFromCmqBase190((CmqBase190) d);
+		} else if(d != null && d instanceof CmqBaseTarget) {
+			detailsFormModel.loadFromCmqBaseTarget((CmqBaseTarget) d);
+		}
+		
+		FacesContext.getCurrentInstance()
+			.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Canceled the details form", ""));
+	}
+	
+	public void saveDetailsAndGoToNextStep() {
+		saveDetails();
+		iaWizard.setStep(iaWizardNextStep);
+	}
+	
+	public void cancelDetailsAndGoToNextStep() {
+		cancelDetails();
+		iaWizard.setStep(iaWizardNextStep);
 	}
 	
 	private void updateParentCodesAndParentTreeNodesForCmqTaget(List<CmqBaseTarget> cmqBaseList
@@ -2629,5 +2648,13 @@ public class ImpactSearchController implements Serializable {
 
 	public void setChangeOccur(boolean changeOccur) {
 		this.changeOccur = changeOccur;
+	}
+	
+	public Wizard getIaWizard() {
+		return iaWizard;
+	}
+
+	public void setIaWizard(Wizard iaWizard) {
+		this.iaWizard = iaWizard;
 	}
 }

@@ -13,11 +13,11 @@
 		
 		<p:remoteCommand name="saveNotesAndGoToNextStep"
 				update="@form:messages"
-				actionListener="#{impactSearchController.saveNotesAndNextStep}"
+				actionListener="#{impactSearchController.saveNotesAndGoToNextStep}"
 				onstart="PF('confirmSaveNotesDlg').hide()" />
 		<p:remoteCommand name="resetNotesAndGoToNextStep"
 				update="@form:messages @form:panelNotes"
-				actionListener="#{impactSearchController.cancelNotesAndNextStep}"
+				actionListener="#{impactSearchController.cancelNotesAndGoToNextStep}"
 				onstart="PF('confirmSaveNotesDlg').hide()" />
 						
 		<p:tabView>
