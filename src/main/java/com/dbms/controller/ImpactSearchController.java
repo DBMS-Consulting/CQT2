@@ -857,8 +857,8 @@ public class ImpactSearchController implements Serializable {
 		if(null != smqBaseCurrent) {
 			HierarchyNode node = this.createSmqBaseCurrrentNode(smqBaseCurrent);
 			TreeNode cmqBaseTreeNode = new DefaultTreeNode(node, currentTableRootTreeNode);
-//			if (changeOccur)
-//				node.setRowStyleClass("blue-colored");
+			if (changeOccur)
+				node.setRowStyleClass("blue-colored");
 			
 			boolean dummyNodeAdded = false;
 			Long count = this.smqBaseCurrentService.findChildSmqCountByParentSmqCode(smqBaseCurrent.getSmqCode());
@@ -889,8 +889,8 @@ public class ImpactSearchController implements Serializable {
 	private void updateTargetTableForSmqList(SmqBaseTarget selectedSmqList) {
 		HierarchyNode node = this.createSmqBaseTargetNode(selectedSmqList);
 		TreeNode cmqBaseTreeNode = new DefaultTreeNode(node, targetTableRootTreeNode);
-//		if (changeOccur)
-//			node.setRowStyleClass("blue-colored");
+		if (changeOccur)
+			node.setRowStyleClass("blue-colored");
 		
 		boolean dummyNodeAdded = false;
 		Long count = this.smqBaseCurrentService.findChildSmqCountByParentSmqCode(selectedSmqList.getSmqCode());
