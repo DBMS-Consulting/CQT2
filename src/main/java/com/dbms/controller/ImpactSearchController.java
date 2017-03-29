@@ -2,6 +2,7 @@ package com.dbms.controller;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -137,7 +138,6 @@ public class ImpactSearchController implements Serializable {
 	
 	private TreeNode[] relationSelected;
 	private TreeNode[] relationSelectedInRelationsTable;
-	private TreeNode relationsRoot;
 	private boolean changeOccur;
 	
 	
@@ -158,8 +158,6 @@ public class ImpactSearchController implements Serializable {
 				"LEVEL", "SCOPE", "CATEGORY", "WEIGHT", null, null), null);
 		this.hierarchyRoot = new DefaultTreeNode("root", new HierarchyNode(
 				"LEVEL", "NAME", "CODE", null), null);
-		relationsRoot = new DefaultTreeNode("root", new HierarchyNode("LEVEL",
-				"NAME", "CODE", "SCOPE", "CATEGORY", "WEIGHT", null), null);
 		setReviewEnabled(false);
 		setApproveEnabled(false);
 		setDemoteEnabled(false);
@@ -501,6 +499,82 @@ public class ImpactSearchController implements Serializable {
 		
 	}
 	
+	/**
+	 * only called when the target table has a CMQ. not for smq at all
+	 * @param nodes
+	 */
+	public void addSelectedToTargetRelation(TreeNode[] nodes) {
+		try{
+			if (nodes != null && nodes.length > 0) {
+				List<TreeNode> nodesList = Arrays.asList(nodes);
+				List<String> existingNodeTerms = new ArrayList<>();
+				if(this.currentTableRootTreeNode.getChildCount() == 1){
+					//count will always be either 0 or 1.
+					TreeNode parentTreeNode = this.targetTableRootTreeNode.getChildren().get(0);
+					HierarchyNode parentHierarchyNode = (HierarchyNode) parentTreeNode.getData();
+					IEntity entity = (IEntity) parentHierarchyNode.getEntity();
+					if(entity instanceof CmqBaseTarget) {
+						//allow additions 
+						for (TreeNode treeNode : nodesList) {
+							HierarchyNode hierarchyNode = (HierarchyNode) treeNode.getData();
+							if ((null != hierarchyNode) && !hierarchyNode.isDummyNode()) {
+								//first check if this node is already added ot relations tree
+								boolean exists = false;
+								List<TreeNode> existingRelationsTreeNodes = parentTreeNode.getChildren();
+								if (CollectionUtils.isNotEmpty(existingRelationsTreeNodes)) {
+									for (TreeNode existingRelationsTreeNode : existingRelationsTreeNodes) {
+										HierarchyNode existingHierarchyNode = (HierarchyNode) existingRelationsTreeNode.getData();
+										if(hierarchyNode.getCode().equalsIgnoreCase(existingHierarchyNode.getCode())
+												&& hierarchyNode.getLevel().equalsIgnoreCase(existingHierarchyNode.getLevel())) {
+											exists = true;
+											existingNodeTerms.add(existingHierarchyNode.getTerm());
+											break;
+										}
+									}
+								}
+							
+								if(!exists) {
+									TreeNode parentNode = treeNode.getParent();
+									if (!nodesList.contains(parentNode)) {
+										HierarchyNode relationsHierarchyNode = hierarchyNode.copy();
+										relationsHierarchyNode.setRowStyleClass("green-colored");//mark this row as green
+										TreeNode relationsTreeNode = new DefaultTreeNode(relationsHierarchyNode, parentTreeNode);
+										relationsHierarchyNode.setDataFetchCompleted(false);
+										List<TreeNode> childTreeNodes = treeNode.getChildren();
+										if(CollectionUtils.isNotEmpty(childTreeNodes)) {
+											HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
+											dummyNode.setDummyNode(true);
+											new DefaultTreeNode(dummyNode, relationsTreeNode);
+										}
+									}
+								}
+							}
+						}
+						
+						// setRelationSelected(nodes);
+						if(CollectionUtils.isNotEmpty(existingNodeTerms)) {
+							FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,
+									existingNodeTerms + " skipped as they are already added to relations. Remaining relations added succesfully.", "");
+							FacesContext.getCurrentInstance().addMessage(null, message);
+						} else {
+							FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,
+									"Selected relations added sucessfully.", "");
+							FacesContext.getCurrentInstance().addMessage(null, message);
+						}
+					} else {
+						FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_FATAL,
+								"Adding relations is allowed for CMQs only.", "");
+						FacesContext.getCurrentInstance().addMessage(null, message);
+					}
+				}
+			}
+		} catch (Exception e) {
+			LOG.error(e.getMessage(), e);
+			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_FATAL,
+					"An error occured while adding relations.", e.getMessage());
+			FacesContext.getCurrentInstance().addMessage(null, message);
+		}
+	}
 
 	/**
 	 * FlowListener of Browse Wizard Component
@@ -2201,14 +2275,6 @@ public class ImpactSearchController implements Serializable {
 
 	public void setRelationSelectedInRelationsTable(TreeNode[] relationSelectedInRelationsTable) {
 		this.relationSelectedInRelationsTable = relationSelectedInRelationsTable;
-	}
-
-	public TreeNode getRelationsRoot() {
-		return relationsRoot;
-	}
-
-	public void setRelationsRoot(TreeNode relationsRoot) {
-		this.relationsRoot = relationsRoot;
 	}
 
 	public TreeNode getCurrentTableSelection() {

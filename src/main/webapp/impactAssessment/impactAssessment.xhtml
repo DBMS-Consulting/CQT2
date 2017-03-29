@@ -200,7 +200,7 @@
 									selectionMode="single" selection="${impactSearchController.targetTableSelection}"
 									style="width: 100%; overflow: auto !important"
 									scrollable="true" scrollHeight="200"
-									resizableColumns="true" rowStyleClass="#{node.rowStyleClass}">
+									resizableColumns="true" rowStyleClass="#{node.rowStyleClass}" >
 								
 									<f:attribute name="uiEventSourceName" value="target-table" />
 									<p:ajax event="expand" listener="#{impactSearchController.onNodeExpandTargetTable}" update="futureListsAndSmqs" />
@@ -315,8 +315,8 @@
 
 				<p:spacer height="10"></p:spacer>
 				<h:panelGrid style="float: right" columns="2">
-					<p:commandButton value="Add selected" onclick="PF('search').hide()"
-						action="#" />
+					<p:commandButton value="Add selected" onclick="PF('search').hide()" update="futureListsAndSmqs"
+						action="#{impactSearchController.addSelectedToTargetRelation(impactSearchController.relationSelected)}" />
 					<p:commandButton value="Cancel" onclick="PF('search').hide()" immediate="true" />
 				</h:panelGrid>
 			</p:dialog>
@@ -429,7 +429,13 @@
 			.ui-chkbox-box {
 				display: none !important;
 			}
+			.green-colored {
+				color: #0fe02a;
+			}
 			
+			.green-colored:HOVER {
+				color: #0a931a;
+			}
 		</style>
 	</ui:define>
 </ui:composition>
