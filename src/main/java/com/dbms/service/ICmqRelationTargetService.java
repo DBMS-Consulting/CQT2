@@ -4,9 +4,10 @@ import java.util.List;
 import java.util.Map;
 
 import com.dbms.entity.cqt.CmqRelationTarget;
+import com.dbms.service.base.ICqtPersistenceService;
 import com.dbms.util.exceptions.CqtServiceException;
 
-public interface ICmqRelationTargetService {
+public interface ICmqRelationTargetService extends ICqtPersistenceService<CmqRelationTarget>{
 
 	void create(List<CmqRelationTarget> cmqRelations) throws CqtServiceException;
 

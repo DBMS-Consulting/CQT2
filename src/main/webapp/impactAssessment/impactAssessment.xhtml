@@ -240,7 +240,7 @@
 									</p:column>
 
 									<p:column>
-										<p:selectOneMenu id="soc3" value="#{node.scope}">
+										<p:selectOneMenu id="soc3" value="#{node.scope}" rendered="#{not node.hideScope}">
 											<f:selectItem itemLabel="Broad" itemValue="1" id="si13s" />
 											<f:selectItem itemLabel="Narrow" itemValue="2" id="si13d" />
 											<f:selectItem itemLabel="Child Narrow" itemValue="3" id="si4" />
@@ -248,7 +248,7 @@
 									</p:column>
 
 									<p:column>
-										<p:selectOneMenu id="soc2" value="#{node.category}" rendered="true">
+										<p:selectOneMenu id="soc2" value="#{node.category}" rendered="#{not node.hideCategory}">
 											<f:selectItem itemLabel="A" itemValue="A" id="si3" />
 											<f:selectItem itemLabel="S" itemValue="S" id="si33" />
 											<f:selectItem itemLabel="B" itemValue="B" id="si8" />
@@ -263,14 +263,14 @@
 									</p:column>
 
 									<p:column>
-										<p:spinner value="#{node.weight}" id="ot6" size="8" />
+										<p:spinner value="#{node.weight}" id="ot6" size="8" rendered="#{not node.hideWeight}"/>
 									</p:column>
 								</p:treeTable>
 							</p:panel>
 						</h:panelGrid>
 
 						<p:commandButton style="margin-top: 10px;" value="Save"
-							icon="ui-icon-disk" update="messages" />
+							icon="ui-icon-disk" update="messages" actionListener="#{impactSearchController.updateTargetRelations}"/>
 					</p:panel>
 				</p:tab>
 
