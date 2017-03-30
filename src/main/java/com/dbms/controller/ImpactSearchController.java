@@ -41,7 +41,6 @@ import com.dbms.entity.cqt.CmqBase190;
 import com.dbms.entity.cqt.CmqBaseTarget;
 import com.dbms.entity.cqt.CmqRelation190;
 import com.dbms.entity.cqt.CmqRelationTarget;
-import com.dbms.entity.cqt.MeddraDictTarget;
 import com.dbms.entity.cqt.SmqBase190;
 import com.dbms.entity.cqt.SmqBaseTarget;
 import com.dbms.entity.cqt.SmqRelation190;
@@ -1205,9 +1204,9 @@ public class ImpactSearchController implements Serializable {
 		CmqBase190 cmqBaseCurrent = this.cmqBaseCurrentService.findByCode(selectedCmqList.getCmqCode());
 		HierarchyNode node = this.createCmqBaseCurrentHierarchyNode(cmqBaseCurrent);
 		TreeNode cmqBaseTreeNode = new DefaultTreeNode(node, currentTableRootTreeNode);
-//		if (changeOccur)
-//			node.setRowStyleClass("blue-colored");
-		
+		if (cmqBaseCurrent.getImpactType().equals("IMPACTED"))
+			node.setRowStyleClass("blue-colored");
+	
 		boolean dummyNodeAdded = false;
 		Long count = this.cmqBaseCurrentService.findCmqChildCountForParentCmqCode(cmqBaseCurrent.getCmqCode());
 		if((count != null) && (count > 0)) {
@@ -1231,8 +1230,9 @@ public class ImpactSearchController implements Serializable {
 	private void updateTargetTableForCmqList(CmqBaseTarget selectedCmqList) {
 		HierarchyNode node = this.createCmqBaseTargetHierarchyNode(selectedCmqList);
 		TreeNode cmqBaseTreeNode = new DefaultTreeNode(node, targetTableRootTreeNode);
-//		if (changeOccur)
-//			node.setRowStyleClass("blue-colored");
+
+		if (selectedCmqList.getImpactType().equals("IMPACTED"))
+			node.setRowStyleClass("blue-colored");
 		
 		boolean dummyNodeAdded = false;
 		Long count = this.cmqBaseTargetService.findCmqChildCountForParentCmqCode(selectedCmqList.getCmqCode());
@@ -1259,8 +1259,9 @@ public class ImpactSearchController implements Serializable {
 		if(null != smqBaseCurrent) {
 			HierarchyNode node = this.createSmqBaseCurrrentNode(smqBaseCurrent);
 			TreeNode cmqBaseTreeNode = new DefaultTreeNode(node, currentTableRootTreeNode);
-//			if (changeOccur)
-//				node.setRowStyleClass("blue-colored");
+
+			if (smqBaseCurrent.getImpactType().equals("IMPACTED"))
+				node.setRowStyleClass("blue-colored");
 			
 			boolean dummyNodeAdded = false;
 			Long count = this.smqBaseCurrentService.findChildSmqCountByParentSmqCode(smqBaseCurrent.getSmqCode());
@@ -1291,8 +1292,9 @@ public class ImpactSearchController implements Serializable {
 	private void updateTargetTableForSmqList(SmqBaseTarget selectedSmqList) {
 		HierarchyNode node = this.createSmqBaseTargetNode(selectedSmqList);
 		TreeNode cmqBaseTreeNode = new DefaultTreeNode(node, targetTableRootTreeNode);
-//		if (changeOccur)
-//			node.setRowStyleClass("blue-colored");
+
+		if (selectedSmqList.getImpactType().equals("IMPACTED"))
+			node.setRowStyleClass("blue-colored");
 		
 		boolean dummyNodeAdded = false;
 		Long count = this.smqBaseCurrentService.findChildSmqCountByParentSmqCode(selectedSmqList.getSmqCode());
