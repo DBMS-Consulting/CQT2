@@ -23,20 +23,19 @@ import com.dbms.entity.BaseEntity;
 public class CmqBase190 extends BaseEntity {
 
 	private static final long serialVersionUID = 6648403063564315829L;
-	
+
 	public static final String CMQ_STATUS_VALUE_ACTIVE = "A";
 	public static final String CMQ_STATUS_DISP_LABEL_ACTIVE = "ACTIVE";
 	public static final String CMQ_STATUS_VALUE_INACTIVE = "I";
 	public static final String CMQ_STATUS_DISP_LABEL_INACTIVE = "INACTIVE";
 	public static final String CMQ_STATUS_VALUE_PENDING = "P";
 	public static final String CMQ_STATUS_DISP_LABEL_PENDING = "PENDING";
-	
+
 	public static final String CMQ_STATE_VALUE_DRAFT = "DRAFT";
 	public static final String CMQ_STATE_VALUE_REVIEWED = "REVIEWED";
 	public static final String CMQ_STATE_VALUE_APPROVED = "APPROVED";
 	public static final String CMQ_STATE_VALUE_PUBLISHED = "PUBLISHED";
-	
-	
+
 	@Id
 	@GeneratedValue(generator = "CMQ_ID_SEQ", strategy = GenerationType.SEQUENCE)
 	@SequenceGenerator(name = "CMQ_ID_SEQ", sequenceName = "CMQ_ID_SEQ", allocationSize = 1)
@@ -107,12 +106,12 @@ public class CmqBase190 extends BaseEntity {
 	 */
 	@Column(name = "CMQ_WF_DESC", length = 200)
 	private String cmqWfDesc;
-	
+
 	/**
 	 * Reason for approval.
 	 */
-//	@Column(name = "CMQ_APPROVE_REASON", length = 200)
-//	private String cmqReasonApproval;
+	// @Column(name = "CMQ_APPROVE_REASON", length = 200)
+	// private String cmqReasonApproval;
 
 	@Column(name = "IMPACT_TYPE", length = 15)
 	private String impactType;
@@ -146,6 +145,15 @@ public class CmqBase190 extends BaseEntity {
 
 	@Column(name = "CMQ_SUBVERSION", nullable = false, precision = 10)
 	private BigDecimal cmqSubversion;
+
+	@Column(name = "CMQ_DESIGNEE2", nullable = false, length = 100)
+	private String cmqDesignee2;
+
+	@Column(name = "CMQ_DESIGNEE3", nullable = false, length = 100)
+	private String cmqDesignee3;
+
+	@Column(name = "CMQ_APPROVE_REASON", nullable = false, length = 4000)
+	private String cmqApproveReason;
 
 	public Long getId() {
 		return cmqId;
@@ -399,12 +407,40 @@ public class CmqBase190 extends BaseEntity {
 		this.cmqParentCode = cmqParentCode;
 	}
 
-//	public String getCmqReasonApproval() {
-//		return cmqReasonApproval;
-//	}
-//
-//	public void setCmqReasonApproval(String cmqReasonApproval) {
-//		this.cmqReasonApproval = cmqReasonApproval;
-//	}
+	public String getCmqDesignee2() {
+		return cmqDesignee2;
+	}
+
+	public void setCmqDesignee2(String cmqDesignee2) {
+		this.cmqDesignee2 = cmqDesignee2;
+	}
+
+	public String getCmqDesignee3() {
+		return cmqDesignee3;
+	}
+
+	public void setCmqDesignee3(String cmqDesignee3) {
+		this.cmqDesignee3 = cmqDesignee3;
+	}
+
+	public String getCmqApproveReason() {
+		return cmqApproveReason;
+	}
+
+	public void setCmqApproveReason(String cmqApproveReason) {
+		this.cmqApproveReason = cmqApproveReason;
+	}
+
+	public void setCmqId(Long cmqId) {
+		this.cmqId = cmqId;
+	}
+
+	// public String getCmqReasonApproval() {
+	// return cmqReasonApproval;
+	// }
+	//
+	// public void setCmqReasonApproval(String cmqReasonApproval) {
+	// this.cmqReasonApproval = cmqReasonApproval;
+	// }
 
 }

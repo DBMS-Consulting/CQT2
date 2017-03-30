@@ -94,7 +94,7 @@ public class CmqBaseTarget extends BaseEntity {
 	 */
 	@Column(name = "CMQ_WF_DESC", length = 200)
 	private String cmqWfDesc;
-	
+
 	@Column(name = "IMPACT_TYPE", length = 15)
 	private String impactType;
 
@@ -127,6 +127,15 @@ public class CmqBaseTarget extends BaseEntity {
 
 	@Column(name = "CMQ_SUBVERSION", nullable = false, precision = 10)
 	private BigDecimal cmqSubversion;
+
+	@Column(name = "CMQ_DESIGNEE2", nullable = false, length = 100)
+	private String cmqDesignee2;
+
+	@Column(name = "CMQ_DESIGNEE3", nullable = false, length = 100)
+	private String cmqDesignee3;
+
+	@Column(name = "CMQ_APPROVE_REASON", nullable = false, length = 4000)
+	private String cmqApproveReason;
 
 	public Long getId() {
 		return cmqId;
@@ -378,5 +387,29 @@ public class CmqBaseTarget extends BaseEntity {
 
 	public void setCmqParentCode(Long cmqParentCode) {
 		this.cmqParentCode = cmqParentCode;
+	}
+
+	public String getCmqDesignee2() {
+		return cmqDesignee2;
+	}
+
+	public void setCmqDesignee2(String cmqDesignee2) {
+		this.cmqDesignee2 = cmqDesignee2;
+	}
+
+	public String getCmqDesignee3() {
+		return cmqDesignee3;
+	}
+
+	public void setCmqDesignee3(String cmqDesignee3) {
+		this.cmqDesignee3 = cmqDesignee3;
+	}
+
+	public String getCmqApproveReason() {
+		return cmqApproveReason;
+	}
+
+	public void setCmqApproveReason(String cmqApproveReason) {
+		this.cmqApproveReason = cmqApproveReason;
 	}
 }

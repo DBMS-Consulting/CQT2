@@ -23,7 +23,7 @@ public class SmqRelationTarget extends BaseEntity {
 
 	@Column(name = "SMQ_CODE", nullable = false, precision = 38)
 	private Long smqCode;
-	
+
 	@Column(name = "PT_CODE", length = 10)
 	private Integer ptCode;
 
@@ -53,6 +53,9 @@ public class SmqRelationTarget extends BaseEntity {
 
 	@Column(name = "PT_TERM_LAST_MODIFIED_VERSION", length = 5)
 	private String ptTermLastModifiedVersion;
+
+	@Column(name = "RELATION_IMPACT_TYPE", length = 15)
+	private String relationImpactType;
 
 	public Long getSmqCode() {
 		return smqCode;
@@ -148,5 +151,13 @@ public class SmqRelationTarget extends BaseEntity {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public String getRelationImpactType() {
+		return relationImpactType;
+	}
+
+	public void setRelationImpactType(String relationImpactType) {
+		this.relationImpactType = relationImpactType;
 	}
 }

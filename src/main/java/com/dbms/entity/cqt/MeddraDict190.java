@@ -82,6 +82,69 @@ public class MeddraDict190 extends BaseEntity {
 	@Column(name = "CREATION_DATE", length = 7)
 	private Date creationDate;
 
+	@Column(name = "NEW_PT", nullable = true, length = 15)
+	private String newPt;
+
+	@Column(name = "PROMOTED_PT", nullable = true, length = 15)
+	private String promotedPt;
+
+	@Column(name = "NEW_LLT", nullable = true, length = 15)
+	private String newLlt;
+
+	@Column(name = "DEMOTED_LLT", nullable = true, length = 15)
+	private String demotedLlt;
+
+	@Column(name = "PROMOTED_LLT", nullable = true, length = 15)
+	private String promotedLlt;
+
+	@Column(name = "PRIMARY_SOC_CHANGE", nullable = true, length = 15)
+	private String primarySocChange;
+
+	@Column(name = "DEMOTED_PT", nullable = true, length = 15)
+	private String demotedPt;
+
+	@Column(name = "MOVED_LLT", nullable = true, length = 15)
+	private String movedLlt;
+
+	@Column(name = "LLT_CURRENCY_CHANGE", nullable = true, length = 15)
+	private String lltCurrencyChange;
+
+	@Column(name = "PT_NAME_CHANGED", nullable = true, length = 15)
+	private String ptNameChanged;
+
+	@Column(name = "LLT_NAME_CHANGED", nullable = true, length = 15)
+	private String lltNameChanged;
+
+	@Column(name = "NEW_HLT", nullable = true, length = 15)
+	private String newHlt;
+
+	@Column(name = "NEW_HLGT", nullable = true, length = 15)
+	private String newHlgt;
+
+	@Column(name = "MOVED_PT", nullable = true, length = 15)
+	private String movedPt;
+
+	@Column(name = "MOVED_HLT", nullable = true, length = 15)
+	private String movedHlt;
+
+	@Column(name = "MOVED_HLGT", nullable = true, length = 15)
+	private String movedHlgt;
+
+	@Column(name = "HLGT_NAME_CHANGED", nullable = true, length = 15)
+	private String hlgtNameChanged;
+
+	@Column(name = "HLT_NAME_CHANGED", nullable = true, length = 15)
+	private String hltNameChanged;
+
+	@Column(name = "SOC_NAME_CHANGED", nullable = true, length = 15)
+	private String socNameChanged;
+
+	@Column(name = "MERGED_HLT", nullable = true, length = 15)
+	private String mergedHlt;
+
+	@Column(name = "MERGED_HLGT", nullable = true, length = 15)
+	private String mergedhlgt;
+
 	public Long getId() {
 		return meddraDictId;
 	}
@@ -89,6 +152,7 @@ public class MeddraDict190 extends BaseEntity {
 	public void setCmqId(Long meddraDictId) {
 		this.meddraDictId = meddraDictId;
 	}
+
 	public String getDictionaryName() {
 		return dictionaryName;
 	}
@@ -223,5 +287,181 @@ public class MeddraDict190 extends BaseEntity {
 
 	public void setCreationDate(Date creationDate) {
 		this.creationDate = creationDate;
+	}
+
+	public Long getMeddraDictId() {
+		return meddraDictId;
+	}
+
+	public void setMeddraDictId(Long meddraDictId) {
+		this.meddraDictId = meddraDictId;
+	}
+
+	public String getNewPt() {
+		return newPt;
+	}
+
+	public void setNewPt(String newPt) {
+		this.newPt = newPt;
+	}
+
+	public String getPromotedPt() {
+		return promotedPt;
+	}
+
+	public void setPromotedPt(String promotedPt) {
+		this.promotedPt = promotedPt;
+	}
+
+	public String getNewLlt() {
+		return newLlt;
+	}
+
+	public void setNewLlt(String newLlt) {
+		this.newLlt = newLlt;
+	}
+
+	public String getDemotedLlt() {
+		return demotedLlt;
+	}
+
+	public void setDemotedLlt(String demotedLlt) {
+		this.demotedLlt = demotedLlt;
+	}
+
+	public String getPromotedLlt() {
+		return promotedLlt;
+	}
+
+	public void setPromotedLlt(String promotedLlt) {
+		this.promotedLlt = promotedLlt;
+	}
+
+	public String getPrimarySocChange() {
+		return primarySocChange;
+	}
+
+	public void setPrimarySocChange(String primarySocChange) {
+		this.primarySocChange = primarySocChange;
+	}
+
+	public String getDemotedPt() {
+		return demotedPt;
+	}
+
+	public void setDemotedPt(String demotedPt) {
+		this.demotedPt = demotedPt;
+	}
+
+	public String getMovedLlt() {
+		return movedLlt;
+	}
+
+	public void setMovedLlt(String movedLlt) {
+		this.movedLlt = movedLlt;
+	}
+
+	public String getLltCurrencyChange() {
+		return lltCurrencyChange;
+	}
+
+	public void setLltCurrencyChange(String lltCurrencyChange) {
+		this.lltCurrencyChange = lltCurrencyChange;
+	}
+
+	public String getPtNameChanged() {
+		return ptNameChanged;
+	}
+
+	public void setPtNameChanged(String ptNameChanged) {
+		this.ptNameChanged = ptNameChanged;
+	}
+
+	public String getLltNameChanged() {
+		return lltNameChanged;
+	}
+
+	public void setLltNameChanged(String lltNameChanged) {
+		this.lltNameChanged = lltNameChanged;
+	}
+
+	public String getNewHlt() {
+		return newHlt;
+	}
+
+	public void setNewHlt(String newHlt) {
+		this.newHlt = newHlt;
+	}
+
+	public String getNewHlgt() {
+		return newHlgt;
+	}
+
+	public void setNewHlgt(String newHlgt) {
+		this.newHlgt = newHlgt;
+	}
+
+	public String getMovedPt() {
+		return movedPt;
+	}
+
+	public void setMovedPt(String movedPt) {
+		this.movedPt = movedPt;
+	}
+
+	public String getMovedHlt() {
+		return movedHlt;
+	}
+
+	public void setMovedHlt(String movedHlt) {
+		this.movedHlt = movedHlt;
+	}
+
+	public String getMovedHlgt() {
+		return movedHlgt;
+	}
+
+	public void setMovedHlgt(String movedHlgt) {
+		this.movedHlgt = movedHlgt;
+	}
+
+	public String getHlgtNameChanged() {
+		return hlgtNameChanged;
+	}
+
+	public void setHlgtNameChanged(String hlgtNameChanged) {
+		this.hlgtNameChanged = hlgtNameChanged;
+	}
+
+	public String getHltNameChanged() {
+		return hltNameChanged;
+	}
+
+	public void setHltNameChanged(String hltNameChanged) {
+		this.hltNameChanged = hltNameChanged;
+	}
+
+	public String getSocNameChanged() {
+		return socNameChanged;
+	}
+
+	public void setSocNameChanged(String socNameChanged) {
+		this.socNameChanged = socNameChanged;
+	}
+
+	public String getMergedHlt() {
+		return mergedHlt;
+	}
+
+	public void setMergedHlt(String mergedHlt) {
+		this.mergedHlt = mergedHlt;
+	}
+
+	public String getMergedhlgt() {
+		return mergedhlgt;
+	}
+
+	public void setMergedhlgt(String mergedhlgt) {
+		this.mergedhlgt = mergedhlgt;
 	}
 }
