@@ -143,7 +143,7 @@ public class MeddraDict190 extends BaseEntity {
 	private String mergedHlt;
 
 	@Column(name = "MERGED_HLGT", nullable = true, length = 15)
-	private String mergedhlgt;
+	private String mergedHlgt;
 
 	public Long getId() {
 		return meddraDictId;
@@ -457,11 +457,13 @@ public class MeddraDict190 extends BaseEntity {
 		this.mergedHlt = mergedHlt;
 	}
 
-	public String getMergedhlgt() {
-		return mergedhlgt;
+	public String getMergedHlgt() {
+		return mergedHlgt;
 	}
 
-	public void setMergedhlgt(String mergedhlgt) {
-		this.mergedhlgt = mergedhlgt;
+	public void setMergedHlgt(String mergedHlgt) {
+		this.mergedHlgt = mergedHlgt;
 	}
+
+
 }

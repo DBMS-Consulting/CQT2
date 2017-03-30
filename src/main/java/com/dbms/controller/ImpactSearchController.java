@@ -1671,7 +1671,8 @@ public class ImpactSearchController implements Serializable {
 					}
 					if ("SCH".equals(childRelation.getRelationImpactType()))
 						childRelationNode.setRowStyleClass("blue-colored");
-					
+					if ("LCN".equals(childRelation.getRelationImpactType()))
+						childRelationNode.setRowStyleClass("grey-colored");
 				}
 				new DefaultTreeNode(childRelationNode, expandedTreeNode);
 			}
@@ -1885,6 +1886,12 @@ public class ImpactSearchController implements Serializable {
 				}
 				for (MeddraDictHierarchySearchDto meddraDictHierarchySearchDto : lltDtos) {
 					HierarchyNode node = this.createMeddraNode(meddraDictHierarchySearchDto, "LLT");
+					//Meddra - Current colors
+					if ("current".equalsIgnoreCase(cmqType))
+						setCurrentMeddraColor(meddraDictHierarchySearchDto, node);
+					if ("target".equalsIgnoreCase(cmqType))
+						setTargetMeddraColor(meddraDictHierarchySearchDto, node);
+					
 					IEntity entity = lltCodesMap.get(meddraDictHierarchySearchDto.getCode());
 					if(entity instanceof CmqRelationTarget) {
 						CmqRelationTarget cmqRelationTarget = (CmqRelationTarget) entity;
@@ -1901,6 +1908,8 @@ public class ImpactSearchController implements Serializable {
 						}
 						if ("SCH".equals(cmqRelationTarget.getRelationImpactType()))
 							node.setRowStyleClass("blue-colored");
+						if ("LCN".equals(cmqRelationTarget.getRelationImpactType()))
+							node.setRowStyleClass("grey-colored");
 					}
 					if(entity instanceof CmqRelation190) {
 						CmqRelation190 cmqRelation = (CmqRelation190) entity;
@@ -1924,6 +1933,56 @@ public class ImpactSearchController implements Serializable {
 				}
 			}
 		}
+	}
+	
+	private void setCurrentMeddraColor(MeddraDictHierarchySearchDto meddraDictHierarchySearchDto, HierarchyNode node) {
+		if((meddraDictHierarchySearchDto.getLltCurrencyChange() != null && "LCN".equalsIgnoreCase(meddraDictHierarchySearchDto.getLltCurrencyChange()))
+				|| (meddraDictHierarchySearchDto.getMovedPt() != null && "LDH".equalsIgnoreCase(meddraDictHierarchySearchDto.getMovedPt()))
+				|| (meddraDictHierarchySearchDto.getMovedLlt() != null && "LDP".equalsIgnoreCase(meddraDictHierarchySearchDto.getMovedLlt()))
+				|| (meddraDictHierarchySearchDto.getMovedHlt() != null && "HDH".equalsIgnoreCase(meddraDictHierarchySearchDto.getMovedHlt()))
+				|| (meddraDictHierarchySearchDto.getMovedHlgt() != null && "HDS".equalsIgnoreCase(meddraDictHierarchySearchDto.getMovedHlgt()))
+				|| (meddraDictHierarchySearchDto.getDemotedPt() != null && "PDL".equalsIgnoreCase(meddraDictHierarchySearchDto.getDemotedPt()))
+				|| (meddraDictHierarchySearchDto.getPromotedLlt() != null && "LPP".equalsIgnoreCase(meddraDictHierarchySearchDto.getPromotedLlt()))
+				|| (meddraDictHierarchySearchDto.getPrimarySocChange() != null && 
+				   ("HPP".equalsIgnoreCase(meddraDictHierarchySearchDto.getPrimarySocChange())
+						   || "HNP".equalsIgnoreCase(meddraDictHierarchySearchDto.getPrimarySocChange())))
+				|| (meddraDictHierarchySearchDto.getMergedHlt() != null && "MRG".equalsIgnoreCase(meddraDictHierarchySearchDto.getMergedHlt()))
+				|| (meddraDictHierarchySearchDto.getMergedHlgt() != null && "MRG".equalsIgnoreCase(meddraDictHierarchySearchDto.getMergedHlgt()))) {
+			node.setRowStyleClass("red-colored");
+		}
+		if((meddraDictHierarchySearchDto.getHlgtNameChanged() != null && "NCH".equalsIgnoreCase(meddraDictHierarchySearchDto.getHlgtNameChanged()))
+				|| (meddraDictHierarchySearchDto.getHltNameChanged() != null && "NCH".equalsIgnoreCase(meddraDictHierarchySearchDto.getHltNameChanged()))
+				|| (meddraDictHierarchySearchDto.getPtNameChanged()!= null && "NCH".equalsIgnoreCase(meddraDictHierarchySearchDto.getPtNameChanged()))
+				|| (meddraDictHierarchySearchDto.getLltNameChanged() != null && "NCH".equalsIgnoreCase(meddraDictHierarchySearchDto.getLltNameChanged()))) {
+			node.setRowStyleClass("italic");
+		}
+		
+	}
+	
+	private void setTargetMeddraColor(MeddraDictHierarchySearchDto meddraDictHierarchySearchDto, HierarchyNode node) {
+		if((meddraDictHierarchySearchDto.getNewLlt() != null && "NTR".equalsIgnoreCase(meddraDictHierarchySearchDto.getNewLlt()))
+				|| (meddraDictHierarchySearchDto.getNewPt() != null && "NTR".equalsIgnoreCase(meddraDictHierarchySearchDto.getNewPt()))
+				|| (meddraDictHierarchySearchDto.getNewHlt() != null && "NTR".equalsIgnoreCase(meddraDictHierarchySearchDto.getNewHlt()))
+				|| (meddraDictHierarchySearchDto.getNewHlgt() != null && "NTR".equalsIgnoreCase(meddraDictHierarchySearchDto.getNewHlgt()))
+				|| (meddraDictHierarchySearchDto.getLltCurrencyChange() != null && "LNC".equalsIgnoreCase(meddraDictHierarchySearchDto.getLltCurrencyChange()))
+				|| (meddraDictHierarchySearchDto.getMovedPt() != null && "LDH".equalsIgnoreCase(meddraDictHierarchySearchDto.getMovedPt()))
+				|| (meddraDictHierarchySearchDto.getMovedLlt() != null && "LDP".equalsIgnoreCase(meddraDictHierarchySearchDto.getMovedLlt()))
+				|| (meddraDictHierarchySearchDto.getDemotedPt() != null && "PDL".equalsIgnoreCase(meddraDictHierarchySearchDto.getDemotedPt()))
+				|| (meddraDictHierarchySearchDto.getPromotedLlt() != null && "LPP".equalsIgnoreCase(meddraDictHierarchySearchDto.getPromotedLlt()))
+				|| (meddraDictHierarchySearchDto.getPrimarySocChange() != null && 
+				   ("HPP".equalsIgnoreCase(meddraDictHierarchySearchDto.getPrimarySocChange())
+					|| "HNP".equalsIgnoreCase(meddraDictHierarchySearchDto.getPrimarySocChange())))
+				|| (meddraDictHierarchySearchDto.getMovedHlt() != null && "HDH".equalsIgnoreCase(meddraDictHierarchySearchDto.getMovedHlt()))
+				|| (meddraDictHierarchySearchDto.getMovedHlgt() != null && "HDS".equalsIgnoreCase(meddraDictHierarchySearchDto.getMovedHlgt()))) {
+			node.setRowStyleClass("orange-colored");
+		}
+		if((meddraDictHierarchySearchDto.getHlgtNameChanged() != null && "NCH".equalsIgnoreCase(meddraDictHierarchySearchDto.getHlgtNameChanged()))
+				|| (meddraDictHierarchySearchDto.getHltNameChanged() != null && "NCH".equalsIgnoreCase(meddraDictHierarchySearchDto.getHltNameChanged()))
+				|| (meddraDictHierarchySearchDto.getPtNameChanged()!= null && "NCH".equalsIgnoreCase(meddraDictHierarchySearchDto.getPtNameChanged()))
+				|| (meddraDictHierarchySearchDto.getLltNameChanged() != null && "NCH".equalsIgnoreCase(meddraDictHierarchySearchDto.getLltNameChanged()))) {
+			node.setRowStyleClass("italic");
+		}
+		
 	}
 	
 	private void populateSmqTreeNode(IEntity entity, TreeNode expandedTreeNode, String cmqType, Long parentCode) {
@@ -1964,6 +2023,8 @@ public class ImpactSearchController implements Serializable {
 			}
 			if ("SCH".equals(cmqRelation.getRelationImpactType()))
 				node.setRowStyleClass("blue-colored");
+			if ("LCN".equals(cmqRelation.getRelationImpactType()))
+				node.setRowStyleClass("grey-colored");
 		}
 		if(null != node) {	
 			TreeNode treeNode = new DefaultTreeNode(node, expandedTreeNode);
@@ -2004,6 +2065,12 @@ public class ImpactSearchController implements Serializable {
 			HierarchyNode node = this.createMeddraNode(meddraDictHierarchySearchDto, nodeType);
 			System.out.println("\n *************** node :: " + node.getTerm());
 			
+			//Meddra - Current colors
+			if ("current".equalsIgnoreCase(cmqType))
+				setCurrentMeddraColor(meddraDictHierarchySearchDto, node);
+			if ("target".equalsIgnoreCase(cmqType))
+				setTargetMeddraColor(meddraDictHierarchySearchDto, node);
+			
 			//convert string to long and match in map
 			IEntity entity = cmqRelationsMap.get(Long.valueOf(meddraDictHierarchySearchDto.getCode()));
 			if(entity instanceof CmqRelationTarget) {
@@ -2021,6 +2088,8 @@ public class ImpactSearchController implements Serializable {
 				}
 				if ("SCH".equals(cmqRelationTarget.getRelationImpactType()))
 					node.setRowStyleClass("blue-colored");
+				if ("LCN".equals(cmqRelationTarget.getRelationImpactType()))
+					node.setRowStyleClass("grey-colored");
 			}
 			if(entity instanceof CmqRelation190) {
 				CmqRelation190 cmqRelation = (CmqRelation190) entity;
@@ -2050,100 +2119,6 @@ public class ImpactSearchController implements Serializable {
 				new DefaultTreeNode(dummyNode, treeNode);
 			}
 		}
-	}
-	
-	/**
-	 * Added term style for CMQ.
-	 * 
-	 * @param node
-	 *            HierarchyNode
-	 * @param cmqRelationTarget 
-	 * @param cmqCodeListSelected
-	 *            Long
-	 */
-	private void setCMQCurrentNodeStyle(HierarchyNode node, int currentSize, Map<String, MeddraDictHierarchySearchDto> targets) {
-		/*if (targets != null) {	
- 	 		if (targets.get(node.getCode()) == null) {
- 	 			node.setRowStyleClass("red-colored");
- 				//changeOccur = true;
- 	 		}
- 	 		
- 	 		if (targets.get(node.getCode()) != null && !targets.get(node.getCode()).getTerm().equals(node.getTerm())) {
- 	 			node.setRowStyleClass("italic");
- 				//changeOccur = true;
- 	 		}
- 		}*/
-	}
-	
-	private void setCMQTargetNodeStyle(HierarchyNode node, int targetSize, Map<String, MeddraDictHierarchySearchDto> currents) {
-		/*if (currents != null) {
-			
-	 		if (currents.get(node.getCode()) == null) {
-	 			node.setRowStyleClass("orange-colored");
-				//changeOccur = true;
-	 		}	 		
-	 			
- 	 		if (currents.get(node.getCode()) != null && !currents.get(node.getCode()).getTerm().equals(node.getTerm())) {
- 	 			node.setRowStyleClass("italic");
- 				//changeOccur = true;
- 	 		}
-		}*/
-	}
-
-	/**
-	 * Added term style for SMQ.
-	 * 
-	 * @param node
-	 *            HierarchyNode
-	 * @param cmqCodeListSelected
-	 *            Long
-	 */
-	private void setSMQCurrentNodeStyle(HierarchyNode node, int currentSize, Map<Long, SmqRelationTarget> targets) {
- 	/*	if (targets != null) {
- 	 		 		
- 	 		if (targets.get(Long.parseLong(node.getCode())) == null) {
- 	 			node.setRowStyleClass("red-colored");
- 				//changeOccur = true;
- 	 		}
- 	 		
- 	 		if (targets.get(Long.parseLong(node.getCode())) != null && !targets.get(Long.parseLong(node.getCode())).getPtName().equals(node.getTerm())) {
- 	 			node.setRowStyleClass("italic");
- 				//changeOccur = true;
- 	 		}
- 		}*/
-	}
-	
-	private void setSMQTargetNodeStyle(HierarchyNode node, int targetSize, Map<Long, SmqRelation190> currents) {
-		/*if (currents != null) {
-	 		if (currents.get(Long.parseLong(node.getCode())) == null) {
-	 			node.setRowStyleClass("orange-colored");
-				//changeOccur = true;
-	 		}
-	 		
-	 		if (currents.get(Long.parseLong(node.getCode())) != null && !currents.get(Long.parseLong(node.getCode())).getPtName().equals(node.getTerm())) {
-	 			node.setRowStyleClass("italic");
-				//changeOccur = true;
-	 		}
-		}*/
-	}
-
-	private Long getRelationCode(CmqRelationTarget rel) {
-		Long code = null;
-		if (rel.getHlgtCode() != null)
-			code = rel.getHlgtCode();
-		if (rel.getHltCode() != null)
-			code = rel.getHltCode();
-		if (rel.getPtCode() != null)
-			code = rel.getPtCode();
-//		if (rel.getSmqCode() != null)
-//			code = rel.getSmqCode();
-		if (rel.getSocCode() != null)
-			code = rel.getSocCode();
-		if (rel.getLltCode() != null)
-			code = rel.getLltCode();
-		
-		
-		return code;
 	}
 	
 	private HierarchyNode createCmqBaseCurrentHierarchyNode(CmqBase190 cmqBaseCurrent) {
