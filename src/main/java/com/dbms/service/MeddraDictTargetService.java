@@ -1,5 +1,6 @@
 package com.dbms.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.faces.bean.ApplicationScoped;
@@ -29,9 +30,112 @@ public class MeddraDictTargetService extends CqtPersistenceService<MeddraDictTar
 
 	private static final Logger LOG = LoggerFactory.getLogger(MeddraDictTargetService.class);
 
+	@Override
+	@SuppressWarnings("unchecked")
+	public List<String> findSocsWithNewPt() {
+		List<String> retVal = null;
+		String queryString = "select distinct (SOC_TERM) from MEDDRA_DICT_TARGET where new_pt = 'NTR' or promoted_llt='LPP' order by SOC_TERM";
+		
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		Session session = entityManager.unwrap(Session.class);
+		try {
+			SQLQuery query = session.createSQLQuery(queryString);
+			retVal = (List<String>) query.list();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg.append("An error occurred while executing findSocsWithNewPt. ")
+					.append(queryString);
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
+	
 	/* (non-Javadoc)
 	 * @see com.dbms.service.IMeddraDictTargetService#findFullReverseHierarchyByLevelAndTerm(java.lang.String, java.lang.String, java.lang.String)
 	 */
+	@Override
+	@SuppressWarnings("unchecked")
+	public List<MeddraDictHierarchySearchDto> findNewPtTerm(String socSearchTerm, int firstResult, int fetchSize) {
+		List<MeddraDictHierarchySearchDto> retVal = null;
+		String queryString = "";
+		if (StringUtils.isBlank(socSearchTerm)) {
+			queryString = "select MEDDRA_DICT_ID as meddraDictId, PT_TERM as term, PT_CODE as code, PRIMARY_PATH_FLAG as primaryPathFlag"
+					+ " from (select MEDDRA_DICT_ID, PT_TERM, PT_CODE, PRIMARY_PATH_FLAG "
+					+ ", row_number() over (partition by PT_CODE order by MEDDRA_DICT_ID) rn "
+					+ "from MEDDRA_DICT_TARGET where new_pt = 'NTR' or promoted_llt='LPP') where rn = 1";
+		} else {
+			queryString = "select MEDDRA_DICT_ID as meddraDictId, PT_TERM as term, PT_CODE as code, PRIMARY_PATH_FLAG as primaryPathFlag"
+					+ " from (select MEDDRA_DICT_ID, PT_TERM, PT_CODE, PRIMARY_PATH_FLAG "
+					+ ", row_number() over (partition by PT_CODE order by MEDDRA_DICT_ID) rn "
+					+ "from MEDDRA_DICT_TARGET	where upper(SOC_TERM) like :socSearchTerm and (new_pt = 'NTR' or promoted_llt='LPP')) where rn = 1";
+		}
+		
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		Session session = entityManager.unwrap(Session.class);
+		try {
+			SQLQuery query = session.createSQLQuery(queryString);
+			query.addScalar("meddraDictId", StandardBasicTypes.LONG);
+			query.addScalar("term", StandardBasicTypes.STRING);
+			query.addScalar("code", StandardBasicTypes.STRING);
+			query.addScalar("primaryPathFlag", StandardBasicTypes.STRING);
+			query.setFetchSize(200);
+			if (!StringUtils.isBlank(socSearchTerm)) {
+				query.setParameter("socSearchTerm", socSearchTerm.toUpperCase());
+			}
+			query.setResultTransformer(Transformers.aliasToBean(MeddraDictHierarchySearchDto.class));
+			query.setFirstResult(firstResult);
+			query.setFetchSize(fetchSize);
+			retVal = query.list();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg.append("An error occurred while executing findNewPtTerm.  Search Term was ")
+					.append(socSearchTerm).append(" and partition column was PT_CODE. Query used was ->")
+					.append(queryString);
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
+	
+	@Override
+	public BigDecimal findNewPtTermRowCount(String socSearchTerm) {
+		BigDecimal retVal = null;
+		String queryString = "";
+		if (StringUtils.isBlank(socSearchTerm)) {
+			queryString = "select count(*) "
+							+ " from (select MEDDRA_DICT_ID, PT_TERM, PT_CODE, PRIMARY_PATH_FLAG "
+							+ ", row_number() over (partition by PT_CODE order by MEDDRA_DICT_ID) rn "
+							+ "from MEDDRA_DICT_TARGET where new_pt = 'NTR' or promoted_llt='LPP') where rn = 1";
+		} else {
+			queryString = "select count(*) "
+							+ " from (select MEDDRA_DICT_ID, PT_TERM, PT_CODE, PRIMARY_PATH_FLAG "
+							+ ", row_number() over (partition by PT_CODE order by MEDDRA_DICT_ID) rn "
+							+ "from MEDDRA_DICT_TARGET	where upper(SOC_TERM) like :socSearchTerm and (new_pt = 'NTR' or promoted_llt='LPP')) where rn = 1";
+		}
+	
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		Session session = entityManager.unwrap(Session.class);
+		try {
+			SQLQuery query = session.createSQLQuery(queryString);
+			if (!StringUtils.isBlank(socSearchTerm)) {
+				query.setParameter("socSearchTerm", socSearchTerm.toUpperCase());
+			}
+			retVal = (BigDecimal)query.uniqueResult();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg.append("An error occurred while executing findNewPtTermRowCount.  Search Term was ")
+					.append(socSearchTerm).append(" and partition column was PT_CODE. Query used was ->")
+					.append(queryString);
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
+
 	@Override
 	@SuppressWarnings("unchecked")
 	public List<MeddraDictReverseHierarchySearchDto> findFullReverseHierarchyByLevelAndTerm(String searchColumnPrefix
@@ -94,7 +198,7 @@ public class MeddraDictTargetService extends CqtPersistenceService<MeddraDictTar
 		}
 		return retVal;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see com.dbms.service.IMeddraDictTargetService#findReverseByCode(java.lang.String, java.lang.String, java.lang.Long)
 	 */

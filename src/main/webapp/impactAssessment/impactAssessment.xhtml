@@ -361,28 +361,33 @@
 				</h:panelGrid>
 			</p:dialog>
 
-			<p:dialog widgetVar="new_pt" modal="false"
+			<p:dialog id="newPtDialog" widgetVar="new_pt" modal="false"
 				header="New Preferred Term">
 				<h:panelGrid style="width: 500px">
 					<h:panelGrid id="pgl1" columns="3">
 						<p:outputLabel value="SOC" />
 						<p:selectCheckboxMenu id="select"
-							value="#{searchController.selectedSOCs}" label="SOC"
-							filter="true" filterMatchMode="startsWith" style="width:400px">
-							<f:selectItem itemValue="All" itemLabel="All" />
+							value="#{impactSearchController.newPtSocSearchTerm}" label="SOC"
+							filter="true" filterMatchMode="startsWith" style="width:400px" >
+							<f:selectItem itemValue="" itemLabel="All" />
+							<f:selectItems value="#{impactSearchController.newPtDistinctSocTermsList}"></f:selectItems>
 						</p:selectCheckboxMenu>
 
-						<p:commandButton value="Search" id="cb11" partialSubmit="true" />
+						<p:commandButton value="Search" id="cb11" action="#{impactSearchController.loadNewPts}" partialSubmit="true" update="newPtResultList"/>
 					</h:panelGrid>
 					<p:spacer width="10" height="10" id="s7" />
-					<p:dataTable value="#{null}">
+					<p:dataTable id="newPtResultList" styleClass="ui-datatable-newPtResultList" widgetVar="newPtResultList"
+						value="#{impactSearchController.newPtSearchLazyDataModel}" var="newPtResultList" paginator="true" rows="10"
+	                	selection="#{impactSearchController.selectedNewPtLists}" selectionMode="multiple" lazy="true"
+	                	paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+	                	rowsPerPageTemplate="5,10,15,20" resizableColumns="true">
 
 						<p:column headerText="Term">
-							<h:outputText value="#{dummyView.value}" rendered="true" />
+							<h:outputText value="#{newPtResultList.term}" rendered="true" />
 						</p:column>
 
 						<p:column headerText="Level">
-							<h:outputText value="#{dummyView.value}" rendered="true" />
+							<h:outputText value="#" rendered="true" />
 						</p:column>
 					</p:dataTable>
 				</h:panelGrid>

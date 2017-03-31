@@ -20,6 +20,7 @@ import javax.faces.context.FacesContext;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.primefaces.component.datatable.DataTable;
 import org.primefaces.component.wizard.Wizard;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.FlowEvent;
@@ -143,6 +144,13 @@ public class ImpactSearchController implements Serializable {
 	//private boolean changeOccur;
 	private boolean targetRelationsUpdated = false;
 	
+	private LazyDataModel<MeddraDictHierarchySearchDto> newPtSearchLazyDataModel;
+	
+	private String[] newPtSocSearchTerm;
+	
+	private MeddraDictHierarchySearchDto[] selectedNewPtLists;
+	
+	private List<String> newPtDistinctSocTermsList;
 	
 	public ImpactSearchController() {
 		
@@ -164,6 +172,8 @@ public class ImpactSearchController implements Serializable {
 		setApproveEnabled(false);
 		setDemoteEnabled(false);
 		currentOrTarget = SELECTED_NO_LIST;
+		
+		newPtDistinctSocTermsList = this.meddraDictTargetService.findSocsWithNewPt();
 		//changeOccur = false;
 	}
 
@@ -1084,6 +1094,15 @@ public class ImpactSearchController implements Serializable {
 	public void cancelDetailsAndGoToNextStep() {
 		cancelDetails();
 		iaWizard.setStep(iaWizardNextStep);
+	}
+	
+	public void loadNewPts() {
+		this.newPtSearchLazyDataModel = new NewPtSearchLazyDataModel();
+		//reload the table
+		DataTable dataTable = (DataTable)  FacesContext.getCurrentInstance().getViewRoot().findComponent("impactAssessment:newPtResultList");
+		dataTable.reset();
+		dataTable.loadLazyData();
+		
 	}
 	
 	private void updateParentCodesAndParentTreeNodesForCmqTaget(List<CmqBaseTarget> cmqBaseList
@@ -2365,6 +2384,62 @@ public class ImpactSearchController implements Serializable {
 		}
 
 	}
+	
+	private class NewPtSearchLazyDataModel extends LazyDataModel<MeddraDictHierarchySearchDto> {
+
+		private static final long serialVersionUID = 7103755193083915253L;
+
+		private List<MeddraDictHierarchySearchDto> meddraDictHierarchySearchDtos = new ArrayList<>();
+
+		@Override
+		public List<MeddraDictHierarchySearchDto> load(int first, int pageSize, List<SortMeta> multiSortMeta,
+				Map<String, Object> filters) {
+			List<MeddraDictHierarchySearchDto> fetchedMeddraDictHierarchySearchDtos = null;
+			LOG.info("Loading more new pt list MeddraDictHierarchySearchDto starting from " + first + " with page size of " + pageSize);
+			String searchTerm = null;
+			if((newPtSocSearchTerm != null) && newPtSocSearchTerm.length > 0) {
+				searchTerm = newPtSocSearchTerm[0];
+			}
+			fetchedMeddraDictHierarchySearchDtos = meddraDictTargetService.findNewPtTerm(searchTerm, first, pageSize);
+			this.setRowCount(meddraDictTargetService.findNewPtTermRowCount(searchTerm).intValue());
+			this.meddraDictHierarchySearchDtos.addAll(fetchedMeddraDictHierarchySearchDtos);
+			
+			return fetchedMeddraDictHierarchySearchDtos;
+		}
+
+		@Override
+		public List<MeddraDictHierarchySearchDto> load(int first, int pageSize, String sortField, SortOrder sortOrder,
+				Map<String, Object> filters) {
+			List<MeddraDictHierarchySearchDto> fetchedMeddraDictHierarchySearchDtos = null;
+			LOG.info("Loading more new pt list MeddraDictHierarchySearchDto starting from " + first + " with page size of " + pageSize);
+			String searchTerm = null;
+			if((newPtSocSearchTerm != null) && newPtSocSearchTerm.length > 0) {
+				searchTerm = newPtSocSearchTerm[0];
+			}
+			fetchedMeddraDictHierarchySearchDtos = meddraDictTargetService.findNewPtTerm(searchTerm, first, pageSize);
+			this.setRowCount(meddraDictTargetService.findNewPtTermRowCount(searchTerm).intValue());
+			this.meddraDictHierarchySearchDtos.addAll(fetchedMeddraDictHierarchySearchDtos);
+			
+			return fetchedMeddraDictHierarchySearchDtos;
+		}
+
+		@Override
+		public MeddraDictHierarchySearchDto getRowData(String rowKey) {
+			long rowKeyLong = Long.parseLong(rowKey);
+			for (MeddraDictHierarchySearchDto meddraDictHierarchySearchDto : meddraDictHierarchySearchDtos) {
+				if (meddraDictHierarchySearchDto.getId().longValue() == rowKeyLong) {
+					return meddraDictHierarchySearchDto;
+				}
+			}
+			return null;
+		}
+
+		@Override
+		public Object getRowKey(MeddraDictHierarchySearchDto object) {
+			return object.getId();
+		}
+
+	}
 
 	public IMeddraDictService getMeddraDictCurrentService() {
 		return meddraDictCurrentService;
@@ -2645,4 +2720,37 @@ public class ImpactSearchController implements Serializable {
 	public void setIaWizard(Wizard iaWizard) {
 		this.iaWizard = iaWizard;
 	}
+
+	public LazyDataModel<MeddraDictHierarchySearchDto> getNewPtSearchLazyDataModel() {
+		return newPtSearchLazyDataModel;
+	}
+
+	public void setNewPtSearchLazyDataModel(LazyDataModel<MeddraDictHierarchySearchDto> newPtSearchLazyDataModel) {
+		this.newPtSearchLazyDataModel = newPtSearchLazyDataModel;
+	}
+
+	public MeddraDictHierarchySearchDto[] getSelectedNewPtLists() {
+		return selectedNewPtLists;
+	}
+
+	public void setSelectedNewPtLists(MeddraDictHierarchySearchDto[] selectedNewPtLists) {
+		this.selectedNewPtLists = selectedNewPtLists;
+	}
+
+	public String[] getNewPtSocSearchTerm() {
+		return newPtSocSearchTerm;
+	}
+
+	public void setNewPtSocSearchTerm(String[] newPtSocSearchTerm) {
+		this.newPtSocSearchTerm = newPtSocSearchTerm;
+	}
+
+	public List<String> getNewPtDistinctSocTermsList() {
+		return newPtDistinctSocTermsList;
+	}
+
+	public void setNewPtDistinctSocTermsList(List<String> newPtDistinctSocTermsList) {
+		this.newPtDistinctSocTermsList = newPtDistinctSocTermsList;
+	}
+
 }

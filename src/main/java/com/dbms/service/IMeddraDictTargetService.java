@@ -1,5 +1,6 @@
 package com.dbms.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import com.dbms.entity.cqt.dtos.MeddraDictHierarchySearchDto;
@@ -25,5 +26,11 @@ public interface IMeddraDictTargetService {
 
 	List<MeddraDictHierarchySearchDto> findChildrenByParentCode(String searchColumnTypePrefix,
 			String parentCodeColumnPrefix, Long parentCode);
+
+	List<MeddraDictHierarchySearchDto> findNewPtTerm(String socSearchTerm, int firstResult, int fetchSize);
+
+	BigDecimal findNewPtTermRowCount(String socSearchTerm);
+
+	List<String> findSocsWithNewPt();
 
 }

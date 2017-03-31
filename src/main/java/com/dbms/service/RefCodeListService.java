@@ -208,7 +208,8 @@ public class RefCodeListService extends
 			StringBuilder msg = new StringBuilder();
 			msg.append(
 					"findCodeByInternalCode failed for CODELIST_INTERNAL_VALUE value'")
-					.append(internalCode).append("' ")
+					.append(internalCode).append("' and codelistConfigType = '")
+					.append(configType).append("' ")
 					.append("Query used was ->").append(queryString);
 			LOG.error(msg.toString(), e);
 		} finally {
