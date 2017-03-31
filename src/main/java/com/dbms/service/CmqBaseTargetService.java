@@ -1,5 +1,6 @@
 package com.dbms.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -48,9 +49,22 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 			CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 			CriteriaQuery<CmqBaseTarget> cq = cb.createQuery(CmqBaseTarget.class);
 			Root<CmqBaseTarget> cmqRoot = cq.from(CmqBaseTarget.class);
-			Predicate equalsPredicate = cb.equal(cmqRoot.get("impactType"), "IMPACTED");
-			cq.where(equalsPredicate);
+			List<Predicate> pred = new ArrayList<Predicate>();
+			
+			pred.add(cb.equal(cmqRoot.get("impactType"), "IMPACTED"));
+			
+			if(filters.containsKey("cmqName") && filters.get("cmqName") != null)
+				pred.add(cb.like(cmqRoot.<String>get("cmqName"), "%" + filters.get("cmqName") + "%"));
+			
+			if(filters.containsKey("cmqTypeCd") && filters.get("cmqTypeCd") != null)
+				pred.add(cb.equal(cmqRoot.get("cmqTypeCd"), filters.get("cmqTypeCd")));
+			
+			if(filters.containsKey("smqLevel") && filters.get("smqLevel") != null)
+				pred.add(cb.equal(cmqRoot.get("cmqLevel"), filters.get("smqLevel")));
+			
+			cq.where(cb.and(pred.toArray(new Predicate[0])));
 			cq.orderBy(cb.asc(cmqRoot.get("cmqName")));
+			
 			TypedQuery<CmqBaseTarget> tq = entityManager.createQuery(cq);
 			
 			if (pageSize >= 0){
@@ -109,8 +123,21 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 			CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 			CriteriaQuery<CmqBaseTarget> cq = cb.createQuery(CmqBaseTarget.class);
 			Root<CmqBaseTarget> cmqRoot = cq.from(CmqBaseTarget.class);
-			Predicate equalsPredicate = cb.equal(cmqRoot.get("impactType"), "NON-IMPACTED");
-			cq.where(equalsPredicate);
+			List<Predicate> pred = new ArrayList<Predicate>();
+			
+			pred.add(cb.equal(cmqRoot.get("impactType"), "NON-IMPACTED"));
+			
+			if(filters.containsKey("cmqName") && filters.get("cmqName") != null)
+				pred.add(cb.like(cmqRoot.<String>get("cmqName"), "%" + filters.get("cmqName") + "%"));
+			
+			if(filters.containsKey("cmqTypeCd") && filters.get("cmqTypeCd") != null)
+				pred.add(cb.equal(cmqRoot.get("cmqTypeCd"), filters.get("cmqTypeCd")));
+			
+			if(filters.containsKey("smqLevel") && filters.get("smqLevel") != null)
+				pred.add(cb.equal(cmqRoot.get("cmqLevel"), filters.get("smqLevel")));
+			
+			cq.where(cb.and(pred.toArray(new Predicate[0])));
+			
 			cq.orderBy(cb.asc(cmqRoot.get("cmqName")));
 			TypedQuery<CmqBaseTarget> tq = entityManager.createQuery(cq);
 			

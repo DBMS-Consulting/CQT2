@@ -1,5 +1,7 @@
 package com.dbms.service;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -10,8 +12,11 @@ import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.persistence.metamodel.EntityType;
+import javax.persistence.metamodel.Metamodel;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.SQLQuery;
@@ -312,9 +317,20 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 			CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 			CriteriaQuery<SmqBaseTarget> cq = cb.createQuery(SmqBaseTarget.class);
 			Root<SmqBaseTarget> smqRoot = cq.from(SmqBaseTarget.class);
-			Predicate equalsPredicate = cb.equal(smqRoot.get("impactType"), "IMPACTED");
-			cq.where(equalsPredicate);
+
+			List<Predicate> pred = new ArrayList<Predicate>();
+			
+			pred.add(cb.equal(smqRoot.get("impactType"), "IMPACTED"));
+			
+			if(filters.containsKey("smqName") && filters.get("smqName") != null)
+				pred.add(cb.like(smqRoot.<String>get("smqName"), "%" + filters.get("smqName") + "%"));
+			
+			if(filters.containsKey("smqLevel") && filters.get("smqLevel") != null)
+				pred.add(cb.equal(smqRoot.get("smqLevel"), filters.get("smqLevel")));
+			
+			cq.where(cb.and(pred.toArray(new Predicate[0])));
 			cq.orderBy(cb.asc(smqRoot.get("smqName")));
+			
 			TypedQuery<SmqBaseTarget> tq = entityManager.createQuery(cq);
 			
 			if (pageSize >= 0){
@@ -373,8 +389,18 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 			CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 			CriteriaQuery<SmqBaseTarget> cq = cb.createQuery(SmqBaseTarget.class);
 			Root<SmqBaseTarget> smqRoot = cq.from(SmqBaseTarget.class);
-			Predicate equalsPredicate = cb.equal(smqRoot.get("impactType"), "NON-IMPACTED");
-			cq.where(equalsPredicate);
+			List<Predicate> pred = new ArrayList<Predicate>();
+			
+			pred.add(cb.equal(smqRoot.get("impactType"), "NON-IMPACTED"));
+			
+			if(filters.containsKey("smqName") && filters.get("smqName") != null)
+				pred.add(cb.like(smqRoot.<String>get("smqName"), "%" + filters.get("smqName") + "%"));
+			
+			if(filters.containsKey("smqLevel") && filters.get("smqLevel") != null)
+				pred.add(cb.equal(smqRoot.get("smqLevel"), filters.get("smqLevel")));
+			
+			cq.where(cb.and(pred.toArray(new Predicate[0])));
+			
 			cq.orderBy(cb.asc(smqRoot.get("smqName")));
 			TypedQuery<SmqBaseTarget> tq = entityManager.createQuery(cq);
 			
