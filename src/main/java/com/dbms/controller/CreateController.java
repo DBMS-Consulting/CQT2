@@ -1441,6 +1441,8 @@ public class CreateController implements Serializable {
 		cmq.setCmqStatus(CmqBase190.CMQ_STATUS_VALUE_PENDING);
 		cmq.setCmqState(CmqBase190.CMQ_STATE_VALUE_DRAFT);
 		cmq.setCmqGroup("No Group");
+		cmq.setActivationDate(null);
+		cmq.setActivatedBy(null);
 		cmq.setCreationDate(null);
 		cmq.setCreatedBy(null);
 		cmq.setLastModifiedBy(null);
