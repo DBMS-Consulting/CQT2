@@ -67,7 +67,7 @@
 				 				
 				<p:commandButton value="Parent List" id="ctb15"
                     styleClass="#{createController.parentViewable ? '' : 'btn-disabled'}" update="@form"
-                    actionListener="#{parentListController.setChildCmqEntity(createController.selectedData)}"
+                    actionListener="#{searchController.populateParentCmqByChild(createController.selectedData)}"
 					disabled="#{createController.parentViewable ? false : true}"
                     oncomplete="PF('parentDlg').show()" icon="fa fa-level-up">
 				</p:commandButton>
