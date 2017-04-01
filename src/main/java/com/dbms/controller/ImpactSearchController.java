@@ -300,7 +300,7 @@ public class ImpactSearchController implements Serializable {
 				this.populateCmqRelations(cmqCode, expandedTreeNode, "current");
 				
 				//Color
-				if (cmqBase.getImpactType().equals("ICC"))
+				if (cmqBase.getImpactType().equals("ICC") || cmqBase.getImpactType().equalsIgnoreCase("IMPACTED"))
 					hierarchyNode.setRowStyleClass("blue-colored");
 			} else if (entity instanceof SmqBase190){
 				SmqBase190 smqBase = (SmqBase190) entity;
@@ -308,7 +308,7 @@ public class ImpactSearchController implements Serializable {
 				this.populateSmqRelations(smqBase.getSmqCode(), expandedTreeNode, "current");
 				
 				//Color
-				if (smqBase.getImpactType().equals("ICC"))
+				if (smqBase.getImpactType().equals("ICS") || smqBase.getImpactType().equalsIgnoreCase("IMPACTED"))
 					hierarchyNode.setRowStyleClass("blue-colored");
 			} else if(entity instanceof MeddraDictHierarchySearchDto) {
 				String parentLevel = hierarchyNode.getLevel();
@@ -343,7 +343,7 @@ public class ImpactSearchController implements Serializable {
 				this.populateCmqRelations(cmqCode, expandedTreeNode, "target");
 				
 				//Color
-				if (cmqBase.getImpactType().equals("ICC"))
+				if (cmqBase.getImpactType().equals("ICC") || cmqBase.getImpactType().equalsIgnoreCase("IMPACTED"))
 					hierarchyNode.setRowStyleClass("blue-colored");
 			} else if (entity instanceof SmqBaseTarget){
 				SmqBaseTarget smqBase = (SmqBaseTarget) entity;
@@ -351,7 +351,7 @@ public class ImpactSearchController implements Serializable {
 				this.populateSmqRelations(smqBase.getSmqCode(), expandedTreeNode, "target");
 				
 				//Color
-				if (smqBase.getImpactType().equals("ICS"))
+				if (smqBase.getImpactType().equals("ICS") || smqBase.getImpactType().equalsIgnoreCase("IMPACTED"))
 					hierarchyNode.setRowStyleClass("blue-colored");
 			} else if(entity instanceof MeddraDictHierarchySearchDto) {
 				String parentLevel = hierarchyNode.getLevel();
@@ -1268,7 +1268,7 @@ public class ImpactSearchController implements Serializable {
 		CmqBase190 cmqBaseCurrent = this.cmqBaseCurrentService.findByCode(selectedCmqList.getCmqCode());
 		HierarchyNode node = this.createCmqBaseCurrentHierarchyNode(cmqBaseCurrent);
 		TreeNode cmqBaseTreeNode = new DefaultTreeNode(node, currentTableRootTreeNode);
-		if (cmqBaseCurrent.getImpactType().equals("IMPACTED"))
+		if (cmqBaseCurrent.getImpactType().equals("IMPACTED") || cmqBaseCurrent.getImpactType().equalsIgnoreCase("IMPACTED"))
 			node.setRowStyleClass("blue-colored");
 	
 		boolean dummyNodeAdded = false;
@@ -1599,7 +1599,7 @@ public class ImpactSearchController implements Serializable {
 					childNode.setEntity(childSmqBase);
 					smqChildCodeList.add(childSmqBase.getSmqCode());
 					
-					if (childSmqBase.getImpactType().equals("ICS"))
+					if (childSmqBase.getImpactType().equals("ICS") || childSmqBase.getImpactType().equalsIgnoreCase("IMPACTED"))
 						childNode.setRowStyleClass("blue-colored");
 					//setSMQCurrentNodeStyle(childNode, childSmqBase);
 				} else {
@@ -1622,7 +1622,7 @@ public class ImpactSearchController implements Serializable {
 					childNode.setEntity(childSmqBase);
 					smqChildCodeList.add(childSmqBase.getSmqCode());
 					
-					if (childSmqBase.getImpactType().equals("ICS"))
+					if (childSmqBase.getImpactType().equals("ICS")  || childSmqBase.getImpactType().equalsIgnoreCase("IMPACTED"))
 						childNode.setRowStyleClass("blue-colored");
 				}
 				// add child to parent
@@ -1796,7 +1796,7 @@ public class ImpactSearchController implements Serializable {
 					childCmqCodeList.add(childCmqBase.getCmqCode());
 					
 					//Color
-					if (childCmqBase.getImpactType().equals("ICC"))
+					if (childCmqBase.getImpactType().equals("ICC") || childCmqBase.getImpactType().equalsIgnoreCase("IMPACTED"))
 						node.setRowStyleClass("blue-colored");
 					//setCMQCurrentNodeStyle(node, childCmqBase);
 				} else {
@@ -1811,7 +1811,7 @@ public class ImpactSearchController implements Serializable {
 					childCmqCodeList.add(childCmqBase.getCmqCode());
 					
 					//Color
-					if (childCmqBase.getImpactType().equals("ICC"))
+					if (childCmqBase.getImpactType().equals("ICC") || childCmqBase.getImpactType().equalsIgnoreCase("IMPACTED"))
 						node.setRowStyleClass("blue-colored");
 				}
 			}
