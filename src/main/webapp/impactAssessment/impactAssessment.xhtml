@@ -9,39 +9,6 @@
 
 
 	<ui:define name="page-content">
-	<script>
-	function initRelationDND() {
-		// define the droppable area on the treetable
-		$('.ui-treetable.ui-treetable-currentListsAndSmqs').droppable({
-           activeClass: 'ui-state-active',
-           hoverClass: 'ui-state-highlight',
-           tolerance: 'pointer',
-           scope: 'selRelationDnd',
-           drop: function(event, ui) {
-        	    var dndRow = $(ui.draggable).closest('tr');
-        	    
-        	    impactSearchToResult([
-        	         {name: 'term', value:  $('td:nth-child(2)', dndRow).text()}
-        	        ,{name: 'code', value: $('td:nth-child(3)', dndRow).text()}	
-        	        ,{name: 'status', value: $('td:nth-child(4)', dndRow).text()}
-        	        ,{name: 'state', value: $('td:nth-child(5)', dndRow).text()}
-        	        ,{name: 'entityId', value: $('.data-entity-id', dndRow).text()}
-        	        ,{name: 'entityType', value: $('.data-entity-type', dndRow).text()}
-        	    ]);
-        	    
-        	    //notifyCreateControllerRelationsModify();
-           }
-        });
-
-		$('.ui-datatable.ui-datatable-impactedCmqList tr').draggable({
-			helper: 'clone',
-			scope: 'selRelationDnd',
-            zIndex: 10000
-		});
-		
-	}
-</script>
-<script>initRelationDND()</script>
 		<h:form id="impactAssessment">
 			<p:growl id="messages" />
 
@@ -132,8 +99,7 @@
 								
 								<p:remoteCommand name="impactSearchToResult" 
 										actionListener="#{impactSearchController.onRelationDrop}" 
-										update="@form" 
-										oncomplete="initRelationDND()" />
+										update="@form" />
 								
 								<p:treeTable value="#{impactSearchController.currentTableRootTreeNode}" var="node" widgetVar="currentLists"
 									id="currentListsAndSmqs" rows="30" styleClass="ui-treetable-currentListsAndSmqs"
@@ -330,7 +296,7 @@
 				</p:tab>
 			</p:wizard>
 
-			<p:dialog header="Impact Search" widgetVar="select_mq" onShow="initRelationDND()" width="840px" minWidth="840">
+			<p:dialog header="Impact Search" widgetVar="select_mq" width="840px" minWidth="840">
 				<ui:include src="../impactCommon/impactSearch.xhtml"></ui:include>
 
 				<p:spacer height="10"></p:spacer>
