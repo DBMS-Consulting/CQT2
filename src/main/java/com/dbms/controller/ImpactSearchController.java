@@ -1118,7 +1118,36 @@ public class ImpactSearchController implements Serializable {
 		DataTable dataTable = (DataTable)  FacesContext.getCurrentInstance().getViewRoot().findComponent("impactAssessment:newPtResultList");
 		dataTable.reset();
 		dataTable.loadLazyData();
-		
+	}
+
+	public void addSelectedNewPtsToTargetRelation() {
+		if((this.selectedNewPtLists != null) && (this.currentTableRootTreeNode.getChildCount() == 1)) {
+			//count will always be either 0 or 1.
+			TreeNode parentTreeNode = this.targetTableRootTreeNode.getChildren().get(0);
+			for (MeddraDictHierarchySearchDto meddraDictHierarchySearchDto : selectedNewPtLists) {
+				Long dtoCode = Long.valueOf(meddraDictHierarchySearchDto.getCode());
+				HierarchyNode node = this.createMeddraNode(meddraDictHierarchySearchDto, "PT");
+				TreeNode treeNode = new DefaultTreeNode(node, parentTreeNode);
+			
+				Long countOfChildren = this.meddraDictTargetService.findChldrenCountByParentCode("LLT_", "PT_", dtoCode);
+				if((null != countOfChildren) && (countOfChildren > 0)) {
+					// add a dummmy node to show expand arrow
+					HierarchyNode dummyNode = new HierarchyNode(null, null,
+							null, null);
+					dummyNode.setDummyNode(true);
+					new DefaultTreeNode(dummyNode, treeNode);
+				}
+			}
+			
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Selected New PTs added successfully.", "");
+			FacesContext ctx = FacesContext.getCurrentInstance();
+			ctx.addMessage(null, msg);
+			targetRelationsUpdated = true;
+		} else {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "No New PTs selected for addition to target table.", "");
+			FacesContext ctx = FacesContext.getCurrentInstance();
+			ctx.addMessage(null, msg);
+		}
 	}
 	
 	private void updateParentCodesAndParentTreeNodesForCmqTaget(List<CmqBaseTarget> cmqBaseList

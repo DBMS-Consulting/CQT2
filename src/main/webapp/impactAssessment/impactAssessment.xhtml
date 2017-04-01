@@ -394,6 +394,8 @@
 
 				<p:spacer height="10"></p:spacer>
 				<h:panelGrid style="float: right">
+					<p:commandButton value="Add selected" onclick="PF('new_pt').hide()" update="futureListsAndSmqs"
+						action="#{impactSearchController.addSelectedNewPtsToTargetRelation}" />
 					<p:commandButton value="Cancel" onclick="PF('new_pt').hide()" />
 				</h:panelGrid>
 			</p:dialog>
