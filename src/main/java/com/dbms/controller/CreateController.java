@@ -660,7 +660,7 @@ public class CreateController implements Serializable {
 			this.copyRelationsToNewCmq(copiedCode, savedEntity);
 			savedRelations = true;
 			
-			this.copyChildCmqsToNewCmq(copiedCode, savedEntity);
+			//this.copyChildCmqsToNewCmq(copiedCode, savedEntity);
 			
 			LOG.info("All updates completed.");		
 			
