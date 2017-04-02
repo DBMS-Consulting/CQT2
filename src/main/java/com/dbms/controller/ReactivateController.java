@@ -13,10 +13,8 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
-import javax.faces.event.AjaxBehaviorEvent;
 
 import org.primefaces.context.RequestContext;
-import org.primefaces.event.TransferEvent;
 import org.primefaces.model.DualListModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,6 +73,12 @@ public class ReactivateController implements Serializable {
 		int cptChild = 0;
 		boolean childNotSelected = true;
 		List<CmqBase190> targetCmqsSelected = new ArrayList<CmqBase190>(this.reactivateDualListModel.getTarget());
+		if((targetCmqsSelected == null) || (targetCmqsSelected.size() == 0)) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Please select at least 1 list to reactivate.", "");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return;
+		}
 		List<Long> targetCmqCodes = new ArrayList<>();
 		LOG.info("\n\n **********************   targetCmqsSelected size " + targetCmqsSelected.size());
 		
@@ -167,6 +171,14 @@ public class ReactivateController implements Serializable {
 					cmqBase190.setCmqStatus(CmqBase190.CMQ_STATUS_VALUE_PENDING); 
 					cmqBase190.setLastModifiedDate(new Date());
 					cmqBase190.setLastModifiedBy("NONE");
+					cmqBase190.setActivationDate(new Date());
+ 					cmqBase190.setActivatedBy("NONE");
+ 					if (cmqBase190.getCmqApproveReason() == null)
+ 						cmqBase190.setCmqApproveReason("");
+ 					if (cmqBase190.getCmqDesignee2() == null)
+ 						cmqBase190.setCmqDesignee2("");
+ 					if (cmqBase190.getCmqDesignee3() == null)
+ 						cmqBase190.setCmqDesignee3("");
 				}
 				try {
 					this.cmqBaseService.update(targetCmqParents);
@@ -179,15 +191,42 @@ public class ReactivateController implements Serializable {
  			for (CmqBase190 cmqBase190 : targetCmqsToReactivate) {
 				cmqBase190.setCmqState(CmqBase190.CMQ_STATE_VALUE_DRAFT);
 				cmqBase190.setCmqStatus(CmqBase190.CMQ_STATUS_VALUE_PENDING); 
-//				cmqBase190.setActivatedBy("NONE");
-//				cmqBase190.setActivationDate(new Date());
+				cmqBase190.setActivatedBy("NONE");
+				cmqBase190.setActivationDate(new Date());
 				cmqBase190.setLastModifiedDate(new Date());
 				cmqBase190.setLastModifiedBy("NONE");
+				if (cmqBase190.getCmqApproveReason() == null)
+						cmqBase190.setCmqApproveReason("");
+					if (cmqBase190.getCmqDesignee2() == null)
+						cmqBase190.setCmqDesignee2("");
+					if (cmqBase190.getCmqDesignee3() == null)
+						cmqBase190.setCmqDesignee3("");
+				
 			}
+ 			
+ 			if (targetCmqsToReactivate.isEmpty()) {
+ 				for (CmqBase190 cmqBase190 : targetCmqsSelected) {
+ 					cmqBase190.setCmqState(CmqBase190.CMQ_STATE_VALUE_DRAFT);
+ 					cmqBase190.setCmqStatus(CmqBase190.CMQ_STATUS_VALUE_PENDING); 
+ 					cmqBase190.setLastModifiedDate(new Date());
+ 					cmqBase190.setLastModifiedBy("NONE");
+ 					cmqBase190.setActivationDate(new Date());
+ 					cmqBase190.setActivatedBy("NONE");
+ 					if (cmqBase190.getCmqApproveReason() == null)
+ 						cmqBase190.setCmqApproveReason("");
+ 					if (cmqBase190.getCmqDesignee2() == null)
+ 						cmqBase190.setCmqDesignee2("");
+ 					if (cmqBase190.getCmqDesignee3() == null)
+ 						cmqBase190.setCmqDesignee3("");
+ 				}
+ 			}
 
 			try {
-				
-				this.cmqBaseService.update(targetCmqsToReactivate);
+				if (targetCmqsToReactivate.isEmpty()) {
+					this.cmqBaseService.update(targetCmqsSelected);
+				}
+				else
+					this.cmqBaseService.update(targetCmqsToReactivate);
 				
 				//update the dualListModel source and target
 				init();

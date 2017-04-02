@@ -76,6 +76,12 @@ public class RetireController implements Serializable {
 		int cpt = 0;
 		int cptChild = 0;
 		List<CmqBase190> targetCmqsSelected = new ArrayList<CmqBase190>(this.retireDualListModel.getTarget());
+		if(targetCmqsSelected.isEmpty()) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Please select at least 1 list to retire.", "");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return;
+		} 
 		List<Long> targetCmqCodes = new ArrayList<>();
 		LOG.info("\n\n **********************   targetCmqsSelected size " + targetCmqsSelected.size());
 		
