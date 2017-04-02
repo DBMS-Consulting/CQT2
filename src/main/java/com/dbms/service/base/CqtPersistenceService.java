@@ -299,4 +299,5 @@ public abstract class CqtPersistenceService<E extends IEntity> implements ICqtPe
 	public Class<E> getEntityClass() {
 		return this.entityClass;
 	}
+	
 }

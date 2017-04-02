@@ -39,6 +39,7 @@ import com.dbms.entity.cqt.dtos.MeddraDictReverseHierarchySearchDto;
 import com.dbms.service.ICmqBase190Service;
 import com.dbms.service.ICmqRelation190Service;
 import com.dbms.service.IRefCodeListService;
+import com.dbms.util.CmqUtils;
 import com.dbms.util.exceptions.CqtServiceException;
 import com.dbms.view.ListDetailsFormModel;
 import com.dbms.view.ListDetailsFormModel.WizardType;
@@ -715,9 +716,10 @@ public class CreateController implements Serializable {
 					LOG.error("Exception occurred while deleting cmq with id " + savedCmqId, e);
 				}
 			}
-
+			String exceptionMessageChain = CmqUtils.getExceptionMessageChain(e);
+			
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"An error occurred while trying to save the details. Exception is [" + e.getMessage() + "]", "");
+					"An error occurred while trying to save the details. Exception is [" + exceptionMessageChain + "]", "");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
 			return null;

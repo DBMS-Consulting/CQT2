@@ -146,13 +146,13 @@ public class CmqBase190 extends BaseEntity {
 	@Column(name = "CMQ_SUBVERSION", nullable = false, precision = 10)
 	private BigDecimal cmqSubversion;
 
-	@Column(name = "CMQ_DESIGNEE2", nullable = false, length = 100)
+	@Column(name = "CMQ_DESIGNEE2", length = 100)
 	private String cmqDesignee2;
 
-	@Column(name = "CMQ_DESIGNEE3", nullable = false, length = 100)
+	@Column(name = "CMQ_DESIGNEE3", length = 100)
 	private String cmqDesignee3;
 
-	@Column(name = "CMQ_APPROVE_REASON", nullable = false, length = 4000)
+	@Column(name = "CMQ_APPROVE_REASON", length = 4000)
 	private String cmqApproveReason;
 
 	public Long getId() {
