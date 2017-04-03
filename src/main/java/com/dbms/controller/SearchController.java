@@ -181,7 +181,9 @@ public class SearchController extends BaseController<CmqBase190> {
 	}
 
 	public void changeLevel() {
-		if (this.extension.equals("PRO")) {
+		if(StringUtils.isBlank(this.extension)) {
+			setLevel(null);
+		} else if (this.extension.equals("PRO")) {
 			setLevel(2);
 		} else {
 			setLevel(1);
@@ -201,7 +203,7 @@ public class SearchController extends BaseController<CmqBase190> {
 		this.extension = "";
 		this.state = "PUBLISHED";
 		this.status = "A";
-		this.level = 1;
+		this.level = null;
 		// this.critical = "No";
 		this.group = "No Group";
 
@@ -224,7 +226,9 @@ public class SearchController extends BaseController<CmqBase190> {
 	public void changeState(AjaxBehaviorEvent event) {		
 		if ("P".equalsIgnoreCase(status))
 			setState("DRAFT");
-		if ("A".equalsIgnoreCase(status))
+		else if ("A".equalsIgnoreCase(status))
+			setState("PUBLISHED");
+		else if ("I".equalsIgnoreCase(status))
 			setState("PUBLISHED");
 		else if("".equals(status))
 			setState("");
