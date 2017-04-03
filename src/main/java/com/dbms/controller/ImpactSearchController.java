@@ -2072,6 +2072,8 @@ public class ImpactSearchController implements Serializable {
 				|| (meddraDictHierarchySearchDto.getLltNameChanged() != null && "NCH".equalsIgnoreCase(meddraDictHierarchySearchDto.getLltNameChanged()))) {
 			node.setRowStyleClass("italic");
 		}
+		if ("LCN".equals(meddraDictHierarchySearchDto.getLltCurrencyChange()))
+			node.setRowStyleClass("grey-colored");
 		
 	}
 	
@@ -2098,6 +2100,8 @@ public class ImpactSearchController implements Serializable {
 				|| (meddraDictHierarchySearchDto.getLltNameChanged() != null && "NCH".equalsIgnoreCase(meddraDictHierarchySearchDto.getLltNameChanged()))) {
 			node.setRowStyleClass("italic");
 		}
+		if ("LCN".equals(meddraDictHierarchySearchDto.getLltCurrencyChange()))
+			node.setRowStyleClass("grey-colored");
 	}
 	
 	private void populateSmqTreeNode(IEntity entity, TreeNode expandedTreeNode, String cmqType, Long parentCode) {
