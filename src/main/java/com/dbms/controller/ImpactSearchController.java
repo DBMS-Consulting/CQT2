@@ -1735,7 +1735,7 @@ public class ImpactSearchController implements Serializable {
 		}
 		if("PDL".equals(childRelation.getRelationImpactType())
 				|| "NTR".equals(childRelation.getRelationImpactType())
-				|| "LNC".equals(childRelation.getRelationImpactType())
+				|| "LCN".equals(childRelation.getRelationImpactType())
 				|| "DTR".equals(childRelation.getRelationImpactType())
 				|| "MRG".equals(childRelation.getRelationImpactType())
 				|| "HNP".equals(childRelation.getRelationImpactType())
@@ -1748,6 +1748,8 @@ public class ImpactSearchController implements Serializable {
 			childRelationNode.setRowStyleClass("blue-colored");	
 		if ("SWC".equals(childRelation.getRelationImpactType()))
 			childRelationNode.setRowStyleClass("pink-colored");	
+		if (childRelation.getRelationImpactType() == null)
+			childRelationNode.setRowStyleClass("none");
 	}
 
 	private void setSMQTargetNodeStyle(HierarchyNode childRelationNode,	SmqRelationTarget childRelation) {
@@ -1766,7 +1768,8 @@ public class ImpactSearchController implements Serializable {
 			childRelationNode.setRowStyleClass("blue-colored");
 		if ("LCN".equals(childRelation.getRelationImpactType()))
 			childRelationNode.setRowStyleClass("grey-colored");
-		
+		if (childRelation.getRelationImpactType() == null)
+			childRelationNode.setRowStyleClass("none");
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -2021,7 +2024,7 @@ public class ImpactSearchController implements Serializable {
 				|| "PTS".equals(cmqRelation.getRelationImpactType())
 				|| "DTR".equals(cmqRelation.getRelationImpactType())
 				|| "MRG".equals(cmqRelation.getRelationImpactType())
-				|| "LNC".equals(cmqRelation.getRelationImpactType())
+				|| "LCN".equals(cmqRelation.getRelationImpactType())
 				|| "HPP".equals(cmqRelation.getRelationImpactType())
 				|| "LPP".equals(cmqRelation.getRelationImpactType())
 				|| "LDP".equals(cmqRelation.getRelationImpactType())) {
@@ -2031,6 +2034,10 @@ public class ImpactSearchController implements Serializable {
 			node.setRowStyleClass("blue-colored");
 		if ("SWC".equals(cmqRelation.getRelationImpactType()))
 			node.setRowStyleClass("pink-colored");
+		
+		if (cmqRelation.getRelationImpactType() == null)
+			node.setRowStyleClass("none");
+		
 	}
 
 	private void setCMQTargetNodeStyle(HierarchyNode node, CmqRelationTarget cmqRelationTarget) {
@@ -2049,6 +2056,8 @@ public class ImpactSearchController implements Serializable {
 			node.setRowStyleClass("blue-colored");
 		if ("LCN".equals(cmqRelationTarget.getRelationImpactType()))
 			node.setRowStyleClass("grey-colored");
+		if (cmqRelationTarget.getRelationImpactType() == null)
+			node.setRowStyleClass("none");
 	}
 
 	private void setCurrentMeddraColor(MeddraDictHierarchySearchDto meddraDictHierarchySearchDto, HierarchyNode node) {
@@ -2072,8 +2081,8 @@ public class ImpactSearchController implements Serializable {
 				|| (meddraDictHierarchySearchDto.getLltNameChanged() != null && "NCH".equalsIgnoreCase(meddraDictHierarchySearchDto.getLltNameChanged()))) {
 			node.setRowStyleClass("italic");
 		}
-		if ("LCN".equals(meddraDictHierarchySearchDto.getLltCurrencyChange()))
-			node.setRowStyleClass("grey-colored");
+		/*if ("LCN".equals(meddraDictHierarchySearchDto.getLltCurrencyChange()))
+			node.setRowStyleClass("red-colored");*/
 		
 	}
 	
@@ -2100,8 +2109,8 @@ public class ImpactSearchController implements Serializable {
 				|| (meddraDictHierarchySearchDto.getLltNameChanged() != null && "NCH".equalsIgnoreCase(meddraDictHierarchySearchDto.getLltNameChanged()))) {
 			node.setRowStyleClass("italic");
 		}
-		if ("LCN".equals(meddraDictHierarchySearchDto.getLltCurrencyChange()))
-			node.setRowStyleClass("grey-colored");
+	/*	if ("LCN".equals(meddraDictHierarchySearchDto.getLltCurrencyChange()))
+			node.setRowStyleClass("grey-colored");*/
 	}
 	
 	private void populateSmqTreeNode(IEntity entity, TreeNode expandedTreeNode, String cmqType, Long parentCode) {
