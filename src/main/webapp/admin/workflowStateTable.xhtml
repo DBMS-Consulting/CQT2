@@ -39,7 +39,7 @@
 
 			<p:commandButton action="#{adminController.initGetRef}"
 				update="@form" process="@this" oncomplete="PF('workflowD').show()"
-				icon="ui-icon-pencil" title="View">
+				icon="ui-icon-pencil" title="View/Edit">
 				<f:setPropertyActionListener value="#{val}"
 					target="#{adminController.selectedRow}" />
 			</p:commandButton>
@@ -69,7 +69,7 @@
 				<p:outputLabel value="Code" styleClass="label-right" />
 				<p:inputText required="true" requiredMessage="The code is required"
 					value="#{adminController.ref.codelistInternalValue}"
-					style="width: 50px !important; text-transform: uppercase; float: left" />
+					style="width: 100px !important; text-transform: uppercase; float: left" />
 
 				<p:outputLabel value="Workflow State Name" styleClass="label-right" />
 				<p:inputText required="true" requiredMessage="The value is required"

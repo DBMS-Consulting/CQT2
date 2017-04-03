@@ -36,9 +36,10 @@
 		</p:column>
 
 		<p:column style="width:32px;text-align: center">
-			<p:commandButton action="#{adminController.initGetRef}" update="@form" process="@this"
+			<p:commandButton action="#{adminController.initGetRef}"
+				update="@form" process="@this"
 				oncomplete="PF('extensionD').show()" icon="ui-icon-pencil"
-				title="View">
+				title="View/Edit">
 				<f:setPropertyActionListener value="#{val}"
 					target="#{adminController.selectedRow}" />
 			</p:commandButton>
@@ -46,7 +47,7 @@
 	</p:dataTable>
 
 	<h:panelGrid columns="2" cellpadding="5">
-	<i class="fa fa-plus"></i>
+		<i class="fa fa-plus"></i>
 		
 		<p:commandLink type="button" value="Add extension"  update="dialog" process="@this"
 			oncomplete="PF('extensionD').show()" 
@@ -61,8 +62,7 @@
 				<p:outputLabel value="Serial #" styleClass="label-right" />
 				<p:spinner required="true" style="float: left"
 					requiredMessage="The serial # is required"
-					value="#{adminController.ref.serialNum}"
-					 />
+					value="#{adminController.ref.serialNum}" />
 
 				<p:outputLabel value="Code" styleClass="label-right" />
 				<p:inputText required="true" requiredMessage="The code is required"
@@ -95,7 +95,7 @@
 					action="#{adminController.addRefCodelist}" />
 
 				<p:commandButton value="Cancel" icon="fa fa-close" 
-					onclick="PF('extensionD').hide()" 
+					onclick="PF('extensionD').hide()" update="tableExtension msgExt"
 					immediate="true" />
 			</h:panelGrid>
 

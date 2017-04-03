@@ -38,7 +38,7 @@
 		<p:column style="width:32px;text-align: center">
 			<p:commandButton update="@form" process="@this"
 				action="#{adminController.initGetRef}"
-				oncomplete="PF('meddraD').show()" icon="ui-icon-pencil" title="View">
+				oncomplete="PF('meddraD').show()" icon="ui-icon-pencil" title="View/Edit">
 				<f:setPropertyActionListener value="#{val}"
 					target="#{adminController.selectedRow}" />
 			</p:commandButton>
@@ -68,7 +68,7 @@
 				<p:outputLabel value="Code" styleClass="label-right" />
 				<p:inputText required="true" requiredMessage="The code is required"
 					value="#{adminController.ref.codelistInternalValue}"
-					style="width: 50px !important; text-transform: uppercase; float: left" />
+					style="width: 150px !important; text-transform: uppercase; float: left" />
 
 				<p:outputLabel value="MedDRA Value" styleClass="label-right" />
 				<p:inputText required="true" requiredMessage="The value is required"

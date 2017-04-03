@@ -36,10 +36,10 @@
 		</p:column>
 
 		<p:column style="width:32px;text-align: center">
-			<p:commandButton update="@form"
-				action="#{adminController.initGetRef}"
+			<p:commandButton action="#{adminController.initGetRef}"
+				update="@form" process="@this"
 				oncomplete="PF('programD').show()" icon="ui-icon-pencil"
-				title="View">
+				title="View/Edit">
 				<f:setPropertyActionListener value="#{val}"
 					target="#{adminController.selectedRow}" />
 			</p:commandButton>
@@ -47,10 +47,7 @@
 	</p:dataTable>
 
 	<h:panelGrid columns="2" cellpadding="5">
-		<!-- <p:commandButton value="Add Program" icon="fa fa-plus"
-			immediate="true" onclick="PF('programD').show()"
-			action="#{adminController.initAddCodelist}" /> -->
-			
+		
 		<i class="fa fa-plus"></i>
 		<p:commandLink type="button" value="Add Program"
 			update="dialogProg" process="@this" oncomplete="PF('programD').show()"
