@@ -148,11 +148,11 @@
 							</p:panel>
 
 							<p:panel style="width: 100%; padding: 0">
-								<p:toolbar>
+								<p:toolbar id="futureListsToolbar">
 									<f:facet name="left">
-										<p:commandButton value="Hierarchy Search" actionListener="#"
+										<p:commandButton value="Hierarchy Search" actionListener="#" disabled="#{not impactSearchController.hierachySearchButtonEnabled}"
 											icon="fa fa-search" onclick="PF('search').show();" />
-										<p:commandButton value="New PTs" actionListener="#"
+										<p:commandButton value="New PTs" actionListener="#" disabled="#{not impactSearchController.selectNewPTButtonEnabled}"
 											onclick="PF('new_pt').show();" icon="fa fa-book" />
 
 										<p:commandButton value="Refresh" actionListener="#"
@@ -314,7 +314,7 @@
 				<h:panelGrid style="float: right">
 					<h:panelGrid columns="2">
 						<p:commandButton value="Add selected" onclick="PF('select_mq').hide()"
-							update="currentListsAndSmqs futureListsAndSmqs">
+							update="currentListsAndSmqs futureListsAndSmqs futureListsToolbar">
 							<f:actionListener binding="#{impactSearchController.updateCurrentTable()}"/>
 	    					<f:actionListener binding="#{impactSearchController.updateTargetTable()}"/>	
 						</p:commandButton>
@@ -343,12 +343,12 @@
 				<h:panelGrid style="width: 500px">
 					<h:panelGrid id="pgl1" columns="3">
 						<p:outputLabel value="SOC" />
-						<p:selectCheckboxMenu id="select"
+						<p:selectOneMenu id="select"
 							value="#{impactSearchController.newPtSocSearchTerm}" label="SOC"
-							filter="true" filterMatchMode="startsWith" style="width:400px" >
+							filter="true" filterMatchMode="startsWith" style="width:400px" autoWidth="false">
 							<f:selectItem itemValue="" itemLabel="All" />
 							<f:selectItems value="#{impactSearchController.newPtDistinctSocTermsList}"></f:selectItems>
-						</p:selectCheckboxMenu>
+						</p:selectOneMenu>
 
 						<p:commandButton value="Search" id="cb11" action="#{impactSearchController.loadNewPts}" partialSubmit="true" update="newPtResultList"/>
 					</h:panelGrid>
@@ -363,14 +363,11 @@
 							<h:outputText value="#{newPtResultList.term}" rendered="true" />
 						</p:column>
 
-						<!-- <p:column headerText="Level">
-							<h:outputText value="#" rendered="true" />
-						</p:column> -->
 					</p:dataTable>
 				</h:panelGrid>
 
 				<p:spacer height="10"></p:spacer>
-				<h:panelGrid style="float: right">
+				<h:panelGrid style="float: right" columns="2">
 					<p:commandButton value="Add selected" onclick="PF('new_pt').hide()" update="futureListsAndSmqs"
 						action="#{impactSearchController.addSelectedNewPtsToTargetRelation}" />
 					<p:commandButton value="Cancel" onclick="PF('new_pt').hide()" />

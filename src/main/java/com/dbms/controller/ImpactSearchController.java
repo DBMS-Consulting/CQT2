@@ -147,7 +147,7 @@ public class ImpactSearchController implements Serializable {
 	
 	private LazyDataModel<MeddraDictHierarchySearchDto> newPtSearchLazyDataModel;
 	
-	private String[] newPtSocSearchTerm;
+	private String newPtSocSearchTerm;
 	
 	private MeddraDictHierarchySearchDto[] selectedNewPtLists;
 	
@@ -2730,8 +2730,8 @@ public class ImpactSearchController implements Serializable {
 			List<MeddraDictHierarchySearchDto> fetchedMeddraDictHierarchySearchDtos = null;
 			LOG.info("Loading more new pt list MeddraDictHierarchySearchDto starting from " + first + " with page size of " + pageSize);
 			String searchTerm = null;
-			if((newPtSocSearchTerm != null) && newPtSocSearchTerm.length > 0) {
-				searchTerm = newPtSocSearchTerm[0];
+			if(newPtSocSearchTerm != null) {
+				searchTerm = newPtSocSearchTerm;
 			}
 			fetchedMeddraDictHierarchySearchDtos = meddraDictTargetService.findNewPtTerm(searchTerm, first, pageSize);
 			this.setRowCount(meddraDictTargetService.findNewPtTermRowCount(searchTerm).intValue());
@@ -2746,8 +2746,8 @@ public class ImpactSearchController implements Serializable {
 			List<MeddraDictHierarchySearchDto> fetchedMeddraDictHierarchySearchDtos = null;
 			LOG.info("Loading more new pt list MeddraDictHierarchySearchDto starting from " + first + " with page size of " + pageSize);
 			String searchTerm = null;
-			if((newPtSocSearchTerm != null) && newPtSocSearchTerm.length > 0) {
-				searchTerm = newPtSocSearchTerm[0];
+			if(newPtSocSearchTerm != null) {
+				searchTerm = newPtSocSearchTerm;
 			}
 			fetchedMeddraDictHierarchySearchDtos = meddraDictTargetService.findNewPtTerm(searchTerm, first, pageSize);
 			this.setRowCount(meddraDictTargetService.findNewPtTermRowCount(searchTerm).intValue());
@@ -3070,11 +3070,11 @@ public class ImpactSearchController implements Serializable {
 		this.selectedNewPtLists = selectedNewPtLists;
 	}
 
-	public String[] getNewPtSocSearchTerm() {
+	public String getNewPtSocSearchTerm() {
 		return newPtSocSearchTerm;
 	}
 
-	public void setNewPtSocSearchTerm(String[] newPtSocSearchTerm) {
+	public void setNewPtSocSearchTerm(String newPtSocSearchTerm) {
 		this.newPtSocSearchTerm = newPtSocSearchTerm;
 	}
 
@@ -3084,6 +3084,20 @@ public class ImpactSearchController implements Serializable {
 
 	public void setNewPtDistinctSocTermsList(List<String> newPtDistinctSocTermsList) {
 		this.newPtDistinctSocTermsList = newPtDistinctSocTermsList;
+	}
+	
+	public boolean isSelectNewPTButtonEnabled() {
+		return ((selectedImpactedCmqList != null) ||
+				(selectedNotImpactedCmqList != null) ||
+				(selectedImpactedSmqList != null) ||
+				(selectedNotImpactedSmqList != null)); 
+	}
+	
+	public boolean isHierachySearchButtonEnabled() {
+		return ((selectedImpactedCmqList != null) ||
+				(selectedNotImpactedCmqList != null) ||
+				(selectedImpactedSmqList != null) ||
+				(selectedNotImpactedSmqList != null)); 
 	}
 
 }
