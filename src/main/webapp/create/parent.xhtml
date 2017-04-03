@@ -27,7 +27,8 @@
 			<p:accordionPanel activeIndex="0" style="width:700px">
 			<p:tab title="Relations" >
 				<p:treeTable value="#{searchController.parentListRoot}" var="node"
-					rows="20" resizableColumns="true" style="overflow: auto"
+					rows="20" resizableColumns="true"
+					scrollable="true" scrollHeight="350"
 					styleClass="ui-treetable-resultHier" 
 					paginator="true" paginatorPosition="bottom"
 					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"

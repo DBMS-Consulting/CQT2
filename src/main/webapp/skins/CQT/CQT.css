@@ -370,7 +370,13 @@ td .bordered {
 #termH {
 	text-transform: uppercase;
 }
-
+.ui-treetable.ui-treetable-resultHier .ui-treetable-scrollable-body {
+	height: auto !important;
+	max-height: 350px;
+}
+.ui-treetable.ui-treetable-resultHier .ui-treetable-scrollable-body .ui-treetable-scrollable-theadclone {
+	display: none;
+}
 .ui-treetable.ui-treetable-resultHier .ui-treetable-selectable-node .ui-chkbox.ui-selection {
 	display: none;
 }

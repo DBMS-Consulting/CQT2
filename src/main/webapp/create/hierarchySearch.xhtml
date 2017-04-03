@@ -8,7 +8,7 @@
 
 	<!-- <p:ajax event="close" listener="#{searchController.onCloseHierarchySearch}" update="@form:hierarchySearchGrid"/> -->
 	
-	<p:panel header="Relations" id="hierarchy-modal" style="min-width:700px; min-height:400px; overflow: auto">
+	<p:panel header="Relations" id="hierarchy-modal" style="min-width:700px; min-height:450px; overflow: auto">
 		<h:panelGrid id="hierarchySearchGrid" columns="6">
 			<p:outputLabel value="Level" for="levelH" />
 			<p:selectOneMenu id="levelH" label="Level"  rendered="#{createController.detailsFormModel.extension ne 'PRO' and createController.detailsFormModel.extension ne 'CPT' and createController.detailsFormModel.extension ne 'DME'}"
@@ -79,7 +79,8 @@
 			</p:toolbar>
   				<p:treeTable value="#{searchController.hierarchyRoot}" var="node"
 					id="resultHier" rows="20" selectionMode="checkbox" selection="#{searchController.relationSelected}"
-					styleClass="ui-treetable-resultHier" style="width:700px; height:450px; overflow: auto"
+					styleClass="ui-treetable-resultHier" style="width:700px;"
+					scrollable="true" scrollHeight="350"
 					paginator="true" paginatorPosition="bottom"
 					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 					rowsPerPageTemplate="5,10,25,30" rowStyleClass="#{node.rowStyleClass}">
@@ -87,7 +88,6 @@
 					<f:attribute name="uiEventSourceName" value="hierarchy-search" />
 					<p:ajax event="expand" listener="#{searchController.onNodeExpand}"
 						update="resultHier">
-							
 					</p:ajax>
 	
 					<p:column headerText="Level">
