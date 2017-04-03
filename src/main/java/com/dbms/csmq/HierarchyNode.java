@@ -256,6 +256,6 @@ public class HierarchyNode implements Serializable, Comparable<HierarchyNode> {
 				return "N".equalsIgnoreCase(((CmqBaseTarget)this.entity).getCmqAlgorithm());
 			}
 		}
-		return false;
+		return true;
 	}
 }
