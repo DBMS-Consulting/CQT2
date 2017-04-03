@@ -15,6 +15,9 @@ public interface IRefCodeListService extends ICqtPersistenceService<RefConfigCod
 	public List<RefConfigCodeList> findAllByConfigType(String codelistConfigType, OrderBy orderBy);
 
 	public RefConfigCodeList getCurrentMeddraVersion();
+	public RefConfigCodeList getTargetMeddraVersion();
+
+	public RefConfigCodeList findByConfigTypeAndInternalCode(String configType, String internalCode);
 	
 	public String findCodeByInternalCode(String codelistInternalValue);
 	

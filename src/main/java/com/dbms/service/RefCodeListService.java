@@ -131,41 +131,46 @@ public class RefCodeListService extends
 		return retVal;
 	}
 
-	@SuppressWarnings("unchecked")
+	@Override
 	public RefConfigCodeList getCurrentMeddraVersion() {
 		RefConfigCodeList retVal = null;
+		retVal = findByConfigTypeAndInternalCode(CqtConstants.CODE_LIST_TYPE_MEDDRA_VERSIONS, CqtConstants.CURRENT_MEDDRA_VERSION);
+		return retVal;
+	}
+	
+	@Override
+	public RefConfigCodeList getTargetMeddraVersion() {
+		RefConfigCodeList retVal = null;
+		retVal = findByConfigTypeAndInternalCode(CqtConstants.CODE_LIST_TYPE_MEDDRA_VERSIONS, CqtConstants.TARGET_MEDDRA_VERSION);
+		return retVal;
+	}
+	
+	@Override
+	public RefConfigCodeList findByConfigTypeAndInternalCode(String configType, String internalCode) {
+		RefConfigCodeList ref = null;
+		String queryString = "from RefConfigCodeList a where a.codelistConfigType = :codelistConfigType and a.codelistInternalValue = :codelistInternalValue";
+
 		EntityManager entityManager = this.cqtEntityManagerFactory
 				.getEntityManager();
-
-		StringBuilder queryString = new StringBuilder(
-				"from RefConfigCodeList a");
-		queryString
-				.append(" where a.codelistConfigType = :codelistConfigType ");
-		queryString
-				.append("and  a.codelistInternalValue = :codelistInternalValue");
 		try {
-			Query query = entityManager.createQuery(queryString.toString());
-			query.setParameter("codelistConfigType",
-					CqtConstants.CODE_LIST_TYPE_MEDDRA_VERSIONS);
-			query.setParameter("codelistInternalValue",
-					CqtConstants.CURRENT_MEDDRA_VERSION);
-
-			List<RefConfigCodeList> result = query.getResultList();
-			if ((null != result) && result.size() > 0) {
-				retVal = result.get(0);
-			}
-		} catch (Exception ex) {
+			Query query = entityManager.createQuery(queryString);
+			query.setParameter("codelistConfigType", configType);
+			query.setParameter("codelistInternalValue", internalCode);
+			ref = (RefConfigCodeList) query.getSingleResult();
+		} catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
-			msg.append("getCurrentMeddraVersion failed for codelistConfigType ")
-					.append(CqtConstants.CODE_LIST_TYPE_MEDDRA_VERSIONS)
-					.append(" and codelistInternalValue ")
-					.append(CqtConstants.CURRENT_MEDDRA_VERSION)
-					.append("Query used was->").append(queryString);
-			LOG.error(msg.toString(), ex);
+			msg.append(
+					"findCodeByInternalCode failed for CODELIST_INTERNAL_VALUE value'")
+					.append(internalCode).append("' and codelistConfigType = '")
+					.append(configType).append("' ")
+					.append("Query used was ->").append(queryString);
+			LOG.error(msg.toString(), e);
 		} finally {
 			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
 		}
-		return retVal;
+		if (ref != null)
+			return ref;
+		return null;
 	}
 
 	@Override
@@ -195,29 +200,13 @@ public class RefCodeListService extends
 	@Override
 	public String findCodeByInternalCode(String configType, String internalCode) {
 		RefConfigCodeList ref = null;
-		String queryString = "from RefConfigCodeList a where a.codelistConfigType = :codelistConfigType and a.codelistInternalValue = :codelistInternalValue";
-
-		EntityManager entityManager = this.cqtEntityManagerFactory
-				.getEntityManager();
-		try {
-			Query query = entityManager.createQuery(queryString);
-			query.setParameter("codelistConfigType", configType);
-			query.setParameter("codelistInternalValue", internalCode);
-			ref = (RefConfigCodeList) query.getSingleResult();
-		} catch (Exception e) {
-			StringBuilder msg = new StringBuilder();
-			msg.append(
-					"findCodeByInternalCode failed for CODELIST_INTERNAL_VALUE value'")
-					.append(internalCode).append("' and codelistConfigType = '")
-					.append(configType).append("' ")
-					.append("Query used was ->").append(queryString);
-			LOG.error(msg.toString(), e);
-		} finally {
-			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
-		}
-		if (ref != null)
+		
+		ref = findByConfigTypeAndInternalCode(configType, internalCode);
+		
+		if(ref == null)
+			return "";
+		else
 			return ref.getValue();
-		return internalCode;
 	}
 
 	/**

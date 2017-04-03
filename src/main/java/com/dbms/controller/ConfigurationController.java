@@ -123,6 +123,11 @@ public class ConfigurationController implements Serializable {
 		return this.currentMeddraVersionCodeList;
 	}
 	
+	public RefConfigCodeList getTargetMeddraVersion() {
+		this.currentMeddraVersionCodeList = refCodeListService.getTargetMeddraVersion();
+		return this.currentMeddraVersionCodeList;
+	}
+	
 	public IRefCodeListService getRefCodeListService() {
 		return refCodeListService;
 	}

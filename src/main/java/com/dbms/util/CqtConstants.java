@@ -9,4 +9,5 @@ public class CqtConstants {
 	public static final String CODE_LIST_TYPE_PROTOCOL = "PROTOCOL";
 	
 	public static final String CURRENT_MEDDRA_VERSION = "CURRENT_MEDDRA_VERSION";
+	public static final String TARGET_MEDDRA_VERSION = "TARGET_MEDDRA_VERSION";
 }
