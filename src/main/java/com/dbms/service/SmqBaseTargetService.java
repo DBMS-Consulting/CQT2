@@ -323,7 +323,7 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 			pred.add(cb.equal(smqRoot.get("impactType"), "IMPACTED"));
 			
 			if(filters.containsKey("smqName") && filters.get("smqName") != null)
-				pred.add(cb.like(smqRoot.<String>get("smqName"), "%" + filters.get("smqName") + "%"));
+				pred.add(cb.like(cb.lower(smqRoot.<String>get("smqName")), "%" + ((String)filters.get("smqName")).toLowerCase() + "%"));
 			
 			if(filters.containsKey("smqLevel") && filters.get("smqLevel") != null)
 				pred.add(cb.equal(smqRoot.get("smqLevel"), filters.get("smqLevel")));
@@ -394,8 +394,7 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 			pred.add(cb.equal(smqRoot.get("impactType"), "NON-IMPACTED"));
 			
 			if(filters.containsKey("smqName") && filters.get("smqName") != null)
-				pred.add(cb.like(smqRoot.<String>get("smqName"), "%" + filters.get("smqName") + "%"));
-			
+				pred.add(cb.like(cb.lower(smqRoot.<String>get("smqName")), "%" + ((String)filters.get("smqName")).toLowerCase() + "%"));			
 			if(filters.containsKey("smqLevel") && filters.get("smqLevel") != null)
 				pred.add(cb.equal(smqRoot.get("smqLevel"), filters.get("smqLevel")));
 			
