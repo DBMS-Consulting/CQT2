@@ -1908,7 +1908,7 @@ public class ImpactSearchController implements Serializable {
 					} else if((cmqRelation.getPtCode() != null) && (cmqRelation.getPtCode().longValue() > 0)) {
 						ptCodesMap.put(cmqRelation.getPtCode(), cmqRelation);
 					} else if((cmqRelation.getLltCode() != null) && (cmqRelation.getLltCode().longValue() > 0)) {
-						lltCodesMap.put(cmqRelation.getLltCode(), cmqRelation);
+						lltCodesMap.put(cmqRelation.getLltCode().longValue(), cmqRelation);
 					} else if((cmqRelation.getSmqCode() != null) && (cmqRelation.getSmqCode().longValue() > 0)) {
 						this.populateSmqTreeNode(cmqRelation, expandedTreeNode, cmqType, cmqCode);
 					}
@@ -1992,7 +1992,7 @@ public class ImpactSearchController implements Serializable {
 					else
 						setTargetMeddraColor(meddraDictHierarchySearchDto, node);
 					
-					IEntity entity = lltCodesMap.get(meddraDictHierarchySearchDto.getCode());
+					IEntity entity = lltCodesMap.get(Long.parseLong(meddraDictHierarchySearchDto.getCode()));
 					if(entity instanceof CmqRelationTarget) {
 						CmqRelationTarget cmqRelationTarget = (CmqRelationTarget) entity;
 						
