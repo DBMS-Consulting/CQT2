@@ -6,8 +6,11 @@ import javax.faces.event.AjaxBehaviorEvent;
 
 import com.dbms.entity.cqt.CmqBase190;
 import com.dbms.entity.cqt.CmqBaseTarget;
+import com.dbms.entity.cqt.RefConfigCodeList;
 import com.dbms.entity.cqt.SmqBase190;
 import com.dbms.entity.cqt.SmqBaseTarget;
+import com.dbms.service.IRefCodeListService;
+import com.dbms.util.CqtConstants;
 
 /**
  * "Create/Update/Browse&Search" module's "Details" tab form data 
@@ -166,54 +169,6 @@ public class ListDetailsFormModel {
 		this.creationDate = cmq.getCreationDate();
 		this.lastModifiedBy = cmq.getLastModifiedBy();
 		this.lastModifiedDate = cmq.getLastModifiedDate();
-	}
-	
-	/**
-	 * Load Form data from SmqBase190 Entity
-	 * @param cmq
-	 */
-	public void loadFromSmqBase190(SmqBase190 smq) {
-		this.extension = smq.getImpactType();
-		this.name = smq.getSmqName();
-		this.protocol = "";
-		this.drugProgram = "";
-		this.product = "";
-		this.designee = "";
-		this.level = smq.getSmqLevel();
-		this.critical = "";
-		this.group = "";
-		this.algorithm = smq.getSmqAlgorithm();
-		this.status = smq.getSmqStatus();
-		
-		this.code = smq.getSmqCode();
-		this.createdBy = "";
-		this.creationDate = null;
-		this.lastModifiedBy = "";
-		this.lastModifiedDate = null;
-	}
-	
-	/**
-	 * Load Form data from CmqBase190 Entity
-	 * @param cmq
-	 */
-	public void loadFromSmqBaseTarget(SmqBaseTarget smq) {
-		this.extension = smq.getImpactType();
-		this.name = smq.getSmqName();
-		this.protocol = "";
-		this.drugProgram = "";
-		this.product = "";
-		this.designee = "";
-		this.level = smq.getSmqLevel();
-		this.critical = "";
-		this.group = "";
-		this.algorithm = smq.getSmqAlgorithm();
-		this.status = smq.getSmqStatus();
-
-		this.code = smq.getSmqCode();
-		this.createdBy = "";
-		this.creationDate = null;
-		this.lastModifiedBy = "";
-		this.lastModifiedDate = null;
 	}
 	
 	/**

@@ -40,6 +40,7 @@ import com.dbms.service.ICmqBase190Service;
 import com.dbms.service.ICmqRelation190Service;
 import com.dbms.service.IRefCodeListService;
 import com.dbms.util.CmqUtils;
+import com.dbms.util.CqtConstants;
 import com.dbms.util.exceptions.CqtServiceException;
 import com.dbms.view.ListDetailsFormModel;
 import com.dbms.view.ListDetailsFormModel.WizardType;
@@ -94,15 +95,33 @@ public class CreateController implements Serializable {
 	}
 
 	private void initAll() {
-		detailsFormModel.init();
-		notesFormModel.init();
-		workflowFormModel.init();
+		initCreateForm();
+		detailsFormModel.loadFromCmqBase190(selectedData);
+		notesFormModel.loadFromCmqBase190(selectedData);
+		workflowFormModel.loadFromCmqBase190(selectedData);
 		relationsModified = false;
 		maintainDesigBtn = false;
 	}
 
 	public void initCreateForm() {
 		this.selectedData = new CmqBase190();
+		if(refCodeListService != null) {
+			RefConfigCodeList d;
+			
+			d = refCodeListService.findDefaultByConfigType(CqtConstants.CODE_LIST_TYPE_EXTENSION);
+			this.selectedData.setCmqTypeCd(d != null ? d.getCodelistInternalValue() : this.selectedData.getCmqTypeCd());
+			
+			d = refCodeListService.findDefaultByConfigType(CqtConstants.CODE_LIST_TYPE_PRODUCT);
+			this.selectedData.setCmqProductCd(d != null ? d.getCodelistInternalValue() : this.selectedData.getCmqProductCd());
+			
+			d = refCodeListService.findDefaultByConfigType(CqtConstants.CODE_LIST_TYPE_PROGRAM);
+			this.selectedData.setCmqProgramCd(d != null ? d.getCodelistInternalValue() : this.selectedData.getCmqProgramCd());
+			
+			d = refCodeListService.findDefaultByConfigType(CqtConstants.CODE_LIST_TYPE_PROTOCOL);
+			this.selectedData.setCmqProtocolCd(d != null ? d.getCodelistInternalValue() : this.selectedData.getCmqProtocolCd());
+			
+			changeLevel(null);
+		}
 		selectedData.setCmqDescription("Please enter the description");
 	}
 	
