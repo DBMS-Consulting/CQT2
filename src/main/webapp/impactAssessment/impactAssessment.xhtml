@@ -338,10 +338,10 @@
 					</h:panelGrid>
 					<p:spacer width="10" height="10" id="s7" />
 					<p:dataTable id="newPtResultList" styleClass="ui-datatable-newPtResultList" widgetVar="newPtResultList"
-						value="#{impactSearchController.newPtSearchLazyDataModel}" var="newPtResultList" paginator="true" rows="10"
+						value="#{impactSearchController.newPtSearchLazyDataModel}" var="newPtResultList"
+						scrollable="true" scrollHeight="300" scrollRows="50" liveScroll="true"
 	                	selection="#{impactSearchController.selectedNewPtLists}" selectionMode="multiple" lazy="true"
-	                	paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-	                	rowsPerPageTemplate="5,10,15,20" resizableColumns="true">
+	                	resizableColumns="true">
 
 						<p:column headerText="Term">
 							<h:outputText value="#{newPtResultList.term}" rendered="true" />
