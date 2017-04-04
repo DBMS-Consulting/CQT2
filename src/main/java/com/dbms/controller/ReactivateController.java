@@ -89,15 +89,6 @@ public class ReactivateController implements Serializable {
 		List<CmqBase190> childCmqsOftargets = this.cmqBaseService.findChildCmqsByCodes(targetCmqCodes);
 		if((null != childCmqsOftargets) && (childCmqsOftargets.size() > 0)) {
 			//add them to the selected cmqs list
-//			for (CmqBase190 childCmq : childCmqsOftargets) {
-//				for (CmqBase190 srcCmq : sourceListToReactivate) {
-//					if (childCmq.getCmqCode().equals(srcCmq.getCmqCode())) {
-//						childNotSelected = true;
-//						break;
-//					}
-//				}
-//			}
-			
 			
 			for (CmqBase190 childCmq : childCmqsOftargets) {
 				if (childCmq.getCmqStatus().equals(CmqBase190.CMQ_STATUS_VALUE_INACTIVE)
@@ -112,11 +103,19 @@ public class ReactivateController implements Serializable {
 			if (cpt == cptChild) //if (cpt == childCmqsOftargets.size())
 				childNotSelected = false;
 		}
+		this.confirmMessage = "Are you sure you want to reactivate this list?";
+		
 		if (childCmqsOftargets != null && !childCmqsOftargets.isEmpty() && childNotSelected)
 			this.confirmMessage = "Not all associate child lists are selected for reactivation. Do you want to continue?";
+//		else
+//			this.confirmMessage = "Are you sure you want to reactivate this list?";
+		
+		if (childCmqsOftargets != null && !childCmqsOftargets.isEmpty() && !childNotSelected)
+			this.confirmMessage = "The List and associated Parent List will be activated. Do you want to proceed?";
+		//else
+			
 
-		else
-			this.confirmMessage = "Are you sure you want to reactivate this list?";
+	
 		
 		RequestContext.getCurrentInstance().execute("PF('confirmReactivation').show();");
 	}
