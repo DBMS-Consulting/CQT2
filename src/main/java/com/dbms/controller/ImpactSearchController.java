@@ -1934,46 +1934,50 @@ public class ImpactSearchController implements Serializable {
 	}
 	
 	private void setSMQCurrentNodeStyle(HierarchyNode childRelationNode, SmqRelation190 childRelation) {
-		if("NCH".equals(childRelation.getRelationImpactType())) {
-			childRelationNode.setRowStyleClass("italic");
+		if (childRelation.getRelationImpactType() != null) {
+			if("NCH".equals(childRelation.getRelationImpactType())) {
+				childRelationNode.setRowStyleClass("italic");
+			}
+			if("LCN".equals(childRelation.getRelationImpactType())
+					|| "DTR".equals(childRelation.getRelationImpactType())
+					|| "MRG".equals(childRelation.getRelationImpactType())
+					|| "HNP".equals(childRelation.getRelationImpactType())
+					|| "HPP".equals(childRelation.getRelationImpactType())
+					|| "PTS".equals(childRelation.getRelationImpactType())
+					|| "LDP".equals(childRelation.getRelationImpactType())) {
+				childRelationNode.setRowStyleClass("red-colored");
+			}
+			if ("SCH".equals(childRelation.getRelationImpactType()) || "ICC".equals(childRelation.getRelationImpactType()))
+				childRelationNode.setRowStyleClass("blue-colored");	
+			if ("SWC".equals(childRelation.getRelationImpactType()))
+				childRelationNode.setRowStyleClass("pink-colored");
+			if ("PDL".equals(childRelation.getRelationImpactType()) || "LPP".equals(childRelation.getRelationImpactType()))
+				childRelationNode.setRowStyleClass("grey-colored");
 		}
-		if("LCN".equals(childRelation.getRelationImpactType())
-				|| "DTR".equals(childRelation.getRelationImpactType())
-				|| "MRG".equals(childRelation.getRelationImpactType())
-				|| "HNP".equals(childRelation.getRelationImpactType())
-				|| "HPP".equals(childRelation.getRelationImpactType())
-				|| "PTS".equals(childRelation.getRelationImpactType())
-				|| "LDP".equals(childRelation.getRelationImpactType())) {
-			childRelationNode.setRowStyleClass("red-colored");
-		}
-		if ("SCH".equals(childRelation.getRelationImpactType()) || "ICC".equals(childRelation.getRelationImpactType()))
-			childRelationNode.setRowStyleClass("blue-colored");	
-		if ("SWC".equals(childRelation.getRelationImpactType()))
-			childRelationNode.setRowStyleClass("pink-colored");
-		if ("PDL".equals(childRelation.getRelationImpactType()) || "LPP".equals(childRelation.getRelationImpactType()))
-			childRelationNode.setRowStyleClass("grey-colored");
-		if (childRelation.getRelationImpactType() == null)
+		else
 			childRelationNode.setRowStyleClass("none");
 	}
 
 	private void setSMQTargetNodeStyle(HierarchyNode childRelationNode,	SmqRelationTarget childRelation) {
-		if("MQM".equalsIgnoreCase(childRelation.getRelationImpactType())) {
-			childRelationNode.setRowStyleClass("green-colored");
+		if (childRelation.getRelationImpactType() != null) {
+			if("MQM".equalsIgnoreCase(childRelation.getRelationImpactType())) {
+				childRelationNode.setRowStyleClass("green-colored");
+			}
+			if("NCH".equals(childRelation.getRelationImpactType())) {
+				childRelationNode.setRowStyleClass("italic");
+			}
+			if("LDP".equals(childRelation.getRelationImpactType()) || "NTR".equals(childRelation.getRelationImpactType())) {
+				childRelationNode.setRowStyleClass("orange-colored");
+			}
+			if ("SCH".equals(childRelation.getRelationImpactType()))
+				childRelationNode.setRowStyleClass("blue-colored");
+			if ("LCN".equals(childRelation.getRelationImpactType()) || "PTS".equals(childRelation.getRelationImpactType()) || "PDL".equals(childRelation.getRelationImpactType())
+					|| "LPP".equals(childRelation.getRelationImpactType()))
+				childRelationNode.setRowStyleClass("grey-colored");
+			if ("SWC".equals(childRelation.getRelationImpactType()))
+				childRelationNode.setRowStyleClass("pink-colored");
 		}
-		if("NCH".equals(childRelation.getRelationImpactType())) {
-			childRelationNode.setRowStyleClass("italic");
-		}
-		if("LDP".equals(childRelation.getRelationImpactType()) || "NTR".equals(childRelation.getRelationImpactType())) {
-			childRelationNode.setRowStyleClass("orange-colored");
-		}
-		if ("SCH".equals(childRelation.getRelationImpactType()))
-			childRelationNode.setRowStyleClass("blue-colored");
-		if ("LCN".equals(childRelation.getRelationImpactType()) || "PTS".equals(childRelation.getRelationImpactType()) || "PDL".equals(childRelation.getRelationImpactType())
-				|| "LPP".equals(childRelation.getRelationImpactType()))
-			childRelationNode.setRowStyleClass("grey-colored");
-		if ("SWC".equals(childRelation.getRelationImpactType()))
-			childRelationNode.setRowStyleClass("pink-colored");
-		if (childRelation.getRelationImpactType() == null)
+		else
 			childRelationNode.setRowStyleClass("none");
 	}
 
@@ -2234,47 +2238,51 @@ public class ImpactSearchController implements Serializable {
 	}
 	
 	private void setCMQCurrentNodeStyle(HierarchyNode node,	CmqRelation190 cmqRelation) {
-		if("NCH".equals(cmqRelation.getRelationImpactType())) {
-			node.setRowStyleClass("italic");
+		if (cmqRelation.getRelationImpactType() != null) {
+			if("NCH".equals(cmqRelation.getRelationImpactType())) {
+				node.setRowStyleClass("italic");
+			}
+			if("PDL".equals(cmqRelation.getRelationImpactType()) //|| "NTR".equals(cmqRelation.getRelationImpactType())
+					
+					|| "PTS".equals(cmqRelation.getRelationImpactType())
+					|| "DTR".equals(cmqRelation.getRelationImpactType())
+					|| "MRG".equals(cmqRelation.getRelationImpactType())
+					|| "LCN".equals(cmqRelation.getRelationImpactType())
+					|| "HPP".equals(cmqRelation.getRelationImpactType())
+					|| "LPP".equals(cmqRelation.getRelationImpactType())
+					|| "LDP".equals(cmqRelation.getRelationImpactType())) {
+				node.setRowStyleClass("red-colored");
+			}
+			if ("SCH".equals(cmqRelation.getRelationImpactType()) || "ICC".equals(cmqRelation.getRelationImpactType()))
+				node.setRowStyleClass("blue-colored");
+			if ("SWC".equals(cmqRelation.getRelationImpactType()))
+				node.setRowStyleClass("pink-colored");
 		}
-		if("PDL".equals(cmqRelation.getRelationImpactType()) //|| "NTR".equals(cmqRelation.getRelationImpactType())
-				
-				|| "PTS".equals(cmqRelation.getRelationImpactType())
-				|| "DTR".equals(cmqRelation.getRelationImpactType())
-				|| "MRG".equals(cmqRelation.getRelationImpactType())
-				|| "LCN".equals(cmqRelation.getRelationImpactType())
-				|| "HPP".equals(cmqRelation.getRelationImpactType())
-				|| "LPP".equals(cmqRelation.getRelationImpactType())
-				|| "LDP".equals(cmqRelation.getRelationImpactType())) {
-			node.setRowStyleClass("red-colored");
-		}
-		if ("SCH".equals(cmqRelation.getRelationImpactType()) || "ICC".equals(cmqRelation.getRelationImpactType()))
-			node.setRowStyleClass("blue-colored");
-		if ("SWC".equals(cmqRelation.getRelationImpactType()))
-			node.setRowStyleClass("pink-colored");
 		
-		if (cmqRelation.getRelationImpactType() == null)
+		else
 			node.setRowStyleClass("none");
 		
 	}
 
 	private void setCMQTargetNodeStyle(HierarchyNode node, CmqRelationTarget cmqRelationTarget) {
-		if("MQM".equalsIgnoreCase(cmqRelationTarget.getRelationImpactType())) {
-			node.setRowStyleClass("green-colored");
+		if (cmqRelationTarget.getRelationImpactType() != null) {
+			if("MQM".equalsIgnoreCase(cmqRelationTarget.getRelationImpactType())) {
+				node.setRowStyleClass("green-colored");
+			}
+			if("NCH".equals(cmqRelationTarget.getRelationImpactType())) {
+				node.setRowStyleClass("italic");
+			}
+			if("PDL".equals(cmqRelationTarget.getRelationImpactType())
+					|| "LDP".equals(cmqRelationTarget.getRelationImpactType())
+					|| "NTR".equals(cmqRelationTarget.getRelationImpactType())) {
+				node.setRowStyleClass("orange-colored");
+			}
+			if ("SCH".equals(cmqRelationTarget.getRelationImpactType()))
+				node.setRowStyleClass("blue-colored");
+			if ("LCN".equals(cmqRelationTarget.getRelationImpactType()))
+				node.setRowStyleClass("grey-colored");
 		}
-		if("NCH".equals(cmqRelationTarget.getRelationImpactType())) {
-			node.setRowStyleClass("italic");
-		}
-		if("PDL".equals(cmqRelationTarget.getRelationImpactType())
-				|| "LDP".equals(cmqRelationTarget.getRelationImpactType())
-				|| "NTR".equals(cmqRelationTarget.getRelationImpactType())) {
-			node.setRowStyleClass("orange-colored");
-		}
-		if ("SCH".equals(cmqRelationTarget.getRelationImpactType()))
-			node.setRowStyleClass("blue-colored");
-		if ("LCN".equals(cmqRelationTarget.getRelationImpactType()))
-			node.setRowStyleClass("grey-colored");
-		if (cmqRelationTarget.getRelationImpactType() == null)
+		else
 			node.setRowStyleClass("none");
 	}
 
@@ -2299,9 +2307,6 @@ public class ImpactSearchController implements Serializable {
 				|| (meddraDictHierarchySearchDto.getLltNameChanged() != null && "NCH".equalsIgnoreCase(meddraDictHierarchySearchDto.getLltNameChanged()))) {
 			node.setRowStyleClass("italic");
 		}
-		/*if ("LCN".equals(meddraDictHierarchySearchDto.getLltCurrencyChange()))
-			node.setRowStyleClass("red-colored");*/
-		
 	}
 	
 	private void setTargetMeddraColor(MeddraDictHierarchySearchDto meddraDictHierarchySearchDto, HierarchyNode node) {
@@ -2311,7 +2316,6 @@ public class ImpactSearchController implements Serializable {
 				|| (meddraDictHierarchySearchDto.getNewHlgt() != null && "NTR".equalsIgnoreCase(meddraDictHierarchySearchDto.getNewHlgt()))
 				|| (meddraDictHierarchySearchDto.getLltCurrencyChange() != null && "LNC".equalsIgnoreCase(meddraDictHierarchySearchDto.getLltCurrencyChange()))
 				|| (meddraDictHierarchySearchDto.getMovedPt() != null && "LDH".equalsIgnoreCase(meddraDictHierarchySearchDto.getMovedPt()))
-				|| (meddraDictHierarchySearchDto.getMovedLlt() != null && "LDP".equalsIgnoreCase(meddraDictHierarchySearchDto.getMovedLlt()))
 				|| (meddraDictHierarchySearchDto.getDemotedPt() != null && "PDL".equalsIgnoreCase(meddraDictHierarchySearchDto.getDemotedPt()))
 				|| (meddraDictHierarchySearchDto.getPromotedLlt() != null && "LPP".equalsIgnoreCase(meddraDictHierarchySearchDto.getPromotedLlt()))
 				|| (meddraDictHierarchySearchDto.getPrimarySocChange() != null && 
@@ -2327,8 +2331,6 @@ public class ImpactSearchController implements Serializable {
 				|| (meddraDictHierarchySearchDto.getLltNameChanged() != null && "NCH".equalsIgnoreCase(meddraDictHierarchySearchDto.getLltNameChanged()))) {
 			node.setRowStyleClass("italic");
 		}
-	/*	if ("LCN".equals(meddraDictHierarchySearchDto.getLltCurrencyChange()))
-			node.setRowStyleClass("grey-colored");*/
 	}
 	
 	private void populateSmqTreeNode(IEntity entity, TreeNode expandedTreeNode, String cmqType, Long parentCode, String uiSourceOfEvent) {
