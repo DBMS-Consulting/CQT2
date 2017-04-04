@@ -88,6 +88,7 @@ public class CreateController implements Serializable {
 	private CmqBase190 selectedData = new CmqBase190();
 	
 	private HtmlInputText dictionaryName;
+	private boolean	formSaved;
 	
 	@PostConstruct
 	public void init() {
@@ -101,6 +102,7 @@ public class CreateController implements Serializable {
 		workflowFormModel.loadFromCmqBase190(selectedData);
 		relationsModified = false;
 		maintainDesigBtn = false;
+		formSaved = false;
 	}
 
 	public void initCreateForm() {
@@ -793,6 +795,8 @@ public class CreateController implements Serializable {
 				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 						"List '" + selectedData.getCmqName() + "' is successfully saved.", "");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
+				
+				setFormSaved(true); 
 			}
 		} catch (CqtServiceException e) {
 			LOG.error("Exception occurred while creating CmqBase190.", e);
@@ -1472,6 +1476,14 @@ public class CreateController implements Serializable {
 		cmq.setCreatedBy(null);
 		cmq.setLastModifiedBy(null);
 		cmq.setLastModifiedDate(null);
+	}
+
+	public boolean isFormSaved() {
+		return formSaved;
+	}
+
+	public void setFormSaved(boolean formSaved) {
+		this.formSaved = formSaved;
 	}
 
 }
