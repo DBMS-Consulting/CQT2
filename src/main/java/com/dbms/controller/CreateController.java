@@ -664,6 +664,10 @@ public class CreateController implements Serializable {
 		try {
 			prepareDetailsFormSave();
 			
+			//remoe the parent cmq from this cmq.
+			selectedData.setCmqParentCode(null);
+			selectedData.setCmqParentName(null);
+			
 			cmqBaseService.create(selectedData);
 			
 			// retrieve the saved cmq base

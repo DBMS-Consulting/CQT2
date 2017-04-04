@@ -134,7 +134,7 @@ public class ImpactSearchController implements Serializable {
 	
 	private boolean isImpactedCmqSelected, isNonImpactedCmqSelected, isImpactedSmqSelected, isNonImpactedSmqSelected;
 	
-	private String levelH;
+	private String levelHT;
 	
 	private TreeNode hierarchyRoot;
 	
@@ -368,8 +368,13 @@ public class ImpactSearchController implements Serializable {
 																				, expandedTreeNode, reverseSearchDto, false, uiSourceOfEvent);	
 				} else if ("PT".equalsIgnoreCase(levelOfExpandedNode)) {
 					Long ptCode = Long.valueOf(reverseSearchDto.getPtCode());
-					this.populateMeddraDictReverseHierarchySearchDtoChildren("PT_", "HLT", ptCode, hierarchyNode
-																				, expandedTreeNode, reverseSearchDto, true, uiSourceOfEvent);		
+					//if its main view tables then show downward hierarchy else its from hierarchySearch so show reverse hierarchy
+					if("target-table".equalsIgnoreCase(uiSourceOfEvent) || "current-table".equalsIgnoreCase(uiSourceOfEvent)) {
+						this.populateMeddraDictHierarchySearchDtoChildren(levelOfExpandedNode, ptCode, expandedTreeNode, "target", uiSourceOfEvent);
+					} else {
+						this.populateMeddraDictReverseHierarchySearchDtoChildren("PT_", "HLT", ptCode, hierarchyNode
+								, expandedTreeNode, reverseSearchDto, true, uiSourceOfEvent);	
+					}
 				} else if ("HLT".equalsIgnoreCase(levelOfExpandedNode)) {
 					Long hltCode = Long.valueOf(reverseSearchDto.getHltCode());
 					this.populateMeddraDictReverseHierarchySearchDtoChildren("HLT_", "HLGT", hltCode, hierarchyNode
@@ -427,37 +432,37 @@ public class ImpactSearchController implements Serializable {
 		boolean searchMeddraBaseReverse = false;
 		boolean searchCmqBase = false;
 		
-		if ("SMQ1".equalsIgnoreCase(levelH)) {
+		if ("SMQ1".equalsIgnoreCase(levelHT)) {
 			level = 1;
 			searchSmqBase = true;
-		} else if ("SMQ2".equalsIgnoreCase(levelH)) {
+		} else if ("SMQ2".equalsIgnoreCase(levelHT)) {
 			level = 2;
 			searchSmqBase = true;
-		} else if ("SMQ3".equalsIgnoreCase(levelH)) {
+		} else if ("SMQ3".equalsIgnoreCase(levelHT)) {
 			level = 3;
 			searchSmqBase = true;
-		} else if ("SMQ4".equalsIgnoreCase(levelH)) {
+		} else if ("SMQ4".equalsIgnoreCase(levelHT)) {
 			level = 4;
 			searchSmqBase = true;
-		} else if ("SMQ5".equalsIgnoreCase(levelH)) {
+		} else if ("SMQ5".equalsIgnoreCase(levelHT)) {
 			level = 5;
 			searchSmqBase = true;
-		} else if ("SOC".equalsIgnoreCase(levelH)) {
+		} else if ("SOC".equalsIgnoreCase(levelHT)) {
 			meddraSearchTermPrefix = "SOC_";
 			searchMeddraBase = true;
-		} else if ("HLGT".equalsIgnoreCase(levelH)) {
+		} else if ("HLGT".equalsIgnoreCase(levelHT)) {
 			meddraSearchTermPrefix = "HLGT_";
 			searchMeddraBase = true;
-		} else if ("HLT".equalsIgnoreCase(levelH)) {
+		} else if ("HLT".equalsIgnoreCase(levelHT)) {
 			meddraSearchTermPrefix = "HLT_";
 			searchMeddraBase = true;
-		} else if ("PT".equalsIgnoreCase(levelH)) {
+		} else if ("PT".equalsIgnoreCase(levelHT)) {
 			meddraSearchTermPrefix = "PT_";
 			searchMeddraBaseReverse = true;
-		} else if ("LLT".equalsIgnoreCase(levelH)) {
+		} else if ("LLT".equalsIgnoreCase(levelHT)) {
 			meddraSearchTermPrefix = "LLT_";
 			searchMeddraBaseReverse = true;
-		} else if ("PRO".equalsIgnoreCase(levelH)) {
+		} else if ("PRO".equalsIgnoreCase(levelHT)) {
 			searchCmqBase = true;
 		}
 	
@@ -479,14 +484,14 @@ public class ImpactSearchController implements Serializable {
 					"LEVEL", "NAME", "CODE", null), null);
 			
 			String childSearchColumnTypePrefix = null;
-			String parentCodeColumnPrefix = levelH + "_";
-			if ("SOC".equalsIgnoreCase(levelH)) {
+			String parentCodeColumnPrefix = levelHT + "_";
+			if ("SOC".equalsIgnoreCase(levelHT)) {
 				childSearchColumnTypePrefix = "HLGT_";
-			} else if ("HLGT".equalsIgnoreCase(levelH)) {
+			} else if ("HLGT".equalsIgnoreCase(levelHT)) {
 				childSearchColumnTypePrefix = "HLT_";
-			} else if ("HLT".equalsIgnoreCase(levelH)) {
+			} else if ("HLT".equalsIgnoreCase(levelHT)) {
 				childSearchColumnTypePrefix = "PT_";
-			} else if ("PT".equalsIgnoreCase(levelH)) {
+			} else if ("PT".equalsIgnoreCase(levelHT)) {
 				childSearchColumnTypePrefix = "LLT_";
 			}
 			
@@ -496,11 +501,11 @@ public class ImpactSearchController implements Serializable {
 			
 		} else if (searchMeddraBaseReverse) {
 			List<MeddraDictReverseHierarchySearchDto> meddraDictDtoList = this.meddraDictTargetService
-					.findFullReverseHierarchyByLevelAndTerm(levelH, levelH, termNameOfHierarchySearch);
+					.findFullReverseHierarchyByLevelAndTerm(levelHT, levelHT, termNameOfHierarchySearch);
 			this.hierarchyRoot = new DefaultTreeNode("root", new HierarchyNode("LEVEL", "NAME", "CODE", null), null);
 			
 			for (MeddraDictReverseHierarchySearchDto meddraDictReverseDto : meddraDictDtoList) {
-				HierarchyNode node = this.createMeddraReverseNode(meddraDictReverseDto, levelH, true);
+				HierarchyNode node = this.createMeddraReverseNode(meddraDictReverseDto, levelHT, true);
 				TreeNode parentTreeNode = new DefaultTreeNode(node, this.hierarchyRoot);
 				
 				// add a dummmy node to show expand arrow
@@ -758,6 +763,14 @@ public class ImpactSearchController implements Serializable {
 								if(!cmqBaseChildrenList.isEmpty()) {
 									this.cmqBaseTargetService.update(cmqBaseChildrenList);
 								}
+								
+								//mark the cmqbase as Impacted if it is NON-IMPACTED
+								String impactType = cmqBaseTarget.getImpactType();
+								if("NON-IMPACTED".equalsIgnoreCase(impactType)) {
+									cmqBaseTarget.setImpactType("IMPACTED");
+									this.cmqBaseTargetService.update(cmqBaseTarget);
+								}
+								
 								FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 										"Relations are successfully updated for target '" + cmqBaseTarget.getCmqName() + "'", "");
 								FacesContext.getCurrentInstance().addMessage(null, msg);
@@ -1135,6 +1148,7 @@ public class ImpactSearchController implements Serializable {
 			for (MeddraDictHierarchySearchDto meddraDictHierarchySearchDto : selectedNewPtLists) {
 				Long dtoCode = Long.valueOf(meddraDictHierarchySearchDto.getCode());
 				HierarchyNode node = this.createMeddraNode(meddraDictHierarchySearchDto, "PT");
+				node.setRowStyleClass("green-colored");
 				TreeNode treeNode = new DefaultTreeNode(node, parentTreeNode);
 			
 				Long countOfChildren = this.meddraDictTargetService.findChldrenCountByParentCode("LLT_", "PT_", dtoCode);
@@ -1163,7 +1177,7 @@ public class ImpactSearchController implements Serializable {
 																	, Map<Long, TreeNode> parentTreeNodes) {
 		for (CmqBaseTarget cmqBase : cmqBaseList) {
 			HierarchyNode node = new HierarchyNode();
-			node.setLevel(levelH);
+			node.setLevel(levelHT);
 			node.setTerm(cmqBase.getCmqName());
 			node.setCode(cmqBase.getCmqCode().toString());
 			node.setEntity(cmqBase);
@@ -1258,7 +1272,7 @@ public class ImpactSearchController implements Serializable {
 	private void updateHierarchySearchForMeddraDict(MeddraDictHierarchySearchDto meddraDictDto
 														, String childSearchColumnTypePrefix
 														, String parentCodeColumnPrefix) {
-		HierarchyNode node = this.createMeddraNode(meddraDictDto, levelH);
+		HierarchyNode node = this.createMeddraNode(meddraDictDto, levelHT);
 		TreeNode parentTreeNode = new DefaultTreeNode(node, this.hierarchyRoot);
 		
 		Long countOfChildren = this.meddraDictTargetService.findChldrenCountByParentCode(childSearchColumnTypePrefix,
@@ -2954,14 +2968,6 @@ public class ImpactSearchController implements Serializable {
 		this.selectedNotImpactedSmqList = selectedNotImpactedSmqList;
 	}
 
-	public String getLevelH() {
-		return levelH;
-	}
-
-	public void setLevelH(String levelH) {
-		this.levelH = levelH;
-	}
-
 	public TreeNode getHierarchyRoot() {
 		return hierarchyRoot;
 	}
@@ -3102,6 +3108,14 @@ public class ImpactSearchController implements Serializable {
 				(selectedNotImpactedCmqList != null) ||
 				(selectedImpactedSmqList != null) ||
 				(selectedNotImpactedSmqList != null)); 
+	}
+
+	public String getLevelHT() {
+		return levelHT;
+	}
+
+	public void setLevelHT(String levelHT) {
+		this.levelHT = levelHT;
 	}
 
 }
