@@ -271,8 +271,6 @@ public class AdminController implements Serializable {
 					refListToSave.add(ref);
 					val++;
 				}
-					
-				
 			}
 			
 			if (!refListToSave.isEmpty())

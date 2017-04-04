@@ -41,5 +41,18 @@ public class CqtCacheManager implements ICqtCacheManager {
 		}
 	}
 	
+	@Override
+	public void removeFromCache(String cacheName, String key) {
+		Cache cache = this.cacheManager.getCache(cacheName);
+		if(cache != null)
+			cache.remove(key);
+	}
+	
+	@Override
+	public void removeAllFromCache(String cacheName) {
+		Cache cache = this.cacheManager.getCache(cacheName);
+		if(cache != null)
+			cache.removeAll();
+	}
 	
 }

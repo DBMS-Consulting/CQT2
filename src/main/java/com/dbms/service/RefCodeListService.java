@@ -34,33 +34,37 @@ import org.primefaces.model.StreamedContent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.dbms.csmq.CSMQBean;
 import com.dbms.entity.cqt.RefConfigCodeList;
 import com.dbms.service.base.CqtPersistenceService;
 import com.dbms.util.CqtConstants;
 import com.dbms.util.OrderBy;
+import com.dbms.util.exceptions.CqtServiceException;
 
 @ManagedBean(name = "RefCodeListService")
 @ApplicationScoped
 public class RefCodeListService extends
 		CqtPersistenceService<RefConfigCodeList> implements IRefCodeListService {
+	private final String CACHE_NAME = "code-list-cache";
 
 	private static final Logger LOG = LoggerFactory
 			.getLogger(RefCodeListService.class);
 
-	// members required for caching mechanism for performance of code-value
-	// interpretation for UI
-	private static final int cacheValidTimeInMillis = 30000000; // 10 sec
-	private HashMap<String, RefConfigCodeListCache> codeListCache = new HashMap<String, RefConfigCodeListCache>();
-
 	@ManagedProperty("#{CqtCacheManager}")
 	private ICqtCacheManager cqtCacheManager;
-
+	
 	@Override
 	@SuppressWarnings({ "unchecked" })
-	public List<RefConfigCodeList> findByConfigType(String codelistConfigType,
-			OrderBy orderBy) {
-		List<RefConfigCodeList> retVal = (List<RefConfigCodeList>) this.cqtCacheManager
-				.getFromCache("code-list-cache", codelistConfigType);
+	public List<RefConfigCodeList> findByConfigType(String codelistConfigType, boolean activeOnly, OrderBy orderBy) {
+		String cacheKey = codelistConfigType + "-" + orderBy.name() + "-" + Boolean.toString(activeOnly);
+		
+		List<RefConfigCodeList> retVal = null;
+		try {
+			retVal = (List<RefConfigCodeList>) this.cqtCacheManager
+				.getFromCache(CACHE_NAME, cacheKey);
+		} catch(Exception e) {
+			retVal = null;
+		}
 
 		if (null == retVal) {
 			EntityManager entityManager = this.cqtEntityManagerFactory
@@ -69,7 +73,10 @@ public class RefCodeListService extends
 			StringBuilder queryString = new StringBuilder(
 					"from RefConfigCodeList a");
 			queryString
-					.append(" where a.codelistConfigType = :codelistConfigType and a.activeFlag = 'Y' order by a.serialNum ");
+					.append(" where a.codelistConfigType = :codelistConfigType");
+			if(activeOnly == true)
+				queryString .append(" and a.activeFlag = 'Y'");
+			queryString.append(" order by a.serialNum ");
 			queryString.append(orderBy.name());
 			try {
 				Query query = entityManager.createQuery(queryString.toString());
@@ -80,8 +87,7 @@ public class RefCodeListService extends
 					retVal = new ArrayList<>();
 				} else {
 					// add them to cache
-					cqtCacheManager.addToCache("code-list-cache",
-							codelistConfigType, retVal);
+					cqtCacheManager.addToCache(CACHE_NAME, cacheKey, retVal);
 				}
 			} catch (Exception ex) {
 				StringBuilder msg = new StringBuilder();
@@ -97,38 +103,34 @@ public class RefCodeListService extends
 		return retVal;
 	}
 
+	/**
+	 * Find all active configs, order by serialNum
+	 */
 	@Override
-	@SuppressWarnings({ "unchecked" })
+	public List<RefConfigCodeList> findByConfigType(String codelistConfigType, OrderBy orderBy) {
+		return findByConfigType(codelistConfigType, true, orderBy);
+	}
+
+	/**
+	 * Find all configs(active/inactive)
+	 */
+	@Override
 	public List<RefConfigCodeList> findAllByConfigType(
 			String codelistConfigType, OrderBy orderBy) {
-		List<RefConfigCodeList> retVal = null;
-		EntityManager entityManager = this.cqtEntityManagerFactory
-				.getEntityManager();
-
-		StringBuilder queryString = new StringBuilder(
-				"from RefConfigCodeList a");
-		queryString
-				.append(" where a.codelistConfigType = :codelistConfigType order by a.serialNum ");
-		queryString.append(orderBy.name());
-		try {
-			Query query = entityManager.createQuery(queryString.toString());
-			query.setParameter("codelistConfigType", codelistConfigType);
-
-			retVal = query.getResultList();
-			if (null == retVal) {
-				retVal = new ArrayList<>();
-			}
-		} catch (Exception ex) {
-			StringBuilder msg = new StringBuilder();
-			msg.append("findByConfigType failed for type '")
-					.append("RefConfigCodeList").append("' and value of ")
-					.append(codelistConfigType).append(". Query used was->")
-					.append(queryString);
-			LOG.error(msg.toString(), ex);
-		} finally {
-			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		return findByConfigType(codelistConfigType, false, orderBy);
+	}
+	
+	public RefConfigCodeList findDefaultByConfigType(String configType) {
+		List<RefConfigCodeList> codeList = findByConfigType(configType, OrderBy.ASC);
+		
+		if (codeList != null) {
+			for(RefConfigCodeList c : codeList) {
+				if(CSMQBean.TRUE.equals(c.getDefaultFlag())) {
+					return c;
+				}
+			}	
 		}
-		return retVal;
+		return null;
 	}
 
 	@Override
@@ -214,107 +216,31 @@ public class RefCodeListService extends
 	 * 
 	 *         Interprets internal code to value
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	public String interpretInternalCodeToValue(String configType,
 			String internalCode) {
-		RefConfigCodeListCache codeList;
-		codeList = codeListCache.get(configType);
-		if (codeList == null || !codeList.isValid()) {
-			// since the cache is empty or invalid, update it from DB
-			List<RefConfigCodeList> listFromDB = null;
-			EntityManager entityManager = this.cqtEntityManagerFactory
-					.getEntityManager();
-
-			StringBuilder queryString = new StringBuilder(
-					"from RefConfigCodeList a");
-			queryString
-					.append(" where a.codelistConfigType = :codelistConfigType order by a.codelistInternalValue ASC");
-			try {
-				Query query = entityManager.createQuery(queryString.toString());
-				query.setParameter("codelistConfigType", configType);
-
-				listFromDB = query.getResultList();
-			} catch (Exception ex) {
-				StringBuilder msg = new StringBuilder();
-				msg.append(
-						"interpretInternalCodeToValue: failed to find the code list for '")
-						.append(configType).append("' type. Query used was->")
-						.append(queryString);
-				LOG.error(msg.toString(), ex);
-			} finally {
-				this.cqtEntityManagerFactory.closeEntityManager(entityManager);
-				if (null == listFromDB) {
-					listFromDB = new ArrayList<>();
+		List<RefConfigCodeList> codeList = findByConfigType(configType, OrderBy.ASC);
+		
+		if (codeList != null) {
+			for(RefConfigCodeList c : codeList) {
+				if(c.getCodelistInternalValue().equals(internalCode)) {
+					return c.getValue();
 				}
-			}
-			if (codeList == null) {
-				codeList = new RefConfigCodeListCache(listFromDB,
-						cacheValidTimeInMillis);
-				codeListCache.put(configType, codeList);
-			} else
-				codeList.setValueList(listFromDB);
+			}	
 		}
-
-		RefConfigCodeList foundEntity = codeList
-				.findByInternalCode(internalCode);
-
-		if (foundEntity != null)
-			return foundEntity.getValue();
 		return internalCode;
 	}
-
-	/**
-	 * 
-	 * @author Andrius Mielkus(andrius.mielkus@yandex.com) Caching mechanism
-	 *         implementation of RefConfigCodeList
-	 *
-	 */
-	private class RefConfigCodeListCache {
-		private List<RefConfigCodeList> valueList;
-		private final int validTimeInMillis;
-		private long updateTimestamp;
-
-		RefConfigCodeListCache(List<RefConfigCodeList> valueList,
-				int validTimeInMillis) {
-			this.valueList = valueList;
-			this.validTimeInMillis = validTimeInMillis;
-			this.updateTimestamp = Calendar.getInstance().getTimeInMillis();
-		}
-
-		public List<RefConfigCodeList> getValueList() {
-			return valueList;
-		}
-
-		public void setValueList(List<RefConfigCodeList> valueList) {
-			this.valueList = valueList;
-			this.updateTimestamp = Calendar.getInstance().getTimeInMillis();
-		}
-
-		public boolean isValid() {
-			long now = Calendar.getInstance().getTimeInMillis();
-			return (now - updateTimestamp < validTimeInMillis);
-		}
-
-		public RefConfigCodeList findByInternalCode(String internalCode) {
-			RefConfigCodeList searchKey = new RefConfigCodeList();
-			searchKey.setCodelistInternalValue(internalCode);
-			int loc = Collections.binarySearch(valueList, searchKey,
-					new Comparator<RefConfigCodeList>() {
-
-						@Override
-						public int compare(RefConfigCodeList o1,
-								RefConfigCodeList o2) {
-							return o1.getCodelistInternalValue().compareTo(
-									o2.getCodelistInternalValue());
-						}
-
-					});
-			if (loc >= 0) {
-				return valueList.get(loc);
-			}
-			return null;
-		}
+	
+	@Override
+	public void create(RefConfigCodeList e) throws CqtServiceException {
+		super.create(e);
+		cqtCacheManager.removeAllFromCache(CACHE_NAME);
+	}
+	
+	@Override
+	public void update(List<RefConfigCodeList> e) throws CqtServiceException {
+		super.update(e);
+		cqtCacheManager.removeAllFromCache(CACHE_NAME);
 	}
 
 	public ICqtCacheManager getCqtCacheManager() {

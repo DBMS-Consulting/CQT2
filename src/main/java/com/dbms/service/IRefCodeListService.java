@@ -10,6 +10,8 @@ import com.dbms.util.OrderBy;
 
 public interface IRefCodeListService extends ICqtPersistenceService<RefConfigCodeList> {
 
+	public List<RefConfigCodeList> findByConfigType(String codelistConfigType, boolean activeOnly, OrderBy orderBy);
+	
 	public List<RefConfigCodeList> findByConfigType(String codelistConfigType, OrderBy orderBy);
 	
 	public List<RefConfigCodeList> findAllByConfigType(String codelistConfigType, OrderBy orderBy);
@@ -18,6 +20,7 @@ public interface IRefCodeListService extends ICqtPersistenceService<RefConfigCod
 	public RefConfigCodeList getTargetMeddraVersion();
 
 	public RefConfigCodeList findByConfigTypeAndInternalCode(String configType, String internalCode);
+	public RefConfigCodeList findDefaultByConfigType(String configType);
 	
 	public String findCodeByInternalCode(String codelistInternalValue);
 	
