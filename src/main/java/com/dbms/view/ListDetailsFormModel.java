@@ -5,6 +5,7 @@ import java.util.Date;
 
 import javax.faces.event.AjaxBehaviorEvent;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.ArrayUtils;
 
 import com.dbms.entity.cqt.CmqBase190;
@@ -389,7 +390,7 @@ public class ListDetailsFormModel {
 			for(int i=0;i<products.length;i++) {
 				prd[i] = refCodeListService.interpretInternalCodeToValue(CqtConstants.CODE_LIST_TYPE_PRODUCT, this.products[i]);
 			}
-			return String.join(", ", prd);
+			return StringUtils.join(prd, ", ");
 		}
 		return "";
 	}
