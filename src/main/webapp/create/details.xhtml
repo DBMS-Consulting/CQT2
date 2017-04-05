@@ -78,7 +78,8 @@
 				disabled="#{createController.readOnlyState}"
 				required="#{createController.detailsFormModel.productRequired and not createController.readOnlyState}"
 				requiredMessage="The Product is required" id="product"
-				label="#{createController.detailsFormModel.productsLabel}">
+				label="#{createController.detailsFormModel.productsLabel}"
+				style="min-width:270px">
 				<f:selectItems value="#{configMB.productList}" var="product"
 					itemLabel="#{product.value}"
 					itemValue="#{product.codelistInternalValue}" />

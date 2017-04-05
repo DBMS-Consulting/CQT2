@@ -137,7 +137,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		}
 		if (productCds != null && productCds.length > 0) {
 			sb = appendClause(sb, first);
-			sb.append(" c.cmqId in (SELECT p.cmqId FROM CmqProduct p WHERE p.cmqProductCd in :cmqProductCds)");
+			sb.append(" c.cmqId in (SELECT p.cmqId FROM CmqProduct p WHERE p.cmqProductCd in (:cmqProductCds))");
 			queryParams.put("cmqProductCds", Arrays.asList(productCds));
 			first = false;
 		}

@@ -44,6 +44,7 @@ import com.dbms.service.ICmqRelation190Service;
 import com.dbms.service.IMeddraDictService;
 import com.dbms.service.IRefCodeListService;
 import com.dbms.service.ISmqBaseService;
+import com.dbms.util.CqtConstants;
 import com.dbms.util.exceptions.CqtServiceException;
 import com.dbms.web.dto.CodelistDTO;
 
@@ -1953,9 +1954,13 @@ public class SearchController extends BaseController<CmqBase190> {
 	}
 	
 	public String getProductsLabel() {
-		if(this.products == null || this.products.length == 0)
-			return "Choose products";
-		else
-			return "Chosen " + this.products.length + " products";
+		if(this.products != null && this.products.length != 0 && this.refCodeListService != null) {
+			String[] prd = new String[this.products.length];
+			for(int i=0;i<products.length;i++) {
+				prd[i] = refCodeListService.interpretInternalCodeToValue(CqtConstants.CODE_LIST_TYPE_PRODUCT, this.products[i]);
+			}
+			return StringUtils.join(prd, ", ");
+		}
+		return "Choose products";
 	}
 }

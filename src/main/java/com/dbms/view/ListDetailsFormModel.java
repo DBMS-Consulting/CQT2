@@ -379,10 +379,14 @@ public class ListDetailsFormModel {
 	}
 	
 	public String getProductsLabel() {
-		if(this.products == null || this.products.length == 0)
-			return "Choose products";
-		else
-			return "Chosen " + this.products.length + " products";
+		if(this.products != null && this.products.length != 0 && this.refCodeListService != null) {
+			String[] prd = new String[this.products.length];
+			for(int i=0;i<products.length;i++) {
+				prd[i] = refCodeListService.interpretInternalCodeToValue(CqtConstants.CODE_LIST_TYPE_PRODUCT, this.products[i]);
+			}
+			return StringUtils.join(prd, ", ");
+		}
+		return "Choose products";
 	}
 	public String getProductsLabel1() {
 		if(this.products != null && this.products.length != 0 && this.refCodeListService != null) {
