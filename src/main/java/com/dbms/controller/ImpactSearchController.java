@@ -1143,27 +1143,56 @@ public class ImpactSearchController implements Serializable {
 
 	public void addSelectedNewPtsToTargetRelation() {
 		if((this.selectedNewPtLists != null) && (this.currentTableRootTreeNode.getChildCount() == 1)) {
+			List<String> existingNodeTerms = new ArrayList<>();
 			//count will always be either 0 or 1.
 			TreeNode parentTreeNode = this.targetTableRootTreeNode.getChildren().get(0);
 			for (MeddraDictHierarchySearchDto meddraDictHierarchySearchDto : selectedNewPtLists) {
 				Long dtoCode = Long.valueOf(meddraDictHierarchySearchDto.getCode());
-				HierarchyNode node = this.createMeddraNode(meddraDictHierarchySearchDto, "PT");
-				node.setRowStyleClass("green-colored");
-				TreeNode treeNode = new DefaultTreeNode(node, parentTreeNode);
-			
-				Long countOfChildren = this.meddraDictTargetService.findChldrenCountByParentCode("LLT_", "PT_", dtoCode);
-				if((null != countOfChildren) && (countOfChildren > 0)) {
-					// add a dummmy node to show expand arrow
-					HierarchyNode dummyNode = new HierarchyNode(null, null,
-							null, null);
-					dummyNode.setDummyNode(true);
-					new DefaultTreeNode(dummyNode, treeNode);
+				
+				//first check if this node is already added ot relations tree
+				boolean exists = false;
+				List<TreeNode> existingRelationsTreeNodes = parentTreeNode.getChildren();
+				if (CollectionUtils.isNotEmpty(existingRelationsTreeNodes)) {
+					for (TreeNode existingRelationsTreeNode : existingRelationsTreeNodes) {
+						HierarchyNode existingHierarchyNode = (HierarchyNode) existingRelationsTreeNode.getData();
+						IEntity existingEntity = existingHierarchyNode.getEntity();
+						if(existingEntity instanceof MeddraDictHierarchySearchDto) {
+							if(dtoCode.toString().equalsIgnoreCase(existingHierarchyNode.getCode())
+									&& "PT".toString().equalsIgnoreCase(existingHierarchyNode.getLevel())) {
+								exists = true;
+								existingNodeTerms.add(existingHierarchyNode.getTerm());
+								break;
+							}
+						}
+					}
+				}
+				
+				if(!exists) {
+					HierarchyNode node = this.createMeddraNode(meddraDictHierarchySearchDto, "PT");
+					node.setRowStyleClass("green-colored");
+					TreeNode treeNode = new DefaultTreeNode(node, parentTreeNode);
+				
+					Long countOfChildren = this.meddraDictTargetService.findChldrenCountByParentCode("LLT_", "PT_", dtoCode);
+					if((null != countOfChildren) && (countOfChildren > 0)) {
+						// add a dummmy node to show expand arrow
+						HierarchyNode dummyNode = new HierarchyNode(null, null,
+								null, null);
+						dummyNode.setDummyNode(true);
+						new DefaultTreeNode(dummyNode, treeNode);
+					}
 				}
 			}
 			
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Selected New PTs added successfully.", "");
-			FacesContext ctx = FacesContext.getCurrentInstance();
-			ctx.addMessage(null, msg);
+			// setRelationSelected(nodes);
+			if(CollectionUtils.isNotEmpty(existingNodeTerms)) {
+				FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,
+						existingNodeTerms + " skipped as they are already added to relations. Remaining New PTs added succesfully.", "");
+				FacesContext.getCurrentInstance().addMessage(null, message);
+			} else {
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Selected New PTs added successfully.", "");
+				FacesContext ctx = FacesContext.getCurrentInstance();
+				ctx.addMessage(null, msg);
+			}
 			targetRelationsUpdated = true;
 		} else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "No New PTs selected for addition to target table.", "");
