@@ -49,9 +49,12 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 			CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 			CriteriaQuery<CmqBaseTarget> cq = cb.createQuery(CmqBaseTarget.class);
 			Root<CmqBaseTarget> cmqRoot = cq.from(CmqBaseTarget.class);
+			
 			List<Predicate> pred = new ArrayList<Predicate>();
 			
-			pred.add(cb.equal(cmqRoot.get("impactType"), "IMPACTED"));
+			pred.add(cb.or(cb.equal(cmqRoot.get("impactType"), "IMPACTED"), 
+					cb.equal(cmqRoot.get("impactType"), "ICC")
+			));
 			
 			if(filters.containsKey("cmqName") && filters.get("cmqName") != null)
 				pred.add(cb.like(cb.lower(cmqRoot.<String>get("cmqName")), "%" + ((String)filters.get("cmqName")).toLowerCase() + "%"));
@@ -92,7 +95,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 	public Long findImpactedCount() {
 		Long retVal = null;
 		StringBuilder sb = new StringBuilder();
-		sb.append("select count(*) from CmqBaseTarget c where c.impactType = 'IMPACTED'");
+		sb.append("select count(*) from CmqBaseTarget c where c.impactType = 'IMPACTED' or c.impactType = 'ICC'");
 		
 		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
 		try {

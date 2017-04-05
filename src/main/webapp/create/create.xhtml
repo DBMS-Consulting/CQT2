@@ -29,8 +29,8 @@
 					<p:panel header="Details">
 						<ui:include src="details.xhtml" />
 						<h:panelGrid columns="2">
-							<p:commandButton value="Save" icon="ui-icon-disk"
-								update="@form:m1 @form:detailsPanel" action="#{createController.save}"></p:commandButton>
+							<p:commandButton value="Save" icon="ui-icon-disk" disabled="#{createController.formSaved}" id="saveButton"
+								update="@form:m1 @form:detailsPanel saveButton" action="#{createController.save}"></p:commandButton>
 							<p:commandButton value="Cancel" icon="ui-icon-close"
 								update="@form:m1 @form:detailsPanel" process="@this"
 								actionListener="#{createController.cancel}">

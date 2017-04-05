@@ -7,8 +7,14 @@
 	xmlns:p="http://primefaces.org/ui" template="../CSMQ.xhtml">
 
 
-
 	<ui:define name="page-content">
+	
+<script type="text/javascript">
+	function initRelationDND() {
+		//dummy function kept here to prevent create/hierarchySearch from breaking 
+	}
+</script>
+	
 		<h:form id="impactAssessment">
 			<p:growl id="messages" />
 
@@ -77,6 +83,12 @@
 											icon="fa fa-search" onclick="PF('select_mq').show();" />
 										<p:spacer width="40px" height="1px"/>
 										<h:outputText value="#{configMB.dictionaryName} - #{configMB.currentMeddraVersion.value}"/>
+									</f:facet>
+									<f:facet name="left">
+										<p:commandButton value="Hierarchy Search" id="ctb13"
+											update="@form:hierarchy-modal"
+											oncomplete="PF('current-hierarchy-search').show();" icon="fa fa-search">
+										</p:commandButton>
 									</f:facet>
 								</p:toolbar>
 								
@@ -309,6 +321,15 @@
 					<p:outputLabel value="Last Updated:" id="plam1" />
 					<h:outputText value="#{dummyView.value}" id="ot27" />
 				</f:facet>
+			</p:dialog>
+
+			<p:dialog widgetVar="current-hierarchy-search" modal="false" header="Hierarchy Search Current" height="auto" width="auto">
+				<ui:include src="../create/hierarchySearch.xhtml"></ui:include>
+		
+				<p:spacer height="10"></p:spacer>
+				<h:panelGrid style="float: right" columns="2">
+					<p:commandButton value="Cancel" onclick="PF('search').hide()" immediate="true" />
+				</h:panelGrid>
 			</p:dialog>
 
 			<p:dialog widgetVar="search" modal="false" header="Hierarchy search" width="740px" minHeight="620">

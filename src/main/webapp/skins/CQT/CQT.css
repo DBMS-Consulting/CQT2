@@ -327,6 +327,12 @@ td .bordered {
 	font-weight: bold;
 }
 
+.none {
+	color: #000;
+	font-style: normal;
+	font-weight: normal;
+}
+
 
 .pink-colored {
 	color: #ffc0cb;
