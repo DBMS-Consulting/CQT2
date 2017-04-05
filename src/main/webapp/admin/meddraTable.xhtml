@@ -6,7 +6,7 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:p="http://primefaces.org/ui">
 
-	<p:growl id="msgMed" />
+	<p:growl id="msgMed" life="#{cSMQBean.defaultGrowlLife}" />
 
 	<h3 style="text-align: center">MedDRA CodeList</h3>
 	<p:dataTable id="tableMeddra" var="val" rows="10"

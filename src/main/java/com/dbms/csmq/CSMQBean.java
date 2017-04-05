@@ -218,6 +218,9 @@ public class CSMQBean {
     public static String defaultPublishReleaseGroup;
     public static String defaultMEDSMQReleaseGroup;
     
+    // PRIMEFACES GROWL COMPONENT MESSAGE LIFE
+    public static int DEFAULT_GROWL_LIFE = 6000;
+    
     /*
      * @author MTW
      * 06/20/2014
@@ -779,6 +782,10 @@ public class CSMQBean {
 	}
 	public String getDefaultDelimeterString() {
 		return DEFAULT_DELIMETER_STRING;
+	}
+	
+	public int getDefaultGrowlLife() {
+		return DEFAULT_GROWL_LIFE;
 	}
 }
 

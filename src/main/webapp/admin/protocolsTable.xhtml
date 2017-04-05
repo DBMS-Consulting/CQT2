@@ -6,7 +6,7 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:p="http://primefaces.org/ui">
 	
-	<p:growl id="msgProt" />
+	<p:growl id="msgProt" life="#{cSMQBean.defaultGrowlLife}" />
 
 	<h3 style="text-align: center">Protocol CodeList</h3>
 	<p:dataTable id="tableProtocol" var="val" rows="10"
