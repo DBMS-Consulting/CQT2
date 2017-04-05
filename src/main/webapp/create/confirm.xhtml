@@ -14,31 +14,20 @@
 			<h:panelGrid columns="2" columnClasses="label-cell, value-cell">
 				<p:outputLabel styleClass="label-right" value="Extension:" />
 				<h:panelGroup>
-					<h:outputText rendered="#{createController.selectedData.cmqTypeCd eq 'PRO'}"
-						value="Protocol" />
-					<h:outputText rendered="#{createController.selectedData.cmqTypeCd eq 'CPT'}"
-						value="Critical Preferred Terms" />
-					<h:outputText rendered="#{createController.selectedData.cmqTypeCd eq 'DME'}"
-						value="Designated Medical Events" />
-					<h:outputText rendered="#{createController.selectedData.cmqTypeCd eq 'TME'}"
-						value="Targeted Medical Events" />
-					<h:outputText rendered="#{createController.selectedData.cmqTypeCd eq 'TR1'}"
-						value="Events of Special Clinical Interest" />
-					<h:outputText rendered="#{createController.selectedData.cmqTypeCd eq 'TIER1'}"
-						value="Events of Clinical Interest" />
+					<h:outputText value="#{createController.detailsFormModel.extensionLabel}" rendered="true"/>
 				</h:panelGroup>
 
 				<p:outputLabel styleClass="label-right" value="Name:" />
 				<h:outputText value="#{createController.selectedData.cmqName}" />
 
 				<p:outputLabel styleClass="label-right" value="Drug Program:" />
-				<h:outputText value="#{RefCodeListService.findCodeByInternalCode('PROGRAM', createController.selectedData.cmqProgramCd)}" />
+				<h:outputText value="#{createController.detailsFormModel.drugProgramLabel}" rendered="true"/>
 
 				<p:outputLabel styleClass="label-right" value="Protocol:" />
-				<h:outputText value="#{RefCodeListService.findCodeByInternalCode('PROTOCOL', createController.selectedData.cmqProtocolCd)}" />
+				<h:outputText value="#{createController.detailsFormModel.protocolLabel}" rendered="true"/>
 
 				<p:outputLabel styleClass="label-right" value="Product:" />
-				<h:outputText value="#{RefCodeListService.findCodeByInternalCode('PRODUCT', createController.selectedData.cmqProductCd)}" />
+				<h:outputText value="#{createController.detailsFormModel.productsLabel1}" rendered="true"/>
 			</h:panelGrid>
 
 			<h:panelGrid columns="2" columnClasses="label-cell, value-cell">
@@ -61,17 +50,7 @@
 			<h:panelGrid columns="2" columnClasses="label-cell, value-cell">
 
 				<p:outputLabel styleClass="label-right" value="Status:" />
-				<h:panelGroup>
-					<h:outputText
-						rendered="#{createController.selectedData.cmqStatus eq 'P'}"
-						value="PENDING" />
-					<h:outputText
-						rendered="#{createController.selectedData.cmqStatus eq 'I'}"
-						value="INACTIVE" />
-					<h:outputText
-						rendered="#{createController.selectedData.cmqStatus eq 'A'}"
-						value="ACTIVE" />
-				</h:panelGroup>
+				<h:outputText value="#{createController.detailsFormModel.statusLabel}" rendered="true"/>
 
 				<p:outputLabel styleClass="label-right" value="State:" />
 				<h:outputText styleClass="uppercase" value="#{createController.selectedData.cmqState}" />

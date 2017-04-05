@@ -90,6 +90,7 @@ public class SearchController extends BaseController<CmqBase190> {
 	private String critical;
 	private String scope;
 	private String product;
+	private String[] products;
 	private String group;
 	private String history;
 	private String codelist;
@@ -201,8 +202,8 @@ public class SearchController extends BaseController<CmqBase190> {
 
 	private void resetSearch() {
 		this.extension = "";
-		this.state = "PUBLISHED";
-		this.status = "A";
+		this.state = "";
+		this.status = "";
 		this.level = null;
 		// this.critical = "No";
 		this.group = "No Group";
@@ -488,7 +489,7 @@ public class SearchController extends BaseController<CmqBase190> {
 		}
 
 		datas = cmqBaseService.findByCriterias(extension, drugProgram,
-				protocol, product, level, status, state, critical, group,
+				protocol, products, level, status, state, critical, group,
 				termName, code);
 		log.debug("found values {}", datas == null ? 0 : datas.size());
 
@@ -1822,7 +1823,9 @@ public class SearchController extends BaseController<CmqBase190> {
 	/**
 	 * Reset relations
 	 */
-	public String resetRelations() {
+	public String resetRelations(CmqBase190 selectedData) {
+		if(selectedData != null && selectedData.getCmqCode() != null)
+			this.clickedCmqCode = selectedData.getCmqCode();
 		buildRelationsRoot();
 		FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Form canceled", "");
 		FacesContext.getCurrentInstance().addMessage(null, msg);
@@ -1939,5 +1942,20 @@ public class SearchController extends BaseController<CmqBase190> {
 
 	public void setParentCmqEntity(CmqBase190 parentCmqEntity) {
 		this.parentCmqEntity = parentCmqEntity;
+	}
+
+	public String[] getProducts() {
+		return products;
+	}
+
+	public void setProducts(String[] products) {
+		this.products = products;
+	}
+	
+	public String getProductsLabel() {
+		if(this.products == null || this.products.length == 0)
+			return "Choose products";
+		else
+			return "Chosen " + this.products.length + " products";
 	}
 }

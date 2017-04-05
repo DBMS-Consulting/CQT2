@@ -33,12 +33,12 @@
 
 			<p:outputLabel value="Product" rendered="true"
 				styleClass="label-right" />
-			<p:selectOneMenu value="#{searchController.product}" disabled="false"
-				id="product2">
-				<f:selectItem itemValue="" itemLabel="" />
+			<p:selectCheckboxMenu value="#{searchController.products}" disabled="false" widgetVar="product2"
+				id="product2" label="#{searchController.productsLabel}">
 				<f:selectItems value="#{configMB.productList}" var="product"
 					itemLabel="#{product.value}" itemValue="#{product.codelistInternalValue}" />
-			</p:selectOneMenu>
+				<p:ajax oncomplete="PF('product2').show()" listener="#{searchController.getProductsLabel}" update="product2" ></p:ajax>
+			</p:selectCheckboxMenu>
 
 		</h:panelGrid>
 

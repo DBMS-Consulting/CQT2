@@ -95,33 +95,16 @@ public class CreateController implements Serializable {
 	}
 
 	private void initAll() {
-		initCreateForm();
-		detailsFormModel.loadFromCmqBase190(selectedData);
-		notesFormModel.loadFromCmqBase190(selectedData);
-		workflowFormModel.loadFromCmqBase190(selectedData);
+		detailsFormModel.setRefCodeListService(refCodeListService);
+		detailsFormModel.init();
+		notesFormModel.init();
+		workflowFormModel.init();
 		relationsModified = false;
 		maintainDesigBtn = false;
 	}
 
 	public void initCreateForm() {
 		this.selectedData = new CmqBase190();
-		if(refCodeListService != null) {
-			RefConfigCodeList d;
-			
-			d = refCodeListService.findDefaultByConfigType(CqtConstants.CODE_LIST_TYPE_EXTENSION);
-			this.selectedData.setCmqTypeCd(d != null ? d.getCodelistInternalValue() : this.selectedData.getCmqTypeCd());
-			
-			d = refCodeListService.findDefaultByConfigType(CqtConstants.CODE_LIST_TYPE_PRODUCT);
-			this.selectedData.setCmqProductCd(d != null ? d.getCodelistInternalValue() : this.selectedData.getCmqProductCd());
-			
-			d = refCodeListService.findDefaultByConfigType(CqtConstants.CODE_LIST_TYPE_PROGRAM);
-			this.selectedData.setCmqProgramCd(d != null ? d.getCodelistInternalValue() : this.selectedData.getCmqProgramCd());
-			
-			d = refCodeListService.findDefaultByConfigType(CqtConstants.CODE_LIST_TYPE_PROTOCOL);
-			this.selectedData.setCmqProtocolCd(d != null ? d.getCodelistInternalValue() : this.selectedData.getCmqProtocolCd());
-			
-			changeLevel(null);
-		}
 		selectedData.setCmqDescription("Please enter the description");
 	}
 	
@@ -1227,7 +1210,7 @@ public class CreateController implements Serializable {
 		} else if(updateWizard != null) {
 			detailsFormModel.setWizardType(WizardType.UpdateWizard);
 		}
-		detailsFormModel.changeLevel(event);
+		detailsFormModel.afterChangeExtension(event);
 	}
 
 	

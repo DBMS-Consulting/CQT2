@@ -47,7 +47,7 @@
 	<p:remoteCommand name="resetRelationsAndGoToNextStep"
 			update="@form:m1 @form:wizardId @form:resultRelations"
 			onstart="PF('confirmSaveRelationsDlg').hide()" >
-		<f:actionListener binding="#{searchController.resetRelations()}" />
+		<f:actionListener binding="#{searchController.resetRelations(createController.selectedData)}" />
 		<f:actionListener binding="#{createController.resetRelationsAndNextStep()}" />
 	</p:remoteCommand>
 	

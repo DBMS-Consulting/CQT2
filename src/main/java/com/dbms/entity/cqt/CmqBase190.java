@@ -1,14 +1,20 @@
 package com.dbms.entity.cqt;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -154,6 +160,9 @@ public class CmqBase190 extends BaseEntity {
 
 	@Column(name = "CMQ_APPROVE_REASON", length = 4000)
 	private String cmqApproveReason;
+	
+	@OneToMany(cascade=CascadeType.ALL, mappedBy="cmqBase", fetch=FetchType.EAGER, orphanRemoval=true)
+	private List<CmqProduct> cmqProducts;
 
 	public Long getId() {
 		return cmqId;
@@ -435,12 +444,73 @@ public class CmqBase190 extends BaseEntity {
 		this.cmqId = cmqId;
 	}
 
-	// public String getCmqReasonApproval() {
-	// return cmqReasonApproval;
-	// }
-	//
-	// public void setCmqReasonApproval(String cmqReasonApproval) {
-	// this.cmqReasonApproval = cmqReasonApproval;
-	// }
+	public List<CmqProduct> getCmqProducts() {
+		return cmqProducts;
+	}
 
+	public void setCmqProducts(List<CmqProduct> cmqProducts) {
+		this.cmqProducts = cmqProducts;
+	}
+
+	public String[] getCmqProductCds() {
+		int s = this.cmqProducts == null ? 0 : this.cmqProducts.size();
+		String[] productCds = new String[s];
+		if(s > 0) {
+			int i=0;
+			for(CmqProduct p: cmqProducts) {
+				productCds[i++] = p.getCmqProductCd();
+			}
+		}
+		return productCds;
+	}
+	
+	public void setCmqProductCds(String[] productCds) {
+		List<String> exProductCds = new ArrayList<String>(Arrays.asList(getCmqProductCds()));
+		exProductCds.removeAll(Arrays.asList(productCds));
+
+		for(String p: productCds) {
+			addCmqProduct(p);
+		}
+		for(String ep: exProductCds) {
+			removeCmqProduct(ep);
+		}
+	}
+	
+	public int addCmqProduct(String productCd) {
+		int s = this.cmqProducts == null ? 0 : this.cmqProducts.size();
+		if(s > 0) {
+			// check if it already exists
+			for(CmqProduct p : cmqProducts) {
+				if(p.getCmqProductCd().equals(productCd)) {
+					return 0;
+				}
+			}
+		}
+		CmqProduct p = new CmqProduct() ;
+		p.setCmqBase(this);
+		p.setCmqProductCd(productCd);
+		if(this.cmqProducts == null)
+			this.cmqProducts = new ArrayList<CmqProduct>();
+		this.cmqProducts.add(p);
+		this.cmqProductCd = this.cmqProducts.get(0).getCmqProductCd();
+		return 1;
+	}
+	
+	public int removeCmqProduct(String productCd) {
+		int s = this.cmqProducts == null ? 0 : this.cmqProducts.size();
+		if(s > 0) {
+			// check if it already exists
+			for(CmqProduct p : cmqProducts) {
+				if(p.getCmqProductCd().equals(productCd)) {
+					cmqProducts.remove(p);
+					return 1;
+				}
+			}
+		}
+		if(this.cmqProducts == null || this.cmqProducts.size() == 0)
+			this.cmqProductCd = null;
+		else
+			this.cmqProductCd = this.cmqProducts.get(0).getCmqProductCd();
+		return 0;
+	}
 }

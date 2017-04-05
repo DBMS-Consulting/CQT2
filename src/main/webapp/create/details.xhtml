@@ -74,15 +74,16 @@
 			<p:outputLabel id="lProduct"
 				value="#{createController.detailsFormModel.productRequired ? '* Product' : 'Product'}"
 				rendered="true" styleClass="label-right" />
-			<p:selectOneMenu value="#{createController.detailsFormModel.product}"
+			<p:selectCheckboxMenu value="#{createController.detailsFormModel.products}" widgetVar="product"
 				disabled="#{createController.readOnlyState}"
 				required="#{createController.detailsFormModel.productRequired and not createController.readOnlyState}"
-				requiredMessage="The Product is required" id="product">
-				<f:selectItem itemValue="" itemLabel="" />
+				requiredMessage="The Product is required" id="product"
+				label="#{createController.detailsFormModel.productsLabel}">
 				<f:selectItems value="#{configMB.productList}" var="product"
 					itemLabel="#{product.value}"
 					itemValue="#{product.codelistInternalValue}" />
-			</p:selectOneMenu>
+				<p:ajax oncomplete="PF('product').show()" listener="#{createController.detailsFormModel.getProductsLabel}" update="product" ></p:ajax>
+			</p:selectCheckboxMenu>
 
 			<p:outputLabel value="* Designee" styleClass="label-right" />
 			<p:selectOneMenu

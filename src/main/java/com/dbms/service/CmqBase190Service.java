@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -109,7 +110,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 	@Override
 	@SuppressWarnings("unchecked")
 	public List<CmqBase190> findByCriterias(String extension,
-			String drugProgramCd, String protocolCd, String productCd,
+			String drugProgramCd, String protocolCd, String[] productCds,
 			Integer level, String status, String state, String criticalEvent,
 			String group, String termName, Long code) {
 		List<CmqBase190> retVal = null;
@@ -134,10 +135,10 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 			queryParams.put("cmqProtocolCd", protocolCd);
 			first = false;
 		}
-		if (StringUtils.isNotEmpty(productCd)) {
+		if (productCds != null && productCds.length > 0) {
 			sb = appendClause(sb, first);
-			sb.append(" lower(c.cmqProductCd) like lower(:cmqProductCd)");
-			queryParams.put("cmqProductCd", productCd);
+			sb.append(" c.cmqId in (SELECT p.cmqId FROM CmqProduct p WHERE p.cmqProductCd in :cmqProductCds)");
+			queryParams.put("cmqProductCds", Arrays.asList(productCds));
 			first = false;
 		}
 		if (level != null) {

@@ -90,7 +90,7 @@
 								action="#{createController.saveRelations(searchController.relationsRoot)}" update="@form:m1" />
 							<p:commandButton value="Cancel" icon="ui-icon-close"
 								process="@this" update="@form:m1 @form:resultRelations" style="float: right"
-								actionListener="#{searchController.resetRelations}">
+								actionListener="#{searchController.resetRelations(createController.selectedData)}">
 								<p:confirm header="Confirm"
 									message="Are you sure you want to erase these fields?"
 									icon="ui-icon-alert" />

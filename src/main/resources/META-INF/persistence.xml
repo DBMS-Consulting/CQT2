@@ -14,6 +14,7 @@
 		<class>com.dbms.entity.cqt.MeddraDict190</class>
 		<class>com.dbms.entity.cqt.MeddraDictTarget</class>
 		<class>com.dbms.entity.cqt.RefConfigCodeList</class>
+		<class>com.dbms.entity.cqt.CmqProduct</class>
 		<class>com.dbms.entity.meddra.HlgtPrefTerm</class>
 		<class>com.dbms.entity.meddra.HltPrefTerm</class>
 		<class>com.dbms.entity.meddra.LowLevelTerm</class>

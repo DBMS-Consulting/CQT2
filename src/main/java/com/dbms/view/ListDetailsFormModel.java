@@ -1,8 +1,11 @@
 package com.dbms.view;
 
+import java.util.Arrays;
 import java.util.Date;
 
 import javax.faces.event.AjaxBehaviorEvent;
+
+import org.apache.commons.lang3.ArrayUtils;
 
 import com.dbms.entity.cqt.CmqBase190;
 import com.dbms.entity.cqt.CmqBaseTarget;
@@ -23,6 +26,7 @@ public class ListDetailsFormModel {
 	
 	private WizardType wizardType = WizardType.CreateWizard;
 	private boolean modelChanged = false;
+	private IRefCodeListService refCodeListService;
 	
 	private String extension;
 	private String name;
@@ -33,6 +37,7 @@ public class ListDetailsFormModel {
 	private String critical;
 	private String scope;
 	private String product;
+	private String[] products;
 	private String group;
 	private String algorithm;
 	private String state;
@@ -53,8 +58,8 @@ public class ListDetailsFormModel {
 		this.extension = "TME";
 		this.name = "";
 		this.drugProgram = "";
-		this.protocol = "999999";
-		this.product = "";
+		this.protocol = CqtConstants.CODE_LIST_NO_PROTOCOL_INTERNALCODE;
+		this.products = new String[0];
 		this.level = 1;
 		this.algorithm = "N";
 		this.critical = "No";
@@ -75,6 +80,7 @@ public class ListDetailsFormModel {
 		this.protocol = cmq.getCmqProtocolCd();
 		this.drugProgram = cmq.getCmqProgramCd();
 		this.product = cmq.getCmqProductCd();
+		this.products = cmq.getCmqProductCds();
 		this.designee = cmq.getCmqDesignee();
 		this.level = cmq.getCmqLevel();
 		this.critical = cmq.getCmqCriticalEvent();
@@ -114,6 +120,9 @@ public class ListDetailsFormModel {
 		cmq.setCmqProgramCd(drugProgram);
 		cmq.setCmqProtocolCd(protocol);
 		cmq.setCmqProductCd(product);
+		
+		cmq.setCmqProductCds(products);
+		
 		cmq.setCmqDesignee(designee);
 		if (cmq.getCmqDesignee() == null){
 			cmq.setCmqDesignee("NONE");
@@ -160,9 +169,9 @@ public class ListDetailsFormModel {
 		}
 		
 		if(this.wizardType == WizardType.CopyWizard)
-			this.modelChanged = true;
+			setModelChanged(true);
 		else 
-			this.modelChanged = false;
+			setModelChanged(false);
 		
 		this.code = cmq.getCmqCode();
 		this.createdBy = cmq.getCreatedBy();
@@ -177,8 +186,8 @@ public class ListDetailsFormModel {
 	 * @param event
 	 *            AjaxBehaviour
 	 */
-	public void changeLevel(AjaxBehaviorEvent event) {
-		if (extension.equals("PRO")) {
+	public void afterChangeExtension(AjaxBehaviorEvent event) {
+		if ("PRO".equals(extension)) {
 			setLevel(2);
 		} else {
 			setLevel(1);
@@ -189,19 +198,40 @@ public class ListDetailsFormModel {
 			/**
 			 * Getting code internal value from now on
 			 */
-			if (extension.equals("CPT") || extension.equals("DME")) {
-				setDrugProgram("420001");
-				setProduct("99999");
-			}
-			else {
+			
+			if("TME".equals(extension) ||
+					"TR1".equals(extension)) {
+				setLevel(1);
 				setDrugProgram("");
-				setProduct(""); 
-			}
-		
-			if (extension.equals("TME") || extension.equals("TR1") || extension.equals("CPT") || extension.equals("DME"))
-				setProtocol("999999");
-			else
+				setProtocol(CqtConstants.CODE_LIST_NO_PROTOCOL_INTERNALCODE);
+				setProduct("");
+			} else if("PRO".equals(extension)) {
+				setLevel(2);
+				setDrugProgram("");
 				setProtocol("");
+				setProduct("");
+			} else if("CPT".equals(extension) ||
+					"DME".equals(extension)) {
+				setDrugProgram(CqtConstants.CODE_LIST_NO_PROGRAM_INTERNALCODE);
+				setProtocol(CqtConstants.CODE_LIST_NO_PROTOCOL_INTERNALCODE);
+				setProduct(CqtConstants.CODE_LIST_NO_PRODUCT_INTERNALCODE);
+			} else {
+				if(refCodeListService != null) {
+					RefConfigCodeList d;
+										
+					d = refCodeListService.findDefaultByConfigType(CqtConstants.CODE_LIST_TYPE_PRODUCT);
+					setProducts(d != null ? new String[] { d.getCodelistInternalValue() } : getProducts());
+					
+					d = refCodeListService.findDefaultByConfigType(CqtConstants.CODE_LIST_TYPE_PROGRAM);
+					setDrugProgram(d != null ? d.getCodelistInternalValue() : getDrugProgram());
+					
+					d = refCodeListService.findDefaultByConfigType(CqtConstants.CODE_LIST_TYPE_PROTOCOL);
+					setProtocol(d != null ? d.getCodelistInternalValue() : getProtocol());
+				} else {
+					setDrugProgram("");
+					setProtocol("");
+				}
+			}
 		}
 	}
 	//--------------------------- Getters & Setters ---------------------------
@@ -238,8 +268,23 @@ public class ListDetailsFormModel {
 	}
 	public void setExtension(String extension) {
 		if(this.extension == null || !this.extension.equals(extension))
-			this.modelChanged = true;
+			setModelChanged(true);
 		this.extension = extension;
+	}
+	public String getExtensionLabel() {
+		if("PRO".equals(this.extension))
+			return "Protocol";
+		else if("CPT".equals(this.extension))
+			return "Critical Preferred Terms";
+		else if("DME".equals(this.extension))
+			return "Designated Medical Events";
+		else if("TME".equals(this.extension))
+			return "Targeted Medical Events";
+		else if("TR1".equals(this.extension))
+			return "Events of Special Clinical Interest";
+		else if("TIER1".equals(this.extension))
+			return "Events of Clinical Interest";
+		return "";
 	}
 	
 	/**
@@ -252,7 +297,7 @@ public class ListDetailsFormModel {
 	}
 	public void setName(String name) {
 		if(this.name == null || !this.name.equals(name))
-			this.modelChanged = true;
+			setModelChanged(true);
 		this.name = name;
 	}
 
@@ -266,8 +311,14 @@ public class ListDetailsFormModel {
 	}
 	public void setDrugProgram(String drugProgram) {
 		if(this.drugProgram == null || !this.drugProgram.equals(drugProgram))
-			this.modelChanged = true;
+			setModelChanged(true);
 		this.drugProgram = drugProgram;
+	}
+	public String getDrugProgramLabel() {
+		if(this.refCodeListService != null) {
+			return refCodeListService.interpretInternalCodeToValue(CqtConstants.CODE_LIST_TYPE_PROGRAM, this.drugProgram);
+		}
+		return this.drugProgram;
 	}
 
 	/**
@@ -278,11 +329,16 @@ public class ListDetailsFormModel {
 	public String getProtocol() {
 		return protocol;
 	}
-
 	public void setProtocol(String protocol) {
 		if(this.protocol == null || !this.protocol.equals(protocol))
-			this.modelChanged = true;
+			setModelChanged(true);
 		this.protocol = protocol;
+	}
+	public String getProtocolLabel() {
+		if(this.refCodeListService != null) {
+			return refCodeListService.interpretInternalCodeToValue(CqtConstants.CODE_LIST_TYPE_PROTOCOL, this.protocol);
+		}
+		return this.protocol;
 	}
 	
 	/**
@@ -295,8 +351,47 @@ public class ListDetailsFormModel {
 	}
 	public void setProduct(String product) {
 		if(this.product== null || !this.product.equals(product))
-			this.modelChanged = true;
+			setModelChanged(true);
 		this.product = product;
+	}
+	public String getProductLabel() {
+		if(this.refCodeListService != null) {
+			return refCodeListService.interpretInternalCodeToValue(CqtConstants.CODE_LIST_TYPE_PRODUCT, this.product);
+		}
+		return this.product;
+	}
+
+	/**
+	 * Details Form / Products
+	 * Getter, Setter
+	 * @return
+	 */
+	public String[] getProducts() {
+		return products;
+	}
+	public void setProducts(String[] products) {
+		Arrays.sort(this.products);
+		Arrays.sort(products);
+		if(this.products== null || !Arrays.equals(this.products, products))
+			this.modelChanged = true;
+		this.products = products;
+	}
+	
+	public String getProductsLabel() {
+		if(this.products == null || this.products.length == 0)
+			return "Choose products";
+		else
+			return "Chosen " + this.products.length + " products";
+	}
+	public String getProductsLabel1() {
+		if(this.products != null && this.products.length != 0 && this.refCodeListService != null) {
+			String[] prd = new String[this.products.length];
+			for(int i=0;i<products.length;i++) {
+				prd[i] = refCodeListService.interpretInternalCodeToValue(CqtConstants.CODE_LIST_TYPE_PRODUCT, this.products[i]);
+			}
+			return String.join(", ", prd);
+		}
+		return "";
 	}
 	
 	/**
@@ -309,7 +404,7 @@ public class ListDetailsFormModel {
 	}
 	public void setDesignee(String designee) {
 		if(this.designee == null || !this.designee.equals(designee))
-			this.modelChanged = true;
+			setModelChanged(true);
 		this.designee = designee;
 	}
 
@@ -324,7 +419,7 @@ public class ListDetailsFormModel {
 
 	public void setLevel(Integer level) {
 		if(this.level == null || !this.level.equals(level))
-			this.modelChanged = true;
+			setModelChanged(true);
 		this.level = level;
 	}
 	
@@ -339,7 +434,7 @@ public class ListDetailsFormModel {
 
 	public void setAlgorithm(String algorithm) {
 		if(this.algorithm == null || !this.algorithm.equals(algorithm))
-			this.modelChanged = true;
+			setModelChanged(true);
 		this.algorithm = algorithm;
 	}
 
@@ -353,7 +448,6 @@ public class ListDetailsFormModel {
 	public String getState() {
 		return state;
 	}
-
 	public void setState(String state) {
 		this.state = state;
 	}
@@ -370,6 +464,15 @@ public class ListDetailsFormModel {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+	public String getStatusLabel() {
+		if(CmqBase190.CMQ_STATUS_VALUE_ACTIVE.equals(this.status))
+			return CmqBase190.CMQ_STATUS_DISP_LABEL_ACTIVE;
+		else if(CmqBase190.CMQ_STATUS_VALUE_INACTIVE.equals(this.status))
+			return CmqBase190.CMQ_STATUS_DISP_LABEL_INACTIVE;
+		else if(CmqBase190.CMQ_STATUS_VALUE_PENDING.equals(this.status))
+			return CmqBase190.CMQ_STATUS_DISP_LABEL_PENDING;
+		return this.status;
 	}
 
 	/**
@@ -480,6 +583,14 @@ public class ListDetailsFormModel {
 
 	public void setLastModifiedDate(Date lastModifiedDate) {
 		this.lastModifiedDate = lastModifiedDate;
+	}
+
+	public IRefCodeListService getRefCodeListService() {
+		return refCodeListService;
+	}
+
+	public void setRefCodeListService(IRefCodeListService refCodeListService) {
+		this.refCodeListService = refCodeListService;
 	}
 
 }
