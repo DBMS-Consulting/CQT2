@@ -357,6 +357,13 @@ td .bordered {
 	vertical-align: middle;
 }
 
+.text-red {
+	color: red;
+}
+.text-bold {
+	font-weight: bold;
+}
+
 /* Styles for primefaces:selectOneMenu */
 .ui-selectonemenu.hide-disabled .ui-selectonemenu-item.ui-state-disabled {
     display: none;
@@ -368,8 +375,8 @@ td .bordered {
 }
 
 /**================= Relations Tree Table ======================**/
-.ui-treetable.ui-treetable-resultRelations .ui-treetable-selectable-node .ui-chkbox.ui-selection {
-	display: none;
+.ui-treetable.hide-sel-chkbox .ui-treetable-selectable-node .ui-chkbox.ui-selection {
+	display: none !important;
 }
 
 /**================= Relations/Hierarchy Search Form ==============**/
@@ -381,9 +388,6 @@ td .bordered {
 	max-height: 350px;
 }
 .ui-treetable.ui-treetable-resultHier .ui-treetable-scrollable-body .ui-treetable-scrollable-theadclone {
-	display: none;
-}
-.ui-treetable.ui-treetable-resultHier .ui-treetable-selectable-node .ui-chkbox.ui-selection {
 	display: none;
 }
 

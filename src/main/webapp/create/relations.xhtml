@@ -138,7 +138,7 @@
 
 		<p:treeTable value="#{searchController.relationsRoot}" var="node"
 			selectionMode="checkbox" id="resultRelations" rows="20"
-			styleClass="ui-treetable-resultRelations"
+			styleClass="ui-treetable-resultRelations hide-sel-chkbox"
 			paginator="true" paginatorPosition="bottom"
 			paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 			rowsPerPageTemplate="5,10,25,30"
@@ -169,7 +169,7 @@
 
 			<p:column>
 				<h:outputText value="#{node.term}" rendered="true" />
-				<h:outputText value=" **INACTIVE**" rendered="#{node.inactiveList}" />
+				<h:outputText value="I " rendered="#{node.inactiveList}" styleClass="text-red text-bold"/>
 			</p:column>
 
 			<p:column>
