@@ -114,11 +114,12 @@
 																		
 									<p:columnGroup type="header">
 										<p:row>
-											<p:column rowspan="2" headerText="Existing Lists/SMQ" style="width:50%"/>
+											<p:column colspan="1" headerText="Existing Lists/SMQ" style="width:50%"/>
 											<p:column colspan="3" headerText="Hierarchy Details" />
 										</p:row>
 
 										<p:row>
+											<p:column styleClass="listName" headerText="#{impactSearchController.listName}" />
 											<p:column headerText="Code" width="25%" />
 											<p:column headerText="Level" width="10%"/>
 											<p:column headerText="Scope" width="15%"/>
@@ -174,11 +175,12 @@
 										
 									<p:columnGroup type="header">
 										<p:row>
-											<p:column rowspan="2" headerText="Future Lists/SMQ" style="width:40%" />
+											<p:column colspan="1" id="targetTitle" style="width:40%" headerText="Future Lists/SMQ" />
 											<p:column colspan="6" headerText="Hierarchy Details" />
 										</p:row>
-
+										
 										<p:row>
+											<p:column styleClass="listName" headerText="#{impactSearchController.listName}" />
 											<p:column headerText="Code" style="width:15%" />
 											<p:column headerText="Level"  style="width:8%" />
 											<p:column headerText="Scope"  style="width:15%" />
@@ -453,6 +455,12 @@
 			
 			.green-colored:HOVER {
 				color: #0a931a;
+			}
+			.listName {
+				font-size: 10px;
+				font-style: italic;
+				font-weight: bold;
+				color: #330066 !important;
 			}
 		</style>
 	</ui:define>

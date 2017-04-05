@@ -153,6 +153,8 @@ public class ImpactSearchController implements Serializable {
 	
 	private List<String> newPtDistinctSocTermsList;
 	
+	private String listName;
+	
 	public ImpactSearchController() {
 		
 	}
@@ -398,13 +400,23 @@ public class ImpactSearchController implements Serializable {
 		LOG.info("current called");	
 		if (this.isImpactedCmqSelected) {
 			this.updateCurrentTableForCmqList(this.selectedImpactedCmqList);
+			//Current List name
+			setListName(this.selectedImpactedCmqList.getCmqName());
 		} else if (this.isNonImpactedCmqSelected) {
 			this.updateCurrentTableForCmqList(this.selectedNotImpactedCmqList);
+			//Current List name
+			setListName(this.selectedNotImpactedCmqList.getCmqName());
 		} else if (this.isImpactedSmqSelected) {
 			this.updateCurrentTableForSmqList(this.selectedImpactedSmqList);
+			//Current List name
+			setListName(this.selectedImpactedSmqList.getSmqName());
 		} else if (this.isNonImpactedSmqSelected) {
 			this.updateCurrentTableForSmqList(this.selectedNotImpactedSmqList);
+			//Current List name
+			setListName(this.selectedNotImpactedSmqList.getSmqName());
 		}
+		
+		
 	}
 
 	public void updateTargetTable() {
@@ -415,12 +427,20 @@ public class ImpactSearchController implements Serializable {
 		LOG.info("target called");
 		if(this.isImpactedCmqSelected) {
 			this.updateTargetTableForCmqList(this.selectedImpactedCmqList);
+			//Target List name
+			setListName(this.selectedImpactedCmqList.getCmqName());
 		} else if(this.isNonImpactedCmqSelected) {
 			this.updateTargetTableForCmqList(this.selectedNotImpactedCmqList);
+			//Target List name
+			setListName(this.selectedNotImpactedCmqList.getCmqName());
 		} else if (this.isImpactedSmqSelected) {
 			this.updateTargetTableForSmqList(this.selectedImpactedSmqList);
+			//Target List name
+			setListName(this.selectedImpactedSmqList.getSmqName());
 		} else if (this.isNonImpactedSmqSelected) {
 			this.updateTargetTableForSmqList(this.selectedNotImpactedSmqList);
+			//Target List name
+			setListName(this.selectedNotImpactedSmqList.getSmqName());
 		}
 	}
 
@@ -3175,6 +3195,14 @@ public class ImpactSearchController implements Serializable {
 
 	public void setLevelHT(String levelHT) {
 		this.levelHT = levelHT;
+	}
+
+	public String getListName() {
+		return listName;
+	}
+
+	public void setListName(String listName) {
+		this.listName = listName;
 	}
 
 }
