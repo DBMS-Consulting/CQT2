@@ -258,4 +258,15 @@ public class HierarchyNode implements Serializable, Comparable<HierarchyNode> {
 		}
 		return true;
 	}
+	
+	public boolean isInactiveList() {
+		if(this.entity != null) {
+			if(this.entity instanceof CmqBase190) {
+				return CmqBase190.CMQ_STATUS_DISP_LABEL_INACTIVE.equals(((CmqBase190)this.entity).getCmqStatus());
+			} else if(this.entity instanceof CmqBaseTarget) {
+				return CmqBase190.CMQ_STATUS_DISP_LABEL_INACTIVE.equals(((CmqBaseTarget)this.entity).getCmqStatus());
+			}
+		}
+		return false;
+	}
 }

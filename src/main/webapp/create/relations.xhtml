@@ -154,21 +154,22 @@
 				<p:row>
 					<p:column rowspan="2"
 						headerText="#{createController.selectedData.cmqName}" />
-					<p:column colspan="6" headerText="Hierarchy Details" />
+					<p:column colspan="6" headerText="Hierarchy Details" width="50%"/>
 				</p:row>
 
 				<p:row>
-					<p:column headerText="Code" />
-					<p:column headerText="Level" />
-					<p:column headerText="Scope" />
-					<p:column headerText="Category" />
-					<p:column headerText="Weight" />
-					<p:column headerText="Delete" />
+					<p:column headerText="Code" width="100"/>
+					<p:column headerText="Level" width="100"/>
+					<p:column headerText="Scope" width="100" />
+					<p:column headerText="Category" width="100" />
+					<p:column headerText="Weight" width="100" />
+					<p:column headerText="Delete" width="100" />
 				</p:row>
 			</p:columnGroup>
 
 			<p:column>
 				<h:outputText value="#{node.term}" rendered="true" />
+				<h:outputText value=" **INACTIVE**" rendered="#{node.inactiveList}" />
 			</p:column>
 
 			<p:column>

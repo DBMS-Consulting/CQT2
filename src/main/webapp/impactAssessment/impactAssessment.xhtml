@@ -81,14 +81,13 @@
 									<f:facet name="left">
 										<p:commandButton value="Select Lists/SMQs" actionListener="#" update=""
 											icon="fa fa-search" onclick="PF('select_mq').show();" />
-										<p:spacer width="40px" height="1px"/>
-										<h:outputText value="#{configMB.dictionaryName} - #{configMB.currentMeddraVersion.value}"/>
-									</f:facet>
-									<f:facet name="left">
+										<p:spacer width="10px" height="1px"/>
 										<p:commandButton value="Hierarchy Search" id="ctb13"
 											update="@form:hierarchy-modal"
 											oncomplete="PF('current-hierarchy-search').show();" icon="fa fa-search">
 										</p:commandButton>
+										<p:spacer width="40px" height="1px"/>
+										<h:outputText value="#{configMB.dictionaryName} - #{configMB.currentMeddraVersion.value}"/>
 									</f:facet>
 								</p:toolbar>
 								

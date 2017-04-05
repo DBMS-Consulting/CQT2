@@ -88,38 +88,38 @@
 			<p:columnGroup type="header">
 				<p:row>
 					<p:column rowspan="2"
-						headerText="#{createController.selectedData.cmqName}" />
-					<p:column colspan="5" headerText="Hierarchy Details" />
+						headerText="#{createController.selectedData.cmqName}"/>
+					<p:column colspan="5" headerText="Hierarchy Details" style="width:50%"/>
 				</p:row>
 
 				<p:row>
-					<p:column headerText="Code" />
-					<p:column headerText="Level" />
-					<p:column headerText="Scope" />
-					<p:column headerText="Category" />
-					<p:column headerText="Weight" />
+					<p:column headerText="Code" style="width:10%" />
+					<p:column headerText="Level" style="width:10%" />
+					<p:column headerText="Scope" style="width:10%" />
+					<p:column headerText="Category" style="width:10%" />
+					<p:column headerText="Weight" style="width:10%" />
 				</p:row>
 			</p:columnGroup>
 
 			<p:column>
-
 				<h:outputText value="#{node.term}" rendered="true" />
+				<h:outputText value=" **INACTIVE**" rendered="#{node.inactiveList}" />
 			</p:column>
 
-			<p:column>
+			<p:column style="width:10%">
 				<h:outputText value="#{node.code}" rendered="true" />
 			</p:column>
-			<p:column style="width: 50px !important">
+			<p:column style="width:10%">
 				<h:outputText value="#{node.level}" rendered="true" />
 			</p:column>
 
-			<p:column>
+			<p:column style="width:10%">
 				<h:outputText rendered="#{node.scope eq '1'}" value="Broad" />
 				<h:outputText rendered="#{node.scope eq '2'}" value="Narrow" />
 				<h:outputText rendered="#{node.scope eq '3'}" value="Child Narrow" />
 			</p:column>
 
-			<p:column>
+			<p:column style="width:10%">
 				<h:outputText rendered="#{node.category eq 'A'}" value="A" />
 				<h:outputText rendered="#{node.category eq 'S'}" value="S" />
 				<h:outputText rendered="#{node.category eq 'B'}" value="B" />
@@ -132,7 +132,7 @@
 				<h:outputText rendered="#{node.category eq 'I'}" value="I" />
 			</p:column>
 
-			<p:column>
+			<p:column style="width:10%">
 				<h:outputText value="#{node.weight}" />
 			</p:column>
 
