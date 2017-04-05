@@ -192,7 +192,7 @@ public class ImpactSearchController implements Serializable {
 		Object obj = event.getObject();
 		if(obj instanceof CmqBaseTarget) {
 			CmqBaseTarget cmqBase = (CmqBaseTarget) obj;
-			if("IMPACTED".equalsIgnoreCase(cmqBase.getImpactType())){
+			if("IMPACTED".equalsIgnoreCase(cmqBase.getImpactType()) || "ICC".equalsIgnoreCase(cmqBase.getImpactType())){
 				this.isImpactedCmqSelected = true;
 				this.isNonImpactedCmqSelected = false;
 				this.isImpactedSmqSelected = false;
@@ -205,7 +205,7 @@ public class ImpactSearchController implements Serializable {
 			}
 		} else if(obj instanceof SmqBaseTarget) {
 			SmqBaseTarget smqBase = (SmqBaseTarget) obj;
-			if("IMPACTED".equalsIgnoreCase(smqBase.getImpactType())){
+			if("IMPACTED".equalsIgnoreCase(smqBase.getImpactType()) || "ICC".equalsIgnoreCase(smqBase.getImpactType())){
 				this.isImpactedCmqSelected = false;
 				this.isNonImpactedCmqSelected = false;
 				this.isImpactedSmqSelected = true;
@@ -1318,7 +1318,7 @@ public class ImpactSearchController implements Serializable {
 		node.markNotEditableInRelationstable();
 		TreeNode cmqBaseTreeNode = new DefaultTreeNode(node, targetTableRootTreeNode);
 
-		if (selectedCmqList.getImpactType().equals("IMPACTED"))
+		if (selectedCmqList.getImpactType().equals("IMPACTED") || selectedCmqList.getImpactType().equals("ICC"))
 			node.setRowStyleClass("blue-colored");
 		
 		boolean dummyNodeAdded = false;
@@ -1434,12 +1434,14 @@ public class ImpactSearchController implements Serializable {
 			Long parentCmqCode = cmqBaseTarget.getCmqCode();
 			IEntity entity = hierarchyNode.getEntity();
 			if(null != entity) {
+				boolean isDeletSuccessful = false;
 				if (entity instanceof CmqBaseTarget) {
 					CmqBaseTarget cmqEntity = (CmqBaseTarget) entity;
 					cmqEntity.setCmqParentCode(null);
 					cmqEntity.setCmqParentName(null);
 					try {
 						this.cmqBaseTargetService.update(cmqEntity);
+						isDeletSuccessful = true;
 					} catch (CqtServiceException e) {
 						String exception = CmqUtils.getExceptionMessageChain(e);
 						LOG.error("Error while removing cmq_parent_code value from cmq_id " + cmqEntity.getId(), e);
@@ -1544,10 +1546,7 @@ public class ImpactSearchController implements Serializable {
 						if(matchFound && (cmqRelationIdToDelete != null)) {
 							try {
 								this.cmqRelationTargetService.remove(cmqRelationIdToDelete);
-								FacesMessage message = new FacesMessage(
-										FacesMessage.SEVERITY_INFO, "Relation deleted successfully.",
-										"");
-								FacesContext.getCurrentInstance().addMessage(null, message);
+								isDeletSuccessful = true;
 							} catch (CqtServiceException e) {
 								LOG.error("Error while removing cmqbase relation.", e);
 								String exception = CmqUtils.getExceptionMessageChain(e);
@@ -1560,6 +1559,26 @@ public class ImpactSearchController implements Serializable {
 						}
 					}
 				}//end of if(null != entity)
+				
+				if(isDeletSuccessful) {
+					//make the cmq target as impacted.
+					cmqBaseTarget.setImpactType("IMPACTED");
+					try {
+						this.cmqBaseTargetService.update(cmqBaseTarget);
+						FacesMessage message = new FacesMessage(
+								FacesMessage.SEVERITY_INFO, "Relation deleted successfully.",
+								"");
+						FacesContext.getCurrentInstance().addMessage(null, message);
+					} catch (CqtServiceException e) {
+						LOG.error("Error while making the cmq target as IMPACTED.", e);
+						String exception = CmqUtils.getExceptionMessageChain(e);
+						FacesMessage message = new FacesMessage(
+								FacesMessage.SEVERITY_ERROR, "Loading....",
+								"Error while making the cmq target as IMPACTED. Error is: "
+										+ exception);
+						FacesContext.getCurrentInstance().addMessage(null, message);
+					}
+				}
 			}//end of if (null != hierarchyNode)
 		}//end of if (null != hierarchyNode)
 	}
