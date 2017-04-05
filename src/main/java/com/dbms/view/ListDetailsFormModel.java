@@ -80,7 +80,6 @@ public class ListDetailsFormModel {
 		this.name = cmq.getCmqName();
 		this.protocol = cmq.getCmqProtocolCd();
 		this.drugProgram = cmq.getCmqProgramCd();
-		this.product = cmq.getCmqProductCd();
 		this.products = cmq.getCmqProductCds();
 		this.designee = cmq.getCmqDesignee();
 		this.level = cmq.getCmqLevel();
@@ -119,9 +118,7 @@ public class ListDetailsFormModel {
 		cmq.setCmqTypeCd(extension);
 		cmq.setCmqName(name);
 		cmq.setCmqProgramCd(drugProgram);
-		cmq.setCmqProtocolCd(protocol);
-		cmq.setCmqProductCd(product);
-		
+		cmq.setCmqProtocolCd(protocol);	
 		cmq.setCmqProductCds(products);
 		
 		cmq.setCmqDesignee(designee);

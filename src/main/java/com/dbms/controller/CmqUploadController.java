@@ -90,7 +90,7 @@ public class CmqUploadController implements Serializable {
 					base.setId(id);
 					base.setCmqName(ss[1]);
 					base.setCmqTypeCd(ss[2]);
-					base.setCmqProductCd(ss[3]);
+					base.setCmqProductCds(StringUtils.split(ss[3], ","));
 					base.setCmqProgramCd(ss[4]);
 					base.setCmqProtocolCd(ss[5]);
 					Integer level=null;

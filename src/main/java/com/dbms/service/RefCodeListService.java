@@ -19,6 +19,7 @@ import javax.faces.context.FacesContext;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.ClientAnchor;
 import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.Drawing;
@@ -35,6 +36,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.dbms.csmq.CSMQBean;
+import com.dbms.entity.cqt.CmqProduct;
 import com.dbms.entity.cqt.RefConfigCodeList;
 import com.dbms.service.base.CqtPersistenceService;
 import com.dbms.util.CqtConstants;
@@ -229,6 +231,25 @@ public class RefCodeListService extends
 			}	
 		}
 		return internalCode;
+	}
+	
+	@Override
+	public String[] interpretProductCodesToValues(List<CmqProduct> products)
+	{
+		if(products != null && products.size() > 0) {
+			String[] pv = new String[products.size()];
+			for(int i=0; i<products.size(); i++) {
+				pv[i] = interpretInternalCodeToValue(CqtConstants.CODE_LIST_TYPE_PRODUCT, products.get(i).getCmqProductCd());
+			}
+			return pv;
+		} else {
+			return new String[0];
+		}
+	}
+	
+	@Override
+	public String interpretProductCodesToValuesLabel(List<CmqProduct> products) {
+		return StringUtils.join(interpretProductCodesToValues(products), ", ");
 	}
 	
 	@Override

@@ -23,6 +23,7 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
 import org.apache.commons.collections.map.HashedMap;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -173,7 +174,7 @@ public class ReportController extends BaseController<CmqBase190> {
 			            getOrCreateHSSFCell(row, 2).setCellValue(refCodeListService.interpretInternalCodeToValue(CqtConstants.CODE_LIST_TYPE_EXTENSION, dr.getCmqTypeCd()));
 			            getOrCreateHSSFCell(row, 3).setCellValue(refCodeListService.interpretInternalCodeToValue(CqtConstants.CODE_LIST_TYPE_PROGRAM, dr.getCmqProgramCd()));
 			            getOrCreateHSSFCell(row, 4).setCellValue(refCodeListService.interpretInternalCodeToValue(CqtConstants.CODE_LIST_TYPE_PROTOCOL, dr.getCmqProtocolCd()));
-			            getOrCreateHSSFCell(row, 5).setCellValue(refCodeListService.interpretInternalCodeToValue(CqtConstants.CODE_LIST_TYPE_PRODUCT, dr.getCmqProductCd()));
+			            getOrCreateHSSFCell(row, 5).setCellValue(refCodeListService.interpretProductCodesToValuesLabel(dr.getCmqProducts()));
 			            getOrCreateHSSFCell(row, 6).setCellValue(dr.getCmqLevel());
 			            getOrCreateHSSFCell(row, 7).setCellValue(dr.getDictionaryVersion());
 			            getOrCreateHSSFCell(row, 8).setCellValue(dr.getCmqStatus());
@@ -204,7 +205,7 @@ public class ReportController extends BaseController<CmqBase190> {
 	    				rowData.put("cmqType", refCodeListService.interpretInternalCodeToValue(CqtConstants.CODE_LIST_TYPE_EXTENSION, dr.getCmqTypeCd()));
 	    				rowData.put("cmqProgram", refCodeListService.interpretInternalCodeToValue(CqtConstants.CODE_LIST_TYPE_PROGRAM, dr.getCmqProgramCd()));
 	    				rowData.put("cmqProtocol", refCodeListService.interpretInternalCodeToValue(CqtConstants.CODE_LIST_TYPE_PROTOCOL, dr.getCmqProtocolCd()));
-	    				rowData.put("cmqProduct", refCodeListService.interpretInternalCodeToValue(CqtConstants.CODE_LIST_TYPE_PRODUCT, dr.getCmqProductCd()));
+	    				rowData.put("cmqProduct", refCodeListService.interpretProductCodesToValuesLabel(dr.getCmqProducts()));
 	    				rowData.put("cmqLevel", dr.getCmqLevel().toString());
 	    				rowData.put("dictionaryVersion", dr.getDictionaryVersion());
 	    				rowData.put("cmqStatus", dr.getCmqStatus());

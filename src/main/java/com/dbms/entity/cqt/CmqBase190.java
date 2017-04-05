@@ -94,9 +94,6 @@ public class CmqBase190 extends BaseEntity {
 	@Column(name = "CMQ_PROTOCOL_CD", nullable = false, length = 100)
 	private String cmqProtocolCd;
 
-	@Column(name = "CMQ_PRODUCT_CD", nullable = false, length = 200)
-	private String cmqProductCd;
-
 	@Column(name = "CMQ_DESIGNEE", nullable = false, length = 100)
 	private String cmqDesignee;
 
@@ -282,14 +279,6 @@ public class CmqBase190 extends BaseEntity {
 
 	public void setCmqProtocolCd(String cmqProtocolCd) {
 		this.cmqProtocolCd = cmqProtocolCd;
-	}
-
-	public String getCmqProductCd() {
-		return cmqProductCd;
-	}
-
-	public void setCmqProductCd(String cmqProductCd) {
-		this.cmqProductCd = cmqProductCd;
 	}
 
 	public String getCmqDesignee() {
@@ -492,7 +481,6 @@ public class CmqBase190 extends BaseEntity {
 		if(this.cmqProducts == null)
 			this.cmqProducts = new ArrayList<CmqProduct>();
 		this.cmqProducts.add(p);
-		this.cmqProductCd = this.cmqProducts.get(0).getCmqProductCd();
 		return 1;
 	}
 	
@@ -507,10 +495,6 @@ public class CmqBase190 extends BaseEntity {
 				}
 			}
 		}
-		if(this.cmqProducts == null || this.cmqProducts.size() == 0)
-			this.cmqProductCd = null;
-		else
-			this.cmqProductCd = this.cmqProducts.get(0).getCmqProductCd();
 		return 0;
 	}
 }
