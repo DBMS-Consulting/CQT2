@@ -252,6 +252,19 @@ public class RefCodeListService extends
 		return StringUtils.join(interpretProductCodesToValues(products), ", ");
 	}
 	
+	public String interpretProductCodesToValuesLabel(String[] productCds) {
+		String [] pv;
+		if(productCds != null && productCds.length > 0) {
+			pv = new String[productCds.length];
+			for(int i=0; i<pv.length; i++) {
+				pv[i] = interpretInternalCodeToValue(CqtConstants.CODE_LIST_TYPE_PRODUCT, productCds[i]);
+			}
+		} else {
+			pv = new String[0];
+		}
+		return StringUtils.join(pv, ", ");
+	}
+	
 	@Override
 	public void create(RefConfigCodeList e) throws CqtServiceException {
 		super.create(e);

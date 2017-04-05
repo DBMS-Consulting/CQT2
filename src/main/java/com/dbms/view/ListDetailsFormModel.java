@@ -282,6 +282,9 @@ public class ListDetailsFormModel {
 			return "Events of Special Clinical Interest";
 		else if("TIER1".equals(this.extension))
 			return "Events of Clinical Interest";
+		else if(this.refCodeListService != null)
+			return refCodeListService.interpretInternalCodeToValue(CqtConstants.CODE_LIST_TYPE_EXTENSION, this.extension);
+			
 		return "";
 	}
 	

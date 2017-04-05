@@ -115,7 +115,7 @@
 								itemValue="#{extension.codelistInternalValue}" />
 		                </p:selectOneMenu>
 		            </f:facet>
-					<h:outputText value="#{RefCodeListService.findCodeByInternalCode('EXTENSION', cmqList.cmqTypeCd)}" id="ot52" />
+					<h:outputText value="#{cmqList.cmqTypeCd}" id="ot52" />
 				</p:column>
 				<p:column sortable="false" headerText="Level" id="c51" width="30" styleClass="text-center">
 					<h:outputText value="#{cmqList.cmqLevel}" id="ot53" />
@@ -157,7 +157,7 @@
 								itemValue="#{extension.codelistInternalValue}" />
 		                </p:selectOneMenu>
 		            </f:facet>
-					<h:outputText value="#{RefCodeListService.findCodeByInternalCode('EXTENSION', cmqList.cmqTypeCd)}" id="ot52" />
+					<h:outputText value="#{cmqList.cmqTypeCd}" id="ot52" />
 				</p:column>
 				<p:column sortable="false" headerText="Level" id="c51" width="30" styleClass="text-center">
 					<h:outputText value="#{cmqList.cmqLevel}" id="ot53" />
