@@ -360,6 +360,14 @@
 					</p:panel>
 				</p:tab>
 			</p:wizard>
+			
+			<p:confirmDialog widgetVar="confirmOK" showEffect="fade"
+				hideEffect="fade" header="Warning"
+				message="#{impactSearchController.confirmMessage}">
+				<p:commandButton value="OK" type="button"
+					onclick="PF('confirmOK').hide();" update="@form"
+					styleClass="ui-confirmdialog-no" />
+			</p:confirmDialog>
 
 			<p:dialog header="Impact Search" widgetVar="select_mq" width="840px"
 				minWidth="840">

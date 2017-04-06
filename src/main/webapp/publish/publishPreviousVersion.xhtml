@@ -42,75 +42,7 @@
 					</p:panel>
 				</p:tab>
 
-				<p:tab id="activate" title="Activate">
-					<p:panel header="Activate">
-						<h:panelGrid id="pgl3">
-							<p:toolbar id="t4">
-								<f:facet name="left">
-								 
-									<p:commandButton value="Validate Group" id="ctb2"
-										onclick="PF('confirmActivate').show();" />
-									<p:commandButton value="Activate Group" id="ctb3"
-										onclick="PF('confirmActivate').show();" disabled="true"
-										partialTriggers="ctb2" rendered="false">
-
-									</p:commandButton>
-								</f:facet>
-							</p:toolbar>
-							<h:panelGrid columns="2">
-								<p:dataTable value="#{null}">
-									<p:column headerText="Term" id="c1" width="240">
-										<p:inputText value="#####">
-											<!-- <f:validator binding="#{row.bindings.Term.validator}" /> -->
-										</p:inputText>
-									</p:column>
-
-									<p:column width="330" headerText="Error">
-										<p:inputText value="######" id="it2">
-											<!-- <f:validator binding="#{row.bindings.ErrorMsg.validator}" /> -->
-										</p:inputText>
-									</p:column>
-
-									<p:column headerText="####" id="c3" width="0" rendered="true">
-										<p:inputText value="#######" id="it3">
-											<!-- <f:validator
-												binding="#{row.bindings.PredictContentId.validator}" /> -->
-											<f:convertNumber />
-										</p:inputText>
-									</p:column>
-
-								</p:dataTable>
-
-
-								
-								<p:dataTable value="#{null}" style="">
-									<p:column sortable="false" headerText="Term" id="c6"
-										width="240">
-										<p:inputText value="#######" required="true" id="it5">
-											<!-- <f:validator binding="#{row.bindings.Term.validator}" /> -->
-										</p:inputText>
-									</p:column>
-									<p:column filterable="false" sortable="true"
-										headerText="Relation Errors" id="c4" width="330">
-										<p:inputText value="######" required="true" id="it4">
-											<!-- <f:validator binding="#{row.bindings.ErrorMsg.validator}" /> -->
-										</p:inputText>
-									</p:column>
-								</p:dataTable>
-							</h:panelGrid>
-
-							<table>
-								<tbody>
-									<tr>
-										
-									</tr>
-								</tbody>
-							</table>
-						</h:panelGrid>
-					</p:panel>
-				</p:tab>
-
-
+				
 			</p:wizard>
 
 			<p:dialog header="Confirm Promotion" widgetVar="confirm1"

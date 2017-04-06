@@ -157,6 +157,8 @@ public class ImpactSearchController implements Serializable {
 	
 	private String listName;
 	private StreamedContent excelFile;
+	private String confirmMessage;
+
 	
 	public ImpactSearchController() {
 		
@@ -199,7 +201,7 @@ public class ImpactSearchController implements Serializable {
 			content = smqBaseTargetService.generateSMQExcel(selectedNotImpactedSmqList);
 		setExcelFile(content); 
 	}
-
+	
 	public void onRelationDrop() {
 		/*
 		 * if(selectedImpactedCmqList.length > 0) { // Multiple item Drag-n-Drop
@@ -980,6 +982,18 @@ public class ImpactSearchController implements Serializable {
 	 * @return
 	 */
 	public String onIaWizardFlowProcess(FlowEvent event) {
+		boolean selected = false;
+		if (selectedImpactedCmqList != null || selectedImpactedSmqList != null || selectedNotImpactedCmqList != null || selectedNotImpactedSmqList != null) {
+			selected = true;			
+		}
+		if (!selected) {
+		//	this.confirmMessage = "Select a List/SMQ to proceed";
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Select a List/SMQ to proceed", "");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			RequestContext.getCurrentInstance().update("impactAssessment:messages");
+			return "impact";
+		}
+		
 		String nextStep = event.getNewStep();
 		boolean unsavedRedirect = true;
 		
@@ -3241,6 +3255,14 @@ public class ImpactSearchController implements Serializable {
 
 	public void setExcelFile(StreamedContent excelFile) {
 		this.excelFile = excelFile;
+	}
+
+	public String getConfirmMessage() {
+		return confirmMessage;
+	}
+
+	public void setConfirmMessage(String confirmMessage) {
+		this.confirmMessage = confirmMessage;
 	}
 
 }
