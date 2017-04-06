@@ -50,7 +50,7 @@
 						<h:panelGrid columns="8">
 							<h:outputText value="Role: " id="pt_ot1a" rendered="true" />
 							<h:outputText id="of2" style="font-weight:bold;"
-								value="#{sWJSFRequest.def(sWJSFRequest.getGroupListAsString('IAMPFIZERUSERGROUPMEMBERSHIP', 'CN'), 'No-Group')}" rendered="true" />
+								value="#{sWJSFRequest.def(sWJSFRequest.getGroupListValueAsString('CN', header['IAMPFIZERUSERGROUPMEMBERSHIP']), 'No-Group')}" rendered="true" />
 <!-- 
 							<h:outputText id="of2a" style="font-weight:bold;" value="User"
 								rendered="true" />
