@@ -157,7 +157,7 @@ public class CmqBase190 extends BaseEntity {
 	@Column(name = "CMQ_APPROVE_REASON", length = 4000)
 	private String cmqApproveReason;
 	
-	@OneToMany(cascade=CascadeType.ALL, mappedBy="cmqBaseCurrent", fetch=FetchType.EAGER)
+	@OneToMany(cascade=CascadeType.ALL, mappedBy="cmqBaseCurrent", fetch=FetchType.EAGER, orphanRemoval=true)
 	private List<CmqProductBaseCurrent> productsList;
 	
 	public Long getId() {
@@ -462,6 +462,7 @@ public class CmqBase190 extends BaseEntity {
 			// check if it already exists
 			for(CmqProductBaseCurrent p: productsList) {
 				if(p.getCmqProductCd().equals(productCd)) {
+					p.setCmqBaseCurrent(this);
 					return 0;
 				}
 			}
@@ -483,8 +484,8 @@ public class CmqBase190 extends BaseEntity {
 			// check if it already exists
 			for(CmqProductBaseCurrent p: productsList) {
 				if(p.getCmqProductCd().equals(productCd)) {
+					p.setCmqBaseCurrent(null);
 					productsList.remove(p);
-					return 1;
 				}
 			}
 		}
