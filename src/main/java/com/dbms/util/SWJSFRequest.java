@@ -52,6 +52,10 @@ public class SWJSFRequest
 		HttpServletRequest request = getRequest();
 		String value = (String) request.getAttribute(name);
 
+		System.out.println("name: " + name);
+		System.out.println("key: " + key);
+		System.out.println("value: " + value);
+		
 		//value = "CN=OPENCQT_ADMIN,OU=CQT_OU,OU=Applications,OU=Delegated,OU=Groups,DC=pxed,DC=pfizer,DC=com:CN=CQT_Users,OU=CQT_OU,OU=Applications,OU=Delegated,OU=Groups,DC=pxed,DC=pfizer,DC=com:CN=GBL-BTNONColleagues,OU=GBLGroups,OU=Applications,OU=Delegated,OU=Groups,DC=pxed,DC=pfizer,DC=com";
 
 		List<String> ret = new ArrayList<String>();
