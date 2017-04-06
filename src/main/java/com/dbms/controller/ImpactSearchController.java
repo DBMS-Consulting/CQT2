@@ -32,6 +32,7 @@ import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortMeta;
 import org.primefaces.model.SortOrder;
+import org.primefaces.model.StreamedContent;
 import org.primefaces.model.TreeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,6 +43,7 @@ import com.dbms.entity.cqt.CmqBase190;
 import com.dbms.entity.cqt.CmqBaseTarget;
 import com.dbms.entity.cqt.CmqRelation190;
 import com.dbms.entity.cqt.CmqRelationTarget;
+import com.dbms.entity.cqt.RefConfigCodeList;
 import com.dbms.entity.cqt.SmqBase190;
 import com.dbms.entity.cqt.SmqBaseTarget;
 import com.dbms.entity.cqt.SmqRelation190;
@@ -130,7 +132,7 @@ public class ImpactSearchController implements Serializable {
 	private ListNotesFormModel notesFormModel = new ListNotesFormModel(); // "Informative Notes" tab model
 	private ListDetailsFormModel detailsFormModel = new ListDetailsFormModel(); // "Details" tab model
 	
-	private boolean reviewEnabled, demoteEnabled, approveEnabled;
+	private boolean reviewEnabled, demoteEnabled, approveEnabled, exportEnabled;
 	
 	private boolean isImpactedCmqSelected, isNonImpactedCmqSelected, isImpactedSmqSelected, isNonImpactedSmqSelected;
 	
@@ -154,6 +156,7 @@ public class ImpactSearchController implements Serializable {
 	private List<String> newPtDistinctSocTermsList;
 	
 	private String listName;
+	private StreamedContent excelFile;
 	
 	public ImpactSearchController() {
 		
@@ -174,10 +177,27 @@ public class ImpactSearchController implements Serializable {
 		setReviewEnabled(false);
 		setApproveEnabled(false);
 		setDemoteEnabled(false);
+		setExportEnabled(false); 
 		currentOrTarget = SELECTED_NO_LIST;
 		
 		newPtDistinctSocTermsList = this.meddraDictTargetService.findSocsWithNewPt();
 		//changeOccur = false;
+	}
+	
+	/**
+	 * Generate Excel report on target datatable.
+	 */
+	public void generateExcel() {
+		StreamedContent content = null;
+		if (selectedImpactedCmqList != null)
+			content = cmqBaseTargetService.generateCMQExcel(selectedImpactedCmqList);
+		if (selectedNotImpactedCmqList != null)
+			content = cmqBaseTargetService.generateCMQExcel(selectedNotImpactedCmqList);
+		if (selectedImpactedSmqList != null)
+			content = smqBaseTargetService.generateSMQExcel(selectedImpactedSmqList);
+		if (selectedNotImpactedSmqList != null)
+			content = smqBaseTargetService.generateSMQExcel(selectedNotImpactedSmqList);
+		setExcelFile(content); 
 	}
 
 	public void onRelationDrop() {
@@ -262,6 +282,7 @@ public class ImpactSearchController implements Serializable {
 		} else if(this.isNonImpactedCmqSelected) {
 			updateWorkflowButtonStates(this.selectedNotImpactedCmqList);
 		}
+		setExportEnabled(true); 
 		
 		currentOrTarget = SELECTED_TARGET_LIST;
 	}
@@ -276,6 +297,7 @@ public class ImpactSearchController implements Serializable {
 		setDemoteEnabled(false);
 		if(currentOrTarget == SELECTED_TARGET_LIST)
 			currentOrTarget = SELECTED_NO_LIST;
+		setExportEnabled(false); 
 	}
 	
 
@@ -3203,6 +3225,22 @@ public class ImpactSearchController implements Serializable {
 
 	public void setListName(String listName) {
 		this.listName = listName;
+	}
+
+	public boolean isExportEnabled() {
+		return exportEnabled;
+	}
+
+	public void setExportEnabled(boolean exportEnabled) {
+		this.exportEnabled = exportEnabled;
+	}
+
+	public StreamedContent getExcelFile() {
+		return excelFile;
+	}
+
+	public void setExcelFile(StreamedContent excelFile) {
+		this.excelFile = excelFile;
 	}
 
 }

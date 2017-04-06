@@ -8,13 +8,13 @@
 
 
 	<ui:define name="page-content">
-	
-<script type="text/javascript">
-	function initRelationDND() {
-		//dummy function kept here to prevent create/hierarchySearch from breaking 
-	}
-</script>
-	
+
+		<script type="text/javascript">
+			function initRelationDND() {
+				//dummy function kept here to prevent create/hierarchySearch from breaking 
+			}
+		</script>
+
 		<h:form id="impactAssessment">
 			<p:growl id="messages" life="#{cSMQBean.defaultGrowlLife}" />
 
@@ -25,7 +25,9 @@
 				</p:breadCrumb>
 			</h:panelGrid>
 
-			<p:wizard flowListener="#{impactSearchController.onIaWizardFlowProcess}" binding="#{impactSearchController.iaWizard}">
+			<p:wizard
+				flowListener="#{impactSearchController.onIaWizardFlowProcess}"
+				binding="#{impactSearchController.iaWizard}">
 
 				<!-- Impact -->
 				<p:tab id="impact" title="Impact Assessment">
@@ -38,32 +40,46 @@
 						<f:facet name="right">
 							<p:commandButton value="Review" id="reviewBtn"
 								disabled="#{!impactSearchController.reviewEnabled}"
-								action="#{impactSearchController.workflowIAState('review')}" icon="ui-icon-disk"
-								process="@this" update="@form">
+								action="#{impactSearchController.workflowIAState('review')}"
+								icon="ui-icon-disk" process="@this" update="@form">
 								<p:confirm header="Confirm Review"
 									message="Are you sure you want to confirm this List as reviewed?"
 									icon="ui-icon-alert" />
 							</p:commandButton>
 							<p:spacer width="5" />
 
-							<p:commandButton id="approveBtn" value="Approve" disabled="#{!impactSearchController.approveEnabled}" update="@form"
-								 icon="ui-icon-arrowthick-1-n" action="#{impactSearchController.workflowIAState('approve')}" process="@this">
+							<p:commandButton id="approveBtn" value="Approve"
+								disabled="#{!impactSearchController.approveEnabled}"
+								update="@form" icon="ui-icon-arrowthick-1-n"
+								action="#{impactSearchController.workflowIAState('approve')}"
+								process="@this">
 								<p:confirm header="Confirm Approve"
 									message="Are you sure you want to approve this List?"
 									icon="ui-icon-alert" />
 							</p:commandButton>
 							<p:spacer width="5" />
-							<p:commandButton value="Demote" action="#{impactSearchController.workflowIAState('demote')}" id="demoteBtn" process="@this"
-								disabled="#{!impactSearchController.demoteEnabled}" icon="ui-icon-arrowthick-1-s" update="@form">
+							<p:commandButton value="Demote"
+								action="#{impactSearchController.workflowIAState('demote')}"
+								id="demoteBtn" process="@this"
+								disabled="#{!impactSearchController.demoteEnabled}"
+								icon="ui-icon-arrowthick-1-s" update="@form">
 								<p:confirm header="Confirm Demote"
 									message="Are you sure you want to demote this List?"
 									icon="ui-icon-alert" />
 							</p:commandButton>
 							<p:spacer width="5" />
 
-							<p:commandButton value="Export" actionListener="#"
+							<!-- <p:commandButton value="Export" actionListener="#" 
 								icon="fa fa-file-excel-o" update="messages" />
-							<p:spacer width="5" />
+							<p:spacer width="5" /> -->
+							<i class="fa fa-file-excel-o"
+								style="position: absolute; margin-top: 8px; margin-left: 5px"></i>
+							<h:commandLink id="exportBtn" value="Export" disabled="#{!impactSearchController.exportEnabled}"
+								type="button" styleClass="generate"
+								actionListener="#{impactSearchController.generateExcel}">
+
+								<p:fileDownload value="#{impactSearchController.excelFile}" />
+							</h:commandLink>
 
 							<p:commandButton value="Legend" actionListener="#"
 								onclick="PF('legend').show()" icon="fa fa-bars"
@@ -75,54 +91,70 @@
 
 					<!-- PANEL -->
 					<p:panel>
-						<h:panelGrid columns="2" columnClasses="ui-grid-col-6 v-align-top, ui-grid-col-6 v-align-top" styleClass="full-width">
-							<p:panel style="width: 100%; padding: 0; overflow: auto !important" id="pan">
+						<h:panelGrid columns="2"
+							columnClasses="ui-grid-col-6 v-align-top, ui-grid-col-6 v-align-top"
+							styleClass="full-width">
+							<p:panel
+								style="width: 100%; padding: 0; overflow: auto !important"
+								id="pan">
 								<p:toolbar>
 									<f:facet name="left">
-										<p:commandButton value="Select Lists/SMQs" actionListener="#" update=""
-											icon="fa fa-search" onclick="PF('select_mq').show();" />
-										<p:spacer width="10px" height="1px"/>
+										<p:commandButton value="Select Lists/SMQs" actionListener="#"
+											update="" icon="fa fa-search"
+											onclick="PF('select_mq').show();" />
+										<p:spacer width="10px" height="1px" />
 										<p:commandButton value="Hierarchy Search" id="ctb13"
 											update="@form:hierarchy-modal"
-											oncomplete="PF('current-hierarchy-search').show();" icon="fa fa-search">
+											oncomplete="PF('current-hierarchy-search').show();"
+											icon="fa fa-search">
 										</p:commandButton>
-										<p:spacer width="40px" height="1px"/>
-										<h:outputText value="#{configMB.dictionaryName} - #{configMB.currentMeddraVersion.value}"/>
+										<p:spacer width="40px" height="1px" />
+										<h:outputText
+											value="#{configMB.dictionaryName} - #{configMB.currentMeddraVersion.value}" />
 									</f:facet>
 								</p:toolbar>
-								
-								<p:remoteCommand name="impactSearchToResult" 
-										actionListener="#{impactSearchController.onRelationDrop}" 
-										update="@form" />
-								
-								<p:treeTable value="#{impactSearchController.currentTableRootTreeNode}" var="node" widgetVar="currentLists"
-									id="currentListsAndSmqs" rows="30" styleClass="ui-treetable-currentListsAndSmqs"
-									selectionMode="single" selection="${impactSearchController.currentTableSelection}"
-									scrollable="true" scrollHeight="400"
-									resizableColumns="true" rowStyleClass="#{node.rowStyleClass}">
-	
+
+								<p:remoteCommand name="impactSearchToResult"
+									actionListener="#{impactSearchController.onRelationDrop}"
+									update="@form" />
+
+								<p:treeTable
+									value="#{impactSearchController.currentTableRootTreeNode}"
+									var="node" widgetVar="currentLists" id="currentListsAndSmqs"
+									rows="30" styleClass="ui-treetable-currentListsAndSmqs"
+									selectionMode="single"
+									selection="${impactSearchController.currentTableSelection}"
+									scrollable="true" scrollHeight="400" resizableColumns="true"
+									rowStyleClass="#{node.rowStyleClass}">
+
 									<f:attribute name="uiEventSourceName" value="current-table" />
-									<p:ajax event="expand" listener="#{impactSearchController.onNodeExpandCurrentTable}" update="currentListsAndSmqs" />
-									
+									<p:ajax event="expand"
+										listener="#{impactSearchController.onNodeExpandCurrentTable}"
+										update="currentListsAndSmqs" />
+
 									<!-- Selection of the list fr workflow states -->
-									<p:ajax event="select" listener="#{impactSearchController.onSelectCurrentRowTreeTable}" 
+									<p:ajax event="select"
+										listener="#{impactSearchController.onSelectCurrentRowTreeTable}"
 										update="@form:reviewBtn @form:approveBtn @form:demoteBtn @form:futureListsAndSmqs"
 										oncomplete="PF('targetLists').unselectAllNodes()" />
-										
-									<p:ajax event="unselect" listener="#{impactSearchController.onUnselectCurrentRowTreeTable}" 
-										update="@form:reviewBtn @form:approveBtn @form:demoteBtn @form:futureListsAndSmqs" />	
-																		
+
+									<p:ajax event="unselect"
+										listener="#{impactSearchController.onUnselectCurrentRowTreeTable}"
+										update="@form:reviewBtn @form:approveBtn @form:demoteBtn @form:futureListsAndSmqs" />
+
 									<p:columnGroup type="header">
 										<p:row>
-											<p:column colspan="1" headerText="Existing Lists/SMQ" style="width:50%"/>
+											<p:column colspan="1" headerText="Existing Lists/SMQ"
+												style="width:50%" />
 											<p:column colspan="3" headerText="Hierarchy Details" />
 										</p:row>
 
 										<p:row>
-											<p:column styleClass="listName" headerText="#{impactSearchController.listName}" />
+											<p:column styleClass="listName"
+												headerText="#{impactSearchController.listName}" />
 											<p:column headerText="Code" width="25%" />
-											<p:column headerText="Level" width="10%"/>
-											<p:column headerText="Scope" width="15%"/>
+											<p:column headerText="Level" width="10%" />
+											<p:column headerText="Scope" width="15%" />
 										</p:row>
 									</p:columnGroup>
 
@@ -130,7 +162,7 @@
 										<h:outputText value="#{node.term}" id="el_c1" />
 									</p:column>
 
-									<p:column id="c26" style="width:25%" >
+									<p:column id="c26" style="width:25%">
 										<h:outputText value="#{node.code}" id="ot7" />
 									</p:column>
 									<p:column id="c18" style="width:10%">
@@ -145,48 +177,59 @@
 							<p:panel style="width: 100%; padding: 0">
 								<p:toolbar id="futureListsToolbar">
 									<f:facet name="left">
-										<p:commandButton value="Hierarchy Search" actionListener="#" disabled="#{not impactSearchController.hierachySearchButtonEnabled}"
+										<p:commandButton value="Hierarchy Search" actionListener="#"
+											disabled="#{not impactSearchController.hierachySearchButtonEnabled}"
 											icon="fa fa-search" onclick="PF('search').show();" />
-										<p:commandButton value="New PTs" actionListener="#" disabled="#{not impactSearchController.selectNewPTButtonEnabled}"
+										<p:commandButton value="New PTs" actionListener="#"
+											disabled="#{not impactSearchController.selectNewPTButtonEnabled}"
 											onclick="PF('new_pt').show();" icon="fa fa-book" />
 
-									
-										<p:spacer width="40px" height="1px"/>
-										<h:outputText value="#{configMB.dictionaryName} - #{configMB.targetMeddraVersion.value}" />
+
+										<p:spacer width="40px" height="1px" />
+										<h:outputText
+											value="#{configMB.dictionaryName} - #{configMB.targetMeddraVersion.value}" />
 									</f:facet>
 								</p:toolbar>
-								
-								<p:treeTable value="#{impactSearchController.targetTableRootTreeNode}" var="node" widgetVar="targetLists"
-									id="futureListsAndSmqs" rows="30" styleClass="ui-treetable-futureListsAndSmqs"
-									selectionMode="single" selection="${impactSearchController.targetTableSelection}"
-									style="width: 100%;"
-									scrollable="true" scrollHeight="400"
-									resizableColumns="true" rowStyleClass="#{node.rowStyleClass}" >
-								
+
+								<p:treeTable
+									value="#{impactSearchController.targetTableRootTreeNode}"
+									var="node" widgetVar="targetLists" id="futureListsAndSmqs"
+									rows="30" styleClass="ui-treetable-futureListsAndSmqs"
+									selectionMode="single"
+									selection="${impactSearchController.targetTableSelection}"
+									style="width: 100%;" scrollable="true" scrollHeight="400"
+									resizableColumns="true" rowStyleClass="#{node.rowStyleClass}">
+
 									<f:attribute name="uiEventSourceName" value="target-table" />
-									<p:ajax event="expand" listener="#{impactSearchController.onNodeExpandTargetTable}" update="futureListsAndSmqs" />
-									
+									<p:ajax event="expand"
+										listener="#{impactSearchController.onNodeExpandTargetTable}"
+										update="futureListsAndSmqs" />
+
 									<!-- Selection of the list fr workflow states -->
-									<p:ajax event="select" listener="#{impactSearchController.onSelectTargetRowTreeTable}" 
-										update="@form:messages @form:reviewBtn @form:approveBtn @form:demoteBtn @form:currentListsAndSmqs"
+									<p:ajax event="select"
+										listener="#{impactSearchController.onSelectTargetRowTreeTable}"
+										update="@form:messages @form:reviewBtn @form:approveBtn @form:demoteBtn @form:exportBtn @form:currentListsAndSmqs"
 										oncomplete="PF('currentLists').unselectAllNodes()" />
-									<p:ajax event="unselect" listener="#{impactSearchController.onUnselectTargetRowTreeTable}" 
+									<p:ajax event="unselect"
+										listener="#{impactSearchController.onUnselectTargetRowTreeTable}"
 										update="@form:messages @form:reviewBtn @form:approveBtn @form:demoteBtn @form:currentListsAndSmqs" />
-										
+
 									<p:columnGroup type="header">
 										<p:row>
-											<p:column colspan="1" id="targetTitle" style="width:40%" headerText="Future Lists/SMQ" />
+											<p:column colspan="1" id="targetTitle" style="width:40%"
+												headerText="Future Lists/SMQ" />
 											<p:column colspan="6" headerText="Hierarchy Details" />
 										</p:row>
-										
+
 										<p:row>
-											<p:column styleClass="listName" headerText="#{impactSearchController.listName}" />
+											<p:column styleClass="listName"
+												headerText="#{impactSearchController.listName}" />
 											<p:column headerText="Code" style="width:15%" />
-											<p:column headerText="Level"  style="width:8%" />
-											<p:column headerText="Scope"  style="width:15%" />
-											<p:column headerText="Category"  style="width:9% "/>
-											<p:column headerText="Weight"  style="width:8%" />
-											<p:column headerText=""  style="width:5%" />
+											<p:column headerText="Level" style="width:8%" />
+											<p:column headerText="Scope" style="width:15%" />
+											<p:column headerText="Category" style="width:9% " />
+											<p:column headerText="Weight" style="width:8%" />
+											<p:column headerText="" style="width:5%" />
 										</p:row>
 									</p:columnGroup>
 
@@ -202,9 +245,9 @@
 									</p:column>
 
 									<p:column style="width:15%">
-										<p:selectOneMenu id="soc3" value="#{node.scope}" rendered="#{not node.hideScope}"
-											 autoWidth="false" disabled="#{node.algorithmN}"
-											 style="width:75%">
+										<p:selectOneMenu id="soc3" value="#{node.scope}"
+											rendered="#{not node.hideScope}" autoWidth="false"
+											disabled="#{node.algorithmN}" style="width:75%">
 											<f:selectItem itemLabel="Broad" itemValue="1" id="si13s" />
 											<f:selectItem itemLabel="Narrow" itemValue="2" id="si13d" />
 											<f:selectItem itemLabel="Child Narrow" itemValue="3" id="si4" />
@@ -212,9 +255,9 @@
 									</p:column>
 
 									<p:column style="width:9%">
-										<p:selectOneMenu id="soc2" value="#{node.category}" rendered="#{not node.hideCategory}"
-											autoWidth="false" disabled="#{node.algorithmN}"
-											style="width:75%">
+										<p:selectOneMenu id="soc2" value="#{node.category}"
+											rendered="#{not node.hideCategory}" autoWidth="false"
+											disabled="#{node.algorithmN}" style="width:75%">
 											<f:selectItem itemLabel="A" itemValue="A" id="si3" />
 											<f:selectItem itemLabel="S" itemValue="S" id="si33" />
 											<f:selectItem itemLabel="B" itemValue="B" id="si8" />
@@ -230,11 +273,13 @@
 
 									<p:column style="width:8%">
 										<p:spinner value="#{node.weight}" id="ot6" size="2"
-											rendered="#{not node.hideWeight}" disabled="#{node.algorithmN}"/>
+											rendered="#{not node.hideWeight}"
+											disabled="#{node.algorithmN}" />
 									</p:column>
 									<p:column style="width:5%">
-										<p:commandLink action="#{impactSearchController.deleteRelation(impactSearchController.targetTableRootTreeNode, node)}"
-											 style="color: red" label="Delete" update="futureListsAndSmqs"
+										<p:commandLink
+											action="#{impactSearchController.deleteRelation(impactSearchController.targetTableRootTreeNode, node)}"
+											style="color: red" label="Delete" update="futureListsAndSmqs"
 											rendered="#{not node.hideDelete}">
 											<i class="fa fa-trash"></i>
 											<p:confirm header="Delete relation"
@@ -247,7 +292,8 @@
 						</h:panelGrid>
 
 						<p:commandButton style="margin-top: 10px;" value="Save"
-							icon="ui-icon-disk" update="messages" actionListener="#{impactSearchController.updateTargetRelations}"/>
+							icon="ui-icon-disk" update="messages"
+							actionListener="#{impactSearchController.updateTargetRelations}" />
 					</p:panel>
 					<p:remoteCommand name="saveImpactsAndGoToNextStep"
 						update="@form:messages"
@@ -256,14 +302,19 @@
 					<p:remoteCommand name="resetImpactsAndGoToNextStep"
 						update="@form:messages @form:impact"
 						onstart="PF('confirmSaveImpactsDlg').hide()" />
-						
+
 					<!-- Save confirmation dialog -->
-					<p:confirmDialog widgetVar="confirmSaveImpactsDlg" showEffect="fade" hideEffect="fade"
+					<p:confirmDialog widgetVar="confirmSaveImpactsDlg"
+						showEffect="fade" hideEffect="fade"
 						header="Confirm about Unsaved Changes"
 						message="There are some unsaved changes. Please save them before you leave.">
-				        <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" onclick="saveImpactsAndGoToNextStep()" />
-				        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"  onclick="resetImpactsAndGoToNextStep()" />
-				    </p:confirmDialog>
+						<p:commandButton value="Yes" type="button"
+							styleClass="ui-confirmdialog-yes" icon="ui-icon-check"
+							onclick="saveImpactsAndGoToNextStep()" />
+						<p:commandButton value="No" type="button"
+							styleClass="ui-confirmdialog-no" icon="ui-icon-close"
+							onclick="resetImpactsAndGoToNextStep()" />
+					</p:confirmDialog>
 				</p:tab>
 
 				<!-- Notes -->
@@ -275,15 +326,16 @@
 				<p:tab id="details" title="Details">
 					<p:panel header="Details">
 						<ui:include src="details.xhtml" />
-						
+
 						<p:commandButton value="Save" icon="ui-icon-disk"
 							action="#{impactSearchController.saveDetails}"
 							disabled="#{impactSearchController.detailsFormReadonly}" />
-						<p:commandButton value="Cancel" icon="ui-icon-close" process="@this"
+						<p:commandButton value="Cancel" icon="ui-icon-close"
+							process="@this"
 							actionListner="#{impactSearchController.cancelDetails}"
 							disabled="#{impactSearchController.detailsFormReadonly}" />
-							
-							
+
+
 						<p:remoteCommand name="saveDetailsAndGoToNextStep"
 							update="@form:messages"
 							actionListener="#{impactSearchController.saveDetailsAndGoToNextStep}"
@@ -292,28 +344,37 @@
 							update="@form:messages @form:details"
 							actionListener="#{impactSearchController.cancelDetailsAndGoToNextStep}"
 							onstart="PF('confirmSaveDetailsDlg').hide()" />
-							
+
 						<!-- Save confirmation dialog -->
-						<p:confirmDialog widgetVar="confirmSaveDetailsDlg" showEffect="fade" hideEffect="fade"
+						<p:confirmDialog widgetVar="confirmSaveDetailsDlg"
+							showEffect="fade" hideEffect="fade"
 							header="Confirm about Unsaved Changes"
 							message="There are some unsaved changes. Do you want to save them before continue.">
-					        <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" onclick="saveDetailsAndGoToNextStep()" />
-					        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"  onclick="resetDetailsAndGoToNextStep()" />
-					    </p:confirmDialog>
+							<p:commandButton value="Yes" type="button"
+								styleClass="ui-confirmdialog-yes" icon="ui-icon-check"
+								onclick="saveDetailsAndGoToNextStep()" />
+							<p:commandButton value="No" type="button"
+								styleClass="ui-confirmdialog-no" icon="ui-icon-close"
+								onclick="resetDetailsAndGoToNextStep()" />
+						</p:confirmDialog>
 					</p:panel>
 				</p:tab>
 			</p:wizard>
 
-			<p:dialog header="Impact Search" widgetVar="select_mq" width="840px" minWidth="840">
+			<p:dialog header="Impact Search" widgetVar="select_mq" width="840px"
+				minWidth="840">
 				<ui:include src="../impactCommon/impactSearch.xhtml"></ui:include>
 
 				<p:spacer height="10"></p:spacer>
 				<h:panelGrid style="float: right">
 					<h:panelGrid columns="2">
-						<p:commandButton value="Add selected" onclick="PF('select_mq').hide()"
+						<p:commandButton value="Add selected"
+							onclick="PF('select_mq').hide()"
 							update="currentListsAndSmqs futureListsAndSmqs futureListsToolbar">
-							<f:actionListener binding="#{impactSearchController.updateCurrentTable()}"/>
-	    					<f:actionListener binding="#{impactSearchController.updateTargetTable()}"/>	
+							<f:actionListener
+								binding="#{impactSearchController.updateCurrentTable()}" />
+							<f:actionListener
+								binding="#{impactSearchController.updateTargetTable()}" />
 						</p:commandButton>
 						<p:commandButton value="Cancel" onclick="PF('select_mq').hide()" />
 					</h:panelGrid>
@@ -324,23 +385,28 @@
 				</f:facet>
 			</p:dialog>
 
-			<p:dialog widgetVar="current-hierarchy-search" modal="false" header="Hierarchy Search Current" height="auto" width="auto">
+			<p:dialog widgetVar="current-hierarchy-search" modal="false"
+				header="Hierarchy Search Current" height="auto" width="auto">
 				<ui:include src="../create/hierarchySearch.xhtml"></ui:include>
-		
+
 				<p:spacer height="10"></p:spacer>
 				<h:panelGrid style="float: right" columns="2">
-					<p:commandButton value="Cancel" onclick="PF('search').hide()" immediate="true" />
+					<p:commandButton value="Cancel" onclick="PF('search').hide()"
+						immediate="true" />
 				</h:panelGrid>
 			</p:dialog>
 
-			<p:dialog widgetVar="search" modal="false" header="Hierarchy search" width="740px" minHeight="620">
+			<p:dialog widgetVar="search" modal="false" header="Hierarchy search"
+				width="740px" minHeight="620">
 				<ui:include src="../impactCommon/hierarchySearch.xhtml"></ui:include>
 
 				<p:spacer height="10"></p:spacer>
 				<h:panelGrid style="float: right" columns="2">
-					<p:commandButton value="Add selected" onclick="PF('search').hide()" update="futureListsAndSmqs"
+					<p:commandButton value="Add selected" onclick="PF('search').hide()"
+						update="futureListsAndSmqs"
 						action="#{impactSearchController.addSelectedToTargetRelation(impactSearchController.relationSelected)}" />
-					<p:commandButton value="Cancel" onclick="PF('search').hide()" immediate="true" />
+					<p:commandButton value="Cancel" onclick="PF('search').hide()"
+						immediate="true" />
 				</h:panelGrid>
 			</p:dialog>
 
@@ -351,19 +417,26 @@
 						<p:outputLabel value="SOC" />
 						<p:selectOneMenu id="select"
 							value="#{impactSearchController.newPtSocSearchTerm}" label="SOC"
-							filter="true" filterMatchMode="startsWith" style="width:400px" autoWidth="false">
+							filter="true" filterMatchMode="startsWith" style="width:400px"
+							autoWidth="false">
 							<f:selectItem itemValue="" itemLabel="All" />
-							<f:selectItems value="#{impactSearchController.newPtDistinctSocTermsList}"></f:selectItems>
+							<f:selectItems
+								value="#{impactSearchController.newPtDistinctSocTermsList}"></f:selectItems>
 						</p:selectOneMenu>
 
-						<p:commandButton value="Search" id="cb11" action="#{impactSearchController.loadNewPts}" partialSubmit="true" update="newPtResultList"/>
+						<p:commandButton value="Search" id="cb11"
+							action="#{impactSearchController.loadNewPts}"
+							partialSubmit="true" update="newPtResultList" />
 					</h:panelGrid>
 					<p:spacer width="10" height="10" id="s7" />
-					<p:dataTable id="newPtResultList" styleClass="ui-datatable-newPtResultList" widgetVar="newPtResultList"
-						value="#{impactSearchController.newPtSearchLazyDataModel}" var="newPtResultList"
-						scrollable="true" scrollHeight="300" scrollRows="50" liveScroll="true"
-	                	selection="#{impactSearchController.selectedNewPtLists}" selectionMode="multiple" lazy="true"
-	                	resizableColumns="true">
+					<p:dataTable id="newPtResultList"
+						styleClass="ui-datatable-newPtResultList"
+						widgetVar="newPtResultList"
+						value="#{impactSearchController.newPtSearchLazyDataModel}"
+						var="newPtResultList" scrollable="true" scrollHeight="300"
+						scrollRows="50" liveScroll="true"
+						selection="#{impactSearchController.selectedNewPtLists}"
+						selectionMode="multiple" lazy="true" resizableColumns="true">
 
 						<p:column headerText="Term">
 							<h:outputText value="#{newPtResultList.term}" rendered="true" />
@@ -374,7 +447,8 @@
 
 				<p:spacer height="10"></p:spacer>
 				<h:panelGrid style="float: right" columns="2">
-					<p:commandButton value="Add selected" onclick="PF('new_pt').hide()" update="futureListsAndSmqs"
+					<p:commandButton value="Add selected" onclick="PF('new_pt').hide()"
+						update="futureListsAndSmqs"
 						action="#{impactSearchController.addSelectedNewPtsToTargetRelation}" />
 					<p:commandButton value="Cancel" onclick="PF('new_pt').hide()" />
 				</h:panelGrid>
@@ -444,24 +518,48 @@
 				</h:panelGrid>
 			</p:dialog>
 		</h:form>
-		
+
 		<style>
-			.ui-chkbox-box {
-				display: none !important;
-			}
-			.green-colored {
-				color: #0fe02a;
-			}
-			
-			.green-colored:HOVER {
-				color: #0a931a;
-			}
-			.listName {
-				font-size: 10px;
-				font-style: italic;
-				font-weight: bold;
-				color: #330066 !important;
-			}
-		</style>
+.ui-chkbox-box {
+	display: none !important;
+}
+
+.green-colored {
+	color: #0fe02a;
+}
+
+.green-colored:HOVER {
+	color: #0a931a;
+}
+
+.listName {
+	font-size: 10px;
+	font-style: italic;
+	font-weight: bold;
+	color: #330066 !important;
+}
+
+.generate {
+	border: 1px solid #8c8c8c !important;
+	border-radius: 4px;
+	padding: 4px;
+	padding-left: 20px;
+	color: #000;
+	font-weight: bold;
+	background-color: #cccccc;
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #ececec),
+		color-stop(100%, #cccccc));
+	background: -webkit-linear-gradient(#ececec, #cccccc);
+	background: -moz-linear-gradient(#ececec, #cccccc);
+	background: -ms-linear-gradient(#ececec, #cccccc);
+	background: -o-linear-gradient(#ececec, #cccccc);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ececec',
+		endColorstr='#cccccc');
+	-ms-filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ececec',
+		endColorstr='#cccccc');
+	background: linear-gradient(#ececec, #cccccc);
+	text-decoration: none;
+}
+</style>
 	</ui:define>
 </ui:composition>

@@ -24,6 +24,7 @@ import org.hibernate.Session;
 import org.hibernate.transform.Transformers;
 import org.hibernate.type.StandardBasicTypes;
 import org.primefaces.model.SortOrder;
+import org.primefaces.model.StreamedContent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -445,5 +446,11 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
 		}
 		return retVal;
+	}
+
+	@Override
+	public StreamedContent generateSMQExcel(SmqBaseTarget selectedImpactedSmqList) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

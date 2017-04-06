@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.primefaces.model.SortOrder;
+import org.primefaces.model.StreamedContent;
 
 import com.dbms.entity.cqt.SmqBaseTarget;
 import com.dbms.entity.cqt.SmqRelationTarget;
@@ -39,5 +40,7 @@ public interface ISmqBaseTargetService {
 			Map<String, Object> filters);
 
 	Long findNotImpactedCount();
+
+	StreamedContent generateSMQExcel(SmqBaseTarget selectedImpactedSmqList);
 
 }
