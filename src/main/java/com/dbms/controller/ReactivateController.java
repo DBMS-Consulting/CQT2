@@ -111,7 +111,7 @@ public class ReactivateController implements Serializable {
 //			this.confirmMessage = "Are you sure you want to reactivate this list?";
 		
 		if (childCmqsOftargets != null && !childCmqsOftargets.isEmpty() && !childNotSelected)
-			this.confirmMessage = "The List and associated Parent List will be activated. Do you want to proceed?";
+			this.confirmMessage = "The List and associated Parent List will be activated.";
 		//else
 			
 
