@@ -213,6 +213,7 @@ public class ListDetailsFormModel {
 				setDrugProgram(CqtConstants.CODE_LIST_NO_PROGRAM_INTERNALCODE);
 				setProtocol(CqtConstants.CODE_LIST_NO_PROTOCOL_INTERNALCODE);
 				setProduct(CqtConstants.CODE_LIST_NO_PRODUCT_INTERNALCODE);
+				setProducts(new String[] { CqtConstants.CODE_LIST_NO_PRODUCT_INTERNALCODE });
 			} else {
 				if(refCodeListService != null) {
 					RefConfigCodeList d;
