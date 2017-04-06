@@ -40,18 +40,29 @@ public class SWJSFRequest
 		return request.getAttribute(name);
 		
 	}
+
+	
+	public static Object def(Object value, Object defVal) {
+		return value != null ? value : defVal;
+	}
+	
 	
 	public static List<String> getGroupList(String name, String key)
 	{
 		HttpServletRequest request = getRequest();
 		String value = (String) request.getAttribute(name);
-		
+
+		//value = "CN=OPENCQT_ADMIN,OU=CQT_OU,OU=Applications,OU=Delegated,OU=Groups,DC=pxed,DC=pfizer,DC=com:CN=CQT_Users,OU=CQT_OU,OU=Applications,OU=Delegated,OU=Groups,DC=pxed,DC=pfizer,DC=com:CN=GBL-BTNONColleagues,OU=GBLGroups,OU=Applications,OU=Delegated,OU=Groups,DC=pxed,DC=pfizer,DC=com";
+
 		List<String> ret = new ArrayList<String>();
-		String[] arr = value.split("[\\s,;]+");
-		for (String s : arr) {
-			if (s.startsWith("CN=")) {
-				String[] v1 = s.split("=");
-				ret.add(v1[1]);
+		
+		if (value != null) {		
+			String[] arr = value.split("[\\s,:]+");
+			for (String s : arr) {
+				if (s.startsWith("CN=")) {
+					String[] v1 = s.split("=");
+					ret.add(v1[1]);
+				}
 			}
 		}
 		
@@ -60,7 +71,10 @@ public class SWJSFRequest
 	
 	public static String getGroupListAsString(String name, String key) {
 		List<String> groupList = getGroupList(name, key);
-		return String.join(" ", groupList);				
+		if (groupList.size() > 0)
+			return String.join(", ", groupList);
+		else 
+			return null;
 	}
 	
 	
