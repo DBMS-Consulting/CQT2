@@ -44,5 +44,7 @@ public interface IRefCodeListService extends ICqtPersistenceService<RefConfigCod
 	public String interpretProductCodesToValuesLabel(List<CmqProductBaseCurrent> products);
 	public String interpretProductCodesToValuesLabel(String[] productCds);
 
-	public StreamedContent generateReport(String codelistType); 
+	public StreamedContent generateReport(String codelistType);
+
+	String convertProductCodesToValuesLabel(List<CmqProductBaseCurrent> products); 
 }

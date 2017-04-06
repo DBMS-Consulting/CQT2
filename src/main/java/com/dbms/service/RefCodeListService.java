@@ -16,7 +16,7 @@ import javax.faces.context.FacesContext;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.ClientAnchor;
 import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.Drawing;
@@ -245,7 +245,12 @@ public class RefCodeListService extends
 	
 	@Override
 	public String interpretProductCodesToValuesLabel(List<CmqProductBaseCurrent> products) {
-		return StringUtils.join(interpretProductCodesToValues(products), ", ");
+		return StringUtils.join(this.interpretProductCodesToValues(products), ", ");
+	}
+	
+	@Override
+	public String convertProductCodesToValuesLabel(List<CmqProductBaseCurrent> products) {
+		return StringUtils.join(this.interpretProductCodesToValues(products), ", ");
 	}
 	
 	public String interpretProductCodesToValuesLabel(String[] productCds) {

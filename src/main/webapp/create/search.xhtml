@@ -154,7 +154,7 @@
 				<h:outputText value="#{RefCodeListService.interpretInternalCodeToValue('PROTOCOL', value.cmqProtocolCd)}" />
 			</p:column>
 			<p:column headerText="Product" width="100">
-				<h:outputText value="#{RefCodeListService.interpretProductCodesToValuesLabel(value.productsList)}" />
+				<h:outputText value="#{RefCodeListService.convertProductCodesToValuesLabel(value.productsList)}" />
 			</p:column>
 			<p:column headerText="Group" width="100">
 				<h:outputText value="#{value.cmqGroup}" />
