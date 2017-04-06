@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.primefaces.model.StreamedContent;
 
-import com.dbms.entity.cqt.CmqProduct;
+import com.dbms.entity.cqt.CmqProductBaseCurrent;
 import com.dbms.entity.cqt.RefConfigCodeList;
 import com.dbms.service.base.ICqtPersistenceService;
 import com.dbms.util.OrderBy;
@@ -40,9 +40,11 @@ public interface IRefCodeListService extends ICqtPersistenceService<RefConfigCod
 	 * @return
 	 */
 	public String interpretInternalCodeToValue(String configType, String internalCode);
-	public String[] interpretProductCodesToValues(List<CmqProduct> products);
-	public String interpretProductCodesToValuesLabel(List<CmqProduct> products);
+	public String[] interpretProductCodesToValues(List<CmqProductBaseCurrent> products);
+	public String interpretProductCodesToValuesLabel(List<CmqProductBaseCurrent> products);
 	public String interpretProductCodesToValuesLabel(String[] productCds);
 
-	public StreamedContent generateReport(String codelistType); 
+	public StreamedContent generateReport(String codelistType);
+
+	String convertProductCodesToValuesLabel(List<CmqProductBaseCurrent> products); 
 }

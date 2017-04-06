@@ -9,6 +9,8 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
+
 
 @ManagedBean
 @ApplicationScoped
@@ -79,7 +81,7 @@ public class SWJSFRequest
 	public static String getGroupListValueAsString(String key, String value) {
 		List<String> groupList = getGroupListValue(key, value);
 		if (groupList.size() > 0)
-			return String.join(", ", groupList);
+			return StringUtils.join(", ", groupList);
 		else 
 			return null;
 	}
@@ -87,7 +89,7 @@ public class SWJSFRequest
 	public static String getGroupListAsString(String name, String key) {
 		List<String> groupList = getGroupList(name, key);
 		if (groupList.size() > 0)
-			return String.join(", ", groupList);
+			return StringUtils.join(", ", groupList);
 		else 
 			return null;
 	}

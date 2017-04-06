@@ -6,9 +6,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.faces.bean.ApplicationScoped;
@@ -19,14 +16,13 @@ import javax.faces.context.FacesContext;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.ClientAnchor;
 import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.Drawing;
 import org.apache.poi.ss.usermodel.Picture;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFCell;
-import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -36,7 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.dbms.csmq.CSMQBean;
-import com.dbms.entity.cqt.CmqProduct;
+import com.dbms.entity.cqt.CmqProductBaseCurrent;
 import com.dbms.entity.cqt.RefConfigCodeList;
 import com.dbms.service.base.CqtPersistenceService;
 import com.dbms.util.CqtConstants;
@@ -234,7 +230,7 @@ public class RefCodeListService extends
 	}
 	
 	@Override
-	public String[] interpretProductCodesToValues(List<CmqProduct> products)
+	public String[] interpretProductCodesToValues(List<CmqProductBaseCurrent> products)
 	{
 		if(products != null && products.size() > 0) {
 			String[] pv = new String[products.size()];
@@ -248,8 +244,13 @@ public class RefCodeListService extends
 	}
 	
 	@Override
-	public String interpretProductCodesToValuesLabel(List<CmqProduct> products) {
-		return StringUtils.join(interpretProductCodesToValues(products), ", ");
+	public String interpretProductCodesToValuesLabel(List<CmqProductBaseCurrent> products) {
+		return StringUtils.join(this.interpretProductCodesToValues(products), ", ");
+	}
+	
+	@Override
+	public String convertProductCodesToValuesLabel(List<CmqProductBaseCurrent> products) {
+		return StringUtils.join(this.interpretProductCodesToValues(products), ", ");
 	}
 	
 	public String interpretProductCodesToValuesLabel(String[] productCds) {

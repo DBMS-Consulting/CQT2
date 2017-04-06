@@ -22,8 +22,6 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
-import org.apache.commons.collections.map.HashedMap;
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -45,20 +43,11 @@ import com.dbms.util.exceptions.ReportGenerationException;
 import com.dbms.view.ListDetailsFormModel;
 import com.dbms.view.ListNotesFormModel;
 
-import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JREmptyDataSource;
-import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
-import net.sf.jasperreports.engine.data.JRMapArrayDataSource;
 import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
-import net.sf.jasperreports.engine.design.JasperDesign;
-import net.sf.jasperreports.engine.util.JRDataUtils;
-import net.sf.jasperreports.engine.util.JRSaver;
-import net.sf.jasperreports.engine.xml.JRDatasetFactory;
-import net.sf.jasperreports.engine.xml.JRXmlLoader;
 
 /**
  * @date Feb 7, 2017 7:39:34 AM
@@ -174,7 +163,7 @@ public class ReportController extends BaseController<CmqBase190> {
 			            getOrCreateHSSFCell(row, 2).setCellValue(refCodeListService.interpretInternalCodeToValue(CqtConstants.CODE_LIST_TYPE_EXTENSION, dr.getCmqTypeCd()));
 			            getOrCreateHSSFCell(row, 3).setCellValue(refCodeListService.interpretInternalCodeToValue(CqtConstants.CODE_LIST_TYPE_PROGRAM, dr.getCmqProgramCd()));
 			            getOrCreateHSSFCell(row, 4).setCellValue(refCodeListService.interpretInternalCodeToValue(CqtConstants.CODE_LIST_TYPE_PROTOCOL, dr.getCmqProtocolCd()));
-			            getOrCreateHSSFCell(row, 5).setCellValue(refCodeListService.interpretProductCodesToValuesLabel(dr.getCmqProducts()));
+			            getOrCreateHSSFCell(row, 5).setCellValue(refCodeListService.interpretProductCodesToValuesLabel(dr.getProductsList()));
 			            getOrCreateHSSFCell(row, 6).setCellValue(dr.getCmqLevel());
 			            getOrCreateHSSFCell(row, 7).setCellValue(dr.getDictionaryVersion());
 			            getOrCreateHSSFCell(row, 8).setCellValue(dr.getCmqStatus());
@@ -205,7 +194,7 @@ public class ReportController extends BaseController<CmqBase190> {
 	    				rowData.put("cmqType", refCodeListService.interpretInternalCodeToValue(CqtConstants.CODE_LIST_TYPE_EXTENSION, dr.getCmqTypeCd()));
 	    				rowData.put("cmqProgram", refCodeListService.interpretInternalCodeToValue(CqtConstants.CODE_LIST_TYPE_PROGRAM, dr.getCmqProgramCd()));
 	    				rowData.put("cmqProtocol", refCodeListService.interpretInternalCodeToValue(CqtConstants.CODE_LIST_TYPE_PROTOCOL, dr.getCmqProtocolCd()));
-	    				rowData.put("cmqProduct", refCodeListService.interpretProductCodesToValuesLabel(dr.getCmqProducts()));
+	    				rowData.put("cmqProduct", refCodeListService.interpretProductCodesToValuesLabel(dr.getProductsList()));
 	    				rowData.put("cmqLevel", dr.getCmqLevel().toString());
 	    				rowData.put("dictionaryVersion", dr.getDictionaryVersion());
 	    				rowData.put("cmqStatus", dr.getCmqStatus());
