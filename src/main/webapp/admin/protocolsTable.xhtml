@@ -9,7 +9,7 @@
 	<p:growl id="msgProt" life="#{cSMQBean.defaultGrowlLife}" />
 
 	<h3 style="text-align: center">Protocol CodeList</h3>
-	<p:dataTable id="tableProtocol" var="val" rows="10"
+	<p:dataTable id="tableProtocol" var="val" rows="10" widgetVar="tblProtocols"
 		value="#{adminController.protocols}" style="margin-bottom:20px"
 		paginator="true" paginatorPosition="bottom"
 		paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
@@ -95,7 +95,7 @@
 			<h:panelGrid columns="2" cellpadding="5">
 				<p:commandButton value="Save" icon="fa fa-plus"
 					onclick="PF('protocolD').hide()" update="tableProtocol msgProt"
-					action="#{adminController.addRefCodelist}" />
+					action="#{adminController.addRefCodelist}" oncomplete="PF('tblProtocols').filter()" />
 
 				<p:commandButton value="Cancel" icon="fa fa-close"
 					onclick="PF('protocolD').hide()" update="tableProtocol msgProt"

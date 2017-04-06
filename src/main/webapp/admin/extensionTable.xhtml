@@ -9,7 +9,7 @@
 	<p:growl id="msgExt" life="#{cSMQBean.defaultGrowlLife}" />
 
 	<h3 style="text-align: center">Extension CodeList</h3>
-	<p:dataTable id="tableExtension" var="val" rows="10"
+	<p:dataTable id="tableExtension" var="val" rows="10" widgetVar="tblExtensions"
 		value="#{adminController.extensions}" style="margin-bottom:20px"
 		paginator="true" paginatorPosition="bottom"
 		paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
@@ -92,7 +92,7 @@
 			<h:panelGrid columns="2" cellpadding="5">
 				<p:commandButton value="Save" icon="fa fa-plus"
 					onclick="PF('extensionD').hide()" update="tableExtension msgExt"
-					action="#{adminController.addRefCodelist}" />
+					action="#{adminController.addRefCodelist}" oncomplete="PF('tblExtensions').filter()" />
 
 				<p:commandButton value="Cancel" icon="fa fa-close" 
 					onclick="PF('extensionD').hide()" update="tableExtension msgExt"

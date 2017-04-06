@@ -273,6 +273,13 @@ public class RefCodeListService extends
 	}
 	
 	@Override
+	public RefConfigCodeList update(RefConfigCodeList e) throws CqtServiceException {
+		RefConfigCodeList u = super.update(e);
+		cqtCacheManager.removeAllFromCache(CACHE_NAME);
+		return u;
+	}
+	
+	@Override
 	public void update(List<RefConfigCodeList> e) throws CqtServiceException {
 		super.update(e);
 		cqtCacheManager.removeAllFromCache(CACHE_NAME);

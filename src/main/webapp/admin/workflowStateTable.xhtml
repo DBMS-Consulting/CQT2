@@ -9,7 +9,7 @@
 	<p:growl id="msgW" life="#{cSMQBean.defaultGrowlLife}" />
 
 	<h3 style="text-align: center">Workflow State CodeList</h3>
-	<p:dataTable id="workflowTable" var="val" rows="10"
+	<p:dataTable id="workflowTable" var="val" rows="10" widgetVar="tblWorkflowStates"
 		value="#{adminController.workflows}" style="margin-bottom:20px"
 		paginator="true" paginatorPosition="bottom"
 		paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
@@ -92,7 +92,7 @@
 			</h:panelGrid>
 
 			<h:panelGrid columns="2" cellpadding="5">
-				<p:commandButton value="Save" icon="fa fa-plus"
+				<p:commandButton value="Save" icon="fa fa-plus" oncomplete="PF('tblWorkflowStates').filter()"
 					onclick="PF('workflowD').hide()" update="workflowTable msgW"
 					action="#{adminController.addRefCodelist}" />
 
