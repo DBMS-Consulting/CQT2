@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 import com.dbms.csmq.HierarchyNode;
 import com.dbms.entity.IEntity;
 import com.dbms.entity.cqt.CmqBase190;
+import com.dbms.entity.cqt.CmqProductBaseCurrent;
 import com.dbms.entity.cqt.CmqRelation190;
 import com.dbms.entity.cqt.RefConfigCodeList;
 import com.dbms.entity.cqt.SmqBase190;
@@ -40,7 +41,6 @@ import com.dbms.service.ICmqBase190Service;
 import com.dbms.service.ICmqRelation190Service;
 import com.dbms.service.IRefCodeListService;
 import com.dbms.util.CmqUtils;
-import com.dbms.util.CqtConstants;
 import com.dbms.util.exceptions.CqtServiceException;
 import com.dbms.view.ListDetailsFormModel;
 import com.dbms.view.ListDetailsFormModel.WizardType;
@@ -970,6 +970,7 @@ public class CreateController implements Serializable {
 			
 			selectedData.setCmqCode(codevalue);
 			selectedData.setDictionaryVersion(currentMeddraVersionCodeList.getValue());
+			
 			// hard coded for now
 			selectedData.setCreatedBy("Test user");
 			if (dictionaryName != null && dictionaryName.getValue() != null)

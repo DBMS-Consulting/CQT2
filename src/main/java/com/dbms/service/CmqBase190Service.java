@@ -10,7 +10,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -22,13 +21,7 @@ import javax.faces.context.FacesContext;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.persistence.TemporalType;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.ClientAnchor;
@@ -48,12 +41,10 @@ import org.hibernate.Session;
 import org.hibernate.transform.Transformers;
 import org.hibernate.type.StandardBasicTypes;
 import org.primefaces.model.DefaultStreamedContent;
-import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.StreamedContent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.dbms.csmq.HierarchyNode;
 import com.dbms.entity.cqt.CmqBase190;
 import com.dbms.entity.cqt.CmqRelation190;
 import com.dbms.entity.cqt.SmqBase190;
@@ -138,7 +129,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		}
 		if (productCds != null && productCds.length > 0) {
 			sb = appendClause(sb, first);
-			sb.append(" c.cmqId in (SELECT p.cmqId FROM CmqProduct p WHERE p.cmqProductCd in (:cmqProductCds))");
+			sb.append(" c.cmqCode in (SELECT p.cmqCode FROM CmqProductBaseCurrent p WHERE p.cmqProductCd in (:cmqProductCds))");
 			queryParams.put("cmqProductCds", Arrays.asList(productCds));
 			first = false;
 		}
