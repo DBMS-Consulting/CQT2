@@ -449,7 +449,7 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 	}
 
 	@Override
-	public StreamedContent generateSMQExcel(SmqBaseTarget selectedImpactedSmqList) {
+	public StreamedContent generateSMQExcel(SmqBaseTarget selectedImpactedSmqList, String dictionaryVersion) {
 		// TODO Auto-generated method stub
 		return null;
 	}

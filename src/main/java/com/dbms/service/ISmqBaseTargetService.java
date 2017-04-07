@@ -41,6 +41,6 @@ public interface ISmqBaseTargetService {
 
 	Long findNotImpactedCount();
 
-	StreamedContent generateSMQExcel(SmqBaseTarget selectedImpactedSmqList);
+	StreamedContent generateSMQExcel(SmqBaseTarget selectedImpactedSmqList, String dictionaryVersion);
 
 }
