@@ -30,7 +30,6 @@ import org.slf4j.LoggerFactory;
 import com.dbms.csmq.HierarchyNode;
 import com.dbms.entity.IEntity;
 import com.dbms.entity.cqt.CmqBase190;
-import com.dbms.entity.cqt.CmqProductBaseCurrent;
 import com.dbms.entity.cqt.CmqRelation190;
 import com.dbms.entity.cqt.RefConfigCodeList;
 import com.dbms.entity.cqt.SmqBase190;
@@ -575,8 +574,10 @@ public class CreateController implements Serializable {
 			if(selectedData == null)
 				selectedData = new CmqBase190();
 			
+			String error = CmqUtils.getExceptionMessageChain(e);
+			
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"An error occurred while trying to update the details.", "");
+					"An error occurred while trying to update the details. Error: " + error, "");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
 			return null;
@@ -786,11 +787,22 @@ public class CreateController implements Serializable {
 			}
 		} catch (CqtServiceException e) {
 			LOG.error("Exception occurred while creating CmqBase190.", e);
-			if(selectedData.getId() == null) {
+			if(selectedData.getId() != null) {
 				// since it failed to save the record, clear the creation date/user info
-				selectedData = new CmqBase190();
+				try {
+					this.cmqBaseService.remove(selectedData.getCmqId());
+				} catch (CqtServiceException e1) {
+					//eat it. No problem here.
+				}
 			}
 			
+			//reset the on screen details.
+			selectedData.setCmqId(null);
+			selectedData.setCmqCode(null);
+			selectedData.setCreationDate(null);
+			selectedData.setCreatedBy(null);
+			this.detailsFormModel.loadFromCmqBase190(selectedData);
+
 			String error = CmqUtils.getExceptionMessageChain(e);
 			
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
