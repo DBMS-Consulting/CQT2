@@ -790,9 +790,11 @@ public class CreateController implements Serializable {
 				// since it failed to save the record, clear the creation date/user info
 				selectedData = new CmqBase190();
 			}
-
+			
+			String error = CmqUtils.getExceptionMessageChain(e);
+			
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"An error occurred while trying to save the details.", "");
+					"An error occurred while trying to save the details. Error: " + error, "");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
 			return null;
