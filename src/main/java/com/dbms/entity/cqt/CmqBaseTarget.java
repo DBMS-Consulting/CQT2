@@ -23,6 +23,12 @@ import com.dbms.entity.BaseEntity;
 public class CmqBaseTarget extends BaseEntity {
 
 	private static final long serialVersionUID = -2129921300717382258L;
+	
+	public static final String CMQ_STATUS_VALUE_ACTIVE = "A";
+	public static final String CMQ_STATUS_PENDING_IA = "PENDING IA";
+	public static final String CMQ_STATE_APPROVED_IA = "APPROVED IA";
+	public static final String CMQ_STATE_PUBLISHED_IA = "PUBLISHED IA";
+
 
 	@Id
 	@GeneratedValue(generator = "CMQ_ID_SEQ", strategy = GenerationType.SEQUENCE)

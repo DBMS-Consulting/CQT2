@@ -841,6 +841,73 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 		cellStyle.setFont(defaultFont);
 		cell.setCellStyle(cellStyle);
 	}
+	
+	/**
+	 * Find Approved IA CmqTarget.
+	 * @return List<CmqBaseTarget>
+	 */
+	@Override
+	public List<CmqBaseTarget> findApprovedCmqs() {
+		List<CmqBaseTarget> retVal = null;
+		String queryString = "from CmqBaseTarget c where upper(c.cmqState) = upper('Approved IA') and c.cmqStatus = 'P' ";
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		try {
+			Query query = entityManager.createQuery(queryString);
+			retVal = query.getResultList();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg.append("findApprovedCmqs failed ").append("Query used was ->")
+					.append(queryString);
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+
+	}
+	
+	@Override
+	public List<CmqBaseTarget> findChildCmqsByCodes(List<Long> codes) {
+		List<CmqBaseTarget> retVal = null;
+		String queryString = "from CmqBaseTarget c where c.cmqParentCode in :codeList ";
+		EntityManager entityManager = this.cqtEntityManagerFactory
+				.getEntityManager();
+		try {
+			Query query = entityManager.createQuery(queryString);
+			query.setParameter("codeList", codes);
+			retVal = query.getResultList();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg.append("findChildCmqsByCodes failed ")
+					.append("Query used was ->").append(queryString);
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
+	
+	@Override
+	public List<CmqBaseTarget> findParentCmqsByCodes(List<Long> codes) {
+		List<CmqBaseTarget> retVal = null;
+		String queryString = "from CmqBaseTarget c where c.cmqCode in :codeList ";
+		EntityManager entityManager = this.cqtEntityManagerFactory
+				.getEntityManager();
+		try {
+			Query query = entityManager.createQuery(queryString);
+			query.setParameter("codeList", codes);
+			retVal = query.getResultList();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg.append("findParentCmqsByCodes failed ")
+					.append("Query used was ->").append(queryString);
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	
+	}
 
 	public ICmqRelationTargetService getCmqRelationTargetService() {
 		return cmqRelationTargetService;

@@ -33,4 +33,10 @@ public interface ICmqBaseTargetService  extends ICqtPersistenceService<CmqBaseTa
 
 	StreamedContent generateCMQExcel(CmqBaseTarget selectedImpactedCmqList, String dictionaryVersion);
 
+	List<CmqBaseTarget> findApprovedCmqs();
+
+	List<CmqBaseTarget> findChildCmqsByCodes(List<Long> targetCmqCodes);
+
+	List<CmqBaseTarget> findParentCmqsByCodes(List<Long> targetCmqParentCodes);
+
 }

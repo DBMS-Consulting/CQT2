@@ -152,9 +152,9 @@
 						url="/publish/publishCurrentVersion.xhtml" disabled="false" />
 					<p:menuitem value="Publish Future Version" id="pt_cmi8"
 						action="IMPACT_PUBLISH" rendered="true"
-						styleClass="#{view.viewId == '/publish/publishPreviousVersion.xhtml' ? 'ui-state-active2' : ''}"
+						styleClass="#{view.viewId == '/publish/publishFutureVersion.xhtml' ? 'ui-state-active2' : ''}"
 						style="font-weight:#{userBean.currentMenu eq 'IMPACT_PUBLISH' ? 'bold' : 'normal'};"
-						url="/publish/publishPreviousVersion.xhtml" />
+						url="/publish/publishFutureVersion.xhtml" />
 				</p:submenu>
 				
 				<p:submenu label="Reactivate/Retire" icon="ui-icon-document"

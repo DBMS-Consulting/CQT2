@@ -14,12 +14,15 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 
+import org.primefaces.context.RequestContext;
 import org.primefaces.model.DualListModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.dbms.entity.cqt.CmqBase190;
+import com.dbms.entity.cqt.CmqBaseTarget;
 import com.dbms.service.ICmqBase190Service;
+import com.dbms.service.ICmqBaseTargetService;
 import com.dbms.service.ICmqRelation190Service;
 import com.dbms.service.IRefCodeListService;
 import com.dbms.util.exceptions.CqtServiceException;
@@ -38,6 +41,9 @@ public class PublishController implements Serializable {
 
 	@ManagedProperty("#{CmqBase190Service}")
 	private ICmqBase190Service cmqBaseService;
+	
+	@ManagedProperty("#{CmqBaseTargetService}")
+	private ICmqBaseTargetService cmqBaseTargetService;
 
 	@ManagedProperty("#{CmqRelation190Service}")
 	private ICmqRelation190Service cmqRelationService;
@@ -46,19 +52,27 @@ public class PublishController implements Serializable {
 	private IRefCodeListService refCodeListService;
 
 	private List<CmqBase190> sourceList;
-
 	private List<CmqBase190> targetList;
+	
+	private List<CmqBaseTarget> sourceIAList;
+	private List<CmqBaseTarget> targetIAList;
 
 	private DualListModel<CmqBase190> publishCurrentVersionDualListModel;
+	private DualListModel<CmqBaseTarget> publishFutureVersionDualListModel;
 	
 	private CmqBaseDualListConverter cmqBaseDualListConverter;
+	private CmqBaseTargetDualListConverter cmqBaseTargetDualListConverter;
 	
 	@PostConstruct
 	public void init() {
 		sourceList = this.cmqBaseService.findApprovedCmqs();
 		targetList = new ArrayList<CmqBase190>();
+		sourceIAList = this.cmqBaseTargetService.findApprovedCmqs();
+		targetIAList = new ArrayList<CmqBaseTarget>();
 		publishCurrentVersionDualListModel = new DualListModel<CmqBase190>(sourceList, targetList);
+		publishFutureVersionDualListModel = new DualListModel<CmqBaseTarget>(sourceIAList, targetIAList);
 		this.cmqBaseDualListConverter = new CmqBaseDualListConverter();
+		this.cmqBaseTargetDualListConverter = new CmqBaseTargetDualListConverter();
 	}
 
 	public String promoteTargetList() {
@@ -202,6 +216,159 @@ public class PublishController implements Serializable {
 		return "";
 	}
 	
+	/**
+	 * Event when we pick on the source list
+	 * @param event
+	 */
+	public void pickList() {
+		RequestContext.getCurrentInstance().execute("PF('confirmPromote').show();");
+	}
+	 
+	
+	/**
+	 * Publish IA list.
+	 * @return
+	 */
+	public String promoteIATargetList() {
+		List<Long> targetCmqCodes = new ArrayList<>();
+		List<Long> targetCmqParentCodes = new ArrayList<>();
+		List<CmqBaseTarget> targetCmqsSelected = new ArrayList<>(publishFutureVersionDualListModel.getTarget());
+		for (CmqBaseTarget cmqBase : targetCmqsSelected) {
+			targetCmqCodes.add(cmqBase.getCmqCode());
+			if(null != cmqBase.getCmqParentCode()) {
+				targetCmqParentCodes.add(cmqBase.getCmqParentCode());
+			}
+		}
+		
+		boolean isListPublishable = true;
+		List<CmqBaseTarget> faultyCmqs = new ArrayList<>();
+		List<CmqBaseTarget> childCmqsOftargets = this.cmqBaseTargetService.findChildCmqsByCodes(targetCmqCodes);
+		if(null != childCmqsOftargets) {
+			for (CmqBaseTarget cmqBaseTarget : childCmqsOftargets) {
+				//if child is not in the target list then check if its publisher or not
+				if(!targetCmqCodes.contains(cmqBaseTarget.getCmqCode())) {
+					if(!cmqBaseTarget.getCmqState().equalsIgnoreCase(CmqBaseTarget.CMQ_STATE_PUBLISHED_IA)
+							&& cmqBaseTarget.getCmqStatus().equalsIgnoreCase(CmqBaseTarget.CMQ_STATUS_PENDING_IA)) {
+						isListPublishable = false;
+						faultyCmqs.add(cmqBaseTarget);
+					}
+				}
+			}
+		}
+		
+		if(!isListPublishable) {
+			String codes = "";
+			if (faultyCmqs != null) {
+				for (CmqBaseTarget cmq : faultyCmqs) {
+					codes += cmq.getCmqCode() + ";";
+				}
+			}
+			//show error dialog with names of faulty cmqs
+			LOG.info("\n\n ******  " + codes); 
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"The list being promoted has an associated list that must be Promoted", "");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			
+			return "";
+		} else {
+			//now check the parents of these cmqs
+			if(targetCmqParentCodes.size() > 0) {
+				List<CmqBaseTarget> parentCmqsList = this.cmqBaseTargetService.findParentCmqsByCodes(targetCmqParentCodes);
+				if(null != parentCmqsList) {
+					for (CmqBaseTarget cmqBaseTarget : parentCmqsList) {
+						//if parent is not in the target list then check if its publisher or not
+						if(!targetCmqCodes.contains(cmqBaseTarget.getCmqCode())) {
+							if(!cmqBaseTarget.getCmqState().equalsIgnoreCase(CmqBaseTarget.CMQ_STATE_PUBLISHED_IA)
+									&& cmqBaseTarget.getCmqStatus().equalsIgnoreCase(CmqBaseTarget.CMQ_STATUS_PENDING_IA)) {
+								isListPublishable = false;
+								faultyCmqs.add(cmqBaseTarget);
+							}
+						}
+					}
+				}
+			}
+			
+			if(!isListPublishable) {
+				//show error dialog with names of faulty cmqs
+				String codes = "";
+				if (faultyCmqs != null) {
+					for (CmqBaseTarget cmq : faultyCmqs) {
+						codes += cmq.getCmqCode() + ";";
+					}
+				}
+				LOG.info("\n\n ******  " + codes); 
+				//show error dialog with names of faulty cmqs
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+						"The list being promoted has an associated list that must be Promoted. ", "");
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+				
+				return "";
+			} else {
+				boolean hasErrorOccured = false;
+				boolean hasParentError = false;
+				String cmqError = "";
+				//success
+				for (CmqBaseTarget cmqBaseTarget : targetCmqsSelected) {
+					if (cmqBaseTarget.getCmqLevel() == 2 && cmqBaseTarget.getCmqParentCode() == null && cmqBaseTarget.getCmqParentName() == null)
+						hasParentError = true;
+					else {
+						cmqBaseTarget.setCmqState(CmqBaseTarget.CMQ_STATE_PUBLISHED_IA);
+						//Pending to Active 'A'
+						cmqBaseTarget.setCmqStatus(CmqBaseTarget.CMQ_STATUS_VALUE_ACTIVE);
+						cmqBaseTarget.setActivatedBy("NONE");
+						cmqBaseTarget.setActivationDate(new Date());
+						cmqBaseTarget.setLastModifiedDate(new Date());
+						cmqBaseTarget.setLastModifiedBy("NONE");
+					}
+
+					if (hasParentError) {
+						cmqError = cmqBaseTarget.getCmqName();
+						break;
+					}
+				}
+				if (hasParentError) {
+					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+							"The List '"+ cmqError + "' does not have an associated parent list, hence cannot be Published", "");
+					FacesContext.getCurrentInstance().addMessage(null, msg);
+					
+					return "";
+				}
+				
+				try {
+					this.cmqBaseTargetService.update(targetCmqsSelected);
+				} catch (CqtServiceException e) {
+					LOG.error(e.getMessage(), e);
+					hasErrorOccured = true;
+				}
+				
+				if(hasErrorOccured) {
+					//show error message popup for partial success.
+					String codes = "";
+					if (targetCmqsSelected != null) {
+						for (CmqBaseTarget cmq : targetCmqsSelected) {
+							codes += cmq.getCmqCode() + ";";
+						}
+					}
+					//show error dialog with names of faulty cmqs
+					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+							"The system could not publish the following cmqs :" + codes, "");
+					FacesContext.getCurrentInstance().addMessage(null, msg);
+				} else {
+					//update the dualListModel source and target
+					init();
+					
+					//show messages on screen
+					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+							"The List(s) were successfully Published", "");
+					FacesContext.getCurrentInstance().addMessage(null, msg);
+				}
+			}
+		}//end 
+		targetCmqsSelected = new ArrayList<CmqBaseTarget>();	
+		
+		return "";
+	}
+	
 	public ICmqBase190Service getCmqBaseService() {
 		return cmqBaseService;
 	}
@@ -283,6 +450,72 @@ public class PublishController implements Serializable {
 		public String getAsString(FacesContext context, UIComponent component, Object value) {
 			return value.toString();
 		}
+	}
+	
+	private class CmqBaseTargetDualListConverter implements Converter {
+
+		@Override
+		public Object getAsObject(FacesContext context, UIComponent component, String value) {
+			long inputValue = 0;
+			try{
+				inputValue = Long.valueOf(value);
+			} catch (Exception e) {
+				LOG.error(e.getMessage(), e);
+			}
+			for (CmqBaseTarget cmqBaseTarget : sourceIAList) {
+				if(cmqBaseTarget.getCmqCode().longValue() == inputValue) {
+					return cmqBaseTarget;
+				}
+			}
+			return null;
+		}
+
+		@Override
+		public String getAsString(FacesContext context, UIComponent component, Object value) {
+			return value.toString();
+		}
+	}
+
+	public DualListModel<CmqBaseTarget> getPublishFutureVersionDualListModel() {
+		return publishFutureVersionDualListModel;
+	}
+
+	public void setPublishFutureVersionDualListModel(
+			DualListModel<CmqBaseTarget> publishFutureVersionDualListModel) {
+		this.publishFutureVersionDualListModel = publishFutureVersionDualListModel;
+	}
+
+	public List<CmqBaseTarget> getSourceIAList() {
+		return sourceIAList;
+	}
+
+	public void setSourceIAList(List<CmqBaseTarget> sourceIAList) {
+		this.sourceIAList = sourceIAList;
+	}
+
+	public List<CmqBaseTarget> getTargetIAList() {
+		return targetIAList;
+	}
+
+	public void setTargetIAList(List<CmqBaseTarget> targetIAList) {
+		this.targetIAList = targetIAList;
+	}
+
+	public CmqBaseTargetDualListConverter getCmqBaseTargetDualListConverter() {
+		return cmqBaseTargetDualListConverter;
+	}
+
+	public void setCmqBaseTargetDualListConverter(
+			CmqBaseTargetDualListConverter cmqBaseTargetDualListConverter) {
+		this.cmqBaseTargetDualListConverter = cmqBaseTargetDualListConverter;
+	}
+
+	public ICmqBaseTargetService getCmqBaseTargetService() {
+		return cmqBaseTargetService;
+	}
+
+	public void setCmqBaseTargetService(ICmqBaseTargetService cmqBaseTargetService) {
+		this.cmqBaseTargetService = cmqBaseTargetService;
 	}
 
 }

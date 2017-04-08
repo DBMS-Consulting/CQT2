@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" template="../CSMQ.xhtml">
+
+	<ui:define name="page-content">
+		<h:form id="f1">
+			<p:growl id="m1" life="#{cSMQBean.defaultGrowlLife}" />
+
+			<h:panelGrid columns="1" style="width: 100% !important">
+				<p:breadCrumb styleClass="breadcrumb">
+					<p:menuitem value="Home" url="/index.xhtml" />
+					<p:menuitem value="Publish Future Version" />
+				</p:breadCrumb>
+			</h:panelGrid>
+
+			<p:wizard flowListener="#{wizard.onFlowProcess}" showNavBar="false">
+				<!-- PROMOTE panel -->
+				<p:tab id="promote" title="Promote to Published">
+					<p:panel header="Promote to Published">
+						<h:panelGrid columns="2">
+							<p:pickList id="pickList" value="#{publishController.publishFutureVersionDualListModel}" 
+								var="pick" converter="#{publishController.cmqBaseTargetDualListConverter}"
+								itemLabel="#{pick.cmqName}" itemValue="#{pick.cmqCode}" />
+								
+							<p:commandButton id="promoteIA" value="Promote" action="#{publishController.pickList}" update="@form m1">
+								<!-- <p:confirm header="Confirm IA Promotion"
+									message="Are you sure you want to promote the selected list (s)?"
+									icon="ui-icon-alert" /> -->
+							</p:commandButton>
+						</h:panelGrid>
+					</p:panel>
+				</p:tab>
+
+				<!-- DEMOTE panel -->
+				<!-- <p:tab id="demote" title="Demote to Draft">
+					<p:panel header="Demote to Draft">
+						<h:panelGrid columns="2">
+							<p:pickList id="pickList2" value="#{userBean.pickList}"
+								var="pick" itemLabel="#{pick}" itemValue="#{pick}" />
+
+							<p:commandButton value="Demote" onclick="PF('confirm2').show();" />
+						</h:panelGrid>
+					</p:panel>
+				</p:tab> -->
+
+				
+			</p:wizard>
+			
+			<p:remoteCommand name="confirmYes" update="@form"
+				actionListener="#{publishController.promoteIATargetList}"
+				onstart="PF('confirmPromote').hide()" />
+
+			<p:confirmDialog widgetVar="confirmPromote" showEffect="fade"
+				hideEffect="fade" header="Confirm Promote"
+				message="Are you sure you want to promote the selected list (s)?">
+				<p:commandButton value="Yes" type="button" process="@this"
+					update="@form" styleClass="ui-confirmdialog-yes"
+					icon="ui-icon-check" onclick="confirmYes()" />
+
+ 
+				<p:commandButton value="No" type="button"
+					onclick="PF('confirmPromote').hide();" update="@form"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+		</h:form>
+	</ui:define>
+</ui:composition>
