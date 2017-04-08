@@ -221,9 +221,16 @@ public class PublishController implements Serializable {
 	 * @param event
 	 */
 	public void pickList() {
-		RequestContext.getCurrentInstance().execute("PF('confirmPromote').show();");
+		if(publishFutureVersionDualListModel.getTarget().isEmpty()) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"Please select at least 1 list to promote.", "");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			
+		}
+		else
+			RequestContext.getCurrentInstance().execute("PF('confirmPromote').show();");
 	}
-	 
+
 	
 	/**
 	 * Publish IA list.

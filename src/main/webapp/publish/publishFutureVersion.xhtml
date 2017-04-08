@@ -22,7 +22,7 @@
 				<p:tab id="promote" title="Promote to Published">
 					<p:panel header="Promote to Published">
 						<h:panelGrid columns="2">
-							<p:pickList id="pickList" value="#{publishController.publishFutureVersionDualListModel}" 
+							<p:pickList id="pickListPromote" value="#{publishController.publishFutureVersionDualListModel}" 
 								var="pick" converter="#{publishController.cmqBaseTargetDualListConverter}"
 								itemLabel="#{pick.cmqName}" itemValue="#{pick.cmqCode}" />
 								
@@ -36,18 +36,17 @@
 				</p:tab>
 
 				<!-- DEMOTE panel -->
-				<!-- <p:tab id="demote" title="Demote to Draft">
+				<p:tab id="demote" title="Demote to Draft">
 					<p:panel header="Demote to Draft">
 						<h:panelGrid columns="2">
-							<p:pickList id="pickList2" value="#{userBean.pickList}"
-								var="pick" itemLabel="#{pick}" itemValue="#{pick}" />
-
-							<p:commandButton value="Demote" onclick="PF('confirm2').show();" />
+							<p:pickList id="pickListDemote" value="#{demoteToDraftController.demoteTargetDualListModel}" 
+								var="pick" converter="#{demoteToDraftController.cmqBaseTargetDualListConverter}"
+								itemLabel="#{pick.cmqName}" itemValue="#{pick.cmqCode}" />
+							
+							<p:commandButton id="demoteIA" value="Demote" action="#{demoteToDraftController.pickList}" update="@form m1" />
 						</h:panelGrid>
 					</p:panel>
-				</p:tab> -->
-
-				
+				</p:tab>
 			</p:wizard>
 			
 			<p:remoteCommand name="confirmYes" update="@form"
@@ -64,6 +63,24 @@
  
 				<p:commandButton value="No" type="button"
 					onclick="PF('confirmPromote').hide();" update="@form"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
+			
+			<!-- DEMOTE -->
+			<p:remoteCommand name="confirmYesIA" update="@form"
+				actionListener="#{demoteToDraftController.demoteIATargetList}"
+				onstart="PF('confirmDemote').hide()" />
+
+			<p:confirmDialog widgetVar="confirmDemote" showEffect="fade"
+				hideEffect="fade" header="Confirm Demote"
+				message="Are you sure you want to demote the selected list (s)?">
+				<p:commandButton value="Yes" type="button" process="@this"
+					update="@form" styleClass="ui-confirmdialog-yes"
+					icon="ui-icon-check" onclick="confirmYesIA()" />
+
+ 
+				<p:commandButton value="No" type="button"
+					onclick="PF('confirmDemote').hide();" update="@form"
 					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
 			</p:confirmDialog>
 		</h:form>

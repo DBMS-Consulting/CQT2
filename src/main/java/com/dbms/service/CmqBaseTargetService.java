@@ -906,7 +906,26 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
 		}
 		return retVal;
+	}
 	
+	@SuppressWarnings("unchecked")
+	public List<CmqBaseTarget> findPublishedCmqs() {
+		List<CmqBaseTarget> retVal = null;
+		String queryString = "from CmqBaseTarget c where upper(c.cmqState) = upper('PUBLISHED IA') and c.cmqStatus = 'P' ";
+		EntityManager entityManager = this.cqtEntityManagerFactory
+				.getEntityManager();
+		try {
+			Query query = entityManager.createQuery(queryString);
+			retVal = query.getResultList();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg.append("findApprovedCmqs failed ").append("Query used was ->")
+					.append(queryString);
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
 	}
 
 	public ICmqRelationTargetService getCmqRelationTargetService() {
