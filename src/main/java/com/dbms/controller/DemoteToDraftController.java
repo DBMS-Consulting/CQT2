@@ -81,7 +81,7 @@ public class DemoteToDraftController implements Serializable {
 	public void pickList() {
 		if(demoteTargetDualListModel.getTarget().isEmpty()) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Please select at least 1 list to retire.", "");
+					"Please select at least 1 list to demote.", "");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}
 		else
