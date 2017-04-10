@@ -8,7 +8,7 @@
 
 	<ui:define name="page-content">
 		<h:form id="f1">
-			<p:growl id="messages" life="#{cSMQBean.defaultGrowlLife}" />
+			<p:growl id="messages" life="#{appCSMQBean.defaultGrowlLife}" sticky="true" />
 
 			<h:panelGrid columns="1" style="width: 100% !important">
 				<p:breadCrumb styleClass="breadcrumb">

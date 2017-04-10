@@ -6,7 +6,7 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:p="http://primefaces.org/ui">
 
-	<p:growl id="msgW" life="#{cSMQBean.defaultGrowlLife}" />
+	<p:growl id="msgW" life="#{appCSMQBean.defaultGrowlLife}" sticky="true" />
 
 	<h3 style="text-align: center">Workflow State CodeList</h3>
 	<p:dataTable id="workflowTable" var="val" rows="10" widgetVar="tblWorkflowStates"

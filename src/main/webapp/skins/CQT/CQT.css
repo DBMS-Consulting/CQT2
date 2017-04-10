@@ -1,7 +1,6 @@
 /**ADFFaces_Skin_File / DO NOT REMOVE**/
-@
-namespace af "http: //xmlns.oracle.com /adf/faces/rich";
- @namespace dvt "http: //xmlns.oracle.com /dss/adf/faces";
+@namespace af "http: //xmlns.oracle.com /adf/faces/rich";
+@namespace dvt "http: //xmlns.oracle.com /dss/adf/faces";
 
 
 af |inputText:disabled::content {

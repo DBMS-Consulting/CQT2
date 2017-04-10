@@ -9,7 +9,7 @@
 	<c:set var="viewcontrollerBundle"
 		value="#{adfBundle['viewcontroller.report.reportsBundle']}" />
 	<ui:define name="page-content">
-		<p:growl id="m1" life="#{cSMQBean.defaultGrowlLife}" />
+		<p:growl id="m1" life="#{appCSMQBean.defaultGrowlLife}" sticky="true" />
 
 		<h:form>
 			<h:panelGrid columns="2" style="width: 100% !important">
