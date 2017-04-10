@@ -520,15 +520,17 @@ public class SearchController extends BaseController<CmqBase190> implements IRel
 				}
 				// setRelationSelected(nodes);
 				if(CollectionUtils.isNotEmpty(existingNodeTerms)) {
-					FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,
-							existingNodeTerms + " skipped as they are already added to relations. Remaining relations added succesfully.", "");
+					FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "The relation already exists", "");
 					FacesContext.getCurrentInstance().addMessage(null, message);
 				} else {
 					FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,
 							"Selected relations added sucessfully.", "");
 					FacesContext.getCurrentInstance().addMessage(null, message);
 				}
-			}
+			} else {
+                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "The relation already exists", "");
+                FacesContext.getCurrentInstance().addMessage(null, msg);
+            }
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_FATAL,
@@ -882,24 +884,7 @@ public class SearchController extends BaseController<CmqBase190> implements IRel
 	 */
 	@Override
 	public void onDropRelations() {
-		if(myHierarchyDlgModel.getSelectedNodes().length > 0) {
-			// Multiple item Drag-n-Drop
-			addSelectedRelations(myHierarchyDlgModel.getSelectedNodes());
-		} else {
-			//One by one Drag-n-Drop
-//			Map<String,String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
-//	        String nodeLevel = params.get("level");
-//	        String nodeName = params.get("name");
-//	        String nodeCode = params.get("code");
-//	        Long nodeEntityId = Long.parseLong(params.get("entityId"));
-//	        
-//			TreeNode treeNode = findTreenodeByEntityId(hierarchyRoot, nodeEntityId);
-//			setRelationSelected(new TreeNode[] {treeNode});
-//			
-//			addSelectedToRelation(relationSelected);
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "No relation is selected to add", "");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		}
+        addSelectedRelations(myHierarchyDlgModel.getSelectedNodes());
 	}
 	
 	/**

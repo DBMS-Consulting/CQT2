@@ -435,8 +435,7 @@ public class ImpactSearchController implements Serializable {
 						
 						// setRelationSelected(nodes);
 						if(CollectionUtils.isNotEmpty(existingNodeTerms)) {
-							FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,
-									existingNodeTerms + " skipped as they are already added to relations. Remaining relations added succesfully.", "");
+							FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "The relation already exists", "");
 							FacesContext.getCurrentInstance().addMessage(null, message);
 						} else {
 							FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,
@@ -449,7 +448,10 @@ public class ImpactSearchController implements Serializable {
 						FacesContext.getCurrentInstance().addMessage(null, message);
 					}
 				}
-			}
+			} else {
+                FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "The relation already exists", "");
+							FacesContext.getCurrentInstance().addMessage(null, message);
+            }
 		} catch (Exception e) {
 			LOG.error(e.getMessage(), e);
 			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_FATAL,
