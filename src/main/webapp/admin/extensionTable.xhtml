@@ -15,15 +15,19 @@
 		paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 		rowsPerPageTemplate="5,10,25">
 
-		<p:column headerText="Serial #" style="text-align: center">
+		<p:column headerText="Serial #" style="text-align: center"
+                  sortable="true" sortBy="#{val.serialNum}">
 			<h:outputText value="#{val.serialNum}" />
 		</p:column>
 
-		<p:column headerText="Code" style="text-align: center" >
+		<p:column headerText="Code" style="text-align: center"
+                  sortable="true" sortBy="#{val.codelistInternalValue}" >
 			<h:outputText value="#{val.codelistInternalValue}" />
 		</p:column>
 
-		<p:column headerText="Extension Name" style="text-align: center" filterBy="#{val.value}" filterMatchMode="contains">
+		<p:column headerText="Extension Name" style="text-align: center"
+                filterBy="#{val.value}" filterMatchMode="contains"
+                sortable="true" sortBy="#{val.value}">
 			<h:outputText value="#{val.value}" />
 		</p:column>
 
