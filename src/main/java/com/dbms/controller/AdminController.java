@@ -257,7 +257,7 @@ public class AdminController implements Serializable {
 	}
 
 	private void updateSerialNumbers(String codelistConfigType, RefConfigCodeList savedRef) {
-		double val = 0;
+		double val = 1;
 		System.out.println("\n\n ********************* serialSaved :  " + savedRef.getSerialNum());
  		List<RefConfigCodeList> refList = refCodeListService.findAllByConfigType(codelistConfigType, OrderBy.ASC);
 		List<RefConfigCodeList> refListToSave = new ArrayList<RefConfigCodeList>();
