@@ -8,7 +8,7 @@
 		<renderer>
 			<component-family>org.primefaces.component</component-family>
 			<renderer-type>org.primefaces.component.WizardRenderer</renderer-type>
-			<renderer-class>com.dbms.util.ExWizardRenderer</renderer-class>
+			<renderer-class>com.dbms.view.ExWizardRenderer</renderer-class>
 		</renderer>
 	</render-kit>
 

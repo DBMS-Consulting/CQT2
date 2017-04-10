@@ -12,12 +12,12 @@ import com.dbms.entity.cqt.CmqBase190;
  * @author Andrius Mielkus(andrius.mielkus@yandex.com)
  *
  */
-public class ListWorkflowFormModel {
+public class ListWorkflowFormVM {
 	private String requestReason;
 	private Date dueDate;
 	private String approvalReason;
 	
-	public ListWorkflowFormModel() {
+	public ListWorkflowFormVM() {
 		init();
 	}
 	

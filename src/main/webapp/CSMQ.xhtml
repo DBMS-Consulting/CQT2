@@ -71,23 +71,20 @@
 					style="text-align:center; width:206px;">
 
 					<p:outputLabel value="Username" for="it1x4s" />
-					<p:inputText id="it1x4s" value="#{dummyView.value}" columns="20" />
+					<p:inputText id="it1x4s" value="#{dummyView.value}" />
 
 					<p:outputLabel value="Password" for="pwd" />
-					<p:password id="pwd" value="#{dummyView.value}" columns="20" />
+					<p:password id="pwd" value="#{dummyView.value}" />
 
-					<p:commandButton text="Login" id="cb1x4s"
-						action="#{dummyView.value}" />
+					<p:commandButton value="Login" id="cb1x4s" action="#{dummyView.value}" />
 				</h:panelGrid>
 			</p:dialog>
 			<p:dialog widgetVar="expiryPU"
-				header="#{applicationScope.CSMQBean.appName}">
-				<h:outputText
-					value="Your password will expire in #{UserBean.passwordExpiryDays}"
-					id="pt_ot6" noWrap="true" />
+				header="#{appCSMQBean.appName}">
+				<h:outputText value="Your password will expire in #{UserBean.passwordExpiryDays}" />
 			</p:dialog>
 			<p:dialog widgetVar="pt_p2"
-				header="#{applicationScope.CSMQBean.appName}">
+				header="#{appCSMQBean.appName}">
 
 				<h:outputText value="#{CSMQBean.version}" id="pt_ot4" />
 			</p:dialog>
@@ -95,13 +92,11 @@
 				<h:panelGrid columns="1">
 					<h:panelGrid columns="2">
 						<p:outputLabel value="New password" for="pt_it1" />
-						<p:password label="New password" id="pt_it1" required="false"
-							immediate="true" />
+						<p:password label="New password" id="pt_it1" required="false" immediate="true" />
 					</h:panelGrid>
 					<h:panelGrid columns="2">
-						<p:outputLabel value="Repeat" for="pt_it2" />
-						<p:password id="pt_it2" showRequired="true" required="false"
-							immediate="true" />
+						<p:outputLabel value="Confirm password" for="pt_it2" />
+						<p:password id="pt_it2" required="false" immediate="true" label="Confirm password"/>
 					</h:panelGrid>
 					<h:panelGrid>
 						<p:commandButton value="Change" id="pt_cb2" disabled="false" />
@@ -205,7 +200,7 @@
 				</p:submenu>
  -->
 				<p:menuitem
-					value="Historical #{applicationScope.CSMQBean.customMQName}s/SMQs"
+					value="Historical #{appCSMQBean.customMQName}s/SMQs"
 					id="pt_cmi7" action="HISTORICAL_IMPACT_ASSESSMENT"
 					style="font-weight:#{userBean.currentMenu eq 'HISTORICAL_IMPACT_ASSESSMENT' ? 'bold' : 'normal'};"
 					rendered="false" />

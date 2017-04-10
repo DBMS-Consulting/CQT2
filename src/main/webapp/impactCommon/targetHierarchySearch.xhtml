@@ -10,8 +10,8 @@
 	<p:panel header="Relations" style="min-height:560px;">
 		<h:panelGrid columns="6">
 			<p:outputLabel value="Level" for="levelHT" />
-			<p:selectOneMenu id="levelHT" label="Level" partialTriggers="soc9"
-				value="#{impactSearchController.levelHT}">
+			<p:selectOneMenu id="levelHT" label="Level"
+                             value="#{impactSearchController.targetHierarchySearchDlgModel.filterLevel}">
 				<f:selectItem itemValue="PRO" itemLabel="PRO" />
 				<f:selectItem itemValue="SMQ1" itemLabel="SMQ1" />
 				<f:selectItem itemValue="SMQ2" itemLabel="SMQ2" />
@@ -27,22 +27,20 @@
 			<p:outputLabel value="Term" for="termHT" />
 			<p:inputText id="termHT" style="text-transform:uppercase"
 				onkeypress="if (event.keyCode == 13) { return false; }"
-				value="#{impactSearchController.termNameOfHierarchySearch}" />
+                value="#{impactSearchController.targetHierarchySearchDlgModel.filterTermName}" />
 			<p:commandButton value="Search" update="resultHierTarget"
-				action="#{impactSearchController.hierarchySearch}" />
+				action="#{impactSearchController.targetHierarchySearchDlgModel.hierarchySearch}" />
 		</h:panelGrid>
 
 		<br />
 		<h:panelGrid id="pct3" styleClass="AFStretchWidth">
-			<p:treeTable value="#{impactSearchController.hierarchyRoot}"  var="node"
-				id="resultHierTarget" rows="20" selectionMode="checkbox" selection="#{impactSearchController.relationSelected}"
+			<p:treeTable value="#{impactSearchController.targetHierarchySearchDlgModel.hierarchyRoot}"  var="node"
+                id="resultHierTarget" selectionMode="checkbox" selection="#{impactSearchController.targetHierarchySearchDlgModel.selectedNodes}"
 				styleClass="ui-treetable-resultHierTarget hide-sel-chkbox" style="width:100%;height:450px; overflow: auto" 
-				paginator="true" paginatorPosition="bottom"
-					paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-					rowsPerPageTemplate="5,10,25,30" rowStyleClass="#{node.rowStyleClass}">
+				rowStyleClass="#{node.rowStyleClass}">
 
 				<p:ajax event="expand"
-					listener="#{impactSearchController.onNodeExpandTargetTable}"
+					listener="#{impactSearchController.targetHierarchySearchDlgModel.onNodeExpand}"
 					update="resultHierTarget" />
 
 				<p:column headerText="Level">
