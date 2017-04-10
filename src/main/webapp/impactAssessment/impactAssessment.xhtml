@@ -179,7 +179,7 @@
 									<f:facet name="left">
 										<p:commandButton value="Hierarchy Search" actionListener="#"
 											disabled="#{not impactSearchController.hierachySearchButtonEnabled}"
-											icon="fa fa-search" onclick="PF('search').show();" />
+											icon="fa fa-search" onclick="PF('target-hierarchy-search').show();" />
 										<p:commandButton value="New PTs" actionListener="#"
 											disabled="#{not impactSearchController.selectNewPTButtonEnabled}"
 											onclick="PF('new_pt').show();" icon="fa fa-book" />
@@ -389,20 +389,20 @@
 
 				<p:spacer height="10"></p:spacer>
 				<h:panelGrid style="float: right" columns="2">
-					<p:commandButton value="Exit" onclick="PF('search').hide()" immediate="true" />
+					<p:commandButton value="Exit" onclick="PF('current-hierarchy-search').hide()" immediate="true" />
 				</h:panelGrid>
 			</p:dialog>
 
-			<p:dialog widgetVar="search" modal="false" header="Hierarchy search"
+			<p:dialog widgetVar="target-hierarchy-search" modal="false" header="Hierarchy search"
 				width="740px" minHeight="620">
 				<ui:include src="../impactCommon/targetHierarchySearch.xhtml"></ui:include>
 
 				<p:spacer height="10"></p:spacer>
 				<h:panelGrid style="float: right" columns="2">
-					<p:commandButton value="Add selected" onclick="PF('search').hide()"
+					<p:commandButton value="Add selected" onclick="PF('target-hierarchy-search').hide()"
 						update="futureListsAndSmqs"
 						action="#{impactSearchController.addSelectedToTargetRelation(impactSearchController.relationSelected)}" />
-					<p:commandButton value="Cancel" onclick="PF('search').hide()"
+					<p:commandButton value="Cancel" onclick="PF('target-hierarchy-search').hide()"
 						immediate="true" />
 				</h:panelGrid>
 			</p:dialog>
