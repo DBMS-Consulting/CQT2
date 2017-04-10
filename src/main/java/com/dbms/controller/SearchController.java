@@ -15,6 +15,7 @@ import javax.faces.event.AjaxBehaviorEvent;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.NodeExpandEvent;
 import org.primefaces.event.RowEditEvent;
 import org.primefaces.model.DefaultTreeNode;
@@ -526,6 +527,8 @@ public class SearchController extends BaseController<CmqBase190> implements IRel
 					FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,
 							"Selected relations added sucessfully.", "");
 					FacesContext.getCurrentInstance().addMessage(null, message);
+					
+					RequestContext.getCurrentInstance().execute("notifyCreateControllerRelationsModify()");
 				}
 			} else {
                 FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "The relation already exists", "");
