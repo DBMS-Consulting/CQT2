@@ -79,6 +79,7 @@
 				required="#{createController.detailsFormModel.productRequired and not createController.readOnlyState}"
 				requiredMessage="The Product is required" id="product"
 				label="#{createController.detailsFormModel.productsLabel}"
+                filter="true" filterMatchMode="startsWith"
 				style="min-width:270px">
 				<f:selectItems value="#{configMB.productList}" var="product"
 					itemLabel="#{product.value}"

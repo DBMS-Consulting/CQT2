@@ -35,7 +35,8 @@
 				styleClass="label-right" />
 			<p:selectCheckboxMenu value="#{searchController.products}" disabled="false" widgetVar="product2"
 				id="product2" label="#{searchController.productsLabel}"
-				style="min-width: 270px;">
+				style="min-width: 270px;"
+                filter="true" filterMatchMode="startsWith">
 				<f:selectItems value="#{configMB.productList}" var="product"
 					itemLabel="#{product.value}" itemValue="#{product.codelistInternalValue}" />
 				<p:ajax oncomplete="PF('product2').show()" listener="#{searchController.getProductsLabel}" update="product2" ></p:ajax>
@@ -165,7 +166,7 @@
 			<p:column headerText="History" style="text-align: center" width="40"
 				rendered="#{view.viewId == '/create/browseAndSearch.xhtml' ? true : false}">
 				<!-- <h:outputText value="#{value.history}" /> -->
-				<p:commandLink action="#" style="color: red" label="History"
+				<p:commandLink action="#" style="color: red" value="History"
 					onclick="PF('history-dialog').show()">
 					<i class="fa fa-power-off"></i>
 				</p:commandLink>
