@@ -6,32 +6,31 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:p="http://primefaces.org/ui" template="../CSMQ.xhtml">
 
-	<ui:define name="page-content">	
+	<ui:define name="page-content">
 		<h:form id="fBrowse">
 			<script>
 				function next() {
 					PF('wizard').next();
 				}
-	
+
 				function back() {
 					PF('wizard').back();
 				}
 			</script>
-			
+
 			<p:growl id="m1" life="#{appCSMQBean.defaultGrowlLife}" sticky="true" />
 			<h:panelGrid columns="2" style="width: 100% !important">
- 					<p:breadCrumb styleClass="breadcrumb">
-						<p:menuitem value="Home" url="/index.xhtml" />
-						<p:menuitem value="Browse &amp; Search" />
-					</p:breadCrumb>
+				<p:breadCrumb styleClass="breadcrumb">
+					<p:menuitem value="Home" url="/index.xhtml" />
+					<p:menuitem value="Browse &amp; Search" />
+				</p:breadCrumb>
 
- 			</h:panelGrid>	
+			</h:panelGrid>
 
 			<p:wizard widgetVar="wizard" id="wizardId"
 				flowListener="#{createController.onBrowseWizardFlowProcess}"
-				binding="#{createController.browseWizard}"
-				showNavBar="false" >
-				
+				binding="#{createController.browseWizard}" showNavBar="false">
+
 				<!-- Search -->
 				<p:tab id="searchBrowse" title="Search">
 					<p:panel header="Search">
@@ -49,25 +48,35 @@
 						*** Adding details body directly inside this tab to deal with read-only property 
 						***
 						-->
-						<h:panelGrid columns="4" cellpadding="30" columnClasses="col-25p,col-25p,col-25p,col-25p">
+						<h:panelGrid columns="4" cellpadding="30"
+							columnClasses="col-25p,col-25p,col-25p,col-25p">
 
 							<h:panelGrid columns="2" columnClasses="label-cell, value-cell">
 								<p:outputLabel styleClass="label-right" value="Extension:" />
 								<h:panelGrid>
-									<h:outputText value="#{createController.detailsFormModel.extensionLabel}" rendered="true"/>
+									<h:outputText
+										value="#{createController.detailsFormModel.extensionLabel}"
+										rendered="true" />
 								</h:panelGrid>
 
 								<p:outputLabel styleClass="label-right" value="Name:" />
-								<h:outputText value="#{createController.detailsFormModel.name}" rendered="true"/>
+								<h:outputText value="#{createController.detailsFormModel.name}"
+									rendered="true" />
 
 								<p:outputLabel styleClass="label-right" value="Drug Program:" />
-								<h:outputText value="#{createController.detailsFormModel.drugProgramLabel}" rendered="true"/>
-								
+								<h:outputText
+									value="#{createController.detailsFormModel.drugProgramLabel}"
+									rendered="true" />
+
 								<p:outputLabel styleClass="label-right" value="Protocol:" />
-								<h:outputText value="#{createController.detailsFormModel.protocolLabel}" rendered="true"/>
+								<h:outputText
+									value="#{createController.detailsFormModel.protocolLabel}"
+									rendered="true" />
 
 								<p:outputLabel styleClass="label-right" value="Product:" />
-								<h:outputText value="#{createController.detailsFormModel.productsLabel1}" rendered="true"/>
+								<h:outputText
+									value="#{createController.detailsFormModel.productsLabel1}"
+									rendered="true" />
 
 							</h:panelGrid>
 
@@ -92,7 +101,9 @@
 							<h:panelGrid columns="2" columnClasses="label-cell, value-cell">
 
 								<p:outputLabel styleClass="label-right" value="Status:" />
-								<h:outputText value="#{createController.detailsFormModel.statusLabel}" rendered="true"/>
+								<h:outputText
+									value="#{createController.detailsFormModel.statusLabel}"
+									rendered="true" />
 
 								<p:outputLabel styleClass="label-right" value="State:" />
 								<h:outputText value="#{createController.selectedData.cmqState}" />
@@ -114,7 +125,7 @@
 								<p:outputLabel styleClass="label-right" value="Creation Date:" />
 								<h:outputText
 									value="#{createController.selectedData.creationDate}">
-									<f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss"/>
+									<f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
 								</h:outputText>
 
 								<p:outputLabel styleClass="label-right" value="Created By: " />
@@ -124,8 +135,8 @@
 									value="Last Activation Date:" />
 								<h:outputText
 									value="#{createController.selectedData.activationDate}">
-									
-									<f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss"/>
+
+									<f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
 								</h:outputText>
 
 								<p:outputLabel styleClass="label-right"
@@ -137,6 +148,8 @@
 								<p:spacer />
 							</h:panelGrid>
 						</h:panelGrid>
+						<p:commandButton value="Audit" action="#"
+							onclick="PF('audit-dialog').show()" />
 					</p:panel>
 				</p:tab>
 
@@ -152,18 +165,23 @@
 					</p:panel>
 				</p:tab>
 			</p:wizard>
-			
-			<h:panelGroup id="wizardNavbar" layout="block" styleClass="ui-wizard-navbar ui-helper-clearfix">
-				<p:commandButton value="Back" onclick="PF('wizard').back();" icon="ui-icon-arrowthick-1-w"
-	        			styleClass="ui-wizard-nav-back" rendered="#{createController.browseWizardNavbarBackShown}" />
-				<p:commandButton value="Next" onclick="PF('wizard').next();" icon="ui-icon-arrowthick-1-e"
-				        styleClass="ui-wizard-nav-next" rendered="#{createController.browseWizardNavbarNextShown}" /> 
+
+			<h:panelGroup id="wizardNavbar" layout="block"
+				styleClass="ui-wizard-navbar ui-helper-clearfix">
+				<p:commandButton value="Back" onclick="PF('wizard').back();"
+					icon="ui-icon-arrowthick-1-w" styleClass="ui-wizard-nav-back"
+					rendered="#{createController.browseWizardNavbarBackShown}" />
+				<p:commandButton value="Next" onclick="PF('wizard').next();"
+					icon="ui-icon-arrowthick-1-e" styleClass="ui-wizard-nav-next"
+					rendered="#{createController.browseWizardNavbarNextShown}" />
 			</h:panelGroup>
-			
+
 			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
-		        <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
-		        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-		    </p:confirmDialog>
+				<p:commandButton value="Yes" type="button"
+					styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+				<p:commandButton value="No" type="button"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
 
 
 			<p:spacer width="10" height="10" id="s6" />
@@ -181,6 +199,50 @@
 			</h:panelGrid>
 			<f:attribute name="currentPage"
 				value="Create New #{appCSMQBean.customMQName} Wizard" />
+
+
+			<p:dialog widgetVar="audit-dialog" modal="false" header="Audit">
+				<p:panel header="Audit Trail " style="width:800px; height:500px;">
+					<p:dataTable var="value" value="#{searchController.values}"
+						id="auditTable" rows="10" paginator="true"
+						paginatorPosition="bottom"
+						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						rowsPerPageTemplate="5,10,25">
+						<p:column headerText="Transaction Type">
+							<h:outputText value="#{value.term}" />
+						</p:column>
+						<p:column headerText="Date" sortBy="#{dummyView.value}">
+							<h:outputText value="#{value.term}" />
+						</p:column>
+						<p:column headerText="Field Name" sortBy="#{dummyView.value}"
+							filterBy="#{dummyView.value}">
+							<h:outputText value="#{dummyView.value}" />
+						</p:column>
+						<p:column headerText="User">
+							<h:outputText value="#{value.level}" />
+						</p:column>
+						<p:column headerText="Old Value">
+							<h:outputText value="#{value.status}" />
+						</p:column>
+						<p:column headerText="New value">
+							<h:outputText value="#{value.state}" />
+						</p:column>
+						<p:column headerText="State">
+							<h:outputText value="#{value.status}" />
+						</p:column>
+						<p:column headerText="Status">
+							<h:outputText value="#{value.state}" />
+						</p:column>
+
+					</p:dataTable>
+
+				</p:panel>
+				<p:spacer height="10"></p:spacer>
+				<h:panelGrid style="float: right">
+					<p:commandButton value="Exit" onclick="PF('audit-dialog').hide()"
+						immediate="true" />
+				</h:panelGrid>
+			</p:dialog>
 
 		</h:form>
 
