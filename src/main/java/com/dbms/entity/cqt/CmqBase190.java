@@ -446,8 +446,6 @@ public class CmqBase190 extends BaseEntity {
 	
 	public void setCmqProductCds(String[] productCds) {
 		if(null != this.productsList) {
-			this.productsList.clear();
-		} else {
 			this.productsList = new ArrayList<>();
 		}
 
