@@ -10,7 +10,7 @@
 	<p:editor />
 
 	<h:form>
-		<p:growl id="messages" />
+		<p:growl id="messages" life="#{appCSMQBean.defaultGrowlLife}" sticky="true" />
 
 		<p:menubar>
 			<p:submenu label="File" icon="ui-icon-document">

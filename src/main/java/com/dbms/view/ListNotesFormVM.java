@@ -11,7 +11,7 @@ import com.dbms.entity.cqt.SmqBaseTarget;
  * @author Andrius Mielkus(andrius.mielkus@yandex.com)
  *
  */
-public class ListNotesFormModel {
+public class ListNotesFormVM {
 	private final String emptyDescription = "Please enter the description";
 	
 	private boolean modelChanged = false;
@@ -20,7 +20,7 @@ public class ListNotesFormModel {
 	private String notes;
 	private String source;
 	
-	public ListNotesFormModel() {
+	public ListNotesFormVM() {
 		init();
 	}
 	

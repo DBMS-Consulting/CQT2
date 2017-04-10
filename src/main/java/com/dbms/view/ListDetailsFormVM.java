@@ -6,13 +6,10 @@ import java.util.Date;
 import javax.faces.event.AjaxBehaviorEvent;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang3.ArrayUtils;
 
 import com.dbms.entity.cqt.CmqBase190;
 import com.dbms.entity.cqt.CmqBaseTarget;
 import com.dbms.entity.cqt.RefConfigCodeList;
-import com.dbms.entity.cqt.SmqBase190;
-import com.dbms.entity.cqt.SmqBaseTarget;
 import com.dbms.service.IRefCodeListService;
 import com.dbms.util.CqtConstants;
 
@@ -22,7 +19,7 @@ import com.dbms.util.CqtConstants;
  * @author Andrius Mielkus(andrius.mielkus@yandex.com)
  *
  */
-public class ListDetailsFormModel {
+public class ListDetailsFormVM {
 	public enum WizardType { BrowseWizard, CreateWizard, UpdateWizard, CopyWizard };
 	
 	private WizardType wizardType = WizardType.CreateWizard;
@@ -51,7 +48,7 @@ public class ListDetailsFormModel {
 	private Date lastModifiedDate;
 	
 	
-	public ListDetailsFormModel() {
+	public ListDetailsFormVM() {
 		init();
 	}
 	

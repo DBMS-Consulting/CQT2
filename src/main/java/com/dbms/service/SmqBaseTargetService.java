@@ -1,5 +1,6 @@
 package com.dbms.service;
 
+import com.dbms.csmq.CSMQBean;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -321,7 +322,7 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 
 			List<Predicate> pred = new ArrayList<Predicate>();
 			
-			pred.add(cb.equal(smqRoot.get("impactType"), "IMPACTED"));
+			pred.add(cb.equal(smqRoot.get("impactType"), CSMQBean.IMPACT_TYPE_IMPACTED));
 			
 			if(filters.containsKey("smqName") && filters.get("smqName") != null)
 				pred.add(cb.like(cb.lower(smqRoot.<String>get("smqName")), "%" + ((String)filters.get("smqName")).toLowerCase() + "%"));
@@ -392,7 +393,7 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 			Root<SmqBaseTarget> smqRoot = cq.from(SmqBaseTarget.class);
 			List<Predicate> pred = new ArrayList<Predicate>();
 			
-			pred.add(cb.equal(smqRoot.get("impactType"), "NON-IMPACTED"));
+			pred.add(cb.equal(smqRoot.get("impactType"), CSMQBean.IMPACT_TYPE_NONIMPACTED));
 			
 			if(filters.containsKey("smqName") && filters.get("smqName") != null)
 				pred.add(cb.like(cb.lower(smqRoot.<String>get("smqName")), "%" + ((String)filters.get("smqName")).toLowerCase() + "%"));			

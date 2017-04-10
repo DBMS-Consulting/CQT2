@@ -54,8 +54,8 @@ import com.dbms.entity.cqt.dtos.MeddraDictReverseHierarchySearchDto;
 import com.dbms.service.base.CqtPersistenceService;
 import com.dbms.util.CqtConstants;
 import com.dbms.util.exceptions.CqtServiceException;
-import com.dbms.view.ListDetailsFormModel;
-import com.dbms.view.ListNotesFormModel;
+import com.dbms.view.ListDetailsFormVM;
+import com.dbms.view.ListNotesFormVM;
 
 /**
  * @author Jay G.(jayshanchn@hotmail.com)
@@ -584,7 +584,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 	 * Excel Report.
 	 */
 	@Override
-	public StreamedContent generateExcelReport(ListDetailsFormModel details,
+	public StreamedContent generateExcelReport(ListDetailsFormVM details,
 			String dictionaryVersion) {
 		XSSFWorkbook workbook = new XSSFWorkbook();
 		XSSFSheet worksheet = null;
@@ -863,7 +863,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 	 * MQ Report.
 	 */
 	@Override
-	public StreamedContent generateMQReport(ListDetailsFormModel details, ListNotesFormModel notes, String dictionaryVersion) {
+	public StreamedContent generateMQReport(ListDetailsFormVM details, ListNotesFormVM notes, String dictionaryVersion) {
 		XSSFWorkbook workbook = new XSSFWorkbook();
 		XSSFSheet worksheet = null;
 

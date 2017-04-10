@@ -10,8 +10,8 @@ import org.primefaces.model.StreamedContent;
 import com.dbms.entity.cqt.CmqBase190;
 import com.dbms.service.base.ICqtPersistenceService;
 import com.dbms.util.exceptions.CqtServiceException;
-import com.dbms.view.ListDetailsFormModel;
-import com.dbms.view.ListNotesFormModel;
+import com.dbms.view.ListDetailsFormVM;
+import com.dbms.view.ListNotesFormVM;
 
 public interface ICmqBase190Service extends ICqtPersistenceService<CmqBase190> {
 
@@ -54,8 +54,8 @@ public interface ICmqBase190Service extends ICqtPersistenceService<CmqBase190> {
 	 */
 	List<CmqBase190> getPublishedListsReportData(Date filterPublishedBetweenFrom, Date filterPublishedBetweenTo);
 
-	StreamedContent generateExcelReport(ListDetailsFormModel details, String dictionaryVersion);
+	StreamedContent generateExcelReport(ListDetailsFormVM details, String dictionaryVersion);
 
-	StreamedContent generateMQReport(ListDetailsFormModel details, ListNotesFormModel notes, String dictionaryVersion);
+	StreamedContent generateMQReport(ListDetailsFormVM details, ListNotesFormVM notes, String dictionaryVersion);
 
 }

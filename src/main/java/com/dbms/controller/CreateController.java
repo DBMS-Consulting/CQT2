@@ -41,10 +41,10 @@ import com.dbms.service.ICmqRelation190Service;
 import com.dbms.service.IRefCodeListService;
 import com.dbms.util.CmqUtils;
 import com.dbms.util.exceptions.CqtServiceException;
-import com.dbms.view.ListDetailsFormModel;
-import com.dbms.view.ListDetailsFormModel.WizardType;
-import com.dbms.view.ListNotesFormModel;
-import com.dbms.view.ListWorkflowFormModel;
+import com.dbms.view.ListDetailsFormVM;
+import com.dbms.view.ListDetailsFormVM.WizardType;
+import com.dbms.view.ListNotesFormVM;
+import com.dbms.view.ListWorkflowFormVM;
 
 /**
  * @author Jay G.(jayshanchn@hotmail.com)
@@ -67,9 +67,9 @@ public class CreateController implements Serializable {
 	@ManagedProperty("#{RefCodeListService}")
 	private IRefCodeListService refCodeListService;
 	
-	private ListDetailsFormModel detailsFormModel = new ListDetailsFormModel();
-	private ListNotesFormModel notesFormModel = new ListNotesFormModel();
-	private ListWorkflowFormModel workflowFormModel = new ListWorkflowFormModel();
+	private ListDetailsFormVM detailsFormModel = new ListDetailsFormVM();
+	private ListNotesFormVM notesFormModel = new ListNotesFormVM();
+	private ListWorkflowFormVM workflowFormModel = new ListWorkflowFormVM();
 	private boolean relationsModified;
 
 	private boolean maintainDesigBtn;
@@ -1215,7 +1215,7 @@ public class CreateController implements Serializable {
 			ctx.addMessage(null, msg);
 			
 			//Clearing workflow attributes : due date, reason for request, reason for approval
-			this.workflowFormModel = new ListWorkflowFormModel();
+			this.workflowFormModel = new ListWorkflowFormVM();
 
 		} catch (CqtServiceException e) {
 			e.printStackTrace();
@@ -1246,10 +1246,10 @@ public class CreateController implements Serializable {
 	 * Details form Model
 	 * @return
 	 */
-	public ListDetailsFormModel getDetailsFormModel() {
+	public ListDetailsFormVM getDetailsFormModel() {
 		return this.detailsFormModel;
 	}
-	public void setDetailsFormModel(ListDetailsFormModel model) {
+	public void setDetailsFormModel(ListDetailsFormVM model) {
 		this.detailsFormModel = model;
 	}
 	
@@ -1257,10 +1257,10 @@ public class CreateController implements Serializable {
 	 * "Informative Notes" form model
 	 * @return
 	 */
-	public ListNotesFormModel getNotesFormModel() {
+	public ListNotesFormVM getNotesFormModel() {
 		return this.notesFormModel;
 	}
-	public void setNotesFormModel(ListNotesFormModel model) {
+	public void setNotesFormModel(ListNotesFormVM model) {
 		this.notesFormModel = model;
 	}
 	
@@ -1268,10 +1268,10 @@ public class CreateController implements Serializable {
 	 * "Confirm / Workflow" form model
 	 * @return
 	 */
-	public ListWorkflowFormModel getWorkflowFormModel() {
+	public ListWorkflowFormVM getWorkflowFormModel() {
 		return this.workflowFormModel;
 	}
-	public void setWorkflowFormModel(ListWorkflowFormModel model) {
+	public void setWorkflowFormModel(ListWorkflowFormVM model) {
 		this.workflowFormModel = model;
 	}
 	

@@ -40,8 +40,8 @@ import com.dbms.service.IRefCodeListService;
 import com.dbms.service.ISmqBaseService;
 import com.dbms.util.CqtConstants;
 import com.dbms.util.exceptions.ReportGenerationException;
-import com.dbms.view.ListDetailsFormModel;
-import com.dbms.view.ListNotesFormModel;
+import com.dbms.view.ListDetailsFormVM;
+import com.dbms.view.ListNotesFormVM;
 
 import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.JasperExportManager;
@@ -257,7 +257,7 @@ public class ReportController extends BaseController<CmqBase190> {
 	/**
 	 * Generate Excel report on relations tab.
 	 */
-	public void generateExcelReport(ListDetailsFormModel details) {
+	public void generateExcelReport(ListDetailsFormVM details) {
 		RefConfigCodeList currentMeddraVersionCodeList = this.refCodeListService.getCurrentMeddraVersion();
 		StreamedContent content = cmqBaseService.generateExcelReport(details, (currentMeddraVersionCodeList != null ? currentMeddraVersionCodeList.getValue() : ""));
 		setExcelFile(content); 
@@ -266,7 +266,7 @@ public class ReportController extends BaseController<CmqBase190> {
 	/**
 	 * Generate MQ report on relations tab.
 	 */
-	public void generateMQReport(ListDetailsFormModel details, ListNotesFormModel notes) {
+	public void generateMQReport(ListDetailsFormVM details, ListNotesFormVM notes) {
 		RefConfigCodeList currentMeddraVersionCodeList = this.refCodeListService.getCurrentMeddraVersion();
 		StreamedContent content = cmqBaseService.generateMQReport(details, notes, (currentMeddraVersionCodeList != null ? currentMeddraVersionCodeList.getValue() : ""));
 		setExcelFile(content); 

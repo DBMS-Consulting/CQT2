@@ -16,7 +16,7 @@
 		</script>
 
 		<h:form id="impactAssessment">
-			<p:growl id="messages" life="#{cSMQBean.defaultGrowlLife}" />
+			<p:growl id="messages" life="#{appCSMQBean.defaultGrowlLife}" sticky="true" />
 
 			<h:panelGrid columns="1" styleClass="full-width">
 				<p:breadCrumb styleClass="breadcrumb">
@@ -121,7 +121,7 @@
 								<p:treeTable
 									value="#{impactSearchController.currentTableRootTreeNode}"
 									var="node" widgetVar="currentLists" id="currentListsAndSmqs"
-									rows="30" styleClass="ui-treetable-currentListsAndSmqs"
+									styleClass="ui-treetable-currentListsAndSmqs"
 									selectionMode="single"
 									selection="${impactSearchController.currentTableSelection}"
 									scrollable="true" scrollHeight="400" resizableColumns="true"
@@ -158,7 +158,7 @@
 										</p:row>
 									</p:columnGroup>
 
-									<p:column id="c8" style="width:50%" noWrap="false">
+									<p:column id="c8" style="width:50%" >
 										<h:outputText value="#{node.term}" id="el_c1" />
 									</p:column>
 
@@ -194,9 +194,8 @@
 								<p:treeTable
 									value="#{impactSearchController.targetTableRootTreeNode}"
 									var="node" widgetVar="targetLists" id="futureListsAndSmqs"
-									rows="30" styleClass="ui-treetable-futureListsAndSmqs"
-									selectionMode="single"
-									selection="${impactSearchController.targetTableSelection}"
+									styleClass="ui-treetable-futureListsAndSmqs"
+									selectionMode="single" selection="${impactSearchController.targetTableSelection}"
 									style="width: 100%;" scrollable="true" scrollHeight="400"
 									resizableColumns="true" rowStyleClass="#{node.rowStyleClass}">
 
@@ -248,9 +247,7 @@
 										<p:selectOneMenu id="soc3" value="#{node.scope}"
 											rendered="#{not node.hideScope}" autoWidth="false"
 											disabled="#{node.algorithmN}" style="width:75%">
-											<f:selectItem itemLabel="Broad" itemValue="1" id="si13s" />
-											<f:selectItem itemLabel="Narrow" itemValue="2" id="si13d" />
-											<f:selectItem itemLabel="Child Narrow" itemValue="3" id="si4" />
+                                            <f:selectItems value="#{appCSMQBean.cqtBaseScopes}" var="s" itemLabel="#{s[1]}" itemValue="#{s[0]}" />
 										</p:selectOneMenu>
 									</p:column>
 
@@ -258,16 +255,7 @@
 										<p:selectOneMenu id="soc2" value="#{node.category}"
 											rendered="#{not node.hideCategory}" autoWidth="false"
 											disabled="#{node.algorithmN}" style="width:75%">
-											<f:selectItem itemLabel="A" itemValue="A" id="si3" />
-											<f:selectItem itemLabel="S" itemValue="S" id="si33" />
-											<f:selectItem itemLabel="B" itemValue="B" id="si8" />
-											<f:selectItem itemLabel="C" itemValue="C" id="si9" />
-											<f:selectItem itemLabel="D" itemValue="D" id="si10" />
-											<f:selectItem itemLabel="E" itemValue="E" id="si11" />
-											<f:selectItem itemLabel="F" itemValue="F" id="si19" />
-											<f:selectItem itemLabel="G" itemValue="G" id="si12" />
-											<f:selectItem itemLabel="H" itemValue="H" id="si17" />
-											<f:selectItem itemLabel="I" itemValue="I" id="si18" />
+                                            <f:selectItems value="#{appCSMQBean.cqtBaseCategories}" var="c" itemLabel="#{c[1]}" itemValue="#{c[0]}" />
 										</p:selectOneMenu>
 									</p:column>
 
@@ -279,9 +267,9 @@
 									<p:column style="width:5%">
 										<p:commandLink
 											action="#{impactSearchController.deleteRelation(impactSearchController.targetTableRootTreeNode, node)}"
-											style="color: red" label="Delete" update="futureListsAndSmqs"
+                                            style="color: red" update="futureListsAndSmqs" title="Delete"
 											rendered="#{not node.hideDelete}">
-											<i class="fa fa-trash"></i>
+											<i class="fa fa-trash"></i><h:outputText value="Delete" />
 											<p:confirm header="Delete relation"
 												message="Are you sure you want to delete this relation?"
 												icon="ui-icon-alert" />
@@ -332,7 +320,7 @@
 							disabled="#{impactSearchController.detailsFormReadonly}" />
 						<p:commandButton value="Cancel" icon="ui-icon-close"
 							process="@this"
-							actionListner="#{impactSearchController.cancelDetails}"
+							actionListener="#{impactSearchController.cancelDetails}"
 							disabled="#{impactSearchController.detailsFormReadonly}" />
 
 
@@ -395,18 +383,19 @@
 
 			<p:dialog widgetVar="current-hierarchy-search" modal="false"
 				header="Hierarchy Search Current" height="auto" width="auto">
-				<ui:include src="../create/hierarchySearch.xhtml"></ui:include>
+                <ui:include src="../create/hierarchySearch.xhtml">
+                    <ui:param name="paramDlgCtrl" value="#{impactSearchController.currentHierarchySearchDlgModel}" />
+                </ui:include>
 
 				<p:spacer height="10"></p:spacer>
 				<h:panelGrid style="float: right" columns="2">
-					<p:commandButton value="Cancel" onclick="PF('search').hide()"
-						immediate="true" />
+					<p:commandButton value="Exit" onclick="PF('search').hide()" immediate="true" />
 				</h:panelGrid>
 			</p:dialog>
 
 			<p:dialog widgetVar="search" modal="false" header="Hierarchy search"
 				width="740px" minHeight="620">
-				<ui:include src="../impactCommon/hierarchySearch.xhtml"></ui:include>
+				<ui:include src="../impactCommon/targetHierarchySearch.xhtml"></ui:include>
 
 				<p:spacer height="10"></p:spacer>
 				<h:panelGrid style="float: right" columns="2">

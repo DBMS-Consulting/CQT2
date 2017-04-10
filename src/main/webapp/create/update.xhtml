@@ -8,7 +8,7 @@
 
 	<ui:define name="page-content">
 		<h:form id="fUpdate">
-			<p:growl id="m1" life="#{cSMQBean.defaultGrowlLife}" />
+			<p:growl id="m1" life="#{appCSMQBean.defaultGrowlLife}" sticky="true" />
 
 			<h:panelGrid columns="2" style="width: 100% !important">
  					<p:breadCrumb styleClass="breadcrumb">
@@ -137,7 +137,7 @@
 					readOnly="true" disabled="true" />
 			</h:panelGrid>
 			<f:attribute name="currentPage"
-				value="Create New #{applicationScope.CSMQBean.customMQName} Wizard" />
+				value="Create New #{appCSMQBean.customMQName} Wizard" />
 		</h:form>
 
 		<style>

@@ -1,8 +1,13 @@
 package com.dbms.csmq;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.ResourceBundle;
 
+import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
+
+import org.apache.commons.lang3.ArrayUtils;
 
 
 
@@ -18,8 +23,8 @@ import javax.faces.bean.ManagedBean;
  * @version        1.0, 10/10/21
  * @author         Tom Struzik
  */
-
-@ManagedBean
+@ApplicationScoped
+@ManagedBean(name="appCSMQBean")
 public class CSMQBean {
 
         
@@ -181,10 +186,30 @@ public class CSMQBean {
     public static final String NMQ_SEARCH = "NMQ%";
     public static final String SMQ_SEARCH = "MQ%";
 
-    //SCOPES
+    // SCOPES
     public static final String FULL_NMQ_SMQ = "0";
-    public static final String CHILD_NARROW = "3";
+    public static final String SCOPE_BROAD = "1";
+    public static final String SCOPE_NARROW = "2";
+    public static final String SCOPE_CHILD_NARROW = "3";
 
+    // Categories
+    public static final String CATEGORY_A = "A";
+    public static final String CATEGORY_S = "S";
+    public static final String CATEGORY_B = "B";
+    public static final String CATEGORY_C = "C";
+    public static final String CATEGORY_D = "D";
+    public static final String CATEGORY_E = "E";
+    public static final String CATEGORY_F = "F";
+    public static final String CATEGORY_G = "G";
+    public static final String CATEGORY_H = "H";
+    public static final String CATEGORY_I = "I";
+
+    // IMPACT TYPE
+    public static final String IMPACT_TYPE_IMPACTED = "IMPACTED";
+    public static final String IMPACT_TYPE_NONIMPACTED = "NON-IMPACTED";
+    public static final String IMPACT_TYPE_ICC = "ICC";
+    public static final String IMPACT_TYPE_ICS = "ICS";
+    
     // MISC
     public static final String DEFAULT_PRODUCT = "STANDARD";
     // This is to prevent queries from running.  It adds a if 1=:killSwichValue to the query.
@@ -786,6 +811,29 @@ public class CSMQBean {
 	
 	public int getDefaultGrowlLife() {
 		return DEFAULT_GROWL_LIFE;
+	}
+	
+	public List<String[]> getCqtBaseScopes() {
+		return Arrays.asList(new String[][] {
+			new String[] { SCOPE_NARROW, "Narrow" },
+			new String[] { SCOPE_BROAD, "Broad" },
+			new String[] { SCOPE_CHILD_NARROW, "Child Narrow" },
+		});
+	}
+	
+	public List<String[]> getCqtBaseCategories() {
+		return Arrays.asList(new String[][] {
+			new String[] { CATEGORY_A, "A" },
+			new String[] { CATEGORY_S, "S" },
+			new String[] { CATEGORY_B, "B" },
+			new String[] { CATEGORY_C, "C" },
+			new String[] { CATEGORY_D, "D" },
+			new String[] { CATEGORY_E, "E" },
+			new String[] { CATEGORY_F, "F" },
+			new String[] { CATEGORY_G, "G" },
+			new String[] { CATEGORY_H, "H" },
+			new String[] { CATEGORY_I, "I" }
+		});
 	}
 }
 

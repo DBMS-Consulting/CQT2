@@ -1,4 +1,4 @@
-package com.dbms.util;
+package com.dbms.view;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,6 +17,7 @@ import com.dbms.csmq.HierarchyNode;
 import com.dbms.entity.IEntity;
 import com.dbms.entity.cqt.CmqBase190;
 import com.dbms.entity.cqt.CmqRelation190;
+import com.dbms.entity.cqt.CmqRelationTarget;
 import com.dbms.entity.cqt.SmqBase190;
 import com.dbms.entity.cqt.SmqRelation190;
 import com.dbms.entity.cqt.dtos.MeddraDictHierarchySearchDto;
@@ -25,8 +26,9 @@ import com.dbms.service.ICmqBase190Service;
 import com.dbms.service.ICmqRelation190Service;
 import com.dbms.service.IMeddraDictService;
 import com.dbms.service.ISmqBaseService;
+import com.dbms.util.SMQLevelHelper;
 
-public class RelationsSearchHelper {
+public class CmqBaseRelationsTreeHelper {
 	public enum SearchTarget { SMQ_BASE, MEDDRA_DICT, CMQ_BASE }
 	
 	private ICmqBase190Service cmqBaseSvc;
@@ -34,7 +36,7 @@ public class RelationsSearchHelper {
 	private IMeddraDictService meddraDictSvc;
 	private ICmqRelation190Service cmqRelationSvc;
 		
-	public RelationsSearchHelper(ICmqBase190Service cmqBaseSvc,
+	public CmqBaseRelationsTreeHelper(ICmqBase190Service cmqBaseSvc,
 			ISmqBaseService smqBaseSvc,
 			IMeddraDictService meddraDictSvc,
 			ICmqRelation190Service cmqRelationSvc) {
@@ -50,7 +52,7 @@ public class RelationsSearchHelper {
 	 * @param requireDrillDown indicates whether it should add dummy nodes for node-expansion for hierarchy drill-down
 	 * @return
 	 */
-	public TreeNode getRelationsRootHierarchy(Long cmqCode, boolean requireDrillDown) {
+	public TreeNode getCmqBaseRelationsRootHierarchy(Long cmqCode, boolean requireDrillDown) {
 		List<CmqRelation190> cmqRelationList = this.cmqRelationSvc.findByCmqCode(cmqCode);
 		TreeNode rootNode = new DefaultTreeNode("root"
 				, new HierarchyNode("LEVEL", "NAME", "CODE", "SCOPE", "CATEGORY", "WEIGHT", null)
@@ -173,10 +175,18 @@ public class RelationsSearchHelper {
 				new DefaultTreeNode(node, rootNode);
 			}
 		}
+		
+		if(requireDrillDown) {
+			this.populateChildCmqsByParent(cmqCode, rootNode);
+		}
 		return rootNode;
 	}
 	
 	public TreeNode getRelationsNodeHierarchy(TreeNode rootNode, TreeNode expandedNode) {
+		return getRelationsNodeHierarchy(rootNode, expandedNode, true);
+	}
+	
+	public TreeNode getRelationsNodeHierarchy(TreeNode rootNode, TreeNode expandedNode, boolean isNodesEditable) {
 		HierarchyNode hNode = (HierarchyNode) expandedNode.getData();
 		boolean isDataFetchCompleted = hNode.isDataFetchCompleted();
 		
@@ -207,6 +217,9 @@ public class RelationsSearchHelper {
 					childNode.setCode(childSmqBase.getSmqCode().toString());
 					childNode.setEntity(childSmqBase);
 
+					if(!isNodesEditable) {
+						childNode.markNotEditableInRelationstable();
+					}
 					// add child to parent
 					TreeNode childTreeNode = new DefaultTreeNode(childNode, expandedNode);
 					smqChildCodeList.add(childSmqBase.getSmqCode());
@@ -268,6 +281,9 @@ public class RelationsSearchHelper {
 					childRelationNode.setTerm(childRelation.getPtName());
 					childRelationNode.setCode(childRelation.getPtCode().toString());
 					childRelationNode.setEntity(childRelation);
+					if(!isNodesEditable) {
+						childRelationNode.markNotEditableInRelationstable();
+					}
 
 					new DefaultTreeNode(childRelationNode, expandedNode);
 				}
@@ -321,6 +337,11 @@ public class RelationsSearchHelper {
 				} else {
 					childNode.setPrimaryPathFlag(false);
 				}
+				
+				if(!isNodesEditable) {
+					childNode.markNotEditableInRelationstable();
+				}
+				
 				TreeNode childTreeNode = new DefaultTreeNode(childNode, expandedNode);
 				
 				//fetch children count of this iterating child node by code of child
@@ -336,6 +357,88 @@ public class RelationsSearchHelper {
 					}
 				}
 			}
+		} else if(entity instanceof MeddraDictReverseHierarchySearchDto) {
+			MeddraDictReverseHierarchySearchDto reverseSearchDto = (MeddraDictReverseHierarchySearchDto)entity;
+			String levelOfExpandedNode = hNode.getLevel();
+			if("LLT".equalsIgnoreCase(levelOfExpandedNode)) {
+				Long lltCode = Long.valueOf(reverseSearchDto.getLltCode());
+				List<MeddraDictReverseHierarchySearchDto> childReverseSearchDtos = this.meddraDictSvc.findReverseByCode("LLT_", "PT_", lltCode);
+				if(CollectionUtils.isNotEmpty(childReverseSearchDtos)) {
+					for (MeddraDictReverseHierarchySearchDto childReverseSearchDto : childReverseSearchDtos) {
+						HierarchyNode childNode = this.createMeddraReverseNode(childReverseSearchDto, "PT", hNode.isPrimaryPathFlag());
+						if(!isNodesEditable) {
+							childNode.markNotEditableInRelationstable();
+						}
+						TreeNode childTreeNode = new DefaultTreeNode(childNode, expandedNode);
+						if(StringUtils.isNotBlank(reverseSearchDto.getHltTerm())) {
+							// add a dummmy node to show expand arrow
+							HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
+							dummyNode.setDummyNode(true);
+							new DefaultTreeNode(dummyNode, childTreeNode);
+						}
+					}
+				}
+			} else if ("PT".equalsIgnoreCase(levelOfExpandedNode)) {
+				Long ptCode = Long.valueOf(reverseSearchDto.getPtCode());
+				if(!isNodesEditable) {
+					//fetch children of parent node by code of parent
+					List<MeddraDictHierarchySearchDto> childDtos = this.meddraDictSvc.findChildrenByParentCode("LLT_", "PT_", ptCode);
+					for (MeddraDictHierarchySearchDto childDto : childDtos) {
+						HierarchyNode childNode = this.createMeddraNode(childDto, "LLT");
+						childNode.markNotEditableInRelationstable();
+						new DefaultTreeNode(childNode, expandedNode);
+					}
+				} else {
+					List<MeddraDictReverseHierarchySearchDto> childReverseSearchDtos = this.meddraDictSvc.findReverseByCode("PT_", "HLT_", ptCode);
+					if(CollectionUtils.isNotEmpty(childReverseSearchDtos)) {
+						for (MeddraDictReverseHierarchySearchDto childReverseSearchDto : childReverseSearchDtos) {
+							boolean isPrimary = false;
+							if("Y".equalsIgnoreCase(childReverseSearchDto.getPrimaryPathFlag())) {
+								isPrimary = true;
+							}
+							HierarchyNode childNode = this.createMeddraReverseNode(childReverseSearchDto, "HLT", isPrimary);
+
+							TreeNode childTreeNode = new DefaultTreeNode(childNode, expandedNode);
+							if(StringUtils.isNotBlank(reverseSearchDto.getHltTerm())) {
+								// add a dummmy node to show expand arrow
+								HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
+								dummyNode.setDummyNode(true);
+								new DefaultTreeNode(dummyNode, childTreeNode);
+							}
+						}
+					}
+				}
+			} else if ("HLT".equalsIgnoreCase(levelOfExpandedNode)) {
+				Long hltCode = Long.valueOf(reverseSearchDto.getHltCode());
+				List<MeddraDictReverseHierarchySearchDto> childReverseSearchDtos = this.meddraDictSvc.findReverseByCode("HLT_", "HLGT_", hltCode);
+				if(CollectionUtils.isNotEmpty(childReverseSearchDtos)) {
+					for (MeddraDictReverseHierarchySearchDto childReverseSearchDto : childReverseSearchDtos) {
+						HierarchyNode childNode = this.createMeddraReverseNode(childReverseSearchDto, "HLGT", hNode.isPrimaryPathFlag());
+						if(!isNodesEditable) {
+							childNode.markNotEditableInRelationstable();
+						}
+						TreeNode childTreeNode = new DefaultTreeNode(childNode, expandedNode);
+						if(StringUtils.isNotBlank(reverseSearchDto.getHltTerm())) {
+							// add a dummmy node to show expand arrow
+							HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
+							dummyNode.setDummyNode(true);
+							new DefaultTreeNode(dummyNode, childTreeNode);
+						}
+					}
+				}
+			} else if ("HLGT".equalsIgnoreCase(levelOfExpandedNode)) {
+				Long hlgtCode = Long.valueOf(reverseSearchDto.getHlgtCode());
+				List<MeddraDictReverseHierarchySearchDto> childReverseSearchDtos = this.meddraDictSvc.findReverseByCode("HLGT_", "SOC_", hlgtCode);
+				if(CollectionUtils.isNotEmpty(childReverseSearchDtos)) {
+					for (MeddraDictReverseHierarchySearchDto childReverseSearchDto : childReverseSearchDtos) {
+						HierarchyNode childNode = this.createMeddraReverseNode(childReverseSearchDto, "SOC", hNode.isPrimaryPathFlag());
+						if(!isNodesEditable) {
+							childNode.markNotEditableInRelationstable();
+						}
+						new DefaultTreeNode(childNode, expandedNode);
+					}
+				}
+			}				
 		} else if (entity instanceof CmqBase190) {
 			CmqBase190 cmqBase = (CmqBase190) entity;
 			Long cmqCode = cmqBase.getCmqCode();
@@ -351,6 +454,9 @@ public class RelationsSearchHelper {
 					node.setTerm(childCmqBase.getCmqName());
 					node.setCode(childCmqBase.getCmqCode().toString());
 					node.setEntity(childCmqBase);
+					if(!isNodesEditable) {
+						node.markNotEditableInRelationstable();
+					}
 					TreeNode cmqBaseChildNode = new DefaultTreeNode(node, expandedNode);
 					
 					childTreeNodes.put(childCmqBase.getCmqCode(), cmqBaseChildNode);
@@ -432,6 +538,9 @@ public class RelationsSearchHelper {
 					} else if((cmqRelation.getSmqCode() != null) && (cmqRelation.getSmqCode().longValue() > 0)) {
 						SmqBase190 smqBase = this.smqBaseSvc.findByCode(cmqRelation.getSmqCode());
 						HierarchyNode node = this.createSmqBaseNode(smqBase);
+						if(!isNodesEditable) {
+							node.markNotEditableInRelationstable();
+						}
 						TreeNode treeNode = new DefaultTreeNode(node, expandedNode);
 						
 						//add a dummy node for either of the cases, expansion will handle the actuals later
@@ -462,6 +571,9 @@ public class RelationsSearchHelper {
 					List<MeddraDictHierarchySearchDto> socDtos = this.meddraDictSvc.findByCodes("SOC_", socCodesList);
 					for (MeddraDictHierarchySearchDto meddraDictHierarchySearchDto : socDtos) {
 						HierarchyNode node = this.createMeddraNode(meddraDictHierarchySearchDto, "SOC");
+						if(!isNodesEditable) {
+							node.markNotEditableInRelationstable();
+						}
 						TreeNode treeNode = new DefaultTreeNode(node, expandedNode);
 						
 						Long countOfChildren = this.meddraDictSvc.findChldrenCountByParentCode("HLGT_",
@@ -480,6 +592,9 @@ public class RelationsSearchHelper {
 					List<MeddraDictHierarchySearchDto> socDtos = this.meddraDictSvc.findByCodes("HLGT_", hlgtCodesList);
 					for (MeddraDictHierarchySearchDto meddraDictHierarchySearchDto : socDtos) {
 						HierarchyNode node = this.createMeddraNode(meddraDictHierarchySearchDto, "HLGT");
+						if(!isNodesEditable) {
+							node.markNotEditableInRelationstable();
+						}
 						TreeNode treeNode = new DefaultTreeNode(node, expandedNode);
 						
 						Long countOfChildren = this.meddraDictSvc.findChldrenCountByParentCode("HLT_",
@@ -498,6 +613,9 @@ public class RelationsSearchHelper {
 					List<MeddraDictHierarchySearchDto> socDtos = this.meddraDictSvc.findByCodes("HLT_", hltCodesList);
 					for (MeddraDictHierarchySearchDto meddraDictHierarchySearchDto : socDtos) {
 						HierarchyNode node = this.createMeddraNode(meddraDictHierarchySearchDto, "HLT");
+						if(!isNodesEditable) {
+							node.markNotEditableInRelationstable();
+						}
 						TreeNode treeNode = new DefaultTreeNode(node, expandedNode);
 						
 						Long countOfChildren = this.meddraDictSvc.findChldrenCountByParentCode("PT_",
@@ -516,6 +634,9 @@ public class RelationsSearchHelper {
 					List<MeddraDictHierarchySearchDto> socDtos = this.meddraDictSvc.findByCodes("PT_", ptCodesList);
 					for (MeddraDictHierarchySearchDto meddraDictHierarchySearchDto : socDtos) {
 						HierarchyNode node = this.createMeddraNode(meddraDictHierarchySearchDto, "PT");
+						if(!isNodesEditable) {
+							node.markNotEditableInRelationstable();
+						}
 						TreeNode treeNode = new DefaultTreeNode(node, expandedNode);
 						
 						Long countOfChildren = this.meddraDictSvc.findChldrenCountByParentCode("LLT_",
@@ -534,6 +655,9 @@ public class RelationsSearchHelper {
 					List<MeddraDictHierarchySearchDto> socDtos = this.meddraDictSvc.findByCodes("LLT_", lltCodesList);
 					for (MeddraDictHierarchySearchDto meddraDictHierarchySearchDto : socDtos) {
 						HierarchyNode node = this.createMeddraNode(meddraDictHierarchySearchDto, "LLT");
+						if(!isNodesEditable) {
+							node.markNotEditableInRelationstable();
+						}
 						TreeNode treeNode = new DefaultTreeNode(node, expandedNode);
 					}
 				}
@@ -551,29 +675,103 @@ public class RelationsSearchHelper {
 		};
 	}
 	
+	/**
+	 * find a TreeNode by a given Entity ID
+	 * Recursive function
+	 * @author andmiel81@yandex.com
+	 * @param rtNode root node of the subtree to be searched in.
+	 * @param entityId Entity ID to be searched for
+	 */
+	private TreeNode findTreenodeByEntityId(TreeNode rtNode, long entityId) {
+		if(rtNode!=null) {
+			for(TreeNode chNode: rtNode.getChildren()) {
+				if(chNode!=null && chNode.getData()!=null
+						&& chNode.getData() instanceof HierarchyNode
+						&& ((HierarchyNode)chNode.getData()).getEntity()!=null
+						&& ((HierarchyNode)chNode.getData()).getEntity().getId() == entityId) {
+					return chNode;
+				} else {
+					TreeNode f = findTreenodeByEntityId(chNode, entityId);
+					if(f!=null)
+						return f;
+				}
+			}
+		}
+		return null;
+	}
+	
+	public void populateChildCmqsByParent(Long parentCmqCode, TreeNode rootTreeNode) {
+		//now process the cmq parent child relations
+		List<CmqBase190> childCmqs = this.cmqBaseSvc.findChildCmqsByParentCode(parentCmqCode);
+		if((null != childCmqs) && (childCmqs.size() > 0)) {
+			for (CmqBase190 childCmq : childCmqs) {
+				HierarchyNode node = this.createCmqBaseNode(childCmq);
+				node.setEntity(childCmq);
+				TreeNode treeNode = new DefaultTreeNode(node, rootTreeNode);
+			
+				Long childCount = this.cmqRelationSvc.findCountByCmqCode(childCmq.getCmqCode());
+				if((null != childCount) && (childCount > 0)) {
+					HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
+					dummyNode.setDummyNode(true);
+					new DefaultTreeNode(dummyNode, treeNode);
+				}
+			}
+		}
+	}
 
-	private HierarchyNode createCmqBaseNode(CmqBase190 childCmq) {
+	public HierarchyNode createCmqBaseNode(CmqBase190 childCmq) {
 		HierarchyNode node = new HierarchyNode();
-		node.setLevel("PRO");
-		node.setCode(childCmq.getCmqCode().toString());
+		node.setLevel(childCmq.getCmqTypeCd());
 		node.setTerm(childCmq.getCmqName());
+		node.setCode(childCmq.getCmqCode().toString());
 		node.setCategory("");
 		node.setWeight("");
 		node.setScope("");
+		node.setEntity(childCmq);
 		return node;
 	}
 	
-	private HierarchyNode createSmqBaseNode(SmqBase190 smqBase) {
+	public HierarchyNode createSmqBaseNode(SmqBase190 smqBase) {
 		HierarchyNode node = new HierarchyNode();
-
-		node.setLevel(SMQLevelHelper.getLabel(smqBase.getSmqLevel()));
+		if (smqBase.getSmqLevel() == 1) {
+			node.setLevel("SMQ1");
+		} else if (smqBase.getSmqLevel() == 2) {
+			node.setLevel("SMQ2");
+		} else if (smqBase.getSmqLevel() == 3) {
+			node.setLevel("SMQ3");
+		} else if (smqBase.getSmqLevel() == 4) {
+			node.setLevel("SMQ4");
+		} else if (smqBase.getSmqLevel() == 5) {
+			node.setLevel("SMQ5");
+		}
 		node.setTerm(smqBase.getSmqName());
 		node.setCode(smqBase.getSmqCode().toString());
 		node.setEntity(smqBase);
 		return node;
 	}
+    
+    public HierarchyNode createSmqRelationCurrentNode(SmqRelation190 smqRelation) {
+		HierarchyNode node = new HierarchyNode();
+		if (smqRelation.getSmqLevel() == 1) {
+			node.setLevel("SMQ1");
+		} else if (smqRelation.getSmqLevel() == 2) {
+			node.setLevel("SMQ2");
+		} else if (smqRelation.getSmqLevel() == 3) {
+			node.setLevel("SMQ3");
+		} else if ((smqRelation.getSmqLevel() == 4)
+				|| (smqRelation.getSmqLevel() == 0)
+				|| (smqRelation.getSmqLevel() == 5)) {
+			node.setLevel("PT");
+		}
+		node.setTerm(smqRelation.getPtName());
+		node.setCode(smqRelation.getPtCode()
+				.toString());
+		node.setEntity(smqRelation);
+		return node;
+	}
+	
 
-	private HierarchyNode createMeddraNode(MeddraDictHierarchySearchDto searchDto, String level) {
+	public HierarchyNode createMeddraNode(MeddraDictHierarchySearchDto searchDto, String level) {
 		HierarchyNode node = new HierarchyNode();
 		node.setLevel(level);
 		node.setTerm(searchDto.getTerm());
@@ -582,7 +780,7 @@ public class RelationsSearchHelper {
 		return node;
 	}
 	
-	private HierarchyNode createMeddraReverseNode(
+	public HierarchyNode createMeddraReverseNode(
 			MeddraDictReverseHierarchySearchDto searchDto, String level, boolean isPrimary) {
 		HierarchyNode node = new HierarchyNode();
 		node.setLevel(level);

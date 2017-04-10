@@ -9,7 +9,7 @@
 	<ui:define name="page-content">
 		<p:panel header="Import TME csv file">
 			<h:form enctype="multipart/form-data">
-				<p:growl id="m1" life="#{cSMQBean.defaultGrowlLife}" />
+				<p:growl id="m1" life="#{appCSMQBean.defaultGrowlLife}" sticky="true" />
 				<h:panelGrid columns="1" style="padding:30px 0;">
 					<h:outputText value="Please select a TME csv file"
 						style="margin:30px 0;" />

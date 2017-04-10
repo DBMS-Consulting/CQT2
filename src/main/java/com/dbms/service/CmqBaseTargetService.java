@@ -1,5 +1,6 @@
 package com.dbms.service;
 
+import com.dbms.csmq.CSMQBean;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -84,8 +85,8 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 			
 			List<Predicate> pred = new ArrayList<Predicate>();
 			
-			pred.add(cb.or(cb.equal(cmqRoot.get("impactType"), "IMPACTED"), 
-					cb.equal(cmqRoot.get("impactType"), "ICC")
+			pred.add(cb.or(cb.equal(cmqRoot.get("impactType"), CSMQBean.IMPACT_TYPE_IMPACTED), 
+					cb.equal(cmqRoot.get("impactType"), CSMQBean.IMPACT_TYPE_ICC)
 			));
 			
 			if(filters.containsKey("cmqName") && filters.get("cmqName") != null)
@@ -160,7 +161,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 			Root<CmqBaseTarget> cmqRoot = cq.from(CmqBaseTarget.class);
 			List<Predicate> pred = new ArrayList<Predicate>();
 			
-			pred.add(cb.equal(cmqRoot.get("impactType"), "NON-IMPACTED"));
+			pred.add(cb.equal(cmqRoot.get("impactType"), CSMQBean.IMPACT_TYPE_NONIMPACTED));
 			
 			if(filters.containsKey("cmqName") && filters.get("cmqName") != null)
 				pred.add(cb.like(cb.lower(cmqRoot.<String>get("cmqName")), "%" + ((String)filters.get("cmqName")).toLowerCase() + "%"));

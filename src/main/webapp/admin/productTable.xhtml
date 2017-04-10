@@ -6,7 +6,7 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:p="http://primefaces.org/ui">
 
-	<p:growl id="msgProd" life="#{cSMQBean.defaultGrowlLife}" />
+	<p:growl id="msgProd" life="#{appCSMQBean.defaultGrowlLife}" sticky="true" />
 
 	<h3 style="text-align: center">Product CodeList</h3>
 	<p:dataTable id="tableProduct" var="val" rows="10" widgetVar="tblProducts"
