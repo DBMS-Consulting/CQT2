@@ -322,6 +322,7 @@ public class PublishController implements Serializable {
 						cmqBaseTarget.setCmqState(CmqBaseTarget.CMQ_STATE_PUBLISHED_IA);
 						//Pending to Active 'A'
 						cmqBaseTarget.setCmqStatus(CmqBaseTarget.CMQ_STATUS_VALUE_ACTIVE);
+						cmqBaseTarget.setCmqState(CmqBaseTarget.CMQ_STATUS_VALUE_ACTIVE);
 						cmqBaseTarget.setActivatedBy("NONE");
 						cmqBaseTarget.setActivationDate(new Date());
 						cmqBaseTarget.setLastModifiedDate(new Date());
