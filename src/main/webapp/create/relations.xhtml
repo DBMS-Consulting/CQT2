@@ -147,16 +147,16 @@
 				<p:row>
 					<p:column rowspan="2"
 						headerText="#{createController.selectedData.cmqName}" />
-					<p:column colspan="6" headerText="Hierarchy Details" width="50%"/>
+					<p:column colspan="6" headerText="Hierarchy Details" style="width:50%"/>
 				</p:row>
 
 				<p:row>
-					<p:column headerText="Code" width="100"/>
-					<p:column headerText="Level" width="100"/>
-					<p:column headerText="Scope" width="100" />
-					<p:column headerText="Category" width="100" />
-					<p:column headerText="Weight" width="100" />
-					<p:column headerText="Delete" width="100" />
+					<p:column headerText="Code"  style="width:10%" />
+					<p:column headerText="Level" style="width:5%" />
+					<p:column headerText="Scope" style="width:10%" />
+					<p:column headerText="Category" style="width:5%" />
+					<p:column headerText="Weight" style="width:10%" />
+					<p:column headerText="Delete" style="width:10%" />
 				</p:row>
 			</p:columnGroup>
 
@@ -165,41 +165,41 @@
 				<h:outputText value="#{node.term}" rendered="true" />
 			</p:column>
 			
-			<p:column>
+			<p:column style="width:10%">
 				<h:outputText value="#{node.code}" rendered="true" />
 			</p:column>
 			
-			<p:column style="width: 50px !important">
+			<p:column style="width:5%">
 				<h:outputText value="#{node.level}" rendered="true" />
 			</p:column>
 
-			<p:column>
+			<p:column style="width:10%">
 				<p:selectOneMenu id="soc3" value="#{node.scope}" 
 						disabled="#{createController.readOnlyState || createController.detailsFormModel.algorithm eq 'N'}"
-						 rendered="#{not node.hideScope}" >
+                        rendered="#{not node.hideScope}" autoWidth="false" style="width:75%">
 					<f:selectItem itemLabel="" itemValue="" noSelectionOption="true"/>
-					<f:selectItems var="s" value="#{applicationScope.CSMQBean.cqtBaseScopes}"
+					<f:selectItems var="s" value="#{appCSMQBean.cqtBaseScopes}"
 						itemValue="#{s[0]}" itemLabel="#{s[1]}" />
 				</p:selectOneMenu>
 			</p:column>
 
-			<p:column>
+			<p:column style="width:10%">
 				<p:selectOneMenu id="soc2" value="#{node.category}" 
 						disabled="#{createController.readOnlyState || createController.detailsFormModel.algorithm eq 'N'}"
-						rendered="#{not node.hideCategory}" >
+						rendered="#{not node.hideCategory}" autoWidth="false" style="width:75%">
 					<f:selectItem itemLabel="" itemValue="" noSelectionOption="true"/>
-					<f:selectItems var="s" value="#{applicationScope.CSMQBean.cqtBaseCategories}"
+					<f:selectItems var="s" value="#{appCSMQBean.cqtBaseCategories}"
 						itemValue="#{s[0]}" itemLabel="#{s[1]}" />
 				</p:selectOneMenu>
 			</p:column>
 
-			<p:column>
+			<p:column style="width:5%">
 				<p:spinner value="#{node.weight}" id="ot6" 
 					disabled="#{createController.readOnlyState || createController.detailsFormModel.algorithm eq 'N'}" 
-					rendered="#{not node.hideWeight}" />
+                    rendered="#{not node.hideWeight}" size="2" />
 			</p:column>
 
-			<p:column>
+			<p:column style="width:10%">
 				<p:commandButton disabled="#{createController.readOnlyState}" rendered="#{not node.hideDelete}"
 					action="#{searchController.deleteRelation(searchController.relationsRoot, node, createController.selectedData.cmqCode)}"
 					oncomplete="notifyCreateControllerRelationsModify()"
