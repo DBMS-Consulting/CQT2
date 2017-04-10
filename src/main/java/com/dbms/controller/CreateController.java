@@ -820,20 +820,15 @@ public class CreateController implements Serializable {
 	 * @return boolean
 	 */
 	public boolean isReadOnlyState() {
-		if(copyWizard != null) {	
-			return false;
-		} else if (updateWizard != null) {
-			if (selectedData != null && selectedData.getCmqState() != null 
-					&& ("DRAFT".equalsIgnoreCase(selectedData.getCmqState())
-							|| "REVIEWED".equalsIgnoreCase(selectedData.getCmqState()))){
-				return false;
-			} else if (selectedData != null && selectedData.getCmqState() == null) {
-				return false;
-			} else {
-				return true;
-			}
-		} 
-		return false;
+        if (selectedData != null && selectedData.getCmqState() != null 
+                && (CmqBase190.CMQ_STATE_VALUE_DRAFT.equalsIgnoreCase(selectedData.getCmqState())
+                        || CmqBase190.CMQ_STATE_VALUE_REVIEWED.equalsIgnoreCase(selectedData.getCmqState()))){
+            return false;
+        } else if (selectedData != null && selectedData.getCmqState() == null) {
+            return false;
+        } else {
+            return true;
+        }
 	}
 	
 	/**
