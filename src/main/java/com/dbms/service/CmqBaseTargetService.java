@@ -850,7 +850,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 	@Override
 	public List<CmqBaseTarget> findApprovedCmqs() {
 		List<CmqBaseTarget> retVal = null;
-		String queryString = "from CmqBaseTarget c where upper(c.cmqState) = upper('Approved IA') and c.cmqStatus = 'P' ";
+		String queryString = "from CmqBaseTarget c where upper(c.cmqState) = upper('Approved IA') ";
 		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
 		try {
 			Query query = entityManager.createQuery(queryString);
@@ -912,7 +912,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 	@SuppressWarnings("unchecked")
 	public List<CmqBaseTarget> findPublishedCmqs() {
 		List<CmqBaseTarget> retVal = null;
-		String queryString = "from CmqBaseTarget c where upper(c.cmqState) = upper('PUBLISHED IA') and c.cmqStatus = 'P' ";
+		String queryString = "from CmqBaseTarget c where upper(c.cmqState) = upper('PUBLISHED IA') ";
 		EntityManager entityManager = this.cqtEntityManagerFactory
 				.getEntityManager();
 		try {

@@ -72,6 +72,7 @@ public class DemoteToDraftController implements Serializable {
 		demoteToDraftDualListModel = new DualListModel<CmqBase190>(sourceList, targetList);
 		demoteTargetDualListModel = new DualListModel<CmqBaseTarget>(sourceIAList, targetIAList);
 		this.cmqBaseDualListConverter = new CmqBaseDualListConverter();
+		this.cmqBaseTargetDualListConverter = new CmqBaseTargetDualListConverter();
 	}
 	
 	/**
@@ -239,7 +240,8 @@ public class DemoteToDraftController implements Serializable {
 				//continue
 				boolean hasErrorOccured = false;
 				for (CmqBaseTarget target : targetCmqsSelected) {
-					target.setCmqStatus(CmqBaseTarget.CMQ_STATUS_PENDING_IA);
+					target.setCmqStatus("P");
+					target.setCmqState(CmqBaseTarget.CMQ_STATUS_PENDING_IA);
 				}
 				
 				try {
