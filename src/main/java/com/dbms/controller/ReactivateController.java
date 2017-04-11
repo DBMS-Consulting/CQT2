@@ -67,6 +67,7 @@ public class ReactivateController implements Serializable {
 	
 	
 	public String reactivateTargetList() {
+		int cptChildren = 0;
 		List<Long> targetCmqCodes = new ArrayList<>();
 		List<Long> targetCmqParentCodes = new ArrayList<>();
 		List<CmqBase190> targetCmqsSelected = new ArrayList<>(reactivateDualListModel.getTarget());
@@ -84,10 +85,11 @@ public class ReactivateController implements Serializable {
 			for (CmqBase190 cmqBase190 : childCmqsOftargets) {
 				//if child is not in the target list then check if its reactivated or not
 				if(!targetCmqCodes.contains(cmqBase190.getCmqCode())) {
+					cptChildren++;
 					if(!cmqBase190.getCmqState().equalsIgnoreCase(CmqBase190.CMQ_STATE_VALUE_PUBLISHED)
 							&& cmqBase190.getCmqStatus().equalsIgnoreCase(CmqBase190.CMQ_STATUS_VALUE_INACTIVE)) {
 						isListPublishable = false;
-						faultyCmqs.add(cmqBase190);
+						faultyCmqs.add(cmqBase190);  
 					}
 				}
 			}
@@ -115,10 +117,12 @@ public class ReactivateController implements Serializable {
 					for (CmqBase190 cmqBase190 : parentCmqsList) {
 						//if parent is not in the target list then check if its reactivated or not
 						if(!targetCmqCodes.contains(cmqBase190.getCmqCode())) {
+							cptChildren++;
 							if(!cmqBase190.getCmqState().equalsIgnoreCase(CmqBase190.CMQ_STATE_VALUE_PUBLISHED)
 									&& cmqBase190.getCmqStatus().equalsIgnoreCase(CmqBase190.CMQ_STATUS_VALUE_INACTIVE)) {
 								isListPublishable = false;
 								faultyCmqs.add(cmqBase190);
+								
 							}
 						}
 					}
@@ -140,7 +144,14 @@ public class ReactivateController implements Serializable {
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 				
 				return "";
+			} else if (cptChildren > 0) {
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+						"The list being promoted has an associated list that must be Promoted. ", "");
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+				
+				return "";
 			} else {
+			
 				boolean hasErrorOccured = false;
 				boolean hasParentError = false;
 				String cmqError = "";
@@ -149,15 +160,6 @@ public class ReactivateController implements Serializable {
 					if (cmqBase190.getCmqLevel() == 2 && cmqBase190.getCmqParentCode() == null && cmqBase190.getCmqParentName() == null)
 						hasParentError = true;
 					else {
-						/*cmqBase190.setCmqState(CmqBase190.CMQ_STATE_VALUE_PUBLISHED);
-						//Pending to Active 'A'
-						cmqBase190.setCmqStatus(CmqBase190.CMQ_STATUS_VALUE_ACTIVE);
-						cmqBase190.setActivatedBy("NONE");
-						cmqBase190.setActivationDate(new Date());
-						cmqBase190.setLastModifiedDate(new Date());
-						cmqBase190.setLastModifiedBy("NONE");*/
-						
-						
 						cmqBase190.setCmqState(CmqBase190.CMQ_STATE_VALUE_DRAFT);
 	 					cmqBase190.setCmqStatus(CmqBase190.CMQ_STATUS_VALUE_PENDING); 
 	 					cmqBase190.setLastModifiedDate(new Date());
