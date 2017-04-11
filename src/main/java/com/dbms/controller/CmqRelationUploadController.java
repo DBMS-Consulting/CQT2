@@ -141,8 +141,8 @@ public class CmqRelationUploadController implements Serializable {
 			} catch (Exception e) {
 				e.printStackTrace();
 				FacesMessage msg = new FacesMessage("Failed to import relation "
-						+ file.getFileName() +", total="+total+",success="+success+",failed="+failed + " Reasion " + e.getMessage(),
-						null);
+						+ file.getFileName() +", total="+total+",success="+success+",failed="+failed,
+						" Reasion " + e.getMessage());
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 
 			}

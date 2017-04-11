@@ -301,8 +301,7 @@ public class SearchController extends BaseController<CmqBase190> implements IRel
 	}
 
 	public void onRowCancel(RowEditEvent event) {
-		FacesMessage msg = new FacesMessage("Canceled", "ZZ");
-		FacesContext.getCurrentInstance().addMessage(null, msg);
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Canceled", "ZZ"));
 	}
 
 	public List<CreateEntity> getValues() {
@@ -521,24 +520,23 @@ public class SearchController extends BaseController<CmqBase190> implements IRel
 				}
 				// setRelationSelected(nodes);
 				if(CollectionUtils.isNotEmpty(existingNodeTerms)) {
-					FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "The relation already exists", "");
-					FacesContext.getCurrentInstance().addMessage(null, message);
+					FacesContext.getCurrentInstance().addMessage(null, 
+                            new FacesMessage(FacesMessage.SEVERITY_INFO, "The relation already exists", ""));
 				} else {
-					FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,
-							"Selected relations added sucessfully.", "");
-					FacesContext.getCurrentInstance().addMessage(null, message);
-					
+					FacesContext.getCurrentInstance().addMessage(null, 
+                            new FacesMessage(FacesMessage.SEVERITY_INFO,
+                                    "Selected relations added sucessfully.", ""));
 					RequestContext.getCurrentInstance().execute("notifyCreateControllerRelationsModify()");
 				}
 			} else {
-                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "The relation already exists", "");
-                FacesContext.getCurrentInstance().addMessage(null, msg);
+                FacesContext.getCurrentInstance().addMessage(null, 
+                        new FacesMessage(FacesMessage.SEVERITY_INFO, "The relation already exists", ""));
             }
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
-			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_FATAL,
-					"An error occured while adding relations.", e.getMessage());
-			FacesContext.getCurrentInstance().addMessage(null, message);
+			FacesContext.getCurrentInstance().addMessage(null, 
+                    new FacesMessage(FacesMessage.SEVERITY_FATAL,
+                            "An error occured while adding relations.", e.getMessage()));
 		}
 	}
 
@@ -897,8 +895,7 @@ public class SearchController extends BaseController<CmqBase190> implements IRel
 		if(selectedData != null && selectedData.getCmqCode() != null)
 			this.clickedCmqCode = selectedData.getCmqCode();
 		buildRelationsRoot();
-		FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Form canceled", "");
-		FacesContext.getCurrentInstance().addMessage(null, msg);
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Form canceled", ""));
 		return "";
 	}
 

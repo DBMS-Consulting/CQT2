@@ -25,8 +25,7 @@ public class UserWizard implements Serializable {
     }
      
     public void save() {        
-        FacesMessage msg = new FacesMessage("Successful", "Welcome :" + user.getFirstname());
-        FacesContext.getCurrentInstance().addMessage(null, msg);
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Successful", "Welcome :" + user.getFirstname()));
     }
      
     public boolean isSkip() {

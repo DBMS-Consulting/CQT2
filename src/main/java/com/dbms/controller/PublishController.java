@@ -111,9 +111,9 @@ public class PublishController implements Serializable {
 			}
 			//show error dialog with names of faulty cmqs
 			LOG.info("\n\n ******  " + codes); 
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"The list being promoted has an associated list that must be Promoted", "");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
+			FacesContext.getCurrentInstance().addMessage(null, 
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                            "The list being promoted has an associated list that must be Promoted", ""));
 			
 			return "";
 		} else {
@@ -144,9 +144,9 @@ public class PublishController implements Serializable {
 				}
 				LOG.info("\n\n ******  " + codes); 
 				//show error dialog with names of faulty cmqs
-				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-						"The list being promoted has an associated list that must be Promoted. ", "");
-				FacesContext.getCurrentInstance().addMessage(null, msg);
+				FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                                "The list being promoted has an associated list that must be Promoted. ", ""));
 				
 				return "";
 			} else {
@@ -173,9 +173,9 @@ public class PublishController implements Serializable {
 					}
 				}
 				if (hasParentError) {
-					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-							"The List '"+ cmqError + "' does not have an associated parent list, hence cannot be Published", "");
-					FacesContext.getCurrentInstance().addMessage(null, msg);
+					FacesContext.getCurrentInstance().addMessage(null, 
+                            new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                                    "The List '"+ cmqError + "' does not have an associated parent list, hence cannot be Published", ""));
 					
 					return "";
 				}
@@ -196,17 +196,17 @@ public class PublishController implements Serializable {
 						}
 					}
 					//show error dialog with names of faulty cmqs
-					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-							"The system could not publish the following cmqs :" + codes, "");
-					FacesContext.getCurrentInstance().addMessage(null, msg);
+					FacesContext.getCurrentInstance().addMessage(null, 
+                            new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                                    "The system could not publish the following cmqs :" + codes, ""));
 				} else {
 					//update the dualListModel source and target
 					init();
 					
 					//show messages on screen
-					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-							"The List(s) were successfully Published", "");
-					FacesContext.getCurrentInstance().addMessage(null, msg);
+					FacesContext.getCurrentInstance().addMessage(null, 
+                            new FacesMessage(FacesMessage.SEVERITY_INFO,
+                                    "The List(s) were successfully Published", ""));
 				}
 			}
 		}//end 
@@ -305,9 +305,9 @@ public class PublishController implements Serializable {
 				}
 				LOG.info("\n\n ******  " + codes); 
 				//show error dialog with names of faulty cmqs
-				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-						"The list being promoted has an associated list that must be Promoted. ", "");
-				FacesContext.getCurrentInstance().addMessage(null, msg);
+				FacesContext.getCurrentInstance().addMessage(null, 
+                        new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                                "The list being promoted has an associated list that must be Promoted. ", ""));
 				
 				return "";
 			} else {
@@ -332,9 +332,9 @@ public class PublishController implements Serializable {
 					}
 				}
 				if (hasParentError) {
-					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-							"The List '"+ cmqError + "' does not have an associated parent list, hence cannot be Published", "");
-					FacesContext.getCurrentInstance().addMessage(null, msg);
+					FacesContext.getCurrentInstance().addMessage(null, 
+                            new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                                    "The List '"+ cmqError + "' does not have an associated parent list, hence cannot be Published", ""));
 					
 					return "";
 				}
@@ -355,17 +355,17 @@ public class PublishController implements Serializable {
 						}
 					}
 					//show error dialog with names of faulty cmqs
-					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-							"The system could not publish the following cmqs :" + codes, "");
-					FacesContext.getCurrentInstance().addMessage(null, msg);
+					FacesContext.getCurrentInstance().addMessage(null, 
+                            new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                                    "The system could not publish the following cmqs :" + codes, ""));
 				} else {
 					//update the dualListModel source and target
 					init();
 					
 					//show messages on screen
-					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-							"The List(s) were successfully Published", "");
-					FacesContext.getCurrentInstance().addMessage(null, msg);
+					FacesContext.getCurrentInstance().addMessage(null, 
+                            new FacesMessage(FacesMessage.SEVERITY_INFO,
+                                    "The List(s) were successfully Published", ""));
 				}
 			}
 		}//end 

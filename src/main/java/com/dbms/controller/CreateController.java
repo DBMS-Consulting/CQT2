@@ -398,9 +398,8 @@ public class CreateController implements Serializable {
 							+ cmqBase.getCmqCode(), e);
 
 					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-							"An error occurred while updated the list of CmqRelations for CMQ base code "
-									+ cmqBase.getCmqCode(),
-							"");
+							"An error occurred while updated the list of CmqRelations for CMQ base code " + cmqBase.getCmqCode(),
+							"Error Details:" + e.getMessage());
 					FacesContext.getCurrentInstance().addMessage(null, msg);
 				}
 			}
@@ -587,7 +586,7 @@ public class CreateController implements Serializable {
 			String error = CmqUtils.getExceptionMessageChain(e);
 			
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"An error occurred while trying to update the details. Error: " + error, "");
+					"An error occurred while trying to update the details.", "Error: " + error);
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
 			return null;
@@ -741,7 +740,8 @@ public class CreateController implements Serializable {
 			String exceptionMessageChain = CmqUtils.getExceptionMessageChain(e);
 			
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"An error occurred while trying to save the details. Exception is [" + exceptionMessageChain + "]", "");
+					"An error occurred while trying to save the details.",
+                    "Exception is [" + exceptionMessageChain + "]");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
 			return null;
@@ -816,7 +816,7 @@ public class CreateController implements Serializable {
 			String error = CmqUtils.getExceptionMessageChain(e);
 			
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"An error occurred while trying to save the details. Error: " + error, "");
+					"An error occurred while trying to save the details.", "Error: " + error);
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
 			return null;
@@ -1214,8 +1214,8 @@ public class CreateController implements Serializable {
 			cmqBaseService.update(selectedData);
 			LOG.info("\n NEW STATE :" + selectedData.getCmqState());
 
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Workflow state set to '" + state + "'",
-					"");
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+                    "Workflow state set to '" + state + "'", "");
 			FacesContext ctx = FacesContext.getCurrentInstance();
 			ctx.addMessage(null, msg);
 			

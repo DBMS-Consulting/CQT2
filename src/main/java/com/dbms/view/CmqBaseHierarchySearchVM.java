@@ -69,8 +69,7 @@ public class CmqBaseHierarchySearchVM {
 	}
 
 	public void onRowCancel(RowEditEvent event) {
-		FacesMessage msg = new FacesMessage("Canceled", "ZZ");
-		FacesContext.getCurrentInstance().addMessage(null, msg);
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Canceled", "ZZ"));
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })

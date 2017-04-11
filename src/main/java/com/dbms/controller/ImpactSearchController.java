@@ -433,28 +433,28 @@ public class ImpactSearchController implements Serializable {
 						
 						// setRelationSelected(nodes);
 						if(CollectionUtils.isNotEmpty(existingNodeTerms)) {
-							FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "The relation already exists", "");
-							FacesContext.getCurrentInstance().addMessage(null, message);
+							FacesContext.getCurrentInstance().addMessage(null,
+                                    new FacesMessage(FacesMessage.SEVERITY_WARN, "The relation already exists", ""));
 						} else {
-							FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,
-									"Selected relations added sucessfully.", "");
-							FacesContext.getCurrentInstance().addMessage(null, message);
+							FacesContext.getCurrentInstance().addMessage(null,
+                                    new FacesMessage(FacesMessage.SEVERITY_INFO,
+                                        "Selected relations added sucessfully.", ""));
 						}
 					} else {
-						FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_FATAL,
-								"Adding relations is allowed for CMQs only.", "");
-						FacesContext.getCurrentInstance().addMessage(null, message);
+						FacesContext.getCurrentInstance().addMessage(null, 
+                                new FacesMessage(FacesMessage.SEVERITY_FATAL,
+                                    "Adding relations is allowed for CMQs only.", ""));
 					}
 				}
 			} else {
-                FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "The relation already exists", "");
-							FacesContext.getCurrentInstance().addMessage(null, message);
+                FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_WARN, "The relation already exists", ""));
             }
 		} catch (Exception e) {
 			LOG.error(e.getMessage(), e);
-			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_FATAL,
-					"An error occured while adding relations.", e.getMessage());
-			FacesContext.getCurrentInstance().addMessage(null, message);
+			FacesContext.getCurrentInstance().addMessage(null, 
+                    new FacesMessage(FacesMessage.SEVERITY_FATAL,
+                        "An error occured while adding relations.", e.getMessage()));
 		}
 	}
 
@@ -628,11 +628,10 @@ public class ImpactSearchController implements Serializable {
 								LOG.error("Exception occurred while updated the list of CmqRelations for CMQ base target code "
 										+ cmqBaseTarget.getCmqCode(), e);
 
-								FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-										"An error occurred while updated the list of CmqRelations for CMQ base code "
-												+ cmqBaseTarget.getCmqCode(),
-										"");
-								FacesContext.getCurrentInstance().addMessage(null, msg);
+								FacesContext.getCurrentInstance().addMessage(null, 
+                                        new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                                            "An error occurred while updated the list of CmqRelations for CMQ base code " + cmqBaseTarget.getCmqCode(),
+                                            ""));
 							}
 						}
 					}//end of if (CollectionUtils.isNotEmpty(childTreeNodes)) 
@@ -1215,18 +1214,16 @@ public class ImpactSearchController implements Serializable {
 					cmqBaseTarget.setImpactType("IMPACTED");
 					try {
 						this.cmqBaseTargetService.update(cmqBaseTarget);
-						FacesMessage message = new FacesMessage(
-								FacesMessage.SEVERITY_INFO, "Relation deleted successfully.",
-								"");
-						FacesContext.getCurrentInstance().addMessage(null, message);
+						FacesContext.getCurrentInstance().addMessage(null, 
+                                new FacesMessage(FacesMessage.SEVERITY_INFO,
+                                        "Relation deleted successfully.", ""));
 					} catch (CqtServiceException e) {
 						LOG.error("Error while making the cmq target as IMPACTED.", e);
 						String exception = CmqUtils.getExceptionMessageChain(e);
-						FacesMessage message = new FacesMessage(
-								FacesMessage.SEVERITY_ERROR, "Loading....",
-								"Error while making the cmq target as IMPACTED. Error is: "
-										+ exception);
-						FacesContext.getCurrentInstance().addMessage(null, message);
+						FacesContext.getCurrentInstance().addMessage(null,
+                                new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                                        "Loading....", 
+                                        "Error while making the cmq target as IMPACTED. Error is: " + exception));
 					}
 				}
 			}//end of if (null != hierarchyNode)
@@ -1251,15 +1248,14 @@ public class ImpactSearchController implements Serializable {
 				cmqBaseTargetService.update(selectedImpactedCmqList);
 			if (this.isNonImpactedCmqSelected)
 				cmqBaseTargetService.update(selectedNotImpactedCmqList);
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Workflow state has been updated", "");
-			FacesContext ctx = FacesContext.getCurrentInstance();
-			ctx.addMessage(null, msg);
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_INFO,
+                            "Workflow state has been updated", ""));
 		} catch (CqtServiceException e) {
 			e.printStackTrace();
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"An error occurred while updating the state of the List", "");
-			FacesContext ctx = FacesContext.getCurrentInstance();
-			ctx.addMessage(null, msg);
+			FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                            "An error occurred while updating the state of the List", ""));
 		}
 		
 		setReviewEnabled(false);

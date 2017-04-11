@@ -247,10 +247,14 @@ public class ReportController extends BaseController<CmqBase190> {
 		    tempFile.delete();
 	    } catch (ReportGenerationException e) {
 	    	log.error("Error while generating report: ", e.getMessage());
-			fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(), ""));
+			fc.addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                            "Error while generating report", e.getMessage()));
 	    } catch(Exception e) {
 	    	log.error("Error while generating report: ", e);
-			fc.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "There was an error while generating the report!", ""));
+			fc.addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                            "There was an error while generating the report!", e.getMessage()));
 	    }
 	}
 	

@@ -77,9 +77,9 @@ public class RetireController implements Serializable {
 		int cptChild = 0;
 		List<CmqBase190> targetCmqsSelected = new ArrayList<CmqBase190>(this.retireDualListModel.getTarget());
 		if(targetCmqsSelected.isEmpty()) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Please select at least 1 list to retire.", "");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
+			FacesContext.getCurrentInstance().addMessage(null, 
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                            "Please select at least 1 list to retire.", ""));
 			return;
 		} 
 		List<Long> targetCmqCodes = new ArrayList<>();
@@ -122,9 +122,9 @@ public class RetireController implements Serializable {
 		List<CmqBase190> targetCmqParents = new ArrayList<CmqBase190>();
 		List<CmqBase190> targetCmqsSelected = new ArrayList<CmqBase190>(this.retireDualListModel.getTarget());
 		if((targetCmqsSelected == null) || (targetCmqsSelected.size() == 0)) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Please select at least 1 list to retire.", "");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
+			FacesContext.getCurrentInstance().addMessage(null, 
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                            "Please select at least 1 list to retire.", ""));
 		} else {
 			for (CmqBase190 cmqBase : targetCmqsSelected) {
 				targetCmqCodes.add(cmqBase.getCmqCode());
@@ -165,9 +165,9 @@ public class RetireController implements Serializable {
  					formatMsg = "The List and retired parent list are retired successfully";
 					
 				//show messages on screen
-				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-						formatMsg, "");
-				FacesContext.getCurrentInstance().addMessage(null, msg);
+				FacesContext.getCurrentInstance().addMessage(null, 
+                        new FacesMessage(FacesMessage.SEVERITY_INFO,
+                                formatMsg, ""));
 				
 			} catch (CqtServiceException e) {
 				LOG.error(e.getMessage(), e);
@@ -180,9 +180,9 @@ public class RetireController implements Serializable {
 					}
 				}
 				//show error dialog with names of faulty cmqs
-				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-						"The system could not retire the following cmqs :" + codes, "");
-				FacesContext.getCurrentInstance().addMessage(null, msg);
+				FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                                "The system could not retire the following cmqs :" + codes, ""));
 			} 
 		}
 		

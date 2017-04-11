@@ -156,10 +156,10 @@ public class UserBean {
 
     public String checkPWExpiry() {
         int daysToExperiry = getPasswordExpiry();
-        FacesMessage msg =
-            new FacesMessage(FacesMessage.SEVERITY_WARN, "Password Expiration Warning", "Your password will expire in " +
-                             daysToExperiry + " days.");
-        FacesContext.getCurrentInstance().addMessage(null, msg);
+        FacesContext.getCurrentInstance().addMessage(null, 
+                new FacesMessage(FacesMessage.SEVERITY_WARN,
+                        "Password Expiration Warning", "Your password will expire in " +
+                        daysToExperiry + " days."));
         return null;
     }
 
@@ -266,8 +266,8 @@ public class UserBean {
         FacesMessage msg = null;
 
         if (!newPassword.equals(repeatPassword)) {
-            msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Change Password", "The passwords do not match.");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Change Password", "The passwords do not match."));
             return null;
         }
 
@@ -441,10 +441,9 @@ public class UserBean {
     }
 
     private void reportUnexpectedLoginError(String errType, Exception e) {
-        FacesMessage msg =
-            new FacesMessage(FacesMessage.SEVERITY_ERROR, "Unexpected error during login", "Unexpected error during login (" +
-                             errType + "), please consult logs for detail");
-        FacesContext.getCurrentInstance().addMessage(null, msg);
+        FacesContext.getCurrentInstance().addMessage(null, 
+                new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                        "Unexpected error during login", "Unexpected error during login (" + errType + "), please consult logs for detail"));
         e.printStackTrace();
     }
 

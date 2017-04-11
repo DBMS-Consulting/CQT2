@@ -123,12 +123,13 @@ public class TmeUploadController implements Serializable {
 					log.debug("save entity {}",createEntity);
 					createEntityService.save(createEntity);
 				}
-				FacesMessage msg = new FacesMessage("Successful import " + file.getFileName(), null);
-				FacesContext.getCurrentInstance().addMessage(null, msg);
+				FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_INFO, "Successful import " + file.getFileName(), null));
 			} catch (Exception e) {
 				e.printStackTrace();
-				FacesMessage msg = new FacesMessage("Failed to import " + file.getFileName() + " Reasion " + e.getMessage(), null);
-				FacesContext.getCurrentInstance().addMessage(null, msg);
+				FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed to import " + file.getFileName(),
+                                "Reasion " + e.getMessage()));
 
 			}
 		}

@@ -1330,10 +1330,9 @@ public class IARelationsTreeHelper {
 				}
 			}
 		} else {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "No Current SQM found with code '" 
-																				+ selectedSmqList.getSmqCode() + "'", "");
-			FacesContext ctx = FacesContext.getCurrentInstance();
-			ctx.addMessage(null, msg);
+			FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_INFO,
+                            "No Current SQM found with code '"  + selectedSmqList.getSmqCode() + "'", ""));
 		}
 	}
 	

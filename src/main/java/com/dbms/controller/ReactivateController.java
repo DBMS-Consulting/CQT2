@@ -104,9 +104,9 @@ public class ReactivateController implements Serializable {
 			}
 			//show error dialog with names of faulty cmqs
 			LOG.info("\n\n ******  " + codes); 
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"The list being promoted has an associated list that must be Reactivated", "");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
+			FacesContext.getCurrentInstance().addMessage(null, 
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                            "The list being promoted has an associated list that must be Reactivated", ""));
 			
 			return "";
 		} else {
@@ -139,15 +139,15 @@ public class ReactivateController implements Serializable {
 				}
 				LOG.info("\n\n ******  " + codes); 
 				//show error dialog with names of faulty cmqs
-				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-						"The list being promoted has an associated list that must be Promoted. ", "");
-				FacesContext.getCurrentInstance().addMessage(null, msg);
+				FacesContext.getCurrentInstance().addMessage(null, 
+                        new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                                "The list being promoted has an associated list that must be Promoted. ", ""));
 				
 				return "";
 			} else if (cptChildren > 0) {
-				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-						"The list being promoted has an associated list that must be Promoted. ", "");
-				FacesContext.getCurrentInstance().addMessage(null, msg);
+				FacesContext.getCurrentInstance().addMessage(null, 
+                        new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                                "The list being promoted has an associated list that must be Promoted. ", ""));
 				
 				return "";
 			} else {
@@ -180,9 +180,9 @@ public class ReactivateController implements Serializable {
 					}
 				}
 				if (hasParentError) {
-					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-							"The List '"+ cmqError + "' does not have an associated parent list, hence cannot be reactivated", "");
-					FacesContext.getCurrentInstance().addMessage(null, msg);
+					FacesContext.getCurrentInstance().addMessage(null, 
+                            new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                                    "The List '"+ cmqError + "' does not have an associated parent list, hence cannot be reactivated", ""));
 					
 					return "";
 				}
@@ -203,9 +203,9 @@ public class ReactivateController implements Serializable {
 						}
 					}
 					//show error dialog with names of faulty cmqs
-					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-							"The system could not reactivate the following cmqs :" + codes, "");
-					FacesContext.getCurrentInstance().addMessage(null, msg);
+					FacesContext.getCurrentInstance().addMessage(null, 
+                            new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                                    "The system could not reactivate the following cmqs :" + codes, ""));
 				} else {
 					//update the dualListModel source and target
 					init();

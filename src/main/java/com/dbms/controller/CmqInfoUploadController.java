@@ -98,7 +98,7 @@ public class CmqInfoUploadController implements Serializable {
 			} catch (Exception e) {
 				e.printStackTrace();
 				FacesMessage msg = new FacesMessage("Failed to import " + file.getFileName() + ", total=" + total
-						+ ",success=" + success + ",failed=" + failed + " Reasion " + e.getMessage(), null);
+						+ ",success=" + success + ",failed=" + failed, "Reasion " + e.getMessage());
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 
 			}
