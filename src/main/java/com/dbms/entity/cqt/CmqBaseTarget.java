@@ -82,8 +82,8 @@ public class CmqBaseTarget extends BaseEntity {
 	@Column(name = "CMQ_PROTOCOL_CD", nullable = false, length = 100)
 	private String cmqProtocolCd;
 
-	/*@Column(name = "CMQ_PRODUCT_CD", nullable = false, length = 200)
-	private String cmqProductCd;*/
+	@Column(name = "CMQ_PRODUCT_CD", nullable = false, length = 200)
+	private String cmqProductCd;
 
 	@Column(name = "CMQ_DESIGNEE", nullable = false, length = 100)
 	private String cmqDesignee;
@@ -263,13 +263,13 @@ public class CmqBaseTarget extends BaseEntity {
 		this.cmqProtocolCd = cmqProtocolCd;
 	}
 
-	/*public String getCmqProductCd() {
+	public String getCmqProductCd() {
 		return cmqProductCd;
 	}
 
 	public void setCmqProductCd(String cmqProductCd) {
 		this.cmqProductCd = cmqProductCd;
-	}*/
+	}
 
 	public String getCmqDesignee() {
 		return cmqDesignee;
