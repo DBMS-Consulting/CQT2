@@ -64,9 +64,9 @@
 			<h:panelGrid columns="2" columnClasses="label, value">
 
 				<p:outputLabel value="Serial #" styleClass="label-right" />
-				<p:spinner required="true" style="float: left"
-					requiredMessage="The serial # is required"
-					value="#{adminController.ref.serialNum}" />
+				<p:spinner style="float: left"
+					required="true" requiredMessage="The serial # is required"
+					value="#{adminController.ref.serialNum}" min="1" />
 
 				<p:outputLabel value="Code" styleClass="label-right" />
 				<p:inputText required="true" requiredMessage="The code is required"

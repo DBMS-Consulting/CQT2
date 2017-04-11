@@ -84,7 +84,7 @@ public class TargetHierarchySearchVM {
 
 		if (smqLevelH != null) {
 			List<SmqBaseTarget> smqBaseList = this.smqBaseTargetService.findByLevelAndTerm(
-					Integer.parseInt(myFilterLevel), myFilterTermName);
+					smqLevelH.getLevel(), myFilterTermName);
 			LOG.info("smqBaseList values {}", smqBaseList == null ? 0 : smqBaseList.size());
 
 			this.myHierarchyRoot = new DefaultTreeNode("root", new HierarchyNode(
