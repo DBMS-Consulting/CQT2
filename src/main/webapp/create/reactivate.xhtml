@@ -27,8 +27,11 @@
 							itemLabel="#{pick.cmqName}" itemValue="#{pick.cmqCode}" />
 							
 							<p:commandButton id="reactivate-btn" value="Reactivate"
- 								action="#{reactivateController.pickList}"
+ 								action="#{reactivateController.reactivateTargetList}"
 	 							update="@form">
+	 							<p:confirm header="Confirm Promotion"
+									message="Are you sure you want to reactivate the selected list (s)?"
+									icon="ui-icon-alert" />
 							</p:commandButton>
 					</h:panelGrid>
 				</p:tab>

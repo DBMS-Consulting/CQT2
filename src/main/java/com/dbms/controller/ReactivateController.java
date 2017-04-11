@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.dbms.entity.cqt.CmqBase190;
+import com.dbms.entity.cqt.CmqBaseTarget;
 import com.dbms.service.ICmqBase190Service;
 import com.dbms.service.ICmqRelation190Service;
 import com.dbms.service.IRefCodeListService;
@@ -64,199 +65,158 @@ public class ReactivateController implements Serializable {
 		this.cmqBaseDualListConverter = new CmqBaseDualListConverter();
 	}
 	
-	/**
-	 * Event when we pick on the source list
-	 * @param event
-	 */
-	public void pickList() {
-		int cpt = 0;
-		int cptChild = 0;
-		boolean childNotSelected = true;
-		List<CmqBase190> targetCmqsSelected = new ArrayList<CmqBase190>(this.reactivateDualListModel.getTarget());
-		if((targetCmqsSelected == null) || (targetCmqsSelected.size() == 0)) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Please select at least 1 list to reactivate.", "");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-			return;
-		}
-		List<Long> targetCmqCodes = new ArrayList<>();
-		LOG.info("\n\n **********************   targetCmqsSelected size " + targetCmqsSelected.size());
-		
-		for (CmqBase190 cmqBase : targetCmqsSelected) {
-			targetCmqCodes.add(cmqBase.getCmqCode());
-		}
-		
-		List<CmqBase190> childCmqsOftargets = this.cmqBaseService.findChildCmqsByCodes(targetCmqCodes);
-		if((null != childCmqsOftargets) && (childCmqsOftargets.size() > 0)) {
-			//add them to the selected cmqs list
-			
-			for (CmqBase190 childCmq : childCmqsOftargets) {
-				if (childCmq.getCmqStatus().equals(CmqBase190.CMQ_STATUS_VALUE_INACTIVE)
-						&& childCmq.getCmqState().equalsIgnoreCase(CmqBase190.CMQ_STATE_VALUE_PUBLISHED))
-					cptChild++;
-				for (CmqBase190 srcCmq : targetCmqsSelected) {
-					if (!srcCmq.getCmqCode().equals(childCmq.getCmqParentCode()))
-						if (childCmq.getCmqCode().equals(srcCmq.getCmqCode())) 
-							cpt++;
-				}
-			}
-			if (cpt == cptChild) 
-				childNotSelected = false;
-		}
-		//this.confirmMessage = "Are you sure you want to reactivate this list?";
-		
-		if (childCmqsOftargets != null && !childCmqsOftargets.isEmpty() && childNotSelected) {
-			this.confirmMessage = "The List being reactivated has an associated list that must be reactivated.";
-			RequestContext.getCurrentInstance().execute("PF('confirmReactivationOK').show();");
-		}
-		else {
-			this.confirmMessage = "Are you sure you want to reactivate this list?";
-			RequestContext.getCurrentInstance().execute("PF('confirmReactivation').show();");
-		}
-		
-//		if (childCmqsOftargets != null && !childCmqsOftargets.isEmpty() && !childNotSelected) {
-//			this.confirmMessage = "The List and associated Parent List will be activated.";
-//			RequestContext.getCurrentInstance().execute("PF('confirmReactivation').show();");
-//		}
-//			
-	}
-	 
-
+	
 	public String reactivateTargetList() {
 		List<Long> targetCmqCodes = new ArrayList<>();
-		List<CmqBase190> targetCmqParents = new ArrayList<CmqBase190>();
-		List<CmqBase190> targetCmqsSelected = new ArrayList<CmqBase190>(this.reactivateDualListModel.getTarget());
-		List<CmqBase190> targetCmqsToReactivate = new ArrayList<CmqBase190>();
-		if((targetCmqsSelected == null) || (targetCmqsSelected.size() == 0)) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Please select at least 1 list to reactivate.", "");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		} else {
-			for (CmqBase190 cmqBase : targetCmqsSelected) {
-				targetCmqCodes.add(cmqBase.getCmqCode());
-				if(null != cmqBase.getCmqParentCode()) {
-					CmqBase190 parent = cmqBaseService.findByCode(cmqBase.getCmqParentCode());
-					if (parent != null && parent.getCmqStatus().equals(CmqBase190.CMQ_STATUS_VALUE_INACTIVE)
-							&& parent.getCmqState().equalsIgnoreCase(CmqBase190.CMQ_STATE_VALUE_PUBLISHED))
-						targetCmqParents.add(parent);
-				}
+		List<Long> targetCmqParentCodes = new ArrayList<>();
+		List<CmqBase190> targetCmqsSelected = new ArrayList<>(reactivateDualListModel.getTarget());
+		for (CmqBase190 cmqBase : targetCmqsSelected) {
+			targetCmqCodes.add(cmqBase.getCmqCode());
+			if(null != cmqBase.getCmqParentCode()) {
+				targetCmqParentCodes.add(cmqBase.getCmqParentCode());
 			}
-			
-			//List<CmqBase190> faultyCmqs = new ArrayList<>();
-			
-			//now get the children
-			//If a parent is reactivated, then child must be reactivated 
-			//(If the child is status in active then show a error 
-			//"The list being reactivated has an associated active child list hence cannot be reactivated.”
-		//	boolean isChildReactivatedError = false;
-			List<CmqBase190> childCmqsOftargets = this.cmqBaseService.findChildCmqsByCodes(targetCmqCodes);
-			if((null != childCmqsOftargets) && (childCmqsOftargets.size() > 0)) {
-				//add them to the selected cmqs list
-				for (CmqBase190 childCmq : childCmqsOftargets) {
-					if(childCmq.getCmqState().equalsIgnoreCase(CmqBase190.CMQ_STATE_VALUE_PUBLISHED)
-							&& childCmq.getCmqStatus().equalsIgnoreCase(CmqBase190.CMQ_STATUS_VALUE_INACTIVE)
-							&& isSelected(childCmq.getCmqCode(), targetCmqsSelected)) {
-						targetCmqsToReactivate.add(childCmq);//we need to reactivate these
+		}
+		
+		boolean isListPublishable = true;
+		List<CmqBase190> faultyCmqs = new ArrayList<>();
+		List<CmqBase190> childCmqsOftargets = this.cmqBaseService.findChildCmqsByCodes(targetCmqCodes);
+		if(null != childCmqsOftargets) {
+			for (CmqBase190 cmqBase190 : childCmqsOftargets) {
+				//if child is not in the target list then check if its reactivated or not
+				if(!targetCmqCodes.contains(cmqBase190.getCmqCode())) {
+					if(!cmqBase190.getCmqState().equalsIgnoreCase(CmqBase190.CMQ_STATE_VALUE_PUBLISHED)
+							&& cmqBase190.getCmqStatus().equalsIgnoreCase(CmqBase190.CMQ_STATUS_VALUE_INACTIVE)) {
+						isListPublishable = false;
+						faultyCmqs.add(cmqBase190);
 					}
 				}
- 			}
-			
-			//If a child is being reactivated, and the parent is NOT selected, it SHOULD reactivate parent as well
-			//it should also prints messages to show the multiple reactivations
-			//and continue forward
-			if(targetCmqParents.size() > 0) {
-				//we need to show message that parent is Reactivated
-				for (CmqBase190 cmqBase190 : targetCmqParents) {
-					cmqBase190.setCmqState(CmqBase190.CMQ_STATE_VALUE_DRAFT);
-					cmqBase190.setCmqStatus(CmqBase190.CMQ_STATUS_VALUE_PENDING); 
-					cmqBase190.setLastModifiedDate(new Date());
-					cmqBase190.setLastModifiedBy("NONE");
-					cmqBase190.setActivationDate(new Date());
- 					cmqBase190.setActivatedBy("NONE");
- 					if (cmqBase190.getCmqApproveReason() == null)
- 						cmqBase190.setCmqApproveReason("");
- 					if (cmqBase190.getCmqDesignee2() == null)
- 						cmqBase190.setCmqDesignee2("");
- 					if (cmqBase190.getCmqDesignee3() == null)
- 						cmqBase190.setCmqDesignee3("");
-				}
-				try {
-					this.cmqBaseService.update(targetCmqParents);
-				} catch (CqtServiceException e) {
-					LOG.error(e.getMessage(), e);
- 				}
-			} 
-
-			//continue
- 			for (CmqBase190 cmqBase190 : targetCmqsToReactivate) {
-				cmqBase190.setCmqState(CmqBase190.CMQ_STATE_VALUE_DRAFT);
-				cmqBase190.setCmqStatus(CmqBase190.CMQ_STATUS_VALUE_PENDING); 
-				cmqBase190.setActivatedBy("NONE");
-				cmqBase190.setActivationDate(new Date());
-				cmqBase190.setLastModifiedDate(new Date());
-				cmqBase190.setLastModifiedBy("NONE");
-				if (cmqBase190.getCmqApproveReason() == null)
-						cmqBase190.setCmqApproveReason("");
-					if (cmqBase190.getCmqDesignee2() == null)
-						cmqBase190.setCmqDesignee2("");
-					if (cmqBase190.getCmqDesignee3() == null)
-						cmqBase190.setCmqDesignee3("");
-				
 			}
- 			
- 			if (targetCmqsToReactivate.isEmpty()) {
- 				for (CmqBase190 cmqBase190 : targetCmqsSelected) {
- 					cmqBase190.setCmqState(CmqBase190.CMQ_STATE_VALUE_DRAFT);
- 					cmqBase190.setCmqStatus(CmqBase190.CMQ_STATUS_VALUE_PENDING); 
- 					cmqBase190.setLastModifiedDate(new Date());
- 					cmqBase190.setLastModifiedBy("NONE");
- 					cmqBase190.setActivationDate(new Date());
- 					cmqBase190.setActivatedBy("NONE");
- 					if (cmqBase190.getCmqApproveReason() == null)
- 						cmqBase190.setCmqApproveReason("");
- 					if (cmqBase190.getCmqDesignee2() == null)
- 						cmqBase190.setCmqDesignee2("");
- 					if (cmqBase190.getCmqDesignee3() == null)
- 						cmqBase190.setCmqDesignee3("");
- 				}
- 			}
-
-			try {
-				if (targetCmqsToReactivate.isEmpty()) {
-					this.cmqBaseService.update(targetCmqsSelected);
+		}
+		
+		if(!isListPublishable) {
+			String codes = "";
+			if (faultyCmqs != null) {
+				for (CmqBase190 cmq : faultyCmqs) {
+					codes += cmq.getCmqCode() + ";";
 				}
-				else
-					this.cmqBaseService.update(targetCmqsToReactivate);
-				
-				//update the dualListModel source and target
-				init();
-				String formatMsg = "The List(s) are reactivated successfully";
-				
-				if (targetCmqParents != null && !targetCmqParents.isEmpty())
- 					formatMsg = "The List and retired parent list is Reactivated successfully";
-					
-				//show messages on screen
-				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-						formatMsg, "");
-				FacesContext.getCurrentInstance().addMessage(null, msg);
-				
-			} catch (CqtServiceException e) {
-				LOG.error(e.getMessage(), e);
-
-				//show error message popup for partial success.
+			}
+			//show error dialog with names of faulty cmqs
+			LOG.info("\n\n ******  " + codes); 
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"The list being promoted has an associated list that must be Reactivated", "");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			
+			return "";
+		} else {
+			//now check the parents of these cmqs
+			if(targetCmqParentCodes.size() > 0) {
+				List<CmqBase190> parentCmqsList = this.cmqBaseService.findParentCmqsByCodes(targetCmqParentCodes);
+				if(null != parentCmqsList) {
+					for (CmqBase190 cmqBase190 : parentCmqsList) {
+						//if parent is not in the target list then check if its reactivated or not
+						if(!targetCmqCodes.contains(cmqBase190.getCmqCode())) {
+							if(!cmqBase190.getCmqState().equalsIgnoreCase(CmqBase190.CMQ_STATE_VALUE_PUBLISHED)
+									&& cmqBase190.getCmqStatus().equalsIgnoreCase(CmqBase190.CMQ_STATUS_VALUE_INACTIVE)) {
+								isListPublishable = false;
+								faultyCmqs.add(cmqBase190);
+							}
+						}
+					}
+				}
+			}
+			
+			if(!isListPublishable) {
+				//show error dialog with names of faulty cmqs
 				String codes = "";
-				if (targetCmqsSelected != null) {
-					for (CmqBase190 cmq : targetCmqsSelected) {
+				if (faultyCmqs != null) {
+					for (CmqBase190 cmq : faultyCmqs) {
 						codes += cmq.getCmqCode() + ";";
 					}
 				}
+				LOG.info("\n\n ******  " + codes); 
 				//show error dialog with names of faulty cmqs
 				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-						"The system could not reactivate the following cmqs :" + codes, "");
+						"The list being promoted has an associated list that must be Promoted. ", "");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
-			
-			} 
-		}
+				
+				return "";
+			} else {
+				boolean hasErrorOccured = false;
+				boolean hasParentError = false;
+				String cmqError = "";
+				//success
+				for (CmqBase190 cmqBase190 : targetCmqsSelected) {
+					if (cmqBase190.getCmqLevel() == 2 && cmqBase190.getCmqParentCode() == null && cmqBase190.getCmqParentName() == null)
+						hasParentError = true;
+					else {
+						/*cmqBase190.setCmqState(CmqBase190.CMQ_STATE_VALUE_PUBLISHED);
+						//Pending to Active 'A'
+						cmqBase190.setCmqStatus(CmqBase190.CMQ_STATUS_VALUE_ACTIVE);
+						cmqBase190.setActivatedBy("NONE");
+						cmqBase190.setActivationDate(new Date());
+						cmqBase190.setLastModifiedDate(new Date());
+						cmqBase190.setLastModifiedBy("NONE");*/
+						
+						
+						cmqBase190.setCmqState(CmqBase190.CMQ_STATE_VALUE_DRAFT);
+	 					cmqBase190.setCmqStatus(CmqBase190.CMQ_STATUS_VALUE_PENDING); 
+	 					cmqBase190.setLastModifiedDate(new Date());
+	 					cmqBase190.setLastModifiedBy("NONE");
+	 					cmqBase190.setActivationDate(new Date());
+	 					cmqBase190.setActivatedBy("NONE");
+	 					if (cmqBase190.getCmqApproveReason() == null)
+	 						cmqBase190.setCmqApproveReason("");
+	 					if (cmqBase190.getCmqDesignee2() == null)
+	 						cmqBase190.setCmqDesignee2("");
+	 					if (cmqBase190.getCmqDesignee3() == null)
+	 						cmqBase190.setCmqDesignee3("");
+					}
+
+					if (hasParentError) {
+						cmqError = cmqBase190.getCmqName();
+						break;
+					}
+				}
+				if (hasParentError) {
+					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+							"The List '"+ cmqError + "' does not have an associated parent list, hence cannot be reactivated", "");
+					FacesContext.getCurrentInstance().addMessage(null, msg);
+					
+					return "";
+				}
+				
+				try {
+					this.cmqBaseService.update(targetCmqsSelected);
+				} catch (CqtServiceException e) {
+					LOG.error(e.getMessage(), e);
+					hasErrorOccured = true;
+				}
+				
+				if(hasErrorOccured) {
+					//show error message popup for partial success.
+					String codes = "";
+					if (targetCmqsSelected != null) {
+						for (CmqBase190 cmq : targetCmqsSelected) {
+							codes += cmq.getCmqCode() + ";";
+						}
+					}
+					//show error dialog with names of faulty cmqs
+					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+							"The system could not reactivate the following cmqs :" + codes, "");
+					FacesContext.getCurrentInstance().addMessage(null, msg);
+				} else {
+					//update the dualListModel source and target
+					init();
+					
+					//show messages on screen
+					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+							"The List(s) were successfully Reactivated", "");
+					FacesContext.getCurrentInstance().addMessage(null, msg);
+				}
+			}
+		}//end 
+		
+		targetCmqsSelected = new ArrayList<CmqBase190>();
 		
 		return "";
 	}
