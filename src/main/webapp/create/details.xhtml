@@ -25,7 +25,7 @@
 			<p:selectOneMenu
 				value="#{createController.detailsFormModel.extension}"
 				disabled="#{createController.readOnlyState or createController.formSaved}"
-				required="#{!createController.readOnlyState}"
+				required="#{createController.activeWizard.step eq 'details' and !createController.readOnlyState}"
 				requiredMessage="The extension is required">
 				<f:selectItems value="#{configMB.extensionList}" var="extension"
 					itemLabel="#{extension.value}"
@@ -49,9 +49,9 @@
 			<p:selectOneMenu
 				value="#{createController.detailsFormModel.drugProgram}" id="drug"
 				disabled="#{createController.readOnlyState or createController.formSaved}"
-				required="#{createController.detailsFormModel.drugProgramRequired and not createController.readOnlyState}"
+				required="#{createController.activeWizard.step eq 'details' and createController.detailsFormModel.drugProgramRequired and not createController.readOnlyState}"
 				requiredMessage="The Drug Program is required">
-				<f:selectItem itemValue="" itemLabel="" />
+				<f:selectItem itemValue="" itemLabel="" noSelectionOption="true" />
 				<f:selectItems value="#{configMB.programList}" var="program"
 					itemLabel="#{program.value}"
 					itemValue="#{program.codelistInternalValue}" />
@@ -63,9 +63,9 @@
 			<p:selectOneMenu
 				value="#{createController.detailsFormModel.protocol}" id="protocol"
 				disabled="#{createController.readOnlyState or createController.formSaved}"
-				required="#{createController.detailsFormModel.protocolRequired and not createController.readOnlyState}">
+				required="#{createController.activeWizard.step eq 'details' and createController.detailsFormModel.protocolRequired and not createController.readOnlyState}">
 				
-				<f:selectItem itemValue="" itemLabel="" />
+                <f:selectItem itemValue="" itemLabel="" noSelectionOption="true" />
 				<f:selectItems value="#{configMB.protocolList}" var="protocol"
 					itemLabel="#{protocol.value}"
 					itemValue="#{protocol.codelistInternalValue}" />
@@ -76,7 +76,7 @@
 				rendered="true" styleClass="label-right" />
 			<p:selectCheckboxMenu value="#{createController.detailsFormModel.products}" widgetVar="product"
 				disabled="#{createController.readOnlyState or createController.formSaved}"
-				required="#{createController.detailsFormModel.productRequired and not createController.readOnlyState}"
+				required="#{createController.activeWizard.step eq 'details' and createController.detailsFormModel.productRequired and not createController.readOnlyState}"
 				requiredMessage="The Product is required" id="product"
 				label="#{createController.detailsFormModel.productsLabel}"
                 filter="true" filterMatchMode="startsWith"
@@ -92,10 +92,9 @@
 				value="#{createController.detailsFormModel.designee}"
 				disabled="#{createController.readOnlyState or createController.formSaved}" rendered="true"
 				requiredMessage="The Designee is required"
-				required="#{!createController.readOnlyState}">
-				<f:selectItem itemLabel="" itemValue=""></f:selectItem>
+				required="#{createController.activeWizard.step eq 'details' and !createController.readOnlyState}">
+				<f:selectItem itemLabel="" itemValue="" noSelectionOption="true" />
 				<f:selectItem itemLabel="NONE" itemValue="NONE"></f:selectItem>
-				<!-- <f:selectItems></f:selectItems> -->
 			</p:selectOneMenu>
 		</h:panelGrid>
 
@@ -103,7 +102,7 @@
 
 			<p:outputLabel value="* Level" styleClass="label-right" />
 			<p:selectOneMenu value="#{createController.detailsFormModel.level}"
-				rendered="true" required="#{!createController.readOnlyState}"
+				rendered="true" required="#{createController.activeWizard.step eq 'details' and !createController.readOnlyState}"
 				requiredMessage="The level is required"
 				disabled="#{createController.readOnlyState or createController.formSaved}" id="level">
 				<f:selectItem itemValue="1" itemLabel="1" />
@@ -189,14 +188,11 @@
 				<h:outputText value="#{createController.selectedData.activatedBy}" />
 			</h:panelGrid>
 
-			<h:panelGrid columns="1" styleClass="grid-right">
-			</h:panelGrid>
+            <p:spacer />
 
-			<h:panelGrid columns="1" styleClass="grid-right">
-			</h:panelGrid>
+			<p:spacer />
 
-			<h:panelGrid columns="1" styleClass="grid-right">
-			</h:panelGrid>
+			<p:spacer />
 		</h:panelGrid>
 	</h:panelGrid>
 

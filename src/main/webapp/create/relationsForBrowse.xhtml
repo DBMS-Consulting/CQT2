@@ -77,15 +77,9 @@
 
 		<br />
 		<p:treeTable value="#{searchController.relationsRoot}" var="node" resizableColumns="true"
-			selectionMode="checkbox" rows="20" styleClass="hide-sel-chkbox"
-			paginator="true" paginatorPosition="bottom"
-			paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-			rowsPerPageTemplate="5,10,25,30">
+			selectionMode="checkbox" styleClass="hide-sel-chkbox">
 			<p:ajax event="expand" listener="#{searchController.onNodeExpand}"
 			/>
-<!-- 
-				update="resultRelationsB" 
- -->
 			<p:columnGroup type="header">
 				<p:row>
 					<p:column rowspan="2"

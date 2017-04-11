@@ -134,8 +134,7 @@
 				<h:outputText style="text-transform: uppercase;" value="#{value.cmqState}" />
 			</p:column>
 			<p:column headerText="Code" width="100">
-				<h:commandLink partialSubmit="true"
-					action="#{createController.loadCmqBaseByCode(value.cmqCode)}"
+				<h:commandLink action="#{createController.loadCmqBaseByCode(value.cmqCode)}"
 					value="#{value.cmqCode}">
 
 					<p:ajax update="@form:wizardId @form:relations" />

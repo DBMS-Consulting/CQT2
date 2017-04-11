@@ -40,8 +40,6 @@
 
 				<p:tab id="details" title="Details">
 					<p:panel header="Details">
-						<!-- <ui:include src="details.xhtml"></ui:include> -->
-
 						<!-- 
 						***
 						***
@@ -88,8 +86,7 @@
 								<h:outputText value="#{createController.selectedData.cmqCode}" />
 
 								<p:outputLabel styleClass="label-right" value="Algorithm:" />
-								<h:outputText
-									value="#{createController.selectedData.cmqAlgorithm}" />
+								<h:outputText value="#{createController.selectedData.cmqAlgorithm}" />
 
 								<p:spacer />
 								<p:spacer />
@@ -154,7 +151,7 @@
 				</p:tab>
 
 				<!-- CONTACT -->
-				<p:tab id="contact" title="Informative Notes">
+				<p:tab id="infonotes" title="Informative Notes">
 					<ui:include src="viewInformativeNotes.xhtml"></ui:include>
 				</p:tab>
 
@@ -190,12 +187,10 @@
 
 				<p:outputLabel for="it1aw" value="Dictionary Version:"></p:outputLabel>
 				<h:inputText id="it1aw"
-					value="#{configMB.currentMeddraVersion.value}" disabled="true"
-					columns="200" />
+					value="#{configMB.currentMeddraVersion.value}" disabled="true" />
 
 				<p:outputLabel for="it3" value="Name: "></p:outputLabel>
-				<h:inputText id="it3" value="#{configMB.dictionaryName}"
-					readOnly="true" disabled="true" />
+				<h:inputText id="it3" value="#{configMB.dictionaryName}" disabled="true" />
 			</h:panelGrid>
 			<f:attribute name="currentPage"
 				value="Create New #{appCSMQBean.customMQName} Wizard" />

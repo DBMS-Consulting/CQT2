@@ -8,15 +8,13 @@
 
 	<ui:define name="page-content">
 		<h:form id="fUpdate">
-			<p:growl id="m1" life="#{appCSMQBean.defaultGrowlLife}" sticky="true" />
+            <p:growl id="m1" life="#{appCSMQBean.defaultGrowlLife}" sticky="true" autoUpdate="true" />
 
 			<h:panelGrid columns="2" style="width: 100% !important">
- 					<p:breadCrumb styleClass="breadcrumb">
-						<p:menuitem value="Home" url="/index.xhtml" />
-						<p:menuitem value="Update" />
-					</p:breadCrumb>
-
- 
+                <p:breadCrumb styleClass="breadcrumb">
+                    <p:menuitem value="Home" url="/index.xhtml" />
+                    <p:menuitem value="Update" />
+                </p:breadCrumb>
 			</h:panelGrid>
 			
 			<p:remoteCommand name="notifySearchControllerDataChange" update="@form">
@@ -25,7 +23,7 @@
 
 			<p:wizard flowListener="#{createController.onUpdateWizardFlowProcess}" widgetVar="wizard" 
 				id="wizardId" binding="#{createController.updateWizard}"
-				styleClass="update-list-wiz" showNavBar="false">
+                styleClass="update-list-wiz" showNavBar="false">
 
 				<!-- Search -->
 				<p:tab id="searchUpdate" title="Search">
@@ -79,7 +77,7 @@
 				</p:tab>
 
 				<!-- Notes -->
-				<p:tab id="contact" title="Update Informative Notes">
+				<p:tab id="infonotes" title="Update Informative Notes">
 					<ui:include src="informativeNotes.xhtml"></ui:include>
 				</p:tab>
 
@@ -110,12 +108,12 @@
 			</p:wizard>
 			
 			<h:panelGroup id="wizardNavbar" layout="block" styleClass="ui-wizard-navbar ui-helper-clearfix">
-				<p:commandButton value="Back" onclick="PF('wizard').back();" icon="ui-icon-arrowthick-1-w"
-	        			styleClass="ui-wizard-nav-back update-list-wiz-back" rendered="#{createController.updateWizardNavbarBackShown}"
-	        			update="@form:m1" />
-				<p:commandButton value="Next" onclick="PF('wizard').next();" icon="ui-icon-arrowthick-1-e"
-				        styleClass="ui-wizard-nav-next" rendered="#{createController.updateWizardNavbarNextShown}"
-				        update="@form:m1" /> 
+                <p:commandButton type="button" value="Back" onclick="PF('wizard').back();"
+                        icon="ui-icon-arrowthick-1-w" iconPos="left"
+	        			styleClass="ui-wizard-nav-back update-list-wiz-back" rendered="#{createController.updateWizardNavbarBackShown}" />
+				<p:commandButton type="button" value="Next" onclick="PF('wizard').next();"
+                        icon="ui-icon-arrowthick-1-e" iconPos="right"
+                        styleClass="ui-wizard-nav-next" rendered="#{createController.updateWizardNavbarNextShown}" /> 
 			</h:panelGroup>
 			
 			<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
@@ -129,12 +127,12 @@
 				<p:outputLabel for="it1aw" value="Dictionary Version:"></p:outputLabel>
 				<h:inputText id="it1aw"
 					value="#{configMB.currentMeddraVersion.value}"
-					disabled="true" columns="200" />
+					disabled="true" />
 
 				<p:outputLabel for="it3" value="Name: "></p:outputLabel>
 				<h:inputText id="it3"
 					value="#{configMB.dictionaryName}"
-					readOnly="true" disabled="true" />
+					disabled="true" />
 			</h:panelGrid>
 			<f:attribute name="currentPage"
 				value="Create New #{appCSMQBean.customMQName} Wizard" />
