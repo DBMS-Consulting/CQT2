@@ -44,13 +44,13 @@
 							<h:outputText value="0.9" style="font-weight:bold;"
 								rendered="true" />
 							<h:outputText value="Logged in as: " id="pt_ot1" rendered="true" />
-							<h:outputText value="${sWJSFRequest.def(header['IAMPFIZERUSERCN'], 'Admin')}  ( ${sWJSFRequest.def(header['IAMPFIZERUSERSURNAME'], 'Last')}, ${sWJSFRequest.def(header['IAMPFIZERUSERGIVENNAME'], 'First')} ) " id="pt_ot2" style="font-weight:bold;"
+							<h:outputText value="${appSWJSFRequest.def(header['IAMPFIZERUSERCN'], 'Admin')}  ( ${appSWJSFRequest.def(header['IAMPFIZERUSERSURNAME'], 'Last')}, ${appSWJSFRequest.def(header['IAMPFIZERUSERGIVENNAME'], 'First')} ) " id="pt_ot2" style="font-weight:bold;"
 								rendered="true" />
 						</h:panelGrid>
 						<h:panelGrid columns="8">
 							<h:outputText value="Role: " id="pt_ot1a" rendered="true" />
 							<h:outputText id="of2" style="font-weight:bold;"
-								value="#{sWJSFRequest.def(sWJSFRequest.getGroupListValueAsString('CN', header['IAMPFIZERUSERGROUPMEMBERSHIP']), 'No-Group')}" rendered="true" />
+								value="#{appSWJSFRequest.def(appSWJSFRequest.getGroupListValueAsString('CN', header['IAMPFIZERUSERGROUPMEMBERSHIP']), 'No-Group')}" rendered="true" />
 <!-- 
 							<h:outputText id="of2a" style="font-weight:bold;" value="User"
 								rendered="true" />
