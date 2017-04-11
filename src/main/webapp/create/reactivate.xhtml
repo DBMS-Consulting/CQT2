@@ -57,6 +57,14 @@
 					onclick="PF('confirmReactivation').hide();" update="@form"
 					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
 			</p:confirmDialog> 
+			
+			<p:confirmDialog widgetVar="confirmReactivationOK" showEffect="fade"
+				hideEffect="fade" header="Confirm Reactivation"
+				message="#{reactivateController.confirmMessage}">
+				<p:commandButton value="OK" type="button"
+					onclick="PF('confirmReactivationOK').hide();" update="@form"
+					styleClass="ui-confirmdialog-no" />
+			</p:confirmDialog>
 		</h:form>
 	</ui:define>
 </ui:composition>

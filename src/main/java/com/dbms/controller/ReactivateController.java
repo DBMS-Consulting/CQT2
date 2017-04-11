@@ -100,24 +100,25 @@ public class ReactivateController implements Serializable {
 							cpt++;
 				}
 			}
-			if (cpt == cptChild) //if (cpt == childCmqsOftargets.size())
+			if (cpt == cptChild) 
 				childNotSelected = false;
 		}
-		this.confirmMessage = "Are you sure you want to reactivate this list?";
+		//this.confirmMessage = "Are you sure you want to reactivate this list?";
 		
-		if (childCmqsOftargets != null && !childCmqsOftargets.isEmpty() && childNotSelected)
-			this.confirmMessage = "Not all associate child lists are selected for reactivation. Do you want to continue?";
-//		else
-//			this.confirmMessage = "Are you sure you want to reactivate this list?";
+		if (childCmqsOftargets != null && !childCmqsOftargets.isEmpty() && childNotSelected) {
+			this.confirmMessage = "The List being reactivated has an associated list that must be reactivated.";
+			RequestContext.getCurrentInstance().execute("PF('confirmReactivationOK').show();");
+		}
+		else {
+			this.confirmMessage = "Are you sure you want to reactivate this list?";
+			RequestContext.getCurrentInstance().execute("PF('confirmReactivation').show();");
+		}
 		
-		if (childCmqsOftargets != null && !childCmqsOftargets.isEmpty() && !childNotSelected)
-			this.confirmMessage = "The List and associated Parent List will be activated.";
-		//else
-			
-
-	
-		
-		RequestContext.getCurrentInstance().execute("PF('confirmReactivation').show();");
+//		if (childCmqsOftargets != null && !childCmqsOftargets.isEmpty() && !childNotSelected) {
+//			this.confirmMessage = "The List and associated Parent List will be activated.";
+//			RequestContext.getCurrentInstance().execute("PF('confirmReactivation').show();");
+//		}
+//			
 	}
 	 
 

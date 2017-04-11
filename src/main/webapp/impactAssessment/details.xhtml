@@ -46,10 +46,10 @@
 			<h:panelGrid columns="2" columnClasses="label-cell, value-cell">
 
 				<p:outputLabel styleClass="label-right" value="Status:" />
-				<h:outputText value="#{RefCodeListService.findCodeByInternalCode('STATUS', impactSearchController.detailsFormModel.status)}" />
+				<h:outputText value="#{impactSearchController.detailsFormModel.status}" />
 
 				<p:outputLabel styleClass="label-right" value="State:" />
-				<h:outputText value="#{RefCodeListService.findCodeByInternalCode('STATE', impactSearchController.detailsFormModel.state)}" />
+				<h:outputText value="#{impactSearchController.detailsFormModel.state}" />
 
 				<p:outputLabel styleClass="label-right" value="Group:" />
 				<h:outputText value="#{impactSearchController.detailsFormModel.group}" />
