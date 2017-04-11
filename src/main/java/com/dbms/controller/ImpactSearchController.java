@@ -348,8 +348,6 @@ public class ImpactSearchController implements Serializable {
 			//Current List name
 			setListName(this.selectedNotImpactedSmqList.getSmqName());
 		}
-		
-		
 	}
 
 	public void updateTargetTable() {

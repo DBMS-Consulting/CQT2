@@ -401,7 +401,7 @@
 				<h:panelGrid style="float: right" columns="2">
 					<p:commandButton value="Add selected" onclick="PF('target-hierarchy-search').hide()"
 						update="futureListsAndSmqs"
-						action="#{impactSearchController.addSelectedToTargetRelation(impactSearchController.relationSelected)}" />
+						action="#{impactSearchController.addSelectedToTargetRelation(impactSearchController.targetHierarchySearchDlgModel.selectedNodes)}" />
 					<p:commandButton value="Cancel" onclick="PF('target-hierarchy-search').hide()"
 						immediate="true" />
 				</h:panelGrid>
