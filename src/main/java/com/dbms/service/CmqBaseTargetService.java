@@ -325,7 +325,8 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 	public List<CmqBaseTarget> findByLevelAndTerm(Integer level, String searchTerm) {
 		List<CmqBaseTarget> retVal = null;
 		StringBuilder sb = new StringBuilder();
-		sb.append("from CmqBaseTarget c where c.cmqLevel = :cmqLevel and c.cmqParentCode is null and c.cmqStatus = 'I' ");
+		//sb.append("from CmqBaseTarget c where c.cmqLevel = :cmqLevel and c.cmqParentCode is null and c.cmqStatus = 'I' ");
+		sb.append("from CmqBaseTarget c where c.cmqLevel = :cmqLevel and c.cmqParentCode is null ");
 		if (!StringUtils.isBlank(searchTerm)) {
 			sb.append("and upper(c.cmqName) like :cmqName");
 		}
