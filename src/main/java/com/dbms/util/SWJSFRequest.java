@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 
 
-@ManagedBean("appSWJSFRequest")
+@ManagedBean(name="appSWJSFRequest")
 @ApplicationScoped
 public class SWJSFRequest 
 {
@@ -36,7 +36,7 @@ public class SWJSFRequest
     public static final String LDAP_ACCOUNT_TO_LOOKUP = "cougha02";
     
     
-    public static LdapContext initLdapContext() throws NamingException {
+    public LdapContext initLdapContext() throws NamingException {
         Hashtable<String, Object> env = new Hashtable<String, Object>();
         env.put(Context.SECURITY_AUTHENTICATION, "simple");
         if(LDAP_USERNAME != null) {
@@ -60,7 +60,7 @@ public class SWJSFRequest
         return ctx;
     }
         
-	public static HttpServletRequest getRequest()
+	public HttpServletRequest getRequest()
 	{
 		HttpServletRequest request = 
 			(HttpServletRequest)FacesContext
@@ -74,13 +74,13 @@ public class SWJSFRequest
 		return request;
 	}
 	
-	public static void setAttribute(String name, Object value)
+	public void setAttribute(String name, Object value)
 	{
 		HttpServletRequest request = getRequest();
 		request.setAttribute(name,value);
 	}
 	
-	public static Object getAttribute(String name)
+	public Object getAttribute(String name)
 	{
 		HttpServletRequest request = getRequest();
 		return request.getAttribute(name);
@@ -88,19 +88,19 @@ public class SWJSFRequest
 	}
 
 	
-	public static Object def(Object value, Object defVal) {
+	public Object def(Object value, Object defVal) {
 		return value != null ? value : defVal;
 	}
 	
 	
-	public static List<String> getGroupList(String name, String key)
+	public List<String> getGroupList(String name, String key)
 	{
 		HttpServletRequest request = getRequest();
 		String value = (String) request.getAttribute(name);
 		return getGroupListValue(key, value);
 	}
 
-	public static List<String> getGroupListValue(String key, String value)
+	public List<String> getGroupListValue(String key, String value)
 	{
 		//value = "CN=OPENCQT_ADMIN,OU=CQT_OU,OU=Applications,OU=Delegated,OU=Groups,DC=pxed,DC=pfizer,DC=com:CN=CQT_Users,OU=CQT_OU,OU=Applications,OU=Delegated,OU=Groups,DC=pxed,DC=pfizer,DC=com:CN=GBL-BTNONColleagues,OU=GBLGroups,OU=Applications,OU=Delegated,OU=Groups,DC=pxed,DC=pfizer,DC=com";
 		//System.out.println("name: " + name);
@@ -122,7 +122,7 @@ public class SWJSFRequest
 		return ret;		
 	}
 	
-	public static String getGroupListValueAsString(String key, String value) {
+	public String getGroupListValueAsString(String key, String value) {
 		List<String> groupList = getGroupListValue(key, value);
 		if (groupList.size() > 0)
 			return StringUtils.join(", ", groupList);
@@ -130,7 +130,7 @@ public class SWJSFRequest
 			return null;
 	}
 	
-	public static String getGroupListAsString(String name, String key) {
+	public String getGroupListAsString(String name, String key) {
 		List<String> groupList = getGroupList(name, key);
 		if (groupList.size() > 0)
 			return StringUtils.join(", ", groupList);
@@ -144,7 +144,7 @@ public class SWJSFRequest
 			
 	
 /*	
-	public static Object locateObject(String name)
+	public Object locateObject(String name)
 	{
 		System.out.println("Trying to locate object:" + name);
 		HttpServletRequest request = getRequest();
@@ -165,7 +165,7 @@ public class SWJSFRequest
 		return null;
 	}
 */	
-	public static void dumpAttributes()
+	public void dumpAttributes()
 	{
 		HttpServletRequest request = getRequest();
 		Enumeration e = request.getAttributeNames();
@@ -305,7 +305,7 @@ public class SWJSFRequest
      * 
      * Based on code from here - http://forums.oracle.com/forums/thread.jspa?threadID=1155740&tstart=0
      */
-    public static String decodeSID(byte[] sid) {
+    public String decodeSID(byte[] sid) {
         
         final StringBuilder strSid = new StringBuilder("S-");
 
@@ -349,7 +349,7 @@ public class SWJSFRequest
      * e.g. Converts "CN=**Dev - Test Group" to "**Dev - Test Group"
      * Converts CN=**Dev - Test Group,OU=Distribution Lists,DC=DOMAIN,DC=com to "**Dev - Test Group"
      */
-    public static String getCN(String cnName) {
+    public String getCN(String cnName) {
         if (cnName != null && cnName.toUpperCase().startsWith("CN=")) {
             cnName = cnName.substring(3);
         }
@@ -361,7 +361,7 @@ public class SWJSFRequest
         }
     }
 
-    public static void printSearchEnumeration(NamingEnumeration<SearchResult> retEnum) {
+    public void printSearchEnumeration(NamingEnumeration<SearchResult> retEnum) {
 	    try {
 	        while (retEnum.hasMore()) {
 	        SearchResult sr = retEnum.next();
