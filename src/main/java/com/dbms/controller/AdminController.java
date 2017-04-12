@@ -35,15 +35,22 @@ public class AdminController implements Serializable {
 	 * serialVersionUID.
 	 */
 	private static final long serialVersionUID = 1085292862045772511L;
+    
+    private static final String CODELIST_EXTENSION = "EXTENSION";
+    private static final String CODELIST_PRODUCT = "PRODUCT";
+    private static final String CODELIST_PROGRAM = "PROGRAM";
+    private static final String CODELIST_PROTOCOL = "PROTOCOL";
+    private static final String CODELIST_MEDDRA = "MEDDRA";
+    private static final String CODELIST_WORKFLOW = "WORKFLOW";
+    private static final String CODELIST_USERGROUP = "USER_GROUP";
 
-	private String codelistType;
 	List<CodelistDTO> list;
 	private String codelist;
 
 	@ManagedProperty("#{RefCodeListService}")
 	private IRefCodeListService refCodeListService;
 
-	private List<RefConfigCodeList> extensions, programs, protocols, products, meddras, workflows;
+	private List<RefConfigCodeList> extensions, programs, protocols, products, meddras, workflows, usergroups;
 	
 	private RefConfigCodeList selectedRow, myFocusRef;
 	private StreamedContent excelFile;
@@ -54,47 +61,47 @@ public class AdminController implements Serializable {
 
 	@PostConstruct
 	public void init() {
-		codelist = "EXTENSION";
+		codelist = CODELIST_EXTENSION;
 		getExtensionList();
 		getProductList();
 		getProgramList();
 		getProtocolList();
 		getMeddraList();
 		getWorkflowList();
+        getUsergroupList();
 	}
 	
 	public String initAddCodelist() {
 		BigDecimal lastSerial = new BigDecimal(0);
 		myFocusRef = new RefConfigCodeList();
-		if (codelist.equals("EXTENSION")) {
+		if (codelist.equals(CODELIST_EXTENSION)) {
 			myFocusRef.setCodelistConfigType(CqtConstants.CODE_LIST_TYPE_EXTENSION); 
 			if (extensions != null && !extensions.isEmpty())
 				lastSerial = extensions.get(extensions.size() - 1).getSerialNum();
-		}
-		if (codelist.equals("PRODUCT")) {
+		} else if (codelist.equals(CODELIST_PRODUCT)) {
 			myFocusRef.setCodelistConfigType(CqtConstants.CODE_LIST_TYPE_PRODUCT); 
 			if (products != null && !products.isEmpty())
 				lastSerial = products.get(products.size() - 1).getSerialNum();
-		}
-		if (codelist.equals("PROGRAM")) {
+		} else if (codelist.equals(CODELIST_PROGRAM)) {
 			myFocusRef.setCodelistConfigType(CqtConstants.CODE_LIST_TYPE_PROGRAM); 
 			if (programs != null && !programs.isEmpty())
 				lastSerial = programs.get(programs.size() - 1).getSerialNum();
-		}
-		if (codelist.equals("PROTOCOL")) {
+		} else if (codelist.equals(CODELIST_PROTOCOL)) {
 			myFocusRef.setCodelistConfigType(CqtConstants.CODE_LIST_TYPE_PROTOCOL); 
 			if (protocols != null && !protocols.isEmpty())
 				lastSerial = protocols.get(protocols.size() - 1).getSerialNum();
-		}
-		if (codelist.equals("MEDDRA")) {
+		} else if (codelist.equals(CODELIST_MEDDRA)) {
 			myFocusRef.setCodelistConfigType(CqtConstants.CODE_LIST_TYPE_MEDDRA_VERSIONS); 
 			if (meddras != null && !meddras.isEmpty())
 				lastSerial = meddras.get(meddras.size() - 1).getSerialNum();
-		}
-		if (codelist.equals("WORKFLOW")) {
+		} else if (codelist.equals(CODELIST_WORKFLOW)) {
 			myFocusRef.setCodelistConfigType(CqtConstants.CODE_LIST_TYPE_WORKFLOW_STATES); 
 			if (workflows != null && !workflows.isEmpty())
 				lastSerial = workflows.get(workflows.size() - 1).getSerialNum();
+		} else if (codelist.equals(CODELIST_USERGROUP)) {
+			myFocusRef.setCodelistConfigType(CqtConstants.CODE_LIST_TYPE_USER_GROUPS); 
+			if (usergroups != null && !usergroups.isEmpty())
+				lastSerial = usergroups.get(usergroups.size() - 1).getSerialNum();
 		}
 		myFocusRef.setCreationDate(new Date());
 		myFocusRef.setLastModificationDate(new Date()); 
@@ -201,6 +208,18 @@ public class AdminController implements Serializable {
 		}
 		return workflows;
 	}
+    
+    /**
+	 * Returns User Group codelist.
+	 * @return
+	 */
+	public List<RefConfigCodeList> getUsergroupList() {
+		usergroups = refCodeListService.findAllByConfigType(CqtConstants.CODE_LIST_TYPE_USER_GROUPS, OrderBy.ASC);
+		if (usergroups == null) {
+			usergroups = new ArrayList<>();
+		}
+		return usergroups;
+	}
 	
 	public void addRefCodelist() {
 		myFocusRef.setCreatedBy("test-user");
@@ -223,26 +242,24 @@ public class AdminController implements Serializable {
 			if (myFocusRef.getCodelistConfigType().equals(CqtConstants.CODE_LIST_TYPE_EXTENSION)) {
 				type = "Extension";
 				getExtensionList();
-			}
-			if (myFocusRef.getCodelistConfigType().equals(CqtConstants.CODE_LIST_TYPE_MEDDRA_VERSIONS)) {
+			} else if (myFocusRef.getCodelistConfigType().equals(CqtConstants.CODE_LIST_TYPE_MEDDRA_VERSIONS)) {
 				type = "MedDRA Dictionary";
 				getMeddraList();
-			}
-			if (myFocusRef.getCodelistConfigType().equals(CqtConstants.CODE_LIST_TYPE_PRODUCT)) {
+			} else if (myFocusRef.getCodelistConfigType().equals(CqtConstants.CODE_LIST_TYPE_PRODUCT)) {
 				type = "Product";
 				getProductList();
-			}
-			if (myFocusRef.getCodelistConfigType().equals(CqtConstants.CODE_LIST_TYPE_PROGRAM)) {
+			} else if (myFocusRef.getCodelistConfigType().equals(CqtConstants.CODE_LIST_TYPE_PROGRAM)) {
 				type = "Program";
 				getProgramList();
-			}
-			if (myFocusRef.getCodelistConfigType().equals(CqtConstants.CODE_LIST_TYPE_PROTOCOL)) {
+			} else if (myFocusRef.getCodelistConfigType().equals(CqtConstants.CODE_LIST_TYPE_PROTOCOL)) {
 				type = "Protocol"; 
 				getProtocolList();
-			}
-			if (myFocusRef.getCodelistConfigType().equals(CqtConstants.CODE_LIST_TYPE_WORKFLOW_STATES)) {
+			} else if (myFocusRef.getCodelistConfigType().equals(CqtConstants.CODE_LIST_TYPE_WORKFLOW_STATES)) {
 				type = "Workflow State";
 				getWorkflowList();
+			} else if (myFocusRef.getCodelistConfigType().equals(CqtConstants.CODE_LIST_TYPE_USER_GROUPS)) {
+				type = "User Group";
+				getUsergroupList();
 			}
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					type + " '" + myFocusRef.getCodelistInternalValue() + "' is successfully saved.", "");
@@ -250,7 +267,7 @@ public class AdminController implements Serializable {
 		} catch (CqtServiceException e) {
 			e.printStackTrace();
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"An error occurred while creating an extension code", "");
+					"An error occurred while creating an extension code", "Error:" + e.getMessage());
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}
 		myFocusRef = new RefConfigCodeList();
@@ -290,7 +307,7 @@ public class AdminController implements Serializable {
 				} catch (CqtServiceException e) {
 					e.printStackTrace();
 					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-							"An error occurred while saving the codelist", "");
+							"An error occurred while saving the codelist", "Error: " + e.getMessage());
 					FacesContext.getCurrentInstance().addMessage(null, msg);
 				}
             }
@@ -300,14 +317,6 @@ public class AdminController implements Serializable {
 	public void generateConfigReport() {
 		StreamedContent content = refCodeListService.generateReport(this.codelist);
 		setExcelFile(content); 
-	}
-
-	public String getCodelistType() {
-		return codelistType;
-	}
-
-	public void setCodelistType(String codelistType) {
-		this.codelistType = codelistType;
 	}
 
 	public List<CodelistDTO> getList() {
@@ -405,5 +414,19 @@ public class AdminController implements Serializable {
 	public void setExcelFile(StreamedContent excelFile) {
 		this.excelFile = excelFile;
 	}
+
+    /**
+     * @return the usergroups
+     */
+    public List<RefConfigCodeList> getUsergroups() {
+        return usergroups;
+    }
+
+    /**
+     * @param usergroups the usergroups to set
+     */
+    public void setUsergroups(List<RefConfigCodeList> usergroups) {
+        this.usergroups = usergroups;
+    }
 
 }
