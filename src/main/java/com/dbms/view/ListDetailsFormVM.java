@@ -369,9 +369,11 @@ public class ListDetailsFormVM {
 		return products;
 	}
 	public void setProducts(String[] products) {
+        this.products = (this.products == null ? new String[0] : this.products);
+        products = (products == null ? new String[0] : products);
 		Arrays.sort(this.products);
 		Arrays.sort(products);
-		if(this.products== null || !Arrays.equals(this.products, products))
+        if(!Arrays.equals(this.products, products))
 			this.modelChanged = true;
 		this.products = products;
 	}
