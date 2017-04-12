@@ -701,13 +701,12 @@ public class CreateController implements Serializable {
 			if(null != searchController) {
 				searchController.setClickedCmqCode(savedCmqCode);
 				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-						"List '" + selectedData.getCmqName() + "', its relations and children are successfully saved.", "");
+						"List , Informative Notes and Relations are copied/updated successfully.", "");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 			} else {
 				LOG.error("Failed to get reference of SearchController to populate the realtions table.");
 				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-						"List '" + selectedData.getCmqName() + "', its relations and children are successfully saved "
-								+ "but Failed to get reference of SearchController to populate the realtions table.", "");
+						"List , Informative Notes and Relations are copied/updated successfully, but Failed to get reference of SearchController to populate the realtions table.", "");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 			}
 		} catch (CqtServiceException e) {
