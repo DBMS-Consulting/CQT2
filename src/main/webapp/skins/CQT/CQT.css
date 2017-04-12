@@ -422,3 +422,12 @@ td .bordered {
 	width: auto !important;
 	height: auto !important;
 }
+
+/** Growl Component customization **/
+.ui-growl-item-container { /* default opacity 0.85 */
+    opacity: 0.95 !important;
+    filter: alpha(opacity=0.95) !important;
+}
+.ui-growl-icon-close { /* make close icon always visible(default is visible only when mouse is hovering the message box)*/
+    display: block !important;
+}
