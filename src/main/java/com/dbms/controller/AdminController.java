@@ -42,7 +42,7 @@ public class AdminController implements Serializable {
     private static final String CODELIST_PROTOCOL = "PROTOCOL";
     private static final String CODELIST_MEDDRA = "MEDDRA";
     private static final String CODELIST_WORKFLOW = "WORKFLOW";
-    private static final String CODELIST_USERGROUP = "USER_GROUP";
+    private static final String CODELIST_USERGROUP = "USER_GROUPS";
 
 	List<CodelistDTO> list;
 	private String codelist;
