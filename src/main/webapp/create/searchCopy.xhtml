@@ -35,8 +35,8 @@
 			<p:outputLabel value="Product" rendered="true"
 				styleClass="label-right" />
 			<p:selectCheckboxMenu value="#{searchController.products}" disabled="false" widgetVar="product2"
-				id="product2" label="#{searchController.productsLabel}"
-				style="min-width: 270px;">
+				id="product2" label="#{searchController.productsLabel}" style="min-width: 270px;"
+                filter="true" filterMatchMode="startsWith">
 				<f:selectItems value="#{configMB.productList}" var="product"
 					itemLabel="#{product.value}" itemValue="#{product.codelistInternalValue}" />
 				<p:ajax oncomplete="PF('product2').show()" listener="#{searchController.getProductsLabel}" update="product2" ></p:ajax>
@@ -142,12 +142,9 @@
 				<h:outputText style="text-transform: uppercase;" value="#{value.cmqState}" />
 			</p:column>
 			<p:column headerText="Code" width="100">
-				<h:commandLink partialSubmit="true"
-					action="#{createController.loadCmqBaseByCode(value.cmqCode)}"
+				<h:commandLink action="#{createController.loadCmqBaseByCode(value.cmqCode)}"
 					value="#{value.cmqCode}">
-
 					<p:ajax update="@form:wizardId @form:relations" />
-
 					<f:setPropertyActionListener
 						target="#{createController.codeSelected}" value="#{value.cmqCode}" />
 				</h:commandLink>
@@ -169,8 +166,7 @@
 			</p:column>
 			<p:column headerText="History" style="text-align: center" width="40"
 				rendered="#{view.viewId == '/create/browseAndSearch.xhtml' ? true : false}">
-				<!-- <h:outputText value="#{value.history}" /> -->
-				<p:commandLink action="#" style="color: red" label="History"
+				<p:commandLink action="#" style="color: red" value="History"
 					onclick="PF('history-dialog').show()">
 					<i class="fa fa-power-off"></i>
 				</p:commandLink>
