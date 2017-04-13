@@ -43,6 +43,7 @@ public class AdminController implements Serializable {
     private static final String CODELIST_MEDDRA = "MEDDRA";
     private static final String CODELIST_WORKFLOW = "WORKFLOW";
     private static final String CODELIST_USERGROUP = "USER_GROUPS";
+    private static final String CODELIST_SYSCONFIG = "SYSTEM_CONFIG";
 
 	List<CodelistDTO> list;
 	private String codelist;
@@ -50,7 +51,7 @@ public class AdminController implements Serializable {
 	@ManagedProperty("#{RefCodeListService}")
 	private IRefCodeListService refCodeListService;
 
-	private List<RefConfigCodeList> extensions, programs, protocols, products, meddras, workflows, usergroups;
+	private List<RefConfigCodeList> extensions, programs, protocols, products, meddras, workflows, usergroups, sysconfigs;
 	
 	private RefConfigCodeList selectedRow, myFocusRef;
 	private StreamedContent excelFile;
@@ -102,6 +103,10 @@ public class AdminController implements Serializable {
 			myFocusRef.setCodelistConfigType(CqtConstants.CODE_LIST_TYPE_USER_GROUPS); 
 			if (usergroups != null && !usergroups.isEmpty())
 				lastSerial = usergroups.get(usergroups.size() - 1).getSerialNum();
+		} else if (codelist.equals(CODELIST_SYSCONFIG)) {
+			myFocusRef.setCodelistConfigType(CqtConstants.CODE_LIST_TYPE_SYSTEM_CONFIG); 
+			if (sysconfigs != null && !sysconfigs.isEmpty())
+				lastSerial = sysconfigs.get(sysconfigs.size() - 1).getSerialNum();
 		}
 		myFocusRef.setCreationDate(new Date());
 		myFocusRef.setLastModificationDate(new Date()); 
@@ -220,6 +225,18 @@ public class AdminController implements Serializable {
 		}
 		return usergroups;
 	}
+    
+    /**
+	 * Returns System Config codelist.
+	 * @return
+	 */
+	public List<RefConfigCodeList> getSysconfigList() {
+		sysconfigs = refCodeListService.findAllByConfigType(CqtConstants.CODE_LIST_TYPE_SYSTEM_CONFIG, OrderBy.ASC);
+		if (sysconfigs == null) {
+			sysconfigs = new ArrayList<>();
+		}
+		return sysconfigs;
+	}
 	
 	public void addRefCodelist() {
 		myFocusRef.setCreatedBy("test-user");
@@ -260,6 +277,9 @@ public class AdminController implements Serializable {
 			} else if (myFocusRef.getCodelistConfigType().equals(CqtConstants.CODE_LIST_TYPE_USER_GROUPS)) {
 				type = "User Group";
 				getUsergroupList();
+			} else if (myFocusRef.getCodelistConfigType().equals(CqtConstants.CODE_LIST_TYPE_SYSTEM_CONFIG)) {
+				type = "System Config";
+				getSysconfigList();
 			}
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					type + " '" + myFocusRef.getCodelistInternalValue() + "' is successfully saved.", "");
@@ -429,4 +449,17 @@ public class AdminController implements Serializable {
         this.usergroups = usergroups;
     }
 
+    /**
+     * @return the sysconfigs
+     */
+    public List<RefConfigCodeList> getSysconfigs() {
+        return sysconfigs;
+    }
+
+    /**
+     * @param usergroups the usergroups to set
+     */
+    public void setSysconfigs(List<RefConfigCodeList> sysconfigs) {
+        this.sysconfigs = sysconfigs;
+    }
 }

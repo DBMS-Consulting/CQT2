@@ -8,6 +8,7 @@ public class CqtConstants {
 	public static final String CODE_LIST_TYPE_PRODUCT = "PRODUCT";
 	public static final String CODE_LIST_TYPE_PROTOCOL = "PROTOCOL";
     public static final String CODE_LIST_TYPE_USER_GROUPS = "USER_GROUPS";
+    public static final String CODE_LIST_TYPE_SYSTEM_CONFIG = "SYSTEM_CONFIG";
 	
 	public static final String CURRENT_MEDDRA_VERSION = "CURRENT_MEDDRA_VERSION";
 	public static final String TARGET_MEDDRA_VERSION = "TARGET_MEDDRA_VERSION";

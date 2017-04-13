@@ -17,6 +17,8 @@ public class ExWizardRenderer extends org.primefaces.component.wizard.WizardRend
         ResponseWriter writer = context.getResponseWriter();
         String currentStep = wizard.getStep();
         boolean currentFound = false;
+        final String wiz = wizard.resolveWidgetVar();
+        final String pfWiz = "PF('" + wiz + "')";
  
         writer.startElement("ul", null);
         writer.writeAttribute("class", Wizard.STEP_STATUS_CLASS, null);
@@ -37,13 +39,14 @@ public class ExWizardRenderer extends org.primefaces.component.wizard.WizardRend
                 writer.startElement("li", null);
                 writer.writeAttribute("class", titleStyleClass, null);
                 if(tab.getTitleStyle() != null) writer.writeAttribute("style", tab.getTitleStyle(), null);
-                 
+                
+                final String tabhdr = wizard.getId() + ":tabhdr" + i;
                 writer.startElement("a", null);
-                final String wiz = wizard.resolveWidgetVar();
                 writer.writeAttribute("href", "#", null);
                 writer.writeAttribute("type", "button", null);
-                writer.writeAttribute("id", wizard.getId() + ":tabhdr" + i, null);
-                writer.writeAttribute("onclick", "PF('" + wiz + "')"+".loadStep("+"PF('" + wiz + "')"+".cfg.steps["+i+"], false);PrimeFaces.ab({s:'" + wizard.getId() + ":tabhdr" + i + "'});return false;", null);
+                writer.writeAttribute("id", tabhdr, null);
+                //writer.writeAttribute("onclick", pfWiz+".loadStep("+pfWiz+".cfg.steps["+i+"], false);PrimeFaces.ab({s:'" + tabhdr + "',p:'" + tabhdr + "',u:'" + tabhdr + "'});return false;", null);
+                writer.writeAttribute("onclick", pfWiz+".loadStep("+pfWiz+".cfg.steps["+i+"], false);return false;", null);
                 
                 if (tab.getTitletip() != null) writer.writeAttribute("title", tab.getTitletip(), null);
                 writer.write(tab.getTitle());

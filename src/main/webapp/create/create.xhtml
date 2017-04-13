@@ -11,15 +11,11 @@
             <p:growl id="m1" life="#{appCSMQBean.defaultGrowlLife}" sticky="true" showDetail="#{appCSMQBean.degugMode}" autoUpdate="true"/>
 
 			<h:panelGrid columns="2" style="width: 100% !important">
- 					<p:breadCrumb styleClass="breadcrumb">
-						<p:menuitem value="Home" url="/index.xhtml" />
-						<p:menuitem value="Create" />
-					</p:breadCrumb>
- 				</h:panelGrid>
-			
-			<p:remoteCommand name="notifySearchControllerDataChange">
-	            <f:setPropertyActionListener target="#{searchController.dataModified}" value="true" />
-		    </p:remoteCommand>
+                <p:breadCrumb styleClass="breadcrumb">
+                    <p:menuitem value="Home" url="/index.xhtml" />
+                    <p:menuitem value="Create" />
+                </p:breadCrumb>
+            </h:panelGrid>
 
 			<p:wizard flowListener="#{createController.onCreateWizardFlowProcess}" widgetVar="wizard"
 				id="wizardId" binding="#{createController.createWizard}"

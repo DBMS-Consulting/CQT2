@@ -17,10 +17,6 @@
                 </p:breadCrumb>
 			</h:panelGrid>
 			
-			<p:remoteCommand name="notifySearchControllerDataChange">
-	            <f:setPropertyActionListener target="#{searchController.dataModified}" value="true" />
-		    </p:remoteCommand>
-
 			<p:wizard flowListener="#{createController.onUpdateWizardFlowProcess}" widgetVar="wizard" 
 				id="wizardId" binding="#{createController.updateWizard}"
                 styleClass="update-list-wiz" showNavBar="false">
@@ -39,8 +35,8 @@
 						
 						<h:panelGrid columns="2">
 							<p:commandButton value="Save" icon="ui-icon-disk" disabled="#{createController.readOnlyState}"
-								update="@form:m1 @form:codeValue @form:detailsPanel" action="#{createController.update}"
-								oncomplete="notifySearchControllerDataChange()" />
+								update="@form:m1 @form:codeValue @form:detailsPanel" actionListener="#{createController.update}"
+                                action="#{searchController.setDataModified(true)}" />
 							
 							<p:commandButton value="Cancel" icon="ui-icon-close" disabled="#{createController.readOnlyState}"
 								process="@this" update="@form:m1 @form:detailsPanel" actionListener="#{createController.cancel}">

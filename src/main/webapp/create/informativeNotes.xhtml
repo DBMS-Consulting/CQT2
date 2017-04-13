@@ -14,7 +14,7 @@
 				actionListener="#{createController.saveNotesAndNextStep}"
 				onstart="PF('confirmSaveNotesDlg').hide()" />
 		<p:remoteCommand name="resetNotesAndGoToNextStep"
-				update="@form:m1 @form:wizardId @form:panelNotes"
+				update="@form:m1 @form:wizardId"
 				actionListener="#{createController.cancelNotesAndNextStep}"
 				onstart="PF('confirmSaveNotesDlg').hide()" />
 						

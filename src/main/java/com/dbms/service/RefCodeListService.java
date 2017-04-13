@@ -117,7 +117,8 @@ public class RefCodeListService extends
 			String codelistConfigType, OrderBy orderBy) {
 		return findByConfigType(codelistConfigType, false, orderBy);
 	}
-	
+    
+	@Override
 	public RefConfigCodeList findDefaultByConfigType(String configType) {
 		List<RefConfigCodeList> codeList = findByConfigType(configType, OrderBy.ASC);
 		
@@ -130,6 +131,21 @@ public class RefCodeListService extends
 		}
 		return null;
 	}
+    
+    @Override
+    public List<RefConfigCodeList> findDefaultsByConfigType(String configType) {
+        List<RefConfigCodeList> codeList = findByConfigType(configType, OrderBy.ASC);
+        List<RefConfigCodeList> retVal = new ArrayList<RefConfigCodeList>();
+		
+		if (codeList != null) {
+			for(RefConfigCodeList c : codeList) {
+				if(CSMQBean.TRUE.equals(c.getDefaultFlag())) {
+					retVal.add(c);
+				}
+			}
+		}
+		return retVal;
+    }
 
 	@Override
 	public RefConfigCodeList getCurrentMeddraVersion() {

@@ -31,6 +31,7 @@
 							<f:selectItem itemLabel="MEDDRA DICTIONARY" itemValue="MEDDRA" />
 							<f:selectItem itemLabel="WORKFLOW STATE" itemValue="WORKFLOW" />
 							<f:selectItem itemLabel="USER GROUPS" itemValue="USER_GROUPS" />
+                            <f:selectItem itemLabel="SYSTEM CONFIG" itemValue="SYSTEM_CONFIG" />
 
 							<p:ajax update="@form" event="change" />
 						</p:selectOneMenu>
@@ -63,6 +64,10 @@
 
                     <ui:fragment rendered="#{adminController.codelist eq 'USER_GROUPS'}">
 						<ui:include src="usergroupTable.xhtml"></ui:include>
+					</ui:fragment>
+                    
+                    <ui:fragment rendered="#{adminController.codelist eq 'SYSTEM_CONFIG'}">
+						<ui:include src="sysconfigTable.xhtml"></ui:include>
 					</ui:fragment>
 				</p:tab>
 

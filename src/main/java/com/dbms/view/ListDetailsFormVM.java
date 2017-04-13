@@ -12,6 +12,7 @@ import com.dbms.entity.cqt.CmqBaseTarget;
 import com.dbms.entity.cqt.RefConfigCodeList;
 import com.dbms.service.IRefCodeListService;
 import com.dbms.util.CqtConstants;
+import java.util.List;
 
 /**
  * "Create/Update/Browse&Search" module's "Details" tab form data 
@@ -200,11 +201,13 @@ public class ListDetailsFormVM {
 				setDrugProgram("");
 				setProtocol(CqtConstants.CODE_LIST_NO_PROTOCOL_INTERNALCODE);
 				setProduct("");
+                setProducts(new String[0]);
 			} else if("PRO".equals(extension)) {
 				setLevel(2);
 				setDrugProgram("");
 				setProtocol("");
 				setProduct("");
+                setProducts(new String[0]);
 			} else if("CPT".equals(extension) ||
 					"DME".equals(extension)) {
 				setDrugProgram(CqtConstants.CODE_LIST_NO_PROGRAM_INTERNALCODE);
@@ -214,9 +217,15 @@ public class ListDetailsFormVM {
 			} else {
 				if(refCodeListService != null) {
 					RefConfigCodeList d;
+                    List<RefConfigCodeList> ds;
+                    String[] dpIds;
 										
-					d = refCodeListService.findDefaultByConfigType(CqtConstants.CODE_LIST_TYPE_PRODUCT);
-					setProducts(d != null ? new String[] { d.getCodelistInternalValue() } : getProducts());
+					ds = refCodeListService.findDefaultsByConfigType(CqtConstants.CODE_LIST_TYPE_PRODUCT);
+                    dpIds = new String[ds.size()];
+                    for(int i=0;i<ds.size();i++) {
+                        dpIds[i] = ds.get(i).getCodelistInternalValue();
+                    }
+					setProducts(dpIds);
 					
 					d = refCodeListService.findDefaultByConfigType(CqtConstants.CODE_LIST_TYPE_PROGRAM);
 					setDrugProgram(d != null ? d.getCodelistInternalValue() : getDrugProgram());

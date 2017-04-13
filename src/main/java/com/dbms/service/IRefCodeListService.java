@@ -22,6 +22,7 @@ public interface IRefCodeListService extends ICqtPersistenceService<RefConfigCod
 
 	public RefConfigCodeList findByConfigTypeAndInternalCode(String configType, String internalCode);
 	public RefConfigCodeList findDefaultByConfigType(String configType);
+    public List<RefConfigCodeList> findDefaultsByConfigType(String configType);
 	
 	public String findCodeByInternalCode(String codelistInternalValue);
 	
