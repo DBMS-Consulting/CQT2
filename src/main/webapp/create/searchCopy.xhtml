@@ -144,7 +144,7 @@
 			<p:column headerText="Code" width="100">
 				<h:commandLink action="#{createController.loadCmqBaseByCode(value.cmqCode)}"
 					value="#{value.cmqCode}">
-					<p:ajax update="@form:wizardId @form:relations" />
+					<p:ajax update="@form:wizardId @form:relations @form:wizardNavbar" />
 					<f:setPropertyActionListener
 						target="#{createController.codeSelected}" value="#{value.cmqCode}" />
 				</h:commandLink>
