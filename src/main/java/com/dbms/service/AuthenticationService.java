@@ -191,7 +191,7 @@ public class AuthenticationService {
 					groupsString += ", ";
 				}
 			}
-		} else {
+		} else if(this.cmqMappedGroupMemberships != null) {
 			for (String group : this.cmqMappedGroupMemberships) {
 				groupsString += group;
 				if (i++ < (cmqMappedGroupMemberships.size() - 1)) {
@@ -207,7 +207,7 @@ public class AuthenticationService {
         String g = getGroupMembershipsAsString();
         
         String[] gp = g.replaceAll("[\\[\\]]", "").split(",");
-        if(gp.length>= 1)
+        if(gp.length>= 1 && gp[0].length() > 0)
             return gp[0].replace("OPENCQT_", "");
         return "NO-GROUP";
     }
@@ -224,12 +224,14 @@ public class AuthenticationService {
 			return true;
 		} else {
 			boolean retval = false;
-			for (String groupName : groupNames) {
-				if (this.cmqMappedGroupMemberships.contains(groupName.trim())) {
-					retval = true;
-					break;
-				}
-			}
+            if(this.cmqMappedGroupMemberships != null ) {
+                for (String groupName : groupNames) {
+                    if (this.cmqMappedGroupMemberships.contains(groupName.trim())) {
+                        retval = true;
+                        break;
+                    }
+                }
+            }
 			return retval;
 		}
 	}
