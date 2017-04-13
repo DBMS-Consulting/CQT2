@@ -22,7 +22,7 @@ import java.util.List;
  */
 public class ListDetailsFormVM {
 	public enum WizardType { BrowseWizard, CreateWizard, UpdateWizard, CopyWizard };
-	
+    
 	private WizardType wizardType = WizardType.CreateWizard;
 	private boolean modelChanged = false;
 	private IRefCodeListService refCodeListService;
@@ -35,7 +35,6 @@ public class ListDetailsFormVM {
 	private Integer level;
 	private String critical;
 	private String scope;
-	private String product;
 	private String[] products;
 	private String group;
 	private String algorithm;
@@ -146,7 +145,7 @@ public class ListDetailsFormVM {
 		this.name = cmq.getCmqName();
 		this.protocol = cmq.getCmqProtocolCd();
 		this.drugProgram = cmq.getCmqProgramCd();
-		this.product = cmq.getCmqProductCd();
+        this.products = cmq.getCmqProductCds();
 		this.designee = cmq.getCmqDesignee();
 		this.level = cmq.getCmqLevel();
 		this.critical = cmq.getCmqCriticalEvent();
@@ -200,19 +199,16 @@ public class ListDetailsFormVM {
 				setLevel(1);
 				setDrugProgram("");
 				setProtocol(CqtConstants.CODE_LIST_NO_PROTOCOL_INTERNALCODE);
-				setProduct("");
                 setProducts(new String[0]);
 			} else if("PRO".equals(extension)) {
 				setLevel(2);
 				setDrugProgram("");
 				setProtocol("");
-				setProduct("");
                 setProducts(new String[0]);
 			} else if("CPT".equals(extension) ||
 					"DME".equals(extension)) {
 				setDrugProgram(CqtConstants.CODE_LIST_NO_PROGRAM_INTERNALCODE);
 				setProtocol(CqtConstants.CODE_LIST_NO_PROTOCOL_INTERNALCODE);
-				setProduct(CqtConstants.CODE_LIST_NO_PRODUCT_INTERNALCODE);
 				setProducts(new String[] { CqtConstants.CODE_LIST_NO_PRODUCT_INTERNALCODE });
 			} else {
 				if(refCodeListService != null) {
@@ -348,27 +344,6 @@ public class ListDetailsFormVM {
 		}
 		return this.protocol;
 	}
-	
-	/**
-	 * Details Form / Product
-	 * Getter, Setter
-	 * @return
-	 */
-	public String getProduct() {
-		return product;
-	}
-	public void setProduct(String product) {
-		if(this.product== null || !this.product.equals(product))
-			setModelChanged(true);
-		this.product = product;
-	}
-	public String getProductLabel() {
-		if(this.refCodeListService != null) {
-			return refCodeListService.interpretInternalCodeToValue(CqtConstants.CODE_LIST_TYPE_PRODUCT, this.product);
-		}
-		return this.product;
-	}
-
 	/**
 	 * Details Form / Products
 	 * Getter, Setter
@@ -398,14 +373,14 @@ public class ListDetailsFormVM {
 		return "Choose products";
 	}
 	public String getProductsLabel1() {
-		if(this.products != null && this.products.length != 0 && this.refCodeListService != null) {
-			String[] prd = new String[this.products.length];
-			for(int i=0;i<products.length;i++) {
-				prd[i] = refCodeListService.interpretInternalCodeToValue(CqtConstants.CODE_LIST_TYPE_PRODUCT, this.products[i]);
-			}
-			return StringUtils.join(prd, ", ");
-		}
-		return "";
+        if(this.products != null && this.products.length != 0 && this.refCodeListService != null) {
+            String[] prd = new String[this.products.length];
+            for(int i=0;i<products.length;i++) {
+                prd[i] = refCodeListService.interpretInternalCodeToValue(CqtConstants.CODE_LIST_TYPE_PRODUCT, this.products[i]);
+            }
+            return StringUtils.join(prd, ", ");
+        }
+        return "";
 	}
 	
 	/**

@@ -368,6 +368,23 @@ td .bordered {
     display: none;
 }
 
+/** Styles for primefaces:growl */
+.ui-growl {
+    min-width: 301px;
+    width: auto !important;
+    max-width: 640px;
+}
+.ui-growl-image {
+    position: absolute !important;
+}
+.ui-growl-message {
+    min-width: 220px;
+    width: auto !important;
+    max-width: 600px;
+    padding: 0 10px 5px 10px !important;
+    margin-left: 40px;
+}
+
 /**================= Page Header ======================**/
 
 .nav {

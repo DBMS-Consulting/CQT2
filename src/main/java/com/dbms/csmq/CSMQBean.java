@@ -1,11 +1,15 @@
 package com.dbms.csmq;
 
+import com.dbms.entity.cqt.RefConfigCodeList;
+import com.dbms.service.IRefCodeListService;
+import com.dbms.util.CqtConstants;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -262,6 +266,10 @@ public class CSMQBean {
 //    private static final ArrayList<SelectItem> reportsSelectItems = new ArrayList<SelectItem>();
 //    private String configFileName;
 //    private static Hashtable properties;
+    
+    
+    @ManagedProperty("#{RefCodeListService}")
+	private IRefCodeListService refCodeListService;
 
 //    public CSMQBean() {
 // 
@@ -810,11 +818,22 @@ public class CSMQBean {
 	}
 	
 	public int getDefaultGrowlLife() {
+        RefConfigCodeList s = getRefCodeListService().findByConfigTypeAndInternalCode(CqtConstants.CODE_LIST_TYPE_SYSTEM_CONFIG, "DEFAULT_GROWL_LIFE");
+        if(s != null) {
+            try {
+                return Integer.parseInt(s.getValue());
+            } catch(NumberFormatException nfe) {
+                return DEFAULT_GROWL_LIFE;
+            }
+        }
 		return DEFAULT_GROWL_LIFE;
 	}
     
     public boolean isDegugMode() {
-        return true;
+        RefConfigCodeList s = getRefCodeListService().findByConfigTypeAndInternalCode(CqtConstants.CODE_LIST_TYPE_SYSTEM_CONFIG, "DEBUG_MESSAGE");
+        if(s != null && "YES".equalsIgnoreCase(s.getValue()))
+            return true;
+        return false;
     }
 	
 	public List<String[]> getCqtBaseScopes() {
@@ -839,6 +858,20 @@ public class CSMQBean {
 			new String[] { CATEGORY_I, "I" }
 		});
 	}
+
+    /**
+     * @return the refCodeListService
+     */
+    public IRefCodeListService getRefCodeListService() {
+        return refCodeListService;
+    }
+
+    /**
+     * @param refCodeListService the refCodeListService to set
+     */
+    public void setRefCodeListService(IRefCodeListService refCodeListService) {
+        this.refCodeListService = refCodeListService;
+    }
 }
 
 

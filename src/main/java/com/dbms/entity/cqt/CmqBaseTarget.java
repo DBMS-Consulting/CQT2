@@ -17,6 +17,12 @@ import javax.persistence.TemporalType;
 import org.apache.commons.lang.StringUtils;
 
 import com.dbms.entity.BaseEntity;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import javax.persistence.CascadeType;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
 
 @Entity
 @Table(name = "CMQ_BASE_TARGET")
@@ -82,9 +88,6 @@ public class CmqBaseTarget extends BaseEntity {
 	@Column(name = "CMQ_PROTOCOL_CD", nullable = false, length = 100)
 	private String cmqProtocolCd;
 
-	@Column(name = "CMQ_PRODUCT_CD", nullable = false, length = 200)
-	private String cmqProductCd;
-
 	@Column(name = "CMQ_DESIGNEE", nullable = false, length = 100)
 	private String cmqDesignee;
 
@@ -142,6 +145,9 @@ public class CmqBaseTarget extends BaseEntity {
 
 	@Column(name = "CMQ_APPROVE_REASON", length = 4000)
 	private String cmqApproveReason;
+    
+    @OneToMany(cascade=CascadeType.ALL, mappedBy="cmqBaseTarget", fetch=FetchType.EAGER, orphanRemoval=true)
+	private List<CmqProductBaseTarget> productsList;
 
 	public Long getId() {
 		return cmqId;
@@ -261,14 +267,6 @@ public class CmqBaseTarget extends BaseEntity {
 
 	public void setCmqProtocolCd(String cmqProtocolCd) {
 		this.cmqProtocolCd = cmqProtocolCd;
-	}
-
-	public String getCmqProductCd() {
-		return cmqProductCd;
-	}
-
-	public void setCmqProductCd(String cmqProductCd) {
-		this.cmqProductCd = cmqProductCd;
 	}
 
 	public String getCmqDesignee() {
@@ -417,5 +415,74 @@ public class CmqBaseTarget extends BaseEntity {
 
 	public void setCmqApproveReason(String cmqApproveReason) {
 		this.cmqApproveReason = cmqApproveReason;
+	}
+    
+    public String[] getCmqProductCds() {
+		int s = this.productsList == null ? 0 : this.productsList.size();
+        HashSet<String> upcds = new HashSet<String>();
+		String[] productCds;
+		if(s > 0) {
+			int i=0;
+			for(CmqProductBaseTarget p: productsList) {
+				upcds.add(p.getCmqProductCd());
+			}
+		}
+        productCds = new String[upcds.size()];
+        upcds.toArray(productCds);
+        return productCds;
+	}
+	
+	public void setCmqProductCds(String[] productCds) {
+		if(null != this.productsList) {
+			this.productsList = new ArrayList<>();
+		}
+
+		for(String p: productCds) {
+			addCmqProduct(p);
+		}
+	}
+	
+	public int addCmqProduct(String productCd) {
+		int s = this.productsList == null ? 0 : this.productsList.size();
+		if(s > 0) {
+			// check if it already exists
+			for(CmqProductBaseTarget p: productsList) {
+				if(p.getCmqProductCd().equals(productCd)) {
+					p.setCmqBaseTarget(this);
+					return 0;
+				}
+			}
+		}
+		CmqProductBaseTarget p = new CmqProductBaseTarget() ;
+		p.setCmqBaseTarget(this);
+		p.setCmqProductCd(productCd);
+		p.setCmqCode(cmqCode);
+		p.setCmqName(cmqName);
+		if(this.productsList == null)
+			this.productsList = new ArrayList<>();
+		this.productsList.add(p);
+		return 1;
+	}
+	
+	public int removeCmqProduct(String productCd) {
+		int s = this.productsList == null ? 0 : this.productsList.size();
+		if(s > 0) {
+			// check if it already exists
+			for(CmqProductBaseTarget p: productsList) {
+				if(p.getCmqProductCd().equals(productCd)) {
+					p.setCmqBaseTarget(null);
+					productsList.remove(p);
+				}
+			}
+		}
+		return 0;
+	}
+
+	public List<CmqProductBaseTarget> getProductsList() {
+		return productsList;
+	}
+
+	public void setProductsList(List<CmqProductBaseTarget> productsList) {
+		this.productsList = productsList;
 	}
 }

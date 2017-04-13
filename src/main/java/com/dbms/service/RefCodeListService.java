@@ -165,6 +165,14 @@ public class RefCodeListService extends
 	@Override
 	public RefConfigCodeList findByConfigTypeAndInternalCode(String configType, String internalCode) {
 		RefConfigCodeList ref = null;
+        String cacheKey = "[" + configType + "-" + internalCode + "]";
+        
+        // try to get it from cache first
+        Object cv = (RefConfigCodeList)this.cqtCacheManager.getFromCache(CACHE_NAME, cacheKey);
+        if(cv != null && cv instanceof RefConfigCodeList) {
+            return (RefConfigCodeList) cv;
+        }
+        
 		String queryString = "from RefConfigCodeList a where a.codelistConfigType = :codelistConfigType and a.codelistInternalValue = :codelistInternalValue";
 
 		EntityManager entityManager = this.cqtEntityManagerFactory
@@ -185,8 +193,10 @@ public class RefCodeListService extends
 		} finally {
 			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
 		}
-		if (ref != null)
+		if (ref != null) {
+            this.cqtCacheManager.addToCache(CACHE_NAME, cacheKey, ref);
 			return ref;
+        }
 		return null;
 	}
 
