@@ -102,6 +102,63 @@ public class RefCodeListService extends
 		return retVal;
 	}
 
+	@Override
+	@SuppressWarnings({ "unchecked" })
+	public RefConfigCodeList findEnterpriseAdType() {
+		RefConfigCodeList retVal = null;
+
+		EntityManager entityManager = this.cqtEntityManagerFactory
+				.getEntityManager();
+
+		StringBuilder queryString = new StringBuilder(
+				"from RefConfigCodeList a");
+		queryString
+				.append(" where a.codelistConfigType = 'SYSTEM_CONFIG' and a.activeFlag = 'Y' and a.codelistInternalValue = 'ENTERPRISE_AD' ");
+		try {
+			Query query = entityManager.createQuery(queryString.toString());
+
+			List<RefConfigCodeList> data = query.getResultList();
+			if((null != data) && (data.size() > 0)) {
+				retVal = data.get(0);
+			}
+		} catch (Exception ex) {
+			StringBuilder msg = new StringBuilder();
+			msg.append("findEnterpriseAdType failed '")
+					.append(". Query used was->").append(queryString);
+			LOG.error(msg.toString(), ex);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
+	
+	@Override
+	@SuppressWarnings({ "unchecked" })
+	public List<RefConfigCodeList> findUserGroups() {
+		List<RefConfigCodeList> retVal = null;
+
+		EntityManager entityManager = this.cqtEntityManagerFactory
+				.getEntityManager();
+
+		StringBuilder queryString = new StringBuilder(
+				"from RefConfigCodeList a");
+		queryString
+				.append(" where a.codelistConfigType = 'USER_GROUPS' and a.activeFlag = 'Y' ");
+		try {
+			Query query = entityManager.createQuery(queryString.toString());
+
+			retVal = query.getResultList();
+		} catch (Exception ex) {
+			StringBuilder msg = new StringBuilder();
+			msg.append("findUserGroups failed '")
+					.append(". Query used was->").append(queryString);
+			LOG.error(msg.toString(), ex);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
+	
 	/**
 	 * Find all active configs, order by serialNum
 	 */

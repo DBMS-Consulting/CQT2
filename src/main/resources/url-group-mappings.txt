@@ -1,0 +1,21 @@
+# comments start with a #
+/create/create.xhtml=MANAGER,REQUESTOR
+/create/update.xhtml=MANAGER,REQUESTOR
+/create/copy.xhtml=MANAGER,REQUESTOR
+/create/browseAndSearch.xhtml=MANAGER,REQUESTOR,USER
+
+Publish-Menu=MANAGER,REQUESTOR
+/publish/publishCurrentVersion.xhtml=MANAGER,REQUESTOR
+/publish/publishFutureVersion.xhtml=MANAGER,REQUESTOR
+
+Reactivate/Retire-Menu=MANAGER,REQUESTOR
+/create/reactivate.xhtml=MANAGER,REQUESTOR
+/create/retire.xhtml=MANAGER,REQUESTOR
+
+/impactAssessment/impactAssessment.xhtml=MANAGER,ADMIN
+
+View-Version-Impacts-Menu=MANAGER,REQUESTOR,USER
+/viewVersionImpact/versionImpact.xhtml=MANAGER,REQUESTOR,USER
+/viewPreviousVersionImpact/previousVersionImpact.xhtml=MANAGER,REQUESTOR,USER
+
+/admin/admin.xhtml=ADMIN

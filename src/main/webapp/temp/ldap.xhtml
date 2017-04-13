@@ -12,8 +12,8 @@
             <p:panel header="LDAP String Input Form">
                 <h:panelGrid columns="2" styleClass="full-width">
                     <p:outputLabel value="LDAP String:" style="width:100px;" />
-                    <p:inputTextarea value="#{dummyView.value}" style="width: 500px" rows="5"></p:inputTextarea>
-                    <p:commandButton value="Submit" action="#{AuthenticationService.updatePxedDummyGroupMembershipHeader(dummyView.value)}"></p:commandButton>
+                    <p:inputTextarea value="#{AuthenticationService.groupMembershipHeader}" style="width: 800px" rows="10" autoResize="true"></p:inputTextarea>
+                    <p:commandButton value="Submit" action="#{AuthenticationService.updatePxedDummyGroupMembershipHeader()}"></p:commandButton>
                 </h:panelGrid>
             </p:panel>
 		</h:form>
