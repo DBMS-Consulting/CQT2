@@ -31,7 +31,7 @@
 
 				<!-- Impact -->
 				<p:tab id="impact" title="Impact Assessment">
-					<p:toolbar>
+					<p:toolbar id="iaWorkflowCtrlPanel">
 						<f:facet name="left">
 							<h:outputText value="Impact Assessment"
 								style="font-weight: bold;" />
@@ -80,7 +80,8 @@
 
 								<p:fileDownload value="#{impactSearchController.excelFile}" />
 							</h:commandLink>
-<p:spacer width="5" />
+                            
+                            <p:spacer width="5" />
 							<p:commandButton value="Legend" actionListener="#"
 								onclick="PF('legend').show()" icon="fa fa-bars"
 								update="messages" />
@@ -135,12 +136,12 @@
 									<!-- Selection of the list fr workflow states -->
 									<p:ajax event="select"
 										listener="#{impactSearchController.onSelectCurrentRowTreeTable}"
-										update="@form:reviewBtn @form:approveBtn @form:demoteBtn @form:futureListsAndSmqs"
+										update="@form:iaWorkflowCtrlPanel @form:futureListsAndSmqs"
 										oncomplete="PF('targetLists').unselectAllNodes()" />
 
 									<p:ajax event="unselect"
 										listener="#{impactSearchController.onUnselectCurrentRowTreeTable}"
-										update="@form:reviewBtn @form:approveBtn @form:demoteBtn @form:futureListsAndSmqs" />
+										update="@form:iaWorkflowCtrlPanel @form:futureListsAndSmqs" />
 
 									<p:columnGroup type="header">
 										<p:row>
@@ -207,11 +208,11 @@
 									<!-- Selection of the list fr workflow states -->
 									<p:ajax event="select"
 										listener="#{impactSearchController.onSelectTargetRowTreeTable}"
-										update="@form:messages @form:reviewBtn @form:approveBtn @form:demoteBtn @form:exportBtn @form:currentListsAndSmqs"
+										update="@form:messages @form:iaWorkflowCtrlPanel @form:currentListsAndSmqs"
 										oncomplete="PF('currentLists').unselectAllNodes()" />
 									<p:ajax event="unselect"
 										listener="#{impactSearchController.onUnselectTargetRowTreeTable}"
-										update="@form:messages @form:reviewBtn @form:approveBtn @form:demoteBtn @form:currentListsAndSmqs" />
+										update="@form:messages @form:iaWorkflowCtrlPanel @form:currentListsAndSmqs" />
 
 									<p:columnGroup type="header">
 										<p:row>

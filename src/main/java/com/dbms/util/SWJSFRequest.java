@@ -372,4 +372,19 @@ public class SWJSFRequest
 	    }
     }
     
+    public String extractGroupName(String groupMembership, String defaultGroup) {
+        String g;
+        try {
+            g = def(getGroupListValueAsString("CN", groupMembership), null).toString();
+        } catch (Exception e) {
+            g = null;
+        }
+        if(g == null)
+            return defaultGroup;
+        String[] gp = g.replaceAll("[\\[\\]]", "").split(",");
+        if(gp.length>= 2)
+            return gp[1].replace("OPENCQT_", "");
+        return defaultGroup;
+    }
+    
 }

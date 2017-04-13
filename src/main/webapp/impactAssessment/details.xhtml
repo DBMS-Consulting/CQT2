@@ -23,7 +23,7 @@
 				<h:outputText value="#{RefCodeListService.findCodeByInternalCode('PROTOCOL', impactSearchController.detailsFormModel.protocol)}" />
 
 				<p:outputLabel styleClass="label-right" value="Product:" />
-				<h:outputText value="#{RefCodeListService.findCodeByInternalCode('PRODUCT', impactSearchController.detailsFormModel.product)}" />
+                <h:outputText value="#{impactSearchController.detailsFormModel.productsLabel1}" />
 			</h:panelGrid>
 
 			<h:panelGrid columns="2" columnClasses="label-cell, value-cell">

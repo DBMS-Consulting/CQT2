@@ -135,8 +135,6 @@ public class ImpactSearchController implements Serializable {
 	private ListNotesFormVM notesFormModel = new ListNotesFormVM(); // "Informative Notes" tab model
 	private ListDetailsFormVM detailsFormModel = new ListDetailsFormVM(); // "Details" tab model
 	
-	private boolean reviewEnabled, demoteEnabled, approveEnabled, exportEnabled;
-	
 	private boolean isImpactedCmqSelected, isNonImpactedCmqSelected, isImpactedSmqSelected, isNonImpactedSmqSelected;
 	
 	private TargetHierarchySearchVM targetHierarchySearchDlgModel;
@@ -166,6 +164,7 @@ public class ImpactSearchController implements Serializable {
 
 	@PostConstruct
 	public void init() {
+        detailsFormModel.setRefCodeListService(refCodeListService);
 		this.impactedCmqBaseLazyDataModel = new CmqLazyDataModel(true);
 		this.notImpactedCmqBaseLazyDataModel = new CmqLazyDataModel(false);
 		this.impactedSmqBaseLazyDataModel = new SmqLazyDataModel(true);
@@ -177,10 +176,6 @@ public class ImpactSearchController implements Serializable {
         currentHierarchySearchDlgModel = new CmqBaseHierarchySearchVM(cmqBaseCurrentService, smqBaseCurrentService, meddraDictCurrentService, cmqRelationCurrentService);
         targetHierarchySearchDlgModel = new TargetHierarchySearchVM(cmqBaseTargetService, smqBaseTargetService, meddraDictTargetService, cmqRelationTargetService);
         
-		setReviewEnabled(false);
-		setApproveEnabled(false);
-		setDemoteEnabled(false);
-		setExportEnabled(false); 
 		currentOrTarget = SELECTED_NO_LIST;
 		
 		newPtDistinctSocTermsList = this.meddraDictTargetService.findSocsWithNewPt();
@@ -258,10 +253,6 @@ public class ImpactSearchController implements Serializable {
 	 */
 	public void onSelectCurrentRowTreeTable(NodeSelectEvent event) {
 		//Updating the worflow buttons
-		setReviewEnabled(false);
-		setApproveEnabled(false);
-		setDemoteEnabled(false);
-		
 		currentOrTarget = SELECTED_CURRENT_LIST;
 	}
 	/**
@@ -270,10 +261,6 @@ public class ImpactSearchController implements Serializable {
 	 */
 	public void onUnselectCurrentRowTreeTable(NodeUnselectEvent event) {
 		//Updating the worflow buttons
-		setReviewEnabled(false);
-		setApproveEnabled(false);
-		setDemoteEnabled(false);
-		
 		if(currentOrTarget == SELECTED_CURRENT_LIST)
 			currentOrTarget = SELECTED_NO_LIST;
 	}
@@ -283,14 +270,6 @@ public class ImpactSearchController implements Serializable {
 	 * @param event NodeSelectEvent
 	 */
 	public void onSelectTargetRowTreeTable(NodeSelectEvent event) {
-		//Updating the worflow buttons
-		if(this.isImpactedCmqSelected) {
-			updateWorkflowButtonStates(this.selectedImpactedCmqList);
-		} else if(this.isNonImpactedCmqSelected) {
-			updateWorkflowButtonStates(this.selectedNotImpactedCmqList);
-		}
-		setExportEnabled(true); 
-		
 		currentOrTarget = SELECTED_TARGET_LIST;
 	}
 	/**
@@ -299,12 +278,8 @@ public class ImpactSearchController implements Serializable {
 	 */
 	public void onUnselectTargetRowTreeTable(NodeUnselectEvent event) {
 		//Updating the worflow buttons
-		setReviewEnabled(false);
-		setApproveEnabled(false);
-		setDemoteEnabled(false);
 		if(currentOrTarget == SELECTED_TARGET_LIST)
 			currentOrTarget = SELECTED_NO_LIST;
-		setExportEnabled(false); 
 	}
 	
 
@@ -631,7 +606,7 @@ public class ImpactSearchController implements Serializable {
 								FacesContext.getCurrentInstance().addMessage(null, 
                                         new FacesMessage(FacesMessage.SEVERITY_ERROR,
                                             "An error occurred while updated the list of CmqRelations for CMQ base code " + cmqBaseTarget.getCmqCode(),
-                                            ""));
+                                            "Error:" + e.getMessage()));
 							}
 						}
 					}//end of if (CollectionUtils.isNotEmpty(childTreeNodes)) 
@@ -901,7 +876,7 @@ public class ImpactSearchController implements Serializable {
 				.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Successfully saved notes", ""));
 		} catch(CqtServiceException e) {
 			FacesContext.getCurrentInstance()
-				.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed to save notes", ""));
+				.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed to save notes", "Error: " + e.getMessage()));
 		}
 	}
 	
@@ -950,7 +925,7 @@ public class ImpactSearchController implements Serializable {
 				.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Successfully saved details", ""));
 		} catch(CqtServiceException e) {
 			FacesContext.getCurrentInstance()
-				.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed to save details", ""));
+				.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed to save details", "Error: " + e.getMessage()));
 		}
 	}
 	
@@ -1254,7 +1229,7 @@ public class ImpactSearchController implements Serializable {
 			e.printStackTrace();
 			FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                            "An error occurred while updating the state of the List", ""));
+                            "An error occurred while updating the state of the List", "Error: " + e.getMessage()));
 		}
 		
 //		setReviewEnabled(false);
@@ -1281,20 +1256,6 @@ public class ImpactSearchController implements Serializable {
 					target.setCmqState("PENDING IA");
 			}
 
-		}
-	}
-
-	private void updateWorkflowButtonStates(CmqBaseTarget target) {
-		/**
-		 * Update on workflow buttons
-		 */
-		if (target != null) {
-			if (target.getCmqState().equals("PENDING IA"))
-				setReviewEnabled(true);
-			if (target.getCmqState().equals("REVIEWED IA"))
-				setApproveEnabled(true);
-			if (target.getCmqState().equals("REVIEWED IA") || target.getCmqState().equals("APPROVED IA"))
-				setDemoteEnabled(true);
 		}
 	}
 	
@@ -1615,27 +1576,18 @@ public class ImpactSearchController implements Serializable {
 	}
 
 	public boolean isReviewEnabled() {
-		return reviewEnabled;
-	}
-
-	public void setReviewEnabled(boolean reviewEnabled) {
-		this.reviewEnabled = reviewEnabled;
+        CmqBaseTarget t = (this.isImpactedCmqSelected ? this.selectedImpactedCmqList : this.selectedNotImpactedCmqList);
+        return (currentOrTarget == SELECTED_TARGET_LIST && t != null && "PENDING IA".equals(t.getCmqState()));
 	}
 
 	public boolean isDemoteEnabled() {
-		return demoteEnabled;
-	}
-
-	public void setDemoteEnabled(boolean demoteEnabled) {
-		this.demoteEnabled = demoteEnabled;
+		CmqBaseTarget t = (this.isImpactedCmqSelected ? this.selectedImpactedCmqList : this.selectedNotImpactedCmqList);
+        return (currentOrTarget == SELECTED_TARGET_LIST && t != null && ("REVIEWED IA".equals(t.getCmqState()) || "APPROVED IA".equals(t.getCmqState())));
 	}
 
 	public boolean isApproveEnabled() {
-		return approveEnabled;
-	}
-
-	public void setApproveEnabled(boolean approveEnabled) {
-		this.approveEnabled = approveEnabled;
+		CmqBaseTarget t = (this.isImpactedCmqSelected ? this.selectedImpactedCmqList : this.selectedNotImpactedCmqList);
+        return (currentOrTarget == SELECTED_TARGET_LIST && t != null && "REVIEWED IA".equals(t.getCmqState()));
 	}
 
 	public LazyDataModel<SmqBaseTarget> getImpactedSmqBaseLazyDataModel() {
@@ -1805,11 +1757,7 @@ public class ImpactSearchController implements Serializable {
 	}
 
 	public boolean isExportEnabled() {
-		return exportEnabled;
-	}
-
-	public void setExportEnabled(boolean exportEnabled) {
-		this.exportEnabled = exportEnabled;
+		return (currentOrTarget == SELECTED_TARGET_LIST);
 	}
 
 	public StreamedContent getExcelFile() {

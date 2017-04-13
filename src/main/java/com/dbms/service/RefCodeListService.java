@@ -257,6 +257,9 @@ public class RefCodeListService extends
 			}
             pv = new String[upcds.size()];
             upcds.toArray(pv);
+            if(upcds.size() != products.size()) {
+                LOG.debug("There were some duplicates in products list given.");
+            }
 			return pv;
 		} else {
 			return new String[0];

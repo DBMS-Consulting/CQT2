@@ -23,39 +23,48 @@
 		<h:form>
 			<h:panelGrid id="l1" columns="2" style="width: 100%">
 				<p:graphicImage id="logo" title="desc" alt="logo" value="/image/openCqt-Logo.png" />
+                
+                <h:panelGroup style="float:right;">
+                    <ul class="nav nav-right">
+                        <li>
+                            <h:outputText value="Version: " rendered="true" />
+                            <h:outputText value="0.9" style="font-weight:bold;" rendered="true" />
+                        </li>
+                        <li>
+                            <h:outputText value="Logged in as: " id="pt_ot1" rendered="true" />
+                            <h:outputText value="${appSWJSFRequest.def(header['IAMPFIZERUSERSURNAME'], 'Last')}, ${appSWJSFRequest.def(header['IAMPFIZERUSERGIVENNAME'], 'First')}" id="pt_ot2" style="font-weight:bold;"
+                                rendered="true" />
+                        </li>
+                        <li>
+                            <h:outputText value="Role: " id="pt_ot1a" rendered="true" />
+                            <h:outputText id="of2" style="font-weight:bold;"
+                                value="#{appSWJSFRequest.extractGroupName(header['IAMPFIZERUSERGROUPMEMBERSHIP'], 'No-Group')}" rendered="true" />
+                        </li>
+                        
+                        <li>
+                            <p:commandButton value="Logoff" id="pt_cb1" rendered="true"
+                                action="#{userBean.logout}" immediate="true" />
+                        </li>
+                    </ul>
+                    
+                    <h:panelGrid columns="3" style="float: right">
+                        <h:panelGrid id="pl2" style="border: none; font-size: 10px;"
+                            columns="3">
+                            
+                            <!--
+                            <p:commandButton value="Login" id="pt_cb1a" rendered="true"
+                                partialSubmit="true" onclick="PF('loginPU').show();"
+                                immediate="true">
+                            </p:commandButton>
 
-				<h:panelGrid columns="1" style="max-width: 400px; float: right">
-					<h:panelGrid id="pl2" style="border: none; font-size: 10px;"
-						columns="3">
-						<p:commandButton value="Logoff" id="pt_cb1" rendered="true"
-							action="#{userBean.logout}" immediate="true" />
-						<p:commandButton value="Login" id="pt_cb1a" rendered="true"
-							partialSubmit="true" onclick="PF('loginPU').show();"
-							immediate="true">
-						</p:commandButton>
+                            <p:commandButton value="Change Password"
+                                onclick="PF('pt_p1').show();" id="pt_gb1" immediate="true" />
+                            -->
+                        </h:panelGrid>
+                    </h:panelGrid>
+                </h:panelGroup>
 
-						<p:commandButton value="Change Password"
-							onclick="PF('pt_p1').show();" id="pt_gb1" immediate="true" />
-					</h:panelGrid>
-
-					<h:panelGrid id="pt_pgl4" columns="1" style="width: 100%">
-						<h:panelGrid columns="2" style="float: right">
-							<h:outputText value="Version: " rendered="true" />
-							<h:outputText value="0.9" style="font-weight:bold;"
-								rendered="true" />
-							<h:outputText value="Logged in as: " id="pt_ot1" rendered="true" />
-							<h:outputText value="${appSWJSFRequest.def(header['IAMPFIZERUSERCN'], 'Admin')}  ( ${appSWJSFRequest.def(header['IAMPFIZERUSERSURNAME'], 'Last')}, ${appSWJSFRequest.def(header['IAMPFIZERUSERGIVENNAME'], 'First')} ) " id="pt_ot2" style="font-weight:bold;"
-								rendered="true" />
-						</h:panelGrid>
-						<h:panelGrid columns="2">
-							<h:outputText value="Role: " id="pt_ot1a" rendered="true" />
-							<h:outputText id="of2" style="font-weight:bold;"
-								value="#{appSWJSFRequest.def(appSWJSFRequest.getGroupListValueAsString('CN', header['IAMPFIZERUSERGROUPMEMBERSHIP']), 'No-Group')}" rendered="true" />
-						</h:panelGrid>
-
-					</h:panelGrid>
-					
-				</h:panelGrid>
+				
 			</h:panelGrid>
 
 			<p:dialog widgetVar="loginPU">
