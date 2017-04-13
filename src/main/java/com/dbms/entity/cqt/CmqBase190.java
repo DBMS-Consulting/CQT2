@@ -22,6 +22,7 @@ import javax.persistence.TemporalType;
 import org.apache.commons.lang.StringUtils;
 
 import com.dbms.entity.BaseEntity;
+import java.util.HashSet;
 
 @Entity
 @Table(name = "CMQ_BASE_CURRENT")
@@ -435,14 +436,17 @@ public class CmqBase190 extends BaseEntity {
 
 	public String[] getCmqProductCds() {
 		int s = this.productsList == null ? 0 : this.productsList.size();
-		String[] productCds = new String[s];
+        HashSet<String> upcds = new HashSet<String>();
+		String[] productCds;
 		if(s > 0) {
 			int i=0;
 			for(CmqProductBaseCurrent p: productsList) {
-				productCds[i++] = p.getCmqProductCd();
+				upcds.add(p.getCmqProductCd());
 			}
 		}
-		return productCds;
+        productCds = new String[upcds.size()];
+        upcds.toArray(productCds);
+        return productCds;
 	}
 	
 	public void setCmqProductCds(String[] productCds) {

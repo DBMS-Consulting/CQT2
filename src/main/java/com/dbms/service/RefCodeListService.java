@@ -38,6 +38,7 @@ import com.dbms.service.base.CqtPersistenceService;
 import com.dbms.util.CqtConstants;
 import com.dbms.util.OrderBy;
 import com.dbms.util.exceptions.CqtServiceException;
+import java.util.HashSet;
 
 @ManagedBean(name = "RefCodeListService")
 @ApplicationScoped
@@ -249,10 +250,13 @@ public class RefCodeListService extends
 	public String[] interpretProductCodesToValues(List<CmqProductBaseCurrent> products)
 	{
 		if(products != null && products.size() > 0) {
-			String[] pv = new String[products.size()];
+            HashSet<String> upcds = new HashSet<String>();
+			String[] pv;
 			for(int i=0; i<products.size(); i++) {
-				pv[i] = interpretInternalCodeToValue(CqtConstants.CODE_LIST_TYPE_PRODUCT, products.get(i).getCmqProductCd());
+                upcds.add(interpretInternalCodeToValue(CqtConstants.CODE_LIST_TYPE_PRODUCT, products.get(i).getCmqProductCd()));
 			}
+            pv = new String[upcds.size()];
+            upcds.toArray(pv);
 			return pv;
 		} else {
 			return new String[0];
@@ -260,15 +264,11 @@ public class RefCodeListService extends
 	}
 	
 	@Override
-	public String interpretProductCodesToValuesLabel(List<CmqProductBaseCurrent> products) {
-		return StringUtils.join(this.interpretProductCodesToValues(products), ", ");
-	}
-	
-	@Override
 	public String convertProductCodesToValuesLabel(List<CmqProductBaseCurrent> products) {
 		return StringUtils.join(this.interpretProductCodesToValues(products), ", ");
 	}
 	
+    @Override
 	public String interpretProductCodesToValuesLabel(String[] productCds) {
 		String [] pv;
 		if(productCds != null && productCds.length > 0) {
