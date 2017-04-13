@@ -752,12 +752,12 @@ public class ImpactSearchController implements Serializable {
 	 * @return
 	 */
 	public String onIaWizardFlowProcess(FlowEvent event) {
-		boolean selected = false;
-		if (selectedImpactedCmqList != null || selectedImpactedSmqList != null || selectedNotImpactedCmqList != null || selectedNotImpactedSmqList != null) {
-			selected = true;			
-		}
-//		if (currentOrTarget == 0)
-//			selected = false;	
+		boolean selected = true;
+//		if (selectedImpactedCmqList != null || selectedImpactedSmqList != null || selectedNotImpactedCmqList != null || selectedNotImpactedSmqList != null) {
+//			selected = true;			
+//		}
+		if (currentOrTarget == 0)
+			selected = false;	
 			
 		if (!selected) {
 		//	this.confirmMessage = "Select a List/SMQ to proceed";
