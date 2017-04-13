@@ -115,6 +115,7 @@ public class AuthenticationService {
 		this.userSurName = request.getHeader(IAMPFIZERUSERSURNAME_HEADER);
 		this.userEmail = request.getHeader(IAMPFIZERUSERINTERNETEMAILADDRESS_HEADER);
 		this.groupMembershipHeader = request.getHeader(IAMPFIZERUSERGROUPMEMBERSHIP_HEADER);
+		LOG.info("Group membership header for " + this.userCn + " is : " + this.groupMembershipHeader);
 		this.parseAndSetGroupMemberships();
 	}
 
