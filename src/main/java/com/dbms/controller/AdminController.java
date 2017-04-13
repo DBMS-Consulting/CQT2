@@ -70,6 +70,7 @@ public class AdminController implements Serializable {
 		getMeddraList();
 		getWorkflowList();
         getUsergroupList();
+        getSysconfigList();
 	}
 	
 	public String initAddCodelist() {
