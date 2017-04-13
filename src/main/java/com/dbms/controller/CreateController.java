@@ -36,6 +36,7 @@ import com.dbms.entity.cqt.SmqBase190;
 import com.dbms.entity.cqt.SmqRelation190;
 import com.dbms.entity.cqt.dtos.MeddraDictHierarchySearchDto;
 import com.dbms.entity.cqt.dtos.MeddraDictReverseHierarchySearchDto;
+import com.dbms.service.AuthenticationService;
 import com.dbms.service.ICmqBase190Service;
 import com.dbms.service.ICmqRelation190Service;
 import com.dbms.service.IRefCodeListService;
@@ -75,6 +76,9 @@ public class CreateController implements Serializable {
 
 	@ManagedProperty("#{RefCodeListService}")
 	private IRefCodeListService refCodeListService;
+    
+    @ManagedProperty("#{AuthenticationService}")
+	private AuthenticationService authService;
 	
 	private ListDetailsFormVM detailsFormModel = new ListDetailsFormVM();
 	private ListNotesFormVM notesFormModel = new ListNotesFormVM();
@@ -1397,6 +1401,10 @@ public class CreateController implements Serializable {
 	}
 
 	public boolean isApproveDisabled() {
+        // if AD Group is Requester, disable it
+        if(getAuthService().hasGroup(new String[] {AuthenticationService.REQUESTER_GROUP}))
+            return true;
+        
 		if (selectedData != null && selectedData.getCmqStatus() != null
 				&& CmqBase190.CMQ_STATE_VALUE_REVIEWED.equalsIgnoreCase(selectedData.getCmqState()))
 			return false;
@@ -1404,6 +1412,10 @@ public class CreateController implements Serializable {
 	}
 
 	public boolean isReviewedDisabled() {
+        // if AD Group is Requester, disable it
+        if(getAuthService().hasGroup(new String[] {AuthenticationService.REQUESTER_GROUP}))
+            return true;
+        
 		if (selectedData != null
 				&& CmqBase190.CMQ_STATE_VALUE_DRAFT.equalsIgnoreCase(selectedData.getCmqState()))
 			return false;
@@ -1467,5 +1479,19 @@ public class CreateController implements Serializable {
 	public void setFormSaved(boolean formSaved) {
 		this.formSaved = formSaved;
 	}
+
+    /**
+     * @return the authService
+     */
+    public AuthenticationService getAuthService() {
+        return authService;
+    }
+
+    /**
+     * @param authService the authService to set
+     */
+    public void setAuthService(AuthenticationService authService) {
+        this.authService = authService;
+    }
 
 }

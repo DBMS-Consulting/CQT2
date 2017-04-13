@@ -39,10 +39,10 @@ public class AuthenticationService {
 	private static final String IAMPFIZERUSERGROUPMEMBERSHIP_HEADER = "IAMPFIZERUSERGROUPMEMBERSHIP";
 	private static final String IAMPFIZERUSERINTERNETEMAILADDRESS_HEADER = "IAMPFIZERUSERINTERNETEMAILADDRESS";
 
-	private static final String MANAGER_GROUP = "MANAGER";
-	private static final String ADMIN_GROUP = "ADMIN";
-	private static final String REQUESTER_GROUP = "REQUESTOR";
-	private static final String USER_GROUP = "USER";
+	public static final String MANAGER_GROUP = "MANAGER";
+	public static final String ADMIN_GROUP = "ADMIN";
+	public static final String REQUESTER_GROUP = "REQUESTOR";
+	public static final String USER_GROUP = "USER";
 	
 	private static final String ENTERPRISE_AD_PXED = "PXED";
 	private static final String ENTERPRISE_AD_PXED_DUMMY = "PXED-DUMMY";
