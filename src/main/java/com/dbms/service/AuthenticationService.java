@@ -201,6 +201,15 @@ public class AuthenticationService {
 		groupsString += "]";
 		return groupsString;
 	}
+    
+    public String getGroupName() {
+        String g = getGroupMembershipsAsString();
+        
+        String[] gp = g.replaceAll("[\\[\\]]", "").split(",");
+        if(gp.length>= 1)
+            return gp[0].replace("OPENCQT_", "");
+        return "NO-GROUP";
+    }
 
 	/**
 	 * This method can be used on selective page parts. "e.g. don't show approve

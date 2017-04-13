@@ -33,13 +33,13 @@
                         </li>
                         <li>
                             <h:outputText value="Logged in as: " id="pt_ot1" rendered="true" />
-                            <h:outputText value="${AuthenticationService.userCn}  (${AuthenticationService.userSurName}, ${AuthenticationService.userGivenName})" 
+                            <h:outputText value="${AuthenticationService.userSurName}, ${AuthenticationService.userGivenName}" 
                             id="pt_ot2" style="font-weight:bold;" rendered="true" />
                         </li>
                         <li>
                             <h:outputText value="Role: " id="pt_ot1a" rendered="true" />
                             <h:outputText id="of2" style="font-weight:bold;"
-                                value="#{AuthenticationService.getGroupMembershipsAsString()}" rendered="true" />
+                                value="#{AuthenticationService.groupName}" rendered="true" />
                         </li>
                         
                         <li>
