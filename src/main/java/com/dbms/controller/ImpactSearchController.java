@@ -1258,9 +1258,9 @@ public class ImpactSearchController implements Serializable {
                             "An error occurred while updating the state of the List", ""));
 		}
 		
-		setReviewEnabled(false);
-		setApproveEnabled(false);
-		setDemoteEnabled(false); 
+//		setReviewEnabled(false);
+//		setApproveEnabled(false);
+//		setDemoteEnabled(false); 
 		
 		return "";
 	}
