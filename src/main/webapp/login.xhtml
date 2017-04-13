@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<h:head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<meta name="description" content="" />
+	<meta name="author" content="" />
+	<title>CSMQ - Login</title>
+
+	<link rel="stylesheet" href="#{request.contextPath}/skins/CQT/CQT.css" />
+	<link rel="stylesheet" href="#{request.contextPath}/skins/NMAT/NMAT.css" />
+
+</h:head>
+
+<h:body>
+	<f:metadata>
+		<f:viewAction action="#{AuthenticationService.authenticate(request)}" />
+	</f:metadata>
+</h:body>
+</html>

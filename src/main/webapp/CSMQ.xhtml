@@ -3,7 +3,8 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:p="http://primefaces.org/ui"
-	xmlns:ui="http://java.sun.com/jsf/facelets">
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 
 <h:head>
 	<meta charset="UTF-8" />
@@ -32,25 +33,24 @@
                         </li>
                         <li>
                             <h:outputText value="Logged in as: " id="pt_ot1" rendered="true" />
-                            <h:outputText value="${appSWJSFRequest.def(header['IAMPFIZERUSERSURNAME'], 'Last')}, ${appSWJSFRequest.def(header['IAMPFIZERUSERGIVENNAME'], 'First')}" id="pt_ot2" style="font-weight:bold;"
-                                rendered="true" />
+                            <h:outputText value="${AuthenticationService.userCn}  (${AuthenticationService.userSurName}, ${AuthenticationService.userGivenName})" 
+                            id="pt_ot2" style="font-weight:bold;" rendered="true" />
                         </li>
                         <li>
                             <h:outputText value="Role: " id="pt_ot1a" rendered="true" />
                             <h:outputText id="of2" style="font-weight:bold;"
-                                value="#{appSWJSFRequest.extractGroupName(header['IAMPFIZERUSERGROUPMEMBERSHIP'], 'No-Group')}" rendered="true" />
+                                value="#{AuthenticationService.getGroupMembershipsAsString()}" rendered="true" />
                         </li>
                         
                         <li>
                             <p:commandButton value="Logoff" id="pt_cb1" rendered="true"
-                                action="#{userBean.logout}" immediate="true" />
+							action="#{AuthenticationService.logout(request)}" immediate="true" />
                         </li>
                     </ul>
                     
                     <h:panelGrid columns="3" style="float: right">
                         <h:panelGrid id="pl2" style="border: none; font-size: 10px;"
-                            columns="3">
-                            
+                            columns="1">
                             <!--
                             <p:commandButton value="Login" id="pt_cb1a" rendered="true"
                                 partialSubmit="true" onclick="PF('loginPU').show();"
@@ -63,8 +63,6 @@
                         </h:panelGrid>
                     </h:panelGrid>
                 </h:panelGroup>
-
-				
 			</h:panelGrid>
 
 			<p:dialog widgetVar="loginPU">
@@ -117,53 +115,58 @@
 					action="#{createController.initCreateForm}"
 					styleClass="#{view.viewId == '/create/create.xhtml' ? 'ui-state-active2' : ''}"
 					style="font-weight:#{userBean.currentMenu eq 'CREATE_NEW_NMQ' ? 'bold' : 'normal'}"
-					url="/create/create.xhtml" rendered="true" />
+					url="/create/create.xhtml" rendered="#{AuthenticationService.getPermissonByUri('/create/create.xhtml')}" />
 				<p:menuitem value="Update" id="pt_cmi3"
 					action="#{searchController.initSearch}"
 					styleClass="#{view.viewId == '/create/update.xhtml' ? 'ui-state-active2' : ''}"
 					style="font-weight:#{userBean.currentMenu eq 'UPDATE_NMQ' ? 'bold' : 'normal'};"
-					url="/create/update.xhtml" rendered="true" />
+					url="/create/update.xhtml" rendered="#{AuthenticationService.getPermissonByUri('/create/update.xhtml')}" />
 				<p:menuitem value="Copy" id="pt_cmi5"
 					action="#{searchController.initSearch}"
 					styleClass="#{view.viewId == '/create/copy.xhtml' ? 'ui-state-active2' : ''}"
 					style="font-weight:#{userBean.currentMenu eq 'COPY_NMQ' ? 'bold' : 'normal'};"
-					url="/create/copy.xhtml" rendered="true" />
+					url="/create/copy.xhtml" rendered="#{AuthenticationService.getPermissonByUri('/create/copy.xhtml')}" />
 
 				<p:menuitem value="Browse &amp; Search" id="pt_cmi17"
-					action="#{searchController.initSearch}" rendered="true"
+					action="#{searchController.initSearch}"
 					styleClass="#{view.viewId == '/create/browseAndSearch.xhtml' ? 'ui-state-active2' : ''}"
 					style="font-weight:#{userBean.currentMenu eq 'BROWSE_SEARCH' ? 'bold' : 'normal'};"
-					url="/create/browseAndSearch.xhtml" />
+					url="/create/browseAndSearch.xhtml" rendered="#{AuthenticationService.getPermissonByUri('/create/browseAndSearch.xhtml')}" />
 				<p:menuitem value="MQ Compare" id="pt_cmi11" action="DIFF"
 					style="font-weight:#{userBean.currentMenu eq 'DIFF' ? 'bold' : 'normal'};"
 					rendered="false" />
 
 				<p:submenu id="pt_m1" label="Publish" icon="ui-icon-document"
 					style="font-weight:#{userBean.currentMenu eq 'NON_IMPACT_PUBLISH' or userBean.currentMenu eq 'IMPACT_PUBLISH' ? 'bold' : 'normal'};"
-					rendered="true">
+					rendered="#{AuthenticationService.getPermissonByUri('Publish-Menu')}">
 					<p:menuitem value="Publish Current Version" id="pt_cmi2"
-						action="NON_IMPACT_PUBLISH" rendered="true"
+						action="NON_IMPACT_PUBLISH" 
 						styleClass="#{view.viewId == '/publish/publishCurrentVersion.xhtml' ? 'ui-state-active2' : ''}"
 						style="font-weight:#{userBean.currentMenu eq 'NON_IMPACT_PUBLISH' ? 'bold' : 'normal'};"
-						url="/publish/publishCurrentVersion.xhtml" disabled="false" />
+						url="/publish/publishCurrentVersion.xhtml" disabled="false" 
+						rendered="#{AuthenticationService.getPermissonByUri('/publish/publishCurrentVersion.xhtml')}" />
 					<p:menuitem value="Publish Future Version" id="pt_cmi8"
-						action="IMPACT_PUBLISH" rendered="true"
+						action="IMPACT_PUBLISH"
 						styleClass="#{view.viewId == '/publish/publishFutureVersion.xhtml' ? 'ui-state-active2' : ''}"
 						style="font-weight:#{userBean.currentMenu eq 'IMPACT_PUBLISH' ? 'bold' : 'normal'};"
-						url="/publish/publishFutureVersion.xhtml" />
+						url="/publish/publishFutureVersion.xhtml" 
+						rendered="#{AuthenticationService.getPermissonByUri('/publish/publishFutureVersion.xhtml')}" />
 				</p:submenu>
 				
 				<p:submenu label="Reactivate/Retire" icon="ui-icon-document"
 					style="font-weight:#{userBean.currentMenu eq 'NON_IMPACT_PUBLISH' or userBean.currentMenu eq 'IMPACT_PUBLISH' ? 'bold' : 'normal'};"
-					rendered="true">
+					rendered="#{AuthenticationService.getPermissonByUri('Reactivate/Retire-Menu')}" >
 					<p:menuitem value="Reactivate" id="reactivate-menu"
-						action="NON_IMPACT_PUBLISH" rendered="true"
+						action="NON_IMPACT_PUBLISH"
 						styleClass="#{view.viewId == '/create/reactivate.xhtml' ? 'ui-state-active2' : ''}"
- 						url="/create/reactivate.xhtml" />
+ 						url="/create/reactivate.xhtml" 
+ 						rendered="#{AuthenticationService.getPermissonByUri('/create/reactivate.xhtml')}"
+ 						/>
 					<p:menuitem value="Retire" id="retire-menu"
-						action="IMPACT_PUBLISH" rendered="true"
+						action="IMPACT_PUBLISH"
 						styleClass="#{view.viewId == '/create/retire.xhtml' ? 'ui-state-active2' : ''}"
- 						url="/create/retire.xhtml" />
+ 						url="/create/retire.xhtml" 
+ 						rendered="#{AuthenticationService.getPermissonByUri('/create/retire.xhtml')}" />
 				</p:submenu>
 				
 				<p:menuitem value="Reports" id="pt_cmi4" action="REPORTS"
@@ -174,23 +177,26 @@
 				<p:menuitem value="Impact Assessment" id="pt_cmi10"
 					action="MEDDRA_IMPACT_ASSESSMENT"
 					styleClass="#{view.viewId == '/impactAssessment/impactAssessment.xhtml' ? 'ui-state-active2' : ''}"
-					rendered='true' url="/impactAssessment/impactAssessment.xhtml"
+					rendered="#{AuthenticationService.getPermissonByUri('/impactAssessment/impactAssessment.xhtml')}"
+					url="/impactAssessment/impactAssessment.xhtml"
 					style="font-weight:#{userBean.currentMenu eq 'MEDDRA_IMPACT_ASSESSMENT' ? 'bold' : 'normal'};" />
-
 
 				<p:submenu label="View Version Impacts" icon="ui-icon-document"
 					id="pt_m3"
-					style="font-weight:#{userBean.currentMenu eq 'VIEW_CURRENT_VERSION_IMPACT' or userBean.currentMenu eq 'VIEW_PREVIOUS_VERSION_IMPACT' ? 'bold' : 'normal'};">
+					style="font-weight:#{userBean.currentMenu eq 'VIEW_CURRENT_VERSION_IMPACT' or userBean.currentMenu eq 'VIEW_PREVIOUS_VERSION_IMPACT' ? 'bold' : 'normal'};"
+					rendered="#{AuthenticationService.getPermissonByUri('View-Version-Impacts-Menu')}" >
 					<p:menuitem value="View Current Version Impact" id="pt_cmi13"
 						styleClass="#{view.viewId == '/viewVersionImpact/versionImpact.xhtml' ? 'ui-state-active2' : ''}"
 						action="#{CQTPageTemplateBean.displayCurrentViewVersionImpact}"
 						style="font-weight:#{userBean.currentMenu eq 'VIEW_CURRENT_VERSION_IMPACT' ? 'bold' : 'normal'};"
-						url="/viewVersionImpact/versionImpact.xhtml" />
+						url="/viewVersionImpact/versionImpact.xhtml" 
+						rendered="#{AuthenticationService.getPermissonByUri('/viewVersionImpact/versionImpact.xhtml')}" />
 					<p:menuitem value="View Previous Version Impact" id="pt_cmi14"
 						action="VIEW_PREVIOUS_VERSION_IMPACT"
 						styleClass="#{view.viewId == '/viewPreviousVersionImpact/previousVersionImpact.xhtml' ? 'ui-state-active2' : ''}"
 						style="font-weight:#{userBean.currentMenu eq 'VIEW_PREVIOUS_VERSION_IMPACT' ? 'bold' : 'normal'};"
-						url="/viewPreviousVersionImpact/previousVersionImpact.xhtml" />
+						url="/viewPreviousVersionImpact/previousVersionImpact.xhtml" 
+						rendered="#{AuthenticationService.getPermissonByUri('/viewPreviousVersionImpact/previousVersionImpact.xhtml')}" />
 				</p:submenu>
 
 			<!-- 	<p:submenu label="Import csv" icon="ui-icon-document" id="pt_m4"
@@ -215,7 +221,8 @@
 
 				<p:menuitem value="Administration" id="admin_menu" action="ADMIN"
 					styleClass="#{view.viewId == '/admin/admin.xhtml' ? 'ui-state-active2' : ''}"
-					disabled="false" url="/admin/admin.xhtml" />
+					disabled="false" url="/admin/admin.xhtml" 
+					rendered="#{AuthenticationService.getPermissonByUri('/admin/admin.xhtml')}" />
 
 			</p:menubar>
 		</h:form>

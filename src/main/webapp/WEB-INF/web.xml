@@ -52,12 +52,21 @@
 		<param-name>javax.faces.PARTIAL_STATE_SAVING</param-name>
 		<param-value>false</param-value>
 	</context-param>
-	
+
 	<context-param>
-	    <param-name>javax.faces.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE</param-name>
-	    <param-value>true</param-value>
+		<param-name>javax.faces.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE</param-name>
+		<param-value>true</param-value>
 	</context-param>
 
 	<!-- <context-param> <param-name>javax.faces.PROJECT_STAGE</param-name> 
 		<param-value>Development</param-value> </context-param> -->
+
+	<filter>
+		<filter-name>AuthenticationFilter</filter-name>
+		<filter-class>com.dbms.filters.AuthenticationFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>AuthenticationFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
 </web-app>
