@@ -437,9 +437,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 
 					SmqBase190 smqSearched = smqBaseService.findByCode(relation.getSmqCode());
 					if (smqSearched != null) {
-						List<SmqBase190> smqBaseList = smqBaseService
-								.findByLevelAndTerm(smqSearched.getSmqLevel(),
-										smqSearched.getSmqName());
+						List<SmqBase190> smqBaseList = smqBaseService.findByLevelAndTerm(smqSearched.getSmqLevel(),	smqSearched.getSmqName());
 						if (smqBaseList != null) {
 							for (SmqBase190 smq : smqBaseList) {
 								if (smq.getSmqLevel() == 1) {
@@ -454,8 +452,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 									level = "SMQ5";
 								}
 								row = worksheet.createRow(rowCount);
-								buildCells(level, smq.getSmqCode() + "",
-										smq.getSmqName(), cell, row);
+								buildCells(level, smq.getSmqCode() + "", smq.getSmqName(), cell, row);
 								setCellStyleColumn(workbook, cell);
 								rowCount++;
 
@@ -463,8 +460,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 								 * Other SMQs
 								 * 
 								 */
-								List<SmqBase190> smqs = smqBaseService
-										.findChildSmqByParentSmqCodes(smqChildCodeList);
+								List<SmqBase190> smqs = smqBaseService.findChildSmqByParentSmqCodes(smqChildCodeList);
 								if (smqs != null)
 									for (SmqBase190 smqC : smqs) {
 										if (smqC.getSmqLevel() == 1) {
@@ -479,22 +475,20 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 											level = "SMQ5";
 										}
 										row = worksheet.createRow(rowCount);
-										buildChildCells(level,
-												smqC.getSmqCode() + "",
-												smqC.getSmqName(), cell, row,
-												"......");
+										buildChildCells(level, smqC.getSmqCode() + "", smqC.getSmqName(), cell, row, "......");
 										rowCount++;
+										
+										
+										
+										
 									}
 							}
 						}
 
-						List<SmqRelation190> childRelations = this.smqBaseService
-								.findSmqRelationsForSmqCode(smqSearched
-										.getSmqCode());
+						List<SmqRelation190> childRelations = this.smqBaseService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
 
 						if (null != childRelations) {
-							System.out
-							.println("\n ******************** childRelations " + childRelations.size()	+ ", for " + smqSearched.getSmqCode());
+							System.out.println("\n ********************SMQ Relations  childRelations " + childRelations.size()	+ ", for " + smqSearched.getSmqName());
 							for (SmqRelation190 childRelation : childRelations) {
 								if (childRelation.getSmqLevel() == 1) {
 									level = "SMQ1";
@@ -511,12 +505,13 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 								row = worksheet.createRow(rowCount);
 								buildChildCells(level, childRelation.getPtCode() + "", childRelation.getPtName(), cell, row, "......");
 								rowCount++;
+								
+								//TODO
+								
+								
 							}
-
-
 						}
 					}
-
 				}
 
 				/**
