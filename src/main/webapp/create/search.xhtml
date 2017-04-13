@@ -13,8 +13,7 @@
 				<f:selectItems value="#{configMB.extensionList}" var="ext"
 					itemLabel="#{ext.value}" itemValue="#{ext.codelistInternalValue}" />
 
-				<p:ajax update="level2" event="change"
-					listener="#{searchController.changeLevel}" />
+				<p:ajax update="level2" event="change" listener="#{searchController.changeLevel}" />
 			</p:selectOneMenu>
 
 			<p:outputLabel value="Drug Program" styleClass="label-right" />
@@ -64,15 +63,6 @@
 
 				<p:ajax update="state" listener="#{searchController.changeState}" event="change" />
 			</p:selectOneMenu>
-
-			<!-- <p:outputLabel value="State" styleClass="label-right" />
-			<p:selectOneMenu value="#{searchController.state}" id="state">
-				<f:selectItem itemValue="" itemLabel="All" />
-				<f:selectItem itemLabel="Draft" itemValue="Draft" itemDisabled="#{searchController.status ne 'I' and searchController.status ne 'P' and searchController.status ne ''}" />
-				<f:selectItem itemLabel="Reviewed" itemValue="Reviewed" itemDisabled="#{searchController.status ne 'I' and searchController.status ne 'P' and searchController.status ne ''}" />
-				<f:selectItem itemLabel="Approved" itemValue="Approved" itemDisabled="#{searchController.status ne 'I' and searchController.status ne 'P' and searchController.status ne ''}" />
-				<f:selectItem itemLabel="Published" itemValue="Published" itemDisabled="#{searchController.status ne 'I' and searchController.status ne 'A' and searchController.status ne ''}" />
- 			</p:selectOneMenu> -->
  			
  			<p:outputLabel value="State" styleClass="label-right" />
 			<p:selectOneMenu value="#{searchController.state}" id="state" styleClass="hide-disabled">
@@ -105,7 +95,7 @@
 		<p:commandButton value="Search" action="#{searchController.search}"
 			process="@form:searchPanel termSearch codeSearch @this" update="@form:result" />
 		<p:commandButton action="#{searchController.reset}" value="Reset"
-			update="@form:result @form:searchPanel termSearch codeSearch" process="@this" />
+			process="@this" update="@form:result @form:searchPanel termSearch codeSearch" />
 	</h:panelGrid>
 
 	<p:spacer />
@@ -135,16 +125,11 @@
 			</p:column>
 			<p:column headerText="Code" width="100">
 				<h:commandLink action="#{createController.loadCmqBaseByCode(value.cmqCode)}"
-					value="#{value.cmqCode}">
-
-					<p:ajax update="@form:wizardId @form:relations" />
-
-					<f:setPropertyActionListener
+                               value="#{value.cmqCode}">
+					<p:ajax update="@form:wizardId @form:relations @form:wizardNavbar" />
+                    <f:setPropertyActionListener
 						target="#{searchController.clickedCmqCode}"
 						value="#{value.cmqCode}" />
-
-					<f:setPropertyActionListener
-						target="#{createController.codeSelected}" value="#{value.cmqCode}" />
 				</h:commandLink>
 			</p:column>
 			<p:column headerText="Drug Program" width="100">
@@ -163,22 +148,18 @@
 				<h:outputText value="#{value.cmqDesignee}" />
 			</p:column>
 			<p:column headerText="History" style="text-align: center" width="40"
-				rendered="#{view.viewId == '/create/browseAndSearch.xhtml' ? true : false}">
-				<!-- <h:outputText value="#{value.history}" /> -->
+                      rendered="#{createController.browseWizard != null ? true : false}">
 				<p:commandLink action="#" style="color: red" value="History"
 					onclick="PF('history-dialog').show()">
 					<i class="fa fa-power-off"></i>
 				</p:commandLink>
-
 			</p:column>
 			
 		</p:dataTable>
 	</p:outputPanel>
 
 
-	
-
-	<p:dialog widgetVar="history-dialog" modal="true" id="historyD"
+    <p:dialog widgetVar="history-dialog" modal="true" id="historyD"
 		closable="true" header="History As of Date (Required for history)">
 
 		<h:panelGrid columns="1">

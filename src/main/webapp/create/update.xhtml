@@ -17,7 +17,7 @@
                 </p:breadCrumb>
 			</h:panelGrid>
 			
-			<p:remoteCommand name="notifySearchControllerDataChange" update="@form">
+			<p:remoteCommand name="notifySearchControllerDataChange">
 	            <f:setPropertyActionListener target="#{searchController.dataModified}" value="true" />
 		    </p:remoteCommand>
 
@@ -35,30 +35,6 @@
 				<!-- Details -->
 				<p:tab id="details" title="Update Details">
 					<p:panel header="Details">
-						<script>
-							//<![CDATA[
-							(function($) {
-								$('.ui-wizard.update-list-wiz .ui-wizard-step-title a').off('click');
-								$('.ui-wizard.update-list-wiz .ui-wizard-step-title a').click(function(event) {
-									var curStepA = $('.ui-wizard.update-list-wiz .ui-wizard-step-title.ui-state-highlight a')[0];
-									var clickStepA = $(this)[0];
-									var curStepIdx = 0;
-									var clickStepIdx = 0;
-									var stepsA = $('.ui-wizard.update-list-wiz .ui-wizard-step-title a');
-									for(var i=0;i<5;i++) {
-										if(stepsA[i] == curStepA)
-											curStepIdx = i;
-										if(stepsA[i] == clickStepA)
-											clickStepIdx = i;
-									}
-									if(clickStepIdx + 1 == curStepIdx) {
-										event.preventDefault();
-										$('.ui-wizard-nav-back.update-list-wiz-back').trigger('click');
-									}
-								});
-							})(jQuery);
-							//]]>
-						</script>
 						<ui:include src="details.xhtml" />
 						
 						<h:panelGrid columns="2">

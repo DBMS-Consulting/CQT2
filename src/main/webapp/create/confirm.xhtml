@@ -140,7 +140,7 @@
 				<p:commandButton value="Demote to Draft" id="demoteBtn"
 					disabled="#{createController.demoteDisabled}"
 					action="#{createController.workflowState('Draft')}"
-					process="@this" update="m1 @form:confirmPan @form"
+					process="@this" update="m1 @form:confirmPan"
 					oncomplete="notifySearchControllerDataChange()">
 					<p:confirm header="Confirm Demote to Draft"
 						message="Are you sure you want to demote this List to draft?"
@@ -150,7 +150,7 @@
 				<p:commandButton value="Reviewed" id="reviewedBtn"
 					disabled="#{createController.reviewedDisabled}"
 					action="#{createController.workflowState('Reviewed')}"
-					process="@this" update="m1 @form:confirmPan @form"
+					process="@this" update="m1 @form:confirmPan"
 					oncomplete="notifySearchControllerDataChange()">
 					<p:confirm header="Confirm Review"
 						message="Are you sure you want to confirm this List as reviewed?"
@@ -160,7 +160,7 @@
 				<p:commandButton value="Approve" id="approveBtn"
 					disabled="#{createController.approveDisabled}"
 					action="#{createController.workflowState('Approved')}"
-					process="@this" update="m1 @form:confirmPan @form"
+					process="@this" update="m1 @form:confirmPan"
 					oncomplete="notifySearchControllerDataChange()">
 					<p:confirm header="Confirm Approve"
 						message="Are you sure you want to approve this List?"
@@ -170,7 +170,7 @@
 				<p:commandButton value="Delete" id="deleteBtn"
 					disabled="#{createController.deleteDisabled}"
 					action="#{createController.workflowState('Delete')}"
-					process="@this" update="m1 @form:confirmPan @form"
+					process="@this" update="m1 @form:confirmPan"
 					oncomplete="notifySearchControllerDataChange()">
 					<p:confirm header="Confirm Delete"
 						message="Are you sure you want to delete this List?"

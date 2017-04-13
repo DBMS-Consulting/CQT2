@@ -512,10 +512,10 @@ public class CreateController implements Serializable {
 				RequestContext.getCurrentInstance().execute("PF('confirmSaveRelationsDlg').show();");
 			} else {
 				nextStep = event.getNewStep();
-				if(WIZARD_STEP_DETAILS.equalsIgnoreCase(oldStep) && UPDATE_WIZARD_STEP_SEARCH.equalsIgnoreCase(nextStep) && !updateWizard.isBackRequest(FacesContext.getCurrentInstance())) {
-					RequestContext.getCurrentInstance().execute("setTimeout(function(){PF('wizard').back();},100)");
-					return oldStep;
-				}
+//				if(WIZARD_STEP_DETAILS.equalsIgnoreCase(oldStep) && UPDATE_WIZARD_STEP_SEARCH.equalsIgnoreCase(nextStep) && !updateWizard.isBackRequest(FacesContext.getCurrentInstance())) {
+//					RequestContext.getCurrentInstance().execute("setTimeout(function(){PF('wizard').back();},100)");
+//					return oldStep;
+//				}
 			}
 		} else {
 			nextStep = UPDATE_WIZARD_STEP_SEARCH;
@@ -848,8 +848,7 @@ public class CreateController implements Serializable {
 	 */
 	public String loadCmqBaseByCode(Long code) {
 		codeSelected = null;
-		CmqBase190 cmq = new CmqBase190();
-		cmq = this.cmqBaseService.findByCode(code);
+		CmqBase190 cmq = this.cmqBaseService.findByCode(code);
 
 		if (cmq != null) {
 			codeSelected = cmq.getCmqCode();
@@ -857,29 +856,11 @@ public class CreateController implements Serializable {
 		}
 		if(createWizard != null) {
 			detailsFormModel.setWizardType(WizardType.CreateWizard);
-		}
-
-		if (browseWizard != null) {
+		} else if (browseWizard != null) {
 			detailsFormModel.setWizardType(WizardType.BrowseWizard);
-			browseWizard.setStep(WIZARD_STEP_DETAILS);
-			if(RequestContext.getCurrentInstance() != null) {
-				// UI: force update the custom wizard navbar area
-				RequestContext.getCurrentInstance().update("fBrowse:wizardNavbar");
-			}
-		}
-		
-		if (updateWizard != null) {
+		} else if (updateWizard != null) {
 			detailsFormModel.setWizardType(WizardType.UpdateWizard);
-			updateWizard.setStep(WIZARD_STEP_DETAILS);
-			if(RequestContext.getCurrentInstance() != null) {
-				// UI: force update the custom wizard navbar area
-				RequestContext.getCurrentInstance().update("fUpdate:wizardNavbar");
-			}
-			// selectedData = new CmqBase190();
-			// setSelectedData(cmq);
-		}
-		
-		if (copyWizard != null) {
+		} else if (copyWizard != null) {
 			detailsFormModel.setWizardType(WizardType.CopyWizard);
 			//reset the values which are not supposed to be copied.
 			copyingCmqCode = codeSelected;
@@ -896,23 +877,17 @@ public class CreateController implements Serializable {
 				name += "-1";
 			} else {
 				name += "-Copy";
-			}
-			
+			}		
 			selectedData.setCmqName(name);
-			// set the details form model changed status to true
-			copyWizard.setStep(WIZARD_STEP_DETAILS);
-			
-			if(RequestContext.getCurrentInstance() != null) {
-				// UI: force update the custom wizard navbar area
-				RequestContext.getCurrentInstance().update("fCopy:wizardNavbar");
-			}
 		}
 		
 		detailsFormModel.loadFromCmqBase190(selectedData);
 		notesFormModel.loadFromCmqBase190(selectedData);
 		workflowFormModel.loadFromCmqBase190(selectedData);
+        
+        getActiveWizard().setStep(WIZARD_STEP_DETAILS);
 
-		return "";
+		return null;
 	}
 	
 	private void copyRelationsToNewCmq(Long copiedCode, CmqBase190 savedEntity) throws CqtServiceException {

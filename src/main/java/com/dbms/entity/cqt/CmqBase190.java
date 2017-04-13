@@ -160,6 +160,7 @@ public class CmqBase190 extends BaseEntity {
 	@OneToMany(cascade=CascadeType.ALL, mappedBy="cmqBaseCurrent", fetch=FetchType.EAGER, orphanRemoval=true)
 	private List<CmqProductBaseCurrent> productsList;
 	
+    @Override
 	public Long getId() {
 		return cmqId;
 	}

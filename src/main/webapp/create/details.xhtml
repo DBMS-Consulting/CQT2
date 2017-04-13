@@ -17,7 +17,6 @@
 		actionListener="#{createController.cancelDetailsAndNextStep}"
 		onstart="PF('confirmSaveDetailsDlg').hide()" />
 
-	<!-- <p:growl id="messages" life="#{appCSMQBean.defaultGrowlLife}" sticky="true" /> -->
 	<h:panelGrid columns="3" cellpadding="5" id="detailsPanel" columnClasses="pad-lr30,pad-lr30,pad-lr30">
 
 		<h:panelGrid columns="2" columnClasses="label, value">
@@ -26,7 +25,8 @@
 				value="#{createController.detailsFormModel.extension}"
 				disabled="#{createController.readOnlyState or createController.formSaved}"
 				required="#{createController.activeWizard.step eq 'details' and !createController.readOnlyState}"
-				requiredMessage="The extension is required">
+				requiredMessage="The extension is required"
+                immediate="true">
 				<f:selectItems value="#{configMB.extensionList}" var="extension"
 					itemLabel="#{extension.value}"
 					itemValue="#{extension.codelistInternalValue}" />
@@ -50,7 +50,8 @@
 				value="#{createController.detailsFormModel.drugProgram}" id="drug"
 				disabled="#{createController.readOnlyState or createController.formSaved}"
 				required="#{createController.activeWizard.step eq 'details' and createController.detailsFormModel.drugProgramRequired and not createController.readOnlyState}"
-				requiredMessage="The Drug Program is required">
+				requiredMessage="The Drug Program is required"
+                immediate="true">
 				<f:selectItem itemValue="" itemLabel="" noSelectionOption="true" />
 				<f:selectItems value="#{configMB.programList}" var="program"
 					itemLabel="#{program.value}"
@@ -63,7 +64,8 @@
 			<p:selectOneMenu
 				value="#{createController.detailsFormModel.protocol}" id="protocol"
 				disabled="#{createController.readOnlyState or createController.formSaved}"
-				required="#{createController.activeWizard.step eq 'details' and createController.detailsFormModel.protocolRequired and not createController.readOnlyState}">
+				required="#{createController.activeWizard.step eq 'details' and createController.detailsFormModel.protocolRequired and not createController.readOnlyState}"
+                immediate="true">
 				
                 <f:selectItem itemValue="" itemLabel="" noSelectionOption="true" />
 				<f:selectItems value="#{configMB.protocolList}" var="protocol"
@@ -74,10 +76,11 @@
 			<p:outputLabel id="lProduct"
 				value="#{createController.detailsFormModel.productRequired ? '* Product' : 'Product'}"
 				rendered="true" styleClass="label-right" />
-			<p:selectCheckboxMenu value="#{createController.detailsFormModel.products}" widgetVar="product"
+			<p:selectCheckboxMenu id="product" value="#{createController.detailsFormModel.products}" widgetVar="product"
 				disabled="#{createController.readOnlyState or createController.formSaved}"
 				required="#{createController.activeWizard.step eq 'details' and createController.detailsFormModel.productRequired and not createController.readOnlyState}"
-				requiredMessage="The Product is required" id="product"
+				requiredMessage="The Product is required"
+                immediate="true"
 				label="#{createController.detailsFormModel.productsLabel}"
                 filter="true" filterMatchMode="startsWith"
 				style="min-width:270px">
@@ -92,7 +95,8 @@
 				value="#{createController.detailsFormModel.designee}"
 				disabled="#{createController.readOnlyState or createController.formSaved}" rendered="true"
 				requiredMessage="The Designee is required"
-				required="#{createController.activeWizard.step eq 'details' and !createController.readOnlyState}">
+				required="#{createController.activeWizard.step eq 'details' and !createController.readOnlyState}"
+                immediate="true">
 				<f:selectItem itemLabel="" itemValue="" noSelectionOption="true" />
 				<f:selectItem itemLabel="NONE" itemValue="NONE"></f:selectItem>
 			</p:selectOneMenu>
@@ -101,11 +105,12 @@
 		<h:panelGrid columns="2" columnClasses="label, value">
 
 			<p:outputLabel value="* Level" styleClass="label-right" />
-			<p:selectOneMenu value="#{createController.detailsFormModel.level}"
+			<p:selectOneMenu id="level" value="#{createController.detailsFormModel.level}"
 				rendered="true" required="#{createController.activeWizard.step eq 'details' and !createController.readOnlyState}"
 				requiredMessage="The level is required"
-				disabled="#{createController.readOnlyState or createController.formSaved}" id="level">
-				<f:selectItem itemValue="1" itemLabel="1" />
+				disabled="#{createController.readOnlyState or createController.formSaved}"
+                immediate="true">
+				<f:selectItem itemValue="1" itemLabel="1" />    
 				<f:selectItem itemValue="2" itemLabel="2" />
 				<f:selectItem itemValue="3" itemLabel="3" />
 				<f:selectItem itemValue="4" itemLabel="4" />
