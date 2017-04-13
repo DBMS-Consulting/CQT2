@@ -65,6 +65,7 @@
 				value="#{createController.detailsFormModel.protocol}" id="protocol"
 				disabled="#{createController.readOnlyState or createController.formSaved}"
 				required="#{createController.activeWizard.step eq 'details' and createController.detailsFormModel.protocolRequired and not createController.readOnlyState}"
+                requiredMessage="The protocol is required"
                 immediate="true">
 				
                 <f:selectItem itemValue="" itemLabel="" noSelectionOption="true" />

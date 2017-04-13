@@ -49,7 +49,7 @@
 
 	<h:form>
 
-		<p:growl id="growl" sticky="true" showDetail="true" />
+		<p:growl id="growl" life="#{appCSMQBean.defaultGrowlLife}" sticky="true" showDetail="#{appCSMQBean.degugMode}" />
 
 		<p:wizard flowListener="#{userWizard.onFlowProcess}">
 			<p:tab id="search" title="Search">

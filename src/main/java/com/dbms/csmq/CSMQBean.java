@@ -812,6 +812,10 @@ public class CSMQBean {
 	public int getDefaultGrowlLife() {
 		return DEFAULT_GROWL_LIFE;
 	}
+    
+    public boolean isDegugMode() {
+        return true;
+    }
 	
 	public List<String[]> getCqtBaseScopes() {
 		return Arrays.asList(new String[][] {

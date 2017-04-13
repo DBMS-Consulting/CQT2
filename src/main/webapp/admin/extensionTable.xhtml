@@ -6,7 +6,7 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:p="http://primefaces.org/ui">
 	
-    <p:growl id="msgExt" life="#{appCSMQBean.defaultGrowlLife}" sticky="true" />
+    <p:growl id="msgExt" life="#{appCSMQBean.defaultGrowlLife}" sticky="true" showDetail="#{appCSMQBean.degugMode}"/>
 
 	<h3 style="text-align: center">Extension CodeList</h3>
 	<p:dataTable id="tableExtension" var="val" rows="10" widgetVar="tblExtensions"
