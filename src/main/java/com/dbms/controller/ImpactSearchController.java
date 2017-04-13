@@ -1037,8 +1037,7 @@ public class ImpactSearchController implements Serializable {
 			
 			// setRelationSelected(nodes);
 			if(CollectionUtils.isNotEmpty(existingNodeTerms)) {
-				FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO,
-						existingNodeTerms + " skipped as they are already added to relations. Remaining New PTs added succesfully.", "");
+				FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "The relation already exists", "");
 				FacesContext.getCurrentInstance().addMessage(null, message);
 			} else {
 				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Selected New PTs added successfully.", "");
@@ -1325,8 +1324,9 @@ public class ImpactSearchController implements Serializable {
 				fetchedCmqBaseList = cmqBaseTargetService.findNotImpactedWithPaginated(first, pageSize, null, null, filters);
 				this.setRowCount(cmqBaseTargetService.findNotImpactedCount().intValue());
 			}
-
-			this.cmqBaseList.addAll(fetchedCmqBaseList);
+            
+            if(fetchedCmqBaseList != null)
+                this.cmqBaseList.addAll(fetchedCmqBaseList);
 			return fetchedCmqBaseList;
 		}
 
@@ -1344,8 +1344,9 @@ public class ImpactSearchController implements Serializable {
 				fetchedCmqBaseList = cmqBaseTargetService.findNotImpactedWithPaginated(first, pageSize, null, null, filters);
 				this.setRowCount(cmqBaseTargetService.findNotImpactedCount().intValue());
 			}
-
-			this.cmqBaseList.addAll(fetchedCmqBaseList);
+            
+            if(fetchedCmqBaseList != null)
+                this.cmqBaseList.addAll(fetchedCmqBaseList);
 			return fetchedCmqBaseList;
 		}
 
@@ -1393,8 +1394,9 @@ public class ImpactSearchController implements Serializable {
 				fetchedSmqBaseList = smqBaseTargetService.findNotImpactedWithPaginated(first, pageSize, null, null, filters);
 				this.setRowCount(smqBaseTargetService.findNotImpactedCount().intValue());
 			}
-
-			this.smqBaseList.addAll(fetchedSmqBaseList);
+            
+            if(fetchedSmqBaseList != null)
+                this.smqBaseList.addAll(fetchedSmqBaseList);
 			return fetchedSmqBaseList;
 		}
 
@@ -1412,8 +1414,9 @@ public class ImpactSearchController implements Serializable {
 				fetchedSmqBaseList = smqBaseTargetService.findNotImpactedWithPaginated(first, pageSize, null, null, filters);
 				this.setRowCount(smqBaseTargetService.findNotImpactedCount().intValue());
 			}
-
-			this.smqBaseList.addAll(fetchedSmqBaseList);
+            
+            if(fetchedSmqBaseList != null)
+                this.smqBaseList.addAll(fetchedSmqBaseList);
 			return fetchedSmqBaseList;
 		}
 
