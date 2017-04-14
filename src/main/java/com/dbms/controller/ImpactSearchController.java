@@ -272,11 +272,10 @@ public class ImpactSearchController implements Serializable {
 	public void onSelectTargetRowTreeTable(NodeSelectEvent event) {
 		currentOrTarget = SELECTED_TARGET_LIST;
 		String code = "";
-		if (selectedImpactedCmqList != null) code = selectedImpactedCmqList.getCmqCode() + "";
-		if (selectedNotImpactedCmqList != null) code = selectedNotImpactedCmqList.getCmqCode() + "";
-		
-		if (selectedImpactedSmqList != null ) code = selectedImpactedSmqList.getSmqCode() + "";
-		if (selectedNotImpactedSmqList != null ) code = selectedNotImpactedSmqList.getSmqCode() + "";
+		if (isImpactedCmqSelected && selectedImpactedCmqList != null) code = selectedImpactedCmqList.getCmqCode() + "";
+        else if (isNonImpactedCmqSelected && selectedNotImpactedCmqList != null) code = selectedNotImpactedCmqList.getCmqCode() + "";
+        else if (isImpactedSmqSelected && selectedImpactedSmqList != null ) code = selectedImpactedSmqList.getSmqCode() + "";
+        else if (isNonImpactedSmqSelected && selectedNotImpactedSmqList != null ) code = selectedNotImpactedSmqList.getSmqCode() + "";
 		
 		HierarchyNode node;
 		if (event != null && event.getTreeNode() != null && event.getTreeNode().getData() != null) {
