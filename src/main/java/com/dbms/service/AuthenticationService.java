@@ -22,6 +22,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.dbms.entity.cqt.RefConfigCodeList;
+import com.dbms.entity.cqt.SessionTrack;
+import com.dbms.service.base.ICqtPersistenceService;
 
 @ManagedBean(name = "AuthenticationService", eager = true)
 @SessionScoped
@@ -53,6 +55,9 @@ public class AuthenticationService {
 	@ManagedProperty("#{RefCodeListService}")
 	private IRefCodeListService refCodeListService;
 
+	@ManagedProperty("#{SessionTrackService}")
+	private ISessionTrackService sessionTrackService;
+	
 	private List<UrlGroups> urlGroupsList;
 
 	private String userCn;
@@ -64,6 +69,8 @@ public class AuthenticationService {
 	private List<String> cmqMappedGroupMemberships;
 	private String enterpriseAdCodeListValue;
 
+	private Long sessionTrackId;
+	
 	@PostConstruct
 	public void init() {
 		this.parseUrlPermissionMappings();
@@ -72,20 +79,26 @@ public class AuthenticationService {
 	public void logout(HttpServletRequest request) {
 		ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
 	    ec.invalidateSession();
-	    //try {
-			//ec.redirect(request.getContextPath() + "/index.xhtml?faces-redirect=true");
-			
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Logout success!", "");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		/*} catch (IOException e) {
-			LOG.error(e.getMessage(), e);
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Logout success! But failed to redirect to Home page.", "");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		}*/
+	    
+		FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Logout success!", "");
+		FacesContext.getCurrentInstance().addMessage(null, msg);
 	}
 	
 	public void authenticate(HttpServletRequest request) throws IOException {
 		this.validateUser(request);
+		
+		//add session track data now if enterpriseAdCodeListValue is PXED, PXED-DUMMY or AD
+		if(ENTERPRISE_AD_PXED.equalsIgnoreCase(this.enterpriseAdCodeListValue)
+				|| ENTERPRISE_AD_PXED_DUMMY.equalsIgnoreCase(this.enterpriseAdCodeListValue)) {
+			ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
+			SessionTrack sessionTrack = this.sessionTrackService.addLoginSessionTrack(this.userCn, this.userGivenName, this.userSurName
+															, this.userEmail, this.groupMembershipHeader, ec.getSessionId(false));
+			if(null != sessionTrack) {
+				this.sessionTrackId = sessionTrack.getId();
+				LOG.info("Added SessionTrack for user " + this.userCn + " with sessionTrackId: " + this.sessionTrackId);
+			}
+		}
+		
 		FacesContext.getCurrentInstance().getExternalContext()
 				.redirect(request.getContextPath() + "/index.xhtml?faces-redirect=true");
 	}
@@ -312,6 +325,10 @@ public class AuthenticationService {
 	@PreDestroy
 	public void destroy() {
 		LOG.info("AuthenticationService pre destroy called for user: " + this.userCn);
+		SessionTrack sessionTrack = this.sessionTrackService.updateLogoutInSessionTrack(this.sessionTrackId);
+		if (null != sessionTrack) {
+			LOG.info("SessionTrack with sessionTrackId:" + this.sessionTrackId + " logged out successfully.");
+		}
 	}
 
 	private class UrlGroups {
@@ -406,5 +423,13 @@ public class AuthenticationService {
 
 	public void setEnterpriseAdCodeListValue(String enterpriseAdCodeListValue) {
 		this.enterpriseAdCodeListValue = enterpriseAdCodeListValue;
+	}
+
+	public ISessionTrackService getSessionTrackService() {
+		return sessionTrackService;
+	}
+
+	public void setSessionTrackService(ISessionTrackService sessionTrackService) {
+		this.sessionTrackService = sessionTrackService;
 	}
 }
