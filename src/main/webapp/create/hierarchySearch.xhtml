@@ -6,8 +6,8 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:p="http://primefaces.org/ui">
 
-	<p:panel header="Relations" id="hierarchy-modal" style="min-width:700px; min-height:450px; overflow: auto">
-		<h:panelGrid id="hierarchySearchGrid" columns="6">
+	<p:panel header="Relations" id="hierarchy-modal" style="min-height: 450px;height: 90%;height: calc(100% - 40px);position: relative;">
+        <h:panelGrid id="hierarchySearchGrid" columns="6">
 			<p:outputLabel value="Level" for="levelH" />
 			<p:selectOneMenu id="levelH" label="Level"  rendered="#{createController.detailsFormModel.extension ne 'PRO' and createController.detailsFormModel.extension ne 'CPT' and createController.detailsFormModel.extension ne 'DME'}"
 				value="#{paramDlgCtrl.filterLevel}">
@@ -46,7 +46,7 @@
 
 		<br />
 		
-		<h:panelGrid id="pc3" styleClass="AFStretchWidth" >
+        <h:panelGroup id="pc3" style="display:block;position: absolute;height:80%;height: calc(100% - 100px);width: 100%;margin-left: -16px;padding: 0 10px;box-sizing: border-box;overflow: auto;">
 			<!--p:toolbar id="t4">
 				<f:facet name="left">
 					<p:commandButton id="filterH" value="Filter and Sort" type="button"
@@ -77,8 +77,7 @@
 			</p:toolbar -->
             <p:treeTable value="#{paramDlgCtrl.hierarchyRoot}" var="node"
                     id="resultHier" selectionMode="checkbox" selection="#{paramDlgCtrl.selectedNodes}"
-                    styleClass="ui-treetable-resultHier hide-sel-chkbox" style="width:700px;"
-                    scrollable="true" scrollHeight="350"
+                    styleClass="ui-treetable-resultHier hide-sel-chkbox full-width"
                     rowStyleClass="#{node.rowStyleClass}">
 
                 <f:attribute name="uiEventSourceName" value="hierarchy-search" />
@@ -99,7 +98,7 @@
                         <h:outputText value="#{node.entity.id}" styleClass="ui-hidden data-entity-id" />
                 </p:column>
             </p:treeTable>
-  		</h:panelGrid>
+  		</h:panelGroup>
 	</p:panel>
 
 	<style>

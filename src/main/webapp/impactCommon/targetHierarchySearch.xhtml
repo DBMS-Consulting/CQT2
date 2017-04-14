@@ -7,7 +7,7 @@
 	xmlns:p="http://primefaces.org/ui">
 
 
-	<p:panel header="Relations" style="min-height:560px;">
+	<p:panel header="Relations" style="min-height: 450px;height: 90%;height: calc(100% - 40px);position: relative;">
 		<h:panelGrid columns="6">
 			<p:outputLabel value="Level" for="levelHT" />
 			<p:selectOneMenu id="levelHT" label="Level"
@@ -34,10 +34,10 @@
 		</h:panelGrid>
 
 		<br />
-		<h:panelGrid id="pct3" styleClass="AFStretchWidth">
+		<h:panelGroup id="pct3" style="display:block;position: absolute;height:80%;height: calc(100% - 100px);width: 100%;margin-left: -16px;padding: 0 10px;box-sizing: border-box;overflow: auto;">
 			<p:treeTable value="#{impactSearchController.targetHierarchySearchDlgModel.hierarchyRoot}"  var="node"
                 id="resultHierTarget" selectionMode="checkbox" selection="#{impactSearchController.targetHierarchySearchDlgModel.selectedNodes}"
-				styleClass="ui-treetable-resultHierTarget hide-sel-chkbox" style="width:100%;height:450px; overflow: auto" 
+				styleClass="ui-treetable-resultHierTarget hide-sel-chkbox"
 				rowStyleClass="#{node.rowStyleClass}">
 
 				<p:ajax event="expand"
@@ -60,7 +60,7 @@
 				</p:column>
 
 			</p:treeTable>
-		</h:panelGrid>
+		</h:panelGroup>
 	</p:panel>
 
 	<style>

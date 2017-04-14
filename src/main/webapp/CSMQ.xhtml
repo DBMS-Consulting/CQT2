@@ -4,7 +4,8 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
 
 <h:head>
 	<meta charset="UTF-8" />
@@ -23,7 +24,11 @@
 	<div>
 		<h:form>
 			<h:panelGrid id="l1" columns="2" style="width: 100%">
-				<p:graphicImage id="logo" title="desc" alt="logo" value="/image/openCqt-Logo.png" />
+                <h:panelGroup>
+                    <a href="#{request.contextPath}">
+                        <p:graphicImage id="logo" title="desc" alt="logo" value="/image/openCqt-Logo.png" />
+                    </a>
+                </h:panelGroup>
                 
                 <h:panelGroup style="float:right;">
                     <ul class="nav nav-right">

@@ -428,7 +428,16 @@ public class ListDetailsFormVM {
 		return state;
 	}
 	public void setState(String state) {
-		this.state = state;
+        if(CmqBase190.CMQ_STATE_VALUE_DRAFT.equalsIgnoreCase(state))
+            this.state = CmqBase190.CMQ_STATE_VALUE_DRAFT;
+        else if(CmqBase190.CMQ_STATE_VALUE_REVIEWED.equalsIgnoreCase(state))
+            this.state = CmqBase190.CMQ_STATE_VALUE_REVIEWED;
+        else if(CmqBase190.CMQ_STATE_VALUE_APPROVED.equalsIgnoreCase(state))
+            this.state = CmqBase190.CMQ_STATE_VALUE_APPROVED;
+        else if(CmqBase190.CMQ_STATE_VALUE_PUBLISHED.equalsIgnoreCase(state))
+            this.state = CmqBase190.CMQ_STATE_VALUE_PUBLISHED;
+        else
+            this.state = state;
 	}
 
 	/**
