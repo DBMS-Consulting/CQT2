@@ -271,6 +271,20 @@ public class ImpactSearchController implements Serializable {
 	 */
 	public void onSelectTargetRowTreeTable(NodeSelectEvent event) {
 		currentOrTarget = SELECTED_TARGET_LIST;
+		String code = "";
+		if (selectedImpactedCmqList != null) code = selectedImpactedCmqList.getCmqCode() + "";
+		if (selectedNotImpactedCmqList != null) code = selectedNotImpactedCmqList.getCmqCode() + "";
+		
+		if (selectedImpactedSmqList != null ) code = selectedImpactedSmqList.getSmqCode() + "";
+		if (selectedNotImpactedSmqList != null ) code = selectedNotImpactedSmqList.getSmqCode() + "";
+		
+		HierarchyNode node;
+		if (event != null && event.getTreeNode() != null && event.getTreeNode().getData() != null) {
+			 node = (HierarchyNode) event.getTreeNode().getData();
+			if (node != null && !node.getCode().equals(code)) {	
+				currentOrTarget = SELECTED_NO_LIST;
+			}
+		}		
 	}
 	/**
 	 * Event fired on the unselection of a row from target list.
@@ -323,6 +337,9 @@ public class ImpactSearchController implements Serializable {
 			//Current List name
 			setListName(this.selectedNotImpactedSmqList.getSmqName());
 		}
+		
+		//reset value of selected to ze
+		currentOrTarget = SELECTED_NO_LIST;
 	}
 
 	public void updateTargetTable() {
@@ -351,13 +368,15 @@ public class ImpactSearchController implements Serializable {
 			//Target List name
 			setListName(this.selectedNotImpactedSmqList.getSmqName());
 		}
+		//reset value of selected to ze
+		currentOrTarget = SELECTED_NO_LIST;
 	}
 	
 	/**
 	 * only called when the target table has a CMQ. not for smq at all
 	 * @param nodes
 	 */
-	public void addSelectedToTargetRelation(TreeNode[] nodes) {
+	public void addSelectedToTargetRelation(TreeNode[] nodes) {		
 		try{
 			if (nodes != null && nodes.length > 0) {
 				List<TreeNode> nodesList = Arrays.asList(nodes);
@@ -756,7 +775,7 @@ public class ImpactSearchController implements Serializable {
 //		if (selectedImpactedCmqList != null || selectedImpactedSmqList != null || selectedNotImpactedCmqList != null || selectedNotImpactedSmqList != null) {
 //			selected = true;			
 //		}
-		if (currentOrTarget == 0)
+		if (currentOrTarget == SELECTED_NO_LIST)
 			selected = false;	
 			
 		if (!selected) {
@@ -831,7 +850,21 @@ public class ImpactSearchController implements Serializable {
 				detailsFormModel.loadFromCmqBase190((CmqBase190)d);
 			} else if(d instanceof CmqBaseTarget) {
 				detailsFormModel.loadFromCmqBaseTarget((CmqBaseTarget)d);
-			} else {
+			} else if(d instanceof SmqBase190) {
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Details tab is not accessible for SMQs", "");
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+				RequestContext.getCurrentInstance().update("impactAssessment:messages");
+				//if (event.)
+				return "notes";
+				
+			} else if(d instanceof SmqBaseTarget) {
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Details tab is not accessible for SMQs", "");
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+				RequestContext.getCurrentInstance().update("impactAssessment:messages");
+				return "notes";
+				
+			} 
+			else {
 				if(unsavedRedirect)
 					iaWizardNextStep = event.getOldStep();
 				else
@@ -1674,7 +1707,7 @@ public class ImpactSearchController implements Serializable {
 	}
 	
 	public boolean isNotesFormReadonly() {
-		if (this.currentOrTarget == SELECTED_CURRENT_LIST)
+		if (this.currentOrTarget == SELECTED_CURRENT_LIST || (detailsFormModel.getState().equals(CmqBaseTarget.CMQ_STATE_APPROVED_IA) || detailsFormModel.getState().equals(CmqBaseTarget.CMQ_STATE_PUBLISHED_IA)))
 			return true;
 		if (this.currentOrTarget == SELECTED_TARGET_LIST)
 			return false;
@@ -1682,7 +1715,7 @@ public class ImpactSearchController implements Serializable {
 	}
 	
 	public boolean isDetailsFormReadonly() {
-		if (this.currentOrTarget == SELECTED_CURRENT_LIST)
+		if (this.currentOrTarget == SELECTED_CURRENT_LIST || (detailsFormModel.getState().equals(CmqBaseTarget.CMQ_STATE_APPROVED_IA) || detailsFormModel.getState().equals(CmqBaseTarget.CMQ_STATE_PUBLISHED_IA)))
 			return true;
 		if (this.currentOrTarget == SELECTED_TARGET_LIST)
 			return false;

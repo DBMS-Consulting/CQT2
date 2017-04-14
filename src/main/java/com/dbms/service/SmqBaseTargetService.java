@@ -1,13 +1,21 @@
 package com.dbms.service;
 
 import com.dbms.csmq.CSMQBean;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
@@ -20,18 +28,31 @@ import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFFont;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.transform.Transformers;
 import org.hibernate.type.StandardBasicTypes;
+import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.SortOrder;
 import org.primefaces.model.StreamedContent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.dbms.entity.cqt.CmqBase190;
+import com.dbms.entity.cqt.CmqBaseTarget;
+import com.dbms.entity.cqt.CmqRelationTarget;
 import com.dbms.entity.cqt.SmqBaseTarget;
 import com.dbms.entity.cqt.SmqBaseTarget;
 import com.dbms.entity.cqt.SmqRelationTarget;
+import com.dbms.entity.cqt.dtos.MeddraDictHierarchySearchDto;
 import com.dbms.service.base.CqtPersistenceService;
 
 /**
@@ -43,6 +64,9 @@ import com.dbms.service.base.CqtPersistenceService;
 public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> implements ISmqBaseTargetService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SmqBaseTargetService.class);
+	
+	@ManagedProperty("#{MeddraDictTargetService}")
+	private IMeddraDictTargetService meddraDictService;
 
 	@Override
 	@SuppressWarnings("unchecked")
@@ -451,7 +475,309 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 
 	@Override
 	public StreamedContent generateSMQExcel(SmqBaseTarget selectedImpactedSmqList, String dictionaryVersion) {
-		// TODO Auto-generated method stub
-		return null;
+		XSSFWorkbook workbook = new XSSFWorkbook();
+		XSSFSheet worksheet = null;
+
+		worksheet = workbook.createSheet("IA Report");
+		XSSFRow row = null;
+		int rowCount = 0;
+		DateFormat dateFormat = DateFormat.getDateTimeInstance(
+		        DateFormat.LONG,
+		        DateFormat.LONG, new Locale("EN","en"));
+
+		/**
+		 * Première ligne - entêtes
+		 */
+		row = worksheet.createRow(rowCount);
+		XSSFCell cell = row.createCell(0);
+
+		row = worksheet.createRow(rowCount);
+		cell = row.createCell(0);
+		cell.setCellValue(selectedImpactedSmqList.getSmqName());
+		setCellStyleTitre(workbook, cell);
+
+		// Term name
+		rowCount += 2;
+		row = worksheet.createRow(rowCount);
+		cell = row.createCell(0);
+		cell.setCellValue("MedDRA Dictionary Version: " + dictionaryVersion);
+
+		rowCount++;
+		row = worksheet.createRow(rowCount);
+		cell = row.createCell(0);
+		cell.setCellValue("Status: " + returnStatus(selectedImpactedSmqList));
+		rowCount++;
+		row = worksheet.createRow(rowCount);
+		cell = row.createCell(0);
+		cell.setCellValue("Scope (Yes/No): " + "");
+		
+		rowCount++;
+		row = worksheet.createRow(rowCount);
+		cell = row.createCell(0);
+		cell.setCellValue("Report Date/Time: " + dateFormat.format(new Date()));
+		
+
+		rowCount += 2;
+		row = worksheet.createRow(rowCount);
+		cell = row.createCell(0);
+		cell.setCellValue("Term");
+		setCellStyleColumn(workbook, cell);
+		cell = row.createCell(1);
+		cell.setCellValue("Code");
+		setCellStyleColumn(workbook, cell);
+		cell = row.createCell(2);
+		cell.setCellValue("Level");
+		setCellStyleColumn(workbook, cell);
+		cell = row.createCell(3);
+		cell.setCellValue("Category");
+		setCellStyleColumn(workbook, cell);
+		cell = row.createCell(4);
+		cell.setCellValue("Weight");
+		setCellStyleColumn(workbook, cell);
+		cell = row.createCell(5);
+		cell.setCellValue("Scope");
+		setCellStyleColumn(workbook, cell);
+		rowCount++;
+
+		// Retrieval of relations - Loop
+		List<SmqRelationTarget> relations = findSmqRelationsForSmqCode(selectedImpactedSmqList.getSmqCode());
+		
+		String level = "", term = "", codeTerm = "";
+
+		if (relations != null) {
+			for (SmqRelationTarget relation : relations) {
+				/**
+				 * 
+				 * SMQs
+				 */
+/*				if (relation.getSmqCode() != null) {
+					List<Long> smqChildCodeList = new ArrayList<>();
+					smqChildCodeList.add(relation.getSmqCode());
+
+					//first Children
+					SmqBaseTarget smqSearched = findByCode(relation.getSmqCode());
+					if (smqSearched != null) {
+						List<SmqBaseTarget> smqBaseList = findByLevelAndTerm(smqSearched.getSmqLevel(),	smqSearched.getSmqName());
+						if (smqBaseList != null) {}
+
+						List<SmqRelationTarget> childRelations = findSmqRelationsForSmqCode(smqSearched.getSmqCode());
+
+						if (null != childRelations) {
+							System.out.println("\n ********************SMQ Relations  childRelations " + childRelations.size()	+ ", for " + smqSearched.getSmqName());
+							for (SmqRelationTarget childRelation : childRelations) {
+								if (childRelation.getSmqLevel() == 1) {
+									level = "SMQ1";
+								} else if (childRelation.getSmqLevel() == 2) {
+									level = "SMQ2";
+								} else if (childRelation.getSmqLevel() == 3) {
+									level = "SMQ3";
+								} else if ((childRelation.getSmqLevel() == 4)
+										|| (childRelation.getSmqLevel() == 0)
+										|| (childRelation.getSmqLevel() == 5)) {
+									level = "PT";
+								}
+
+								row = worksheet.createRow(rowCount);
+								buildChildCells(level, childRelation.getPtCode() + "", childRelation.getPtName(), cell, row, "......");
+								rowCount++;
+								
+								if (level.equals("SMQ1")) {
+									smqSearched = findByCode(childRelation.getSmqCode());
+									if (smqSearched != null) {
+										System.out.println(" **************************** SMQ1 :: " + smqSearched.getSmqName() + ",   " + smqSearched.getSmqCode()); 
+										List<SmqRelationTarget> list = findSmqRelationsForSmqCode(smqSearched.getSmqCode());
+										if (list != null)
+											for (SmqRelationTarget smq2 : list) {
+												row = worksheet.createRow(rowCount);
+												buildChildCells("PT", smq2.getPtCode() + "", smq2.getPtName(), cell, row, ".............");
+												rowCount++;
+											}
+									}
+								}
+							}
+						}
+					}
+				}*/
+				
+				/**
+				 * 
+				 * PT
+				 */
+				if (relation.getPtCode() != null) {
+					row = worksheet.createRow(rowCount);
+					buildCells("PT", relation.getPtCode() + "", relation.getPtName(), cell, row);
+					setCellStyleColumn(workbook, cell); 
+					rowCount++;
+
+					/**
+					 * LLT.
+					 */
+				/*	List<MeddraDictHierarchySearchDto> listPT =  meddraDictService.findChildrenByParentCode("LLT_", "PT_", Long.valueOf(pt.getCode()));
+					List<Long> hlgtCodesList = new ArrayList<>();
+					for (MeddraDictHierarchySearchDto meddra : listPT) {
+						hlgtCodesList.add(Long.parseLong(meddra.getCode())); 
+					}
+
+					List<MeddraDictHierarchySearchDto> llts = this.meddraDictService.findByCodes("LLT_", hlgtCodesList);
+					if (llts != null)
+						for (MeddraDictHierarchySearchDto llt : llts) {
+							row = worksheet.createRow(rowCount);
+							buildChildCells("LLT", llt.getCode(), llt.getTerm(), cell, row, "......");
+							rowCount++;
+						}
+						*/				
+				}
+				
+//				if (relation.getPtCode() != null) {
+//					List<Long> ptCodesList = new ArrayList<>();
+//					ptCodesList.add(Long.parseLong(relation.getPtCode() + "")); 
+//					List<MeddraDictHierarchySearchDto> pts = this.meddraDictService.findByCodes("PT_", ptCodesList);
+//					for (MeddraDictHierarchySearchDto pt : pts) {
+//						row = worksheet.createRow(rowCount);
+//						buildCells("PT", pt.getCode(), pt.getTerm(), cell, row);
+//						setCellStyleColumn(workbook, cell); 
+//						rowCount++;
+//
+//						/**
+//						 * LLT.
+//						 */
+//						List<MeddraDictHierarchySearchDto> listPT =  meddraDictService.findChildrenByParentCode("LLT_", "PT_", Long.valueOf(pt.getCode()));
+//						List<Long> hlgtCodesList = new ArrayList<>();
+//						for (MeddraDictHierarchySearchDto meddra : listPT) {
+//							hlgtCodesList.add(Long.parseLong(meddra.getCode())); 
+//						}
+//
+//						List<MeddraDictHierarchySearchDto> llts = this.meddraDictService.findByCodes("LLT_", hlgtCodesList);
+//						if (llts != null)
+//							for (MeddraDictHierarchySearchDto llt : llts) {
+//								row = worksheet.createRow(rowCount);
+//								buildChildCells("LLT", llt.getCode(), llt.getTerm(), cell, row, "......");
+//								rowCount++;
+//							}
+//											
+//					}
+//				}
+			}
+				
+				
+			
+			
+			List<SmqBaseTarget> childCmqs = findChildSmqByParentSmqCode(selectedImpactedSmqList.getSmqCode());
+			if((null != childCmqs) && (childCmqs.size() > 0)) {
+				for (SmqBaseTarget childCmq : childCmqs) {
+					level = childCmq.getSmqLevel() + "";
+					term = childCmq.getSmqName();
+					codeTerm = childCmq.getSmqCode() != null ? childCmq.getSmqCode() + "" : "";
+
+					row = worksheet.createRow(rowCount);
+					buildCells(level, codeTerm, term, cell, row);
+					rowCount++;
+				}
+			}
+		}
+		worksheet.autoSizeColumn(0);
+		worksheet.autoSizeColumn(1);
+		worksheet.autoSizeColumn(2);
+		worksheet.autoSizeColumn(3);
+		worksheet.autoSizeColumn(4);
+		worksheet.autoSizeColumn(5);
+
+		StreamedContent content = null;
+		try {
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			workbook.write(baos);
+			byte[] xls = baos.toByteArray();
+			ByteArrayInputStream bais = new ByteArrayInputStream(xls);
+			content = new DefaultStreamedContent(
+					bais,
+					"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+					"Impact_Assessment_Report_" + selectedImpactedSmqList.getSmqName()
+					+ ".xlsx");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return content;
+	}
+	
+	
+	private String returnStatus(SmqBaseTarget smq) {
+		String status = "";
+		if(CmqBase190.CMQ_STATUS_VALUE_PENDING.equalsIgnoreCase(smq.getSmqStatus())) {
+			status = CmqBase190.CMQ_STATUS_DISP_LABEL_PENDING;
+		} else if (CmqBase190.CMQ_STATUS_VALUE_ACTIVE.equalsIgnoreCase(smq.getSmqStatus())) {
+			status = CmqBase190.CMQ_STATUS_DISP_LABEL_ACTIVE;
+		} else if (CmqBase190.CMQ_STATUS_VALUE_INACTIVE.equalsIgnoreCase(smq.getSmqStatus())){
+			status = CmqBase190.CMQ_STATUS_DISP_LABEL_INACTIVE;
+		} else {
+			status = "UNKNOWN";
+		}
+		return status;
+	}
+	private void setCellStyleTitre(XSSFWorkbook wb, XSSFCell cell) {
+		XSSFCellStyle cellStyle = wb.createCellStyle();
+
+		XSSFFont defaultFont = wb.createFont();
+		defaultFont.setFontHeightInPoints((short) 14);
+		defaultFont.setFontName("Arial");
+		defaultFont.setColor(IndexedColors.BLACK.getIndex());
+		defaultFont.setBold(true);
+		defaultFont.setItalic(false);
+
+		cellStyle.setFont(defaultFont);
+		cell.setCellStyle(cellStyle);
+	}
+
+	private void setCellStyleColumn(XSSFWorkbook wb, XSSFCell cell) {
+		XSSFCellStyle cellStyle = wb.createCellStyle();
+		cellStyle.setFillBackgroundColor(IndexedColors.AQUA.getIndex());
+		cellStyle.setFillPattern(XSSFCellStyle.SOLID_FOREGROUND);
+		cellStyle.setFillForegroundColor(HSSFColor.GREY_40_PERCENT.index);
+
+		XSSFFont defaultFont = wb.createFont();
+		defaultFont.setFontHeightInPoints((short) 12);
+		defaultFont.setFontName("Arial");
+		defaultFont.setColor(IndexedColors.BLACK.getIndex());
+		defaultFont.setBold(true);
+		defaultFont.setItalic(false);
+
+		cellStyle.setFont(defaultFont);
+		cell.setCellStyle(cellStyle);
+	}
+	
+	private void buildCells(String level, String codeTerm, String term, XSSFCell cell, XSSFRow row) {
+		// Cell 0
+		cell = row.createCell(0);
+		cell.setCellValue(term);
+
+		// Cell 1
+		cell = row.createCell(1);
+		cell.setCellValue(codeTerm);
+
+		// Cell 2
+		cell = row.createCell(2);
+		cell.setCellValue(level);
+	}
+	
+	private void buildChildCells(String level, String codeTerm, String term, XSSFCell cell, XSSFRow row, String dots) {
+		// Cell 0
+		cell = row.createCell(0);
+		cell.setCellValue(dots + term);
+
+		// Cell 1
+		cell = row.createCell(1);
+		cell.setCellValue(codeTerm);
+
+		// Cell 2
+		cell = row.createCell(2);
+		cell.setCellValue(level);
+	}
+
+	public IMeddraDictTargetService getMeddraDictService() {
+		return meddraDictService;
+	}
+
+	public void setMeddraDictService(IMeddraDictTargetService meddraDictService) {
+		this.meddraDictService = meddraDictService;
 	}
 }

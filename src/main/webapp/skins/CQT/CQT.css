@@ -319,6 +319,14 @@ td .bordered {
 	color: #ffa500;
 	font-weight: bold;
 }
+.mauve-colored {
+	color: #CC99FF;
+	font-weight: bold;
+}
+.mauve-colored:HOVER {
+	color: #CC99FF;
+	font-weight: bold;
+}
 
 .italic {
 	color: #000;
