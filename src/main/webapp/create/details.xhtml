@@ -78,13 +78,12 @@
 				disabled="#{createController.readOnlyState or createController.formSaved}"
 				required="#{createController.activeWizard.step eq 'details' and createController.detailsFormModel.productRequired and not createController.readOnlyState}"
 				requiredMessage="The Product is required"
-				label="#{createController.detailsFormModel.productsLabel}"
+				label="Choose products" updateLabel="true"
                 filter="true" filterMatchMode="startsWith"
 				style="min-width:270px">
 				<f:selectItems value="#{configMB.productList}" var="product"
 					itemLabel="#{product.value}"
 					itemValue="#{product.codelistInternalValue}" />
-				<p:ajax oncomplete="PF('product').show()" listener="#{createController.detailsFormModel.getProductsLabel}" update="product" ></p:ajax>
 			</p:selectCheckboxMenu>
 
 			<p:outputLabel value="* Designee" styleClass="label-right" />
