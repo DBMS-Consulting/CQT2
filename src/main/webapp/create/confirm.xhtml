@@ -9,7 +9,7 @@
 
 
 	<p:panel header="Details" id="confirmPan" >
-		<h:panelGrid columns="4" cellpadding="30" columnClasses="col-25p,col-25p,col-25p,col-25p">
+		<h:panelGrid columns="4" cellpadding="15" columnClasses="col-25p,col-25p,col-25p,col-25p">
 
 			<h:panelGrid columns="2" columnClasses="label-cell, value-cell">
 				<p:outputLabel styleClass="label-right" value="Extension:" />
@@ -141,7 +141,7 @@
 					disabled="#{createController.demoteDisabled}"
 					actionListener="#{createController.workflowState('Draft')}"
                     action="#{searchController.setDataModified(true)}"
-					process="@this" update="m1 @form:confirmPan @form:workflowCtrlPanel">
+					process="@form:workflowCtrlPanel" update="m1 @form:confirmPan @form:workflowCtrlPanel">
 					<p:confirm header="Confirm Demote to Draft"
 						message="Are you sure you want to demote this List to draft?"
 						icon="ui-icon-alert" />
@@ -151,7 +151,7 @@
 					disabled="#{createController.reviewedDisabled}"
 					actionListener="#{createController.workflowState('Reviewed')}"
                     action="#{searchController.setDataModified(true)}"
-					process="@this" update="m1 @form:confirmPan @form:workflowCtrlPanel">
+					process="@form:workflowCtrlPanel" update="m1 @form:confirmPan @form:workflowCtrlPanel">
 					<p:confirm header="Confirm Review"
 						message="Are you sure you want to confirm this List as reviewed?"
 						icon="ui-icon-alert" />
@@ -161,7 +161,7 @@
 					disabled="#{createController.approveDisabled}"
 					actionListener="#{createController.workflowState('Approved')}"
                     action="#{searchController.setDataModified(true)}"
-					process="@this" update="m1 @form:confirmPan @form:workflowCtrlPanel">
+					process="@form:workflowCtrlPanel" update="m1 @form:confirmPan @form:workflowCtrlPanel">
 					<p:confirm header="Confirm Approve"
 						message="Are you sure you want to approve this List?"
 						icon="ui-icon-alert" />
@@ -171,7 +171,7 @@
 					disabled="#{createController.deleteDisabled}"
                     actionListener="#{createController.workflowState('Delete')}"
 					action="#{searchController.setDataModified(true)}"
-					process="@this" update="m1 @form:confirmPan @form:workflowCtrlPanel">
+					process="@form:workflowCtrlPanel" update="m1 @form:confirmPan @form:workflowCtrlPanel">
 					<p:confirm header="Confirm Delete"
 						message="Are you sure you want to delete this List?"
 						icon="ui-icon-alert" />
@@ -179,27 +179,20 @@
 
 			</f:facet>
 		</p:toolbar>
-		<table>
-			<tbody>
-				<tr>
-					<td class="label-cell"><p:outputLabel styleClass="label-right" value="Reason for Request:" /></td>
-					<td class="value-cell"><p:inputText id="request" value="#{createController.workflowFormModel.requestReason}" /></td>
-				</tr>
-				<tr>
-					<td class="label-cell"><p:outputLabel styleClass="label-right" value="Due Date:" /></td>
-					<td class="value-cell">
-						<p:calendar value="#{createController.workflowFormModel.dueDate}" id="dueDate" mode="popup" pattern="dd-MMM-yyyy" >
-							<p:ajax event="dateSelect" listener="#{createController.workflowFormModel.onDueDateSelect}" />
-						</p:calendar>
-					</td>
-				</tr>
-				<tr>
-					<td class="label-cell"><p:outputLabel styleClass="label-right" value="Reason for Approval:" /></td>
-					<td class="value-cell"><p:inputText value="#{createController.workflowFormModel.approvalReason}" id="reason_approval"
-							disabled="#{createController.selectedData.cmqState ne 'Reviewed'}" /></td>
-				</tr>
-			</tbody>
-		</table>
+        
+        <p:panelGrid columns="2" columnClasses="label-cell,value-cell">
+			<p:outputLabel styleClass="label-right" value="Reason for Request:" />
+			<p:inputText id="request" value="#{createController.workflowFormModel.requestReason}" />
+            
+            <p:outputLabel styleClass="label-right" value="Due Date:" />
+            <p:calendar value="#{createController.workflowFormModel.dueDate}" id="dueDate" mode="popup" pattern="dd-MMM-yyyy" mindate="#{createController.workflowFormModel.minDueDate}">
+                <p:ajax event="dateSelect" listener="#{createController.workflowFormModel.onDueDateSelect}" global="false" />
+            </p:calendar>
+					
+            <p:outputLabel styleClass="label-right" value="Reason for Approval:" />
+			<p:inputText value="#{createController.workflowFormModel.approvalReason}" id="reason_approval"
+							disabled="#{createController.selectedData.cmqState ne 'REVIEWED'}" />
+        </p:panelGrid>
 
 		<!-- <p:spacer height="5" />
 		<p:commandButton value="Save" icon="ui-icon-disk"

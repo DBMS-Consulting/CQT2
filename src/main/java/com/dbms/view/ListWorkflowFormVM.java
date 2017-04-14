@@ -13,10 +13,11 @@ import com.dbms.entity.cqt.CmqBase190;
  *
  */
 public class ListWorkflowFormVM {
+    private String myCurState;
 	private String requestReason;
 	private Date dueDate;
 	private String approvalReason;
-	
+    
 	public ListWorkflowFormVM() {
 		init();
 	}
@@ -28,13 +29,16 @@ public class ListWorkflowFormVM {
 	}
 	
 	public void loadFromCmqBase190(CmqBase190 cmq) {
+        myCurState = cmq.getCmqState();
 		this.dueDate = cmq.getCmqDueDate();
+        this.requestReason = cmq.getCmqWfDesc();
+        this.approvalReason = cmq.getCmqApproveReason();
 	}
 	
 	public void saveToCmqBase190(CmqBase190 cmq) {
 		cmq.setCmqDueDate(this.dueDate);
 		cmq.setCmqWfDesc(requestReason);
-	//	cmq.setCmqReasonApproval(approvalReason); 
+		cmq.setCmqApproveReason(approvalReason);
 	}
 	
 	public void onDueDateSelect(SelectEvent event) {
@@ -58,6 +62,10 @@ public class ListWorkflowFormVM {
 	public void setDueDate(Date dueDate) {
 		this.dueDate = dueDate;
 	}
+    
+    public Date getMinDueDate() {
+        return new Date();
+    }
 
 	public String getApprovalReason() {
 		return approvalReason;
@@ -66,4 +74,8 @@ public class ListWorkflowFormVM {
 	public void setApprovalReason(String approvalReason) {
 		this.approvalReason = approvalReason;
 	}
+    
+    public boolean isApprovalReasonEnabled() {
+        return (CmqBase190.CMQ_STATE_VALUE_REVIEWED.equals(myCurState));
+    }
 }

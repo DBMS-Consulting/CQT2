@@ -887,7 +887,6 @@ public class CreateController implements Serializable {
 		
 		detailsFormModel.loadFromCmqBase190(selectedData);
 		notesFormModel.loadFromCmqBase190(selectedData);
-		workflowFormModel.loadFromCmqBase190(selectedData);
         
         getActiveWizard().setStep(WIZARD_STEP_DETAILS);
 
@@ -1198,7 +1197,7 @@ public class CreateController implements Serializable {
 			ctx.addMessage(null, msg);
 			
 			//Clearing workflow attributes : due date, reason for request, reason for approval
-			this.workflowFormModel = new ListWorkflowFormVM();
+			this.workflowFormModel.init();
 
 		} catch (CqtServiceException e) {
 			e.printStackTrace();
