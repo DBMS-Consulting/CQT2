@@ -470,9 +470,9 @@ public class SearchController extends BaseController<CmqBase190> implements IRel
 		////event source attriute from the ui
 		String uiSourceOfEvent =  (String) event.getComponent().getAttributes().get("uiEventSourceName");
 		TreeNode expandedTreeNode = event.getTreeNode();
-		boolean isNodesEditable = !"RELATIONS".equals(uiSourceOfEvent);
+		boolean isRelationView = "RELATIONS".equalsIgnoreCase(uiSourceOfEvent);
 		CmqBaseRelationsTreeHelper relationsSearchHelper = new CmqBaseRelationsTreeHelper(cmqBaseService, smqBaseService, meddraDictService, cmqRelationService);	
-		relationsSearchHelper.getRelationsNodeHierarchy(null, expandedTreeNode, isNodesEditable);
+		relationsSearchHelper.getRelationsNodeHierarchy(null, expandedTreeNode, isRelationView);
 	}
 
 	/**
@@ -508,6 +508,7 @@ public class SearchController extends BaseController<CmqBase190> implements IRel
 								HierarchyNode relationsHierarchyNode = hierarchyNode.copy();
 								TreeNode relationsTreeNode = new DefaultTreeNode(relationsHierarchyNode, relationsRoot);
 								relationsHierarchyNode.setDataFetchCompleted(false);
+								relationsHierarchyNode. markEditableInRelationstable();
 								List<TreeNode> childTreeNodes = treeNode.getChildren();
 								if(CollectionUtils.isNotEmpty(childTreeNodes)) {
 									HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);

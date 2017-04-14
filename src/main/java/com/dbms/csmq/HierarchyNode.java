@@ -170,6 +170,13 @@ public class HierarchyNode implements Serializable, Comparable<HierarchyNode> {
 		this.hideScope = true;
 		this.hideWeight = true;
 	}
+	
+	public void markEditableInRelationstable() {
+		this.hideCategory = false;
+		this.hideDelete = false;
+		this.hideScope = false;
+		this.hideWeight = false;
+	}
 
 	@Override
 	public String toString() {

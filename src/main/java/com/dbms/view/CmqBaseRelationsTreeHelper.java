@@ -186,7 +186,7 @@ public class CmqBaseRelationsTreeHelper {
 		return getRelationsNodeHierarchy(rootNode, expandedNode, true);
 	}
 	
-	public TreeNode getRelationsNodeHierarchy(TreeNode rootNode, TreeNode expandedNode, boolean isNodesEditable) {
+	public TreeNode getRelationsNodeHierarchy(TreeNode rootNode, TreeNode expandedNode, boolean isRelationView) {
 		HierarchyNode hNode = (HierarchyNode) expandedNode.getData();
 		boolean isDataFetchCompleted = hNode.isDataFetchCompleted();
 		
@@ -217,7 +217,7 @@ public class CmqBaseRelationsTreeHelper {
 					childNode.setCode(childSmqBase.getSmqCode().toString());
 					childNode.setEntity(childSmqBase);
 
-					if(!isNodesEditable) {
+					if(isRelationView) {
 						childNode.markNotEditableInRelationstable();
 					}
 					// add child to parent
@@ -281,7 +281,7 @@ public class CmqBaseRelationsTreeHelper {
 					childRelationNode.setTerm(childRelation.getPtName());
 					childRelationNode.setCode(childRelation.getPtCode().toString());
 					childRelationNode.setEntity(childRelation);
-					if(!isNodesEditable) {
+					if(isRelationView) {
 						childRelationNode.markNotEditableInRelationstable();
 					}
 
@@ -338,7 +338,7 @@ public class CmqBaseRelationsTreeHelper {
 					childNode.setPrimaryPathFlag(false);
 				}
 				
-				if(!isNodesEditable) {
+				if(isRelationView) {
 					childNode.markNotEditableInRelationstable();
 				}
 				
@@ -366,7 +366,7 @@ public class CmqBaseRelationsTreeHelper {
 				if(CollectionUtils.isNotEmpty(childReverseSearchDtos)) {
 					for (MeddraDictReverseHierarchySearchDto childReverseSearchDto : childReverseSearchDtos) {
 						HierarchyNode childNode = this.createMeddraReverseNode(childReverseSearchDto, "PT", hNode.isPrimaryPathFlag());
-						if(!isNodesEditable) {
+						if(isRelationView) {
 							childNode.markNotEditableInRelationstable();
 						}
 						TreeNode childTreeNode = new DefaultTreeNode(childNode, expandedNode);
@@ -380,7 +380,7 @@ public class CmqBaseRelationsTreeHelper {
 				}
 			} else if ("PT".equalsIgnoreCase(levelOfExpandedNode)) {
 				Long ptCode = Long.valueOf(reverseSearchDto.getPtCode());
-				if(!isNodesEditable) {
+				if(isRelationView) {
 					//fetch children of parent node by code of parent
 					List<MeddraDictHierarchySearchDto> childDtos = this.meddraDictSvc.findChildrenByParentCode("LLT_", "PT_", ptCode);
 					for (MeddraDictHierarchySearchDto childDto : childDtos) {
@@ -397,7 +397,9 @@ public class CmqBaseRelationsTreeHelper {
 								isPrimary = true;
 							}
 							HierarchyNode childNode = this.createMeddraReverseNode(childReverseSearchDto, "HLT", isPrimary);
-
+							if(isRelationView) {
+								childNode.markNotEditableInRelationstable();
+							}
 							TreeNode childTreeNode = new DefaultTreeNode(childNode, expandedNode);
 							if(StringUtils.isNotBlank(reverseSearchDto.getHltTerm())) {
 								// add a dummmy node to show expand arrow
@@ -414,7 +416,7 @@ public class CmqBaseRelationsTreeHelper {
 				if(CollectionUtils.isNotEmpty(childReverseSearchDtos)) {
 					for (MeddraDictReverseHierarchySearchDto childReverseSearchDto : childReverseSearchDtos) {
 						HierarchyNode childNode = this.createMeddraReverseNode(childReverseSearchDto, "HLGT", hNode.isPrimaryPathFlag());
-						if(!isNodesEditable) {
+						if(isRelationView) {
 							childNode.markNotEditableInRelationstable();
 						}
 						TreeNode childTreeNode = new DefaultTreeNode(childNode, expandedNode);
@@ -432,7 +434,7 @@ public class CmqBaseRelationsTreeHelper {
 				if(CollectionUtils.isNotEmpty(childReverseSearchDtos)) {
 					for (MeddraDictReverseHierarchySearchDto childReverseSearchDto : childReverseSearchDtos) {
 						HierarchyNode childNode = this.createMeddraReverseNode(childReverseSearchDto, "SOC", hNode.isPrimaryPathFlag());
-						if(!isNodesEditable) {
+						if(isRelationView) {
 							childNode.markNotEditableInRelationstable();
 						}
 						new DefaultTreeNode(childNode, expandedNode);
@@ -454,7 +456,7 @@ public class CmqBaseRelationsTreeHelper {
 					node.setTerm(childCmqBase.getCmqName());
 					node.setCode(childCmqBase.getCmqCode().toString());
 					node.setEntity(childCmqBase);
-					if(!isNodesEditable) {
+					if(isRelationView) {
 						node.markNotEditableInRelationstable();
 					}
 					TreeNode cmqBaseChildNode = new DefaultTreeNode(node, expandedNode);
@@ -477,7 +479,6 @@ public class CmqBaseRelationsTreeHelper {
 									it.remove();//remove it from parentCmqCodeList
 									Long count = (Long)map.get("COUNT");
 									if(count > 0) {
-
 										//add a dummy node for this child in parent
 										TreeNode parentTreeNode = childTreeNodes.get(childCmqCode);
 										HierarchyNode dummyNode = new HierarchyNode(null, null,
@@ -538,7 +539,7 @@ public class CmqBaseRelationsTreeHelper {
 					} else if((cmqRelation.getSmqCode() != null) && (cmqRelation.getSmqCode().longValue() > 0)) {
 						SmqBase190 smqBase = this.smqBaseSvc.findByCode(cmqRelation.getSmqCode());
 						HierarchyNode node = this.createSmqBaseNode(smqBase);
-						if(!isNodesEditable) {
+						if(isRelationView) {
 							node.markNotEditableInRelationstable();
 						}
 						TreeNode treeNode = new DefaultTreeNode(node, expandedNode);
@@ -571,7 +572,7 @@ public class CmqBaseRelationsTreeHelper {
 					List<MeddraDictHierarchySearchDto> socDtos = this.meddraDictSvc.findByCodes("SOC_", socCodesList);
 					for (MeddraDictHierarchySearchDto meddraDictHierarchySearchDto : socDtos) {
 						HierarchyNode node = this.createMeddraNode(meddraDictHierarchySearchDto, "SOC");
-						if(!isNodesEditable) {
+						if(isRelationView) {
 							node.markNotEditableInRelationstable();
 						}
 						TreeNode treeNode = new DefaultTreeNode(node, expandedNode);
@@ -592,7 +593,7 @@ public class CmqBaseRelationsTreeHelper {
 					List<MeddraDictHierarchySearchDto> socDtos = this.meddraDictSvc.findByCodes("HLGT_", hlgtCodesList);
 					for (MeddraDictHierarchySearchDto meddraDictHierarchySearchDto : socDtos) {
 						HierarchyNode node = this.createMeddraNode(meddraDictHierarchySearchDto, "HLGT");
-						if(!isNodesEditable) {
+						if(isRelationView) {
 							node.markNotEditableInRelationstable();
 						}
 						TreeNode treeNode = new DefaultTreeNode(node, expandedNode);
@@ -613,7 +614,7 @@ public class CmqBaseRelationsTreeHelper {
 					List<MeddraDictHierarchySearchDto> socDtos = this.meddraDictSvc.findByCodes("HLT_", hltCodesList);
 					for (MeddraDictHierarchySearchDto meddraDictHierarchySearchDto : socDtos) {
 						HierarchyNode node = this.createMeddraNode(meddraDictHierarchySearchDto, "HLT");
-						if(!isNodesEditable) {
+						if(isRelationView) {
 							node.markNotEditableInRelationstable();
 						}
 						TreeNode treeNode = new DefaultTreeNode(node, expandedNode);
@@ -634,7 +635,7 @@ public class CmqBaseRelationsTreeHelper {
 					List<MeddraDictHierarchySearchDto> socDtos = this.meddraDictSvc.findByCodes("PT_", ptCodesList);
 					for (MeddraDictHierarchySearchDto meddraDictHierarchySearchDto : socDtos) {
 						HierarchyNode node = this.createMeddraNode(meddraDictHierarchySearchDto, "PT");
-						if(!isNodesEditable) {
+						if(isRelationView) {
 							node.markNotEditableInRelationstable();
 						}
 						TreeNode treeNode = new DefaultTreeNode(node, expandedNode);
@@ -655,7 +656,7 @@ public class CmqBaseRelationsTreeHelper {
 					List<MeddraDictHierarchySearchDto> socDtos = this.meddraDictSvc.findByCodes("LLT_", lltCodesList);
 					for (MeddraDictHierarchySearchDto meddraDictHierarchySearchDto : socDtos) {
 						HierarchyNode node = this.createMeddraNode(meddraDictHierarchySearchDto, "LLT");
-						if(!isNodesEditable) {
+						if(isRelationView) {
 							node.markNotEditableInRelationstable();
 						}
 						TreeNode treeNode = new DefaultTreeNode(node, expandedNode);
