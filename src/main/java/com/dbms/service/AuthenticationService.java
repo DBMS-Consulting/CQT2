@@ -17,6 +17,7 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +32,7 @@ public class AuthenticationService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AuthenticationService.class);
 
-	private static final String PXED_DUMMY_GROUP_MEMBERSHIP = "CN=OPENCQT_ADMIN,OU=CQT_OU,OU=Applications,OU=Delegated,OU=Groups,DC=pxed,DC=pfizer,DC=com"
+	private static final String PXED_DUMMY_GROUP_MEMBERSHIP = "CN=OPENCQT_MQM,OU=CQT_OU,OU=Applications,OU=Delegated,OU=Groups,DC=pxed,DC=pfizer,DC=com"
 																+ ":CN=CQT_Users,OU=CQT_OU,OU=Applications,OU=Delegated,OU=Groups,DC=pxed,DC=pfizer,DC=com"
 																+ ":CN=GBL-BTNONColleagues,OU=GBLGroups,OU=Applications,OU=Delegated,OU=Groups,DC=pxed,DC=pfizer,DC=com";
 	
@@ -67,6 +68,7 @@ public class AuthenticationService {
 	private String groupMembershipHeader;
 	private List<String> groupMemberships;
 	private List<String> cmqMappedGroupMemberships;
+	private List<String> combinedMappedGroupMemberships;
 	private String enterpriseAdCodeListValue;
 
 	private Long sessionTrackId;
@@ -178,18 +180,25 @@ public class AuthenticationService {
 		// map the pfixer groups to cmq groups and add them here
 		List<RefConfigCodeList> cmqUserGroups = this.refCodeListService.findUserGroups();
 		this.cmqMappedGroupMemberships = new ArrayList<>();
+		this.combinedMappedGroupMemberships = new ArrayList<>();
 		if (null != cmqUserGroups) {
 			for (RefConfigCodeList cmqUserGroup : cmqUserGroups) {
 				String pxedGroupName = cmqUserGroup.getValue();
 				if (this.groupMemberships.contains(pxedGroupName)) {
 					this.cmqMappedGroupMemberships.add(cmqUserGroup.getCodelistInternalValue());
+					int index = this.groupMemberships.indexOf(pxedGroupName);
+					String groupName = this.groupMemberships.get(index);
+					String combinedMapping = cmqUserGroup.getCodelistInternalValue() + "[" + groupName + "]";
+					this.combinedMappedGroupMemberships.add(combinedMapping);
 				}
 			}
 			if (this.cmqMappedGroupMemberships.isEmpty()) {
 				this.cmqMappedGroupMemberships.add(USER_GROUP);// default group
+				this.combinedMappedGroupMemberships.add(USER_GROUP + "["+ USER_GROUP +"]");
 			}
 		} else {
 			this.cmqMappedGroupMemberships.add(USER_GROUP);// default group
+			this.combinedMappedGroupMemberships.add(USER_GROUP + "["+ USER_GROUP +"]");
 		}
 	}
 
@@ -307,6 +316,24 @@ public class AuthenticationService {
 		} else {
 			return retval;
 		}
+	}
+	
+	public String getLastModifiedByString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("|#|").append(this.userCn).append("|#|").append(this.userGivenName)
+			.append("|#|").append(this.userSurName)
+			.append("|#|");
+		if(CollectionUtils.isNotEmpty(combinedMappedGroupMemberships)) {
+			int i = 0;
+			for (String combinedMappedGroup : this.combinedMappedGroupMemberships) {
+				sb.append(combinedMappedGroup);
+				if(++i < this.combinedMappedGroupMemberships.size()) {
+					sb.append(",");
+				}
+			}
+		}
+		sb.append("|#|");
+		return sb.toString();
 	}
 	
 	private InputStream getResourceAsStream(String resource) {

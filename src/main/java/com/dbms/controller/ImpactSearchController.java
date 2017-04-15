@@ -50,6 +50,7 @@ import com.dbms.entity.cqt.SmqRelation190;
 import com.dbms.entity.cqt.SmqRelationTarget;
 import com.dbms.entity.cqt.dtos.MeddraDictHierarchySearchDto;
 import com.dbms.entity.cqt.dtos.MeddraDictReverseHierarchySearchDto;
+import com.dbms.service.AuthenticationService;
 import com.dbms.service.ICmqBase190Service;
 import com.dbms.service.ICmqBaseTargetService;
 import com.dbms.service.ICmqRelation190Service;
@@ -109,6 +110,9 @@ public class ImpactSearchController implements Serializable {
 	@ManagedProperty("#{RefCodeListService}")
 	private IRefCodeListService refCodeListService;
 	
+	@ManagedProperty("#{AuthenticationService}")
+	private AuthenticationService authService;
+	
 	Wizard iaWizard;
 	private String iaWizardNextStep;
 
@@ -133,7 +137,7 @@ public class ImpactSearchController implements Serializable {
 	private int currentOrTarget = 0; // represents if viewing LIST is from current table or target table
 	
 	private ListNotesFormVM notesFormModel = new ListNotesFormVM(); // "Informative Notes" tab model
-	private ListDetailsFormVM detailsFormModel = new ListDetailsFormVM(); // "Details" tab model
+	private ListDetailsFormVM detailsFormModel; // "Details" tab model
 	
 	private boolean isImpactedCmqSelected, isNonImpactedCmqSelected, isImpactedSmqSelected, isNonImpactedSmqSelected;
 	
@@ -164,6 +168,7 @@ public class ImpactSearchController implements Serializable {
 
 	@PostConstruct
 	public void init() {
+		this.detailsFormModel  = new ListDetailsFormVM(this.authService);
         detailsFormModel.setRefCodeListService(refCodeListService);
 		this.impactedCmqBaseLazyDataModel = new CmqLazyDataModel(true);
 		this.notImpactedCmqBaseLazyDataModel = new CmqLazyDataModel(false);
@@ -1826,5 +1831,13 @@ public class ImpactSearchController implements Serializable {
     public void setCurrentHierarchySearchDlgModel(CmqBaseHierarchySearchVM currentHierarchySearchDlgModel) {
         this.currentHierarchySearchDlgModel = currentHierarchySearchDlgModel;
     }
+
+	public AuthenticationService getAuthService() {
+		return authService;
+	}
+
+	public void setAuthService(AuthenticationService authService) {
+		this.authService = authService;
+	}
 
 }

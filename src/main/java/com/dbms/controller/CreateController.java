@@ -80,7 +80,7 @@ public class CreateController implements Serializable {
     @ManagedProperty("#{AuthenticationService}")
 	private AuthenticationService authService;
 	
-	private ListDetailsFormVM detailsFormModel = new ListDetailsFormVM();
+	private ListDetailsFormVM detailsFormModel;
 	private ListNotesFormVM notesFormModel = new ListNotesFormVM();
 	private ListWorkflowFormVM workflowFormModel = new ListWorkflowFormVM();
 	private boolean relationsModified;
@@ -104,6 +104,7 @@ public class CreateController implements Serializable {
 	
 	@PostConstruct
 	public void init() {
+		this.detailsFormModel  = new ListDetailsFormVM(this.authService);
 		initAll();
 	}
 
@@ -220,6 +221,11 @@ public class CreateController implements Serializable {
 	public String saveInformativeNotes() {
 		notesFormModel.saveToCmqBase190(selectedData);
 		
+		Date d = new Date();
+		String lastModifiedByString = this.authService.getLastModifiedByString();
+		selectedData.setLastModifiedDate(d);
+		selectedData.setLastModifiedBy(lastModifiedByString);
+		
 		try {
 			this.cmqBaseService.update(selectedData);
 			this.notesFormModel.loadFromCmqBase190(selectedData);
@@ -259,6 +265,9 @@ public class CreateController implements Serializable {
 	 */
 	public String updateRelations(TreeNode relationsRoot) {
 		if ((relationsRoot != null) && (relationsRoot.getChildCount() > 0)) {
+			Date lastModifiedDate = new Date();
+			String lastModifiedByString = this.authService.getLastModifiedByString();
+			
 			List<CmqRelation190> cmqRelationsList = new ArrayList<>();
 			List<CmqBase190> cmqBaseChildrenList = new ArrayList<>();
 			List<TreeNode> childTreeNodes = relationsRoot.getChildren();
@@ -373,13 +382,12 @@ public class CreateController implements Serializable {
 							cmqRelation.setDictionaryName(cmqBase.getDictionaryName());
 							cmqRelation.setDictionaryVersion(cmqBase.getDictionaryVersion());
 							cmqRelation.setCmqSubversion(cmqBase.getCmqSubversion());
-							if(updateNeeded) {
-								cmqRelation.setLastModifiedDate(new Date());
-								cmqRelation.setLastModifiedBy("test-user");
-							} else {
-								cmqRelation.setCreationDate(new Date());
-								cmqRelation.setCreatedBy("test-user");
+							if(!updateNeeded) {
+								cmqRelation.setCreationDate(lastModifiedDate);
+								cmqRelation.setCreatedBy(lastModifiedByString);
 							}
+							cmqRelation.setLastModifiedDate(lastModifiedDate);
+							cmqRelation.setLastModifiedBy(lastModifiedByString);
 							cmqRelationsList.add(cmqRelation);
 						}
 					}
@@ -389,9 +397,28 @@ public class CreateController implements Serializable {
 			if (!cmqRelationsList.isEmpty() || !cmqBaseChildrenList.isEmpty()) {
 				try {
 					if(!cmqRelationsList.isEmpty()) {
+						for (CmqRelation190 cmqRelation190 : cmqRelationsList) {
+							if(StringUtils.isBlank(cmqRelation190.getLastModifiedBy()) || cmqRelation190.getLastModifiedDate() == null) {
+								cmqRelation190.setLastModifiedBy(lastModifiedByString);
+								cmqRelation190.setLastModifiedDate(lastModifiedDate);
+							}
+							if(StringUtils.isBlank(cmqRelation190.getCreatedBy()) || cmqRelation190.getCreationDate() == null) {
+								cmqRelation190.setCreatedBy(lastModifiedByString);
+								cmqRelation190.setCreationDate(lastModifiedDate);
+							}
+						}
 						this.cmqRelationService.update(cmqRelationsList);
 					}
 					if(!cmqBaseChildrenList.isEmpty()) {
+						
+						for (CmqBase190 cmqBase190 : cmqBaseChildrenList) {
+							cmqBase190.setLastModifiedBy(lastModifiedByString);
+							cmqBase190.setLastModifiedDate(lastModifiedDate);
+							if(StringUtils.isBlank(cmqBase190.getCreatedBy()) || cmqBase190.getCreationDate() == null) {
+								cmqBase190.setCreatedBy(lastModifiedByString);
+								cmqBase190.setCreationDate(lastModifiedDate);
+							}
+						}
 						this.cmqBaseService.update(cmqBaseChildrenList);
 					}
 					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
@@ -902,10 +929,10 @@ public class CreateController implements Serializable {
 			cmqRelation190.setCmqRelationId(null);
 			cmqRelation190.setCmqCode(savedEntity.getCmqCode());
 			cmqRelation190.setCmqId(savedEntity.getCmqId());
-			cmqRelation190.setLastModifiedDate(null);
-			cmqRelation190.setLastModifiedBy(null);
+			cmqRelation190.setLastModifiedDate(creationDate);
+			cmqRelation190.setLastModifiedBy(this.authService.getLastModifiedByString());
 			cmqRelation190.setCreationDate(creationDate);
-			cmqRelation190.setCreatedBy("Test-User");
+			cmqRelation190.setCreatedBy(this.authService.getLastModifiedByString());
 		}
 		//save relations
 		this.cmqRelationService.update(cmqRelationList);
@@ -967,8 +994,6 @@ public class CreateController implements Serializable {
 			selectedData.setCmqCode(codevalue);
 			selectedData.setDictionaryVersion(currentMeddraVersionCodeList.getValue());
 			
-			// hard coded for now
-			selectedData.setCreatedBy("Test user");
 			if (dictionaryName != null && dictionaryName.getValue() != null)
 				selectedData.setDictionaryName((String) dictionaryName.getValue());
 			else
@@ -1002,6 +1027,7 @@ public class CreateController implements Serializable {
 	 */
 	public String saveRelations(TreeNode relationsRoot) {
 		return this.updateRelations(relationsRoot);
+		
 	}
 	
 	private Map<String, Object> checkIfMeddraRelationExists(List<CmqRelation190> existingRelation, String matchKey, HierarchyNode hierarchyNode) {

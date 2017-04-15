@@ -14,6 +14,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 
+import org.apache.commons.lang3.StringUtils;
 import org.primefaces.context.RequestContext;
 import org.primefaces.model.DualListModel;
 import org.slf4j.Logger;
@@ -21,6 +22,7 @@ import org.slf4j.LoggerFactory;
 
 import com.dbms.entity.cqt.CmqBase190;
 import com.dbms.entity.cqt.CmqBaseTarget;
+import com.dbms.service.AuthenticationService;
 import com.dbms.service.ICmqBase190Service;
 import com.dbms.service.ICmqBaseTargetService;
 import com.dbms.service.ICmqRelation190Service;
@@ -51,6 +53,9 @@ public class PublishController implements Serializable {
 	@ManagedProperty("#{RefCodeListService}")
 	private IRefCodeListService refCodeListService;
 
+	@ManagedProperty("#{AuthenticationService}")
+	private AuthenticationService authService;
+	
 	private List<CmqBase190> sourceList;
 	private List<CmqBase190> targetList;
 	
@@ -181,6 +186,16 @@ public class PublishController implements Serializable {
 				}
 				
 				try {
+					Date d = new Date();
+					String lastModifiedByString = this.authService.getLastModifiedByString();
+					for (CmqBase190 cmqBase190 : targetCmqsSelected) {
+						cmqBase190.setLastModifiedBy(lastModifiedByString);
+						cmqBase190.setLastModifiedDate(d);
+						if(StringUtils.isBlank(cmqBase190.getCreatedBy()) || cmqBase190.getCreationDate() == null) {
+							cmqBase190.setCreatedBy(lastModifiedByString);
+							cmqBase190.setCreationDate(d);
+						}
+					}
 					this.cmqBaseService.update(targetCmqsSelected);
 				} catch (CqtServiceException e) {
 					LOG.error(e.getMessage(), e);
@@ -521,6 +536,14 @@ public class PublishController implements Serializable {
 
 	public void setCmqBaseTargetService(ICmqBaseTargetService cmqBaseTargetService) {
 		this.cmqBaseTargetService = cmqBaseTargetService;
+	}
+
+	public AuthenticationService getAuthService() {
+		return authService;
+	}
+
+	public void setAuthService(AuthenticationService authService) {
+		this.authService = authService;
 	}
 
 }

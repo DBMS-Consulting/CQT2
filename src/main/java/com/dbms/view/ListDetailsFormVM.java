@@ -2,6 +2,7 @@ package com.dbms.view;
 
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import javax.faces.event.AjaxBehaviorEvent;
 
@@ -10,9 +11,9 @@ import org.apache.commons.lang.StringUtils;
 import com.dbms.entity.cqt.CmqBase190;
 import com.dbms.entity.cqt.CmqBaseTarget;
 import com.dbms.entity.cqt.RefConfigCodeList;
+import com.dbms.service.AuthenticationService;
 import com.dbms.service.IRefCodeListService;
 import com.dbms.util.CqtConstants;
-import java.util.List;
 
 /**
  * "Create/Update/Browse&Search" module's "Details" tab form data 
@@ -47,8 +48,10 @@ public class ListDetailsFormVM {
 	private String lastModifiedBy;
 	private Date lastModifiedDate;
 	
+	private AuthenticationService authService;
 	
-	public ListDetailsFormVM() {
+	public ListDetailsFormVM(AuthenticationService authService) {
+		this.authService = authService;
 		init();
 	}
 	
@@ -112,11 +115,13 @@ public class ListDetailsFormVM {
 	 * @param cmq
 	 */
 	public void saveToCmqBase190(CmqBase190 cmq) {
+		Date d = new Date();
+		String lastModifiedByString = this.authService.getLastModifiedByString();
 		cmq.setCmqTypeCd(extension);
 		cmq.setCmqName(name);
 		cmq.setCmqProgramCd(drugProgram);
 		cmq.setCmqProtocolCd(protocol);	
-		cmq.setCmqProductCds(products);
+		cmq.setCmqProductCds(products, lastModifiedByString, d);
 		
 		cmq.setCmqDesignee(designee);
 		if (cmq.getCmqDesignee() == null){
@@ -125,11 +130,12 @@ public class ListDetailsFormVM {
 		cmq.setCmqLevel(level);
 		cmq.setCmqAlgorithm(algorithm);
 		
-		cmq.setLastModifiedDate(new Date());
-		cmq.setLastModifiedBy("test-user");
+		cmq.setLastModifiedDate(d);
+		cmq.setLastModifiedBy(lastModifiedByString);
 		
 		if(wizardType == WizardType.CreateWizard || wizardType == WizardType.CopyWizard) {
-			cmq.setCreationDate(new Date());
+			cmq.setCreationDate(d);
+			cmq.setCreatedBy(lastModifiedByString);
 			cmq.setCmqStatus(CmqBase190.CMQ_STATUS_VALUE_PENDING);
 			cmq.setCmqState(CmqBase190.CMQ_STATE_VALUE_DRAFT);
 			cmq.setCmqGroup("No Group");

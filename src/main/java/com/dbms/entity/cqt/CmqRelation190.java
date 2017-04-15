@@ -69,14 +69,14 @@ public class CmqRelation190 extends BaseEntity {
 	@Column(name = "RELATION_IMPACT_TYPE", length = 15)
 	private String relationImpactType;
 
-	@Column(name = "CREATED_BY", nullable = false, length = 30)
+	@Column(name = "CREATED_BY", nullable = false, length = 4000)
 	private String createdBy;
 
 	@Temporal(TemporalType.DATE)
 	@Column(name = "CREATION_DATE", nullable = false, length = 7)
 	private Date creationDate;
 
-	@Column(name = "LAST_MODIFIED_BY", length = 30)
+	@Column(name = "LAST_MODIFIED_BY", length = 4000)
 	private String lastModifiedBy;
 
 	@Temporal(TemporalType.DATE)

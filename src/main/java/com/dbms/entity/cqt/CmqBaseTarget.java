@@ -107,14 +107,14 @@ public class CmqBaseTarget extends BaseEntity {
 	@Column(name = "IMPACT_TYPE", length = 15)
 	private String impactType;
 
-	@Column(name = "CREATED_BY", nullable = false, length = 30)
+	@Column(name = "CREATED_BY", nullable = false, length = 4000)
 	private String createdBy;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "CREATION_DATE", nullable = false, length = 7)
 	private Date creationDate;
 
-	@Column(name = "LAST_MODIFIED_BY", length = 30)
+	@Column(name = "LAST_MODIFIED_BY", length = 4000)
 	private String lastModifiedBy;
 
 	@Temporal(TemporalType.TIMESTAMP)

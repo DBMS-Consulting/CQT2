@@ -3,8 +3,10 @@ package com.dbms.controller;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -16,13 +18,12 @@ import javax.faces.context.FacesContext;
 import org.primefaces.model.StreamedContent;
 
 import com.dbms.entity.cqt.RefConfigCodeList;
+import com.dbms.service.AuthenticationService;
 import com.dbms.service.IRefCodeListService;
 import com.dbms.util.CqtConstants;
 import com.dbms.util.OrderBy;
 import com.dbms.util.exceptions.CqtServiceException;
 import com.dbms.web.dto.CodelistDTO;
-import java.util.Comparator;
-import java.util.Objects;
 
 /**
  * @date Feb 7, 2017 7:39:34 AM
@@ -51,6 +52,9 @@ public class AdminController implements Serializable {
 	@ManagedProperty("#{RefCodeListService}")
 	private IRefCodeListService refCodeListService;
 
+	@ManagedProperty("#{AuthenticationService}")
+	private AuthenticationService authService;
+	
 	private List<RefConfigCodeList> extensions, programs, protocols, products, meddras, workflows, usergroups, sysconfigs;
 	
 	private RefConfigCodeList selectedRow, myFocusRef;
@@ -240,8 +244,8 @@ public class AdminController implements Serializable {
 	}
 	
 	public void addRefCodelist() {
-		myFocusRef.setCreatedBy("test-user");
-		myFocusRef.setLastModifiedBy("test-user"); 
+		Date lastModifiedDate = new Date();
+		String lastModifiedByString = this.authService.getLastModifiedByString();
 		//To uppercase for workflow State
 		if (myFocusRef.getCodelistConfigType().equals(CqtConstants.CODE_LIST_TYPE_WORKFLOW_STATES))
 			myFocusRef.setValue(myFocusRef.getValue().toUpperCase());
@@ -249,9 +253,15 @@ public class AdminController implements Serializable {
 		if (myFocusRef.getCodelistInternalValue() != null)
 			myFocusRef.setCodelistInternalValue(myFocusRef.getCodelistInternalValue().toUpperCase());
 		try {
-			if (myFocusRef.getId() != null)
+			if (myFocusRef.getId() != null){
+				myFocusRef.setLastModificationDate(lastModifiedDate);
+				myFocusRef.setLastModifiedBy(lastModifiedByString);
 				refCodeListService.update(myFocusRef);
-			else {
+			} else {
+				myFocusRef.setLastModificationDate(lastModifiedDate);
+				myFocusRef.setLastModifiedBy(lastModifiedByString);
+				myFocusRef.setCreationDate(lastModifiedDate);
+				myFocusRef.setCreatedBy(lastModifiedByString);
 				refCodeListService.create(myFocusRef);
 			}
 			updateSerialNumbers(myFocusRef.getCodelistConfigType(), myFocusRef);
@@ -463,4 +473,12 @@ public class AdminController implements Serializable {
     public void setSysconfigs(List<RefConfigCodeList> sysconfigs) {
         this.sysconfigs = sysconfigs;
     }
+
+	public AuthenticationService getAuthService() {
+		return authService;
+	}
+
+	public void setAuthService(AuthenticationService authService) {
+		this.authService = authService;
+	}
 }

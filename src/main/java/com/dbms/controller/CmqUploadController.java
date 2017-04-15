@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.dbms.entity.cqt.CmqBase190;
+import com.dbms.service.AuthenticationService;
 import com.dbms.service.ICmqBase190Service;
 
 /**
@@ -34,6 +35,9 @@ public class CmqUploadController implements Serializable {
 	@ManagedProperty("#{CmqBase190Service}")
 	private ICmqBase190Service cmqBaseService;
 
+	@ManagedProperty("#{AuthenticationService}")
+	private AuthenticationService authService;
+	
 	private UploadedFile file;
 
 	public UploadedFile getFile() {
@@ -55,6 +59,8 @@ public class CmqUploadController implements Serializable {
 		int failed=0;
 		if (file != null) {
 			try {
+				Date lastModifiedDate = new Date();
+				String lastModifiedByString = this.authService.getLastModifiedByString();
 				InputStreamReader isr = new InputStreamReader(
 						file.getInputstream());
 				BufferedReader reader = new BufferedReader(isr);
@@ -90,7 +96,7 @@ public class CmqUploadController implements Serializable {
 					base.setId(id);
 					base.setCmqName(ss[1]);
 					base.setCmqTypeCd(ss[2]);
-					base.setCmqProductCds(StringUtils.split(ss[3], ","));
+					base.setCmqProductCds(StringUtils.split(ss[3], ","), lastModifiedByString, lastModifiedDate);
 					base.setCmqProgramCd(ss[4]);
 					base.setCmqProtocolCd(ss[5]);
 					Integer level=null;
@@ -124,11 +130,13 @@ public class CmqUploadController implements Serializable {
 					}
 					base.setCmqState(ss[15]);
 					base.setCreatedBy(ss[16]);
+					base.setLastModifiedBy(ss[16]);
 					Date created = null;
 					if (StringUtils.isNotEmpty(ss[17])
 							&& ss[17].equalsIgnoreCase("SYSTEM DATE")) {
 						created = new Date();
 						base.setCreationDate(created);
+						base.setLastModifiedDate(created);
 					}
 					log.debug("save entity {}", base);
 					cmqBaseService.create(base);
@@ -147,5 +155,13 @@ public class CmqUploadController implements Serializable {
 			}
 		}
 
+	}
+
+	public AuthenticationService getAuthService() {
+		return authService;
+	}
+
+	public void setAuthService(AuthenticationService authService) {
+		this.authService = authService;
 	}
 }

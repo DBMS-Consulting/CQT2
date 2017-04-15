@@ -3,6 +3,7 @@ package com.dbms.entity.cqt;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -22,7 +23,6 @@ import javax.persistence.TemporalType;
 import org.apache.commons.lang.StringUtils;
 
 import com.dbms.entity.BaseEntity;
-import java.util.HashSet;
 
 @Entity
 @Table(name = "CMQ_BASE_CURRENT")
@@ -119,14 +119,14 @@ public class CmqBase190 extends BaseEntity {
 	@Column(name = "IMPACT_TYPE", length = 15)
 	private String impactType;
 
-	@Column(name = "CREATED_BY", nullable = false, length = 30)
+	@Column(name = "CREATED_BY", nullable = false, length = 4000)
 	private String createdBy;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "CREATION_DATE", nullable = false, length = 7)
 	private Date creationDate;
 
-	@Column(name = "LAST_MODIFIED_BY", length = 30)
+	@Column(name = "LAST_MODIFIED_BY", length = 4000)
 	private String lastModifiedBy;
 
 	@Temporal(TemporalType.TIMESTAMP)
@@ -449,17 +449,17 @@ public class CmqBase190 extends BaseEntity {
         return productCds;
 	}
 	
-	public void setCmqProductCds(String[] productCds) {
+	public void setCmqProductCds(String[] productCds, String lastModifiedByString, Date modifiedDate) {
 		if(null != this.productsList) {
 			this.productsList = new ArrayList<>();
 		}
 
 		for(String p: productCds) {
-			addCmqProduct(p);
+			addCmqProduct(p, lastModifiedByString, modifiedDate);
 		}
 	}
 	
-	public int addCmqProduct(String productCd) {
+	public int addCmqProduct(String productCd, String lastModifiedByString, Date modifiedDate) {
 		int s = this.productsList == null ? 0 : this.productsList.size();
 		if(s > 0) {
 			// check if it already exists
@@ -475,6 +475,10 @@ public class CmqBase190 extends BaseEntity {
 		p.setCmqProductCd(productCd);
 		p.setCmqCode(cmqCode);
 		p.setCmqName(cmqName);
+		p.setCreatedBy(lastModifiedByString);
+		p.setCreationDate(modifiedDate);
+		p.setLastModifiedBy(lastModifiedByString);
+		p.setLastModifiedDate(modifiedDate);
 		if(this.productsList == null)
 			this.productsList = new ArrayList<>();
 		this.productsList.add(p);

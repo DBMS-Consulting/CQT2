@@ -1,5 +1,7 @@
 package com.dbms.entity.cqt;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,6 +11,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import com.dbms.entity.BaseEntity;
 
@@ -32,6 +36,20 @@ public class CmqProductBaseCurrent extends BaseEntity {
 
 	@Column(name = "CMQ_PRODUCT_CD", nullable = false, length = 200)
 	private String cmqProductCd;
+
+	@Column(name = "CREATED_BY", nullable = false, length = 4000)
+	private String createdBy;
+
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "CREATION_DATE", nullable = false, length = 7)
+	private Date creationDate;
+
+	@Column(name = "LAST_MODIFIED_BY", length = 4000)
+	private String lastModifiedBy;
+
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "LAST_MODIFIED_DATE", length = 7)
+	private Date lastModifiedDate;
 
 	@ManyToOne
 	@JoinColumn(name = "cmq_id")
@@ -76,6 +94,38 @@ public class CmqProductBaseCurrent extends BaseEntity {
 
 	public void setCmqProductCd(String cmqProductCd) {
 		this.cmqProductCd = cmqProductCd;
+	}
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public Date getCreationDate() {
+		return creationDate;
+	}
+
+	public void setCreationDate(Date creationDate) {
+		this.creationDate = creationDate;
+	}
+
+	public String getLastModifiedBy() {
+		return lastModifiedBy;
+	}
+
+	public void setLastModifiedBy(String lastModifiedBy) {
+		this.lastModifiedBy = lastModifiedBy;
+	}
+
+	public Date getLastModifiedDate() {
+		return lastModifiedDate;
+	}
+
+	public void setLastModifiedDate(Date lastModifiedDate) {
+		this.lastModifiedDate = lastModifiedDate;
 	}
 
 }
