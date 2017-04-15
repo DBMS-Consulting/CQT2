@@ -50,4 +50,6 @@ public interface IRefCodeListService extends ICqtPersistenceService<RefConfigCod
 	public RefConfigCodeList findEnterpriseAdType();
 
 	public List<RefConfigCodeList> findUserGroups();
+    
+    public String getMedDRAVersioningReportsPath();
 }

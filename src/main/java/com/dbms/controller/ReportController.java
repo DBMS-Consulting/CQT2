@@ -42,6 +42,8 @@ import com.dbms.util.CqtConstants;
 import com.dbms.util.exceptions.ReportGenerationException;
 import com.dbms.view.ListDetailsFormVM;
 import com.dbms.view.ListNotesFormVM;
+import java.io.FilenameFilter;
+import java.util.ArrayList;
 
 import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.JasperExportManager;
@@ -87,6 +89,7 @@ public class ReportController extends BaseController<CmqBase190> {
 	private Date reportEndDate = null;
 	private ReportType genReportType = null;
 	private ReportFormat genReportFormat = null;
+    private String meddraVersioningReport;
 	
 	private StreamedContent excelFile;
 
@@ -260,6 +263,7 @@ public class ReportController extends BaseController<CmqBase190> {
 	
 	/**
 	 * Generate Excel report on relations tab.
+     * @param details
 	 */
 	public void generateExcelReport(ListDetailsFormVM details) {
 		RefConfigCodeList currentMeddraVersionCodeList = this.refCodeListService.getCurrentMeddraVersion();
@@ -269,12 +273,52 @@ public class ReportController extends BaseController<CmqBase190> {
 	
 	/**
 	 * Generate MQ report on relations tab.
+     * @param details
+     * @param notes
 	 */
 	public void generateMQReport(ListDetailsFormVM details, ListNotesFormVM notes) {
 		RefConfigCodeList currentMeddraVersionCodeList = this.refCodeListService.getCurrentMeddraVersion();
 		StreamedContent content = cmqBaseService.generateMQReport(details, notes, (currentMeddraVersionCodeList != null ? currentMeddraVersionCodeList.getValue() : ""));
 		setExcelFile(content); 
 	}
+    
+    public void downloadMeddraVersioningReport() throws IOException {
+        FacesContext fc = FacesContext.getCurrentInstance();
+        String reportsPath = refCodeListService.getMedDRAVersioningReportsPath();
+        if(meddraVersioningReport != null && reportsPath != null) {
+            
+            ExternalContext ec = fc.getExternalContext();
+            String contentType = ec.getMimeType(meddraVersioningReport);
+            
+            File rptFile = new File(reportsPath, meddraVersioningReport);
+            
+            if(rptFile.exists() && rptFile.canRead()) {
+                ec.responseReset(); // Some JSF component library or some Filter might have set some headers in the buffer beforehand. We want to get rid of them, else it may collide.
+                ec.setResponseContentType(contentType); // Check http://www.iana.org/assignments/media-types for all types. Use if necessary ExternalContext#getMimeType() for auto-detection based on filename.
+                ec.setResponseContentLength((int)rptFile.length()); // Set it with the file size. This header is optional. It will work if it's omitted, but the download progress will be unknown.
+                ec.setResponseHeader("Content-Disposition", "attachment; filename=\"" + meddraVersioningReport + "\""); // The Save As popup magic is done here. You can give it any file name you want, this only won't work in MSIE, it will use current request URL as file name instead.
+                
+                OutputStream output = ec.getResponseOutputStream();
+                Files.copy(rptFile.toPath(), output);
+	
+                fc.responseComplete(); // Important! Otherwise JSF will attempt to render the response which obviously will fail since it's already written with a file and closed.
+            } else {
+                fc.addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                            "Can not read report file", ""));
+            }
+        } else {
+            if(meddraVersioningReport == null) {
+                fc.addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                            "Please choose report to download", ""));
+            } else if(reportsPath == null) {
+                fc.addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                            "Invalid report files' directory configuration", ""));
+            }
+        }
+    }
 
 
 	//-------------------------- Getters and Setters -------------------------------
@@ -357,6 +401,25 @@ public class ReportController extends BaseController<CmqBase190> {
 	public void setGenReportFormat(ReportFormat genReportFormat) {
 		this.genReportFormat= genReportFormat;
 	}
+    
+    public List<String[]> getMedDRAVersioningReports() {
+        List<String[]> rpts = new ArrayList<String[]>();       
+        String reportsPath = refCodeListService.getMedDRAVersioningReportsPath();
+        if(reportsPath != null) {
+            File dir = new File(reportsPath);
+            File [] files = dir.listFiles(new FilenameFilter() {
+                @Override
+                public boolean accept(File dir, String name) {
+                    return name.endsWith(".xls") || name.endsWith(".xlsx");
+                }
+            });
+
+            for (File xmlfile : files) {
+                rpts.add(new String[] { xmlfile.getName(), xmlfile.getName() });
+            }
+        }
+        return rpts;
+    }
 
 
 	//---------------------- child classes -----------------------------------
@@ -398,4 +461,18 @@ public class ReportController extends BaseController<CmqBase190> {
 	public void setExcelFile(StreamedContent excelFile) {
 		this.excelFile = excelFile;
 	}
+
+    /**
+     * @return the meddraVersioningReport
+     */
+    public String getMeddraVersioningReport() {
+        return meddraVersioningReport;
+    }
+
+    /**
+     * @param meddraVersioningReport the meddraVersioningReport to set
+     */
+    public void setMeddraVersioningReport(String meddraVersioningReport) {
+        this.meddraVersioningReport = meddraVersioningReport;
+    }
 }

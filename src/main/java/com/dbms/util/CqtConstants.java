@@ -12,6 +12,8 @@ public class CqtConstants {
 	
 	public static final String CURRENT_MEDDRA_VERSION = "CURRENT_MEDDRA_VERSION";
 	public static final String TARGET_MEDDRA_VERSION = "TARGET_MEDDRA_VERSION";
+    
+    public static final String SYSTEM_CONFIG_MEDDRA_IMPACT_DL_PATH = "MEDDRA_IMPACT_DL_PATH";
 	
 	public static final String CODE_LIST_NO_PROTOCOL_INTERNALCODE = "999999";
 	public static final String CODE_LIST_NO_PRODUCT_INTERNALCODE = "99999";

@@ -378,6 +378,15 @@ public class RefCodeListService extends
 	public void setCqtCacheManager(ICqtCacheManager cqtCacheManager) {
 		this.cqtCacheManager = cqtCacheManager;
 	}
+    
+    @Override
+    public String getMedDRAVersioningReportsPath() {
+        RefConfigCodeList reportsPathConfig = findByConfigTypeAndInternalCode(CqtConstants.CODE_LIST_TYPE_SYSTEM_CONFIG, CqtConstants.SYSTEM_CONFIG_MEDDRA_IMPACT_DL_PATH);
+        if(reportsPathConfig != null) {
+            return reportsPathConfig.getValue();
+        }
+        return null;
+    }
 
 	@Override
 	public StreamedContent generateReport(String codelistType) {
