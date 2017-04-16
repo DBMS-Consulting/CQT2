@@ -581,7 +581,9 @@ public class SearchController extends BaseController<CmqBase190> implements IRel
 					cmqEntity.setCmqParentCode(null);
 					cmqEntity.setCmqParentName(null);
 					try {
-						this.cmqBaseService.update(cmqEntity);
+						this.cmqBaseService.update(cmqEntity, this.authService.getUserCn()
+								, this.authService.getUserGivenName(), this.authService.getUserSurName()
+								, this.authService.getCombinedMappedGroupMembershipAsString());
 					} catch (CqtServiceException e) {
 						log.error("Error while removing cmq_parent_code value from cmq_id " + cmqEntity.getId(), e);
 					}

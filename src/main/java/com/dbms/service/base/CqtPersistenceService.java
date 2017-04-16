@@ -28,6 +28,8 @@ public abstract class CqtPersistenceService<E extends IEntity> implements ICqtPe
 
 	private static final Logger LOG = LoggerFactory.getLogger(CqtPersistenceService.class);
 
+	private static final String DELETE_SP = "begin CPQ_DML_PKG.SET_MODIFIED_BY(:PV_USER_ID, :PV_FNAME, :PV_LNAME, :PV_GROUP_NAME); end; ";
+	
 	private Class<E> entityClass;
 
 	@ManagedProperty(value = "#{CqtEntityManagerFactory}")
@@ -107,13 +109,23 @@ public abstract class CqtPersistenceService<E extends IEntity> implements ICqtPe
 		}
 		return retVal;
 	}
-
-	public void create(E e) throws CqtServiceException {
+	
+	@Override	
+	public void create(E e, String userCn, String userFirstName, String userLastName, String userGroups) throws CqtServiceException {
 		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
 		EntityTransaction tx = null;
 		try {
 			tx = entityManager.getTransaction();
 			tx.begin();
+			
+			Session session = entityManager.unwrap(Session.class);
+			SQLQuery query = session.createSQLQuery(DELETE_SP);
+			query.setParameter("PV_USER_ID", userCn);
+			query.setParameter("PV_FNAME", userFirstName);
+			query.setParameter("PV_LNAME", userLastName);
+			query.setParameter("PV_GROUP_NAME", userGroups);
+			query.executeUpdate();
+			
 			entityManager.persist(e);
 			tx.commit();
 		} catch (Exception ex) {
@@ -130,12 +142,20 @@ public abstract class CqtPersistenceService<E extends IEntity> implements ICqtPe
 	}
 	
 	@Override
-	public E update(E e) throws CqtServiceException {
+	public E update(E e, String userCn, String userFirstName, String userLastName, String userGroups) throws CqtServiceException {
 		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
 		EntityTransaction tx = null;
 		try {
 			tx = entityManager.getTransaction();
 			tx.begin();
+			
+			Session session = entityManager.unwrap(Session.class);
+			SQLQuery query = session.createSQLQuery(DELETE_SP);
+			query.setParameter("PV_USER_ID", userCn);
+			query.setParameter("PV_FNAME", userFirstName);
+			query.setParameter("PV_LNAME", userLastName);
+			query.setParameter("PV_GROUP_NAME", userGroups);
+			query.executeUpdate();
 			
 			entityManager.merge(e);
 			tx.commit();
@@ -154,12 +174,21 @@ public abstract class CqtPersistenceService<E extends IEntity> implements ICqtPe
 	}
 	
 	@Override
-	public void update(List<E> listOfE) throws CqtServiceException {
+	public void update(List<E> listOfE, String userCn, String userFirstName, String userLastName, String userGroups) throws CqtServiceException {
 		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
 		EntityTransaction tx = null;
 		try {
 			tx = entityManager.getTransaction();
 			tx.begin();
+			
+			Session session = entityManager.unwrap(Session.class);
+			SQLQuery query = session.createSQLQuery(DELETE_SP);
+			query.setParameter("PV_USER_ID", userCn);
+			query.setParameter("PV_FNAME", userFirstName);
+			query.setParameter("PV_LNAME", userLastName);
+			query.setParameter("PV_GROUP_NAME", userGroups);
+			query.executeUpdate();
+			
 			for (E e : listOfE) {
 				//setModifyTimestampAndUserInfo(e);
 				entityManager.merge(e);
@@ -181,15 +210,13 @@ public abstract class CqtPersistenceService<E extends IEntity> implements ICqtPe
 	@Override
 	public void remove(Long id, String userCn, String userFirstName, String userLastName, String userGroups) throws CqtServiceException {
 		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
-		String deleteSp = "begin CPQ_DML_PKG.SET_MODIFIED_BY(:PV_USER_ID, :PV_FNAME, :PV_LNAME, :PV_GROUP_NAME); end; ";
-		
 		final Class<? extends E> entityClass = getEntityClass();
 		EntityTransaction tx = null;
 		try {
 			tx = entityManager.getTransaction();
 			tx.begin();
 			Session session = entityManager.unwrap(Session.class);
-			SQLQuery query = session.createSQLQuery(deleteSp);
+			SQLQuery query = session.createSQLQuery(DELETE_SP);
 			query.setParameter("PV_USER_ID", userCn);
 			query.setParameter("PV_FNAME", userFirstName);
 			query.setParameter("PV_LNAME", userLastName);

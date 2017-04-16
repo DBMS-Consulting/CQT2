@@ -353,21 +353,21 @@ public class RefCodeListService extends
 	}
 	
 	@Override
-	public void create(RefConfigCodeList e) throws CqtServiceException {
-		super.create(e);
+	public void create(RefConfigCodeList e, String userCn, String userFirstName, String userLastName, String userGroups) throws CqtServiceException {
+		super.create(e, userCn, userFirstName, userLastName, userGroups);
 		cqtCacheManager.removeAllFromCache(CACHE_NAME);
 	}
 	
 	@Override
-	public RefConfigCodeList update(RefConfigCodeList e) throws CqtServiceException {
-		RefConfigCodeList u = super.update(e);
+	public RefConfigCodeList update(RefConfigCodeList e, String userCn, String userFirstName, String userLastName, String userGroups) throws CqtServiceException {
+		RefConfigCodeList u = super.update(e, userCn, userFirstName, userLastName, userGroups);
 		cqtCacheManager.removeAllFromCache(CACHE_NAME);
 		return u;
 	}
 	
 	@Override
-	public void update(List<RefConfigCodeList> e) throws CqtServiceException {
-		super.update(e);
+	public void update(List<RefConfigCodeList> e, String userCn, String userFirstName, String userLastName, String userGroups) throws CqtServiceException {
+		super.update(e, userCn, userFirstName, userLastName, userGroups);
 		cqtCacheManager.removeAllFromCache(CACHE_NAME);
 	}
 

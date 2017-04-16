@@ -139,7 +139,9 @@ public class CmqUploadController implements Serializable {
 						base.setLastModifiedDate(created);
 					}
 					log.debug("save entity {}", base);
-					cmqBaseService.create(base);
+					cmqBaseService.create(base, this.authService.getUserCn()
+							, this.authService.getUserGivenName(), this.authService.getUserSurName()
+							, this.authService.getCombinedMappedGroupMembershipAsString());
 					success++;
 				}
 				FacesMessage msg = new FacesMessage("Successful import "

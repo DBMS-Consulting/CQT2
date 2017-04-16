@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 
 import com.dbms.entity.cqt.CmqBase190;
 import com.dbms.entity.cqt.CmqBaseTarget;
+import com.dbms.service.AuthenticationService;
 import com.dbms.service.ICmqBase190Service;
 import com.dbms.service.ICmqBaseTargetService;
 import com.dbms.service.ICmqRelation190Service;
@@ -50,6 +51,9 @@ public class DemoteToDraftController implements Serializable {
 	@ManagedProperty("#{CmqBaseTargetService}")
 	private ICmqBaseTargetService cmqBaseTargetService;
 
+	@ManagedProperty("#{AuthenticationService}")
+	private AuthenticationService authService;
+	
 	private List<CmqBase190> sourceList;
 	private List<CmqBase190> targetList;
 	
@@ -149,7 +153,9 @@ public class DemoteToDraftController implements Serializable {
 				}
 				
 				try {
-					this.cmqBaseService.update(targetCmqsSelected);
+					this.cmqBaseService.update(targetCmqsSelected, this.authService.getUserCn()
+							, this.authService.getUserGivenName(), this.authService.getUserSurName()
+							, this.authService.getCombinedMappedGroupMembershipAsString());
 				} catch (CqtServiceException e) {
 					LOG.error(e.getMessage(), e);
 					hasErrorOccured = true;
@@ -245,7 +251,9 @@ public class DemoteToDraftController implements Serializable {
 				}
 				
 				try {
-					this.cmqBaseTargetService.update(targetCmqsSelected);
+					this.cmqBaseTargetService.update(targetCmqsSelected, this.authService.getUserCn()
+							, this.authService.getUserGivenName(), this.authService.getUserSurName()
+							, this.authService.getCombinedMappedGroupMembershipAsString());
 				} catch (CqtServiceException e) {
 					LOG.error(e.getMessage(), e);
 					hasErrorOccured = true;
@@ -427,6 +435,14 @@ public class DemoteToDraftController implements Serializable {
 	public void setCmqBaseTargetDualListConverter(
 			CmqBaseTargetDualListConverter cmqBaseTargetDualListConverter) {
 		this.cmqBaseTargetDualListConverter = cmqBaseTargetDualListConverter;
+	}
+
+	public AuthenticationService getAuthService() {
+		return authService;
+	}
+
+	public void setAuthService(AuthenticationService authService) {
+		this.authService = authService;
 	}
 
 }

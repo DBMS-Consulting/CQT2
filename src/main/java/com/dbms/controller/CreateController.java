@@ -227,7 +227,9 @@ public class CreateController implements Serializable {
 		selectedData.setLastModifiedBy(lastModifiedByString);
 		
 		try {
-			this.cmqBaseService.update(selectedData);
+			this.cmqBaseService.update(selectedData, this.authService.getUserCn()
+					, this.authService.getUserGivenName(), this.authService.getUserSurName()
+					, this.authService.getCombinedMappedGroupMembershipAsString());
 			this.notesFormModel.loadFromCmqBase190(selectedData);
 
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
@@ -407,7 +409,9 @@ public class CreateController implements Serializable {
 								cmqRelation190.setCreationDate(lastModifiedDate);
 							}
 						}
-						this.cmqRelationService.update(cmqRelationsList);
+						this.cmqRelationService.update(cmqRelationsList, this.authService.getUserCn()
+								, this.authService.getUserGivenName(), this.authService.getUserSurName()
+								, this.authService.getCombinedMappedGroupMembershipAsString());
 					}
 					if(!cmqBaseChildrenList.isEmpty()) {
 						
@@ -419,7 +423,9 @@ public class CreateController implements Serializable {
 								cmqBase190.setCreationDate(lastModifiedDate);
 							}
 						}
-						this.cmqBaseService.update(cmqBaseChildrenList);
+						this.cmqBaseService.update(cmqBaseChildrenList, this.authService.getUserCn()
+								, this.authService.getUserGivenName(), this.authService.getUserSurName()
+								, this.authService.getCombinedMappedGroupMembershipAsString());
 					}
 					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 							"Relations are successfully updated for '" + cmqBase.getCmqName() + "'", "");
@@ -579,7 +585,9 @@ public class CreateController implements Serializable {
 			if(count < 2) {
 				//we should have atmost 1
 				prepareDetailsFormSave();
-				cmqBaseService.update(selectedData);
+				cmqBaseService.update(selectedData, this.authService.getUserCn()
+						, this.authService.getUserGivenName(), this.authService.getUserSurName()
+						, this.authService.getCombinedMappedGroupMembershipAsString());
 				
 				// retrieve the saved cmq base
 				CmqBase190 savedEntity = cmqBaseService.findByCode(selectedData.getCmqCode());		
@@ -697,7 +705,9 @@ public class CreateController implements Serializable {
 			selectedData.setCmqParentCode(null);
 			selectedData.setCmqParentName(null);
 			
-			cmqBaseService.create(selectedData);
+			cmqBaseService.create(selectedData, this.authService.getUserCn()
+					, this.authService.getUserGivenName(), this.authService.getUserSurName()
+					, this.authService.getCombinedMappedGroupMembershipAsString());
 			
 			// retrieve the saved cmq base
 			CmqBase190 savedEntity = cmqBaseService.findByCode(selectedData.getCmqCode());
@@ -811,7 +821,9 @@ public class CreateController implements Serializable {
 				return null;
 			} else {
 				prepareDetailsFormSave();
-				cmqBaseService.create(selectedData);
+				cmqBaseService.create(selectedData, this.authService.getUserCn()
+						, this.authService.getUserGivenName(), this.authService.getUserSurName()
+						, this.authService.getCombinedMappedGroupMembershipAsString());
 
 				// retrieve the saved cmq base
 				CmqBase190 savedEntity = cmqBaseService.findByCode(codevalue);
@@ -941,7 +953,9 @@ public class CreateController implements Serializable {
 			cmqRelation190.setCreatedBy(this.authService.getLastModifiedByString());
 		}
 		//save relations
-		this.cmqRelationService.update(cmqRelationList);
+		this.cmqRelationService.update(cmqRelationList, this.authService.getUserCn()
+				, this.authService.getUserGivenName(), this.authService.getUserSurName()
+				, this.authService.getCombinedMappedGroupMembershipAsString());
 		LOG.info("Cmq relations saved.");
 	}
 	
@@ -977,7 +991,9 @@ public class CreateController implements Serializable {
 			childCmq.setLastModifiedDate(null);
 		}
 		//save children
-		this.cmqBaseService.update(childCmqs);
+		this.cmqBaseService.update(childCmqs, this.authService.getUserCn()
+				, this.authService.getUserGivenName(), this.authService.getUserSurName()
+				, this.authService.getCombinedMappedGroupMembershipAsString());
 		LOG.info("Cmq children saved.");
 	}
 	
@@ -1224,7 +1240,9 @@ public class CreateController implements Serializable {
 		
 		// Update
 		try {
-			cmqBaseService.update(selectedData);
+			cmqBaseService.update(selectedData, this.authService.getUserCn()
+					, this.authService.getUserGivenName(), this.authService.getUserSurName()
+					, this.authService.getCombinedMappedGroupMembershipAsString());
 			LOG.info("\n NEW STATE :" + selectedData.getCmqState());
 
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,

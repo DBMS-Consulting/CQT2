@@ -603,17 +603,23 @@ public class ImpactSearchController implements Serializable {
 						if (!cmqRelationsList.isEmpty() || !cmqBaseChildrenList.isEmpty()) {
 							try {
 								if(!cmqRelationsList.isEmpty()) {
-									this.cmqRelationTargetService.update(cmqRelationsList);
+									this.cmqRelationTargetService.update(cmqRelationsList, this.authService.getUserCn()
+											, this.authService.getUserGivenName(), this.authService.getUserSurName()
+											, this.authService.getCombinedMappedGroupMembershipAsString());
 								}
 								if(!cmqBaseChildrenList.isEmpty()) {
-									this.cmqBaseTargetService.update(cmqBaseChildrenList);
+									this.cmqBaseTargetService.update(cmqBaseChildrenList, this.authService.getUserCn()
+											, this.authService.getUserGivenName(), this.authService.getUserSurName()
+											, this.authService.getCombinedMappedGroupMembershipAsString());
 								}
 								
 								//mark the cmqbase as Impacted if it is NON-IMPACTED
 								String impactType = cmqBaseTarget.getImpactType();
 								if("NON-IMPACTED".equalsIgnoreCase(impactType)) {
 									cmqBaseTarget.setImpactType("IMPACTED");
-									this.cmqBaseTargetService.update(cmqBaseTarget);
+									this.cmqBaseTargetService.update(cmqBaseTarget, this.authService.getUserCn()
+											, this.authService.getUserGivenName(), this.authService.getUserSurName()
+											, this.authService.getCombinedMappedGroupMembershipAsString());
 								}
 								
 								FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
@@ -901,13 +907,17 @@ public class ImpactSearchController implements Serializable {
 		try {
 			if(d != null && d instanceof CmqBase190) {
 				notesFormModel.saveToCmqBase190((CmqBase190)d);
-				cmqBaseCurrentService.update((CmqBase190)d);
+				cmqBaseCurrentService.update((CmqBase190)d, this.authService.getUserCn()
+						, this.authService.getUserGivenName(), this.authService.getUserSurName()
+						, this.authService.getCombinedMappedGroupMembershipAsString());
 			} else if(d != null && d instanceof SmqBase190) {
 				notesFormModel.saveToSmqBase190((SmqBase190)d);
 				//
 			} else if(d != null && d instanceof CmqBaseTarget) {
 				notesFormModel.saveToCmqBaseTarget((CmqBaseTarget)d);
-				cmqBaseTargetService.update((CmqBaseTarget)d);
+				cmqBaseTargetService.update((CmqBaseTarget)d, this.authService.getUserCn()
+						, this.authService.getUserGivenName(), this.authService.getUserSurName()
+						, this.authService.getCombinedMappedGroupMembershipAsString());
 			} else if(d != null && d instanceof SmqBaseTarget) {
 				notesFormModel.saveToSmqBaseTarget((SmqBaseTarget)d);
 				//
@@ -955,10 +965,14 @@ public class ImpactSearchController implements Serializable {
 		try {
 			if(d != null && d instanceof CmqBase190) {
 				((CmqBase190)d).setCmqDesignee(detailsFormModel.getDesignee());
-				cmqBaseCurrentService.update((CmqBase190)d);
+				cmqBaseCurrentService.update((CmqBase190)d, this.authService.getUserCn()
+						, this.authService.getUserGivenName(), this.authService.getUserSurName()
+						, this.authService.getCombinedMappedGroupMembershipAsString());
 			} else if(d != null && d instanceof CmqBaseTarget) {
 				((CmqBaseTarget)d).setCmqDesignee(detailsFormModel.getDesignee());
-				cmqBaseTargetService.update((CmqBaseTarget)d);
+				cmqBaseTargetService.update((CmqBaseTarget)d, this.authService.getUserCn()
+						, this.authService.getUserGivenName(), this.authService.getUserSurName()
+						, this.authService.getCombinedMappedGroupMembershipAsString());
 			}
 			
 			FacesContext.getCurrentInstance()
@@ -1103,7 +1117,9 @@ public class ImpactSearchController implements Serializable {
 					cmqEntity.setCmqParentCode(null);
 					cmqEntity.setCmqParentName(null);
 					try {
-						this.cmqBaseTargetService.update(cmqEntity);
+						this.cmqBaseTargetService.update(cmqEntity, this.authService.getUserCn()
+								, this.authService.getUserGivenName(), this.authService.getUserSurName()
+								, this.authService.getCombinedMappedGroupMembershipAsString());
 						isDeletSuccessful = true;
 					} catch (CqtServiceException e) {
 						String exception = CmqUtils.getExceptionMessageChain(e);
@@ -1229,7 +1245,9 @@ public class ImpactSearchController implements Serializable {
 					//make the cmq target as impacted.
 					cmqBaseTarget.setImpactType("IMPACTED");
 					try {
-						this.cmqBaseTargetService.update(cmqBaseTarget);
+						this.cmqBaseTargetService.update(cmqBaseTarget, this.authService.getUserCn()
+								, this.authService.getUserGivenName(), this.authService.getUserSurName()
+								, this.authService.getCombinedMappedGroupMembershipAsString());
 						FacesContext.getCurrentInstance().addMessage(null, 
                                 new FacesMessage(FacesMessage.SEVERITY_INFO,
                                         "Relation deleted successfully.", ""));
@@ -1261,9 +1279,13 @@ public class ImpactSearchController implements Serializable {
 		//Update of target
 		try {
 			if (this.isImpactedCmqSelected)
-				cmqBaseTargetService.update(selectedImpactedCmqList);
+				cmqBaseTargetService.update(selectedImpactedCmqList, this.authService.getUserCn()
+						, this.authService.getUserGivenName(), this.authService.getUserSurName()
+						, this.authService.getCombinedMappedGroupMembershipAsString());
 			if (this.isNonImpactedCmqSelected)
-				cmqBaseTargetService.update(selectedNotImpactedCmqList);
+				cmqBaseTargetService.update(selectedNotImpactedCmqList, this.authService.getUserCn()
+						, this.authService.getUserGivenName(), this.authService.getUserSurName()
+						, this.authService.getCombinedMappedGroupMembershipAsString());
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO,
                             "Workflow state has been updated", ""));
