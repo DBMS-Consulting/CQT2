@@ -34,6 +34,7 @@ import com.dbms.entity.cqt.SmqBase190;
 import com.dbms.entity.cqt.SmqRelation190;
 import com.dbms.entity.cqt.dtos.MeddraDictHierarchySearchDto;
 import com.dbms.entity.cqt.dtos.MeddraDictReverseHierarchySearchDto;
+import com.dbms.service.AuthenticationService;
 import com.dbms.service.ICmqBase190Service;
 import com.dbms.service.ICmqRelation190Service;
 import com.dbms.service.IMeddraDictService;
@@ -72,6 +73,9 @@ public class SearchController extends BaseController<CmqBase190> implements IRel
 	@ManagedProperty("#{RefCodeListService}")
 	private IRefCodeListService refCodeListService;
 
+	@ManagedProperty("#{AuthenticationService}")
+	private AuthenticationService authService;
+	
 	private String releaseStatus;
 	private String criticalEvent;
 	private String termName;
@@ -676,7 +680,9 @@ public class SearchController extends BaseController<CmqBase190> implements IRel
 						
 						if(matchFound && (cmqRelationIdToDelete != null)) {
 							try {
-								this.cmqRelationService.remove(cmqRelationIdToDelete);
+								this.cmqRelationService.remove(cmqRelationIdToDelete, this.authService.getUserCn()
+																	, this.authService.getUserGivenName(), this.authService.getUserSurName()
+																	, this.authService.getCombinedMappedGroupMembershipAsString());
 							} catch (CqtServiceException e) {
 								log.error("Error while removing cmqbase relation.", e);
 								FacesMessage message = new FacesMessage(
@@ -929,5 +935,13 @@ public class SearchController extends BaseController<CmqBase190> implements IRel
 			return refCodeListService.interpretProductCodesToValuesLabel(this.products);
 		}
 		return "Choose products";
+	}
+
+	public AuthenticationService getAuthService() {
+		return authService;
+	}
+
+	public void setAuthService(AuthenticationService authService) {
+		this.authService = authService;
 	}
 }

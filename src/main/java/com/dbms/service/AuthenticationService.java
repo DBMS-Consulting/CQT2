@@ -336,6 +336,20 @@ public class AuthenticationService {
 		return sb.toString();
 	}
 	
+	public String getCombinedMappedGroupMembershipAsString() {
+		StringBuilder sb = new StringBuilder();
+		if(CollectionUtils.isNotEmpty(combinedMappedGroupMemberships)) {
+			int i = 0;
+			for (String combinedMappedGroup : this.combinedMappedGroupMemberships) {
+				sb.append(combinedMappedGroup);
+				if(++i < this.combinedMappedGroupMemberships.size()) {
+					sb.append(",");
+				}
+			}
+		}
+		return sb.toString();
+	}
+	
 	private InputStream getResourceAsStream(String resource) {
 		final InputStream in = getContextClassLoader().getResourceAsStream(resource);
 		return in == null ? getClass().getResourceAsStream(resource) : in;

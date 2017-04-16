@@ -20,11 +20,11 @@ public interface ICqtPersistenceService<E extends IEntity> {
 
 	public E update(E e) throws CqtServiceException;
 
-	public void remove(Long id) throws CqtServiceException;
+	public void remove(Long id, String userCn, String userFirstName, String userLastName, String userGroups) throws CqtServiceException;
 
-	public void remove(E e) throws CqtServiceException;
+	public void remove(E e, String userCn, String userFirstName, String userLastName, String userGroups) throws CqtServiceException;
 
-	public void remove(Set<Long> ids) throws CqtServiceException;
+	public void remove(Set<Long> ids, String userCn, String userFirstName, String userLastName, String userGroups) throws CqtServiceException;
 
 	public Class<E> getEntityClass();
 

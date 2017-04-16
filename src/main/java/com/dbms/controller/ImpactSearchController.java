@@ -1208,7 +1208,9 @@ public class ImpactSearchController implements Serializable {
 						
 						if(matchFound && (cmqRelationIdToDelete != null)) {
 							try {
-								this.cmqRelationTargetService.remove(cmqRelationIdToDelete);
+								this.cmqRelationTargetService.remove(cmqRelationIdToDelete, this.authService.getUserCn()
+										, this.authService.getUserGivenName(), this.authService.getUserSurName()
+										, this.authService.getCombinedMappedGroupMembershipAsString());
 								isDeletSuccessful = true;
 							} catch (CqtServiceException e) {
 								LOG.error("Error while removing cmqbase relation.", e);

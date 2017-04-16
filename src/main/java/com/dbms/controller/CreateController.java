@@ -753,7 +753,9 @@ public class CreateController implements Serializable {
 				List<CmqRelation190> cmqRelationList = this.cmqRelationService.findByCmqCode(savedCmqCode);
 				for (CmqRelation190 cmqRelation190 : cmqRelationList) {
 					try {
-						this.cmqRelationService.remove(cmqRelation190);
+						this.cmqRelationService.remove(cmqRelation190, this.authService.getUserCn()
+								, this.authService.getUserGivenName(), this.authService.getUserSurName()
+								, this.authService.getCombinedMappedGroupMembershipAsString());
 					} catch (CqtServiceException e1) {
 						LOG.error("Exception occurred while deleting relation with relation id " + cmqRelation190.getId(), e);
 					}
@@ -762,7 +764,9 @@ public class CreateController implements Serializable {
 			
 			if(cmqSaved) {
 				try {
-					this.cmqBaseService.remove(savedCmqId);
+					this.cmqBaseService.remove(savedCmqId, this.authService.getUserCn()
+												, this.authService.getUserGivenName(), this.authService.getUserSurName()
+												, this.authService.getCombinedMappedGroupMembershipAsString());
 				} catch (CqtServiceException e1) {
 					LOG.error("Exception occurred while deleting cmq with id " + savedCmqId, e);
 				}
@@ -830,7 +834,9 @@ public class CreateController implements Serializable {
 			if(selectedData.getId() != null) {
 				// since it failed to save the record, clear the creation date/user info
 				try {
-					this.cmqBaseService.remove(selectedData.getCmqId());
+					this.cmqBaseService.remove(selectedData.getCmqId(), this.authService.getUserCn()
+							, this.authService.getUserGivenName(), this.authService.getUserSurName()
+							, this.authService.getCombinedMappedGroupMembershipAsString());
 				} catch (CqtServiceException e1) {
 					//eat it. No problem here.
 				}
@@ -1177,10 +1183,14 @@ public class CreateController implements Serializable {
 					ids.add(r.getId());
 				}
 				if(!ids.isEmpty())
-					this.cmqRelationService.remove(ids);
+					this.cmqRelationService.remove(ids, this.authService.getUserCn()
+							, this.authService.getUserGivenName(), this.authService.getUserSurName()
+							, this.authService.getCombinedMappedGroupMembershipAsString());
 				
 				// delete the record
-				cmqBaseService.remove(selectedData.getCmqId());
+				cmqBaseService.remove(selectedData.getCmqId(), this.authService.getUserCn()
+						, this.authService.getUserGivenName(), this.authService.getUserSurName()
+						, this.authService.getCombinedMappedGroupMembershipAsString());
 
 				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Record has been deleted!", "");
 				FacesContext ctx = FacesContext.getCurrentInstance();

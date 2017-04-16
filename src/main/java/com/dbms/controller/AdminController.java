@@ -313,7 +313,7 @@ public class AdminController implements Serializable {
         final Long lastSavedId = savedRef.getId();
         
 		if (refList != null && !refList.isEmpty()) {
-            /*refList.sort(new Comparator<RefConfigCodeList> () {
+            refList.sort(new Comparator<RefConfigCodeList> () {
                 @Override
                 public int compare(RefConfigCodeList o1, RefConfigCodeList o2) {
                     int c = Double.compare(o1.getSerialNum().doubleValue(), o2.getSerialNum().doubleValue());
@@ -325,7 +325,7 @@ public class AdminController implements Serializable {
                     }
                     return c;
                 }
-            });*/
+            });
             for (RefConfigCodeList ref : refList) {
                 ref.setSerialNum(new BigDecimal(val));
                 refListToSave.add(ref);
