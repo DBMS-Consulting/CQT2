@@ -51,6 +51,7 @@ import com.dbms.entity.cqt.SmqBase190;
 import com.dbms.entity.cqt.SmqRelation190;
 import com.dbms.entity.cqt.dtos.MeddraDictHierarchySearchDto;
 import com.dbms.entity.cqt.dtos.MeddraDictReverseHierarchySearchDto;
+import com.dbms.entity.cqt.dtos.ReportLineDataDto;
 import com.dbms.service.base.CqtPersistenceService;
 import com.dbms.util.CqtConstants;
 import com.dbms.util.exceptions.CqtServiceException;
@@ -876,6 +877,9 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
+		
+		Map<Integer, ReportLineDataDto> mapReport = new HashMap<Integer, ReportLineDataDto>();
+		int cpt = 0;
 
 		/**
 		 * Première ligne - entêtes
@@ -1023,12 +1027,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		String level = "", term = "", codeTerm = "";
 
 		if (relations != null) {
-			System.out.println("$$$$$$$$$$$$$$$$$$$$$  relations size " + relations.size()); 
-
 			for (CmqRelation190 relation : relations) {
-				System.out.println("$$$$$$$$$$  " + relation.getCmqCode()); 
-
-
 				/**
 				 * 
 				 * SMQs
@@ -1055,11 +1054,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 								} else if (smq.getSmqLevel() == 5) {
 									level = "SMQ5";
 								}
-								row = worksheet.createRow(rowCount);
-								buildCells(level, smq.getSmqCode() + "",
-										smq.getSmqName(), cell, row);
-								setCellStyleColumn(workbook, cell);
-								rowCount++;
+								mapReport.put(cpt++, new ReportLineDataDto(level, smq.getSmqCode() + "", smq.getSmqName(), "")); 
 								
 								if (level.equals("SMQ1")) {
 									smqSearched = smqBaseService.findByCode(smq.getSmqCode());
@@ -1068,9 +1063,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 										List<SmqRelation190> list = smqBaseService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
 										if (list != null)
 											for (SmqRelation190 smq2 : list) {
-												row = worksheet.createRow(rowCount);
-												buildChildCells("PT", smq2.getPtCode() + "", smq2.getPtName(), cell, row, ".............");
-												rowCount++;
+												mapReport.put(cpt++, new ReportLineDataDto("PT", smq2.getPtCode() + "", smq2.getPtName(), ".............")); 
 											}
 									}
 								}
@@ -1094,12 +1087,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 										} else if (smqC.getSmqLevel() == 5) {
 											level = "SMQ5";
 										}
-										row = worksheet.createRow(rowCount);
-										buildChildCells(level,
-												smqC.getSmqCode() + "",
-												smqC.getSmqName(), cell, row,
-												"......");
-										rowCount++;
+										mapReport.put(cpt++, new ReportLineDataDto(level, smqC.getSmqCode() + "", smqC.getSmqName(), "......"));  
 										
 										if (level.equals("SMQ1")) {
 											smqSearched = smqBaseService.findByCode(smqC.getSmqCode());
@@ -1108,9 +1096,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 												List<SmqRelation190> list = smqBaseService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
 												if (list != null)
 													for (SmqRelation190 smq2 : list) {
-														row = worksheet.createRow(rowCount);
-														buildChildCells("PT", smq2.getPtCode() + "", smq2.getPtName(), cell, row, ".............");
-														rowCount++;
+														mapReport.put(cpt++, new ReportLineDataDto("PT", smq2.getPtCode() + "", smq2.getPtName(), ".............")); 
 													}
 											}
 										}
@@ -1122,9 +1108,8 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 												List<SmqRelation190> list = smqBaseService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
 												if (list != null)
 													for (SmqRelation190 smq2 : list) {
-														row = worksheet.createRow(rowCount);
-														buildChildCells("PT", smq2.getPtCode() + "", smq2.getPtName(), cell, row, ".............");
-														rowCount++;
+														mapReport.put(cpt++, new ReportLineDataDto("PT", smq2.getPtCode() + "", smq2.getPtName(), "..............")); 
+
 													}
 											}
 										}
@@ -1148,10 +1133,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 										|| (childRelation.getSmqLevel() == 5)) {
 									level = "PT";
 								}
-
-								row = worksheet.createRow(rowCount);
-								buildChildCells(level, childRelation.getPtCode() + "", childRelation.getPtName(), cell, row, "......");
-								rowCount++;
+								mapReport.put(cpt++, new ReportLineDataDto(level, childRelation.getPtCode() + "", childRelation.getPtName(), "......")); 
 								
 								if (level.equals("SMQ1")) {
 									smqSearched = smqBaseService.findByCode(childRelation.getSmqCode());
@@ -1188,10 +1170,8 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 					hltCodesList.add(relation.getHltCode());
 					List<MeddraDictHierarchySearchDto> hlts = this.meddraDictService.findByCodes("HLT_", hltCodesList);
 					for (MeddraDictHierarchySearchDto hlt : hlts) {
-						row = worksheet.createRow(rowCount);
-						buildCells("HLT", hlt.getCode(), hlt.getTerm(), cell, row);
-						setCellStyleColumn(workbook, cell); 
-						rowCount++;
+						mapReport.put(cpt++, new ReportLineDataDto("HLT", hlt.getCode(), hlt.getTerm(), ""));  
+
 
 						/**
 						 * PT.
@@ -1205,9 +1185,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 						List<MeddraDictHierarchySearchDto> llts = this.meddraDictService.findByCodes("PT_", ptCodesList);
 						if (llts != null)
 							for (MeddraDictHierarchySearchDto llt : llts) {
-								row = worksheet.createRow(rowCount);
-								buildChildCells("PT", llt.getCode(), llt.getTerm(), cell, row, "......");
-								rowCount++;
+								mapReport.put(cpt++, new ReportLineDataDto("PT", llt.getCode() + "", llt.getTerm(), "......")); 
 								
 								/**
 								 * LLT.
@@ -1221,9 +1199,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 								List<MeddraDictHierarchySearchDto> llts_0 = this.meddraDictService.findByCodes("LLT_", lltCodesList_0);
 								if (llts_0 != null)
 									for (MeddraDictHierarchySearchDto llt_1 : llts_0) {
-										row = worksheet.createRow(rowCount);
-										buildChildCells("LLT", llt_1.getCode(), llt_1.getTerm(), cell, row, ".............");
-										rowCount++;
+										mapReport.put(cpt++, new ReportLineDataDto("LLT", llt_1.getCode() + "", llt_1.getTerm(), ".............")); 
 									}
 							}
 					}
@@ -1238,27 +1214,80 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 					ptCodesList.add(relation.getPtCode());
 					List<MeddraDictHierarchySearchDto> pts = this.meddraDictService.findByCodes("PT_", ptCodesList);
 					for (MeddraDictHierarchySearchDto pt : pts) {
-						row = worksheet.createRow(rowCount);
-						buildCells("PT", pt.getCode(), pt.getTerm(), cell, row);
-						setCellStyleColumn(workbook, cell); 
-						rowCount++;
-
+						mapReport.put(cpt++, new ReportLineDataDto("PT", pt.getCode() + "", pt.getTerm(), "")); 
+						
 						/**
-						 * LLT.
+						 * Reverse first.
+						 * HLT.
 						 */
-						List<MeddraDictHierarchySearchDto> listPT =  meddraDictService.findChildrenByParentCode("LLT_", "PT_", Long.valueOf(pt.getCode()));
-						List<Long> hlgtCodesList = new ArrayList<>();
-						for (MeddraDictHierarchySearchDto meddra : listPT) {
-							hlgtCodesList.add(Long.parseLong(meddra.getCode())); 
+						List<MeddraDictHierarchySearchDto> listHLT =  meddraDictService.findChildrenByParentCode("HLT_", "PT_", Long.valueOf(pt.getCode()));
+						if (listHLT != null) {
+							List<Long> codes = new ArrayList<>();
+							for (MeddraDictHierarchySearchDto meddra : listHLT) {
+								codes.add(Long.parseLong(meddra.getCode())); 
+							}
+							List<MeddraDictHierarchySearchDto> hlts = this.meddraDictService.findByCodes("HLT_", codes);
+							if (hlts != null)
+								for (MeddraDictHierarchySearchDto hlt : hlts) {
+									mapReport.put(cpt++, new ReportLineDataDto("HLT", hlt.getCode() + "", hlt.getTerm(), "......"));
+									
+									/**
+									 * HLGT.
+									 */
+									List<MeddraDictHierarchySearchDto> listHLGT =  meddraDictService.findChildrenByParentCode("HLGT_", "HLT_", Long.valueOf(hlt.getCode()));
+									if (listHLGT != null) {
+										List<Long> codes_1 = new ArrayList<>();
+										for (MeddraDictHierarchySearchDto meddra : listHLGT) {
+											codes_1.add(Long.parseLong(meddra.getCode())); 
+										}
+										List<MeddraDictHierarchySearchDto> hlgts = this.meddraDictService.findByCodes("HLGT_", codes_1);
+										if (hlgts != null)
+											for (MeddraDictHierarchySearchDto hlgt : hlgts) {
+												mapReport.put(cpt++, new ReportLineDataDto("HLGT", hlgt.getCode() + "", hlgt.getTerm(), ".............."));
+												
+
+												/**
+												 * SOC.
+												 */
+												List<MeddraDictHierarchySearchDto> listSOC =  meddraDictService.findChildrenByParentCode("SOC_", "HLGT_", Long.valueOf(hlgt.getCode()));
+												if (listSOC != null) {
+													List<Long> codes_2 = new ArrayList<>();
+													for (MeddraDictHierarchySearchDto meddra : listSOC) {
+														codes_2.add(Long.parseLong(meddra.getCode())); 
+													}
+													List<MeddraDictHierarchySearchDto> socs = this.meddraDictService.findByCodes("SOC_", codes_2);
+													if (socs != null)
+														for (MeddraDictHierarchySearchDto soc : socs) {
+															mapReport.put(cpt++, new ReportLineDataDto("SOC", soc.getCode() + "", soc.getTerm(), "...................."));
+															
+															
+														}
+												}
+											}
+									}
+								}
+						}
+						else {
+							/**
+							 * LLT.
+							 */
+							List<MeddraDictHierarchySearchDto> listPT =  meddraDictService.findChildrenByParentCode("LLT_", "PT_", Long.valueOf(pt.getCode()));
+							List<Long> hlgtCodesList = new ArrayList<>();
+							for (MeddraDictHierarchySearchDto meddra : listPT) {
+								hlgtCodesList.add(Long.parseLong(meddra.getCode())); 
+							}
+
+							List<MeddraDictHierarchySearchDto> llts = this.meddraDictService.findByCodes("LLT_", hlgtCodesList);
+							if (llts != null)
+								for (MeddraDictHierarchySearchDto llt : llts) {
+									mapReport.put(cpt++, new ReportLineDataDto("LLT", llt.getCode() + "", llt.getTerm(), "......"));
+								}
+							
+							
 						}
 
-						List<MeddraDictHierarchySearchDto> llts = this.meddraDictService.findByCodes("LLT_", hlgtCodesList);
-						if (llts != null)
-							for (MeddraDictHierarchySearchDto llt : llts) {
-								row = worksheet.createRow(rowCount);
-								buildChildCells("LLT", llt.getCode(), llt.getTerm(), cell, row, "......");
-								rowCount++;
-							}
+
+						
 					}
 				}
 
@@ -1271,10 +1300,8 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 					socCodesList.add(relation.getSocCode());
 					List<MeddraDictHierarchySearchDto> socss = this.meddraDictService.findByCodes("SOC_", socCodesList);
 					for (MeddraDictHierarchySearchDto soc : socss) {
-						row = worksheet.createRow(rowCount);
-						buildCells("SOC", soc.getCode(), soc.getTerm(), cell, row);
-						setCellStyleColumn(workbook, cell); 
-						rowCount++;
+						mapReport.put(cpt++, new ReportLineDataDto("SOC", soc.getCode() + "", soc.getTerm(), "")); 
+
 
 						/**
 						 * HLGT.
@@ -1288,9 +1315,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 						List<MeddraDictHierarchySearchDto> hlgts = this.meddraDictService.findByCodes("HLGT_", hlgtCodesList);
 						if (hlgts != null)
 							for (MeddraDictHierarchySearchDto hlgt : hlgts) {
-								row = worksheet.createRow(rowCount);
-								buildChildCells("HLGT", hlgt.getCode(), hlgt.getTerm(), cell, row, "......");
-								rowCount++;
+								mapReport.put(cpt++, new ReportLineDataDto("HLGT", hlgt.getCode() + "", hlgt.getTerm(), "......"));
 
 								/**
 								 * HLT.
@@ -1304,9 +1329,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 								List<MeddraDictHierarchySearchDto> hlts = this.meddraDictService.findByCodes("HLT_", hltCodesList);
 								if (hlts != null)
 									for (MeddraDictHierarchySearchDto hlt : hlts) {
-										row = worksheet.createRow(rowCount);
-										buildChildCells("HLT", hlt.getCode(), hlt.getTerm(), cell, row, "...........");
-										rowCount++;
+										mapReport.put(cpt++, new ReportLineDataDto("HLT", hlt.getCode() + "", hlt.getTerm(), "...............")); 
 
 										/**
 										 * PT.
@@ -1320,9 +1343,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 										List<MeddraDictHierarchySearchDto> pts = this.meddraDictService.findByCodes("PT_", ptCodesList);
 										if (pts != null)
 											for (MeddraDictHierarchySearchDto pt : pts) {
-												row = worksheet.createRow(rowCount);
-												buildChildCells("PT", pt.getCode(), pt.getTerm(), cell, row, "................");
-												rowCount++;
+												mapReport.put(cpt++, new ReportLineDataDto("PT", pt.getCode() + "", pt.getTerm(), "....................")); 
 												
 												/**
 												 * LLT.
@@ -1336,9 +1357,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 												List<MeddraDictHierarchySearchDto> llts = this.meddraDictService.findByCodes("LLT_", lltCodesList);
 												if (llts != null)
 													for (MeddraDictHierarchySearchDto llt : llts) {
-														row = worksheet.createRow(rowCount);
-														buildChildCells("LLT", llt.getCode(), llt.getTerm(), cell, row, ".....................");
-														rowCount++;
+														mapReport.put(cpt++, new ReportLineDataDto("LLT", llt.getCode() + "", llt.getTerm(), "..........................")); 
 													}
 											}
 									}
@@ -1355,10 +1374,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 					hlgtCodesList.add(relation.getHlgtCode());
 					List<MeddraDictHierarchySearchDto> socDtos = this.meddraDictService.findByCodes("HLGT_", hlgtCodesList);
 					for (MeddraDictHierarchySearchDto hlgt : socDtos) {
-						row = worksheet.createRow(rowCount);
-						buildCells("HLGT", hlgt.getCode(), hlgt.getTerm(), cell, row);
-						setCellStyleColumn(workbook, cell); 
-						rowCount++;
+						mapReport.put(cpt++, new ReportLineDataDto("HLGT", hlgt.getCode() + "", hlgt.getTerm(), ""));  
 
 						/**
 						 * HLT.
@@ -1372,10 +1388,8 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 						List<MeddraDictHierarchySearchDto> hlts = this.meddraDictService.findByCodes("HLT_", hltCodesList);
 						if (hlts != null)
 							for (MeddraDictHierarchySearchDto hlt : hlts) {
-								row = worksheet.createRow(rowCount);
-								buildChildCells("HLT", hlt.getCode(), hlt.getTerm(), cell, row, "......");
-								rowCount++;
-
+								mapReport.put(cpt++, new ReportLineDataDto("HLT", hlt.getCode() + "", hlt.getTerm(), "......")); 
+								
 								/**
 								 * PT.
 								 */
@@ -1388,9 +1402,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 								List<MeddraDictHierarchySearchDto> pts = this.meddraDictService.findByCodes("PT_", ptCodesList);
 								if (pts != null)
 									for (MeddraDictHierarchySearchDto pt : pts) {
-										row = worksheet.createRow(rowCount);
-										buildChildCells("PT", pt.getCode(), pt.getTerm(), cell, row, "..............");
-										rowCount++;
+										mapReport.put(cpt++, new ReportLineDataDto("PT", pt.getCode() + "", pt.getTerm(), "...............")); 
 									}
 							}
 					}
@@ -1408,7 +1420,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		
 		
 		/**
-		 * PRO.
+		 * PRO, TME.
 		 */
 		List<CmqBase190> childCmqs = findChildCmqsByParentCode(details.getCode());
 		
@@ -1420,9 +1432,8 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 				term = childCmq.getCmqName();
 				codeTerm = childCmq.getCmqCode() != null ? childCmq.getCmqCode() + "" : "";
 
-				row = worksheet.createRow(rowCount);
-				buildCells(level, codeTerm, term, cell, row);
-				rowCount++;
+				mapReport.put(cpt++, new ReportLineDataDto(level, codeTerm, term, ""));
+
 
 				/**
 				 * Other Relations
@@ -1456,10 +1467,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 										} else if (smq.getSmqLevel() == 5) {
 											level = "SMQ5";
 										}
-										row = worksheet.createRow(rowCount);
-										buildChildCells(level, smq.getSmqCode() + "", smq.getSmqName(), cell, row, ".......");
-										setCellStyleColumn(workbook, cell);
-										rowCount++;
+										mapReport.put(cpt++, new ReportLineDataDto(level, smq.getSmqCode() + "", smq.getSmqName(), "......."));
 
 										smqSearched = new SmqBase190();
 										//if (level.equals("SMQ1") ) {
@@ -1468,9 +1476,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 											List<SmqRelation190> list = smqBaseService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
 											if (list != null)
 												for (SmqRelation190 pt : list) {
-													row = worksheet.createRow(rowCount);
-													buildChildCells("PT", pt.getPtCode() + "", pt.getPtName(), cell, row, ".............");
-													rowCount++;
+													mapReport.put(cpt++, new ReportLineDataDto(level, pt.getPtCode() + "", pt.getPtName(), ""));
 												}
 										}
 										//}
@@ -1494,10 +1500,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 							hltCodesList.add(relation.getHltCode());
 							List<MeddraDictHierarchySearchDto> hlts = this.meddraDictService.findByCodes("HLT_", hltCodesList);
 							for (MeddraDictHierarchySearchDto hlt : hlts) {
-								row = worksheet.createRow(rowCount);
-								buildChildCells("HLT", hlt.getCode(), hlt.getTerm(), cell, row, "......");
-								setCellStyleColumn(workbook, cell); 
-								rowCount++;
+								mapReport.put(cpt++, new ReportLineDataDto("HLT", hlt.getCode() + "", hlt.getTerm(), "......"));
 
 								/**
 								 * PT.
@@ -1511,9 +1514,8 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 								List<MeddraDictHierarchySearchDto> llts = this.meddraDictService.findByCodes("PT_", ptCodesList);
 								if (llts != null)
 									for (MeddraDictHierarchySearchDto llt : llts) {
-										row = worksheet.createRow(rowCount);
-										buildChildCells("PT", llt.getCode(), llt.getTerm(), cell, row, ".............");
-										rowCount++;
+										mapReport.put(cpt++, new ReportLineDataDto("PT", llt.getCode() + "", llt.getTerm(), ".............."));
+
 
 										/**
 										 * LLT.
@@ -1527,9 +1529,8 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 										List<MeddraDictHierarchySearchDto> llts_soc = this.meddraDictService.findByCodes("LLT_", llttCodesList);
 										if (llts_soc != null)
 											for (MeddraDictHierarchySearchDto llt_soc : llts_soc) {
-												row = worksheet.createRow(rowCount);
-												buildChildCells("LLT", llt_soc.getCode(), llt_soc.getTerm(), cell, row, "...................");
-												rowCount++;
+												mapReport.put(cpt++, new ReportLineDataDto("LLT", llt_soc.getCode() + "", llt_soc.getTerm(), "...................."));
+
 											}
 									}
 							}
@@ -1544,10 +1545,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 							ptCodesList.add(relation.getPtCode());
 							List<MeddraDictHierarchySearchDto> pts = this.meddraDictService.findByCodes("PT_", ptCodesList);
 							for (MeddraDictHierarchySearchDto pt : pts) {
-								row = worksheet.createRow(rowCount);
-								buildChildCells("PT", pt.getCode(), pt.getTerm(), cell, row, "......");
-								setCellStyleColumn(workbook, cell); 
-								rowCount++;
+								mapReport.put(cpt++, new ReportLineDataDto("PT", pt.getCode() + "", pt.getTerm(), "......"));
 
 								/**
 								 * LLT.
@@ -1561,9 +1559,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 								List<MeddraDictHierarchySearchDto> llts = this.meddraDictService.findByCodes("LLT_", hlgtCodesList);
 								if (llts != null)
 									for (MeddraDictHierarchySearchDto llt : llts) {
-										row = worksheet.createRow(rowCount);
-										buildChildCells("LLT", llt.getCode(), llt.getTerm(), cell, row, ".............");
-										rowCount++;
+										mapReport.put(cpt++, new ReportLineDataDto("LLT", llt.getCode() + "", llt.getTerm(), "............."));
 									}
 							}
 						}
@@ -1577,10 +1573,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 							socCodesList.add(relation.getSocCode());
 							List<MeddraDictHierarchySearchDto> socss = this.meddraDictService.findByCodes("SOC_", socCodesList);
 							for (MeddraDictHierarchySearchDto soc : socss) {
-								row = worksheet.createRow(rowCount);
-								buildChildCells("SOC", soc.getCode(), soc.getTerm(), cell, row, "........");
-								setCellStyleColumn(workbook, cell); 
-								rowCount++;
+								mapReport.put(cpt++, new ReportLineDataDto("SOC", soc.getCode() + "", soc.getTerm(), "........"));
 
 								/**
 								 * HLGT.
@@ -1594,9 +1587,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 								List<MeddraDictHierarchySearchDto> hlgts = this.meddraDictService.findByCodes("HLGT_", hlgtCodesList);
 								if (hlgts != null)
 									for (MeddraDictHierarchySearchDto hlgt : hlgts) {
-										row = worksheet.createRow(rowCount);
-										buildChildCells("HLGT", hlgt.getCode(), hlgt.getTerm(), cell, row, ".............");
-										rowCount++;
+										mapReport.put(cpt++, new ReportLineDataDto("HLGT", hlgt.getCode() + "", hlgt.getTerm(), "............."));
 
 										/**
 										 * HLT.
@@ -1610,9 +1601,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 										List<MeddraDictHierarchySearchDto> hlts = this.meddraDictService.findByCodes("HLT_", hltCodesList);
 										if (hlts != null)
 											for (MeddraDictHierarchySearchDto hlt : hlts) {
-												row = worksheet.createRow(rowCount);
-												buildChildCells("HLT", hlt.getCode(), hlt.getTerm(), cell, row, "...................");
-												rowCount++;
+												mapReport.put(cpt++, new ReportLineDataDto("HLT", hlt.getCode() + "", hlt.getTerm(), ".................."));
 
 												/**
 												 * PT.
@@ -1626,9 +1615,8 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 												List<MeddraDictHierarchySearchDto> pts = this.meddraDictService.findByCodes("PT_", ptCodesList);
 												if (pts != null)
 													for (MeddraDictHierarchySearchDto pt : pts) {
-														row = worksheet.createRow(rowCount);
-														buildChildCells("PT", pt.getCode(), pt.getTerm(), cell, row, "..........................");
-														rowCount++;
+														mapReport.put(cpt++, new ReportLineDataDto("PT", pt.getCode() + "", pt.getTerm(), "........................."));
+
 
 														/**
 														 * LLT.
@@ -1642,9 +1630,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 														List<MeddraDictHierarchySearchDto> llts_soc = this.meddraDictService.findByCodes("LLT_", llttCodesList);
 														if (llts_soc != null)
 															for (MeddraDictHierarchySearchDto llt_soc : llts_soc) {
-																row = worksheet.createRow(rowCount);
-																buildChildCells("LLT", llt_soc.getCode(), llt_soc.getTerm(), cell, row, "................................");
-																rowCount++;
+																mapReport.put(cpt++, new ReportLineDataDto("LLT", llt_soc.getCode() + "", llt_soc.getTerm(), ".................................."));
 															}
 													}
 											}
@@ -1661,10 +1647,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 							hlgtCodesList.add(relation.getHlgtCode());
 							List<MeddraDictHierarchySearchDto> socDtos = this.meddraDictService.findByCodes("HLGT_", hlgtCodesList);
 							for (MeddraDictHierarchySearchDto hlgt : socDtos) {
-								row = worksheet.createRow(rowCount);
-								buildChildCells("HLGT", hlgt.getCode(), hlgt.getTerm(), cell, row, "......");
-								setCellStyleColumn(workbook, cell); 
-								rowCount++;
+								mapReport.put(cpt++, new ReportLineDataDto("HLGT", hlgt.getCode() + "", hlgt.getTerm(), "......"));
 
 								/**
 								 * HLT.
@@ -1678,9 +1661,8 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 								List<MeddraDictHierarchySearchDto> hlts = this.meddraDictService.findByCodes("HLT_", hltCodesList);
 								if (hlts != null)
 									for (MeddraDictHierarchySearchDto hlt : hlts) {
-										row = worksheet.createRow(rowCount);
-										buildChildCells("HLT", hlt.getCode(), hlt.getTerm(), cell, row, "............");
-										rowCount++;
+										mapReport.put(cpt++, new ReportLineDataDto("HLT", hlt.getCode() + "", hlt.getTerm(), "..........."));
+
 
 										/**
 										 * PT.
@@ -1694,9 +1676,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 										List<MeddraDictHierarchySearchDto> pts = this.meddraDictService.findByCodes("PT_", ptCodesList);
 										if (pts != null)
 											for (MeddraDictHierarchySearchDto pt : pts) {
-												row = worksheet.createRow(rowCount);
-												buildChildCells("PT", pt.getCode(), pt.getTerm(), cell, row, "...................");
-												rowCount++;
+												mapReport.put(cpt++, new ReportLineDataDto("PT", pt.getCode() + "", pt.getTerm(), "...................."));
 
 												/**
 												 * LLT.
@@ -1710,9 +1690,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 												List<MeddraDictHierarchySearchDto> llts = this.meddraDictService.findByCodes("LLT_", lltCodesList);
 												if (llts != null)
 													for (MeddraDictHierarchySearchDto llt : llts) {
-														row = worksheet.createRow(rowCount);
-														buildChildCells("LLT", llt.getCode(), llt.getTerm(), cell, row, "............................");
-														rowCount++;
+														mapReport.put(cpt++, new ReportLineDataDto("LLT", llt.getCode() + "", llt.getTerm(), "........................."));
 													}
 											}
 									}
@@ -1722,13 +1700,17 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 				}
 			}
 		}
+		
+		System.out.println("\n $$$$$$$$$$$$$$$$$$$$$$$$ map size : " + mapReport.size());
+		
+		fillReport(mapReport, cell, row, rowCount, worksheet);
 
-//		worksheet.autoSizeColumn(0);
-//		worksheet.autoSizeColumn(1);
-//		worksheet.autoSizeColumn(2);
-//		worksheet.autoSizeColumn(3);
-//		worksheet.autoSizeColumn(4);
-//		worksheet.autoSizeColumn(5);
+		worksheet.autoSizeColumn(0);
+		worksheet.autoSizeColumn(1);
+		worksheet.autoSizeColumn(2);
+		worksheet.autoSizeColumn(3);
+		worksheet.autoSizeColumn(4);
+		worksheet.autoSizeColumn(5);
 
 		StreamedContent content = null;
 		try {
@@ -1749,20 +1731,29 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 	
 	}
 	
-	private void printCodes(CmqRelation190 cmq) {
-		if (cmq.getSmqCode() != null)
-			System.out.println("********************** SMQ " + cmq.getSmqCode());
-		System.out.println();
-		if (cmq.getSocCode() != null)
-			System.out.println("********************** SOC " + cmq.getSocCode());System.out.println();
-		if (cmq.getHlgtCode() != null)
-			System.out.println("********************** HLGT " + cmq.getHlgtCode());System.out.println();
-		if (cmq.getHltCode() != null)
-			System.out.println("********************** HLT " + cmq.getHltCode());System.out.println();
-		if (cmq.getLltCode() != null)
-			System.out.println("********************** LLT " + cmq.getLltCode());System.out.println();
-		if (cmq.getPtCode() != null)
-			System.out.println("********************** PT " + cmq.getPtCode());System.out.println();
+	private void fillReport(Map<Integer, ReportLineDataDto> mapReport, XSSFCell cell, XSSFRow row, int rowCount, XSSFSheet worksheet) {
+		int cpt = 0;
+		while (cpt < mapReport.size()) {
+			ReportLineDataDto line = mapReport.get(cpt);
+			
+			row = worksheet.createRow(rowCount);
+
+			// Cell 0
+			cell = row.createCell(0);
+			cell.setCellValue(line.getDots() + line.getTerm());
+
+			// Cell 1
+			cell = row.createCell(1);
+			cell.setCellValue(line.getCode());
+
+			// Cell 2
+			cell = row.createCell(2);
+			cell.setCellValue(line.getLevel());
+			rowCount++;		
+			
+			cpt++;
+		}
+		
 		
 	}
 

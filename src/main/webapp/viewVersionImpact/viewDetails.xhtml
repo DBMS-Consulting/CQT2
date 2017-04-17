@@ -1,0 +1,97 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui">
+	
+	<p:panel>
+		<h:panelGrid columns="4" cellpadding="15" columnClasses="col-25p,col-25p,col-25p,col-25p">
+
+			<h:panelGrid columns="2" columnClasses="label-cell, value-cell">
+				<p:outputLabel styleClass="label-right" value="Extension:" />
+				<h:outputText value="#{RefCodeListService.findCodeByInternalCode('LIST_EXTENSION_TYPES', impactSearchController.detailsFormModel.extension)}" />
+				
+				<p:outputLabel styleClass="label-right" value="Name:" />
+				<h:outputText value="#{impactSearchController.detailsFormModel.name}" />
+
+				<p:outputLabel styleClass="label-right" value="Drug Program:" />
+				<h:outputText value="#{RefCodeListService.findCodeByInternalCode('PROGRAM', impactSearchController.detailsFormModel.drugProgram)}" />
+
+				<p:outputLabel styleClass="label-right" value="Protocol:" />
+				<h:outputText value="#{RefCodeListService.findCodeByInternalCode('PROTOCOL', impactSearchController.detailsFormModel.protocol)}" />
+
+				<p:outputLabel styleClass="label-right" value="Product:" />
+                <h:outputText value="#{impactSearchController.detailsFormModel.productsLabel}" />
+			</h:panelGrid>
+
+			<h:panelGrid columns="2" columnClasses="label-cell, value-cell">
+				<p:outputLabel styleClass="label-right" value="Level:" />
+				<h:outputText value="#{impactSearchController.detailsFormModel.level}" />
+
+				<p:outputLabel styleClass="label-right" value="Code:" />
+				<h:outputText value="#{impactSearchController.detailsFormModel.code}" />
+
+				<p:outputLabel styleClass="label-right" value="Algorithm:" />
+				<h:outputText value="#{impactSearchController.detailsFormModel.algorithm}" />
+
+				<p:spacer />
+				<p:spacer />
+
+				<p:spacer />
+				<p:spacer />
+			</h:panelGrid>
+
+			<h:panelGrid columns="2" columnClasses="label-cell, value-cell">
+
+				<p:outputLabel styleClass="label-right" value="Status:" />
+				<h:outputText value="#{impactSearchController.detailsFormModel.status}" />
+
+				<p:outputLabel styleClass="label-right" value="State:" />
+				<h:outputText value="#{impactSearchController.detailsFormModel.state}" />
+
+				<p:outputLabel styleClass="label-right" value="Group:" />
+				<h:outputText value="#{impactSearchController.detailsFormModel.group}" />
+
+				<p:outputLabel value="* Designee" styleClass="label-right" />
+				<p:selectOneMenu
+					value="#{impactSearchController.detailsFormModel.designee}"
+					disabled="true"
+					label="Designee" >
+					<f:selectItem itemLabel="" itemValue=""></f:selectItem>
+					<f:selectItem itemLabel="NONE" itemValue="NONE"></f:selectItem>
+					<!-- <f:selectItems></f:selectItems> -->
+				</p:selectOneMenu>
+
+				<p:spacer />
+				<p:spacer />
+			</h:panelGrid>
+
+
+			<h:panelGrid columns="2" columnClasses="label-cell, value-cell">
+
+				<p:outputLabel styleClass="label-right" value="Creation Date: " />
+				<h:outputText value="#{impactSearchController.detailsFormModel.creationDate}">
+					<f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss"/>
+				</h:outputText>
+
+				<p:outputLabel styleClass="label-right" value="Created By: " />
+				<h:outputText value="#{impactSearchController.detailsFormModel.createdBy}" />
+
+				<p:spacer />
+				<p:spacer />
+				
+				<p:spacer />
+				<p:spacer />
+			</h:panelGrid>
+		</h:panelGrid>
+	</p:panel>
+	<style>
+.label-right {
+	float: right;
+	margin-right: 20px;
+	font-size: 14px !important;
+}
+</style>
+</ui:composition>

@@ -113,7 +113,7 @@ public class ImpactSearchController implements Serializable {
 	@ManagedProperty("#{AuthenticationService}")
 	private AuthenticationService authService;
 	
-	Wizard iaWizard;
+	Wizard iaWizard, iaVersionWizard;
 	private String iaWizardNextStep;
 
 	private LazyDataModel<CmqBaseTarget> impactedCmqBaseLazyDataModel;
@@ -882,6 +882,88 @@ public class ImpactSearchController implements Serializable {
 				else
 					nextStep = event.getOldStep();
 			}
+		}
+		return nextStep;
+	}
+	
+	/**
+	 * FlowListener of Browse Wizard Component
+	 * @param event
+	 * @return
+	 */
+	public String onIaVersionWizardFlowProcess(FlowEvent event) {
+		boolean selected = true;
+
+		if (currentOrTarget == SELECTED_NO_LIST)
+			selected = false;	
+			
+		if (!selected) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Select a List/SMQ to proceed", "");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			RequestContext.getCurrentInstance().update("impactAssessment:messages");
+			return "impact";
+		}
+		
+		String nextStep = event.getNewStep();
+		
+		
+		/*if("impact".equalsIgnoreCase(event.getNewStep())) {
+			// if the target tab is "Impact Assessment", allow it always
+			if(unsavedRedirect)
+				iaWizardNextStep = event.getNewStep();
+			else
+				nextStep = event.getNewStep();
+		} else*/ if("notes".equalsIgnoreCase(event.getNewStep())) {
+			// if the target tab is "notes", allow it only when there is a valid CmqBase* or SmqBase* object selected from current or target lists
+			Object d = null;
+			if(currentOrTarget == SELECTED_CURRENT_LIST && currentTableSelection != null) {
+				HierarchyNode hn = (HierarchyNode)currentTableSelection.getData();
+				d = (hn != null ? hn.getEntity() : null); 
+			} else if(currentOrTarget == SELECTED_TARGET_LIST && targetTableSelection != null) {
+				HierarchyNode hn = (HierarchyNode)targetTableSelection.getData();
+				d = (hn != null ? hn.getEntity() : null); 
+			}
+			
+			if(d instanceof CmqBase190) {
+				notesFormModel.loadFromCmqBase190((CmqBase190)d);
+				detailsFormModel.loadFromCmqBase190((CmqBase190)d);
+			} else if(d instanceof SmqBase190) {
+				notesFormModel.loadFromSmqBase190((SmqBase190)d);
+			} else if(d instanceof CmqBaseTarget) {
+				notesFormModel.loadFromCmqBaseTarget((CmqBaseTarget)d);
+				detailsFormModel.loadFromCmqBaseTarget((CmqBaseTarget)d);
+			} else if(d instanceof SmqBaseTarget) {
+				notesFormModel.loadFromSmqBaseTarget((SmqBaseTarget)d);
+			}
+			
+		} else if("details".equalsIgnoreCase(event.getNewStep())) {
+			// if the target tab is "details", allow it only when there is a valid CmqBase* or SmqBase* object selected from current or target lists
+			Object d = null;
+			if(currentOrTarget == SELECTED_CURRENT_LIST && currentTableSelection != null) {
+				HierarchyNode hn = (HierarchyNode)currentTableSelection.getData();
+				d = (hn != null ? hn.getEntity() : null); 					
+			} else if(currentOrTarget == SELECTED_TARGET_LIST && targetTableSelection != null) {
+				HierarchyNode hn = (HierarchyNode)targetTableSelection.getData();
+				d = (hn != null ? hn.getEntity() : null); 
+			}
+			if(d instanceof CmqBase190) {
+				detailsFormModel.loadFromCmqBase190((CmqBase190)d);
+			} else if(d instanceof CmqBaseTarget) {
+				detailsFormModel.loadFromCmqBaseTarget((CmqBaseTarget)d);
+			} else if(d instanceof SmqBase190) {
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Details tab is not accessible for SMQs", "");
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+				RequestContext.getCurrentInstance().update("impactAssessment:messages");
+				//if (event.)
+				return "notes";
+				
+			} else if(d instanceof SmqBaseTarget) {
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Details tab is not accessible for SMQs", "");
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+				RequestContext.getCurrentInstance().update("impactAssessment:messages");
+				return "notes";
+				
+			} 			
 		}
 		return nextStep;
 	}
@@ -1864,6 +1946,14 @@ public class ImpactSearchController implements Serializable {
 
 	public void setAuthService(AuthenticationService authService) {
 		this.authService = authService;
+	}
+
+	public Wizard getIaVersionWizard() {
+		return iaVersionWizard;
+	}
+
+	public void setIaVersionWizard(Wizard iaVersionWizard) {
+		this.iaVersionWizard = iaVersionWizard;
 	}
 
 }

@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui">
+
+
+	<p:panel id="panelNotes"
+		header="Informative Notes for #{impactSearchController.detailsFormModel.name}">
+	 
+						
+		<p:tabView>
+			<p:tab title="Description">
+				<p:inputTextarea  
+					readonly="true"
+					value="#{impactSearchController.notesFormModel.description}"
+					label="Description"
+					style="width: 100%; min-height: 250px" autoResize="true" />
+			</p:tab>
+			<p:tab title="Notes">
+				<p:inputTextarea value="#{impactSearchController.notesFormModel.notes}"
+					readonly="true"
+					style="width: 100%; min-height: 250px" autoResize="true" />
+			</p:tab>
+			<p:tab title="Source">
+				<p:inputTextarea value="#{impactSearchController.notesFormModel.source}"
+					readonly="true"
+					style="width: 100%; min-height: 250px" autoResize="true" />
+			</p:tab>
+		</p:tabView>    
+	</p:panel>
+
+	<style>
+.ui-state-disabled {
+	opacity: 0.7 !important;
+}
+</style>
+
+
+</ui:composition>
