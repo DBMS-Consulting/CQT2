@@ -1723,12 +1723,12 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 			}
 		}
 
-		worksheet.autoSizeColumn(0);
-		worksheet.autoSizeColumn(1);
-		worksheet.autoSizeColumn(2);
-		worksheet.autoSizeColumn(3);
-		worksheet.autoSizeColumn(4);
-		worksheet.autoSizeColumn(5);
+//		worksheet.autoSizeColumn(0);
+//		worksheet.autoSizeColumn(1);
+//		worksheet.autoSizeColumn(2);
+//		worksheet.autoSizeColumn(3);
+//		worksheet.autoSizeColumn(4);
+//		worksheet.autoSizeColumn(5);
 
 		StreamedContent content = null;
 		try {
