@@ -197,7 +197,7 @@
 						url="/viewVersionImpact/versionImpact.xhtml" 
 						rendered="#{AuthenticationService.getPermissonByUri('/viewVersionImpact/versionImpact.xhtml')}" />
 					<p:menuitem value="View Previous Version Impact" id="pt_cmi14"
-						action="VIEW_PREVIOUS_VERSION_IMPACT"
+						action="VIEW_PREVIOUS_VERSION_IMPACT" disabled="true"
 						styleClass="#{view.viewId == '/viewPreviousVersionImpact/previousVersionImpact.xhtml' ? 'ui-state-active2' : ''}"
 						style="font-weight:#{userBean.currentMenu eq 'VIEW_PREVIOUS_VERSION_IMPACT' ? 'bold' : 'normal'};"
 						url="/viewPreviousVersionImpact/previousVersionImpact.xhtml" 
