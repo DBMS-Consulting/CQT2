@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import com.dbms.entity.cqt.CmqBase190;
 import com.dbms.entity.cqt.CmqRelation190;
+import com.dbms.service.AuthenticationService;
 import com.dbms.service.ICmqBase190Service;
 import com.dbms.service.ICmqRelation190Service;
 
@@ -38,6 +39,9 @@ public class CmqRelationUploadController implements Serializable {
 	@ManagedProperty("#{CmqRelation190Service}")
 	private ICmqRelation190Service cmqRelationService;
 
+	@ManagedProperty("#{AuthenticationService}")
+	private AuthenticationService authService;
+	
 	private UploadedFile file;
 
 	public UploadedFile getFile() {
@@ -132,7 +136,9 @@ public class CmqRelationUploadController implements Serializable {
 						}catch(Exception e){log.error("Error parse weight {}",e.getMessage(),e);}
 					}
 					relation.setTermWeight(weight);
-					cmqRelationService.create(relation);
+					cmqRelationService.create(relation, this.authService.getUserCn()
+							, this.authService.getUserGivenName(), this.authService.getUserSurName()
+							, this.authService.getCombinedMappedGroupMembershipAsString());
 					success++;
 				}
 				FacesMessage msg = new FacesMessage("Successful import relation "
@@ -148,5 +154,13 @@ public class CmqRelationUploadController implements Serializable {
 			}
 		}
 
+	}
+
+	public AuthenticationService getAuthService() {
+		return authService;
+	}
+
+	public void setAuthService(AuthenticationService authService) {
+		this.authService = authService;
 	}
 }

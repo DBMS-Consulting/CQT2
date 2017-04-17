@@ -16,15 +16,15 @@ public interface ICqtPersistenceService<E extends IEntity> {
 
 	public E findById(Long id, List<String> fetchFields);
 
-	public void create(E e) throws CqtServiceException;
+	public void create(E e, String userCn, String userFirstName, String userLastName, String userGroups) throws CqtServiceException;
 
-	public E update(E e) throws CqtServiceException;
+	public E update(E e, String userCn, String userFirstName, String userLastName, String userGroups) throws CqtServiceException;
 
-	public void remove(Long id) throws CqtServiceException;
+	public void remove(Long id, String userCn, String userFirstName, String userLastName, String userGroups) throws CqtServiceException;
 
-	public void remove(E e) throws CqtServiceException;
+	public void remove(E e, String userCn, String userFirstName, String userLastName, String userGroups) throws CqtServiceException;
 
-	public void remove(Set<Long> ids) throws CqtServiceException;
+	public void remove(Set<Long> ids, String userCn, String userFirstName, String userLastName, String userGroups) throws CqtServiceException;
 
 	public Class<E> getEntityClass();
 
@@ -32,5 +32,5 @@ public interface ICqtPersistenceService<E extends IEntity> {
 
 	public List<E> list(String orderByEntityField, OrderBy orderBy);
 
-	public void update(List<E> e) throws CqtServiceException;
+	public void update(List<E> e, String userCn, String userFirstName, String userLastName, String userGroups) throws CqtServiceException;
 }

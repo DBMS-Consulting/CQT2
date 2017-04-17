@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.dbms.entity.cqt.CmqBase190;
+import com.dbms.service.AuthenticationService;
 import com.dbms.service.ICmqBase190Service;
 
 /**
@@ -32,6 +33,9 @@ public class CmqInfoUploadController implements Serializable {
 	@ManagedProperty("#{CmqBase190Service}")
 	private ICmqBase190Service cmqBaseService;
 
+	@ManagedProperty("#{AuthenticationService}")
+	private AuthenticationService authService;
+	
 	private UploadedFile file;
 
 	public UploadedFile getFile() {
@@ -89,7 +93,9 @@ public class CmqInfoUploadController implements Serializable {
 					if (ss.length > 3 && StringUtils.isNotEmpty(ss[3]))
 						base.setCmqSource(ss[3]);
 					log.debug("save entity {}", base);
-					cmqBaseService.update(base);
+					cmqBaseService.update(base, this.authService.getUserCn()
+							, this.authService.getUserGivenName(), this.authService.getUserSurName()
+							, this.authService.getCombinedMappedGroupMembershipAsString());
 					success++;
 				}
 				FacesMessage msg = new FacesMessage("Successful import " + file.getFileName() + ", total=" + total
@@ -104,5 +110,13 @@ public class CmqInfoUploadController implements Serializable {
 			}
 		}
 
+	}
+
+	public AuthenticationService getAuthService() {
+		return authService;
+	}
+
+	public void setAuthService(AuthenticationService authService) {
+		this.authService = authService;
 	}
 }

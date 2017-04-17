@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.dbms.entity.cqt.CmqBase190;
+import com.dbms.service.AuthenticationService;
 import com.dbms.service.ICmqBase190Service;
 import com.dbms.service.ICmqRelation190Service;
 import com.dbms.service.IRefCodeListService;
@@ -46,6 +47,9 @@ public class RetireController implements Serializable {
 	@ManagedProperty("#{RefCodeListService}")
 	private IRefCodeListService refCodeListService;
 
+	@ManagedProperty("#{AuthenticationService}")
+	private AuthenticationService authService;
+	
 	private List<CmqBase190> sourceListToRetire;
 
 	private List<CmqBase190> targetList;
@@ -155,7 +159,9 @@ public class RetireController implements Serializable {
 				cmqBase190.setLastModifiedBy("NONE");
 			}
 			try {
-				this.cmqBaseService.update(targetCmqsSelected);
+				this.cmqBaseService.update(targetCmqsSelected, this.authService.getUserCn()
+						, this.authService.getUserGivenName(), this.authService.getUserSurName()
+						, this.authService.getCombinedMappedGroupMembershipAsString());
 				
 				//update the dualListModel source and target
 				init();
@@ -292,5 +298,13 @@ public class RetireController implements Serializable {
 
 	public void setChildNotSelected(boolean childNotSelected) {
 		this.childNotSelected = childNotSelected;
+	}
+
+	public AuthenticationService getAuthService() {
+		return authService;
+	}
+
+	public void setAuthService(AuthenticationService authService) {
+		this.authService = authService;
 	} 
 }

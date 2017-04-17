@@ -196,7 +196,9 @@ public class PublishController implements Serializable {
 							cmqBase190.setCreationDate(d);
 						}
 					}
-					this.cmqBaseService.update(targetCmqsSelected);
+					this.cmqBaseService.update(targetCmqsSelected, this.authService.getUserCn()
+							, this.authService.getUserGivenName(), this.authService.getUserSurName()
+							, this.authService.getCombinedMappedGroupMembershipAsString());
 				} catch (CqtServiceException e) {
 					LOG.error(e.getMessage(), e);
 					hasErrorOccured = true;
@@ -355,7 +357,9 @@ public class PublishController implements Serializable {
 				}
 				
 				try {
-					this.cmqBaseTargetService.update(targetCmqsSelected);
+					this.cmqBaseTargetService.update(targetCmqsSelected, this.authService.getUserCn()
+							, this.authService.getUserGivenName(), this.authService.getUserSurName()
+							, this.authService.getCombinedMappedGroupMembershipAsString());
 				} catch (CqtServiceException e) {
 					LOG.error(e.getMessage(), e);
 					hasErrorOccured = true;

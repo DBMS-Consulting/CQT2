@@ -256,13 +256,17 @@ public class AdminController implements Serializable {
 			if (myFocusRef.getId() != null){
 				myFocusRef.setLastModificationDate(lastModifiedDate);
 				myFocusRef.setLastModifiedBy(lastModifiedByString);
-				refCodeListService.update(myFocusRef);
+				refCodeListService.update(myFocusRef, this.authService.getUserCn()
+						, this.authService.getUserGivenName(), this.authService.getUserSurName()
+						, this.authService.getCombinedMappedGroupMembershipAsString());
 			} else {
 				myFocusRef.setLastModificationDate(lastModifiedDate);
 				myFocusRef.setLastModifiedBy(lastModifiedByString);
 				myFocusRef.setCreationDate(lastModifiedDate);
 				myFocusRef.setCreatedBy(lastModifiedByString);
-				refCodeListService.create(myFocusRef);
+				refCodeListService.create(myFocusRef, this.authService.getUserCn()
+						, this.authService.getUserGivenName(), this.authService.getUserSurName()
+						, this.authService.getCombinedMappedGroupMembershipAsString());
 			}
 			updateSerialNumbers(myFocusRef.getCodelistConfigType(), myFocusRef);
 			String type = "";
@@ -334,7 +338,9 @@ public class AdminController implements Serializable {
 			
 			if (!refListToSave.isEmpty()) {
 				try {
-					refCodeListService.update(refListToSave);
+					refCodeListService.update(refListToSave, this.authService.getUserCn()
+							, this.authService.getUserGivenName(), this.authService.getUserSurName()
+							, this.authService.getCombinedMappedGroupMembershipAsString());
 				} catch (CqtServiceException e) {
 					e.printStackTrace();
 					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,

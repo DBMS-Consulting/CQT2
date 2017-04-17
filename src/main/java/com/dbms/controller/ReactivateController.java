@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 
 import com.dbms.entity.cqt.CmqBase190;
 import com.dbms.entity.cqt.CmqBaseTarget;
+import com.dbms.service.AuthenticationService;
 import com.dbms.service.ICmqBase190Service;
 import com.dbms.service.ICmqRelation190Service;
 import com.dbms.service.IRefCodeListService;
@@ -46,6 +47,9 @@ public class ReactivateController implements Serializable {
 	@ManagedProperty("#{RefCodeListService}")
 	private IRefCodeListService refCodeListService;
 
+	@ManagedProperty("#{AuthenticationService}")
+	private AuthenticationService authService;
+	
 	private List<CmqBase190> sourceListToReactivate;
 
 	private List<CmqBase190> targetList;
@@ -188,7 +192,9 @@ public class ReactivateController implements Serializable {
 				}
 				
 				try {
-					this.cmqBaseService.update(targetCmqsSelected);
+					this.cmqBaseService.update(targetCmqsSelected, this.authService.getUserCn()
+							, this.authService.getUserGivenName(), this.authService.getUserSurName()
+							, this.authService.getCombinedMappedGroupMembershipAsString());
 				} catch (CqtServiceException e) {
 					LOG.error(e.getMessage(), e);
 					hasErrorOccured = true;
@@ -326,5 +332,15 @@ public class ReactivateController implements Serializable {
 
 	public void setConfirmMessage(String confirmMessage) {
 		this.confirmMessage = confirmMessage;
+	}
+
+
+	public AuthenticationService getAuthService() {
+		return authService;
+	}
+
+
+	public void setAuthService(AuthenticationService authService) {
+		this.authService = authService;
 	} 
 }
