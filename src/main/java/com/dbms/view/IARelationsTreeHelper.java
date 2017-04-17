@@ -418,7 +418,8 @@ public class IARelationsTreeHelper {
 				|| (meddraDictHierarchySearchDto.getPromotedLlt() != null && "LPP".equalsIgnoreCase(meddraDictHierarchySearchDto.getPromotedLlt()))
 				|| (meddraDictHierarchySearchDto.getPrimarySocChange() != null && "HNP".equalsIgnoreCase(meddraDictHierarchySearchDto.getPrimarySocChange()))
 				|| (meddraDictHierarchySearchDto.getMovedHlt() != null && "HDH".equalsIgnoreCase(meddraDictHierarchySearchDto.getMovedHlt()))
-				|| (meddraDictHierarchySearchDto.getMovedHlgt() != null && "HDS".equalsIgnoreCase(meddraDictHierarchySearchDto.getMovedHlgt()))) {
+				|| (meddraDictHierarchySearchDto.getMovedHlt() != null && "HDH".equalsIgnoreCase(meddraDictHierarchySearchDto.getMovedHlt()))
+				|| (meddraDictHierarchySearchDto.getMovedHlgt() != null && "SDP".equalsIgnoreCase(meddraDictHierarchySearchDto.getMovedHlgt()))) {
 			node.setRowStyleClass("orange-colored");
 		}
 		if (meddraDictHierarchySearchDto.getLltCurrencyChange() != null && "LCN".equalsIgnoreCase(meddraDictHierarchySearchDto.getLltCurrencyChange()))
@@ -448,6 +449,7 @@ public class IARelationsTreeHelper {
 					|| "HDS".equals(cmqRelationTarget.getRelationImpactType())
 					|| "HPP".equals(cmqRelationTarget.getRelationImpactType())
 					|| "LDP".equals(cmqRelationTarget.getRelationImpactType())
+					|| "SDP".equals(cmqRelationTarget.getRelationImpactType())
 					|| "NTR".equals(cmqRelationTarget.getRelationImpactType())) {
 				node.setRowStyleClass("orange-colored");
 			}
@@ -547,7 +549,7 @@ public class IARelationsTreeHelper {
 			if("NCH".equals(childRelation.getRelationImpactType())) {
 				childRelationNode.setRowStyleClass("italic");
 			}
-			if("LDP".equals(childRelation.getRelationImpactType()) || "NTR".equals(childRelation.getRelationImpactType())) {
+			if("LDP".equals(childRelation.getRelationImpactType()) || "NTR".equals(childRelation.getRelationImpactType()) || "SDP".equals(childRelation.getRelationImpactType())) {
 				childRelationNode.setRowStyleClass("orange-colored");
 			}
 			if ("SCH".equals(childRelation.getRelationImpactType()))

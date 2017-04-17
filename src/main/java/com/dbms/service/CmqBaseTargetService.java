@@ -777,7 +777,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 					}
 				}
 			}
-			List<CmqBaseTarget> childCmqs = findChildCmqsByParentCode(selectedImpactedCmqList.getCmqCode());
+			/*List<CmqBaseTarget> childCmqs = findChildCmqsByParentCode(selectedImpactedCmqList.getCmqCode());
 			if((null != childCmqs) && (childCmqs.size() > 0)) {
 				for (CmqBaseTarget childCmq : childCmqs) {
 					level = childCmq.getCmqTypeCd();
@@ -787,6 +787,322 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 					row = worksheet.createRow(rowCount);
 					buildCells(level, codeTerm, term, cell, row);
 					rowCount++;
+				}
+			}*/
+		}
+		
+		/**
+		 * PRO.
+		 */
+		List<CmqBaseTarget> childCmqs = findChildCmqsByParentCode(selectedImpactedCmqList.getCmqCode());
+		
+		if((null != childCmqs) && (childCmqs.size() > 0)) {
+			System.out.println("$$$$$$$$$$$$$$$$$$$$$  childCmqs PRO " + childCmqs.size()); 
+			for (CmqBaseTarget childCmq : childCmqs) {
+				
+				level = childCmq.getCmqTypeCd();
+				term = childCmq.getCmqName();
+				codeTerm = childCmq.getCmqCode() != null ? childCmq.getCmqCode() + "" : "";
+
+				row = worksheet.createRow(rowCount);
+				buildCells(level, codeTerm, term, cell, row);
+				rowCount++;
+
+				/**
+				 * Other Relations
+				 */
+				List<CmqRelationTarget> relationsPro = cmqRelationTargetService.findByCmqCode(childCmq.getCmqCode());
+
+				if (relations != null) {
+					for (CmqRelationTarget relation : relationsPro) {
+
+						/**
+						 * 
+						 * SMQs
+						 */
+						if (relation.getSmqCode() != null) {
+							List<Long> smqChildCodeList = new ArrayList<>();
+							smqChildCodeList.add(relation.getSmqCode());
+
+							SmqBaseTarget smqSearched = smqBaseTargetService.findByCode(relation.getSmqCode());
+							if (smqSearched != null) {
+								List<SmqBaseTarget> smqBaseList = smqBaseTargetService.findByLevelAndTerm(smqSearched.getSmqLevel(),	smqSearched.getSmqName());
+								if (smqBaseList != null) {
+									for (SmqBaseTarget smq : smqBaseList) {
+										if (smq.getSmqLevel() == 1) {
+											level = "SMQ1";
+										} else if (smq.getSmqLevel() == 2) {
+											level = "SMQ2";
+										} else if (smq.getSmqLevel() == 3) {
+											level = "SMQ3";
+										} else if (smq.getSmqLevel() == 4) {
+											level = "SMQ4";
+										} else if (smq.getSmqLevel() == 5) {
+											level = "SMQ5";
+										}
+										row = worksheet.createRow(rowCount);
+										buildChildCells(level, smq.getSmqCode() + "", smq.getSmqName(), cell, row, ".......");
+										setCellStyleColumn(workbook, cell);
+										rowCount++;
+
+										smqSearched = new SmqBaseTarget();
+										//if (level.equals("SMQ1") ) {
+										smqSearched = smqBaseTargetService.findByCode(smq.getSmqCode());
+										if (smqSearched != null) {
+											List<SmqRelationTarget> list = smqBaseTargetService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
+											if (list != null)
+												for (SmqRelationTarget pt : list) {
+													row = worksheet.createRow(rowCount);
+													buildChildCells("PT", pt.getPtCode() + "", pt.getPtName(), cell, row, ".............");
+													rowCount++;
+												}
+										}
+										//}
+
+									}
+								}
+							}
+						}
+
+
+
+
+
+
+						/**
+						 * 
+						 * HLT.
+						 */
+						if (relation.getHltCode() != null) {
+							List<Long> hltCodesList = new ArrayList<>();
+							hltCodesList.add(relation.getHltCode());
+							List<MeddraDictHierarchySearchDto> hlts = this.meddraDictService.findByCodes("HLT_", hltCodesList);
+							for (MeddraDictHierarchySearchDto hlt : hlts) {
+								row = worksheet.createRow(rowCount);
+								buildChildCells("HLT", hlt.getCode(), hlt.getTerm(), cell, row, "......");
+								setCellStyleColumn(workbook, cell); 
+								rowCount++;
+
+								/**
+								 * PT.
+								 */
+								List<MeddraDictHierarchySearchDto> listPT =  meddraDictService.findChildrenByParentCode("PT_", "HLT_", Long.valueOf(hlt.getCode()));
+								List<Long> ptCodesList = new ArrayList<>();
+								for (MeddraDictHierarchySearchDto meddra : listPT) {
+									ptCodesList.add(Long.parseLong(meddra.getCode())); 
+								}
+
+								List<MeddraDictHierarchySearchDto> llts = this.meddraDictService.findByCodes("PT_", ptCodesList);
+								if (llts != null)
+									for (MeddraDictHierarchySearchDto llt : llts) {
+										row = worksheet.createRow(rowCount);
+										buildChildCells("PT", llt.getCode(), llt.getTerm(), cell, row, ".............");
+										rowCount++;
+
+										/**
+										 * LLT.
+										 */
+										List<MeddraDictHierarchySearchDto> listPT_soc =  meddraDictService.findChildrenByParentCode("LLT_", "PT_", Long.valueOf(llt.getCode()));
+										List<Long> llttCodesList = new ArrayList<>();
+										for (MeddraDictHierarchySearchDto meddra : listPT_soc) {
+											llttCodesList.add(Long.parseLong(meddra.getCode())); 
+										}
+
+										List<MeddraDictHierarchySearchDto> llts_soc = this.meddraDictService.findByCodes("LLT_", llttCodesList);
+										if (llts_soc != null)
+											for (MeddraDictHierarchySearchDto llt_soc : llts_soc) {
+												row = worksheet.createRow(rowCount);
+												buildChildCells("LLT", llt_soc.getCode(), llt_soc.getTerm(), cell, row, "...................");
+												rowCount++;
+											}
+									}
+							}
+						}
+
+						/**
+						 * 
+						 * PT
+						 */
+						if (relation.getPtCode() != null) {
+							List<Long> ptCodesList = new ArrayList<>();
+							ptCodesList.add(relation.getPtCode());
+							List<MeddraDictHierarchySearchDto> pts = this.meddraDictService.findByCodes("PT_", ptCodesList);
+							for (MeddraDictHierarchySearchDto pt : pts) {
+								row = worksheet.createRow(rowCount);
+								buildChildCells("PT", pt.getCode(), pt.getTerm(), cell, row, "......");
+								setCellStyleColumn(workbook, cell); 
+								rowCount++;
+
+								/**
+								 * LLT.
+								 */
+								List<MeddraDictHierarchySearchDto> listPT =  meddraDictService.findChildrenByParentCode("LLT_", "PT_", Long.valueOf(pt.getCode()));
+								List<Long> hlgtCodesList = new ArrayList<>();
+								for (MeddraDictHierarchySearchDto meddra : listPT) {
+									hlgtCodesList.add(Long.parseLong(meddra.getCode())); 
+								}
+
+								List<MeddraDictHierarchySearchDto> llts = this.meddraDictService.findByCodes("LLT_", hlgtCodesList);
+								if (llts != null)
+									for (MeddraDictHierarchySearchDto llt : llts) {
+										row = worksheet.createRow(rowCount);
+										buildChildCells("LLT", llt.getCode(), llt.getTerm(), cell, row, ".............");
+										rowCount++;
+									}
+							}
+						}
+
+						/**
+						 * 
+						 * SOC
+						 */
+						if (relation.getSocCode() != null) {
+							List<Long> socCodesList = new ArrayList<>();
+							socCodesList.add(relation.getSocCode());
+							List<MeddraDictHierarchySearchDto> socss = this.meddraDictService.findByCodes("SOC_", socCodesList);
+							for (MeddraDictHierarchySearchDto soc : socss) {
+								row = worksheet.createRow(rowCount);
+								buildChildCells("SOC", soc.getCode(), soc.getTerm(), cell, row, "........");
+								setCellStyleColumn(workbook, cell); 
+								rowCount++;
+
+								/**
+								 * HLGT.
+								 */
+								List<MeddraDictHierarchySearchDto> listHLGT =  meddraDictService.findChildrenByParentCode("HLGT_", "SOC_", Long.valueOf(soc.getCode()));
+								List<Long> hlgtCodesList = new ArrayList<>();
+								for (MeddraDictHierarchySearchDto meddra : listHLGT) {
+									hlgtCodesList.add(Long.parseLong(meddra.getCode())); 
+								}
+
+								List<MeddraDictHierarchySearchDto> hlgts = this.meddraDictService.findByCodes("HLGT_", hlgtCodesList);
+								if (hlgts != null)
+									for (MeddraDictHierarchySearchDto hlgt : hlgts) {
+										row = worksheet.createRow(rowCount);
+										buildChildCells("HLGT", hlgt.getCode(), hlgt.getTerm(), cell, row, ".............");
+										rowCount++;
+
+										/**
+										 * HLT.
+										 */
+										List<MeddraDictHierarchySearchDto> listHLT =  meddraDictService.findChildrenByParentCode("HLT_", "HLGT_", Long.valueOf(hlgt.getCode()));
+										List<Long> hltCodesList = new ArrayList<>();
+										for (MeddraDictHierarchySearchDto meddra : listHLT) {
+											hltCodesList.add(Long.parseLong(meddra.getCode())); 
+										}
+
+										List<MeddraDictHierarchySearchDto> hlts = this.meddraDictService.findByCodes("HLT_", hltCodesList);
+										if (hlts != null)
+											for (MeddraDictHierarchySearchDto hlt : hlts) {
+												row = worksheet.createRow(rowCount);
+												buildChildCells("HLT", hlt.getCode(), hlt.getTerm(), cell, row, "...................");
+												rowCount++;
+
+												/**
+												 * PT.
+												 */
+												List<MeddraDictHierarchySearchDto> listHT =  meddraDictService.findChildrenByParentCode("PT_", "HLT_", Long.valueOf(hlt.getCode()));
+												List<Long> ptCodesList = new ArrayList<>();
+												for (MeddraDictHierarchySearchDto meddra : listHT) {
+													ptCodesList.add(Long.parseLong(meddra.getCode())); 
+												}
+
+												List<MeddraDictHierarchySearchDto> pts = this.meddraDictService.findByCodes("PT_", ptCodesList);
+												if (pts != null)
+													for (MeddraDictHierarchySearchDto pt : pts) {
+														row = worksheet.createRow(rowCount);
+														buildChildCells("PT", pt.getCode(), pt.getTerm(), cell, row, "..........................");
+														rowCount++;
+
+														/**
+														 * LLT.
+														 */
+														List<MeddraDictHierarchySearchDto> listPT_soc =  meddraDictService.findChildrenByParentCode("LLT_", "PT_", Long.valueOf(pt.getCode()));
+														List<Long> llttCodesList = new ArrayList<>();
+														for (MeddraDictHierarchySearchDto meddra : listPT_soc) {
+															llttCodesList.add(Long.parseLong(meddra.getCode())); 
+														}
+
+														List<MeddraDictHierarchySearchDto> llts_soc = this.meddraDictService.findByCodes("LLT_", llttCodesList);
+														if (llts_soc != null)
+															for (MeddraDictHierarchySearchDto llt_soc : llts_soc) {
+																row = worksheet.createRow(rowCount);
+																buildChildCells("LLT", llt_soc.getCode(), llt_soc.getTerm(), cell, row, "................................");
+																rowCount++;
+															}
+													}
+											}
+									}
+							}
+						}
+
+						/**
+						 * 
+						 * HLGT.
+						 */
+						if (relation.getHlgtCode() != null) {
+							List<Long> hlgtCodesList = new ArrayList<>();
+							hlgtCodesList.add(relation.getHlgtCode());
+							List<MeddraDictHierarchySearchDto> socDtos = this.meddraDictService.findByCodes("HLGT_", hlgtCodesList);
+							for (MeddraDictHierarchySearchDto hlgt : socDtos) {
+								row = worksheet.createRow(rowCount);
+								buildChildCells("HLGT", hlgt.getCode(), hlgt.getTerm(), cell, row, "......");
+								setCellStyleColumn(workbook, cell); 
+								rowCount++;
+
+								/**
+								 * HLT.
+								 */
+								List<MeddraDictHierarchySearchDto> listHLGT =  meddraDictService.findChildrenByParentCode("HLT_", "HLGT_", Long.valueOf(hlgt.getCode()));
+								List<Long> hltCodesList = new ArrayList<>();
+								for (MeddraDictHierarchySearchDto meddra : listHLGT) {
+									hltCodesList.add(Long.parseLong(meddra.getCode())); 
+								}
+
+								List<MeddraDictHierarchySearchDto> hlts = this.meddraDictService.findByCodes("HLT_", hltCodesList);
+								if (hlts != null)
+									for (MeddraDictHierarchySearchDto hlt : hlts) {
+										row = worksheet.createRow(rowCount);
+										buildChildCells("HLT", hlt.getCode(), hlt.getTerm(), cell, row, "............");
+										rowCount++;
+
+										/**
+										 * PT.
+										 */
+										List<MeddraDictHierarchySearchDto> listHT =  meddraDictService.findChildrenByParentCode("PT_", "HLT_", Long.valueOf(hlt.getCode()));
+										List<Long> ptCodesList = new ArrayList<>();
+										for (MeddraDictHierarchySearchDto meddra : listHT) {
+											ptCodesList.add(Long.parseLong(meddra.getCode())); 
+										}
+
+										List<MeddraDictHierarchySearchDto> pts = this.meddraDictService.findByCodes("PT_", ptCodesList);
+										if (pts != null)
+											for (MeddraDictHierarchySearchDto pt : pts) {
+												row = worksheet.createRow(rowCount);
+												buildChildCells("PT", pt.getCode(), pt.getTerm(), cell, row, "...................");
+												rowCount++;
+
+												/**
+												 * LLT.
+												 */
+												List<MeddraDictHierarchySearchDto> listPT =  meddraDictService.findChildrenByParentCode("LLT_", "PT_", Long.valueOf(pt.getCode()));
+												List<Long> lltCodesList = new ArrayList<>();
+												for (MeddraDictHierarchySearchDto meddra : listPT) {
+													lltCodesList.add(Long.parseLong(meddra.getCode())); 
+												}
+
+												List<MeddraDictHierarchySearchDto> llts = this.meddraDictService.findByCodes("LLT_", lltCodesList);
+												if (llts != null)
+													for (MeddraDictHierarchySearchDto llt : llts) {
+														row = worksheet.createRow(rowCount);
+														buildChildCells("LLT", llt.getCode(), llt.getTerm(), cell, row, "............................");
+														rowCount++;
+													}
+											}
+									}
+							}
+						}
+					}
 				}
 			}
 		}
