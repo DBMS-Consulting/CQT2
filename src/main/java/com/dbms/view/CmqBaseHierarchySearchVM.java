@@ -236,7 +236,7 @@ public class CmqBaseHierarchySearchVM {
 		TreeNode expandedTreeNode = event.getTreeNode();
 		boolean isNodesEditable = !"RELATIONS".equals(uiSourceOfEvent);
 		CmqBaseRelationsTreeHelper relationsSearchHelper = new CmqBaseRelationsTreeHelper(cmqBaseService, smqBaseService, meddraDictService, cmqRelationService);	
-		this.myHierarchyRoot = relationsSearchHelper.getRelationsNodeHierarchy(this.myHierarchyRoot, expandedTreeNode, isNodesEditable);
+		this.myHierarchyRoot = relationsSearchHelper.getRelationsNodeHierarchy(this.myHierarchyRoot, expandedTreeNode, isNodesEditable, false);
 	}
 
 	/**
