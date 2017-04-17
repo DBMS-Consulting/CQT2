@@ -1023,6 +1023,8 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		String level = "", term = "", codeTerm = "";
 
 		if (relations != null) {
+			System.out.println("$$$$$$$$$$$$$$$$$$$$$  relations size " + relations.size()); 
+
 			for (CmqRelation190 relation : relations) {
 				System.out.println("$$$$$$$$$$  " + relation.getCmqCode()); 
 
@@ -1409,9 +1411,11 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		 * PRO.
 		 */
 		List<CmqBase190> childCmqs = findChildCmqsByParentCode(details.getCode());
+		
 		if((null != childCmqs) && (childCmqs.size() > 0)) {
+			System.out.println("$$$$$$$$$$$$$$$$$$$$$  childCmqs PRO " + childCmqs.size()); 
 			for (CmqBase190 childCmq : childCmqs) {
-				System.out.println("$$$$$$$$$$$$$$$$$$$$$   " + childCmq.getCmqName()); 
+				
 				level = childCmq.getCmqTypeCd();
 				term = childCmq.getCmqName();
 				codeTerm = childCmq.getCmqCode() != null ? childCmq.getCmqCode() + "" : "";

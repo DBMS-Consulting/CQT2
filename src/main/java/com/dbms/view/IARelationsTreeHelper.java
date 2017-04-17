@@ -413,6 +413,7 @@ public class IARelationsTreeHelper {
 				|| (meddraDictHierarchySearchDto.getNewHlt() != null && "NTR".equalsIgnoreCase(meddraDictHierarchySearchDto.getNewHlt()))
 				|| (meddraDictHierarchySearchDto.getNewHlgt() != null && "NTR".equalsIgnoreCase(meddraDictHierarchySearchDto.getNewHlgt()))
 				|| (meddraDictHierarchySearchDto.getMovedPt() != null && "LDH".equalsIgnoreCase(meddraDictHierarchySearchDto.getMovedPt()))
+				|| (meddraDictHierarchySearchDto.getLltCurrencyChange() != null && "LNC".equalsIgnoreCase(meddraDictHierarchySearchDto.getLltCurrencyChange()))
 				|| (meddraDictHierarchySearchDto.getDemotedPt() != null && "PDL".equalsIgnoreCase(meddraDictHierarchySearchDto.getDemotedPt()))
 				|| (meddraDictHierarchySearchDto.getPromotedLlt() != null && "LPP".equalsIgnoreCase(meddraDictHierarchySearchDto.getPromotedLlt()))
 				|| (meddraDictHierarchySearchDto.getPrimarySocChange() != null && "HNP".equalsIgnoreCase(meddraDictHierarchySearchDto.getPrimarySocChange()))
@@ -420,7 +421,7 @@ public class IARelationsTreeHelper {
 				|| (meddraDictHierarchySearchDto.getMovedHlgt() != null && "HDS".equalsIgnoreCase(meddraDictHierarchySearchDto.getMovedHlgt()))) {
 			node.setRowStyleClass("orange-colored");
 		}
-		if (meddraDictHierarchySearchDto.getLltCurrencyChange() != null && "LNC".equalsIgnoreCase(meddraDictHierarchySearchDto.getLltCurrencyChange()))
+		if (meddraDictHierarchySearchDto.getLltCurrencyChange() != null && "LCN".equalsIgnoreCase(meddraDictHierarchySearchDto.getLltCurrencyChange()))
 			node.setRowStyleClass("mauve-colored");
 		if (meddraDictHierarchySearchDto.getPrimarySocChange() != null && "HPP".equalsIgnoreCase(meddraDictHierarchySearchDto.getPrimarySocChange()))
 			node.setRowStyleClass("red-colored");
