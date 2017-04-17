@@ -45,8 +45,7 @@
 
 							<p:outputLabel value="Format" styleClass="label-right" />
 							<p:selectOneMenu label="Format"
-								value="#{reportController.genReportFormat}" required="true"
-								label="File Format">
+								value="#{reportController.genReportFormat}" required="true">
 								<f:selectItems value="#{reportController.reportFormats}"
 									var="reportType" itemValue="#{reportFormat}"
 									itemLabel="#{reportFormat.label}" />

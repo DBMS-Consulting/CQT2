@@ -450,23 +450,38 @@ public class CmqBase190 extends BaseEntity {
 	}
 	
 	public void setCmqProductCds(String[] productCds, String lastModifiedByString, Date modifiedDate) {
-		if(null != this.productsList) {
-			this.productsList = new ArrayList<>();
-		}
-
+        List<CmqProductBaseCurrent> newlySetProducts = new ArrayList<CmqProductBaseCurrent>();
+        List<CmqProductBaseCurrent> deletedProducts;
+        if(productsList != null)
+            deletedProducts = new ArrayList<CmqProductBaseCurrent>(productsList);
+        else
+            deletedProducts = new ArrayList<CmqProductBaseCurrent>();
+        
 		for(String p: productCds) {
-			addCmqProduct(p, lastModifiedByString, modifiedDate);
+			newlySetProducts.add(addCmqProduct(p, lastModifiedByString, modifiedDate));
 		}
+        deletedProducts.removeAll(newlySetProducts);
+        productsList = newlySetProducts;
+        
+        for(CmqProductBaseCurrent p: deletedProducts) {
+            p.setCmqBaseCurrent(null);
+        }
 	}
 	
-	public int addCmqProduct(String productCd, String lastModifiedByString, Date modifiedDate) {
+	public CmqProductBaseCurrent addCmqProduct(String productCd, String lastModifiedByString, Date modifiedDate) {
 		int s = this.productsList == null ? 0 : this.productsList.size();
 		if(s > 0) {
 			// check if it already exists
 			for(CmqProductBaseCurrent p: productsList) {
 				if(p.getCmqProductCd().equals(productCd)) {
 					p.setCmqBaseCurrent(this);
-					return 0;
+                    if(p.getCreatedBy() == null || p.getLastModifiedBy() == null) {
+                        p.setCreatedBy(lastModifiedByString);
+                        p.setCreationDate(modifiedDate);
+                        p.setLastModifiedBy(lastModifiedByString);
+                        p.setLastModifiedDate(modifiedDate);
+                    }
+					return p;
 				}
 			}
 		}
@@ -482,7 +497,7 @@ public class CmqBase190 extends BaseEntity {
 		if(this.productsList == null)
 			this.productsList = new ArrayList<>();
 		this.productsList.add(p);
-		return 1;
+		return p;
 	}
 	
 	public int removeCmqProduct(String productCd) {

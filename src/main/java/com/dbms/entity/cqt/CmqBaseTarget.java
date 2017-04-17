@@ -433,23 +433,28 @@ public class CmqBaseTarget extends BaseEntity {
 	}
 	
 	public void setCmqProductCds(String[] productCds) {
-		if(null != this.productsList) {
-			this.productsList = new ArrayList<>();
-		}
-
+		List<CmqProductBaseTarget> newlySetProducts = new ArrayList<CmqProductBaseTarget>();
+        List<CmqProductBaseTarget> deletedProducts = new ArrayList<CmqProductBaseTarget>(productsList);
+        
 		for(String p: productCds) {
-			addCmqProduct(p);
+			newlySetProducts.add(addCmqProduct(p));
 		}
+        deletedProducts.removeAll(newlySetProducts);
+        productsList = newlySetProducts;
+        
+        for(CmqProductBaseTarget p: deletedProducts) {
+            p.setCmqBaseTarget(null);
+        }
 	}
 	
-	public int addCmqProduct(String productCd) {
+	public CmqProductBaseTarget addCmqProduct(String productCd) {
 		int s = this.productsList == null ? 0 : this.productsList.size();
 		if(s > 0) {
 			// check if it already exists
 			for(CmqProductBaseTarget p: productsList) {
 				if(p.getCmqProductCd().equals(productCd)) {
 					p.setCmqBaseTarget(this);
-					return 0;
+					return p;
 				}
 			}
 		}
@@ -461,7 +466,7 @@ public class CmqBaseTarget extends BaseEntity {
 		if(this.productsList == null)
 			this.productsList = new ArrayList<>();
 		this.productsList.add(p);
-		return 1;
+		return p;
 	}
 	
 	public int removeCmqProduct(String productCd) {

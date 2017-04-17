@@ -19,11 +19,11 @@
 
 	<h:panelGrid columns="3" cellpadding="5" id="detailsPanel" columnClasses="pad-lr30,pad-lr30,pad-lr30">
 
-		<h:panelGrid columns="2" columnClasses="label, value">
-			<p:outputLabel value="* Extension" styleClass="label-right" />
+		<h:panelGrid columns="2" columnClasses="label-cell, value-cell">
+			<p:outputLabel value="* Extension" />
 			<p:selectOneMenu
 				value="#{createController.detailsFormModel.extension}"
-				disabled="#{createController.readOnlyState or createController.formSaved}"
+				disabled="#{createController.detailsFormDisabled}"
 				required="#{createController.activeWizard.step eq 'details' and !createController.readOnlyState}"
 				label="Extension">
 				<f:selectItems value="#{configMB.extensionList}" var="extension"
@@ -35,18 +35,17 @@
 					listener="#{createController.changeLevel}" />
 			</p:selectOneMenu>
 
-			<p:outputLabel value="* Name" styleClass="label-right" />
+			<p:outputLabel value="* Name" />
 			<p:inputText required="#{!createController.readOnlyState}" label="Name"
-				disabled="#{createController.readOnlyState or createController.formSaved}" maxlength="200"
+                         disabled="#{createController.detailsFormDisabled}" maxlength="200"
 				value="#{createController.detailsFormModel.name}"
 				style="width: 300px !important" />
 
 			<p:outputLabel id="lDrug"
-				value="#{createController.detailsFormModel.drugProgramRequired ? '* Drug Program' : 'Drug Program'}"
-				styleClass="label-right" />
+				value="#{createController.detailsFormModel.drugProgramRequired ? '* Drug Program' : 'Drug Program'}" />
 			<p:selectOneMenu
 				value="#{createController.detailsFormModel.drugProgram}" id="drug"
-				disabled="#{createController.readOnlyState or createController.formSaved}"
+				disabled="#{createController.detailsFormDisabled}"
 				required="#{createController.activeWizard.step eq 'details' and createController.detailsFormModel.drugProgramRequired and not createController.readOnlyState}"
                 label="Drug Program">
 				<f:selectItem itemValue="" itemLabel="" noSelectionOption="true" />
@@ -56,11 +55,10 @@
 			</p:selectOneMenu>
 
 			<p:outputLabel id="lProtocol"
-				value="#{createController.detailsFormModel.protocolRequired ? '* Protocol' : 'Protocol'}"
-				styleClass="label-right" />
+				value="#{createController.detailsFormModel.protocolRequired ? '* Protocol' : 'Protocol'}" />
 			<p:selectOneMenu
 				value="#{createController.detailsFormModel.protocol}" id="protocol"
-				disabled="#{createController.readOnlyState or createController.formSaved}"
+				disabled="#{createController.detailsFormDisabled}"
 				required="#{createController.activeWizard.step eq 'details' and createController.detailsFormModel.protocolRequired and not createController.readOnlyState}"
                 label="Protocol">
 				
@@ -72,22 +70,22 @@
 
 			<p:outputLabel id="lProduct"
 				value="#{createController.detailsFormModel.productRequired ? '* Product' : 'Product'}"
-				rendered="true" styleClass="label-right" />
+				rendered="true" />
 			<p:selectCheckboxMenu id="product" value="#{createController.detailsFormModel.products}" widgetVar="product"
-				disabled="#{createController.readOnlyState or createController.formSaved}"
 				required="#{createController.activeWizard.step eq 'details' and createController.detailsFormModel.productRequired and not createController.readOnlyState}"
-                label="Product" updateLabel="true"
+                disabled="#{createController.detailsFormDisabled}"
+                label="#{createController.detailsFormDisabled ? createController.detailsFormModel.productsLabel : 'Product'}" updateLabel="true"
                 filter="true" filterMatchMode="startsWith"
-				style="min-width:270px">
-				<f:selectItems value="#{configMB.productList}" var="product"
-					itemLabel="#{product.value}"
-					itemValue="#{product.codelistInternalValue}" />
+				style="min-width:270px; max-width: 600px">
+				<f:selectItems value="#{configMB.productList}" var="prd"
+					itemLabel="#{prd.value}"
+                    itemValue="#{prd.codelistInternalValue}" />
 			</p:selectCheckboxMenu>
 
-			<p:outputLabel value="* Designee" styleClass="label-right" />
+			<p:outputLabel value="* Designee" />
 			<p:selectOneMenu
 				value="#{createController.detailsFormModel.designee}"
-				disabled="#{createController.readOnlyState or createController.formSaved}" rendered="true"
+				disabled="#{createController.detailsFormDisabled}" rendered="true"
                 label="Designee"
 				required="#{createController.activeWizard.step eq 'details' and !createController.readOnlyState}">
 				<f:selectItem itemLabel="" itemValue="" noSelectionOption="true" />
@@ -95,13 +93,13 @@
 			</p:selectOneMenu>
 		</h:panelGrid>
 
-		<h:panelGrid columns="2" columnClasses="label, value">
+		<h:panelGrid columns="2" columnClasses="label-cell, value-cell">
 
-			<p:outputLabel value="* Level" styleClass="label-right" />
+			<p:outputLabel value="* Level" />
 			<p:selectOneMenu id="level" value="#{createController.detailsFormModel.level}"
 				rendered="true" required="#{createController.activeWizard.step eq 'details' and !createController.readOnlyState}"
                 label="Level"
-				disabled="#{createController.readOnlyState or createController.formSaved}">
+				disabled="#{createController.detailsFormDisabled}">
 				<f:selectItem itemValue="1" itemLabel="1" />    
 				<f:selectItem itemValue="2" itemLabel="2" />
 				<f:selectItem itemValue="3" itemLabel="3" />
@@ -109,81 +107,43 @@
 				<f:selectItem itemValue="5" itemLabel="5" />
 			</p:selectOneMenu>
 
-			<p:outputLabel value="* Algorithm" styleClass="label-right" />
+			<p:outputLabel value="* Algorithm" />
 			<p:inputText value="#{createController.detailsFormModel.algorithm}"
 				disabled="#{true or createController.readOnlyState}" />
 
-			<h:panelGrid columns="1" styleClass="grid-right">
-				<p:outputLabel value="* Status" />
-			</h:panelGrid>
-			<h:panelGrid columns="1">
-				<h:outputText value="#{createController.detailsFormModel.status}"
-					style="height: 30px !important" styleClass="uppercase"></h:outputText>
-			</h:panelGrid>
+            <p:outputLabel value="* Status" />
+            <h:outputText value="#{createController.detailsFormModel.status}"
+                style="height: 30px !important" styleClass="uppercase"></h:outputText>
 
-			<h:panelGrid columns="1" styleClass="grid-right">
-				<p:outputLabel value="* State" />
-			</h:panelGrid>
-			<h:panelGrid columns="1">
-				<h:outputText value="#{createController.detailsFormModel.state}"
+            <p:outputLabel value="* State" />
+            <h:outputText value="#{createController.detailsFormModel.state}"
 					styleClass="uppercase"></h:outputText>
-			</h:panelGrid>
 
+            <p:outputLabel value="Group" />
+            <h:outputText value="#{createController.detailsFormModel.group}" />
 
-			<h:panelGrid columns="1" styleClass="grid-right">
-				<p:outputLabel value="Group" />
-			</h:panelGrid>
-			<h:panelGrid columns="1">
-				<h:outputText value="#{createController.detailsFormModel.group}" />
-			</h:panelGrid>
-
-
-			<h:panelGrid columns="1" styleClass="grid-right">
-				<p:outputLabel value="Code" />
-			</h:panelGrid>
-			<h:panelGrid columns="1">
-				<h:outputText id="codeValue"
+            <p:outputLabel value="Code" />
+            <h:outputText id="codeValue"
 					value="#{createController.selectedData.cmqCode}" />
-			</h:panelGrid>
 		</h:panelGrid>
 
-		<h:panelGrid columns="2" columnClasses="label, value">
-			<h:panelGrid columns="1" styleClass="grid-right">
-				<p:outputLabel value="Creation Date  " />
-			</h:panelGrid>
+		<h:panelGrid columns="2" columnClasses="label-cell, value-cell">
+            <p:outputLabel value="Creation Date  " />
+            <h:outputText value="#{createController.selectedData.creationDate}">
+                <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
+            </h:outputText>
 
-			<h:panelGrid columns="1" styleClass="grid-right">
-				<h:outputText value="#{createController.selectedData.creationDate}">
-					<f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
-				</h:outputText>
-			</h:panelGrid>
+            <p:outputLabel value="Created By  " />
+            <h:outputText value="#{createController.selectedData.createdBy}" />
 
-			<h:panelGrid columns="1" styleClass="grid-right">
-				<p:outputLabel value="Created By  " />
-			</h:panelGrid>
-
-			<h:panelGrid columns="1">
-				<h:outputText value="#{createController.selectedData.createdBy}" />
-			</h:panelGrid>
-
-			<h:panelGrid columns="1" styleClass="grid-right">
-				<p:outputLabel value="Last Activation Date  " />
-			</h:panelGrid>
-
-			<h:panelGrid columns="1">
-				<h:outputText
+            <p:outputLabel value="Last Activation Date  " />
+            <h:outputText
 					value="#{createController.selectedData.activationDate}">
-					<f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss"/>
-				</h:outputText>
-			</h:panelGrid>
+                <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss"/>
+            </h:outputText>
 
-			<h:panelGrid columns="1" styleClass="grid-right">
-				<p:outputLabel value="Last Activation By  " />
-			</h:panelGrid>
-
-			<h:panelGrid columns="1">
-				<h:outputText value="#{createController.selectedData.activatedBy}" />
-			</h:panelGrid>
+            <p:outputLabel value="Last Activation By  "/>
+            <h:outputText value="#{createController.selectedData.activatedBy}" />
 
             <p:spacer />
 

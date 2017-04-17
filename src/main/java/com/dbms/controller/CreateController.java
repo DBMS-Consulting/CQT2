@@ -1219,7 +1219,7 @@ public class CreateController implements Serializable {
 			} catch (CqtServiceException e) {
 				e.printStackTrace();
 				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-						"An error occurred while deleting the state", "");
+						"An error occurred while deleting the list", "");
 				FacesContext ctx = FacesContext.getCurrentInstance();
 				ctx.addMessage(null, msg);
 			}
@@ -1545,6 +1545,10 @@ public class CreateController implements Serializable {
      */
     public void setAuthService(AuthenticationService authService) {
         this.authService = authService;
+    }
+    
+    public boolean isDetailsFormDisabled() {
+        return this.isReadOnlyState() || this.isFormSaved();
     }
 
 }

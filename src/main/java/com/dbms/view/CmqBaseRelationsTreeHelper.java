@@ -17,7 +17,6 @@ import com.dbms.csmq.HierarchyNode;
 import com.dbms.entity.IEntity;
 import com.dbms.entity.cqt.CmqBase190;
 import com.dbms.entity.cqt.CmqRelation190;
-import com.dbms.entity.cqt.CmqRelationTarget;
 import com.dbms.entity.cqt.SmqBase190;
 import com.dbms.entity.cqt.SmqRelation190;
 import com.dbms.entity.cqt.dtos.MeddraDictHierarchySearchDto;
@@ -164,7 +163,16 @@ public class CmqBaseRelationsTreeHelper {
 				node.setCategory((cmqRelation.getTermCategory() == null) ? "" : cmqRelation.getTermCategory());
 				node.setScope((cmqRelation.getTermScope() == null) ? "" : cmqRelation.getTermScope());
 				node.setWeight((cmqRelation.getTermWeight() == null) ? "" : cmqRelation.getTermWeight() + "");
-				new DefaultTreeNode(node, rootNode);
+				TreeNode treeNode = new DefaultTreeNode(node, rootNode);
+				
+				if(requireDrillDown) {
+					Long childCount = this.meddraDictSvc.findChldrenCountByParentCode("LLT_", "PT_", cmqRelation.getPtCode());
+					if((null != childCount) && (childCount > 0)) {
+						HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
+						dummyNode.setDummyNode(true);
+						new DefaultTreeNode(dummyNode, treeNode);
+					}
+				}
 			} else if ((cmqRelation.getLltCode() != null)
 					&& (cmqRelation.getLltCode() > 0)) {
 				MeddraDictReverseHierarchySearchDto searchDto = this.meddraDictSvc.findByPtOrLltCode("LLT_", cmqRelation.getLltCode());
@@ -183,10 +191,10 @@ public class CmqBaseRelationsTreeHelper {
 	}
 	
 	public TreeNode getRelationsNodeHierarchy(TreeNode rootNode, TreeNode expandedNode) {
-		return getRelationsNodeHierarchy(rootNode, expandedNode, true);
+		return getRelationsNodeHierarchy(rootNode, expandedNode, true, false);
 	}
 	
-	public TreeNode getRelationsNodeHierarchy(TreeNode rootNode, TreeNode expandedNode, boolean isRelationView) {
+	public TreeNode getRelationsNodeHierarchy(TreeNode rootNode, TreeNode expandedNode, boolean isRelationView, boolean isParentListView) {
 		HierarchyNode hNode = (HierarchyNode) expandedNode.getData();
 		boolean isDataFetchCompleted = hNode.isDataFetchCompleted();
 		
@@ -452,7 +460,11 @@ public class CmqBaseRelationsTreeHelper {
 			if ((null != childCmqBaseList) && (childCmqBaseList.size() > 0)) {
 				for (CmqBase190 childCmqBase : childCmqBaseList) {
 					HierarchyNode node = new HierarchyNode();
-					node.setLevel(hNode.getLevel()); // levelH
+					if(isParentListView) {
+						node.setLevel(childCmqBase.getCmqTypeCd());
+					} else {
+						node.setLevel(hNode.getLevel()); // levelH
+					}
 					node.setTerm(childCmqBase.getCmqName());
 					node.setCode(childCmqBase.getCmqCode().toString());
 					node.setEntity(childCmqBase);

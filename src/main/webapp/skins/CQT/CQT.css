@@ -206,6 +206,12 @@ af |inputText:disabled::content {
 .full-width {
 	width: 100%;
 }
+.col-1 {
+    width: 8.33333%;
+}
+.col-11 {
+    width: 91.66666%;
+}
 .col-25p {
 	width: 25%;
 }
@@ -222,22 +228,24 @@ af |inputText:disabled::content {
 }
 
 td.label-cell, td.value-cell {
-	vertical-align: top;
+    min-height: 33px;
+    height: 33px;
+    line-height: 1.4;
+}
+
+td.label-cell {
+    text-align: right;
+    padding-right: 20px;
 }
 
 td.label-cell label {
-	line-height: 1.4;
 	font-weight: 600;
 }
-td.value-cell {
-	line-height: 1.4;
-}
-td .bordered {
-	display: block;
-	padding: 10px;
+
+td.bordered {
 	border: solid 1px #bbb;
-	margin-bottom: 10px;
 }
+
 .ui-text-wrap {
  	white-space: pre-wrap;      /* CSS3 */   
 	white-space: -moz-pre-wrap; /* Firefox */    
@@ -340,7 +348,6 @@ td .bordered {
 	font-weight: normal;
 }
 
-
 .pink-colored {
 	color: #ffc0cb;
 	font-weight: bold;
@@ -363,7 +370,12 @@ td .bordered {
 	text-align: center;
 	vertical-align: middle;
 }
-
+.text-right {
+	text-align: right;
+}
+.text-top {
+	vertical-align: top;
+}
 .text-red {
 	color: red;
 }
