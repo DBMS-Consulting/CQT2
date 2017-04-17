@@ -5,6 +5,7 @@ import java.util.Date;
 import org.primefaces.event.SelectEvent;
 
 import com.dbms.entity.cqt.CmqBase190;
+import com.dbms.service.AuthenticationService;
 
 /**
  * "Create/Update/Browse&Search" module / "Confirm" tab / "Workflow" section's form data 
@@ -13,12 +14,15 @@ import com.dbms.entity.cqt.CmqBase190;
  *
  */
 public class ListWorkflowFormVM {
+    private AuthenticationService authService;
+    
     private String myCurState;
 	private String requestReason;
 	private Date dueDate;
 	private String approvalReason;
     
-	public ListWorkflowFormVM() {
+	public ListWorkflowFormVM(AuthenticationService authService) {
+        this.authService = authService;
 		init();
 	}
 	
@@ -75,7 +79,21 @@ public class ListWorkflowFormVM {
 		this.approvalReason = approvalReason;
 	}
     
-    public boolean isApprovalReasonEnabled() {
-        return (CmqBase190.CMQ_STATE_VALUE_REVIEWED.equals(myCurState));
+    public boolean isRequestReasonDisabled() {
+        if(authService.hasGroup(new String[] {AuthenticationService.REQUESTER_GROUP}))
+            return true;
+        return false;
+    }
+    
+    public boolean isDueDateDisabled() {
+        if(authService.hasGroup(new String[] {AuthenticationService.REQUESTER_GROUP}))
+            return true;
+        return false;
+    }
+    
+    public boolean isApprovalReasonDisabled() {
+        if(authService.hasGroup(new String[] {AuthenticationService.REQUESTER_GROUP}))
+            return true;
+        return false;
     }
 }

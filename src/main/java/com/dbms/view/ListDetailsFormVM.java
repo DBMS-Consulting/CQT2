@@ -27,6 +27,7 @@ public class ListDetailsFormVM {
 	private WizardType wizardType = WizardType.CreateWizard;
 	private boolean modelChanged = false;
 	private IRefCodeListService refCodeListService;
+    private AuthenticationService authService;
 	
 	private String extension;
 	private String name;
@@ -48,10 +49,9 @@ public class ListDetailsFormVM {
 	private String lastModifiedBy;
 	private Date lastModifiedDate;
 	
-	private AuthenticationService authService;
-	
-	public ListDetailsFormVM(AuthenticationService authService) {
+	public ListDetailsFormVM(AuthenticationService authService, IRefCodeListService refCodeListService) {
 		this.authService = authService;
+        this.refCodeListService = refCodeListService;
 		init();
 	}
 	
@@ -548,7 +548,8 @@ public class ListDetailsFormVM {
 	}
 
 	public String getCreatedBy() {
-		return createdBy;
+		return createdBy.replaceAll("(^\\|#\\|)|(\\|#\\|$)", "") //replace first and last |#|
+                .replaceAll("\\|#\\|", ", "); //replace remaining |#|
 	}
 
 	public void setCreatedBy(String createdBy) {

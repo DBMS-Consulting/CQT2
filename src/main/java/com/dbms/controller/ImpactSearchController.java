@@ -168,8 +168,7 @@ public class ImpactSearchController implements Serializable {
 
 	@PostConstruct
 	public void init() {
-		this.detailsFormModel  = new ListDetailsFormVM(this.authService);
-        detailsFormModel.setRefCodeListService(refCodeListService);
+		this.detailsFormModel  = new ListDetailsFormVM(this.authService, this.refCodeListService);
 		this.impactedCmqBaseLazyDataModel = new CmqLazyDataModel(true);
 		this.notImpactedCmqBaseLazyDataModel = new CmqLazyDataModel(false);
 		this.impactedSmqBaseLazyDataModel = new SmqLazyDataModel(true);
