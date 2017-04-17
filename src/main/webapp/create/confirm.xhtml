@@ -9,35 +9,35 @@
 
 
 	<p:panel header="Details" id="confirmPan" >
-		<h:panelGrid columns="4" cellpadding="15" columnClasses="col-25p,col-25p,col-25p,col-25p">
+		<h:panelGrid columns="4" cellpadding="20">
 
 			<h:panelGrid columns="2" columnClasses="label-cell, value-cell">
-				<p:outputLabel styleClass="label-right" value="Extension:" />
+				<p:outputLabel value="Extension:" />
 				<h:panelGroup>
 					<h:outputText value="#{createController.detailsFormModel.extensionLabel}" rendered="true"/>
 				</h:panelGroup>
 
-				<p:outputLabel styleClass="label-right" value="Name:" />
+				<p:outputLabel value="Name:" />
 				<h:outputText value="#{createController.selectedData.cmqName}" />
 
-				<p:outputLabel styleClass="label-right" value="Drug Program:" />
+				<p:outputLabel value="Drug Program:" />
 				<h:outputText value="#{createController.detailsFormModel.drugProgramLabel}" rendered="true"/>
 
-				<p:outputLabel styleClass="label-right" value="Protocol:" />
+				<p:outputLabel value="Protocol:" />
 				<h:outputText value="#{createController.detailsFormModel.protocolLabel}" rendered="true"/>
 
-				<p:outputLabel styleClass="label-right" value="Product:" />
+				<p:outputLabel value="Product:" />
 				<h:outputText value="#{createController.detailsFormModel.productsLabel}" rendered="true"/>
 			</h:panelGrid>
 
 			<h:panelGrid columns="2" columnClasses="label-cell, value-cell">
-				<p:outputLabel styleClass="label-right" value="Level:" />
+				<p:outputLabel value="Level:" />
 				<h:outputText value="#{createController.selectedData.cmqLevel}" />
 
-				<p:outputLabel styleClass="label-right" value="Code:" />
+				<p:outputLabel value="Code:" />
 				<h:outputText value="#{createController.selectedData.cmqCode}" />
 
-				<p:outputLabel styleClass="label-right" value="Algorithm:" />
+				<p:outputLabel value="Algorithm:" />
 				<h:outputText value="#{createController.selectedData.cmqAlgorithm}" />
 
 				<p:spacer />
@@ -48,17 +48,16 @@
 			</h:panelGrid>
 
 			<h:panelGrid columns="2" columnClasses="label-cell, value-cell">
-
-				<p:outputLabel styleClass="label-right" value="Status:" />
+				<p:outputLabel value="Status:" />
 				<h:outputText value="#{createController.detailsFormModel.statusLabel}" rendered="true"/>
 
-				<p:outputLabel styleClass="label-right" value="State:" />
-				<h:outputText styleClass="uppercase" value="#{createController.selectedData.cmqState}" />
+				<p:outputLabel value="State:" />
+				<h:outputText value="#{createController.selectedData.cmqState}" styleClass="uppercase" />
 
-				<p:outputLabel styleClass="label-right" value="Group:" />
+				<p:outputLabel value="Group:" />
 				<h:outputText value="#{createController.selectedData.cmqGroup}" />
 
-				<p:outputLabel styleClass="label-right" value="Designee:" />
+				<p:outputLabel value="Designee:" />
 				<h:outputText value="#{createController.selectedData.cmqDesignee}" />
 
 				<p:spacer />
@@ -67,23 +66,21 @@
 
 
 			<h:panelGrid columns="2" columnClasses="label-cell, value-cell">
-
-				<p:outputLabel styleClass="label-right" value="Creation Date: " />
+				<p:outputLabel value="Creation Date: " />
 				<h:outputText value="#{createController.selectedData.creationDate}">
 					<f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss"/>
 				</h:outputText>
 
-				<p:outputLabel styleClass="label-right" value="Created By: " />
+				<p:outputLabel value="Created By: " />
 				<h:outputText value="#{createController.selectedData.createdBy}" />
 
-				<p:outputLabel styleClass="label-right"
-					value="Last Activation Date: " />
+				<p:outputLabel value="Last Activation Date: " />
 				<h:outputText
 					value="#{createController.selectedData.activationDate}">
 					<f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss"/>
 				</h:outputText>
 
-				<p:outputLabel styleClass="label-right" value="Last Activation By: " />
+				<p:outputLabel value="Last Activation By: " />
 				<h:outputText value="#{createController.selectedData.activatedBy}" />
 
 				<p:spacer />
@@ -95,18 +92,17 @@
 	<p:spacer height="10"></p:spacer>
 
 	<p:panel header="Informative Notes">
-		<h:panelGrid columns="1" cellpadding="30" styleClass="full-width">
-			<h:panelGrid columns="2" columnClasses="label-cell ui-grid-col-1, value-cell ui-grid-col-11 bordered ui-text-wrap" style="width: 100%">
-				<p:outputLabel styleClass="label-right" value="Description:" />
-				<h:outputText value="#{createController.selectedData.cmqDescription}" />
-		
-				<p:outputLabel styleClass="label-right" value="Source:" />
-				<h:outputText value="#{createController.selectedData.cmqSource}" />
-								
-				<p:outputLabel styleClass="label-right" value="Notes:" />
-				<h:outputText value="#{createController.selectedData.cmqNote}" />
-			</h:panelGrid>
-		</h:panelGrid>
+        <h:panelGrid columns="2" columnClasses="label-cell col-1 text-top, value-cell bordered col-11 text-top ui-text-wrap"
+                     styleClass="full-width" cellpadding="8" cellspacing="10" >
+            <p:outputLabel value="Description:" />
+            <h:outputText value="#{createController.selectedData.cmqDescription}" />
+
+            <p:outputLabel value="Source:" />
+            <h:outputText value="#{createController.selectedData.cmqSource}" />
+
+            <p:outputLabel value="Notes:" />
+            <h:outputText value="#{createController.selectedData.cmqNote}" />
+        </h:panelGrid>
 	</p:panel>
 	
 	<p:spacer height="10"></p:spacer>
@@ -181,15 +177,15 @@
 		</p:toolbar>
         
         <p:panelGrid columns="2" columnClasses="label-cell,value-cell">
-			<p:outputLabel styleClass="label-right" value="Reason for Request:" />
+			<p:outputLabel value="Reason for Request:" />
 			<p:inputText id="request" value="#{createController.workflowFormModel.requestReason}" />
             
-            <p:outputLabel styleClass="label-right" value="Due Date:" />
+            <p:outputLabel value="Due Date:" />
             <p:calendar value="#{createController.workflowFormModel.dueDate}" id="dueDate" mode="popup" pattern="dd-MMM-yyyy" mindate="#{createController.workflowFormModel.minDueDate}">
                 <p:ajax event="dateSelect" listener="#{createController.workflowFormModel.onDueDateSelect}" global="false" />
             </p:calendar>
 					
-            <p:outputLabel styleClass="label-right" value="Reason for Approval:" />
+            <p:outputLabel value="Reason for Approval:" />
 			<p:inputText value="#{createController.workflowFormModel.approvalReason}" id="reason_approval"
 							disabled="#{createController.selectedData.cmqState ne 'REVIEWED'}" />
         </p:panelGrid>

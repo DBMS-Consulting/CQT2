@@ -35,7 +35,7 @@
 			<p:outputLabel value="Product" rendered="true"
 				styleClass="label-right" />
 			<p:selectCheckboxMenu value="#{searchController.products}" disabled="false" widgetVar="product2"
-				id="product2" label="Choose products" updateLabel="true" style="min-width: 270px;"
+				id="product2" label="Choose products" updateLabel="true" style="min-width: 270px; max-width: 600px"
                 filter="true" filterMatchMode="startsWith">
 				<f:selectItems value="#{configMB.productList}" var="product"
 					itemLabel="#{product.value}" itemValue="#{product.codelistInternalValue}" />

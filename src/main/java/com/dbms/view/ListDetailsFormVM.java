@@ -378,7 +378,7 @@ public class ListDetailsFormVM {
 		}
 		return "";
 	}
-	
+
 	/**
 	 * Details Form / Designee
 	 * Getter, Setter
