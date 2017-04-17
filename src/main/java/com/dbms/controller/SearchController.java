@@ -475,8 +475,9 @@ public class SearchController extends BaseController<CmqBase190> implements IRel
 		String uiSourceOfEvent =  (String) event.getComponent().getAttributes().get("uiEventSourceName");
 		TreeNode expandedTreeNode = event.getTreeNode();
 		boolean isRelationView = "RELATIONS".equalsIgnoreCase(uiSourceOfEvent);
+		boolean isParentListView = "PARENT-LIST".equalsIgnoreCase(uiSourceOfEvent);
 		CmqBaseRelationsTreeHelper relationsSearchHelper = new CmqBaseRelationsTreeHelper(cmqBaseService, smqBaseService, meddraDictService, cmqRelationService);	
-		relationsSearchHelper.getRelationsNodeHierarchy(null, expandedTreeNode, isRelationView);
+		relationsSearchHelper.getRelationsNodeHierarchy(null, expandedTreeNode, isRelationView, isParentListView);
 	}
 
 	/**
