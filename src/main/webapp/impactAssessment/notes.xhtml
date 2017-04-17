@@ -44,11 +44,11 @@
 
 		<h:panelGrid columns="2">
 			<p:commandButton value="Save" update="messages" icon="ui-icon-disk"
-				rendered="#{not impactSearchController.notesFormReadonly}"
+				disabled="#{impactSearchController.notesFormReadonly}"
 				action="#{impactSearchController.saveInformativeNotes}"></p:commandButton>
 
 			<p:commandButton value="Cancel" icon="ui-icon-close"
-				rendered="#{not impactSearchController.notesFormReadonly}"
+				disabled="#{impactSearchController.notesFormReadonly}"
 				process="@this" update="@form:messages @form:panelNotes" style="float: right"
 				actionListener="#{impactSearchController.cancelNotes}">
 				<p:confirm header="Confirm" message="Are you sure you want to erase these fields?" icon="ui-icon-alert" />
