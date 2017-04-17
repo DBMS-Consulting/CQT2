@@ -721,6 +721,23 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 												row = worksheet.createRow(rowCount);
 												buildChildCells("PT", pt.getCode(), pt.getTerm(), cell, row, "..............");
 												rowCount++;
+												
+												/**
+												 * LLT.
+												 */
+												List<MeddraDictHierarchySearchDto> listPT =  meddraDictService.findChildrenByParentCode("LLT_", "PT_", Long.valueOf(pt.getCode()));
+												List<Long> lltCodes = new ArrayList<>();
+												for (MeddraDictHierarchySearchDto meddra : listPT) {
+													lltCodes.add(Long.parseLong(meddra.getCode())); 
+												}
+
+												List<MeddraDictHierarchySearchDto> llts = this.meddraDictService.findByCodes("LLT_", lltCodes);
+												if (llts != null)
+													for (MeddraDictHierarchySearchDto llt : llts) {
+														row = worksheet.createRow(rowCount);
+														buildChildCells("LLT", llt.getCode(), llt.getTerm(), cell, row, ".....................");
+														rowCount++;
+													}
 											}
 									}
 							}
