@@ -58,7 +58,7 @@
 				<p:selectOneMenu
 					value="#{impactSearchController.detailsFormModel.designee}"
 					disabled="#{impactSearchController.detailsFormReadonly}"
-					requiredMessage="The Designee is required" required="#{not impactSearchController.detailsFormReadonly}">
+					required="#{not impactSearchController.detailsFormReadonly}" label="Designee" >
 					<f:selectItem itemLabel="" itemValue=""></f:selectItem>
 					<f:selectItem itemLabel="NONE" itemValue="NONE"></f:selectItem>
 					<!-- <f:selectItems></f:selectItems> -->

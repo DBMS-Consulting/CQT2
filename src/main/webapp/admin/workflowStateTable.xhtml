@@ -67,16 +67,16 @@
 
 				<p:outputLabel value="Serial #" styleClass="label-right" />
 				<p:spinner style="float: left"
-					required="true" requiredMessage="The serial # is required"
+					required="true" label="Serial #"
 					value="#{adminController.ref.serialNum}" min="1" />
 
 				<p:outputLabel value="Code" styleClass="label-right" />
-				<p:inputText required="true" requiredMessage="The code is required"
+				<p:inputText required="true" label="Code"
 					value="#{adminController.ref.codelistInternalValue}"
 					style="width: 100px !important; text-transform: uppercase; float: left" />
 
 				<p:outputLabel value="Workflow State Name" styleClass="label-right" />
-				<p:inputText required="true" requiredMessage="The value is required"
+				<p:inputText required="true" label="Workflow State Name"
 					value="#{adminController.ref.value}"
 					style="width: 300px !important; float: left; text-transform: uppercase;" />
 

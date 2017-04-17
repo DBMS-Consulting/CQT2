@@ -11,5 +11,8 @@
 			<renderer-class>com.dbms.view.ExWizardRenderer</renderer-class>
 		</renderer>
 	</render-kit>
-
+    
+    <application>
+        <message-bundle>com.dbms.MyMessage</message-bundle>
+    </application>
 </faces-config>

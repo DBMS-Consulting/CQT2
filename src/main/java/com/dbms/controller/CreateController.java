@@ -595,7 +595,7 @@ public class CreateController implements Serializable {
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 			} else {
 				String errorMsg = "Duplicate CMQ name ('"
-						+ selectedData.getCmqName() + "') and extention ('"
+						+ detailsFormModel.getName() + "') and extention ('"
 						+ detailsFormModel.getExtension()
 						+ "') found in db.";
 				

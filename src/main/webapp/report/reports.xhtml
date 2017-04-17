@@ -28,7 +28,7 @@
 							<p:outputLabel value="Report" styleClass="label-right" />
 							<p:selectOneMenu value="#{reportController.genReportType}"
 								required="true"
-								requiredMessage="Please choose Report type to generate.">
+								label="Report Type">
 								<f:selectItem itemValue="#{null}" itemLabel="--Select a report--" noSelectionOption="true" />
 								<f:selectItems value="#{reportController.reportTypes}" var="reportType"
                                                itemValue="#{reportType}" itemLabel="#{reportType.label}" />
@@ -46,7 +46,7 @@
 							<p:outputLabel value="Format" styleClass="label-right" />
 							<p:selectOneMenu label="Format"
 								value="#{reportController.genReportFormat}" required="true"
-								requiredMessage="Please choose a file format of the report.">
+								label="File Format">
 								<f:selectItems value="#{reportController.reportFormats}"
 									var="reportType" itemValue="#{reportFormat}"
 									itemLabel="#{reportFormat.label}" />
