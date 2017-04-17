@@ -82,7 +82,7 @@ public class CreateController implements Serializable {
 	
 	private ListDetailsFormVM detailsFormModel;
 	private ListNotesFormVM notesFormModel = new ListNotesFormVM();
-	private ListWorkflowFormVM workflowFormModel = new ListWorkflowFormVM();
+	private ListWorkflowFormVM workflowFormModel;
 	private boolean relationsModified;
 
 	private boolean maintainDesigBtn;
@@ -104,12 +104,12 @@ public class CreateController implements Serializable {
 	
 	@PostConstruct
 	public void init() {
-		this.detailsFormModel  = new ListDetailsFormVM(this.authService);
+		this.detailsFormModel  = new ListDetailsFormVM(this.authService, this.refCodeListService);
+        this.workflowFormModel = new ListWorkflowFormVM(this.authService);
 		initAll();
 	}
 
 	private void initAll() {
-		detailsFormModel.setRefCodeListService(refCodeListService);
 		detailsFormModel.init();
 		notesFormModel.init();
 		workflowFormModel.init();
