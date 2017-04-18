@@ -24,7 +24,6 @@ import org.slf4j.LoggerFactory;
 
 import com.dbms.entity.cqt.RefConfigCodeList;
 import com.dbms.entity.cqt.SessionTrack;
-import com.dbms.service.base.ICqtPersistenceService;
 
 @ManagedBean(name = "AuthenticationService", eager = true)
 @SessionScoped
@@ -316,6 +315,13 @@ public class AuthenticationService {
 		} else {
 			return retval;
 		}
+	}
+	
+	public String getLastModifiedByUserAsString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(this.userCn).append(" , ").append(this.userSurName)
+			.append(" , ").append(this.userGivenName);
+		return sb.toString();
 	}
 	
 	public String getLastModifiedByString() {

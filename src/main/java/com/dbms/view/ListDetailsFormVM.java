@@ -10,6 +10,7 @@ import org.apache.commons.lang.StringUtils;
 
 import com.dbms.entity.cqt.CmqBase190;
 import com.dbms.entity.cqt.CmqBaseTarget;
+import com.dbms.entity.cqt.CmqProductBaseCurrent;
 import com.dbms.entity.cqt.RefConfigCodeList;
 import com.dbms.service.AuthenticationService;
 import com.dbms.service.IRefCodeListService;
@@ -116,7 +117,7 @@ public class ListDetailsFormVM {
 	 */
 	public void saveToCmqBase190(CmqBase190 cmq) {
 		Date d = new Date();
-		String lastModifiedByString = this.authService.getLastModifiedByString();
+		String lastModifiedByString = this.authService.getLastModifiedByUserAsString();
 		cmq.setCmqTypeCd(extension);
 		cmq.setCmqName(name);
 		cmq.setCmqProgramCd(drugProgram);
@@ -139,6 +140,13 @@ public class ListDetailsFormVM {
 			cmq.setCmqStatus(CmqBase190.CMQ_STATUS_VALUE_PENDING);
 			cmq.setCmqState(CmqBase190.CMQ_STATE_VALUE_DRAFT);
 			cmq.setCmqGroup("No Group");
+			if(wizardType == WizardType.CopyWizard) {
+				//remove product ids since these are new products for the copied cmq
+				List<CmqProductBaseCurrent> products = cmq.getProductsList();
+				for (CmqProductBaseCurrent cmqProductBaseCurrent : products) {
+					cmqProductBaseCurrent.setCmqProductId(null);
+				}
+			}
 		}
 	}
 	
@@ -548,8 +556,12 @@ public class ListDetailsFormVM {
 	}
 
 	public String getCreatedBy() {
-		return createdBy.replaceAll("(^\\|#\\|)|(\\|#\\|$)", "") //replace first and last |#|
-                .replaceAll("\\|#\\|", ", "); //replace remaining |#|
+		if(createdBy != null) {
+			return createdBy.replaceAll("(^\\|#\\|)|(\\|#\\|$)", "") //replace first and last |#|
+					.replaceAll("\\|#\\|", ", "); //replace remaining |#|
+		} else {
+			return createdBy;
+		}
 	}
 
 	public void setCreatedBy(String createdBy) {

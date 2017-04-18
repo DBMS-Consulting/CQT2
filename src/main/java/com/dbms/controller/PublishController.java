@@ -163,13 +163,15 @@ public class PublishController implements Serializable {
 					if (cmqBase190.getCmqLevel() == 2 && cmqBase190.getCmqParentCode() == null && cmqBase190.getCmqParentName() == null)
 						hasParentError = true;
 					else {
+						Date lastModifiedDate = new Date();
+						String lastModifiedByString = this.authService.getLastModifiedByUserAsString();
 						cmqBase190.setCmqState(CmqBase190.CMQ_STATE_VALUE_PUBLISHED);
 						//Pending to Active 'A'
 						cmqBase190.setCmqStatus(CmqBase190.CMQ_STATUS_VALUE_ACTIVE);
-						cmqBase190.setActivatedBy("NONE");
-						cmqBase190.setActivationDate(new Date());
-						cmqBase190.setLastModifiedDate(new Date());
-						cmqBase190.setLastModifiedBy("NONE");
+						cmqBase190.setActivatedBy(lastModifiedByString);
+						cmqBase190.setActivationDate(lastModifiedDate);
+						cmqBase190.setLastModifiedDate(lastModifiedDate);
+						cmqBase190.setLastModifiedBy(lastModifiedByString);
 					}
 
 					if (hasParentError) {
@@ -186,14 +188,14 @@ public class PublishController implements Serializable {
 				}
 				
 				try {
-					Date d = new Date();
-					String lastModifiedByString = this.authService.getLastModifiedByString();
+					Date lastModifiedDate = new Date();
+					String lastModifiedByString = this.authService.getLastModifiedByUserAsString();
 					for (CmqBase190 cmqBase190 : targetCmqsSelected) {
 						cmqBase190.setLastModifiedBy(lastModifiedByString);
-						cmqBase190.setLastModifiedDate(d);
+						cmqBase190.setLastModifiedDate(lastModifiedDate);
 						if(StringUtils.isBlank(cmqBase190.getCreatedBy()) || cmqBase190.getCreationDate() == null) {
 							cmqBase190.setCreatedBy(lastModifiedByString);
-							cmqBase190.setCreationDate(d);
+							cmqBase190.setCreationDate(lastModifiedDate);
 						}
 					}
 					this.cmqBaseService.update(targetCmqsSelected, this.authService.getUserCn()
@@ -336,11 +338,13 @@ public class PublishController implements Serializable {
 					if (cmqBaseTarget.getCmqLevel() == 2 && cmqBaseTarget.getCmqParentCode() == null && cmqBaseTarget.getCmqParentName() == null)
 						hasParentError = true;
 					else {
+						Date lastModifiedDate = new Date();
+						String lastModifiedByString = this.authService.getLastModifiedByUserAsString();
 						cmqBaseTarget.setCmqState(CmqBaseTarget.CMQ_STATE_PUBLISHED_IA);
-						cmqBaseTarget.setActivatedBy("NONE");
-						cmqBaseTarget.setActivationDate(new Date());
-						cmqBaseTarget.setLastModifiedDate(new Date());
-						cmqBaseTarget.setLastModifiedBy("NONE");
+						cmqBaseTarget.setActivatedBy(lastModifiedByString);
+						cmqBaseTarget.setActivationDate(lastModifiedDate);
+						cmqBaseTarget.setLastModifiedDate(lastModifiedDate);
+						cmqBaseTarget.setLastModifiedBy(lastModifiedByString);
 					}
 
 					if (hasParentError) {

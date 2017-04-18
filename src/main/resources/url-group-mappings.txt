@@ -4,9 +4,9 @@
 /create/copy.xhtml=MANAGER,REQUESTOR
 /create/browseAndSearch.xhtml=MANAGER,REQUESTOR,USER
 
-Publish-Menu=MANAGER,REQUESTOR
-/publish/publishCurrentVersion.xhtml=MANAGER,REQUESTOR
-/publish/publishFutureVersion.xhtml=MANAGER,REQUESTOR
+Publish-Menu=MANAGER
+/publish/publishCurrentVersion.xhtml=MANAGER
+/publish/publishFutureVersion.xhtml=MANAGER
 
 Reactivate/Retire-Menu=MANAGER,REQUESTOR
 /create/reactivate.xhtml=MANAGER,REQUESTOR
