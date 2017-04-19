@@ -234,9 +234,10 @@ public class CmqBaseHierarchySearchVM {
 		//event source attriute from the ui
 		String uiSourceOfEvent =  (String) event.getComponent().getAttributes().get("uiEventSourceName");
 		TreeNode expandedTreeNode = event.getTreeNode();
-		boolean isNodesEditable = !"RELATIONS".equals(uiSourceOfEvent);
+		boolean isRelationView = "RELATIONS".equalsIgnoreCase(uiSourceOfEvent);
+		boolean isParentListView = "PARENT-LIST".equalsIgnoreCase(uiSourceOfEvent);
 		CmqBaseRelationsTreeHelper relationsSearchHelper = new CmqBaseRelationsTreeHelper(cmqBaseService, smqBaseService, meddraDictService, cmqRelationService);	
-		this.myHierarchyRoot = relationsSearchHelper.getRelationsNodeHierarchy(this.myHierarchyRoot, expandedTreeNode, isNodesEditable, false);
+		this.myHierarchyRoot = relationsSearchHelper.getRelationsNodeHierarchy(this.myHierarchyRoot, expandedTreeNode, isRelationView, isParentListView);
 	}
 
 	/**

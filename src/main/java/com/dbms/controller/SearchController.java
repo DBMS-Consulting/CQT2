@@ -512,13 +512,17 @@ public class SearchController extends BaseController<CmqBase190> implements IRel
 							if (!nodesList.contains(parentNode)) {
 								HierarchyNode relationsHierarchyNode = hierarchyNode.copy();
 								TreeNode relationsTreeNode = new DefaultTreeNode(relationsHierarchyNode, relationsRoot);
-								relationsHierarchyNode.setDataFetchCompleted(false);
 								relationsHierarchyNode. markEditableInRelationstable();
-								List<TreeNode> childTreeNodes = treeNode.getChildren();
-								if(CollectionUtils.isNotEmpty(childTreeNodes)) {
-									HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
-									dummyNode.setDummyNode(true);
-									new DefaultTreeNode(dummyNode, relationsTreeNode);
+								if(!"LLT".equalsIgnoreCase(relationsHierarchyNode.getLevel())) {
+									List<TreeNode> childTreeNodes = treeNode.getChildren();
+									if(CollectionUtils.isNotEmpty(childTreeNodes)) {
+										relationsHierarchyNode.setDataFetchCompleted(false);
+										HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
+										dummyNode.setDummyNode(true);
+										new DefaultTreeNode(dummyNode, relationsTreeNode);
+									}
+								} else {
+									relationsHierarchyNode.setDataFetchCompleted(true);
 								}
 							}
 						}
