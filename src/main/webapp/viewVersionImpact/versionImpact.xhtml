@@ -344,53 +344,45 @@
 
 
 			<p:dialog widgetVar="legend" modal="true" id="historyD"
-				closable="true" header="Impact Legend">
+                      closable="true" header="Impact Legend" resizable="false">
 
-				<h:panelGrid columns="1">
-					<h:panelGrid columns="1">
-						<h:panelGrid columns="3">
-							<p:graphicImage url="/image/impact/1010.png" />
-							<p:spacer width="5" />
-							<p:outputLabel value="Impacted"
-								style="font-weight: bold; color: blue" />
-						</h:panelGrid>
-						<h:panelGrid columns="3">
-							<p:graphicImage url="/image/impact/1080.png" />
-							<p:spacer width="5" />
-							<p:outputLabel value="Renamed Terms (Italic BLACK)"
-								style="font-weight: bold; color: #000; font-style: italic" />
-						</h:panelGrid>
-						<h:panelGrid columns="3">
-							<p:graphicImage url="/image/impact/1040.png" />
-							<p:spacer width="5" height="1" />
-							<p:outputLabel value="MedDRA Inserted/Added Term/Relation"
-								style="font-weight: bold; color: orange" />
-						</h:panelGrid>
-						<h:panelGrid columns="3">
-							<p:graphicImage url="/image/impact/1070.png" />
-							<p:spacer width="5" height="1" />
-							<p:outputLabel value="MQM Inserted/Added New PT"
-								style="font-weight: bold; color: green" />
-						</h:panelGrid>
-						<h:panelGrid columns="3">
-							<p:graphicImage url="/image/impact/1020.png" />
-							<p:spacer width="5" height="1" />
-							<p:outputLabel value="Deleted/Merged/Moved Term/Relation"
-								style="font-weight: bold; color: red" />
-						</h:panelGrid>
-						<h:panelGrid columns="3">
-							<p:graphicImage url="/image/impact/1030.png" />
-							<p:spacer width="5" height="10" />
-							<p:outputLabel value="Non-Current LLT (Future Lists)"
-								style="font-weight: bold; color: #CC99FF" />
-						</h:panelGrid>
-						<h:panelGrid columns="3">
-							<p:graphicImage url="/image/impact/1050.png" />
-							<p:spacer width="5" height="1" />
-							<p:outputLabel value="Change in TERM scope (SMQs)"
-								style="font-weight: bold; font-weight: bold; color: pink" />
-						</h:panelGrid>
-					</h:panelGrid>
+				<h:panelGrid columns="1" styleClass="full-width">
+                    <h:panelGrid columns="3" cellpadding="8">
+                        <p:graphicImage url="/image/impact/1010.png" />
+                        <p:spacer width="5" />
+                        <p:outputLabel value="Impacted"
+                            style="font-weight: bold; font-size:1.2em; color: blue" />
+
+                        <p:graphicImage url="/image/impact/1080.png" />
+                        <p:spacer width="5" />
+                        <p:outputLabel value="Renamed Terms (Italic BLACK)"
+                            style="font-weight: bold; font-size:1.2em; color: #000; font-style: italic" />
+
+                        <p:graphicImage url="/image/impact/1040.png" />
+                        <p:spacer width="5" height="1" />
+                        <p:outputLabel value="MedDRA Inserted/Added Term/Relation"
+                            style="font-weight: bold; font-size:1.2em; color: orange" />
+
+                        <p:graphicImage url="/image/impact/1070.png" />
+                        <p:spacer width="5" height="1" />
+                        <p:outputLabel value="MQM Inserted/Added New PT"
+                            style="font-weight: bold; font-size:1.2em; color: green" />
+
+                        <p:graphicImage url="/image/impact/1020.png" />
+                        <p:spacer width="5" height="1" />
+                        <p:outputLabel value="Deleted/Merged/Moved Term/Relation"
+                            style="font-weight: bold; font-size:1.2em; color: red" />
+
+                        <p:graphicImage url="/image/impact/1030.png" />
+                        <p:spacer width="5" height="10" />
+                        <p:outputLabel value="Non-Current LLT (Future Lists)"
+                            style="font-weight: bold; font-size:1.2em; color: #CC99FF" />
+
+                        <p:graphicImage url="/image/impact/1050.png" />
+                        <p:spacer width="5" height="1" />
+                        <p:outputLabel value="Change in TERM scope (SMQs)"
+                            style="font-weight: bold; font-size:1.2em; font-weight: bold; color: pink" />
+                    </h:panelGrid>
 
 					<h:panelGrid style="float: right" columns="1">
 						<p:commandButton value="OK" onclick="PF('legend').hide()"
