@@ -780,7 +780,7 @@ public class IARelationsTreeHelper {
 					childCmqCodeList.add(childCmqBase.getCmqCode());
 					
 					//Color
-					if (childCmqBase.getImpactType().equals("ICC") || childCmqBase.getImpactType().equalsIgnoreCase("IMPACTED"))
+					if ("ICC".equalsIgnoreCase(childCmqBase.getImpactType()) || "IMPACTED".equalsIgnoreCase(childCmqBase.getImpactType()))
 						node.setRowStyleClass("blue-colored");
 					//setCMQCurrentNodeStyle(node, childCmqBase);
 				} else {
@@ -798,7 +798,7 @@ public class IARelationsTreeHelper {
 					childCmqCodeList.add(childCmqBase.getCmqCode());
 					
 					//Color
-					if (childCmqBase.getImpactType().equals("ICC") || childCmqBase.getImpactType().equalsIgnoreCase("IMPACTED"))
+					if ("ICC".equalsIgnoreCase(childCmqBase.getImpactType()) || "IMPACTED".equalsIgnoreCase(childCmqBase.getImpactType()))
 						node.setRowStyleClass("blue-colored");
 				}
 			}
@@ -1039,7 +1039,7 @@ public class IARelationsTreeHelper {
 					childNode.setEntity(childSmqBase);
 					smqChildCodeList.add(childSmqBase.getSmqCode());
 					
-					if (childSmqBase.getImpactType().equals("ICS") || childSmqBase.getImpactType().equalsIgnoreCase("IMPACTED"))
+					if ("ICS".equalsIgnoreCase(childSmqBase.getImpactType()) || "IMPACTED".equalsIgnoreCase(childSmqBase.getImpactType()))
 						childNode.setRowStyleClass("blue-colored");
 					//setSMQCurrentNodeStyle(childNode, childSmqBase);
 				} else {
@@ -1064,7 +1064,7 @@ public class IARelationsTreeHelper {
 					if(!isRootListNode && "target-table".equalsIgnoreCase(uiSourceOfEvent)) {
 						childNode.markNotEditableInRelationstable();
 					}
-					if (childSmqBase.getImpactType().equals("ICS")  || childSmqBase.getImpactType().equalsIgnoreCase("IMPACTED"))
+					if ("ICS".equalsIgnoreCase(childSmqBase.getImpactType())  || "IMPACTED".equalsIgnoreCase(childSmqBase.getImpactType()))
 						childNode.setRowStyleClass("blue-colored");
 				}
 				// add child to parent
@@ -1255,7 +1255,7 @@ public class IARelationsTreeHelper {
 		CmqBase190 cmqBaseCurrent = this.cmqBaseCurrentService.findByCode(selectedCmqList.getCmqCode());
 		HierarchyNode node = treeHelper.createCmqBaseCurrentHierarchyNode(cmqBaseCurrent);
 		TreeNode cmqBaseTreeNode = new DefaultTreeNode(node, currentTableRootTreeNode);
-		if (cmqBaseCurrent.getImpactType().equals("IMPACTED") || cmqBaseCurrent.getImpactType().equalsIgnoreCase("IMPACTED"))
+		if ("IMPACTED".equalsIgnoreCase(cmqBaseCurrent.getImpactType()) || "IMPACTED".equalsIgnoreCase(cmqBaseCurrent.getImpactType()))
 			node.setRowStyleClass("blue-colored");
 	
 		boolean dummyNodeAdded = false;
@@ -1283,7 +1283,7 @@ public class IARelationsTreeHelper {
 		node.markNotEditableInRelationstable();
 		TreeNode cmqBaseTreeNode = new DefaultTreeNode(node, targetTableRootTreeNode);
 
-		if (selectedCmqList.getImpactType().equals("IMPACTED") || selectedCmqList.getImpactType().equals("ICC"))
+		if ("IMPACTED".equalsIgnoreCase(selectedCmqList.getImpactType()) || "ICC".equalsIgnoreCase(selectedCmqList.getImpactType()))
 			node.setRowStyleClass("blue-colored");
 		
 		boolean dummyNodeAdded = false;
@@ -1348,7 +1348,7 @@ public class IARelationsTreeHelper {
 		node.markNotEditableInRelationstable();
 		TreeNode cmqBaseTreeNode = new DefaultTreeNode(node, targetTableRootTreeNode);
 
-		if (selectedSmqList.getImpactType().equals("IMPACTED"))
+		if ("IMPACTED".equalsIgnoreCase(selectedSmqList.getImpactType()))
 			node.setRowStyleClass("blue-colored");
 		
 		boolean dummyNodeAdded = false;

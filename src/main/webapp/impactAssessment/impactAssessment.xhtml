@@ -96,7 +96,7 @@
 							columnClasses="ui-grid-col-6 v-align-top, ui-grid-col-6 v-align-top"
 							styleClass="full-width">
 							<p:panel
-								style="width: 100%; padding: 0; overflow: auto !important"
+								style="width: 100%; padding: 0;"
 								id="pan">
 								<p:toolbar>
 									<f:facet name="left">
@@ -123,8 +123,7 @@
 									value="#{impactSearchController.currentTableRootTreeNode}"
 									var="node" widgetVar="currentLists" id="currentListsAndSmqs"
 									styleClass="ui-treetable-currentListsAndSmqs"
-									selectionMode="single"
-									selection="${impactSearchController.currentTableSelection}"
+									selectionMode="single" selection="${impactSearchController.currentTableSelection}"
 									scrollable="true" scrollHeight="400" resizableColumns="true"
 									rowStyleClass="#{node.rowStyleClass}">
 
@@ -145,33 +144,21 @@
 
 									<p:columnGroup type="header">
 										<p:row>
-											<p:column colspan="1" headerText="Existing Lists/SMQ"
-												style="width:50%" />
-											<p:column colspan="3" headerText="Hierarchy Details" />
+											<p:column headerText="Existing Lists/SMQ" style="width:50%"/>
+											<p:column colspan="3" headerText="Hierarchy Details" style="width:50%" />
 										</p:row>
-
 										<p:row>
 											<p:column styleClass="listName"
-												headerText="#{impactSearchController.listName}" />
-											<p:column headerText="Code" width="25%" />
-											<p:column headerText="Level" width="10%" />
-											<p:column headerText="Scope" width="15%" />
+												headerText="#{impactSearchController.listName}" style="width:50%"/>
+											<p:column headerText="Code" style="width:30%" />
+											<p:column headerText="Level" style="width:10%" />
+											<p:column headerText="Scope" style="width:10%" />
 										</p:row>
 									</p:columnGroup>
-
-									<p:column id="c8" style="width:50%" >
-										<h:outputText value="#{node.term}" id="el_c1" />
-									</p:column>
-
-									<p:column id="c26" style="width:25%">
-										<h:outputText value="#{node.code}" id="ot7" />
-									</p:column>
-									<p:column id="c18" style="width:10%">
-										<h:outputText value="#{node.level}" id="ot14" />
-									</p:column>
-									<p:column id="c17" style="width:15%">
-										<h:outputText value="#{node.scope}" id="ot13" />
-									</p:column>
+									<p:column><h:outputText value="#{node.term}" /></p:column>
+									<p:column><h:outputText value="#{node.code}" /></p:column>
+									<p:column><h:outputText value="#{node.level}" /></p:column>
+									<p:column><h:outputText value="#{node.scope}" /></p:column>
 								</p:treeTable>
 							</p:panel>
 
@@ -216,14 +203,14 @@
 
 									<p:columnGroup type="header">
 										<p:row>
-											<p:column colspan="1" id="targetTitle" style="width:40%"
+											<p:column id="targetTitle" style="width:35%"
 												headerText="Future Lists/SMQ" />
 											<p:column colspan="6" headerText="Hierarchy Details" />
 										</p:row>
 
 										<p:row>
 											<p:column styleClass="listName"
-												headerText="#{impactSearchController.listName}" />
+												headerText="#{impactSearchController.listName}" style="width:35%" />
 											<p:column headerText="Code" style="width:15%" />
 											<p:column headerText="Level" style="width:8%" />
 											<p:column headerText="Scope" style="width:15%" />
@@ -233,39 +220,29 @@
 										</p:row>
 									</p:columnGroup>
 
-									<p:column style="width:40%">
-										<h:outputText value="#{node.term}" id="fl_c1" />
-									</p:column>
-
-									<p:column style="width:15%">
-										<h:outputText value="#{node.code}" rendered="true" />
-									</p:column>
-									<p:column headerText="Level" style="width:8%">
-										<h:outputText value="#{node.level}" rendered="true" />
-									</p:column>
-
-									<p:column style="width:15%">
-										<p:selectOneMenu id="soc3" value="#{node.scope}"
+									<p:column><h:outputText value="#{node.term}" /></p:column>
+									<p:column><h:outputText value="#{node.code}" /></p:column>
+									<p:column><h:outputText value="#{node.level}" /></p:column>
+									<p:column>
+										<p:selectOneMenu value="#{node.scope}"
 											rendered="#{not node.hideScope}" autoWidth="false"
-											disabled="#{node.algorithmN}" style="width:75%">
+											disabled="#{node.algorithmN}" style="width:70%">
                                             <f:selectItems value="#{appCSMQBean.cqtBaseScopes}" var="s" itemLabel="#{s[1]}" itemValue="#{s[0]}" />
 										</p:selectOneMenu>
 									</p:column>
-
-									<p:column style="width:9%">
-										<p:selectOneMenu id="soc2" value="#{node.category}"
+									<p:column>
+										<p:selectOneMenu value="#{node.category}"
 											rendered="#{not node.hideCategory}" autoWidth="false"
-											disabled="#{node.algorithmN}" style="width:75%">
+											disabled="#{node.algorithmN}" style="width:70%">
                                             <f:selectItems value="#{appCSMQBean.cqtBaseCategories}" var="c" itemLabel="#{c[1]}" itemValue="#{c[0]}" />
 										</p:selectOneMenu>
 									</p:column>
-
-									<p:column style="width:8%">
-										<p:spinner value="#{node.weight}" id="ot6" size="2"
+									<p:column>
+										<p:spinner value="#{node.weight}" size="2"
 											rendered="#{not node.hideWeight}"
 											disabled="#{node.algorithmN}" />
 									</p:column>
-									<p:column style="width:5%">
+									<p:column>
 										<p:commandLink
 											action="#{impactSearchController.deleteRelation(impactSearchController.targetTableRootTreeNode, node)}"
                                             style="color: red" update="futureListsAndSmqs" title="Delete"

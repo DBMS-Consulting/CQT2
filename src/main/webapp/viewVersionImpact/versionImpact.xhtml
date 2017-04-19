@@ -111,33 +111,22 @@
 
 									<p:columnGroup type="header">
 										<p:row>
-											<p:column colspan="1" headerText="Existing Lists/SMQ"
-												style="width:50%" />
+											<p:column headerText="Existing Lists/SMQ" style="width:50%" />
 											<p:column colspan="3" headerText="Hierarchy Details" />
 										</p:row>
-
 										<p:row>
 											<p:column styleClass="listName"
 												headerText="#{impactSearchController.listName}" />
-											<p:column headerText="Code" width="25%" />
-											<p:column headerText="Level" width="10%" />
-											<p:column headerText="Scope" width="15%" />
+											<p:column headerText="Code" style="width:25%" />
+											<p:column headerText="Level" style="width:10%"/>
+											<p:column headerText="Scope" style="width:15%" />
 										</p:row>
 									</p:columnGroup>
 
-									<p:column id="c8" style="width:50%" >
-										<h:outputText value="#{node.term}" id="el_c1" />
-									</p:column>
-
-									<p:column id="c26" style="width:25%">
-										<h:outputText value="#{node.code}" id="ot7" />
-									</p:column>
-									<p:column id="c18" style="width:10%">
-										<h:outputText value="#{node.level}" id="ot14" />
-									</p:column>
-									<p:column id="c17" style="width:15%">
-										<h:outputText value="#{node.scope}" id="ot13" />
-									</p:column>
+									<p:column><h:outputText value="#{node.term}" /></p:column>
+									<p:column><h:outputText value="#{node.code}" /></p:column>
+									<p:column><h:outputText value="#{node.level}" /></p:column>
+									<p:column><h:outputText value="#{node.scope}" /></p:column>
 								</p:treeTable>
 							</p:panel>
 
@@ -182,9 +171,9 @@
 
 									<p:columnGroup type="header">
 										<p:row>
-											<p:column colspan="1" id="targetTitle" style="width:40%"
+											<p:column id="targetTitle" style="width:40%"
 												headerText="Future Lists/SMQ" />
-											<p:column colspan="6" headerText="Hierarchy Details" />
+											<p:column colspan="5" headerText="Hierarchy Details" />
 										</p:row>
 
 										<p:row>
@@ -195,32 +184,15 @@
 											<p:column headerText="Scope" style="width:15%" />
 											<p:column headerText="Category" style="width:9% " />
 											<p:column headerText="Weight" style="width:8%" />
-											<p:column headerText="" style="width:5%" />
 										</p:row>
 									</p:columnGroup>
 
-									<p:column style="width:40%">
-										<h:outputText value="#{node.term}" id="fl_c1" />
-									</p:column>
-
-									<p:column style="width:15%">
-										<h:outputText value="#{node.code}" />
-									</p:column>
-									<p:column headerText="Level" style="width:8%">
-										<h:outputText value="#{node.level}" />
-									</p:column>
-
-									<p:column style="width:15%">
-										<h:outputText value="#{node.scope}" />
-									</p:column>
-
-									<p:column style="width:9%">
-										<h:outputText value="#{node.category}" />
-									</p:column>
-
-									<p:column style="width:8%">
-										<h:outputText value="#{node.weight}" rendered="true" />
-									</p:column>
+									<p:column><h:outputText value="#{node.term}" /></p:column>
+									<p:column><h:outputText value="#{node.code}" /></p:column>
+									<p:column><h:outputText value="#{node.level}" /></p:column>
+									<p:column><h:outputText value="#{node.scope}" /></p:column>
+									<p:column><h:outputText value="#{node.category}" /></p:column>
+									<p:column><h:outputText value="#{node.weight}" /></p:column>
 									
 								</p:treeTable>
 							</p:panel>
