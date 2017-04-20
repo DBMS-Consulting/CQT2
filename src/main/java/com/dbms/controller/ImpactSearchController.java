@@ -616,6 +616,8 @@ public class ImpactSearchController implements Serializable {
 								String impactType = cmqBaseTarget.getImpactType();
 								if("NON-IMPACTED".equalsIgnoreCase(impactType)) {
 									cmqBaseTarget.setImpactType("IMPACTED");
+									cmqBaseTarget.setCmqState("PENDING IA");
+									cmqBaseTarget.setCmqStatus("P");
 									this.cmqBaseTargetService.update(cmqBaseTarget, this.authService.getUserCn()
 											, this.authService.getUserGivenName(), this.authService.getUserSurName()
 											, this.authService.getCombinedMappedGroupMembershipAsString());
