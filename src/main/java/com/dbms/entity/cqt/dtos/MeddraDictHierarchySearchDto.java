@@ -38,6 +38,14 @@ public class MeddraDictHierarchySearchDto implements IEntity {
 	private String socNameChanged;
 	private String mergedHlt;
 	private String mergedHlgt;
+	
+	private String lltCode;
+	private String ptCode;
+	private String hltCode;
+	private String hlgtCode;
+	private String socCode;
+	
+	private String newSoc;
 
 	public Long getId() {
 		return meddraDictId;
@@ -56,6 +64,17 @@ public class MeddraDictHierarchySearchDto implements IEntity {
 	}
 
 	public String getCode() {
+		if (code == null) {
+			if (lltCode != null) return lltCode;
+			if (ptCode != null) return ptCode;
+			if (hltCode != null) return hltCode;
+			if (hlgtCode != null) return hlgtCode;
+			if (socCode != null) return socCode;
+			if (ptCode != null) return ptCode;
+			if (ptCode != null) return ptCode;
+			if (ptCode != null) return ptCode;
+		}
+			
 		return code;
 	}
 
@@ -245,6 +264,54 @@ public class MeddraDictHierarchySearchDto implements IEntity {
 
 	public void setMergedHlgt(String mergedHlgt) {
 		this.mergedHlgt = mergedHlgt;
+	}
+
+	public String getLltCode() {
+		return lltCode;
+	}
+
+	public void setLltCode(String lltCode) {
+		this.lltCode = lltCode;
+	}
+
+	public String getPtCode() {
+		return ptCode;
+	}
+
+	public void setPtCode(String ptCode) {
+		this.ptCode = ptCode;
+	}
+
+	public String getHltCode() {
+		return hltCode;
+	}
+
+	public void setHltCode(String hltCode) {
+		this.hltCode = hltCode;
+	}
+
+	public String getHlgtCode() {
+		return hlgtCode;
+	}
+
+	public void setHlgtCode(String hlgtCode) {
+		this.hlgtCode = hlgtCode;
+	}
+
+	public String getSocCode() {
+		return socCode;
+	}
+
+	public void setSocCode(String socCode) {
+		this.socCode = socCode;
+	}
+
+	public String getNewSoc() {
+		return newSoc;
+	}
+
+	public void setNewSoc(String newSoc) {
+		this.newSoc = newSoc;
 	}
 
 	

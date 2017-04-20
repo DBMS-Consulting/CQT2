@@ -405,13 +405,17 @@ public class MeddraDictTargetService extends CqtPersistenceService<MeddraDictTar
 		List<MeddraDictHierarchySearchDto> retVal = null;
 		String termColumnName = searchColumnTypePrefix + "TERM";
 		String codeColumnName = searchColumnTypePrefix + "CODE";
+		
+		//Using this alias to get code - Either PT, HLT, LLT, HLGT, or SOC
+		String codeAlias = searchColumnTypePrefix.replace("_", "").toLowerCase().concat("Code");
+		
 		/*String queryString = "select MEDDRA_DICT_ID as meddraDictId, " + termColumnName + " as term, " + codeColumnName
 				+ " as code, PRIMARY_PATH_FLAG as primaryPathFlag from (select MEDDRA_DICT_ID, " + termColumnName + ", " + codeColumnName
 				+ ", PRIMARY_PATH_FLAG, row_number() over (partition by " + codeColumnName
 				+ " order by MEDDRA_DICT_ID) rn from MEDDRA_DICT_TARGET where " + codeColumnName
 				+ " in :codeList ) where rn = 1";*/
 		String queryString = "select MEDDRA_DICT_ID as meddraDictId, " + termColumnName + " as term, " + codeColumnName
-				+ " as code, PRIMARY_PATH_FLAG as primaryPathFlag, MOVED_LLT as movedLlt, NEW_PT as newPt, PROMOTED_PT as promotedPt, NEW_LLT as newLlt, DEMOTED_LLT as demotedLlt, "
+				+ " as " + codeAlias + ", PRIMARY_PATH_FLAG as primaryPathFlag, MOVED_LLT as movedLlt, NEW_PT as newPt, PROMOTED_PT as promotedPt, NEW_LLT as newLlt, DEMOTED_LLT as demotedLlt, "
 				+ " PROMOTED_LLT as promotedLlt, PRIMARY_SOC_CHANGE as primarySocChange, DEMOTED_PT as demotedPt, LLT_CURRENCY_CHANGE as lltCurrencyChange, PT_NAME_CHANGED as ptNameChanged,"
 				+ " LLT_NAME_CHANGED as lltNameChanged, NEW_HLT as newHlt, NEW_HLGT as newHlgt, MOVED_PT as movedPt, MOVED_HLT as movedHlt, MOVED_HLGT as movedHlgt, "
 				+ " HLGT_NAME_CHANGED as hlgtNameChanged, HLT_NAME_CHANGED as hltNameChanged, SOC_NAME_CHANGED as socNameChanged, MERGED_HLT as mergedHlt, MERGED_HLGT as mergedHlgt" 
@@ -440,7 +444,8 @@ public class MeddraDictTargetService extends CqtPersistenceService<MeddraDictTar
 			SQLQuery query = session.createSQLQuery(queryString);
 			query.addScalar("meddraDictId", StandardBasicTypes.LONG);
 			query.addScalar("term", StandardBasicTypes.STRING);
-			query.addScalar("code", StandardBasicTypes.STRING);
+//			query.addScalar("code", StandardBasicTypes.STRING);
+			query.addScalar(codeAlias, StandardBasicTypes.STRING);
 			query.addScalar("primaryPathFlag", StandardBasicTypes.STRING);
 			
 			query.addScalar("newPt", StandardBasicTypes.STRING);
@@ -468,6 +473,10 @@ public class MeddraDictTargetService extends CqtPersistenceService<MeddraDictTar
 			query.addScalar("socNameChanged", StandardBasicTypes.STRING);
 			query.addScalar("mergedHlt", StandardBasicTypes.STRING);
 			query.addScalar("mergedHlgt", StandardBasicTypes.STRING);
+			
+			query.addScalar(codeAlias, StandardBasicTypes.STRING);
+			
+			
 			query.setFetchSize(400);
 			//query.setParameterList("codeList", codes);
 			query.setResultTransformer(Transformers.aliasToBean(MeddraDictHierarchySearchDto.class));
@@ -532,13 +541,17 @@ public class MeddraDictTargetService extends CqtPersistenceService<MeddraDictTar
 		String termColumnName = searchColumnTypePrefix + "TERM";
 		String codeColumnName = searchColumnTypePrefix + "CODE";
 		String parentCodeColumnName = parentCodeColumnPrefix + "CODE";
+		
+		//Using this alias to get code - Either PT, HLT, LLT, HLGT, or SOC
+		String codeAlias = searchColumnTypePrefix.replace("_", "").toLowerCase().concat("Code");
+		
 		/*String queryString = "select MEDDRA_DICT_ID as meddraDictId, " + termColumnName + " as term, " + codeColumnName
 				+ " as code, PRIMARY_PATH_FLAG as primaryPathFlag from (select MEDDRA_DICT_ID, " + termColumnName + ", " + codeColumnName
 				+ ", PRIMARY_PATH_FLAG, row_number() over (partition by " + codeColumnName
 				+ " order by MEDDRA_DICT_ID) rn from MEDDRA_DICT_TARGET where " + parentCodeColumnName
 				+ " = :code ) where rn = 1";*/
 		String queryString = "select MEDDRA_DICT_ID as meddraDictId, " + termColumnName + " as term, " + codeColumnName
-				+ " as code, PRIMARY_PATH_FLAG as primaryPathFlag, MOVED_LLT as movedLlt, NEW_PT as newPt, PROMOTED_PT as promotedPt, NEW_LLT as newLlt, DEMOTED_LLT as demotedLlt, "
+				+ " as " + codeAlias + ", PRIMARY_PATH_FLAG as primaryPathFlag, MOVED_LLT as movedLlt, NEW_PT as newPt, PROMOTED_PT as promotedPt, NEW_LLT as newLlt, DEMOTED_LLT as demotedLlt, "
 				+ " PROMOTED_LLT as promotedLlt, PRIMARY_SOC_CHANGE as primarySocChange, DEMOTED_PT as demotedPt, LLT_CURRENCY_CHANGE as lltCurrencyChange, PT_NAME_CHANGED as ptNameChanged,"
 				+ " LLT_NAME_CHANGED as lltNameChanged, NEW_HLT as newHlt, NEW_HLGT as newHlgt, MOVED_PT as movedPt, MOVED_HLT as movedHlt, MOVED_HLGT as movedHlgt, "
 				+ " HLGT_NAME_CHANGED as hlgtNameChanged, HLT_NAME_CHANGED as hltNameChanged, SOC_NAME_CHANGED as socNameChanged, MERGED_HLT as mergedHlt, MERGED_HLGT as mergedHlgt" 
@@ -547,7 +560,7 @@ public class MeddraDictTargetService extends CqtPersistenceService<MeddraDictTar
 				+ " LLT_NAME_CHANGED, NEW_HLT, NEW_HLGT, MOVED_HLT, MOVED_HLGT, HLGT_NAME_CHANGED, HLT_NAME_CHANGED, SOC_NAME_CHANGED, MERGED_HLT, MERGED_HLGT,"
 				+ " row_number() over (partition by " + codeColumnName
 				+ " order by MEDDRA_DICT_ID) rn from MEDDRA_DICT_TARGET where " + parentCodeColumnName
-				+ " in :code ) where rn = 1";
+				+ " in :" + codeAlias + " ) where rn = 1";
 
 		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
 		Session session = entityManager.unwrap(Session.class);
@@ -555,7 +568,8 @@ public class MeddraDictTargetService extends CqtPersistenceService<MeddraDictTar
 			SQLQuery query = session.createSQLQuery(queryString);
 			query.addScalar("meddraDictId", StandardBasicTypes.LONG);
 			query.addScalar("term", StandardBasicTypes.STRING);
-			query.addScalar("code", StandardBasicTypes.STRING);
+			//query.addScalar("code", StandardBasicTypes.STRING);
+			query.addScalar(codeAlias, StandardBasicTypes.STRING);
 			query.addScalar("primaryPathFlag", StandardBasicTypes.STRING);
 			
 			query.addScalar("newPt", StandardBasicTypes.STRING);
@@ -583,8 +597,11 @@ public class MeddraDictTargetService extends CqtPersistenceService<MeddraDictTar
 			query.addScalar("socNameChanged", StandardBasicTypes.STRING);
 			query.addScalar("mergedHlt", StandardBasicTypes.STRING);
 			query.addScalar("mergedHlgt", StandardBasicTypes.STRING);
+			
+			query.addScalar(codeAlias, StandardBasicTypes.STRING);			
+			
 			query.setFetchSize(400);
-			query.setParameter("code", parentCode);
+			query.setParameter(codeAlias, parentCode);
 			query.setResultTransformer(Transformers.aliasToBean(MeddraDictHierarchySearchDto.class));
 
 			retVal = query.list();

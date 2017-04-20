@@ -407,33 +407,7 @@ public class IARelationsTreeHelper {
 		return node;
 	}
     
-    public void setTargetMeddraColor(MeddraDictHierarchySearchDto meddraDictHierarchySearchDto, HierarchyNode node) {
-		if((meddraDictHierarchySearchDto.getNewLlt() != null && "NTR".equalsIgnoreCase(meddraDictHierarchySearchDto.getNewLlt()))
-				|| (meddraDictHierarchySearchDto.getNewPt() != null && "NTR".equalsIgnoreCase(meddraDictHierarchySearchDto.getNewPt()))
-				|| (meddraDictHierarchySearchDto.getNewHlt() != null && "NTR".equalsIgnoreCase(meddraDictHierarchySearchDto.getNewHlt()))
-				|| (meddraDictHierarchySearchDto.getNewHlgt() != null && "NTR".equalsIgnoreCase(meddraDictHierarchySearchDto.getNewHlgt()))
-				|| (meddraDictHierarchySearchDto.getMovedPt() != null && "LDH".equalsIgnoreCase(meddraDictHierarchySearchDto.getMovedPt()))
-				|| (meddraDictHierarchySearchDto.getLltCurrencyChange() != null && "LNC".equalsIgnoreCase(meddraDictHierarchySearchDto.getLltCurrencyChange()))
-				|| (meddraDictHierarchySearchDto.getDemotedPt() != null && "PDL".equalsIgnoreCase(meddraDictHierarchySearchDto.getDemotedPt()))
-				|| (meddraDictHierarchySearchDto.getPromotedLlt() != null && "LPP".equalsIgnoreCase(meddraDictHierarchySearchDto.getPromotedLlt()))
-				|| (meddraDictHierarchySearchDto.getPrimarySocChange() != null && "HNP".equalsIgnoreCase(meddraDictHierarchySearchDto.getPrimarySocChange()))
-				|| (meddraDictHierarchySearchDto.getMovedHlt() != null && "HDH".equalsIgnoreCase(meddraDictHierarchySearchDto.getMovedHlt()))
-				|| (meddraDictHierarchySearchDto.getMovedHlt() != null && "HDH".equalsIgnoreCase(meddraDictHierarchySearchDto.getMovedHlt()))
-				|| (meddraDictHierarchySearchDto.getMovedHlgt() != null && "SDP".equalsIgnoreCase(meddraDictHierarchySearchDto.getMovedHlgt()))) {
-			node.setRowStyleClass("orange-colored");
-		}
-		if (meddraDictHierarchySearchDto.getLltCurrencyChange() != null && "LCN".equalsIgnoreCase(meddraDictHierarchySearchDto.getLltCurrencyChange()))
-			node.setRowStyleClass("mauve-colored");
-		if (meddraDictHierarchySearchDto.getPrimarySocChange() != null && "HPP".equalsIgnoreCase(meddraDictHierarchySearchDto.getPrimarySocChange()))
-			node.setRowStyleClass("red-colored");
-		if((meddraDictHierarchySearchDto.getHlgtNameChanged() != null && "NCH".equalsIgnoreCase(meddraDictHierarchySearchDto.getHlgtNameChanged()))
-				|| (meddraDictHierarchySearchDto.getHltNameChanged() != null && "NCH".equalsIgnoreCase(meddraDictHierarchySearchDto.getHltNameChanged()))
-				|| (meddraDictHierarchySearchDto.getPtNameChanged()!= null && "NCH".equalsIgnoreCase(meddraDictHierarchySearchDto.getPtNameChanged()))
-				|| (meddraDictHierarchySearchDto.getSocNameChanged()!= null && "NCH".equalsIgnoreCase(meddraDictHierarchySearchDto.getSocNameChanged()))
-				|| (meddraDictHierarchySearchDto.getLltNameChanged() != null && "NCH".equalsIgnoreCase(meddraDictHierarchySearchDto.getLltNameChanged()))) {
-			node.setRowStyleClass("italic");
-		}
-	}
+   
     
     public void setCMQTargetNodeStyle(HierarchyNode node, CmqRelationTarget cmqRelationTarget) {
 		if (cmqRelationTarget.getRelationImpactType() != null) {
@@ -493,28 +467,65 @@ public class IARelationsTreeHelper {
 		
 	}
 
-	public void setCurrentMeddraColor(MeddraDictHierarchySearchDto meddraDictHierarchySearchDto, HierarchyNode node) {
-		if((meddraDictHierarchySearchDto.getLltCurrencyChange() != null && "LCN".equalsIgnoreCase(meddraDictHierarchySearchDto.getLltCurrencyChange()))
-				|| (meddraDictHierarchySearchDto.getMovedPt() != null && "LDH".equalsIgnoreCase(meddraDictHierarchySearchDto.getMovedPt()))
-				|| (meddraDictHierarchySearchDto.getMovedLlt() != null && "LDP".equalsIgnoreCase(meddraDictHierarchySearchDto.getMovedLlt()))
-				|| (meddraDictHierarchySearchDto.getMovedHlt() != null && "HDH".equalsIgnoreCase(meddraDictHierarchySearchDto.getMovedHlt()))
-				|| (meddraDictHierarchySearchDto.getMovedHlgt() != null && "HDS".equalsIgnoreCase(meddraDictHierarchySearchDto.getMovedHlgt()))
-				|| (meddraDictHierarchySearchDto.getDemotedPt() != null && "PDL".equalsIgnoreCase(meddraDictHierarchySearchDto.getDemotedPt()))
-				|| (meddraDictHierarchySearchDto.getPromotedLlt() != null && "LPP".equalsIgnoreCase(meddraDictHierarchySearchDto.getPromotedLlt()))
-				|| (meddraDictHierarchySearchDto.getPrimarySocChange() != null && "HNP".equalsIgnoreCase(meddraDictHierarchySearchDto.getPrimarySocChange()))
-				|| (meddraDictHierarchySearchDto.getMergedHlt() != null && "MRG".equalsIgnoreCase(meddraDictHierarchySearchDto.getMergedHlt()))
-				|| (meddraDictHierarchySearchDto.getMergedHlgt() != null && "MRG".equalsIgnoreCase(meddraDictHierarchySearchDto.getMergedHlgt()))) {
+	public void setCurrentMeddraColor(MeddraDictHierarchySearchDto meddra, HierarchyNode node) {
+		if((meddra.getMovedPt() != null && "LDH".equalsIgnoreCase(meddra.getMovedPt()) && meddra.getPtCode() != null)
+				|| (meddra.getMovedLlt() != null && "LDP".equalsIgnoreCase(meddra.getMovedLlt()) && meddra.getLltCode() != null)
+				|| (meddra.getMovedHlt() != null && "HDH".equalsIgnoreCase(meddra.getMovedHlt()) && meddra.getHltCode() != null)
+				|| (meddra.getMovedHlgt() != null && "HDS".equalsIgnoreCase(meddra.getMovedHlgt()) && meddra.getHlgtCode() != null)
+				|| (meddra.getDemotedPt() != null && "PDL".equalsIgnoreCase(meddra.getDemotedPt()) && meddra.getPtCode() != null)
+				|| (meddra.getPromotedLlt() != null && "LPP".equalsIgnoreCase(meddra.getPromotedLlt()) && meddra.getLltCode() != null)
+				|| (meddra.getPrimarySocChange() != null && "HNP".equalsIgnoreCase(meddra.getPrimarySocChange()) 
+						&& (meddra.getPtCode() != null && meddra.getLltCode() != null && meddra.getHltCode() != null && meddra.getHlgtCode() != null))) {
 			node.setRowStyleClass("red-colored");
 		}
-		if (meddraDictHierarchySearchDto.getPrimarySocChange() != null && "HPP".equalsIgnoreCase(meddraDictHierarchySearchDto.getPrimarySocChange()))
-			node.setRowStyleClass("orange-colored");
-		if((meddraDictHierarchySearchDto.getHlgtNameChanged() != null && "NCH".equalsIgnoreCase(meddraDictHierarchySearchDto.getHlgtNameChanged()))
-				|| (meddraDictHierarchySearchDto.getHltNameChanged() != null && "NCH".equalsIgnoreCase(meddraDictHierarchySearchDto.getHltNameChanged()))
-				|| (meddraDictHierarchySearchDto.getPtNameChanged()!= null && "NCH".equalsIgnoreCase(meddraDictHierarchySearchDto.getPtNameChanged()))
-				|| (meddraDictHierarchySearchDto.getLltNameChanged() != null && "NCH".equalsIgnoreCase(meddraDictHierarchySearchDto.getLltNameChanged()))) {
+		
+		if((meddra.getHlgtNameChanged() != null && "NCH".equalsIgnoreCase(meddra.getHlgtNameChanged()) && meddra.getHlgtCode() != null)
+				|| (meddra.getHltNameChanged() != null && "NCH".equalsIgnoreCase(meddra.getHltNameChanged()) && meddra.getHltCode() != null)
+				|| (meddra.getPtNameChanged()!= null && "NCH".equalsIgnoreCase(meddra.getPtNameChanged()) && meddra.getPtCode() != null)
+				|| (meddra.getSocNameChanged()!= null && "NCH".equalsIgnoreCase(meddra.getSocNameChanged()) && meddra.getSocCode() != null)
+				|| (meddra.getLltNameChanged() != null && "NCH".equalsIgnoreCase(meddra.getLltNameChanged()) && meddra.getLltCode() != null)) {
 			node.setRowStyleClass("italic");
 		}
+		
+		if ((meddra.getMergedHlt() != null && "MRG".equalsIgnoreCase(meddra.getMergedHlt()))
+			|| (meddra.getMergedHlgt() != null && "MRG".equalsIgnoreCase(meddra.getMergedHlgt()))
+			|| (meddra.getPrimarySocChange() != null && "HPP".equalsIgnoreCase(meddra.getPrimarySocChange())))
+				node.setRowStyleClass("none");
 	}
+	
+	 public void setTargetMeddraColor(MeddraDictHierarchySearchDto meddra, HierarchyNode node) {
+	    	if ((meddra.getLltCurrencyChange() != null && "LCN".equalsIgnoreCase(meddra.getLltCurrencyChange()) && meddra.getLltCode() != null)
+	    			|| (meddra.getPrimarySocChange() != null && "HPP".equalsIgnoreCase(meddra.getPrimarySocChange()) && meddra.getSocCode() != null)
+	    			|| (meddra.getPrimarySocChange() != null && "HNP".equalsIgnoreCase(meddra.getPrimarySocChange()) && meddra.getSocCode() != null)) {
+	    		node.setRowStyleClass("none");
+	        }
+			if((meddra.getNewLlt() != null && "NTR".equalsIgnoreCase(meddra.getNewLlt()) && meddra.getLltCode() != null)
+					|| (meddra.getNewPt() != null && "NTR".equalsIgnoreCase(meddra.getNewPt()) && meddra.getPtCode() != null)
+					|| (meddra.getNewHlt() != null && "NTR".equalsIgnoreCase(meddra.getNewHlt()) && meddra.getHltCode() != null)
+					|| (meddra.getNewHlgt() != null && "NTR".equalsIgnoreCase(meddra.getNewHlgt()) && meddra.getHlgtCode() != null)
+					|| (meddra.getNewSoc() != null && "NTR".equalsIgnoreCase(meddra.getNewSoc()) && meddra.getSocCode() != null)
+					|| (meddra.getMovedPt() != null && "LDH".equalsIgnoreCase(meddra.getMovedPt()) && meddra.getPtCode() != null)
+					|| (meddra.getLltCurrencyChange() != null && "LNC".equalsIgnoreCase(meddra.getLltCurrencyChange()) && meddra.getLltCode() != null)
+					|| (meddra.getDemotedPt() != null && "PDL".equalsIgnoreCase(meddra.getDemotedPt()) && meddra.getPtCode() != null)
+					|| (meddra.getPromotedLlt() != null && "LPP".equalsIgnoreCase(meddra.getPromotedLlt()) && meddra.getLltCode() != null)
+					|| (meddra.getPrimarySocChange() != null && "HNP".equalsIgnoreCase(meddra.getPrimarySocChange()) && meddra.getSocCode() != null)
+					|| (meddra.getMovedLlt() != null && "LDP".equalsIgnoreCase(meddra.getMovedLlt()) && meddra.getLltCode() != null)
+					|| (meddra.getMovedHlt() != null && "HDH".equalsIgnoreCase(meddra.getMovedHlt()) && meddra.getHltCode() != null)
+					|| (meddra.getMovedHlgt() != null && "HDS".equalsIgnoreCase(meddra.getMovedHlgt())) && meddra.getHlgtCode() != null) {
+				node.setRowStyleClass("orange-colored");
+			}
+			
+			if (meddra.getLltCurrencyChange() != null && "LCN".equalsIgnoreCase(meddra.getLltCurrencyChange()) && meddra.getLltCode() != null)
+				node.setRowStyleClass("none");
+		   
+			if((meddra.getHlgtNameChanged() != null && "NCH".equalsIgnoreCase(meddra.getHlgtNameChanged()) && meddra.getHlgtCode() != null)
+					|| (meddra.getHltNameChanged() != null && "NCH".equalsIgnoreCase(meddra.getHltNameChanged()) && meddra.getHltCode() != null)
+					|| (meddra.getPtNameChanged()!= null && "NCH".equalsIgnoreCase(meddra.getPtNameChanged()) && meddra.getPtCode() != null)
+					|| (meddra.getSocNameChanged()!= null && "NCH".equalsIgnoreCase(meddra.getSocNameChanged()) && meddra.getSocCode() != null)
+					|| (meddra.getLltNameChanged() != null && "NCH".equalsIgnoreCase(meddra.getLltNameChanged()) && meddra.getLltCode() != null)) {
+				node.setRowStyleClass("italic");
+			}
+		}
     
 	public void setSMQCurrentNodeStyle(HierarchyNode childRelationNode, SmqRelation190 childRelation) {
 		if (childRelation.getRelationImpactType() != null) {
@@ -534,8 +545,13 @@ public class IARelationsTreeHelper {
 				childRelationNode.setRowStyleClass("blue-colored");	
 			if ("SWC".equals(childRelation.getRelationImpactType()))
 				childRelationNode.setRowStyleClass("pink-colored");
-			if ("PDL".equals(childRelation.getRelationImpactType()) || "LPP".equals(childRelation.getRelationImpactType()))
-				childRelationNode.setRowStyleClass("grey-colored");
+			if ("PDL".equals(childRelation.getRelationImpactType()) || "NTR".equals(childRelation.getRelationImpactType()) || "LPP".equals(childRelation.getRelationImpactType()))
+				childRelationNode.setRowStyleClass("orange-colored");
+//			if ("PDL".equals(childRelation.getRelationImpactType()) || "LPP".equals(childRelation.getRelationImpactType()))
+//				childRelationNode.setRowStyleClass("grey-colored");
+			if("PTS".equals(childRelation.getRelationImpactType())) {
+				childRelationNode.setRowStyleClass("none");
+			}
 		}
 		else
 			childRelationNode.setRowStyleClass("none");
@@ -546,6 +562,12 @@ public class IARelationsTreeHelper {
 			if("MQM".equalsIgnoreCase(childRelation.getRelationImpactType())) {
 				childRelationNode.setRowStyleClass("green-colored");
 			}
+			if("LPP".equalsIgnoreCase(childRelation.getRelationImpactType())
+					|| "PDL".equalsIgnoreCase(childRelation.getRelationImpactType())
+					|| "PTS".equalsIgnoreCase(childRelation.getRelationImpactType())
+					|| "DTR".equalsIgnoreCase(childRelation.getRelationImpactType())) {
+				childRelationNode.setRowStyleClass("red-colored");
+			}
 			if("NCH".equals(childRelation.getRelationImpactType())) {
 				childRelationNode.setRowStyleClass("italic");
 			}
@@ -554,11 +576,10 @@ public class IARelationsTreeHelper {
 			}
 			if ("SCH".equals(childRelation.getRelationImpactType()))
 				childRelationNode.setRowStyleClass("blue-colored");
-			if ("LCN".equals(childRelation.getRelationImpactType()) || "PTS".equals(childRelation.getRelationImpactType()) || "PDL".equals(childRelation.getRelationImpactType())
-					|| "LPP".equals(childRelation.getRelationImpactType()))
+			if ("LCN".equals(childRelation.getRelationImpactType()))
 				childRelationNode.setRowStyleClass("grey-colored");
 			if ("SWC".equals(childRelation.getRelationImpactType()))
-				childRelationNode.setRowStyleClass("pink-colored");
+				childRelationNode.setRowStyleClass("none");
 		}
 		else
 			childRelationNode.setRowStyleClass("none");
