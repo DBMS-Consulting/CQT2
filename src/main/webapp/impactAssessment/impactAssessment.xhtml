@@ -367,7 +367,7 @@
 
 				<p:spacer height="10"></p:spacer>
 				<h:panelGrid style="float: right" columns="2">
-					<p:commandButton value="Exit" onclick="PF('current-hierarchy-search').hide()" immediate="true" />
+					<p:commandButton value="Exit" type="button" onclick="PF('current-hierarchy-search').hide()" />
 				</h:panelGrid>
 			</p:dialog>
 
@@ -380,8 +380,7 @@
 					<p:commandButton value="Add selected" onclick="PF('target-hierarchy-search').hide()"
 						update="futureListsAndSmqs"
 						action="#{impactSearchController.addSelectedToTargetRelation(impactSearchController.targetHierarchySearchDlgModel.selectedNodes)}" />
-					<p:commandButton value="Cancel" onclick="PF('target-hierarchy-search').hide()"
-						immediate="true" />
+					<p:commandButton value="Cancel" type="button" onclick="PF('target-hierarchy-search').hide()" />
 				</h:panelGrid>
 			</p:dialog>
 
@@ -425,7 +424,7 @@
 					<p:commandButton value="Add selected" onclick="PF('new_pt').hide()"
 						update="futureListsAndSmqs messages"
 						action="#{impactSearchController.addSelectedNewPtsToTargetRelation}" />
-					<p:commandButton value="Cancel" onclick="PF('new_pt').hide()" />
+					<p:commandButton value="Cancel" type="button" onclick="PF('new_pt').hide()" />
 				</h:panelGrid>
 			</p:dialog>
 
@@ -479,8 +478,7 @@
                     </h:panelGrid>
 
 					<h:panelGrid style="float: right" columns="1">
-						<p:commandButton value="OK" onclick="PF('legend').hide()"
-							immediate="true" />
+						<p:commandButton value="OK" type="button" onclick="PF('legend').hide()" />
 					</h:panelGrid>
 				</h:panelGrid>
 			</p:dialog>
