@@ -70,6 +70,12 @@ public class ListDetailsFormVM {
 		this.status = CmqBase190.CMQ_STATUS_DISP_LABEL_PENDING;
 		this.designee = "NONE";
 		this.modelChanged = false;
+        
+        this.createdBy = "";
+        this.creationDate = null;
+        this.lastModifiedBy = "";
+        this.lastModifiedDate = null;
+        this.code = null;
 	}
 	
 	/**

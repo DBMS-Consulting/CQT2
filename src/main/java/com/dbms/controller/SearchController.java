@@ -536,11 +536,10 @@ public class SearchController extends BaseController<CmqBase190> implements IRel
 					FacesContext.getCurrentInstance().addMessage(null, 
                             new FacesMessage(FacesMessage.SEVERITY_INFO,
                                     "Selected relations added sucessfully.", ""));
-					RequestContext.getCurrentInstance().execute("notifyCreateControllerRelationsModify()");
 				}
 			} else {
                 FacesContext.getCurrentInstance().addMessage(null, 
-                        new FacesMessage(FacesMessage.SEVERITY_INFO, "The relation already exists", ""));
+                        new FacesMessage(FacesMessage.SEVERITY_INFO, "Please select one or more relations from Hierarchy Search Dialog", ""));
             }
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);

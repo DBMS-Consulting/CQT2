@@ -14,7 +14,7 @@
 			<h:panelGrid columns="2" columnClasses="label-cell, value-cell">
 				<p:outputLabel value="Extension:" />
 				<h:panelGroup>
-					<h:outputText value="#{createController.detailsFormModel.extensionLabel}" rendered="true"/>
+                    <h:outputText value="#{createController.codeSelected eq null ? '' : createController.detailsFormModel.extensionLabel}" rendered="true"/>
 				</h:panelGroup>
 
 				<p:outputLabel value="Name:" />
@@ -24,7 +24,7 @@
 				<h:outputText value="#{createController.detailsFormModel.drugProgramLabel}" rendered="true"/>
 
 				<p:outputLabel value="Protocol:" />
-				<h:outputText value="#{createController.detailsFormModel.protocolLabel}" rendered="true"/>
+				<h:outputText value="#{createController.codeSelected eq null ? '' : createController.detailsFormModel.protocolLabel}" rendered="true"/>
 
 				<p:outputLabel value="Product:" />
 				<h:outputText value="#{createController.detailsFormModel.productsLabel}" rendered="true"/>
@@ -49,10 +49,10 @@
 
 			<h:panelGrid columns="2" columnClasses="label-cell, value-cell">
 				<p:outputLabel value="Status:" />
-				<h:outputText value="#{createController.detailsFormModel.statusLabel}" rendered="true"/>
+				<h:outputText value="#{createController.codeSelected eq null ? '' : createController.detailsFormModel.statusLabel}" rendered="true"/>
 
 				<p:outputLabel value="State:" />
-				<h:outputText value="#{createController.selectedData.cmqState}" styleClass="uppercase" />
+				<h:outputText value="#{createController.codeSelected eq null ? '' : createController.selectedData.cmqState}" styleClass="uppercase" />
 
 				<p:outputLabel value="Group:" />
 				<h:outputText value="#{createController.selectedData.cmqGroup}" />
@@ -91,7 +91,7 @@
 	</p:panel>
 	<p:spacer height="10"></p:spacer>
 
-	<p:panel header="Informative Notes">
+	<p:panel header="Informative Notes" id="notesPane">
         <h:panelGrid columns="2" columnClasses="label-cell col-1 text-top, value-cell bordered col-11 text-top ui-text-wrap"
                      styleClass="full-width" cellpadding="8" cellspacing="10" >
             <p:outputLabel value="Description:" />
@@ -167,7 +167,7 @@
 					disabled="#{createController.deleteDisabled}"
                     actionListener="#{createController.workflowState('Delete')}"
 					action="#{searchController.setDataModified(true)}"
-					process="@form:workflowCtrlPanel" update="m1 @form:confirmPan @form:workflowCtrlPanel">
+					process="@form:workflowCtrlPanel" update="m1 @form:confirmPan @form:notesPane @form:workflowCtrlPanel">
 					<p:confirm header="Confirm Delete"
 						message="Are you sure you want to delete this List?"
 						icon="ui-icon-alert" />

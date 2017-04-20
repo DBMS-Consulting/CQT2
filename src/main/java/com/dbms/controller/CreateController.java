@@ -1208,20 +1208,18 @@ public class CreateController implements Serializable {
 						, this.authService.getUserGivenName(), this.authService.getUserSurName()
 						, this.authService.getCombinedMappedGroupMembershipAsString());
 
-				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Record has been deleted!", "");
-				FacesContext ctx = FacesContext.getCurrentInstance();
-				ctx.addMessage(null, msg);
-
-				selectedData = new CmqBase190();
+                selectedData = new CmqBase190();
 				codeSelected = null;
 				initAll();
+                
+				FacesContext.getCurrentInstance()
+                        .addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Record has been deleted!", ""));
 
 			} catch (CqtServiceException e) {
 				e.printStackTrace();
-				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-						"An error occurred while deleting the list", "");
-				FacesContext ctx = FacesContext.getCurrentInstance();
-				ctx.addMessage(null, msg);
+				FacesContext.getCurrentInstance()
+                        .addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                            "An error occurred while deleting the list", e.getMessage()));
 			}
 
 			return "";

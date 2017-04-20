@@ -20,6 +20,7 @@
 			<p:wizard flowListener="#{createController.onCreateWizardFlowProcess}" widgetVar="wizard"
 				id="wizardId" binding="#{createController.createWizard}"
 				 showNavBar="false">
+                <!-- DETAILS -->
 				<p:tab id="details" title="Add Details" disabled="false"
 					closable="true">
 					<p:panel header="Details">
@@ -37,7 +38,7 @@
 					</p:panel>
 				</p:tab>
 
-				<!-- CONTACT -->
+				<!-- NOTES -->
 				<p:tab id="infonotes" title="Add Informative Notes">
 					<ui:include src="informativeNotes.xhtml"></ui:include>
 				</p:tab>
@@ -69,6 +70,7 @@
 				<p:tab id="confirmPanel" title="Confirm">
 					<ui:include src="confirm.xhtml"></ui:include>
 				</p:tab>
+                
 			</p:wizard>
 			
 			<h:panelGroup id="wizardNavbar" layout="block" styleClass="ui-wizard-navbar ui-helper-clearfix">
@@ -96,7 +98,8 @@
 				<h:inputText id="it3" value="#{configMB.dictionaryName}"
 					binding="#{createController.dictionaryName}" disabled="true" />
 			</h:panelGrid>
-			<f:attribute name="currentPage" value="Create New #{appCSMQBean.customMQName} Wizard" />
+			<f:attribute name="currentPage"
+                         value="Create New #{appCSMQBean.customMQName} Wizard" />
 
 		</h:form>
 
