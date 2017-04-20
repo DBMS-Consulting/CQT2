@@ -221,7 +221,7 @@
 				update="resultRelations @form:m1"
                 actionListener="#{searchController.addSelectedRelations(searchController.hierarchyDlgModel.selectedNodes)}"
                 action="#{createController.notifyRelationsUpdate}" />
-			<p:commandButton value="Cancel" onclick="PF('search').hide()" immediate="true" />
+			<p:commandButton value="Cancel" onclick="PF('search').hide()" type="button" />
 		</h:panelGrid>
 	</p:dialog>
     
@@ -230,7 +230,7 @@
 
         <p:spacer height="10"></p:spacer>
         <h:panelGrid style="float: right" columns="2">
-            <p:commandButton value="Close" onclick="PF('parentDlg').hide()" immediate="true" />
+            <p:commandButton value="Close" onclick="PF('parentDlg').hide()" type="button" />
         </h:panelGrid>
     </p:dialog>
     
