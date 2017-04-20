@@ -77,7 +77,7 @@ public class MeddraDictService extends CqtPersistenceService<MeddraDict190> impl
 				query.setParameter("searchTerm", searchTerm.toUpperCase());
 			}
 			query.setResultTransformer(Transformers.aliasToBean(MeddraDictReverseHierarchySearchDto.class));
-
+			query.setCacheable(true);
 			retVal = query.list();
 		} catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
@@ -124,7 +124,7 @@ public class MeddraDictService extends CqtPersistenceService<MeddraDict190> impl
 			query.setFetchSize(400);
 			query.setParameter("code", code);
 			query.setResultTransformer(Transformers.aliasToBean(MeddraDictReverseHierarchySearchDto.class));
-
+			query.setCacheable(true);
 			retVal = query.list();
 		} catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
@@ -172,7 +172,7 @@ public class MeddraDictService extends CqtPersistenceService<MeddraDict190> impl
 				query.setParameter("searchTerm", searchTerm.toUpperCase());
 			}
 			query.setResultTransformer(Transformers.aliasToBean(MeddraDictHierarchySearchDto.class));
-
+			query.setCacheable(true);
 			retVal = query.list();
 		} catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
@@ -208,7 +208,7 @@ public class MeddraDictService extends CqtPersistenceService<MeddraDict190> impl
 			query.setFetchSize(400);
 			query.setParameter("code", code);
 			query.setResultTransformer(Transformers.aliasToBean(MeddraDictHierarchySearchDto.class));
-
+			query.setCacheable(true);
 			List<MeddraDictHierarchySearchDto> dataList = query.list();
 			if ((null != dataList) && (dataList.size() > 0)) {
 				retVal = dataList.get(0);
@@ -257,7 +257,7 @@ public class MeddraDictService extends CqtPersistenceService<MeddraDict190> impl
 			query.setFetchSize(400);
 			query.setParameter("searchCode", code);
 			query.setResultTransformer(Transformers.aliasToBean(MeddraDictReverseHierarchySearchDto.class));
-
+			query.setCacheable(true);
 			List<MeddraDictReverseHierarchySearchDto> dataList = query.list();
 			if ((null != dataList) && (dataList.size() > 0)) {
 				retVal = dataList.get(0);
@@ -346,7 +346,7 @@ public class MeddraDictService extends CqtPersistenceService<MeddraDict190> impl
 			query.setFetchSize(400);
 			//query.setParameterList("codeList", codes);
 			query.setResultTransformer(Transformers.aliasToBean(MeddraDictHierarchySearchDto.class));
-
+			query.setCacheable(true);
 			retVal = query.list();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -380,6 +380,7 @@ public class MeddraDictService extends CqtPersistenceService<MeddraDict190> impl
 			SQLQuery query = session.createSQLQuery(queryString);
 			query.setParameter("code", parentCode);
 			query.setFetchSize(400);
+			//query.setCacheable(true);
 			retVal = ((Number)query.uniqueResult()).longValue();
 		} catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
@@ -458,7 +459,7 @@ public class MeddraDictService extends CqtPersistenceService<MeddraDict190> impl
 //			query.setParameter("code", parentCode);
 			query.setParameter(codeAlias, parentCode);
 			query.setResultTransformer(Transformers.aliasToBean(MeddraDictHierarchySearchDto.class));
-
+			query.setCacheable(true);
 			retVal = query.list();
 		} catch (Exception e) {
 			StringBuilder msg = new StringBuilder();

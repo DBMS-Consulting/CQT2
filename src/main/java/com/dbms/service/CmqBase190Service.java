@@ -186,7 +186,9 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 			for (String key : keySet) {
 				query.setParameter(key, queryParams.get(key));
 			}
-
+			
+			query.setHint("org.hibernate.cacheable", true);
+			
 			retVal = query.getResultList();
 		} catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
@@ -216,6 +218,9 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 			if (!StringUtils.isBlank(searchTerm)) {
 				query.setParameter("cmqName", searchTerm.toUpperCase());
 			}
+			
+			query.setHint("org.hibernate.cacheable", true);
+			
 			retVal = query.getResultList();
 		} catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
@@ -244,7 +249,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		EntityManager entityManager = this.cqtEntityManagerFactory
 				.getEntityManager();
 		try {
-			retVal = entityManager.createQuery(query).getResultList();
+			retVal = entityManager.createQuery(query).setHint("org.hibernate.cacheable", true).getResultList();
 		} catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
 			msg.append(
@@ -270,7 +275,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		EntityManager entityManager = this.cqtEntityManagerFactory
 				.getEntityManager();
 		try {
-			retVal = entityManager.createQuery(query).getResultList();
+			retVal = entityManager.createQuery(query).setHint("org.hibernate.cacheable", true).getResultList();
 		} catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
 			msg.append(
@@ -313,6 +318,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		try {
 			Query query = entityManager.createQuery(queryString);
 			query.setParameter("cmqCode", cmqCode);
+			query.setHint("org.hibernate.cacheable", true);
 			retVal = (CmqBase190) query.getSingleResult();
 		} catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
@@ -342,6 +348,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 			query.addScalar("COUNT", StandardBasicTypes.LONG);
 			query.setParameterList("cmqCodes", cmqCodes);
 			query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+			query.setCacheable(true);
 			retVal = query.list();
 		} catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
@@ -366,6 +373,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		try {
 			Query query = entityManager.createQuery(sb.toString());
 			query.setParameter("cmqCode", cmqCode);
+			query.setHint("org.hibernate.cacheable", true);
 			retVal = (Long) query.getSingleResult();
 		} catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
@@ -391,6 +399,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 			Query query = entityManager.createQuery(sb.toString());
 			query.setParameter("cmqName", cmqName.toUpperCase());
 			query.setParameter("cmqTypeCd", extension.toUpperCase());
+			query.setHint("org.hibernate.cacheable", true);
 			retVal = (Long) query.getSingleResult();
 		} catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
@@ -411,6 +420,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 				.getEntityManager();
 		try {
 			Query query = entityManager.createQuery(queryString);
+			query.setHint("org.hibernate.cacheable", true);
 			retVal = query.getResultList();
 		} catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
@@ -431,6 +441,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 				.getEntityManager();
 		try {
 			Query query = entityManager.createQuery(queryString);
+			query.setHint("org.hibernate.cacheable", true);
 			retVal = query.getResultList();
 		} catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
@@ -452,6 +463,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		try {
 			Query query = entityManager.createQuery(queryString);
 			query.setParameter("codeList", code);
+			query.setHint("org.hibernate.cacheable", true);
 			retVal = query.getResultList();
 		} catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
@@ -472,6 +484,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		try {
 			Query query = entityManager.createQuery(queryString);
 			query.setParameter("codeList", codes);
+			query.setHint("org.hibernate.cacheable", true);
 			retVal = query.getResultList();
 		} catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
@@ -492,6 +505,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		try {
 			Query query = entityManager.createQuery(queryString);
 			query.setParameter("codeList", codes);
+			query.setHint("org.hibernate.cacheable", true);
 			retVal = query.getResultList();
 		} catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
@@ -511,6 +525,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 				.getEntityManager();
 		try {
 			Query query = entityManager.createQuery(queryString);
+			query.setHint("org.hibernate.cacheable", true);
 			retVal = query.getResultList();
 		} catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
@@ -530,6 +545,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 				.getEntityManager();
 		try {
 			Query query = entityManager.createQuery(queryString);
+			query.setHint("org.hibernate.cacheable", true);
 			retVal = query.getResultList();
 		} catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
@@ -569,6 +585,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 			if (filterPublishedBetweenTo != null)
 				query.setParameter("pubBtwTo", filterPublishedBetweenTo,
 						TemporalType.TIMESTAMP);
+			query.setHint("org.hibernate.cacheable", true);
 			retVal = query.getResultList();
 		} catch (Exception e) {
 			LOG.error(

@@ -63,6 +63,7 @@ public class CmqRelation190Service extends CqtPersistenceService<CmqRelation190>
 		try {
 			Query query = entityManager.createQuery(sb.toString());
 			query.setParameter("cmqCode", cmqCode);
+			query.setHint("org.hibernate.cacheable", true);
 			retVal = query.getResultList();
 		} catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
@@ -92,6 +93,7 @@ public class CmqRelation190Service extends CqtPersistenceService<CmqRelation190>
 			query.addScalar("COUNT", StandardBasicTypes.LONG);
 			query.setParameterList("cmqCodes", cmqCodes);
 			query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+			query.setCacheable(true);
 			retVal = query.list();
 		} catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
@@ -116,6 +118,7 @@ public class CmqRelation190Service extends CqtPersistenceService<CmqRelation190>
 		try {
 			Query query = entityManager.createQuery(sb.toString());
 			query.setParameter("cmqCode", cmqCode);
+			query.setHint("org.hibernate.cacheable", true);
 			retVal = (Long)query.getSingleResult();
 		} catch (Exception e) {
 			StringBuilder msg = new StringBuilder();

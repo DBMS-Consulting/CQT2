@@ -15,6 +15,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import com.dbms.entity.BaseEntity;
 import java.util.ArrayList;
@@ -25,6 +27,7 @@ import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 
 @Entity
+@Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 @Table(name = "CMQ_BASE_TARGET")
 public class CmqBaseTarget extends BaseEntity {
 

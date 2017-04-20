@@ -12,6 +12,9 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 import com.dbms.entity.BaseEntity;
 
 /**
@@ -19,6 +22,7 @@ import com.dbms.entity.BaseEntity;
  * @date Feb 10, 2017 8:46:36 AM
  **/
 @Entity
+@Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 @Table(name = "MEDDRA_DICT_CURRENT")
 public class MeddraDict190 extends BaseEntity {
 

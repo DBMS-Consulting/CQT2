@@ -1,12 +1,16 @@
 package com.dbms.service;
 
+import java.lang.management.ManagementFactory;
+
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
+import javax.management.MBeanServer;
 
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
+import net.sf.ehcache.management.ManagementService;
 
 @ManagedBean(name = "CqtCacheManager")
 @ApplicationScoped
@@ -16,6 +20,8 @@ public class CqtCacheManager implements ICqtCacheManager {
 	@PostConstruct
 	public void init() {
 		this.cacheManager = CacheManager.create(this.getClass().getClassLoader().getResource("cqt-ehcache.xml"));
+		MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+		ManagementService.registerMBeans(cacheManager, mbs, true, true, true, true);
 	}
 	
 	/* (non-Javadoc)

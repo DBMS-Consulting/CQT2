@@ -5,10 +5,57 @@
 	<!-- By default, Ehcache stored the cached files in temp folder. -->
 	<!-- <diskStore path="java.io.tmpdir" /> -->
 
+	<defaultCache name="defaut" maxElementsInMemory="1000"
+		eternal="false" timeToIdleSeconds="1800" timeToLiveSeconds="3600"
+		overflowToDisk="false" diskPersistent="false"
+		memoryStoreEvictionPolicy="LRU" />
+
 	<cache name="code-list-cache" maxElementsInMemory="10000"
 		diskPersistent="false" overflowToDisk="false" overflowToOffHeap="false"
 		eternal="false" timeToIdleSeconds="1200" timeToLiveSeconds="1800"
 		memoryStoreEvictionPolicy="LFU" transactionalMode="off">
 	</cache>
+
+	<cache name="org.hibernate.cache.internal.StandardQueryCache"
+		maxElementsInMemory="10000" eternal="false" timeToIdleSeconds="1800"
+		timeToLiveSeconds="3600" overflowToDisk="false" diskPersistent="false"
+		memoryStoreEvictionPolicy="LRU" transactionalMode="off">
+	</cache>
+
+	<cache name="org.hibernate.cache.spi.UpdateTimestampsCache"
+		maxElementsInMemory="10000" eternal="false" timeToIdleSeconds="1800"
+		timeToLiveSeconds="3600" overflowToDisk="false" diskPersistent="false"
+		memoryStoreEvictionPolicy="LRU" transactionalMode="off">
+	</cache>
+
+	<cache name="com.dbms.entity.cqt.CmqBase190" maxElementsInMemory="500"
+		eternal="false" timeToIdleSeconds="1800" timeToLiveSeconds="3600"
+		overflowToDisk="false" diskPersistent="false"
+		memoryStoreEvictionPolicy="LRU" transactionalMode="off" />
+
+	<cache name="com.dbms.entity.cqt.CmqBaseTarget"
+		maxElementsInMemory="500" eternal="false" timeToIdleSeconds="1800"
+		timeToLiveSeconds="3600" overflowToDisk="false" diskPersistent="false"
+		memoryStoreEvictionPolicy="LRU" transactionalMode="off" />
+
+	<cache name="com.dbms.entity.cqt.CmqProductBaseCurrent"
+		maxElementsInMemory="500" eternal="false" timeToIdleSeconds="1800"
+		timeToLiveSeconds="3600" overflowToDisk="false" diskPersistent="false"
+		memoryStoreEvictionPolicy="LRU" transactionalMode="off" />
+
+	<cache name="com.dbms.entity.cqt.CmqRelation190"
+		maxElementsInMemory="500" eternal="false" timeToIdleSeconds="1800"
+		timeToLiveSeconds="3600" overflowToDisk="false" diskPersistent="false"
+		memoryStoreEvictionPolicy="LRU" transactionalMode="off" />
+
+	<cache name="com.dbms.entity.cqt.MeddraDict190"
+		maxElementsInMemory="500" eternal="false" timeToIdleSeconds="1800"
+		timeToLiveSeconds="3600" overflowToDisk="false" diskPersistent="false"
+		memoryStoreEvictionPolicy="LRU" transactionalMode="off" />
+
+	<cache name="com.dbms.entity.cqt.RefConfigCodeList"
+		maxElementsInMemory="1000" eternal="false" timeToIdleSeconds="1800"
+		timeToLiveSeconds="3600" overflowToDisk="false" diskPersistent="false"
+		memoryStoreEvictionPolicy="LRU" transactionalMode="off" />
 
 </ehcache>

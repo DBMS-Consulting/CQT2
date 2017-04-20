@@ -14,9 +14,13 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 import com.dbms.entity.BaseEntity;
 
 @Entity
+@Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 @Table(name = "CMQ_PRODUCT_BASE_CURRENT")
 public class CmqProductBaseCurrent extends BaseEntity {
 

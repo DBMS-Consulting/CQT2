@@ -1373,7 +1373,7 @@ public class IARelationsTreeHelper {
 			node.setRowStyleClass("blue-colored");
 		
 		boolean dummyNodeAdded = false;
-		Long count = this.smqBaseCurrentService.findChildSmqCountByParentSmqCode(selectedSmqList.getSmqCode());
+		Long count = this.smqBaseTargetService.findChildSmqCountByParentSmqCode(selectedSmqList.getSmqCode());
 		if((count != null) && (count > 0)) {
 			HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
 			dummyNode.setDummyNode(true);
@@ -1383,7 +1383,7 @@ public class IARelationsTreeHelper {
 		
 		//check for relations now
 		if(!dummyNodeAdded) {
-			count = this.smqBaseCurrentService.findSmqRelationsCountForSmqCode(selectedSmqList.getSmqCode());
+			count = this.smqBaseTargetService.findSmqRelationsCountForSmqCode(selectedSmqList.getSmqCode());
 			if((count != null) && (count > 0)) {
 				HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
 				dummyNode.setDummyNode(true);

@@ -80,7 +80,7 @@ public class RefCodeListService extends
 			try {
 				Query query = entityManager.createQuery(queryString.toString());
 				query.setParameter("codelistConfigType", codelistConfigType);
-
+				query.setHint("org.hibernate.cacheable", true);
 				retVal = query.getResultList();
 				if (null == retVal) {
 					retVal = new ArrayList<>();
@@ -116,7 +116,7 @@ public class RefCodeListService extends
 				.append(" where a.codelistConfigType = 'SYSTEM_CONFIG' and a.activeFlag = 'Y' and a.codelistInternalValue = 'ENTERPRISE_AD' ");
 		try {
 			Query query = entityManager.createQuery(queryString.toString());
-
+			query.setHint("org.hibernate.cacheable", true);
 			List<RefConfigCodeList> data = query.getResultList();
 			if((null != data) && (data.size() > 0)) {
 				retVal = data.get(0);
@@ -146,7 +146,7 @@ public class RefCodeListService extends
 				.append(" where a.codelistConfigType = 'USER_GROUPS' and a.activeFlag = 'Y' ");
 		try {
 			Query query = entityManager.createQuery(queryString.toString());
-
+			query.setHint("org.hibernate.cacheable", true);
 			retVal = query.getResultList();
 		} catch (Exception ex) {
 			StringBuilder msg = new StringBuilder();
@@ -238,6 +238,7 @@ public class RefCodeListService extends
 			Query query = entityManager.createQuery(queryString);
 			query.setParameter("codelistConfigType", configType);
 			query.setParameter("codelistInternalValue", internalCode);
+			query.setHint("org.hibernate.cacheable", true);
 			ref = (RefConfigCodeList) query.getSingleResult();
 		} catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
@@ -266,6 +267,7 @@ public class RefCodeListService extends
 		try {
 			Query query = entityManager.createQuery(queryString);
 			query.setParameter("codelistInternalValue", codelistInternalValue);
+			query.setHint("org.hibernate.cacheable", true);
 			ref = (RefConfigCodeList) query.getSingleResult();
 		} catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
