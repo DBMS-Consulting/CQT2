@@ -497,8 +497,12 @@ public class IARelationsTreeHelper {
 	    			|| (meddra.getPrimarySocChange() != null && "HNP".equalsIgnoreCase(meddra.getPrimarySocChange()) && meddra.getSocCode() != null)) {
 	    		node.setRowStyleClass("none");
 	        }
-	    	if (meddra.getLltCurrencyChange() != null && "LCN".equalsIgnoreCase(meddra.getLltCurrencyChange()) && meddra.getLltCode() != null)
+	    	if (meddra.getLltCurrencyChange() != null && "LCN".equalsIgnoreCase(meddra.getLltCurrencyChange()) && meddra.getLltCode() != null) {
 	    		node.setRowStyleClass("mauve-colored");
+	    		System.out.println("\n ******** LLT code : " + meddra.getLltCode());
+	    		System.out.println("\n ******** currency code : " + meddra.getLltCurrencyChange());
+	    	}
+	    		
 	    	
 			if((meddra.getNewLlt() != null && "NTR".equalsIgnoreCase(meddra.getNewLlt()) && meddra.getLltCode() != null)
 					|| (meddra.getNewPt() != null && "NTR".equalsIgnoreCase(meddra.getNewPt()) && meddra.getPtCode() != null)
@@ -519,9 +523,6 @@ public class IARelationsTreeHelper {
 				node.setRowStyleClass("orange-colored");
 			}
 			
-			if (meddra.getLltCurrencyChange() != null && "LCN".equalsIgnoreCase(meddra.getLltCurrencyChange()) && meddra.getLltCode() != null)
-				node.setRowStyleClass("none");
-		   
 			if((meddra.getHlgtNameChanged() != null && "NCH".equalsIgnoreCase(meddra.getHlgtNameChanged()) && meddra.getHlgtCode() != null)
 					|| (meddra.getHltNameChanged() != null && "NCH".equalsIgnoreCase(meddra.getHltNameChanged()) && meddra.getHltCode() != null)
 					|| (meddra.getPtNameChanged()!= null && "NCH".equalsIgnoreCase(meddra.getPtNameChanged()) && meddra.getPtCode() != null)
@@ -536,9 +537,7 @@ public class IARelationsTreeHelper {
 			if("NCH".equals(childRelation.getRelationImpactType())) {
 				childRelationNode.setRowStyleClass("italic");
 			}
-			if("LPP".equals(childRelation.getRelationImpactType())
-				|| "PDL".equals(childRelation.getRelationImpactType())
-				|| "DTR".equals(childRelation.getRelationImpactType())) {
+			if("DTR".equals(childRelation.getRelationImpactType())) {
 				childRelationNode.setRowStyleClass("red-colored");
 			}
 			if ("SCH".equals(childRelation.getRelationImpactType()) || "ICC".equals(childRelation.getRelationImpactType()))
