@@ -6,7 +6,7 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
 import javax.faces.context.FacesContext;
 import javax.naming.Context;
@@ -93,7 +93,7 @@ public class SWJSFRequest
 	}
 	
 	public ArrayList<String> getPXEDUserList(){
-		ArrayList<String> userList = new ArrayList<>(Arrays.asList("cougha02", "khosan01", "kaura07",
+		ArrayList<String> userList = new ArrayList<>(Arrays.asList("NONE", "cougha02", "khosan01", "kaura07",
 				"sings162", "tirumn", "novakm01","arcem", "lallr01","szel","nipj03","santod10","tomn",
 				"zutshm","shuklr04"));
 		return userList;	

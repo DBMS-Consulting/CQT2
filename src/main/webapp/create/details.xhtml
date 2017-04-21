@@ -88,13 +88,29 @@
 				disabled="#{createController.detailsFormDisabled}" rendered="true"
                 label="Designee"
 				required="#{createController.activeWizard.step eq 'details' and !createController.readOnlyState}">
-				<f:selectItem itemLabel="" itemValue="" noSelectionOption="true" />
-				<f:selectItem itemLabel="NONE" itemValue="NONE"></f:selectItem>
+				<f:selectItems value="#{createController.detailsFormModel.designeeList}" />
 			</p:selectOneMenu>
 		</h:panelGrid>
 
 		<h:panelGrid columns="2" columnClasses="label-cell, value-cell">
-
+			<p:outputLabel value="Designee 2" />
+			<p:selectOneMenu
+				value="#{createController.detailsFormModel.designeeTwo}"
+				disabled="#{createController.detailsFormDisabled}" rendered="true"
+                label="Designee 2"
+				required="#{createController.activeWizard.step eq 'details' and !createController.readOnlyState}">
+				<f:selectItems value="#{createController.detailsFormModel.designeeList}" />
+			</p:selectOneMenu>
+			
+			<p:outputLabel value="Designee 3" />
+			<p:selectOneMenu
+				value="#{createController.detailsFormModel.designeeThree}"
+				disabled="#{createController.detailsFormDisabled}" rendered="true"
+                label="Designee 2"
+				required="#{createController.activeWizard.step eq 'details' and !createController.readOnlyState}">
+				<f:selectItems value="#{createController.detailsFormModel.designeeList}" />
+			</p:selectOneMenu>
+			
 			<p:outputLabel value="* Level" />
 			<p:selectOneMenu id="level" value="#{createController.detailsFormModel.level}"
 				rendered="true" required="#{createController.activeWizard.step eq 'details' and !createController.readOnlyState}"
@@ -118,16 +134,16 @@
             <p:outputLabel value="* State" />
             <h:outputText value="#{createController.detailsFormModel.state}"
 					styleClass="uppercase"></h:outputText>
+		</h:panelGrid>
 
-            <p:outputLabel value="Group" />
+		<h:panelGrid columns="2" columnClasses="label-cell, value-cell">
+			<p:outputLabel value="Group" />
             <h:outputText value="#{createController.detailsFormModel.group}" />
 
             <p:outputLabel value="Code" />
             <h:outputText id="codeValue"
 					value="#{createController.selectedData.cmqCode}" />
-		</h:panelGrid>
-
-		<h:panelGrid columns="2" columnClasses="label-cell, value-cell">
+		
             <p:outputLabel value="Creation Date  " />
             <h:outputText value="#{createController.selectedData.creationDate}">
                 <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
@@ -145,11 +161,11 @@
             <p:outputLabel value="Last Activation By  "/>
             <h:outputText value="#{createController.selectedData.activatedBy}" />
 
-            <p:spacer />
+            <!-- <p:spacer />
 
 			<p:spacer />
 
-			<p:spacer />
+			<p:spacer /> -->
 		</h:panelGrid>
 	</h:panelGrid>
 
