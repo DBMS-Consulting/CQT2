@@ -78,8 +78,9 @@
 		<br />
 		<p:treeTable value="#{searchController.relationsRoot}" var="node" resizableColumns="true"
 			selectionMode="checkbox" styleClass="hide-sel-chkbox">
-			<p:ajax event="expand" listener="#{searchController.onNodeExpand}"
-			/>
+			
+			<f:attribute name="uiEventSourceName" value="relations" />
+			<p:ajax event="expand" listener="#{searchController.onNodeExpand}" />
 			<p:columnGroup type="header">
 				<p:row>
 					<p:column rowspan="2"
