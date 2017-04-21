@@ -15,6 +15,7 @@ import com.dbms.entity.cqt.RefConfigCodeList;
 import com.dbms.service.AuthenticationService;
 import com.dbms.service.IRefCodeListService;
 import com.dbms.util.CqtConstants;
+import com.dbms.util.SWJSFRequest;
 
 /**
  * "Create/Update/Browse&Search" module's "Details" tab form data 
@@ -29,12 +30,15 @@ public class ListDetailsFormVM {
 	private boolean modelChanged = false;
 	private IRefCodeListService refCodeListService;
     private AuthenticationService authService;
+	private SWJSFRequest appSWJSFRequest;
 	
 	private String extension;
 	private String name;
 	private String drugProgram;
 	private String protocol;
 	private String designee;
+	private String designeeTwo;
+	private String designeeThree;
 	private Integer level;
 	private String critical;
 	private String scope;
@@ -50,9 +54,12 @@ public class ListDetailsFormVM {
 	private String lastModifiedBy;
 	private Date lastModifiedDate;
 	
-	public ListDetailsFormVM(AuthenticationService authService, IRefCodeListService refCodeListService) {
+	private List<String> designeeList;
+	
+	public ListDetailsFormVM(AuthenticationService authService, IRefCodeListService refCodeListService, SWJSFRequest appSWJSFRequest) {
 		this.authService = authService;
         this.refCodeListService = refCodeListService;
+        this.appSWJSFRequest = appSWJSFRequest;
 		init();
 	}
 	
@@ -69,6 +76,7 @@ public class ListDetailsFormVM {
 		this.state = CmqBase190.CMQ_STATE_VALUE_DRAFT;
 		this.status = CmqBase190.CMQ_STATUS_DISP_LABEL_PENDING;
 		this.designee = "NONE";
+		this.designeeList = this.appSWJSFRequest.getPXEDUserList();
 		this.modelChanged = false;
         
         this.createdBy = "";
@@ -89,6 +97,8 @@ public class ListDetailsFormVM {
 		this.drugProgram = cmq.getCmqProgramCd();
 		this.products = cmq.getCmqProductCds();
 		this.designee = cmq.getCmqDesignee();
+		this.designeeTwo = cmq.getCmqDesignee2();
+		this.designeeThree = cmq.getCmqDesignee3();
 		this.level = cmq.getCmqLevel();
 		this.critical = cmq.getCmqCriticalEvent();
 		this.group = cmq.getCmqGroup();
@@ -133,6 +143,14 @@ public class ListDetailsFormVM {
 		cmq.setCmqDesignee(designee);
 		if (cmq.getCmqDesignee() == null){
 			cmq.setCmqDesignee("NONE");
+		}
+		cmq.setCmqDesignee2(designeeTwo);
+		if (cmq.getCmqDesignee2() == null){
+			cmq.setCmqDesignee2("NONE");
+		}
+		cmq.setCmqDesignee3(designeeThree);
+		if (cmq.getCmqDesignee3() == null){
+			cmq.setCmqDesignee3("NONE");
 		}
 		cmq.setCmqLevel(level);
 		cmq.setCmqAlgorithm(algorithm);
@@ -603,6 +621,30 @@ public class ListDetailsFormVM {
 
 	public void setRefCodeListService(IRefCodeListService refCodeListService) {
 		this.refCodeListService = refCodeListService;
+	}
+
+	public List<String> getDesigneeList() {
+		return designeeList;
+	}
+
+	public void setDesigneeList(List<String> designeeList) {
+		this.designeeList = designeeList;
+	}
+
+	public String getDesigneeTwo() {
+		return designeeTwo;
+	}
+
+	public void setDesigneeTwo(String designeeTwo) {
+		this.designeeTwo = designeeTwo;
+	}
+
+	public String getDesigneeThree() {
+		return designeeThree;
+	}
+
+	public void setDesigneeThree(String designeeThree) {
+		this.designeeThree = designeeThree;
 	}
 
 }

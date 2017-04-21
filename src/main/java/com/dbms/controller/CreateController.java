@@ -41,6 +41,7 @@ import com.dbms.service.ICmqBase190Service;
 import com.dbms.service.ICmqRelation190Service;
 import com.dbms.service.IRefCodeListService;
 import com.dbms.util.CmqUtils;
+import com.dbms.util.SWJSFRequest;
 import com.dbms.util.exceptions.CqtServiceException;
 import com.dbms.view.ListDetailsFormVM;
 import com.dbms.view.ListDetailsFormVM.WizardType;
@@ -80,6 +81,9 @@ public class CreateController implements Serializable {
     @ManagedProperty("#{AuthenticationService}")
 	private AuthenticationService authService;
 	
+    @ManagedProperty("#{appSWJSFRequest}")
+    private SWJSFRequest appSWJSFRequest;
+    
 	private ListDetailsFormVM detailsFormModel;
 	private ListNotesFormVM notesFormModel = new ListNotesFormVM();
 	private ListWorkflowFormVM workflowFormModel;
@@ -104,7 +108,7 @@ public class CreateController implements Serializable {
 	
 	@PostConstruct
 	public void init() {
-		this.detailsFormModel  = new ListDetailsFormVM(this.authService, this.refCodeListService);
+		this.detailsFormModel  = new ListDetailsFormVM(this.authService, this.refCodeListService, this.appSWJSFRequest);
         this.workflowFormModel = new ListWorkflowFormVM(this.authService);
 		initAll();
 	}
@@ -1548,5 +1552,13 @@ public class CreateController implements Serializable {
     public boolean isDetailsFormDisabled() {
         return this.isReadOnlyState() || this.isFormSaved();
     }
+
+	public SWJSFRequest getAppSWJSFRequest() {
+		return appSWJSFRequest;
+	}
+
+	public void setAppSWJSFRequest(SWJSFRequest appSWJSFRequest) {
+		this.appSWJSFRequest = appSWJSFRequest;
+	}
 
 }

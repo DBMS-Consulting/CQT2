@@ -46,11 +46,11 @@ public class AuthenticationService {
 	public static final String REQUESTER_GROUP = "REQUESTOR";
 	public static final String USER_GROUP = "USER";
 	
-	private static final String ENTERPRISE_AD_PXED = "PXED";
-	private static final String ENTERPRISE_AD_PXED_DUMMY = "PXED-DUMMY";
-	private static final String ENTERPRISE_AD_DBMS = "AD";
-	private static final String ENTERPRISE_AD_NONE = "NONE";
-	private static final String DEFAULT_ENTERPRISE_AD_CODE_LIST_VALUE = ENTERPRISE_AD_NONE;
+	public static final String ENTERPRISE_AD_PXED = "PXED";
+	public static final String ENTERPRISE_AD_PXED_DUMMY = "PXED-DUMMY";
+	public static final String ENTERPRISE_AD_DBMS = "AD";
+	public static final String ENTERPRISE_AD_NONE = "NONE";
+	public static final String DEFAULT_ENTERPRISE_AD_CODE_LIST_VALUE = ENTERPRISE_AD_NONE;
 	
 	@ManagedProperty("#{RefCodeListService}")
 	private IRefCodeListService refCodeListService;

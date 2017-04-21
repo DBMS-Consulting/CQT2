@@ -87,7 +87,10 @@
 								<p:outputLabel styleClass="label-right" value="Algorithm:" />
 								<h:outputText value="#{createController.selectedData.cmqAlgorithm}" />
 
-								<p:spacer />
+								<p:outputLabel styleClass="label-right" value="Status:" />
+								<h:outputText
+									value="#{createController.detailsFormModel.statusLabel}"
+									rendered="true" />
 								<p:spacer />
 
 								<p:spacer />
@@ -95,11 +98,6 @@
 							</h:panelGrid>
 
 							<h:panelGrid columns="2" columnClasses="label-cell, value-cell">
-
-								<p:outputLabel styleClass="label-right" value="Status:" />
-								<h:outputText
-									value="#{createController.detailsFormModel.statusLabel}"
-									rendered="true" />
 
 								<p:outputLabel styleClass="label-right" value="State:" />
 								<h:outputText value="#{createController.selectedData.cmqState}" />
@@ -111,8 +109,13 @@
 								<h:outputText
 									value="#{createController.selectedData.cmqDesignee}" />
 
-								<p:spacer />
-								<p:spacer />
+								<p:outputLabel styleClass="label-right" value="Designee 2:" />
+								<h:outputText
+									value="#{createController.selectedData.cmqDesignee2}" />
+									
+								<p:outputLabel styleClass="label-right" value="Designee 3:" />
+								<h:outputText
+									value="#{createController.selectedData.cmqDesignee3}" />
 							</h:panelGrid>
 
 

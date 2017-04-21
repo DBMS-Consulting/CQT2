@@ -1,12 +1,12 @@
 package com.dbms.util;
 
 import java.util.ArrayList;
-
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
 import javax.faces.context.FacesContext;
 import javax.naming.Context;
@@ -92,6 +92,12 @@ public class SWJSFRequest
 		return value != null ? value : defVal;
 	}
 	
+	public ArrayList<String> getPXEDUserList(){
+		ArrayList<String> userList = new ArrayList<>(Arrays.asList("NONE", "cougha02", "khosan01", "kaura07",
+				"sings162", "tirumn", "novakm01","arcem", "lallr01","szel","nipj03","santod10","tomn",
+				"zutshm","shuklr04"));
+		return userList;	
+	}
 	
 	public List<String> getGroupList(String name, String key)
 	{
