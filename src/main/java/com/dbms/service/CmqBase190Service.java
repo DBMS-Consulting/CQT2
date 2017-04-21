@@ -57,6 +57,7 @@ import com.dbms.util.CqtConstants;
 import com.dbms.util.exceptions.CqtServiceException;
 import com.dbms.view.ListDetailsFormVM;
 import com.dbms.view.ListNotesFormVM;
+import org.apache.commons.lang3.ArrayUtils;
 
 /**
  * @author Jay G.(jayshanchn@hotmail.com)
@@ -105,7 +106,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 	public List<CmqBase190> findByCriterias(String extension,
 			String drugProgramCd, String protocolCd, String[] productCds,
 			Integer level, String status, String state, String criticalEvent,
-			String group, String termName, Long code) {
+			String group, String termName, Long code, String[] designees) {
 		List<CmqBase190> retVal = null;
 		StringBuilder sb = new StringBuilder("from CmqBase190 c");
 		boolean first = true;
@@ -176,6 +177,13 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 			queryParams.put("cmqCode", code);
 			first = false;
 		}
+        if(ArrayUtils.isNotEmpty(designees)) {
+            sb = appendClause(sb, first);
+			sb.append(" (c.cmqDesignee in (:cmqDesignees) or c.cmqDesignee2 in (:cmqDesignees) or c.cmqDesignee3 in (:cmqDesignees))");
+			queryParams.put("cmqDesignees", Arrays.asList(designees));
+            first = false;
+        }
+        
 		EntityManager entityManager = this.cqtEntityManagerFactory
 				.getEntityManager();
 		try {

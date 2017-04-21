@@ -82,19 +82,21 @@ public class SearchController extends BaseController<CmqBase190> implements IRel
 
 	private Long code;
 
-	private String extension;
-	private String drugProgram;
-	private String protocol;
-	private String state;
-	private Integer level;
-	private String status;
+	private String myFltExtension;
+	private String myFltDrugProgram;
+	private String myFltProtocol;
+	private String myFltState;
+	private Integer myFltLevel;
+	private String myFltStatus;
 	private String critical;
 	private String scope;
 	private String product;
-	private String[] products;
-	private String group;
+	private String[] myFltProducts;
+	private String myFltGroup;
 	private String history;
 	private String codelist;
+    
+    private String[] myFltDesignees;
 
 	private boolean maintainDesigBtn;
 	private boolean dataModified = false;
@@ -185,9 +187,9 @@ public class SearchController extends BaseController<CmqBase190> implements IRel
 	}
 
 	public void changeLevel() {
-		if(StringUtils.isBlank(this.extension)) {
+		if(StringUtils.isBlank(this.myFltExtension)) {
 			setLevel(null);
-		} else if (this.extension.equals("PRO")) {
+		} else if (this.myFltExtension.equals("PRO")) {
 			setLevel(2);
 		} else {
 			setLevel(1);
@@ -204,16 +206,16 @@ public class SearchController extends BaseController<CmqBase190> implements IRel
 	}
 
 	private void resetSearch() {
-		this.extension = "";
-		this.state = "";
-		this.status = "";
-		this.level = null;
+		this.myFltExtension = "";
+		this.myFltState = "";
+		this.myFltStatus = "";
+		this.myFltLevel = null;
 		// this.critical = "No";
-		this.group = "No Group";
+		this.myFltGroup = "No Group";
 
 		this.product = "";
-		this.protocol = "";
-		this.drugProgram = "";
+		this.myFltProtocol = "";
+		this.myFltDrugProgram = "";
 		this.termName = "";
 		this.code = null;
 		this.dataModified = false;
@@ -228,38 +230,38 @@ public class SearchController extends BaseController<CmqBase190> implements IRel
 	 *            AjaxBehaviour
 	 */
 	public void changeState(AjaxBehaviorEvent event) {		
-		if ("P".equalsIgnoreCase(status))
+		if ("P".equalsIgnoreCase(myFltStatus))
 			setState("DRAFT");
-		else if ("A".equalsIgnoreCase(status))
+		else if ("A".equalsIgnoreCase(myFltStatus))
 			setState("PUBLISHED");
-		else if ("I".equalsIgnoreCase(status))
+		else if ("I".equalsIgnoreCase(myFltStatus))
 			setState("PUBLISHED");
-		else if("".equals(status))
+		else if("".equals(myFltStatus))
 			setState("");
 	}
 
 	public String getExtension() {
-		return extension;
+		return myFltExtension;
 	}
 
 	public void setExtension(String extension) {
-		this.extension = extension;
+		this.myFltExtension = extension;
 	}
 
 	public String getDrugProgram() {
-		return drugProgram;
+		return myFltDrugProgram;
 	}
 
 	public void setDrugProgram(String drugProgram) {
-		this.drugProgram = drugProgram;
+		this.myFltDrugProgram = drugProgram;
 	}
 
 	public String getProtocol() {
-		return protocol;
+		return myFltProtocol;
 	}
 
 	public void setProtocol(String protocol) {
-		this.protocol = protocol;
+		this.myFltProtocol = protocol;
 	}
 
 	public String getReleaseStatus() {
@@ -271,11 +273,11 @@ public class SearchController extends BaseController<CmqBase190> implements IRel
 	}
 
 	public Integer getLevel() {
-		return level;
+		return myFltLevel;
 	}
 
 	public void setLevel(Integer level) {
-		this.level = level;
+		this.myFltLevel = level;
 	}
 
 	public String getCriticalEvent() {
@@ -330,11 +332,11 @@ public class SearchController extends BaseController<CmqBase190> implements IRel
 	}
 
 	public String getStatus() {
-		return status;
+		return myFltStatus;
 	}
 
 	public void setStatus(String status) {
-		this.status = status;
+		this.myFltStatus = status;
 	}
 
 	public String getCritical() {
@@ -354,11 +356,11 @@ public class SearchController extends BaseController<CmqBase190> implements IRel
 	}
 
 	public String getGroup() {
-		return group;
+		return myFltGroup;
 	}
 
 	public void setGroup(String group) {
-		this.group = group;
+		this.myFltGroup = group;
 	}
 
 	public String getTermName() {
@@ -378,11 +380,11 @@ public class SearchController extends BaseController<CmqBase190> implements IRel
 	}
 
 	public String getState() {
-		return state;
+		return myFltState;
 	}
 
 	public void setState(String state) {
-		this.state = state;
+		this.myFltState = state;
 	}
 
 	public String getHistory() {
@@ -422,33 +424,33 @@ public class SearchController extends BaseController<CmqBase190> implements IRel
 	}
 
 	public String search() {
-		log.debug("search by{}", extension);
+		log.debug("search by{}", myFltExtension);
 
 		dataModified = false;
 		// Item label is 'All' but value is empty string
-		if (StringUtils.isBlank(status)) {
-			status = null;
+		if (StringUtils.isBlank(myFltStatus)) {
+			myFltStatus = null;
 		}
 		// Item label is 'All' but value is empty string
 		if (StringUtils.isBlank(critical)) {
 			critical = null;
 		}
 		// Item label is 'All' but value is empty string
-		if ((null != level) && (level.intValue() <= 0)) {
-			level = null;
+		if ((null != myFltLevel) && (myFltLevel.intValue() <= 0)) {
+			myFltLevel = null;
 		}
 		// Item label is 'All' but value is empty string
-		if ("".equalsIgnoreCase(group)) {
-			group = null;
+		if ("".equalsIgnoreCase(myFltGroup)) {
+			myFltGroup = null;
 		}
 
 		if (code != null && code == 0) {
 			code = null;
 		}
 
-		datas = cmqBaseService.findByCriterias(extension, drugProgram,
-				protocol, products, level, status, state, critical, group,
-				termName, code);
+		datas = cmqBaseService.findByCriterias(myFltExtension, myFltDrugProgram,
+				myFltProtocol, myFltProducts, myFltLevel, myFltStatus, myFltState, critical, myFltGroup,
+				termName, code, myFltDesignees);
 		log.debug("found values {}", datas == null ? 0 : datas.size());
 
 		// Relations retrieval
@@ -929,16 +931,16 @@ public class SearchController extends BaseController<CmqBase190> implements IRel
 	}
 
 	public String[] getProducts() {
-		return products;
+		return myFltProducts;
 	}
 
 	public void setProducts(String[] products) {
-		this.products = products;
+		this.myFltProducts = products;
 	}
 	
 	public String getProductsLabel() {
-		if(this.products != null && this.products.length != 0 && this.refCodeListService != null) {
-			return refCodeListService.interpretProductCodesToValuesLabel(this.products);
+		if(this.myFltProducts != null && this.myFltProducts.length != 0 && this.refCodeListService != null) {
+			return refCodeListService.interpretProductCodesToValuesLabel(this.myFltProducts);
 		}
 		return "Choose products";
 	}
@@ -950,4 +952,12 @@ public class SearchController extends BaseController<CmqBase190> implements IRel
 	public void setAuthService(AuthenticationService authService) {
 		this.authService = authService;
 	}
+    
+    public String[] getFltDesignees() {
+        return myFltDesignees;
+    }
+
+    public void setFltDesignees(String[] myFilterDesignees) {
+        this.myFltDesignees = myFilterDesignees;
+    }
 }

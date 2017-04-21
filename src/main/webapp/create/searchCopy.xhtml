@@ -92,27 +92,24 @@
 
 	<p:separator />
 
-	<h:panelGrid columns="8">
+	<h:panelGrid columns="8" id="searchPanel2">
 		<p:outputLabel value="List Name" />
 		<p:inputText id="termSearch" value="#{searchController.termName}" />
+        
 		<p:outputLabel value="Code" />
 		<p:inputText id="codeSearch" value="#{searchController.code}" />
 
-		<!-- <p:outputLabel value="Designee" /> -->
-		<!-- <p:selectOneMenu value="#{createController.selectedData.cmqDesignee}">
-			<f:selectItem itemLabel="" itemValue=""></f:selectItem>
-			<f:selectItem itemLabel="NONE" itemValue="NONE"></f:selectItem>
-		</p:selectOneMenu> -->
-		<p:selectCheckboxMenu value="#{createController.selectedDesignees}"
-			label="Designees">
-			<f:selectItem itemLabel="" itemValue=""></f:selectItem>
-			<f:selectItem itemLabel="NONE" itemValue="NONE"></f:selectItem>
+		<p:selectCheckboxMenu value="#{searchController.fltDesignees}"
+                              label="Designees" updateLabel="true">
+			<f:selectItems value="#{createController.detailsFormModel.designeeList}" />
+            <f:validator validatorId="mySelectCheckboxMenuLimitValidator" />                       
+            <f:attribute name="maxLimit" value="3" />
 		</p:selectCheckboxMenu>
 
 		<p:commandButton value="Search" action="#{searchController.search}"
 			update="@form:result" />
 		<p:commandButton action="#{searchController.reset}" value="Reset"
-			update="@form:result @form:searchPanel termSearch codeSearch" />
+			update="@form:result @form:searchPanel @form:searchPanel2" />
 	</h:panelGrid>
 
 	<p:spacer />
