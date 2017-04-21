@@ -414,8 +414,10 @@ public class ReportController extends BaseController<CmqBase190> {
                 }
             });
 
-            for (File xmlfile : files) {
-                rpts.add(new String[] { xmlfile.getName(), xmlfile.getName() });
+            if(files != null) {
+                for (File xmlfile : files) {
+                    rpts.add(new String[] { xmlfile.getName(), xmlfile.getName() });
+                }
             }
         }
         return rpts;
