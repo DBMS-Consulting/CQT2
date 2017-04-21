@@ -129,18 +129,18 @@
 			<p:column headerText="Extension" width="140">
 				<h:outputText value="#{RefCodeListService.interpretInternalCodeToValue('LIST_EXTENSION_TYPES', value.cmqTypeCd)}" />
 			</p:column>
-			<p:column headerText="Level" width="30">
+			<p:column headerText="Level" width="20">
 				<h:outputText value="#{value.cmqLevel}" />
 			</p:column>
-			<p:column headerText="Status" width="80">
+			<p:column headerText="Status" width="60">
 				<h:outputText rendered="#{value.cmqStatus eq 'P'}" value="PENDING" />
 				<h:outputText rendered="#{value.cmqStatus eq 'I'}" value="INACTIVE" />
 				<h:outputText rendered="#{value.cmqStatus eq 'A'}" value="ACTIVE" />
 			</p:column>
-			<p:column headerText="State" width="80">
+			<p:column headerText="State" width="60">
 				<h:outputText style="text-transform: uppercase;" value="#{value.cmqState}" />
 			</p:column>
-			<p:column headerText="Code" width="100">
+			<p:column headerText="Code" width="60">
 				<h:commandLink action="#{createController.loadCmqBaseByCode(value.cmqCode)}"
 					value="#{value.cmqCode}">
 					<p:ajax update="@form:wizardId @form:relations @form:wizardNavbar" />
@@ -148,20 +148,20 @@
 						target="#{createController.codeSelected}" value="#{value.cmqCode}" />
 				</h:commandLink>
 			</p:column>
-			<p:column headerText="Drug Program" width="100">
+			<p:column headerText="Drug Program" width="70">
 				<h:outputText value="#{RefCodeListService.interpretInternalCodeToValue('PROGRAM', value.cmqProgramCd)}" />
 			</p:column>
-			<p:column headerText="Protocol" width="100">
+			<p:column headerText="Protocol" width="60">
 				<h:outputText value="#{RefCodeListService.interpretInternalCodeToValue('PROTOCOL', value.cmqProtocolCd)}" />
 			</p:column>
-			<p:column headerText="Product" width="100">
+			<p:column headerText="Product" width="140">
 				<h:outputText value="#{RefCodeListService.convertProductCodesToValuesLabel(value.productsList)}" />
 			</p:column>
-			<p:column headerText="Group" width="100">
+			<p:column headerText="Group" width="60">
 				<h:outputText value="#{value.cmqGroup}" />
 			</p:column>
 			<p:column headerText="Created By" width="100">
-				<h:outputText value="#{value.cmqDesignee}" />
+				<h:outputText value="#{value.createdByLabel}" />
 			</p:column>
 			<p:column headerText="History" style="text-align: center" width="40"
 				rendered="#{view.viewId == '/create/browseAndSearch.xhtml' ? true : false}">
