@@ -61,6 +61,7 @@ import com.dbms.service.IRefCodeListService;
 import com.dbms.service.ISmqBaseService;
 import com.dbms.service.ISmqBaseTargetService;
 import com.dbms.util.CmqUtils;
+import com.dbms.util.SWJSFRequest;
 import com.dbms.view.IARelationsTreeHelper;
 import com.dbms.util.exceptions.CqtServiceException;
 import com.dbms.view.CmqBaseHierarchySearchVM;
@@ -112,6 +113,9 @@ public class ImpactSearchController implements Serializable {
 	
 	@ManagedProperty("#{AuthenticationService}")
 	private AuthenticationService authService;
+	
+	@ManagedProperty("#{appSWJSFRequest}")
+    private SWJSFRequest appSWJSFRequest;
 	
 	Wizard iaWizard, iaVersionWizard;
 	private String iaWizardNextStep;
@@ -168,7 +172,7 @@ public class ImpactSearchController implements Serializable {
 
 	@PostConstruct
 	public void init() {
-		this.detailsFormModel  = new ListDetailsFormVM(this.authService, this.refCodeListService);
+		this.detailsFormModel  = new ListDetailsFormVM(this.authService, this.refCodeListService, this.appSWJSFRequest);
 		this.impactedCmqBaseLazyDataModel = new CmqLazyDataModel(true);
 		this.notImpactedCmqBaseLazyDataModel = new CmqLazyDataModel(false);
 		this.impactedSmqBaseLazyDataModel = new SmqLazyDataModel(true);
@@ -1955,6 +1959,14 @@ public class ImpactSearchController implements Serializable {
 
 	public void setIaVersionWizard(Wizard iaVersionWizard) {
 		this.iaVersionWizard = iaVersionWizard;
+	}
+
+	public SWJSFRequest getAppSWJSFRequest() {
+		return appSWJSFRequest;
+	}
+
+	public void setAppSWJSFRequest(SWJSFRequest appSWJSFRequest) {
+		this.appSWJSFRequest = appSWJSFRequest;
 	}
 
 }
