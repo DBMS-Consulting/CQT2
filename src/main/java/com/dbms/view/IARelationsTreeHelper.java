@@ -422,7 +422,6 @@ public class IARelationsTreeHelper {
 					|| "HDH".equals(cmqRelationTarget.getRelationImpactType())
 					|| "HDS".equals(cmqRelationTarget.getRelationImpactType())
 					|| "LDP".equals(cmqRelationTarget.getRelationImpactType())
-					|| "HPP".equals(cmqRelationTarget.getRelationImpactType())
 					|| "LPP".equals(cmqRelationTarget.getRelationImpactType())
 					|| "HPP".equals(cmqRelationTarget.getRelationImpactType())
 					|| "NTR".equals(cmqRelationTarget.getRelationImpactType())) {
