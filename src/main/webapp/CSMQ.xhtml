@@ -190,7 +190,7 @@
 					id="pt_m3"
 					style="font-weight:#{userBean.currentMenu eq 'VIEW_CURRENT_VERSION_IMPACT' or userBean.currentMenu eq 'VIEW_PREVIOUS_VERSION_IMPACT' ? 'bold' : 'normal'};"
 					rendered="#{AuthenticationService.getPermissonByUri('View-Version-Impacts-Menu')}" >
-					<p:menuitem value="View Current Version Impact" id="pt_cmi13"
+					<p:menuitem value="View Version Impact" id="pt_cmi13"
 						styleClass="#{view.viewId == '/viewVersionImpact/versionImpact.xhtml' ? 'ui-state-active2' : ''}"
 						action="#{CQTPageTemplateBean.displayCurrentViewVersionImpact}"
 						style="font-weight:#{userBean.currentMenu eq 'VIEW_CURRENT_VERSION_IMPACT' ? 'bold' : 'normal'};"

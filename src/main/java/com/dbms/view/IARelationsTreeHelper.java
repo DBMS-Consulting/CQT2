@@ -423,11 +423,11 @@ public class IARelationsTreeHelper {
 					|| "HDS".equals(cmqRelationTarget.getRelationImpactType())
 					|| "LDP".equals(cmqRelationTarget.getRelationImpactType())
 					|| "LPP".equals(cmqRelationTarget.getRelationImpactType())
+					|| "HPP".equals(cmqRelationTarget.getRelationImpactType())
 					|| "NTR".equals(cmqRelationTarget.getRelationImpactType())) {
 				node.setRowStyleClass("orange-colored");
 			}
-			if("HPP".equals(cmqRelationTarget.getRelationImpactType()))
-				node.setRowStyleClass("red-colored");
+			
 			if("LCN".equals(cmqRelationTarget.getRelationImpactType()))
 				node.setRowStyleClass("mauve-colored");
 			if ("SCH".equals(cmqRelationTarget.getRelationImpactType()))
@@ -515,7 +515,7 @@ public class IARelationsTreeHelper {
 					|| (meddra.getMovedLlt() != null && "LDP".equalsIgnoreCase(meddra.getMovedLlt()))
 					|| (meddra.getNewSuccessorPt() != null && "SDP".equalsIgnoreCase(meddra.getNewSuccessorPt()) && meddra.getPtCode() != null)
 					|| (meddra.getMovedHlt() != null && "HDH".equalsIgnoreCase(meddra.getMovedHlt()) && (meddra.getHltCode() != null || meddra.getLltCode() != null || meddra.getPtCode() != null))
-					|| (meddra.getMovedHlgt() != null && "HDS".equalsIgnoreCase(meddra.getMovedHlgt())) && (meddra.getHlgtCode() != null ||meddra.getHltCode() != null || meddra.getLltCode() != null || meddra.getPtCode() != null)) {
+					|| (meddra.getMovedHlgt() != null && "HDS".equalsIgnoreCase(meddra.getMovedHlgt())) && (meddra.getHlgtCode() != null || meddra.getHltCode() != null || meddra.getLltCode() != null || meddra.getPtCode() != null)) {
 				node.setRowStyleClass("orange-colored");
 			}
 			
@@ -563,12 +563,7 @@ public class IARelationsTreeHelper {
 					|| "PSA".equalsIgnoreCase(childRelation.getRelationImpactType())) {
 				childRelationNode.setRowStyleClass("orange-colored");
 			}
-//			if("NCH".equals(childRelation.getRelationImpactType())) {
-//				childRelationNode.setRowStyleClass("italic");
-//			}
-			if("PSI".equals(childRelation.getRelationImpactType())) {
-				childRelationNode.setRowStyleClass("red-colored");
-			}
+
 			if ("SCH".equals(childRelation.getRelationImpactType()))
 				childRelationNode.setRowStyleClass("blue-colored");
 			
