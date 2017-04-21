@@ -422,6 +422,7 @@ public class IARelationsTreeHelper {
 					|| "HDH".equals(cmqRelationTarget.getRelationImpactType())
 					|| "HDS".equals(cmqRelationTarget.getRelationImpactType())
 					|| "LDP".equals(cmqRelationTarget.getRelationImpactType())
+					|| "HPP".equals(cmqRelationTarget.getRelationImpactType())
 					|| "LPP".equals(cmqRelationTarget.getRelationImpactType())
 					|| "HPP".equals(cmqRelationTarget.getRelationImpactType())
 					|| "NTR".equals(cmqRelationTarget.getRelationImpactType())) {
@@ -451,6 +452,7 @@ public class IARelationsTreeHelper {
 					|| "LCN".equals(cmqRelation.getRelationImpactType())
 					|| "HPP".equals(cmqRelation.getRelationImpactType())
 					|| "LPP".equals(cmqRelation.getRelationImpactType())
+					|| "HNP".equals(cmqRelation.getRelationImpactType())
 					|| "LDP".equals(cmqRelation.getRelationImpactType())) {
 				node.setRowStyleClass("red-colored");
 			}
@@ -492,8 +494,7 @@ public class IARelationsTreeHelper {
 	}
 	
 	 public void setTargetMeddraColor(MeddraDictHierarchySearchDto meddra, HierarchyNode node) {
-	    	if ((meddra.getLltCurrencyChange() != null && "LCN".equalsIgnoreCase(meddra.getLltCurrencyChange()))
-	    			|| (meddra.getPrimarySocChange() != null && "HPP".equalsIgnoreCase(meddra.getPrimarySocChange()) && meddra.getSocCode() != null)
+	    	if ((meddra.getPrimarySocChange() != null && "HPP".equalsIgnoreCase(meddra.getPrimarySocChange()) && meddra.getSocCode() != null)
 	    			|| (meddra.getPrimarySocChange() != null && "HNP".equalsIgnoreCase(meddra.getPrimarySocChange()) && meddra.getSocCode() != null)) {
 	    		node.setRowStyleClass("none");
 	        }
