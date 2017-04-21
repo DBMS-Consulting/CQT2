@@ -565,9 +565,8 @@ public class ListDetailsFormVM {
 		if(createdBy != null) {
 			return createdBy.replaceAll("(^\\|#\\|)|(\\|#\\|$)", "") //replace first and last |#|
 					.replaceAll("\\|#\\|", ", "); //replace remaining |#|
-		} else {
-			return createdBy;
 		}
+        return null;
 	}
 
 	public void setCreatedBy(String createdBy) {

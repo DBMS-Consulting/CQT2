@@ -524,6 +524,13 @@ public class CmqBase190 extends BaseEntity {
 	public void setProductsList(List<CmqProductBaseCurrent> productsList) {
 		this.productsList = productsList;
 	}
-
+    
+    public String getCreatedByLabel() {
+        if(createdBy != null) {
+			return createdBy.replaceAll("(^\\|#\\|)|(\\|#\\|$)", "") //replace first and last |#|
+					.replaceAll("\\|#\\|", ", "); //replace remaining |#|
+		}
+        return null;
+    }
 	
 }
