@@ -421,18 +421,17 @@ public class IARelationsTreeHelper {
 					|| "PDH".equals(cmqRelationTarget.getRelationImpactType())
 					|| "HDH".equals(cmqRelationTarget.getRelationImpactType())
 					|| "HDS".equals(cmqRelationTarget.getRelationImpactType())
-					|| "HPP".equals(cmqRelationTarget.getRelationImpactType())
 					|| "LDP".equals(cmqRelationTarget.getRelationImpactType())
-					|| "SDP".equals(cmqRelationTarget.getRelationImpactType())
+					|| "LPP".equals(cmqRelationTarget.getRelationImpactType())
 					|| "NTR".equals(cmqRelationTarget.getRelationImpactType())) {
 				node.setRowStyleClass("orange-colored");
 			}
 			if("HPP".equals(cmqRelationTarget.getRelationImpactType()))
 				node.setRowStyleClass("red-colored");
+			if("LCN".equals(cmqRelationTarget.getRelationImpactType()))
+				node.setRowStyleClass("mauve-colored");
 			if ("SCH".equals(cmqRelationTarget.getRelationImpactType()))
 				node.setRowStyleClass("blue-colored");
-			if ("LCN".equals(cmqRelationTarget.getRelationImpactType()))
-				node.setRowStyleClass("grey-colored");
 		}
 		else
 			node.setRowStyleClass("none");
@@ -443,11 +442,10 @@ public class IARelationsTreeHelper {
 			if("NCH".equals(cmqRelation.getRelationImpactType())) {
 				node.setRowStyleClass("italic");
 			}
-			if("PDL".equals(cmqRelation.getRelationImpactType()) //|| "NTR".equals(cmqRelation.getRelationImpactType())
+			if("PDL".equals(cmqRelation.getRelationImpactType())
 					|| "PDH".equals(cmqRelation.getRelationImpactType())
 					|| "HDH".equals(cmqRelation.getRelationImpactType())
 					|| "HDS".equals(cmqRelation.getRelationImpactType())
-					|| "PTS".equals(cmqRelation.getRelationImpactType())
 					|| "DTR".equals(cmqRelation.getRelationImpactType())
 					|| "MRG".equals(cmqRelation.getRelationImpactType())
 					|| "LCN".equals(cmqRelation.getRelationImpactType())
@@ -458,8 +456,8 @@ public class IARelationsTreeHelper {
 			}
 			if ("SCH".equals(cmqRelation.getRelationImpactType()) || "ICC".equals(cmqRelation.getRelationImpactType()))
 				node.setRowStyleClass("blue-colored");
-			if ("SWC".equals(cmqRelation.getRelationImpactType()))
-				node.setRowStyleClass("pink-colored");
+//			if ("SWC".equals(cmqRelation.getRelationImpactType()))
+//				node.setRowStyleClass("pink-colored");
 		}
 		
 		else
@@ -468,14 +466,16 @@ public class IARelationsTreeHelper {
 	}
 
 	public void setCurrentMeddraColor(MeddraDictHierarchySearchDto meddra, HierarchyNode node) {
-		if((meddra.getMovedPt() != null && "LDH".equalsIgnoreCase(meddra.getMovedPt()) && meddra.getPtCode() != null)
+		if((meddra.getMovedPt() != null && "LDH".equalsIgnoreCase(meddra.getMovedPt()) && (meddra.getPtCode() != null || meddra.getLltCode() != null))
 				|| (meddra.getMovedLlt() != null && "LDP".equalsIgnoreCase(meddra.getMovedLlt()) && meddra.getLltCode() != null)
-				|| (meddra.getMovedHlt() != null && "HDH".equalsIgnoreCase(meddra.getMovedHlt()) && meddra.getHltCode() != null)
-				|| (meddra.getMovedHlgt() != null && "HDS".equalsIgnoreCase(meddra.getMovedHlgt()) && meddra.getHlgtCode() != null)
-				|| (meddra.getDemotedPt() != null && "PDL".equalsIgnoreCase(meddra.getDemotedPt()) && meddra.getPtCode() != null)
+				|| (meddra.getMovedHlt() != null && "HDH".equalsIgnoreCase(meddra.getMovedHlt()) && (meddra.getLltCode() != null || meddra.getHltCode() != null || meddra.getPtCode() != null))
+				|| (meddra.getMovedHlgt() != null && "HDS".equalsIgnoreCase(meddra.getMovedHlgt()) && (meddra.getHlgtCode() != null || meddra.getLltCode() != null || meddra.getHltCode() != null || meddra.getPtCode() != null))
+				|| (meddra.getDemotedPt() != null && "PDL".equalsIgnoreCase(meddra.getDemotedPt()) && (meddra.getPtCode() != null || meddra.getLltCode() != null))
 				|| (meddra.getPromotedLlt() != null && "LPP".equalsIgnoreCase(meddra.getPromotedLlt()) && meddra.getLltCode() != null)
-				|| (meddra.getPrimarySocChange() != null && "HNP".equalsIgnoreCase(meddra.getPrimarySocChange()) 
-						&& (meddra.getPtCode() != null && meddra.getLltCode() != null && meddra.getHltCode() != null && meddra.getHlgtCode() != null))) {
+				|| (meddra.getMergedHlgt() != null && "MRG".equalsIgnoreCase(meddra.getMergedHlgt()) && (meddra.getHlgtCode() != null || meddra.getLltCode() != null || meddra.getHltCode() != null || meddra.getPtCode() != null))
+				|| (meddra.getPrimarySocChange() != null && "HPN".equalsIgnoreCase(meddra.getPrimarySocChange()) 
+						&& (meddra.getHlgtCode() != null || meddra.getLltCode() != null || meddra.getHltCode() != null || meddra.getPtCode() != null))
+				|| (meddra.getMergedHlt() != null && "MRG".equalsIgnoreCase(meddra.getMergedHlt()) && (meddra.getLltCode() != null || meddra.getHltCode() != null || meddra.getPtCode() != null))) {
 			node.setRowStyleClass("red-colored");
 		}
 		
@@ -487,31 +487,35 @@ public class IARelationsTreeHelper {
 			node.setRowStyleClass("italic");
 		}
 		
-		if ((meddra.getMergedHlt() != null && "MRG".equalsIgnoreCase(meddra.getMergedHlt()))
-			|| (meddra.getMergedHlgt() != null && "MRG".equalsIgnoreCase(meddra.getMergedHlgt()))
-			|| (meddra.getPrimarySocChange() != null && "HPP".equalsIgnoreCase(meddra.getPrimarySocChange())))
+		if (meddra.getPrimarySocChange() != null && "HPP".equalsIgnoreCase(meddra.getPrimarySocChange()))
 				node.setRowStyleClass("none");
 	}
 	
 	 public void setTargetMeddraColor(MeddraDictHierarchySearchDto meddra, HierarchyNode node) {
-	    	if ((meddra.getLltCurrencyChange() != null && "LCN".equalsIgnoreCase(meddra.getLltCurrencyChange()) && meddra.getLltCode() != null)
+	    	if ((meddra.getLltCurrencyChange() != null && "LCN".equalsIgnoreCase(meddra.getLltCurrencyChange()))
 	    			|| (meddra.getPrimarySocChange() != null && "HPP".equalsIgnoreCase(meddra.getPrimarySocChange()) && meddra.getSocCode() != null)
 	    			|| (meddra.getPrimarySocChange() != null && "HNP".equalsIgnoreCase(meddra.getPrimarySocChange()) && meddra.getSocCode() != null)) {
 	    		node.setRowStyleClass("none");
 	        }
+	    	if (meddra.getLltCurrencyChange() != null && "LCN".equalsIgnoreCase(meddra.getLltCurrencyChange()) && meddra.getLltCode() != null)
+	    		node.setRowStyleClass("mauve-colored");
+	    	
 			if((meddra.getNewLlt() != null && "NTR".equalsIgnoreCase(meddra.getNewLlt()) && meddra.getLltCode() != null)
 					|| (meddra.getNewPt() != null && "NTR".equalsIgnoreCase(meddra.getNewPt()) && meddra.getPtCode() != null)
 					|| (meddra.getNewHlt() != null && "NTR".equalsIgnoreCase(meddra.getNewHlt()) && meddra.getHltCode() != null)
 					|| (meddra.getNewHlgt() != null && "NTR".equalsIgnoreCase(meddra.getNewHlgt()) && meddra.getHlgtCode() != null)
 					|| (meddra.getNewSoc() != null && "NTR".equalsIgnoreCase(meddra.getNewSoc()) && meddra.getSocCode() != null)
-					|| (meddra.getMovedPt() != null && "LDH".equalsIgnoreCase(meddra.getMovedPt()) && meddra.getPtCode() != null)
+					|| (meddra.getMovedHlt() != null && "NTR".equalsIgnoreCase(meddra.getMovedHlt()) && (meddra.getHltCode() != null || meddra.getLltCode() != null || meddra.getPtCode() != null))
+					|| (meddra.getMovedHlgt()!= null && "NTR".equalsIgnoreCase(meddra.getMovedHlgt()) && (meddra.getHlgtCode() != null ||meddra.getHltCode() != null || meddra.getLltCode() != null || meddra.getPtCode() != null))
+					|| (meddra.getMovedPt() != null && "LDH".equalsIgnoreCase(meddra.getMovedPt()) && (meddra.getLltCode() != null || meddra.getPtCode() != null))
 					|| (meddra.getLltCurrencyChange() != null && "LNC".equalsIgnoreCase(meddra.getLltCurrencyChange()) && meddra.getLltCode() != null)
-					|| (meddra.getDemotedPt() != null && "PDL".equalsIgnoreCase(meddra.getDemotedPt()) && meddra.getPtCode() != null)
+					|| (meddra.getDemotedPt() != null && "PDL".equalsIgnoreCase(meddra.getDemotedPt()) && (meddra.getPtCode() != null || meddra.getLltCode() != null))
 					|| (meddra.getPromotedLlt() != null && "LPP".equalsIgnoreCase(meddra.getPromotedLlt()) && meddra.getLltCode() != null)
 					|| (meddra.getPrimarySocChange() != null && "HNP".equalsIgnoreCase(meddra.getPrimarySocChange()) && meddra.getSocCode() != null)
-					|| (meddra.getMovedLlt() != null && "LDP".equalsIgnoreCase(meddra.getMovedLlt()) && meddra.getLltCode() != null)
-					|| (meddra.getMovedHlt() != null && "HDH".equalsIgnoreCase(meddra.getMovedHlt()) && meddra.getHltCode() != null)
-					|| (meddra.getMovedHlgt() != null && "HDS".equalsIgnoreCase(meddra.getMovedHlgt())) && meddra.getHlgtCode() != null) {
+					|| (meddra.getMovedLlt() != null && "LDP".equalsIgnoreCase(meddra.getMovedLlt()))
+					|| (meddra.getNewSuccessorPt() != null && "SDP".equalsIgnoreCase(meddra.getNewSuccessorPt()) && meddra.getPtCode() != null)
+					|| (meddra.getMovedHlt() != null && "HDH".equalsIgnoreCase(meddra.getMovedHlt()) && (meddra.getHltCode() != null || meddra.getLltCode() != null || meddra.getPtCode() != null))
+					|| (meddra.getMovedHlgt() != null && "HDS".equalsIgnoreCase(meddra.getMovedHlgt())) && (meddra.getHlgtCode() != null ||meddra.getHltCode() != null || meddra.getLltCode() != null || meddra.getPtCode() != null)) {
 				node.setRowStyleClass("orange-colored");
 			}
 			
@@ -532,25 +536,19 @@ public class IARelationsTreeHelper {
 			if("NCH".equals(childRelation.getRelationImpactType())) {
 				childRelationNode.setRowStyleClass("italic");
 			}
-			if("LCN".equals(childRelation.getRelationImpactType())
-					|| "DTR".equals(childRelation.getRelationImpactType())
-					|| "MRG".equals(childRelation.getRelationImpactType())
-					|| "HNP".equals(childRelation.getRelationImpactType())
-					|| "HPP".equals(childRelation.getRelationImpactType())
-					|| "PTS".equals(childRelation.getRelationImpactType())
-					|| "LDP".equals(childRelation.getRelationImpactType())) {
+			if("LPP".equals(childRelation.getRelationImpactType())
+				|| "PDL".equals(childRelation.getRelationImpactType())
+				|| "DTR".equals(childRelation.getRelationImpactType())) {
 				childRelationNode.setRowStyleClass("red-colored");
 			}
 			if ("SCH".equals(childRelation.getRelationImpactType()) || "ICC".equals(childRelation.getRelationImpactType()))
 				childRelationNode.setRowStyleClass("blue-colored");	
+			
 			if ("SWC".equals(childRelation.getRelationImpactType()))
 				childRelationNode.setRowStyleClass("pink-colored");
-			if ("PDL".equals(childRelation.getRelationImpactType()) || "NTR".equals(childRelation.getRelationImpactType()) || "LPP".equals(childRelation.getRelationImpactType()))
-				childRelationNode.setRowStyleClass("orange-colored");
-//			if ("PDL".equals(childRelation.getRelationImpactType()) || "LPP".equals(childRelation.getRelationImpactType()))
-//				childRelationNode.setRowStyleClass("grey-colored");
+			
 			if("PTS".equals(childRelation.getRelationImpactType())) {
-				childRelationNode.setRowStyleClass("none");
+				childRelationNode.setRowStyleClass("text-bold");
 			}
 		}
 		else
@@ -559,27 +557,23 @@ public class IARelationsTreeHelper {
 
 	public void setSMQTargetNodeStyle(HierarchyNode childRelationNode,	SmqRelationTarget childRelation) {
 		if (childRelation.getRelationImpactType() != null) {
-			if("MQM".equalsIgnoreCase(childRelation.getRelationImpactType())) {
-				childRelationNode.setRowStyleClass("green-colored");
-			}
 			if("LPP".equalsIgnoreCase(childRelation.getRelationImpactType())
 					|| "PDL".equalsIgnoreCase(childRelation.getRelationImpactType())
-					|| "PTS".equalsIgnoreCase(childRelation.getRelationImpactType())
-					|| "DTR".equalsIgnoreCase(childRelation.getRelationImpactType())) {
-				childRelationNode.setRowStyleClass("red-colored");
-			}
-			if("NCH".equals(childRelation.getRelationImpactType())) {
-				childRelationNode.setRowStyleClass("italic");
-			}
-			if("LDP".equals(childRelation.getRelationImpactType()) || "NTR".equals(childRelation.getRelationImpactType()) || "SDP".equals(childRelation.getRelationImpactType())) {
+					|| "NTR".equalsIgnoreCase(childRelation.getRelationImpactType())
+					|| "PSA".equalsIgnoreCase(childRelation.getRelationImpactType())) {
 				childRelationNode.setRowStyleClass("orange-colored");
+			}
+//			if("NCH".equals(childRelation.getRelationImpactType())) {
+//				childRelationNode.setRowStyleClass("italic");
+//			}
+			if("PSI".equals(childRelation.getRelationImpactType())) {
+				childRelationNode.setRowStyleClass("red-colored");
 			}
 			if ("SCH".equals(childRelation.getRelationImpactType()))
 				childRelationNode.setRowStyleClass("blue-colored");
-			if ("LCN".equals(childRelation.getRelationImpactType()))
-				childRelationNode.setRowStyleClass("grey-colored");
+			
 			if ("SWC".equals(childRelation.getRelationImpactType()))
-				childRelationNode.setRowStyleClass("none");
+				childRelationNode.setRowStyleClass("pink-colored");
 		}
 		else
 			childRelationNode.setRowStyleClass("none");

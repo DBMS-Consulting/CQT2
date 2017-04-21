@@ -148,7 +148,11 @@ public class MeddraDict190 extends BaseEntity {
 
 	@Column(name = "MERGED_HLGT", nullable = true, length = 15)
 	private String mergedHlgt;
-
+	
+	@Column(name = "NEW_SUCCESSOR_PT", nullable = true, length = 15)
+	private String newSuccessorPt;
+		
+	
 	public Long getId() {
 		return meddraDictId;
 	}
@@ -467,6 +471,14 @@ public class MeddraDict190 extends BaseEntity {
 
 	public void setMergedHlgt(String mergedHlgt) {
 		this.mergedHlgt = mergedHlgt;
+	}
+
+	public String getNewSuccessorPt() {
+		return newSuccessorPt;
+	}
+
+	public void setNewSuccessorPt(String newSuccessorPt) {
+		this.newSuccessorPt = newSuccessorPt;
 	}
 
 

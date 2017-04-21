@@ -46,6 +46,7 @@ public class MeddraDictHierarchySearchDto implements IEntity {
 	private String socCode;
 	
 	private String newSoc;
+	private String newSuccessorPt;
 
 	public Long getId() {
 		return meddraDictId;
@@ -312,6 +313,14 @@ public class MeddraDictHierarchySearchDto implements IEntity {
 
 	public void setNewSoc(String newSoc) {
 		this.newSoc = newSoc;
+	}
+
+	public String getNewSuccessorPt() {
+		return newSuccessorPt;
+	}
+
+	public void setNewSuccessorPt(String newSuccessorPt) {
+		this.newSuccessorPt = newSuccessorPt;
 	}
 
 	
