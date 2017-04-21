@@ -5,7 +5,7 @@
 	<!-- By default, Ehcache stored the cached files in temp folder. -->
 	<!-- <diskStore path="java.io.tmpdir" /> -->
 
-	<defaultCache name="defaut" maxElementsInMemory="3000"
+	<defaultCache name="defaut" maxElementsInMemory="10000"
 		eternal="false" timeToIdleSeconds="1800" timeToLiveSeconds="3600"
 		overflowToDisk="false" diskPersistent="false"
 		memoryStoreEvictionPolicy="LRU" />
@@ -28,33 +28,33 @@
 		memoryStoreEvictionPolicy="LRU" transactionalMode="off">
 	</cache>
 
-	<cache name="com.dbms.entity.cqt.CmqBase190" maxElementsInMemory="800"
+	<cache name="com.dbms.entity.cqt.CmqBase190" maxElementsInMemory="5000"
 		eternal="false" timeToIdleSeconds="1800" timeToLiveSeconds="3600"
 		overflowToDisk="false" diskPersistent="false"
 		memoryStoreEvictionPolicy="LRU" transactionalMode="off" />
 
 	<cache name="com.dbms.entity.cqt.CmqBaseTarget"
-		maxElementsInMemory="800" eternal="false" timeToIdleSeconds="1800"
+		maxElementsInMemory="5000" eternal="false" timeToIdleSeconds="1800"
 		timeToLiveSeconds="3600" overflowToDisk="false" diskPersistent="false"
 		memoryStoreEvictionPolicy="LRU" transactionalMode="off" />
 
 	<cache name="com.dbms.entity.cqt.CmqProductBaseCurrent"
-		maxElementsInMemory="800" eternal="false" timeToIdleSeconds="1800"
+		maxElementsInMemory="5000" eternal="false" timeToIdleSeconds="1800"
 		timeToLiveSeconds="3600" overflowToDisk="false" diskPersistent="false"
 		memoryStoreEvictionPolicy="LRU" transactionalMode="off" />
 
 	<cache name="com.dbms.entity.cqt.CmqRelation190"
-		maxElementsInMemory="800" eternal="false" timeToIdleSeconds="1800"
+		maxElementsInMemory="10000" eternal="false" timeToIdleSeconds="1800"
 		timeToLiveSeconds="3600" overflowToDisk="false" diskPersistent="false"
 		memoryStoreEvictionPolicy="LRU" transactionalMode="off" />
 
 	<cache name="com.dbms.entity.cqt.MeddraDict190"
-		maxElementsInMemory="800" eternal="false" timeToIdleSeconds="1800"
+		maxElementsInMemory="5000" eternal="false" timeToIdleSeconds="1800"
 		timeToLiveSeconds="3600" overflowToDisk="false" diskPersistent="false"
 		memoryStoreEvictionPolicy="LRU" transactionalMode="off" />
 
 	<cache name="com.dbms.entity.cqt.RefConfigCodeList"
-		maxElementsInMemory="1000" eternal="false" timeToIdleSeconds="1800"
+		maxElementsInMemory="5000" eternal="false" timeToIdleSeconds="1800"
 		timeToLiveSeconds="3600" overflowToDisk="false" diskPersistent="false"
 		memoryStoreEvictionPolicy="LRU" transactionalMode="off" />
 
