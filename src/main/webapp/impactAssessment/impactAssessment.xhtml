@@ -8,11 +8,33 @@
 
 
 	<ui:define name="page-content">
+        <h:inputHidden id="hVersionUpgradePending" value="#{CmqBaseTargetService.versionUpgradePending}" />
+        
+        <p:dialog widgetVar="vunpDlg" modal="true" id="vunpDlg"
+                      closable="true" header="Not Available" resizable="false">
+            <h:panelGrid columns="1" cellpadding="10">
+                <h:outputText value="The Impact Assessment page is only available while MedDRA Versioning data is pending." />
+                
+                <p:commandButton type="button" onclick="PF('vunpDlg').hide()" value="OK" style="float: right" />
+            </h:panelGrid>
+        </p:dialog>
 
 		<script type="text/javascript">
 			function initRelationDND() {
 				//dummy function kept here to prevent create/hierarchySearch from breaking 
 			}
+            
+            function checkVersionUpgradePending() {
+                var vup = $('#hVersionUpgradePending').val();
+                if(vup === "false")
+                {
+                    PF('vunpDlg').show();
+                }
+            }
+            
+            $(document).ready(function() {
+                checkVersionUpgradePending();
+            });
 		</script>
 
 		<h:form id="impactAssessment">
@@ -27,7 +49,7 @@
 
 			<p:wizard
 				flowListener="#{impactSearchController.onIaWizardFlowProcess}"
-				binding="#{impactSearchController.iaWizard}">
+                binding="#{impactSearchController.iaWizard}" rendered="#{CmqBaseTargetService.versionUpgradePending}">
 
 				<!-- Impact -->
 				<p:tab id="impact" title="Impact Assessment">

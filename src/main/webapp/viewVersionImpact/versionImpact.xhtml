@@ -8,12 +8,34 @@
 
 
 	<ui:define name="page-content">
-<!-- 
-		<script type="text/javascript">
+        <h:inputHidden id="hVersionUpgradePending" value="#{CmqBaseTargetService.versionUpgradePending}" />
+
+        <p:dialog widgetVar="vunpDlg" modal="true" id="vunpDlg"
+                      closable="true" header="Not Available" resizable="false">
+            <h:panelGrid columns="1" cellpadding="10">
+                <h:outputText value="The View Version Impact page is only available while MedDRA Versioning data is pending." />
+                
+                <p:commandButton type="button" onclick="PF('vunpDlg').hide()" value="OK" style="float: right" />
+            </h:panelGrid>
+        </p:dialog>
+        
+        <script type="text/javascript">
 			function initRelationDND() {
 				//dummy function kept here to prevent create/hierarchySearch from breaking 
 			}
-		</script> -->
+            
+            function checkVersionUpgradePending() {
+                var vup = $('#hVersionUpgradePending').val();
+                if(vup === "false")
+                {
+                    PF('vunpDlg').show();
+                }
+            }
+            
+            $(document).ready(function() {
+                checkVersionUpgradePending();
+            });
+		</script>
 
 		<h:form id="impactAssessment">
 			<p:growl id="messages" life="#{appCSMQBean.defaultGrowlLife}" sticky="true" showDetail="#{appCSMQBean.degugMode}" />
@@ -27,7 +49,7 @@
 
 			<p:wizard
 				flowListener="#{impactSearchController.onIaVersionWizardFlowProcess}" 
-				binding="#{impactSearchController.iaVersionWizard}">
+				binding="#{impactSearchController.iaVersionWizard}" rendered="#{CmqBaseTargetService.versionUpgradePending}">
 
 				<!-- Impact -->
 				<p:tab id="impact" title="View Current Version Impact">

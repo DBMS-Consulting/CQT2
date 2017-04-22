@@ -40,5 +40,7 @@ public interface ICmqBaseTargetService  extends ICqtPersistenceService<CmqBaseTa
 	List<CmqBaseTarget> findParentCmqsByCodes(List<Long> targetCmqParentCodes);
 
 	List<CmqBaseTarget> findPublishedCmqs();
+    
+    boolean isVersionUpgradePending();
 
 }

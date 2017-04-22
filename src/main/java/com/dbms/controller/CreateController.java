@@ -1,5 +1,6 @@
 package com.dbms.controller;
 
+import com.dbms.csmq.CSMQBean;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -30,6 +31,7 @@ import org.slf4j.LoggerFactory;
 import com.dbms.csmq.HierarchyNode;
 import com.dbms.entity.IEntity;
 import com.dbms.entity.cqt.CmqBase190;
+import com.dbms.entity.cqt.CmqBaseTarget;
 import com.dbms.entity.cqt.CmqRelation190;
 import com.dbms.entity.cqt.RefConfigCodeList;
 import com.dbms.entity.cqt.SmqBase190;
@@ -38,9 +40,11 @@ import com.dbms.entity.cqt.dtos.MeddraDictHierarchySearchDto;
 import com.dbms.entity.cqt.dtos.MeddraDictReverseHierarchySearchDto;
 import com.dbms.service.AuthenticationService;
 import com.dbms.service.ICmqBase190Service;
+import com.dbms.service.ICmqBaseTargetService;
 import com.dbms.service.ICmqRelation190Service;
 import com.dbms.service.IRefCodeListService;
 import com.dbms.util.CmqUtils;
+import com.dbms.util.CqtConstants;
 import com.dbms.util.SWJSFRequest;
 import com.dbms.util.exceptions.CqtServiceException;
 import com.dbms.view.ListDetailsFormVM;
@@ -84,6 +88,9 @@ public class CreateController implements Serializable {
     @ManagedProperty("#{appSWJSFRequest}")
     private SWJSFRequest appSWJSFRequest;
     
+    @ManagedProperty("#{CmqBaseTargetService}")
+    private ICmqBaseTargetService myCmqTargetService;
+    
 	private ListDetailsFormVM detailsFormModel;
 	private ListNotesFormVM notesFormModel = new ListNotesFormVM();
 	private ListWorkflowFormVM workflowFormModel;
@@ -102,6 +109,7 @@ public class CreateController implements Serializable {
 
 	private Long codevalue;
 	private CmqBase190 selectedData = new CmqBase190();
+    private CmqBaseTarget mySelectedCmqTarget = new CmqBaseTarget();
 	
 	private HtmlInputText dictionaryName;
 	private boolean	formSaved;
@@ -882,6 +890,8 @@ public class CreateController implements Serializable {
 	 * @return boolean
 	 */
 	public boolean isReadOnlyState() {
+        if(isSelectedCmqImpaced())
+            return true;
         if (selectedData != null && selectedData.getCmqState() != null 
                 && (CmqBase190.CMQ_STATE_VALUE_DRAFT.equalsIgnoreCase(selectedData.getCmqState())
                         || CmqBase190.CMQ_STATE_VALUE_REVIEWED.equalsIgnoreCase(selectedData.getCmqState()))){
@@ -906,6 +916,8 @@ public class CreateController implements Serializable {
 		if (cmq != null) {
 			codeSelected = cmq.getCmqCode();
 			selectedData = cmq;
+            CmqBaseTarget t = myCmqTargetService.findByCode(code);
+            mySelectedCmqTarget = (t == null ? new CmqBaseTarget() : t);
 		}
 		if(createWizard != null) {
 			detailsFormModel.setWizardType(WizardType.CreateWizard);
@@ -936,6 +948,12 @@ public class CreateController implements Serializable {
 		
 		detailsFormModel.loadFromCmqBase190(selectedData);
 		notesFormModel.loadFromCmqBase190(selectedData);
+        
+        if(isSelectedCmqImpaced()) {
+			FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_INFO,
+                        "The List is impacted by MedDRA versioning", ""));
+        }
         
         getActiveWizard().setStep(WIZARD_STEP_DETAILS);
 
@@ -1328,6 +1346,14 @@ public class CreateController implements Serializable {
 	public ICmqBase190Service getCmqBaseService() {
 		return cmqBaseService;
 	}
+    
+    public ICmqBaseTargetService getMyCmqTargetService() {
+        return myCmqTargetService;
+    }
+
+    public void setMyCmqTargetService(ICmqBaseTargetService cmqTargetService) {
+        this.myCmqTargetService = cmqTargetService;
+    }
 
 	public IRefCodeListService getRefCodeListService() {
 		return refCodeListService;
@@ -1560,5 +1586,13 @@ public class CreateController implements Serializable {
 	public void setAppSWJSFRequest(SWJSFRequest appSWJSFRequest) {
 		this.appSWJSFRequest = appSWJSFRequest;
 	}
+    
+    public boolean isSelectedCmqImpaced() {
+        if(selectedData != null && CSMQBean.IMPACT_TYPE_IMPACTED.equals(selectedData.getImpactType()))
+            return true;
+        else if(mySelectedCmqTarget != null && CSMQBean.IMPACT_TYPE_IMPACTED.equals(mySelectedCmqTarget.getImpactType()))
+            return true;
+        return false;
+    }
 
 }

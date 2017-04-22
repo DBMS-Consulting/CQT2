@@ -33,8 +33,7 @@ public class SelectCheckboxMenuLimitValidator implements Validator {
 
        if (maxLimit>0 && ((String[])myComponent.getSubmittedValue()).length > maxLimit) {
            FacesMessage msg
-                   = new FacesMessage("Can not select more than " + maxLimit + " designees", "");
-           msg.setSeverity(FacesMessage.SEVERITY_ERROR);
+                   = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Can not select more than " + maxLimit + " designees", "");
            throw new ValidatorException(msg);
        } 
    }

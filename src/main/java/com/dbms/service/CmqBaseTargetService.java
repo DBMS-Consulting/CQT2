@@ -1266,6 +1266,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 	}
 	
 	@SuppressWarnings("unchecked")
+    @Override
 	public List<CmqBaseTarget> findPublishedCmqs() {
 		List<CmqBaseTarget> retVal = null;
 		String queryString = "from CmqBaseTarget c where upper(c.cmqState) = upper('PUBLISHED IA') ";
@@ -1284,6 +1285,22 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 		}
 		return retVal;
 	}
+    
+    @Override
+    public boolean isVersionUpgradePending() {
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		try {
+			Query query = entityManager.createQuery("select count(*) from CmqBaseTarget c where 1");
+			Long retVal = (Long)query.getSingleResult();
+            if(retVal!=null && retVal>0)
+                return true;
+		} catch (Exception e) {
+            return false;
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return false;
+    }
 
 	public ICmqRelationTargetService getCmqRelationTargetService() {
 		return cmqRelationTargetService;
