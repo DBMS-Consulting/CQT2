@@ -1014,6 +1014,7 @@ public class ImpactSearchController implements Serializable {
 				notesFormModel.saveToSmqBaseTarget((SmqBaseTarget)d);
 				//
 			}
+            notesFormModel.setModelChanged(false);
 			FacesContext.getCurrentInstance()
 				.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Successfully saved notes", ""));
 		} catch(CqtServiceException e) {
@@ -1066,7 +1067,7 @@ public class ImpactSearchController implements Serializable {
 						, this.authService.getUserGivenName(), this.authService.getUserSurName()
 						, this.authService.getCombinedMappedGroupMembershipAsString());
 			}
-			
+			detailsFormModel.setModelChanged(false);
 			FacesContext.getCurrentInstance()
 				.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Successfully saved details", ""));
 		} catch(CqtServiceException e) {
