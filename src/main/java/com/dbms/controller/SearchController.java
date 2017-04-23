@@ -533,7 +533,7 @@ public class SearchController extends BaseController<CmqBase190> implements IRel
 				// setRelationSelected(nodes);
 				if(CollectionUtils.isNotEmpty(existingNodeTerms)) {
 					FacesContext.getCurrentInstance().addMessage(null, 
-                            new FacesMessage(FacesMessage.SEVERITY_INFO, "The relation already exists", ""));
+                            new FacesMessage(FacesMessage.SEVERITY_INFO, "Relation/Term is already associated to the List", ""));
 				} else {
 					FacesContext.getCurrentInstance().addMessage(null, 
                             new FacesMessage(FacesMessage.SEVERITY_INFO,
