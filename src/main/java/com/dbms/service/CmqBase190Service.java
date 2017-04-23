@@ -1064,9 +1064,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 
 					SmqBase190 smqSearched = smqBaseService.findByCode(relation.getSmqCode());
 					if (smqSearched != null) {
-						List<SmqBase190> smqBaseList = smqBaseService
-								.findByLevelAndTerm(smqSearched.getSmqLevel(),
-										smqSearched.getSmqName());
+						List<SmqBase190> smqBaseList = smqBaseService.findByLevelAndTerm(smqSearched.getSmqLevel(),	smqSearched.getSmqName());
 						if (smqBaseList != null) {
 							for (SmqBase190 smq : smqBaseList) {
 								if (smq.getSmqLevel() == 1) {
@@ -1082,17 +1080,17 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 								}
 								mapReport.put(cpt++, new ReportLineDataDto(level, smq.getSmqCode() + "", smq.getSmqName(), "")); 
 								
-								if (level.equals("SMQ1")) {
-									smqSearched = smqBaseService.findByCode(smq.getSmqCode());
-									if (smqSearched != null) {
-										System.out.println(" **************************** SMQ1 :: " + smqSearched.getSmqName() + ",   " + smqSearched.getSmqCode()); 
-										List<SmqRelation190> list = smqBaseService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
-										if (list != null)
-											for (SmqRelation190 smq2 : list) {
-												mapReport.put(cpt++, new ReportLineDataDto("PT", smq2.getPtCode() + "", smq2.getPtName(), ".............")); 
-											}
-									}
-								}
+//								if (level.equals("SMQ1")) {
+//									smqSearched = smqBaseService.findByCode(smq.getSmqCode());
+//									if (smqSearched != null) {
+//										System.out.println(" **************************** SMQ1 :: " + smqSearched.getSmqName() + ",   " + smqSearched.getSmqCode()); 
+//										List<SmqRelation190> list = smqBaseService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
+//										if (list != null)
+//											for (SmqRelation190 smq2 : list) {
+//												mapReport.put(cpt++, new ReportLineDataDto("SMQ1", smq2.getPtCode() + "", smq2.getPtName(), ".............")); 
+//											}
+//									}
+//								}
 
 								/**
 								 * Other SMQs
@@ -1122,7 +1120,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 												List<SmqRelation190> list = smqBaseService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
 												if (list != null)
 													for (SmqRelation190 smq2 : list) {
-														mapReport.put(cpt++, new ReportLineDataDto("PT", smq2.getPtCode() + "", smq2.getPtName(), ".............")); 
+														mapReport.put(cpt++, new ReportLineDataDto("SMQ1", smq2.getPtCode() + "", smq2.getPtName(), ".............")); 
 													}
 											}
 										}
@@ -1134,7 +1132,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 												List<SmqRelation190> list = smqBaseService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
 												if (list != null)
 													for (SmqRelation190 smq2 : list) {
-														mapReport.put(cpt++, new ReportLineDataDto("PT", smq2.getPtCode() + "", smq2.getPtName(), "..............")); 
+														mapReport.put(cpt++, new ReportLineDataDto("SMQ2", smq2.getPtCode() + "", smq2.getPtName(), "..............")); 
 
 													}
 											}
@@ -1166,22 +1164,16 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 									if (smqSearched != null) {
 										System.out.println(" **************************** SMQ1 :: " + smqSearched.getSmqName() + ",   " + smqSearched.getSmqCode()); 
 										List<SmqRelation190> list = smqBaseService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
-										if (list != null)
+										/*if (list != null)
 											for (SmqRelation190 smq2 : list) {
 												row = worksheet.createRow(rowCount);
-												buildChildCells("PT", smq2.getPtCode() + "", smq2.getPtName(), cell, row, ".............");
+												buildChildCells("SMQ1", smq2.getPtCode() + "", smq2.getPtName(), cell, row, ".............");
 												rowCount++;
-											}
+											}*/
 									}
 								}
 								
-								if (level.equals("PT")) {
-									
-									
-								}
 							}
-
-
 						}
 					}
 
