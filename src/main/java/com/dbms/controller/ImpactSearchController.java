@@ -2107,4 +2107,11 @@ public class ImpactSearchController implements Serializable {
 		this.appSWJSFRequest = appSWJSFRequest;
 	}
 
+    public String getSelectedListExtension() {
+        if(this.selectedImpactedCmqList != null)
+            return this.selectedImpactedCmqList.getCmqTypeCd();
+        else if(this.selectedNotImpactedCmqList != null)
+            return this.selectedNotImpactedCmqList.getCmqTypeCd();
+        return "";
+    }
 }

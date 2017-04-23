@@ -213,6 +213,7 @@
 	<p:dialog widgetVar="search" modal="false" header="Hierarchy search" onShow="initRelationDND()" height="auto" width="auto">
         <ui:include src="hierarchySearch.xhtml">
             <ui:param name="paramDlgCtrl" value="#{searchController.hierarchyDlgModel}" />
+            <ui:param name="paramParentExtension" value="#{createController.detailsFormModel.extension}" />
         </ui:include>		
 
 		<p:spacer height="10"></p:spacer>

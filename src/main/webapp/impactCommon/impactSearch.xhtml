@@ -8,7 +8,7 @@
  
 	<p:tabView id="pt2" style="min-width:800px; min-height:381px;">
 
-		<p:tab title="Impacted SMQs" id="sdi5" styleClass="AFStretchWidth">
+		<p:tab title="Impacted SMQs" id="sdi5">
 			<p:dataTable id="impactedSmqList" styleClass="ui-datatable-impactedSmqList" widgetVar="impactedSmqList"
 					value="#{impactSearchController.impactedSmqBaseLazyDataModel}" var="smqList" paginator="true" rows="10"
                 	selection="#{impactSearchController.selectedImpactedSmqList}" selectionMode="single" lazy="true"
@@ -47,7 +47,7 @@
 
 			</p:dataTable>
 		</p:tab>
-		<p:tab title="Non-Impacted SMQs" styleClass="AFStretchWidth" id="sdi4">
+		<p:tab title="Non-Impacted SMQs" id="sdi4">
 			<p:dataTable id="notImpactedSmqList" value="#{impactSearchController.notImpactedSmqBaseLazyDataModel}"
 				widgetVar="notImpactedSmqList" var="smqList" paginator="true" rows="10"
                 selection="#{impactSearchController.selectedNotImpactedSmqList}" selectionMode="single" lazy="true"
@@ -133,8 +133,7 @@
 				</p:column>
 			</p:dataTable>
 		</p:tab>
-		<p:tab title="Non-Impacted Lists" id="sdi6"
-			styleClass="AFStretchWidth">
+		<p:tab title="Non-Impacted Lists" id="sdi6">
 			<p:dataTable id="notImpactedCmqList" value="#{impactSearchController.notImpactedCmqBaseLazyDataModel}"
 				widgetVar="notImpactedCmqList" var="cmqList" paginator="true" rows="10"
                 selection="#{impactSearchController.selectedNotImpactedCmqList}" selectionMode="single" lazy="true"

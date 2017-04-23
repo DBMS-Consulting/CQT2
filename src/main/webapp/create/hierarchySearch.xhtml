@@ -9,7 +9,7 @@
 	<p:panel header="Relations" id="hierarchy-modal" style="min-height: 450px;height: 90%;height: calc(100% - 40px);position: relative;">
         <h:panelGrid id="hierarchySearchGrid" columns="6">
 			<p:outputLabel value="Level" for="levelH" />
-			<p:selectOneMenu id="levelH" label="Level"  rendered="#{createController.detailsFormModel.extension ne 'PRO' and createController.detailsFormModel.extension ne 'CPT' and createController.detailsFormModel.extension ne 'DME'}"
+			<p:selectOneMenu id="levelH" label="Level"  rendered="#{paramParentExtension ne 'PRO' and paramParentExtension ne 'CPT' and paramParentExtension ne 'DME'}"
 				value="#{paramDlgCtrl.filterLevel}">
  				<f:selectItem itemValue="PRO" itemLabel="PRO"/> 				
  				<f:selectItem itemValue="SMQ1" itemLabel="SMQ1" />
@@ -23,7 +23,7 @@
 				<f:selectItem itemValue="PT" itemLabel="PT" />
 				<f:selectItem itemValue="LLT" itemLabel="LLT" />
 			</p:selectOneMenu>
-			<p:selectOneMenu id="levelH2" label="Level"  rendered="#{createController.detailsFormModel.extension eq 'PRO' or createController.detailsFormModel.extension eq 'CPT' or createController.detailsFormModel.extension eq 'DME'}"
+			<p:selectOneMenu id="levelH2" label="Level"  rendered="#{paramParentExtension eq 'PRO' or paramParentExtension eq 'CPT' or paramParentExtension eq 'DME'}"
 				value="#{paramDlgCtrl.filterLevel}">			
  				
  				<f:selectItem itemValue="SMQ1" itemLabel="SMQ1" />

@@ -393,6 +393,7 @@
 				header="Hierarchy Search Current" width="680px" minHeight="480">
                 <ui:include src="../create/hierarchySearch.xhtml">
                     <ui:param name="paramDlgCtrl" value="#{impactSearchController.currentHierarchySearchDlgModel}" />
+                    <ui:param name="paramParentExtension" value="#{impactSearchController.selectedListExtension}" />
                 </ui:include>
 
 				<p:spacer height="10"></p:spacer>
