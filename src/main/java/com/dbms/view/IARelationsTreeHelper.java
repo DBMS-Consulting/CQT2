@@ -497,12 +497,8 @@ public class IARelationsTreeHelper {
 	    			|| (meddra.getPrimarySocChange() != null && "HNP".equalsIgnoreCase(meddra.getPrimarySocChange()) && meddra.getSocCode() != null)) {
 	    		node.setRowStyleClass("none");
 	        }
-	    	if (meddra.getLltCurrencyChange() != null && "LCN".equalsIgnoreCase(meddra.getLltCurrencyChange()) && meddra.getLltCode() != null) {
-	    		node.setRowStyleClass("mauve-colored");
-	    		System.out.println("\n ******** LLT code : " + meddra.getLltCode());
-	    		System.out.println("\n ******** currency code : " + meddra.getLltCurrencyChange());
-	    	}
-	    		
+	    	if (meddra.getLltCurrencyChange() != null && "LCN".equalsIgnoreCase(meddra.getLltCurrencyChange()) && meddra.getLltCode() != null)
+	    		node.setRowStyleClass("mauve-colored");	
 	    	
 			if((meddra.getNewLlt() != null && "NTR".equalsIgnoreCase(meddra.getNewLlt()) && meddra.getLltCode() != null)
 					|| (meddra.getNewPt() != null && "NTR".equalsIgnoreCase(meddra.getNewPt()) && meddra.getPtCode() != null)
@@ -512,7 +508,6 @@ public class IARelationsTreeHelper {
 					|| (meddra.getMovedHlt() != null && "NTR".equalsIgnoreCase(meddra.getMovedHlt()) && (meddra.getHltCode() != null || meddra.getLltCode() != null || meddra.getPtCode() != null))
 					|| (meddra.getMovedHlgt()!= null && "NTR".equalsIgnoreCase(meddra.getMovedHlgt()) && (meddra.getHlgtCode() != null ||meddra.getHltCode() != null || meddra.getLltCode() != null || meddra.getPtCode() != null))
 					|| (meddra.getMovedPt() != null && "LDH".equalsIgnoreCase(meddra.getMovedPt()) && (meddra.getLltCode() != null || meddra.getPtCode() != null))
-					|| (meddra.getLltCurrencyChange() != null && "LNC".equalsIgnoreCase(meddra.getLltCurrencyChange()) && meddra.getLltCode() != null)
 					|| (meddra.getDemotedPt() != null && "PDL".equalsIgnoreCase(meddra.getDemotedPt()) && (meddra.getPtCode() != null || meddra.getLltCode() != null))
 					|| (meddra.getPromotedLlt() != null && "LPP".equalsIgnoreCase(meddra.getPromotedLlt()) && meddra.getLltCode() != null)
 					|| (meddra.getPrimarySocChange() != null && "HNP".equalsIgnoreCase(meddra.getPrimarySocChange()) && meddra.getSocCode() != null)
