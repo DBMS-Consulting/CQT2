@@ -474,7 +474,7 @@ ul.nav>li {
 
 .ui-treetable-currentListsAndSmqs table td .ui-treetable-toggler,
 .ui-treetable-futureListsAndSmqs table td .ui-treetable-toggler{
-	margin-top: 6px;
+	margin-top: 4px;
 }
 
 .ui-selectcheckboxmenu-item .ui-chkbox .ui-chkbox-box {

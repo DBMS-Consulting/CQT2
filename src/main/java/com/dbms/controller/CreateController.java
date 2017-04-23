@@ -1588,9 +1588,13 @@ public class CreateController implements Serializable {
 	}
     
     public boolean isSelectedCmqImpaced() {
-        if(selectedData != null && CSMQBean.IMPACT_TYPE_IMPACTED.equals(selectedData.getImpactType()))
+        if(selectedData != null &&
+                (CSMQBean.IMPACT_TYPE_IMPACTED.equalsIgnoreCase(selectedData.getImpactType()) || 
+                    CSMQBean.IMPACT_TYPE_ICC.equalsIgnoreCase(selectedData.getImpactType())))
             return true;
-        else if(mySelectedCmqTarget != null && CSMQBean.IMPACT_TYPE_IMPACTED.equals(mySelectedCmqTarget.getImpactType()))
+        else if(mySelectedCmqTarget != null &&
+                (CSMQBean.IMPACT_TYPE_IMPACTED.equalsIgnoreCase(mySelectedCmqTarget.getImpactType()) || 
+                    CSMQBean.IMPACT_TYPE_ICC.equalsIgnoreCase(mySelectedCmqTarget.getImpactType())))
             return true;
         return false;
     }

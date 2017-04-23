@@ -3,6 +3,13 @@ package com.dbms.util;
 public class MeddraDictLevelHelper {
 	public static final int SEARCH_MEDDRA_BASE = 1;
 	public static final int SEARCH_MEDDRA_BASE_REVERSE = 2;
+    
+    public static final MeddraDictLevelHelper MeddraDictLevel_SOC = new MeddraDictLevelHelper(MeddraDictLevelType.SOC, "SOC", "SOC_", SEARCH_MEDDRA_BASE);
+    public static final MeddraDictLevelHelper MeddraDictLevel_HLGT = new MeddraDictLevelHelper(MeddraDictLevelType.SOC, "HLGT", "HLGT_", SEARCH_MEDDRA_BASE);
+    public static final MeddraDictLevelHelper MeddraDictLevel_HLT = new MeddraDictLevelHelper(MeddraDictLevelType.HLT, "HLT", "HLT_", SEARCH_MEDDRA_BASE);
+    public static final MeddraDictLevelHelper MeddraDictLevel_PT = new MeddraDictLevelHelper(MeddraDictLevelType.PT, "PT", "PT_", SEARCH_MEDDRA_BASE_REVERSE);
+    public static final MeddraDictLevelHelper MeddraDictLevel_LLT = new MeddraDictLevelHelper(MeddraDictLevelType.LLT, "LLT", "LLT_", SEARCH_MEDDRA_BASE_REVERSE);
+    
 	
 	private MeddraDictLevelType myLevel;
 	private String myLabel;
@@ -17,11 +24,11 @@ public class MeddraDictLevelHelper {
 	}
 	
 	private static MeddraDictLevelHelper[] allLevel = new MeddraDictLevelHelper[] {
-			new MeddraDictLevelHelper(MeddraDictLevelType.SOC, "SOC", "SOC_", SEARCH_MEDDRA_BASE),
-			new MeddraDictLevelHelper(MeddraDictLevelType.HLGT, "HLGT", "HLGT_", SEARCH_MEDDRA_BASE),
-			new MeddraDictLevelHelper(MeddraDictLevelType.HLT, "HLT", "HLT_", SEARCH_MEDDRA_BASE),
-			new MeddraDictLevelHelper(MeddraDictLevelType.PT, "PT", "PT_", SEARCH_MEDDRA_BASE_REVERSE),
-			new MeddraDictLevelHelper(MeddraDictLevelType.LLT, "LLT", "LLT_", SEARCH_MEDDRA_BASE_REVERSE)
+        MeddraDictLevel_SOC,
+		MeddraDictLevel_HLGT,
+		MeddraDictLevel_HLT,
+		MeddraDictLevel_PT,
+		MeddraDictLevel_LLT
 	};
 	
 	public static String getLabel(MeddraDictLevelType meddraLvl) {

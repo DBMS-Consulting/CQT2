@@ -39,6 +39,7 @@
 
 		<h:form id="impactAssessment">
 			<p:growl id="messages" life="#{appCSMQBean.defaultGrowlLife}" sticky="true" showDetail="#{appCSMQBean.degugMode}" />
+            <p:tooltip position="right" />
 
 			<h:panelGrid columns="1" styleClass="full-width">
 				<p:breadCrumb styleClass="breadcrumb">
@@ -146,7 +147,11 @@
 									</p:columnGroup>
 
 									<p:column><h:outputText value="#{node.term}" /></p:column>
-									<p:column><h:outputText value="#{node.code}" /></p:column>
+									<p:column>
+                                        <h:outputLink value="#" title="#{impactSearchController.getImpactDesc(node)}" >
+                                            <h:outputText value="#{node.code}" />
+                                        </h:outputLink>
+                                    </p:column>
 									<p:column><h:outputText value="#{node.level}" /></p:column>
 									<p:column><h:outputText value="#{node.scope}" /></p:column>
 								</p:treeTable>
@@ -210,7 +215,11 @@
 									</p:columnGroup>
 
 									<p:column><h:outputText value="#{node.term}" /></p:column>
-									<p:column><h:outputText value="#{node.code}" /></p:column>
+									<p:column>
+                                        <h:outputLink value="#" title="#{impactSearchController.getImpactDesc(node)}" >
+                                            <h:outputText value="#{node.code}" />
+                                        </h:outputLink>
+                                    </p:column>
 									<p:column><h:outputText value="#{node.level}" /></p:column>
 									<p:column><h:outputText value="#{node.scope}" /></p:column>
 									<p:column><h:outputText value="#{node.category}" /></p:column>

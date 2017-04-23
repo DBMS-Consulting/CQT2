@@ -43,6 +43,7 @@ import com.dbms.entity.cqt.CmqBase190;
 import com.dbms.entity.cqt.CmqBaseTarget;
 import com.dbms.entity.cqt.CmqRelation190;
 import com.dbms.entity.cqt.CmqRelationTarget;
+import com.dbms.entity.cqt.MeddraDict190;
 import com.dbms.entity.cqt.RefConfigCodeList;
 import com.dbms.entity.cqt.SmqBase190;
 import com.dbms.entity.cqt.SmqBaseTarget;
@@ -61,10 +62,12 @@ import com.dbms.service.IRefCodeListService;
 import com.dbms.service.ISmqBaseService;
 import com.dbms.service.ISmqBaseTargetService;
 import com.dbms.util.CmqUtils;
+import com.dbms.util.SMQLevelHelper;
 import com.dbms.util.SWJSFRequest;
 import com.dbms.view.IARelationsTreeHelper;
 import com.dbms.util.exceptions.CqtServiceException;
 import com.dbms.view.CmqBaseHierarchySearchVM;
+import com.dbms.view.CmqBaseRelationsTreeHelper;
 import com.dbms.view.ListDetailsFormVM;
 import com.dbms.view.ListNotesFormVM;
 import com.dbms.view.TargetHierarchySearchVM;
@@ -1190,6 +1193,136 @@ public class ImpactSearchController implements Serializable {
 			}
 		}
 	}
+    
+    /**
+     * Returns CMQ Impact Type Description
+     * @param impactType
+     * @return 
+     */
+    private String getCmqImpactDesc(String impactType) {
+        if("LDP".equals(impactType))
+            return "LLT moved to Different PT";
+        else if("LPP".equals(impactType))
+            return "LLT promoted to PT";
+        else if("PDL".equals(impactType))
+            return "PT demoted to LLT";
+        else if("NTR".equals(impactType))
+            return "New Term";
+        else if("PDH".equals(impactType))
+            return "PT moved to Different HLT";
+        else if("HDH".equals(impactType))
+            return "HLT moved to Different HLGT";
+        else if("HDS".equals(impactType))
+            return "HLGT moved to Different SOC";
+        else if("HPP".equals(impactType))
+            return "Primary SOC Change";
+        else if("HNP".equals(impactType))
+            return "Primary SOC Change";
+        else if("NCH".equals(impactType))
+            return "MedDRA Name Change";
+        else if("MRG".equals(impactType))
+            return "Term merged";
+        else if("LCN".equals(impactType))
+            return "Non-Current LLT";
+        else if("SDP".equals(impactType))
+            return "New successor PT";
+        return "";
+    }
+    /**
+     * Returns SMQ Impact Type Description
+     * @param impactType
+     * @return 
+     */
+    private String getSmqImpactDesc(String impactType) {
+        if("PSI".equals(impactType))
+            return "Inactive PT";
+        else if("PSA".equals(impactType))
+            return "Active PT";
+        else if("SWC".equals(impactType))
+            return "Scope, Weight, Category change";
+        else if("DTR".equals(impactType))
+            return "Deleted PT / Demoted PT in SMQ";
+        else if("LPP".equals(impactType))
+            return "Promoted PT in SMQ";
+        else if("PDL".equals(impactType))
+            return "Demoted PT in SMQ";
+        else if("NTR".equals(impactType))
+            return "Added PT /  Promoted PT in SMQ";
+        return "";
+    }
+    /**
+     * Returns the CMQ/SMQ relation impact type message (Hover text on relations hierarchy row/code column):
+     * @param node
+     * @return 
+     */
+    public String getImpactDesc(HierarchyNode node) {
+        if(node.getEntity() instanceof CmqBase190) {
+            CmqBase190 ent = (CmqBase190)node.getEntity();
+            return getCmqImpactDesc(ent.getImpactType());
+        } else if(node.getEntity() instanceof CmqRelation190) {
+            CmqRelation190 ent = (CmqRelation190)node.getEntity();
+            return getCmqImpactDesc(ent.getRelationImpactType());
+        } else if(node.getEntity() instanceof CmqBaseTarget) {
+            CmqBaseTarget ent = (CmqBaseTarget)node.getEntity();
+            return getCmqImpactDesc(ent.getImpactType());
+        } else if(node.getEntity() instanceof CmqRelationTarget) {
+            CmqRelationTarget ent = (CmqRelationTarget)node.getEntity();
+            return getCmqImpactDesc(ent.getRelationImpactType());
+        } else if(node.getEntity() instanceof SmqBase190) {
+            SmqBase190 ent = (SmqBase190)node.getEntity();
+            return getSmqImpactDesc(ent.getImpactType());
+        } else if(node.getEntity() instanceof SmqRelation190) {
+            SmqRelation190 ent = (SmqRelation190)node.getEntity();
+            return getSmqImpactDesc(ent.getRelationImpactType());
+        } else if(node.getEntity() instanceof SmqBaseTarget) {
+            SmqBaseTarget ent = (SmqBaseTarget)node.getEntity();
+            return getSmqImpactDesc(ent.getImpactType());
+        } else if(node.getEntity() instanceof SmqRelationTarget) {
+            SmqRelationTarget ent = (SmqRelationTarget)node.getEntity();
+            return getSmqImpactDesc(ent.getRelationImpactType());
+        } else if(node.getEntity() instanceof MeddraDictHierarchySearchDto) {
+            MeddraDictHierarchySearchDto ent = (MeddraDictHierarchySearchDto)node.getEntity();
+            if(ent.getPromotedLlt() != null)
+                return "LPP: LLT promoted to PT";
+            else if(ent.getDemotedPt() != null)
+                return "PDL: PT demoted to LLT";
+            else if(ent.getNewLlt() != null || 
+                    ent.getNewPt() != null ||
+                    ent.getNewHlt() != null ||
+                    ent.getNewHlgt() != null ||
+                    ent.getNewSoc() != null)
+                return "NTR: New Term";
+            else if(ent.getMovedLlt() != null)
+                return "LDP: LLT moved to Different PT";
+            else if(ent.getMovedPt() != null)
+                return "PDH: PT moved to Different HLT";
+            else if(ent.getMovedHlt() != null)
+                return "HDH: HLT moved to Different HLGT";
+            else if(ent.getMovedHlgt() != null)
+                return "HDS: HLGT moved to Different SOC";
+            else if(ent.getPrimarySocChange() != null)
+                return "HPP or HNP: Primary SOC changed";
+            else if(ent.getLltNameChanged() != null ||
+                    ent.getPtNameChanged() != null ||
+                    ent.getHltNameChanged() != null ||
+                    ent.getHlgtNameChanged() != null ||
+                    ent.getSocNameChanged() != null)
+                return "NCH: MedDRA Name Change";
+            else if(ent.getMergedHlt() != null ||
+                    ent.getMergedHlgt() != null)
+                return "MRG: Term merged";
+            else if(ent.getNewSuccessorPt() != null)
+                return "SDP: New successor PT";
+            else if(ent.getLltCurrencyChange() != null)
+                return "LCN: None-Current LLT";
+            return node.getLevel();
+        } else if(node.getEntity() instanceof MeddraDictReverseHierarchySearchDto) {
+            MeddraDictReverseHierarchySearchDto ent = (MeddraDictReverseHierarchySearchDto)node.getEntity();
+            return node.getLevel();
+        } else {
+            return node.getLevel();
+        }
+    }
 	
 	private void deleteRelationFromDb(HierarchyNode hierarchyNode) {
 		if (null != hierarchyNode) {
@@ -1824,7 +1957,9 @@ public class ImpactSearchController implements Serializable {
 	}
 	
 	public boolean isNotesFormReadonly() {
-		if (this.currentOrTarget == SELECTED_CURRENT_LIST || (detailsFormModel.getState().equals(CmqBaseTarget.CMQ_STATE_APPROVED_IA) || detailsFormModel.getState().equals(CmqBaseTarget.CMQ_STATE_PUBLISHED_IA)))
+		if (this.currentOrTarget == SELECTED_CURRENT_LIST ||
+                (detailsFormModel.getState().equals(CmqBaseTarget.CMQ_STATE_APPROVED_IA) ||
+                detailsFormModel.getState().equals(CmqBaseTarget.CMQ_STATE_PUBLISHED_IA)))
 			return true;
 		if (this.currentOrTarget == SELECTED_TARGET_LIST)
 			return false;
@@ -1832,7 +1967,9 @@ public class ImpactSearchController implements Serializable {
 	}
 	
 	public boolean isDetailsFormReadonly() {
-		if (this.currentOrTarget == SELECTED_CURRENT_LIST || (detailsFormModel.getState().equals(CmqBaseTarget.CMQ_STATE_APPROVED_IA) || detailsFormModel.getState().equals(CmqBaseTarget.CMQ_STATE_PUBLISHED_IA)))
+		if (this.currentOrTarget == SELECTED_CURRENT_LIST ||
+                (detailsFormModel.getState().equals(CmqBaseTarget.CMQ_STATE_APPROVED_IA) ||
+                detailsFormModel.getState().equals(CmqBaseTarget.CMQ_STATE_PUBLISHED_IA)))
 			return true;
 		if (this.currentOrTarget == SELECTED_TARGET_LIST)
 			return false;
