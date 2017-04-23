@@ -1290,7 +1290,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
     public boolean isVersionUpgradePending() {
 		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
 		try {
-			Query query = entityManager.createQuery("select count(*) from CmqBaseTarget c where 1");
+			Query query = entityManager.createQuery("select count(*) from CmqBaseTarget c");
 			Long retVal = (Long)query.getSingleResult();
             if(retVal!=null && retVal>0)
                 return true;
