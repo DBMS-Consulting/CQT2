@@ -298,9 +298,13 @@ public class CreateController implements Serializable {
 					IEntity entity = hierarchyNode.getEntity();
 					if (entity instanceof CmqBase190) {
 						CmqBase190 cmqEntity = (CmqBase190) entity;
-						cmqEntity.setCmqParentCode(cmqBase.getCmqCode());
-						cmqEntity.setCmqParentName(cmqBase.getCmqName());
-						cmqBaseChildrenList.add(cmqEntity);
+						Long existingParentCode = cmqEntity.getCmqParentCode();
+						if((null == existingParentCode) || (existingParentCode.longValue() != cmqBase.getCmqParentCode().longValue())) {
+							//update only if needed
+							cmqEntity.setCmqParentCode(cmqBase.getCmqCode());
+							cmqEntity.setCmqParentName(cmqBase.getCmqName());
+							cmqBaseChildrenList.add(cmqEntity);
+						}
 					} else {
 						CmqRelation190 cmqRelation = null;						
 						if (entity instanceof MeddraDictHierarchySearchDto) {
