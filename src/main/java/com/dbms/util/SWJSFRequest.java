@@ -6,8 +6,10 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.context.FacesContext;
 import javax.naming.Context;
 import javax.naming.NamingEnumeration;
@@ -23,18 +25,41 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.dbms.entity.cqt.RefConfigCodeList;
+import com.dbms.service.IRefCodeListService;
+
 
 @ManagedBean(name="appSWJSFRequest")
 @ApplicationScoped
 public class SWJSFRequest 
 {
+	
+	@ManagedProperty("#{RefCodeListService}")
+	private IRefCodeListService refCodeListService;
+	
     public static final String MEMBER_OF = "uniquemember";
-    public static final String LDAP_AD_SERVER = "ldaps://pxedv2dev.pfizer.com:6360"; //"ldap://iamv2dev.pfizer.com:6360";
-    public static final String LDAP_SEARCH_BASE = "dc=pxed,dc=pfizer,dc=com";
-    public static final String LDAP_USERNAME = "cn=cqt_admpx,ou=People,dc=pxed,dc=pfizer,dc=com";
-    public static final String LDAP_PASSWORD = "H7IMC85R#@4$";
-    public static final String LDAP_ACCOUNT_TO_LOOKUP = "cougha02";
+    public static String LDAP_AD_SERVER;
+    public static String LDAP_SEARCH_BASE;
+    public static String LDAP_USERNAME;
+    public static String LDAP_PASSWORD;
+    public static String LDAP_ACCOUNT_TO_LOOKUP = "cougha02";
     
+    @PostConstruct
+    public void init() {
+    	List<RefConfigCodeList> ldapConfigCoeList = this.refCodeListService.findLdapConfig();
+    	for (RefConfigCodeList refConfigCodeList : ldapConfigCoeList) {
+			String codeInternalValue = refConfigCodeList.getCodelistInternalValue();
+			if("LDAP_AD_SERVER".equalsIgnoreCase(codeInternalValue)) {
+				LDAP_AD_SERVER = refConfigCodeList.getValue();
+			} else if("LDAP_USERNAME".equalsIgnoreCase(codeInternalValue)) {
+				LDAP_USERNAME = refConfigCodeList.getValue();
+			} else if("LDAP_PASSWORD".equalsIgnoreCase(codeInternalValue)) {
+				LDAP_PASSWORD = refConfigCodeList.getValue();
+			} else if("LDAP_SEARCH_BASE".equalsIgnoreCase(codeInternalValue)) {
+				LDAP_SEARCH_BASE = refConfigCodeList.getValue();
+			}
+		}
+    }
     
     public LdapContext initLdapContext() throws NamingException {
         Hashtable<String, Object> env = new Hashtable<String, Object>();
@@ -392,5 +417,13 @@ public class SWJSFRequest
             return gp[1].replace("OPENCQT_", "");
         return defaultGroup;
     }
+
+	public IRefCodeListService getRefCodeListService() {
+		return refCodeListService;
+	}
+
+	public void setRefCodeListService(IRefCodeListService refCodeListService) {
+		this.refCodeListService = refCodeListService;
+	}
     
 }

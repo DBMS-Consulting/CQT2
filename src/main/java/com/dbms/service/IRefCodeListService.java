@@ -54,4 +54,6 @@ public interface IRefCodeListService extends ICqtPersistenceService<RefConfigCod
 	public List<RefConfigCodeList> findUserGroups();
     
     public String getMedDRAVersioningReportsPath();
+
+	List<RefConfigCodeList> findLdapConfig();
 }
