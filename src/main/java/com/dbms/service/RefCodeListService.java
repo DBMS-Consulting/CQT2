@@ -300,10 +300,10 @@ public class RefCodeListService extends
 	 * 
 	 *         Interprets internal code to value
 	 */
-	@Override
-	public String interpretInternalCodeToValue(String configType,
-			String internalCode) {
-		List<RefConfigCodeList> codeList = findByConfigType(configType, OrderBy.ASC);
+    @Override
+    public String interpretInternalCodeToValueOrDefault(String configType,
+			String internalCode, String defaultValue) {
+        List<RefConfigCodeList> codeList = findByConfigType(configType, OrderBy.ASC);
 		
 		if (codeList != null) {
 			for(RefConfigCodeList c : codeList) {
@@ -312,7 +312,13 @@ public class RefCodeListService extends
 				}
 			}	
 		}
-		return internalCode;
+		return defaultValue;
+    }
+    
+	@Override
+	public String interpretInternalCodeToValue(String configType,
+			String internalCode) {
+        return interpretInternalCodeToValueOrDefault(configType, internalCode, internalCode);
 	}
     
 	/**

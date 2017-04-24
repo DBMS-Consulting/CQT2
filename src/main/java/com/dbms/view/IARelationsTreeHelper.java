@@ -590,19 +590,18 @@ public class IARelationsTreeHelper {
 		if (childRelation.getRelationImpactType() != null) {
 			if("NCH".equals(childRelation.getRelationImpactType())) {
 				childRelationNode.setRowStyleClass("italic");
-			}
-			if("DTR".equals(childRelation.getRelationImpactType())) {
+			} else if("DTR".equals(childRelation.getRelationImpactType())) {
 				childRelationNode.setRowStyleClass("red-colored");
-			}
-			if ("SCH".equals(childRelation.getRelationImpactType()) || "ICC".equals(childRelation.getRelationImpactType()))
+			} else if ("SCH".equals(childRelation.getRelationImpactType()) ||
+                    "ICC".equals(childRelation.getRelationImpactType())) {
 				childRelationNode.setRowStyleClass("blue-colored");	
-			
-			if ("SWC".equals(childRelation.getRelationImpactType()))
+            } else if ("SWC".equals(childRelation.getRelationImpactType())) {
 				childRelationNode.setRowStyleClass("pink-colored");
-			
-			if("PTS".equals(childRelation.getRelationImpactType())) {
+            } else if("PTS".equals(childRelation.getRelationImpactType())) {
 				childRelationNode.setRowStyleClass("text-bold");
-			}
+			} else if("PSI".equals(childRelation.getRelationImpactType())) {
+                childRelationNode.setRowStyleClass("orange-colored");
+            }
 		}
 		else
 			childRelationNode.setRowStyleClass("none");
@@ -615,13 +614,13 @@ public class IARelationsTreeHelper {
 					|| "NTR".equalsIgnoreCase(childRelation.getRelationImpactType())
 					|| "PSA".equalsIgnoreCase(childRelation.getRelationImpactType())) {
 				childRelationNode.setRowStyleClass("orange-colored");
-			}
-
-			if ("SCH".equals(childRelation.getRelationImpactType()))
+			} else if ("SCH".equals(childRelation.getRelationImpactType())) {
 				childRelationNode.setRowStyleClass("blue-colored");
-			
-			if ("SWC".equals(childRelation.getRelationImpactType()))
+            } else if ("SWC".equals(childRelation.getRelationImpactType())) {
 				childRelationNode.setRowStyleClass("pink-colored");
+            } else if ("PSI".equals(childRelation.getRelationImpactType())) {
+				childRelationNode.setRowStyleClass("red-colored");
+            }
 		}
 		else
 			childRelationNode.setRowStyleClass("none");

@@ -1202,7 +1202,7 @@ public class ImpactSearchController implements Serializable {
      * @return 
      */
     private String getCmqRelationImpactDesc(String impactType) {
-        return refCodeListService.findCodeByInternalCode(CqtConstants.CODE_LIST_TYPE_CMQ_RELATION_IMPACT_TYPE, impactType);
+        return refCodeListService.interpretInternalCodeToValueOrDefault(CqtConstants.CODE_LIST_TYPE_CMQ_RELATION_IMPACT_TYPE, impactType, "");
     }
     /**
      * Returns SMQ Impact Type Description
@@ -1210,7 +1210,7 @@ public class ImpactSearchController implements Serializable {
      * @return 
      */
     private String getSmqRelationImpactDesc(String impactType) {
-        return refCodeListService.findCodeByInternalCode(CqtConstants.CODE_LIST_TYPE_SMQ_RELATION_IMPACT_TYPE, impactType);
+        return refCodeListService.interpretInternalCodeToValueOrDefault(CqtConstants.CODE_LIST_TYPE_SMQ_RELATION_IMPACT_TYPE, impactType, "");
     }
     
     /**
