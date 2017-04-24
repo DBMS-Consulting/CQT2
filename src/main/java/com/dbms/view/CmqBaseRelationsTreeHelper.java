@@ -62,7 +62,7 @@ public class CmqBaseRelationsTreeHelper {
 	 * @return
 	 */
 	public TreeNode getCmqBaseRelationsRootHierarchy(Long cmqCode, boolean requireDrillDown) {
-		ExecutorService executorService = Executors.newFixedThreadPool(7);
+		ExecutorService executorService = Executors.newFixedThreadPool(10);
 		List<CmqRelation190> cmqRelationList = this.cmqRelationSvc.findByCmqCode(cmqCode);
 		TreeNode rootNode = new DefaultTreeNode("root"
 				, new HierarchyNode("LEVEL", "NAME", "CODE", "SCOPE", "CATEGORY", "WEIGHT", null)
@@ -81,7 +81,7 @@ public class CmqBaseRelationsTreeHelper {
 				future.get();//get it to make sure we wait till all finish
 				i++;
 				if((i % 100) == 0) {
-					LOG.info("finishes {} futures fetches.", i);
+					LOG.info("Finished {} futures fetches.", i);
 				}
 			} catch (InterruptedException | ExecutionException e) {
 				LOG.error(e.getMessage());
