@@ -1230,6 +1230,8 @@ public class ImpactSearchController implements Serializable {
                 return refCodeListService.interpretMeddraImpactTypeDesc("moved_llt", ent.getMovedLlt());
             else if(ent.getPrimarySocChange() != null)
                 return refCodeListService.interpretMeddraImpactTypeDesc("primary_soc_change", ent.getPrimarySocChange());
+            else if(ent.getLltCurrencyChange() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("llt_currency_change", ent.getLltCurrencyChange());
         } else if("PT".equals(lvl)) {
             if(ent.getNewPt() != null)
                 return refCodeListService.interpretMeddraImpactTypeDesc("new_pt", ent.getNewPt());
@@ -1269,10 +1271,6 @@ public class ImpactSearchController implements Serializable {
             else if(ent.getSocNameChanged() != null)
                 return refCodeListService.interpretMeddraImpactTypeDesc("soc_name_changed", ent.getSocNameChanged());
         }
-
-        
-        else if(ent.getLltCurrencyChange() != null)
-            return refCodeListService.interpretMeddraImpactTypeDesc("llt_currency_change", ent.getLltCurrencyChange());
         return "";
     }
     /**

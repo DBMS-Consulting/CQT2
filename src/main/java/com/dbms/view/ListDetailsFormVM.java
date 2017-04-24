@@ -76,6 +76,9 @@ public class ListDetailsFormVM {
 		this.state = CmqBase190.CMQ_STATE_VALUE_DRAFT;
 		this.status = CmqBase190.CMQ_STATUS_DISP_LABEL_PENDING;
 		this.designee = "NONE";
+        this.designeeTwo = "NONE";
+        this.designeeThree = "NONE";
+        
 		this.designeeList = this.appSWJSFRequest.getPXEDUserList();
 		this.modelChanged = false;
         
