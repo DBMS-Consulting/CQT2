@@ -54,7 +54,7 @@ public class CmqBaseHierarchySearchVM {
 	private List<HierarchySearchResultBean> hierarchySearchResults;
 	
 	private IRelationsChangeListener onDropRelationsListener;
-
+	
 	public CmqBaseHierarchySearchVM(ICmqBase190Service cmqBaseSvc,
 			ISmqBaseService smqBaseSvc,
 			IMeddraDictService meddraDictSvc,

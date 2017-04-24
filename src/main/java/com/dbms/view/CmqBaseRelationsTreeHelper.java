@@ -6,12 +6,19 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.dbms.csmq.HierarchyNode;
 import com.dbms.entity.IEntity;
@@ -30,11 +37,14 @@ import com.dbms.util.SMQLevelHelper;
 public class CmqBaseRelationsTreeHelper {
 	public enum SearchTarget { SMQ_BASE, MEDDRA_DICT, CMQ_BASE }
 	
+	private static final Logger LOG = LoggerFactory
+			.getLogger(CmqBaseRelationsTreeHelper.class);
+	
 	private ICmqBase190Service cmqBaseSvc;
 	private ISmqBaseService smqBaseSvc;
 	private IMeddraDictService meddraDictSvc;
 	private ICmqRelation190Service cmqRelationSvc;
-		
+	
 	public CmqBaseRelationsTreeHelper(ICmqBase190Service cmqBaseSvc,
 			ISmqBaseService smqBaseSvc,
 			IMeddraDictService meddraDictSvc,
@@ -52,137 +62,33 @@ public class CmqBaseRelationsTreeHelper {
 	 * @return
 	 */
 	public TreeNode getCmqBaseRelationsRootHierarchy(Long cmqCode, boolean requireDrillDown) {
+		ExecutorService executorService = Executors.newFixedThreadPool(7);
 		List<CmqRelation190> cmqRelationList = this.cmqRelationSvc.findByCmqCode(cmqCode);
 		TreeNode rootNode = new DefaultTreeNode("root"
 				, new HierarchyNode("LEVEL", "NAME", "CODE", "SCOPE", "CATEGORY", "WEIGHT", null)
 				, null);
+		List<Future<Boolean>> futures = new ArrayList<>();
 		for (CmqRelation190 cmqRelation : cmqRelationList) {
-			HierarchyNode node = null;
-			if ((cmqRelation.getSmqCode() != null)
-					&& (cmqRelation.getSmqCode() > 0)) {
-				if((cmqRelation.getPtCode() != null)
-						&& (cmqRelation.getPtCode() > 0)) {
-					//this is an smq relation
-					SmqRelation190 childRelation = this.smqBaseSvc.findSmqRelationBySmqAndPtCode(cmqRelation.getSmqCode()
-																										, cmqRelation.getPtCode().intValue());
-					HierarchyNode childRelationNode = new HierarchyNode();
-					if (childRelation.getSmqLevel() == 1) {
-						childRelationNode.setLevel("SMQ1");
-					} else if (childRelation.getSmqLevel() == 2) {
-						childRelationNode.setLevel("SMQ2");
-					} else if (childRelation.getSmqLevel() == 3) {
-						childRelationNode.setLevel("SMQ3");
-					} else if ((childRelation.getSmqLevel() == 4)
-							|| (childRelation.getSmqLevel() == 0)
-							|| (childRelation.getSmqLevel() == 5)) {
-						childRelationNode.setLevel("PT");
-					}
-					childRelationNode.setTerm(childRelation.getPtName());
-					childRelationNode.setCode(childRelation.getPtCode().toString());
-					childRelationNode.setEntity(childRelation);
-					new DefaultTreeNode(childRelationNode, rootNode);
-				} else {
-					//this is an smq base 
-					SmqBase190 smqBase190 = this.smqBaseSvc
-							.findByCode(cmqRelation.getSmqCode());
-					if (null != smqBase190) {
-						node = this.createSmqBaseNode(smqBase190);
-						node.setCategory((cmqRelation.getTermCategory() == null) ? "" : cmqRelation.getTermCategory());
-						node.setScope((cmqRelation.getTermScope() == null) ? "" : cmqRelation.getTermScope());
-						node.setWeight((cmqRelation.getTermWeight() == null) ? "" : cmqRelation.getTermWeight() + "");
-						TreeNode smqBaseTreeNode = new DefaultTreeNode(node,
-								rootNode);
-						if(requireDrillDown) {
-							long childSmqrelationsCount = this.smqBaseSvc
-									.findSmqRelationsCountForSmqCode(smqBase190
-											.getSmqCode());
-							if (childSmqrelationsCount > 0) {
-								// add a dummmy node to show expand arrow
-								HierarchyNode dummyNode = new HierarchyNode(null, null,
-										null, null);
-								dummyNode.setDummyNode(true);
-								new DefaultTreeNode(dummyNode, smqBaseTreeNode);
-							}
-						}
-					}
+			RelationsWorker worker  = new RelationsWorker(cmqRelation, rootNode, requireDrillDown);
+			Future<Boolean> future = executorService.submit(worker);
+			futures.add(future);
+		}
+		
+		int i=0;
+		
+		for (Future<Boolean> future : futures) {
+			try {
+				future.get();//get it to make sure we wait till all finish
+				i++;
+				if((i % 100) == 0) {
+					LOG.info("finishes {} futures fetches.", i);
 				}
-			} else if ((cmqRelation.getSocCode() != null) && (cmqRelation.getSocCode() > 0)) {
-				MeddraDictHierarchySearchDto searchDto = this.meddraDictSvc
-						.findByCode("SOC_", cmqRelation.getSocCode());
-				node = this.createMeddraNode(searchDto, "SOC");
-				node.setCategory((cmqRelation.getTermCategory() == null) ? "" : cmqRelation.getTermCategory());
-				node.setScope((cmqRelation.getTermScope() == null) ? "" : cmqRelation.getTermScope());
-				node.setWeight((cmqRelation.getTermWeight() == null) ? "" : cmqRelation.getTermWeight() + "");
-				TreeNode treeNode = new DefaultTreeNode(node, rootNode);
-
-				if(requireDrillDown) {
-					Long childCount = this.meddraDictSvc.findChldrenCountByParentCode("HLGT_", "SOC_", cmqRelation.getSocCode());
-					if((null != childCount) && (childCount > 0)) {
-						HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
-						dummyNode.setDummyNode(true);
-						new DefaultTreeNode(dummyNode, treeNode);
-					}
-				}
-			} else if ((cmqRelation.getHlgtCode() != null) && (cmqRelation.getHlgtCode() > 0)) {
-				MeddraDictHierarchySearchDto searchDto = this.meddraDictSvc
-						.findByCode("HLGT_", cmqRelation.getHlgtCode());
-				node = this.createMeddraNode(searchDto, "HLGT");
-				node.setCategory((cmqRelation.getTermCategory() == null) ? "" : cmqRelation.getTermCategory());
-				node.setScope((cmqRelation.getTermScope() == null) ? "" : cmqRelation.getTermScope());
-				node.setWeight((cmqRelation.getTermWeight() == null) ? "" : cmqRelation.getTermWeight() + "");
-				TreeNode treeNode = new DefaultTreeNode(node, rootNode);
-
-				if(requireDrillDown) {
-					Long childCount = this.meddraDictSvc.findChldrenCountByParentCode("HLT_", "HLGT_", cmqRelation.getHlgtCode());
-					if((null != childCount) && (childCount > 0)) {
-						HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
-						dummyNode.setDummyNode(true);
-						new DefaultTreeNode(dummyNode, treeNode);
-					}
-				}
-			} else if ((cmqRelation.getHltCode() != null) && (cmqRelation.getHltCode() > 0)) {
-				MeddraDictHierarchySearchDto searchDto = this.meddraDictSvc
-						.findByCode("HLT_", cmqRelation.getHltCode());
-				node = this.createMeddraNode(searchDto, "HLT");
-				node.setCategory((cmqRelation.getTermCategory() == null) ? "" : cmqRelation.getTermCategory());
-				node.setScope((cmqRelation.getTermScope() == null) ? "" : cmqRelation.getTermScope());
-				node.setWeight((cmqRelation.getTermWeight() == null) ? "" : cmqRelation.getTermWeight() + "");
-				TreeNode treeNode = new DefaultTreeNode(node, rootNode);
-
-				if(requireDrillDown) {
-					Long childCount = this.meddraDictSvc.findChldrenCountByParentCode("PT_", "HLT_", cmqRelation.getHltCode());
-					if((null != childCount) && (childCount > 0)) {
-						HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
-						dummyNode.setDummyNode(true);
-						new DefaultTreeNode(dummyNode, treeNode);
-					}
-				}
-			} else if ((cmqRelation.getPtCode() != null) && (cmqRelation.getPtCode() > 0)) {
-				MeddraDictReverseHierarchySearchDto searchDto = this.meddraDictSvc.findByPtOrLltCode("PT_", cmqRelation.getPtCode());
-				node = this.createMeddraReverseNode(searchDto, "PT", false);
-				node.setCategory((cmqRelation.getTermCategory() == null) ? "" : cmqRelation.getTermCategory());
-				node.setScope((cmqRelation.getTermScope() == null) ? "" : cmqRelation.getTermScope());
-				node.setWeight((cmqRelation.getTermWeight() == null) ? "" : cmqRelation.getTermWeight() + "");
-				TreeNode treeNode = new DefaultTreeNode(node, rootNode);
-				
-				if(requireDrillDown) {
-					Long childCount = this.meddraDictSvc.findChldrenCountByParentCode("LLT_", "PT_", cmqRelation.getPtCode());
-					if((null != childCount) && (childCount > 0)) {
-						HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
-						dummyNode.setDummyNode(true);
-						new DefaultTreeNode(dummyNode, treeNode);
-					}
-				}
-			} else if ((cmqRelation.getLltCode() != null)
-					&& (cmqRelation.getLltCode() > 0)) {
-				MeddraDictReverseHierarchySearchDto searchDto = this.meddraDictSvc.findByPtOrLltCode("LLT_", cmqRelation.getLltCode());
-				node = this.createMeddraReverseNode(searchDto, "LLT", false);
-				node.setCategory((cmqRelation.getTermCategory() == null) ? "" : cmqRelation.getTermCategory());
-				node.setScope((cmqRelation.getTermScope() == null) ? "" : cmqRelation.getTermScope());
-				node.setWeight((cmqRelation.getTermWeight() == null) ? "" : cmqRelation.getTermWeight() + "");
-				new DefaultTreeNode(node, rootNode);
+			} catch (InterruptedException | ExecutionException e) {
+				LOG.error(e.getMessage());
 			}
 		}
+		
+		LOG.info("Finished futures fetch.");
 		
 		if(requireDrillDown) {
 			this.populateChildCmqsByParent(cmqCode, rootNode);
@@ -822,5 +728,182 @@ public class CmqBaseRelationsTreeHelper {
 		}
 		node.setEntity(searchDto);
 		return node;
+	}
+	
+	private class RelationsWorker implements Callable<Boolean> {
+		private CmqRelation190 cmqRelation;
+		private TreeNode rootNode;
+		private boolean requireDrillDown;
+		
+		public RelationsWorker(CmqRelation190 cmqRelation, TreeNode rootNode, boolean requireDrillDown) {
+			this.cmqRelation = cmqRelation;
+			this.rootNode = rootNode;
+			this.requireDrillDown = requireDrillDown;
+		}
+		
+		@Override
+		public Boolean call() throws Exception {
+			try {
+				HierarchyNode node = null;
+				
+				if ((cmqRelation.getSmqCode() != null)
+						&& (cmqRelation.getSmqCode() > 0)) {
+					if((cmqRelation.getPtCode() != null)
+							&& (cmqRelation.getPtCode() > 0)) {
+						//this is an smq relation
+						SmqRelation190 childRelation = smqBaseSvc.findSmqRelationBySmqAndPtCode(cmqRelation.getSmqCode()
+																											, cmqRelation.getPtCode().intValue());
+						HierarchyNode childRelationNode = new HierarchyNode();
+						if (childRelation.getSmqLevel() == 1) {
+							childRelationNode.setLevel("SMQ1");
+						} else if (childRelation.getSmqLevel() == 2) {
+							childRelationNode.setLevel("SMQ2");
+						} else if (childRelation.getSmqLevel() == 3) {
+							childRelationNode.setLevel("SMQ3");
+						} else if ((childRelation.getSmqLevel() == 4)
+								|| (childRelation.getSmqLevel() == 0)
+								|| (childRelation.getSmqLevel() == 5)) {
+							childRelationNode.setLevel("PT");
+						}
+						childRelationNode.setTerm(childRelation.getPtName());
+						childRelationNode.setCode(childRelation.getPtCode().toString());
+						childRelationNode.setEntity(childRelation);
+						synchronized (rootNode) {
+							new DefaultTreeNode(childRelationNode, rootNode);
+						}
+					} else {
+						//this is an smq base 
+						SmqBase190 smqBase190 = smqBaseSvc.findByCode(cmqRelation.getSmqCode());
+						if (null != smqBase190) {
+							node = createSmqBaseNode(smqBase190);
+							node.setCategory((cmqRelation.getTermCategory() == null) ? "" : cmqRelation.getTermCategory());
+							node.setScope((cmqRelation.getTermScope() == null) ? "" : cmqRelation.getTermScope());
+							node.setWeight((cmqRelation.getTermWeight() == null) ? "" : cmqRelation.getTermWeight() + "");
+							TreeNode smqBaseTreeNode = null;
+							synchronized (rootNode) {
+								smqBaseTreeNode = new DefaultTreeNode(node,rootNode);
+							}
+							if(requireDrillDown) {
+								long childSmqrelationsCount = smqBaseSvc
+										.findSmqRelationsCountForSmqCode(smqBase190
+												.getSmqCode());
+								if (childSmqrelationsCount > 0) {
+									// add a dummmy node to show expand arrow
+									HierarchyNode dummyNode = new HierarchyNode(null, null,
+											null, null);
+									dummyNode.setDummyNode(true);
+									synchronized (rootNode) {
+										new DefaultTreeNode(dummyNode, smqBaseTreeNode);
+									}
+								}
+							}
+						}
+					}
+				} else if ((cmqRelation.getSocCode() != null) && (cmqRelation.getSocCode() > 0)) {
+					MeddraDictHierarchySearchDto searchDto = meddraDictSvc
+							.findByCode("SOC_", cmqRelation.getSocCode());
+					node = createMeddraNode(searchDto, "SOC");
+					node.setCategory((cmqRelation.getTermCategory() == null) ? "" : cmqRelation.getTermCategory());
+					node.setScope((cmqRelation.getTermScope() == null) ? "" : cmqRelation.getTermScope());
+					node.setWeight((cmqRelation.getTermWeight() == null) ? "" : cmqRelation.getTermWeight() + "");
+					TreeNode treeNode = null;
+					synchronized (rootNode) {
+						treeNode = new DefaultTreeNode(node, rootNode);
+					}
+
+					if(requireDrillDown) {
+						Long childCount = meddraDictSvc.findChldrenCountByParentCode("HLGT_", "SOC_", cmqRelation.getSocCode());
+						if((null != childCount) && (childCount > 0)) {
+							HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
+							dummyNode.setDummyNode(true);
+							synchronized (rootNode) {
+								new DefaultTreeNode(dummyNode, treeNode);
+							}
+						}
+					}
+				} else if ((cmqRelation.getHlgtCode() != null) && (cmqRelation.getHlgtCode() > 0)) {
+					MeddraDictHierarchySearchDto searchDto = meddraDictSvc
+							.findByCode("HLGT_", cmqRelation.getHlgtCode());
+					node = createMeddraNode(searchDto, "HLGT");
+					node.setCategory((cmqRelation.getTermCategory() == null) ? "" : cmqRelation.getTermCategory());
+					node.setScope((cmqRelation.getTermScope() == null) ? "" : cmqRelation.getTermScope());
+					node.setWeight((cmqRelation.getTermWeight() == null) ? "" : cmqRelation.getTermWeight() + "");
+					TreeNode treeNode = null;
+					synchronized (rootNode) {
+						treeNode = new DefaultTreeNode(node, rootNode);
+					}
+
+
+					if(requireDrillDown) {
+						Long childCount = meddraDictSvc.findChldrenCountByParentCode("HLT_", "HLGT_", cmqRelation.getHlgtCode());
+						if((null != childCount) && (childCount > 0)) {
+							HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
+							dummyNode.setDummyNode(true);
+							synchronized (rootNode) {
+								new DefaultTreeNode(dummyNode, treeNode);
+							}
+						}
+					}
+				} else if ((cmqRelation.getHltCode() != null) && (cmqRelation.getHltCode() > 0)) {
+					MeddraDictHierarchySearchDto searchDto = meddraDictSvc
+							.findByCode("HLT_", cmqRelation.getHltCode());
+					node = createMeddraNode(searchDto, "HLT");
+					node.setCategory((cmqRelation.getTermCategory() == null) ? "" : cmqRelation.getTermCategory());
+					node.setScope((cmqRelation.getTermScope() == null) ? "" : cmqRelation.getTermScope());
+					node.setWeight((cmqRelation.getTermWeight() == null) ? "" : cmqRelation.getTermWeight() + "");
+					TreeNode treeNode = null;
+					synchronized (rootNode) {
+						treeNode = new DefaultTreeNode(node, rootNode);
+					}
+
+					if(requireDrillDown) {
+						Long childCount = meddraDictSvc.findChldrenCountByParentCode("PT_", "HLT_", cmqRelation.getHltCode());
+						if((null != childCount) && (childCount > 0)) {
+							HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
+							dummyNode.setDummyNode(true);
+							synchronized (rootNode) {
+								new DefaultTreeNode(dummyNode, treeNode);
+							}
+						}
+					}
+				} else if ((cmqRelation.getPtCode() != null) && (cmqRelation.getPtCode() > 0)) {
+					MeddraDictReverseHierarchySearchDto searchDto = meddraDictSvc.findByPtOrLltCode("PT_", cmqRelation.getPtCode());
+					node = createMeddraReverseNode(searchDto, "PT", false);
+					node.setCategory((cmqRelation.getTermCategory() == null) ? "" : cmqRelation.getTermCategory());
+					node.setScope((cmqRelation.getTermScope() == null) ? "" : cmqRelation.getTermScope());
+					node.setWeight((cmqRelation.getTermWeight() == null) ? "" : cmqRelation.getTermWeight() + "");
+					TreeNode treeNode = null;
+					synchronized (rootNode) {
+						treeNode = new DefaultTreeNode(node, rootNode);
+					}
+					
+					if(requireDrillDown) {
+						Long childCount = meddraDictSvc.findChldrenCountByParentCode("LLT_", "PT_", cmqRelation.getPtCode());
+						if((null != childCount) && (childCount > 0)) {
+							HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
+							dummyNode.setDummyNode(true);
+							synchronized (rootNode) {
+								new DefaultTreeNode(dummyNode, treeNode);
+							}
+						}
+					}
+				} else if ((cmqRelation.getLltCode() != null)
+						&& (cmqRelation.getLltCode() > 0)) {
+					MeddraDictReverseHierarchySearchDto searchDto = meddraDictSvc.findByPtOrLltCode("LLT_", cmqRelation.getLltCode());
+					node = createMeddraReverseNode(searchDto, "LLT", false);
+					node.setCategory((cmqRelation.getTermCategory() == null) ? "" : cmqRelation.getTermCategory());
+					node.setScope((cmqRelation.getTermScope() == null) ? "" : cmqRelation.getTermScope());
+					node.setWeight((cmqRelation.getTermWeight() == null) ? "" : cmqRelation.getTermWeight() + "");
+					synchronized (rootNode) {
+						new DefaultTreeNode(node, rootNode);
+					}
+				}
+			} catch (Throwable e) {
+				LOG.error(e.getMessage(), e);
+				return false;
+			}
+			return true;
+		}
+		
 	}
 }
