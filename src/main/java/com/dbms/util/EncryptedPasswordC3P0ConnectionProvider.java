@@ -25,10 +25,14 @@ import java.util.Properties;
 import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.service.jdbc.connections.internal.C3P0ConnectionProvider;
 import org.jasypt.encryption.pbe.PBEStringEncryptor;
+import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
+import org.jasypt.encryption.pbe.config.EnvironmentStringPBEConfig;
 import org.jasypt.exceptions.EncryptionInitializationException;
 import org.jasypt.hibernate4.connectionprovider.ParameterNaming;
 import org.jasypt.hibernate4.encryptor.HibernatePBEEncryptorRegistry;
 import org.jasypt.properties.PropertyValueEncryptionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -92,11 +96,39 @@ public final class EncryptedPasswordC3P0ConnectionProvider
     
     private static final long serialVersionUID = 5273353009914873806L;
 
+	private static final Logger LOG = LoggerFactory.getLogger(EncryptorListener.class);
 
+	private static final String hibernateEncryptor = "hibernateEncryptor";
+	private static final String TOKEN_KEY = "TOKEN_KEY";
+	private static final String ALGORITHM = "PBEWITHMD5ANDDES";
+
+	private static HibernatePBEEncryptorRegistry registry = null;
+	
+	
     public EncryptedPasswordC3P0ConnectionProvider() {
         super();
+        init();
     }
 
+    public void init() {   	
+    	if (registry == null) {
+	    	String myKey = System.getenv("TOKEN_KEY");
+	    	LOG.info("key: [" + myKey + "]");
+	
+			EnvironmentStringPBEConfig config = new EnvironmentStringPBEConfig();
+			config.setPasswordEnvName(TOKEN_KEY);
+			  
+			StandardPBEStringEncryptor strongEncryptor = new StandardPBEStringEncryptor();
+			strongEncryptor.setAlgorithm(ALGORITHM);
+			strongEncryptor.setConfig(config);
+			  
+			registry =  HibernatePBEEncryptorRegistry.getInstance();
+			registry.registerPBEStringEncryptor(hibernateEncryptor, strongEncryptor);
+	
+			LOG.info("'" + hibernateEncryptor + "' has been registered.");
+    	}
+    }
+    
 	public void configure(Map props) {
 		final String encryptorRegisteredName =
 				(String)props.get(ParameterNaming.ENCRYPTOR_REGISTERED_NAME);
