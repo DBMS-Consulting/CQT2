@@ -35,7 +35,11 @@
 			<property name="hibernate.connection.driver_class" value="oracle.jdbc.driver.OracleDriver" />
             <property name="hibernate.connection.url" value="jdbc:oracle:thin:@192.196.245.20:8078/devcqt1" />
 			<property name="hibernate.connection.username" value="opencqt" />
+
 			<property name="hibernate.connection.password" value="release098" />
+<!-- 
+			<property name="hibernate.connection.password" value="ENC(eUob/NCg3ql+yuAf+IlLuM55Z2tEt11S)" />
+ -->			
 			<property name="hibernate.default_schema" value="OPENCQT" />
 			<property name="hibernate.connection.autocommit" value="false" />
 			<property name="hibernate.max_fetch_depth" value="4" />
@@ -55,8 +59,11 @@
 			<property name="hibernate.format_sql" value="false" />
 
 			<!-- Connection pooling -->
-			<property name="hibernate.connection.provider_class"
-				value="org.hibernate.connection.C3P0ConnectionProvider" />
+<!-- 
+			<property name="hibernate.connection.provider_class" value="org.hibernate.connection.C3P0ConnectionProvider" />
+ -->
+			<property name="hibernate.connection.provider_class" value="com.dbms.util.EncryptedPasswordC3P0ConnectionProvider" />
+			<property name="hibernate.connection.encryptor_registered_name" value="hibernateEncryptor"/>				
 			<property name="hibernate.c3p0.max_size" value="3" />
 			<property name="hibernate.c3p0.min_size" value="1" />
 			<property name="hibernate.c3p0.acquire_increment" value="1" />

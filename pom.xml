@@ -22,6 +22,7 @@
 
 		<!-- to be compatible with JBoss EAP 6.4 -->
 		<hibernate.version>4.2.18.Final</hibernate.version>
+		<jasypt.version>1.9.2</jasypt.version>
 
 	</properties>
 	<dependencies>
@@ -153,6 +154,17 @@
 		    <version>6.4.0</version>
 		</dependency>
 				
+		<dependency>
+			<groupId>org.jasypt</groupId>
+			<artifactId>jasypt</artifactId>
+			<version>${jasypt.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jasypt</groupId>
+			<artifactId>jasypt-hibernate4</artifactId>
+			<version>${jasypt.version}</version>
+		</dependency>
+    				
 	</dependencies>
 
 	<build>
