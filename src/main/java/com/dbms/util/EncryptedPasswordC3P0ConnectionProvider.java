@@ -96,7 +96,7 @@ public final class EncryptedPasswordC3P0ConnectionProvider
     
     private static final long serialVersionUID = 5273353009914873806L;
 
-	private static final Logger LOG = LoggerFactory.getLogger(EncryptorListener.class);
+	private static final Logger LOG = LoggerFactory.getLogger(EncryptedPasswordC3P0ConnectionProvider.class);
 
 	private static final String hibernateEncryptor = "hibernateEncryptor";
 	private static final String TOKEN_KEY = "TOKEN_KEY";
