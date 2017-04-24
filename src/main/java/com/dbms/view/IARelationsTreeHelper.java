@@ -621,7 +621,7 @@ public class IARelationsTreeHelper {
 						if (meddra.getSocCode() != null) {
 							List<Long> codes = new ArrayList<Long>();
 							codes.add(Long.parseLong(meddra.getSocCode()));
-							List<MeddraDictHierarchySearchDto> list = this.meddraDictCurrentService.findChildrenByParentCode("HLGT_", "SOC_", Long.parseLong(meddra.getSocCode()));
+							List<MeddraDictHierarchySearchDto> list = this.meddraDictTargetService.findChildrenByParentCode("HLGT_", "SOC_", Long.parseLong(meddra.getSocCode()));
 							if (list != null) {
 								for (MeddraDictHierarchySearchDto child : list)
 								if (child.getNewHlgt() != null || child.getMovedHlgt() != null || child.getMergedHlgt() != null || child.getHlgtNameChanged() != null) {
@@ -635,7 +635,7 @@ public class IARelationsTreeHelper {
 						if (meddra.getHlgtCode() != null) {
 							List<Long> codes = new ArrayList<Long>();
 							codes.add(Long.parseLong(meddra.getHlgtCode()));
-							List<MeddraDictHierarchySearchDto> list = this.meddraDictCurrentService.findChildrenByParentCode("HLT_", "HLGT_", Long.parseLong(meddra.getHlgtCode()));//findByCodes("HLT_", codes);
+							List<MeddraDictHierarchySearchDto> list = this.meddraDictTargetService.findChildrenByParentCode("HLT_", "HLGT_", Long.parseLong(meddra.getHlgtCode()));//findByCodes("HLT_", codes);
 							if (list != null) {
 								for (MeddraDictHierarchySearchDto child : list)
 								if (child.getNewHlt() != null || child.getMovedHlt() != null || child.getHltNameChanged() != null) {
@@ -650,7 +650,7 @@ public class IARelationsTreeHelper {
 						if (meddra.getHltCode() != null) { 
 							List<Long> codes = new ArrayList<Long>();
 							codes.add(Long.parseLong(meddra.getHltCode()));
-							List<MeddraDictHierarchySearchDto> list = this.meddraDictCurrentService.findChildrenByParentCode("PT_", "HLT_", Long.parseLong(meddra.getHltCode()));//findByCodes("HLT_", codes);
+							List<MeddraDictHierarchySearchDto> list = this.meddraDictTargetService.findChildrenByParentCode("PT_", "HLT_", Long.parseLong(meddra.getHltCode()));//findByCodes("HLT_", codes);
 							if (list != null) {
 								for (MeddraDictHierarchySearchDto child : list)
 								if (child.getNewSuccessorPt() != null || child.getNewPt() != null || child.getMovedPt() != null || child.getPromotedPt() != null || child.getDemotedLlt() != null || child.getLltNameChanged() != null) {
@@ -665,7 +665,7 @@ public class IARelationsTreeHelper {
 						if (meddra.getPtCode() != null) {
 							List<Long> codes = new ArrayList<Long>();
 							codes.add(Long.parseLong(meddra.getPtCode()));
-							List<MeddraDictHierarchySearchDto> list = this.meddraDictCurrentService.findChildrenByParentCode("LLT_", "PT_", Long.parseLong(meddra.getPtCode()));//findByCodes("HLT_", codes);
+							List<MeddraDictHierarchySearchDto> list = this.meddraDictTargetService.findChildrenByParentCode("LLT_", "PT_", Long.parseLong(meddra.getPtCode()));//findByCodes("HLT_", codes);
 							if (list != null) {
 								for (MeddraDictHierarchySearchDto child : list)
 								if (child.getLltCurrencyChange() != null || child.getNewLlt() != null || child.getMovedLlt() != null || child.getPromotedLlt() != null || child.getDemotedLlt() != null || child.getLltNameChanged() != null) {
