@@ -62,6 +62,7 @@ import com.dbms.service.IRefCodeListService;
 import com.dbms.service.ISmqBaseService;
 import com.dbms.service.ISmqBaseTargetService;
 import com.dbms.util.CmqUtils;
+import com.dbms.util.CqtConstants;
 import com.dbms.util.SMQLevelHelper;
 import com.dbms.util.SWJSFRequest;
 import com.dbms.view.IARelationsTreeHelper;
@@ -1200,55 +1201,66 @@ public class ImpactSearchController implements Serializable {
      * @param impactType
      * @return 
      */
-    private String getCmqImpactDesc(String impactType) {
-        if("LDP".equals(impactType))
-            return "LLT moved to Different PT";
-        else if("LPP".equals(impactType))
-            return "LLT promoted to PT";
-        else if("PDL".equals(impactType))
-            return "PT demoted to LLT";
-        else if("NTR".equals(impactType))
-            return "New Term";
-        else if("PDH".equals(impactType))
-            return "PT moved to Different HLT";
-        else if("HDH".equals(impactType))
-            return "HLT moved to Different HLGT";
-        else if("HDS".equals(impactType))
-            return "HLGT moved to Different SOC";
-        else if("HPP".equals(impactType))
-            return "Primary SOC Change";
-        else if("HNP".equals(impactType))
-            return "Primary SOC Change";
-        else if("NCH".equals(impactType))
-            return "MedDRA Name Change";
-        else if("MRG".equals(impactType))
-            return "Term merged";
-        else if("LCN".equals(impactType))
-            return "Non-Current LLT";
-        else if("SDP".equals(impactType))
-            return "New successor PT";
-        return "";
+    private String getCmqRelationImpactDesc(String impactType) {
+        return refCodeListService.findCodeByInternalCode(CqtConstants.CODE_LIST_TYPE_CMQ_RELATION_IMPACT_TYPE, impactType);
     }
     /**
      * Returns SMQ Impact Type Description
      * @param impactType
      * @return 
      */
-    private String getSmqImpactDesc(String impactType) {
-        if("PSI".equals(impactType))
-            return "Inactive PT";
-        else if("PSA".equals(impactType))
-            return "Active PT";
-        else if("SWC".equals(impactType))
-            return "Scope, Weight, Category change";
-        else if("DTR".equals(impactType))
-            return "Deleted PT / Demoted PT in SMQ";
-        else if("LPP".equals(impactType))
-            return "Promoted PT in SMQ";
-        else if("PDL".equals(impactType))
-            return "Demoted PT in SMQ";
-        else if("NTR".equals(impactType))
-            return "Added PT /  Promoted PT in SMQ";
+    private String getSmqRelationImpactDesc(String impactType) {
+        return refCodeListService.findCodeByInternalCode(CqtConstants.CODE_LIST_TYPE_SMQ_RELATION_IMPACT_TYPE, impactType);
+    }
+    
+    /**
+     * Returns SMQ Impact Type Description
+     * @param impactType
+     * @return 
+     */
+    private String getMeddraDictImpactDesc(MeddraDictHierarchySearchDto ent) {
+        if(ent.getPromotedLlt() != null)
+            return refCodeListService.interpretMeddraImpactTypeDesc("promoted_llt", ent.getPromotedLlt());
+        else if(ent.getDemotedPt() != null)
+            return refCodeListService.interpretMeddraImpactTypeDesc("demoted_llt", ent.getDemotedPt());
+        else if(ent.getNewLlt() != null)
+            return refCodeListService.interpretMeddraImpactTypeDesc("new_llt", ent.getNewLlt());
+        else if(ent.getNewPt() != null)
+            return refCodeListService.interpretMeddraImpactTypeDesc("new_pt", ent.getNewPt());
+        else if(ent.getNewHlt() != null)
+            return refCodeListService.interpretMeddraImpactTypeDesc("new_hlt", ent.getNewHlt());
+        else if(ent.getNewHlgt() != null)
+            return refCodeListService.interpretMeddraImpactTypeDesc("new_hlgt", ent.getNewHlgt());
+        else if(ent.getNewSoc() != null)
+            return refCodeListService.interpretMeddraImpactTypeDesc("new_soc", ent.getNewSoc());
+        else if(ent.getMovedLlt() != null)
+            return refCodeListService.interpretMeddraImpactTypeDesc("moved_llt", ent.getMovedLlt());
+        else if(ent.getMovedPt() != null)
+            return refCodeListService.interpretMeddraImpactTypeDesc("moved_pt", ent.getMovedPt());
+        else if(ent.getMovedHlt() != null)
+            return refCodeListService.interpretMeddraImpactTypeDesc("moved_hlt", ent.getMovedHlt());
+        else if(ent.getMovedHlgt() != null)
+            return refCodeListService.interpretMeddraImpactTypeDesc("moved_hlgt", ent.getMovedHlgt());
+        else if(ent.getPrimarySocChange() != null)
+            return refCodeListService.interpretMeddraImpactTypeDesc("primary_soc_change", ent.getPrimarySocChange());
+        else if(ent.getLltNameChanged() != null)
+            return refCodeListService.interpretMeddraImpactTypeDesc("llt_name_changed", ent.getLltNameChanged());
+        else if(ent.getPtNameChanged() != null)
+            return refCodeListService.interpretMeddraImpactTypeDesc("pt_name_changed", ent.getPtNameChanged());
+        else if(ent.getHltNameChanged() != null)
+            return refCodeListService.interpretMeddraImpactTypeDesc("hlt_name_changed", ent.getHltNameChanged());
+        else if(ent.getHlgtNameChanged() != null)
+            return refCodeListService.interpretMeddraImpactTypeDesc("hlgt_name_changed", ent.getHlgtNameChanged());
+        else if(ent.getSocNameChanged() != null)
+            return refCodeListService.interpretMeddraImpactTypeDesc("soc_name_changed", ent.getSocNameChanged());
+        else if(ent.getMergedHlt() != null)
+            return refCodeListService.interpretMeddraImpactTypeDesc("merged_hlt", ent.getMergedHlt());
+        else if(ent.getMergedHlgt() != null)
+            return refCodeListService.interpretMeddraImpactTypeDesc("merged_hlgt", ent.getMergedHlgt());
+        else if(ent.getNewSuccessorPt() != null)
+            return refCodeListService.interpretMeddraImpactTypeDesc("new_successor_pt", ent.getNewSuccessorPt());
+        else if(ent.getLltCurrencyChange() != null)
+            return refCodeListService.interpretMeddraImpactTypeDesc("llt_currency_change", ent.getLltCurrencyChange());
         return "";
     }
     /**
@@ -1259,70 +1271,36 @@ public class ImpactSearchController implements Serializable {
     public String getImpactDesc(HierarchyNode node) {
         if(node.getEntity() instanceof CmqBase190) {
             CmqBase190 ent = (CmqBase190)node.getEntity();
-            return getCmqImpactDesc(ent.getImpactType());
+            return getCmqRelationImpactDesc(ent.getImpactType());
         } else if(node.getEntity() instanceof CmqRelation190) {
             CmqRelation190 ent = (CmqRelation190)node.getEntity();
-            return getCmqImpactDesc(ent.getRelationImpactType());
+            return getCmqRelationImpactDesc(ent.getRelationImpactType());
         } else if(node.getEntity() instanceof CmqBaseTarget) {
             CmqBaseTarget ent = (CmqBaseTarget)node.getEntity();
-            return getCmqImpactDesc(ent.getImpactType());
+            return getCmqRelationImpactDesc(ent.getImpactType());
         } else if(node.getEntity() instanceof CmqRelationTarget) {
             CmqRelationTarget ent = (CmqRelationTarget)node.getEntity();
-            return getCmqImpactDesc(ent.getRelationImpactType());
+            return getCmqRelationImpactDesc(ent.getRelationImpactType());
         } else if(node.getEntity() instanceof SmqBase190) {
             SmqBase190 ent = (SmqBase190)node.getEntity();
-            return getSmqImpactDesc(ent.getImpactType());
+            return getSmqRelationImpactDesc(ent.getImpactType());
         } else if(node.getEntity() instanceof SmqRelation190) {
             SmqRelation190 ent = (SmqRelation190)node.getEntity();
-            return getSmqImpactDesc(ent.getRelationImpactType());
+            return getSmqRelationImpactDesc(ent.getRelationImpactType());
         } else if(node.getEntity() instanceof SmqBaseTarget) {
             SmqBaseTarget ent = (SmqBaseTarget)node.getEntity();
-            return getSmqImpactDesc(ent.getImpactType());
+            return getSmqRelationImpactDesc(ent.getImpactType());
         } else if(node.getEntity() instanceof SmqRelationTarget) {
             SmqRelationTarget ent = (SmqRelationTarget)node.getEntity();
-            return getSmqImpactDesc(ent.getRelationImpactType());
+            return getSmqRelationImpactDesc(ent.getRelationImpactType());
         } else if(node.getEntity() instanceof MeddraDictHierarchySearchDto) {
             MeddraDictHierarchySearchDto ent = (MeddraDictHierarchySearchDto)node.getEntity();
-            if(ent.getPromotedLlt() != null)
-                return "LPP: LLT promoted to PT";
-            else if(ent.getDemotedPt() != null)
-                return "PDL: PT demoted to LLT";
-            else if(ent.getNewLlt() != null || 
-                    ent.getNewPt() != null ||
-                    ent.getNewHlt() != null ||
-                    ent.getNewHlgt() != null ||
-                    ent.getNewSoc() != null)
-                return "NTR: New Term";
-            else if(ent.getMovedLlt() != null)
-                return "LDP: LLT moved to Different PT";
-            else if(ent.getMovedPt() != null)
-                return "PDH: PT moved to Different HLT";
-            else if(ent.getMovedHlt() != null)
-                return "HDH: HLT moved to Different HLGT";
-            else if(ent.getMovedHlgt() != null)
-                return "HDS: HLGT moved to Different SOC";
-            else if(ent.getPrimarySocChange() != null)
-                return "HPP or HNP: Primary SOC changed";
-            else if(ent.getLltNameChanged() != null ||
-                    ent.getPtNameChanged() != null ||
-                    ent.getHltNameChanged() != null ||
-                    ent.getHlgtNameChanged() != null ||
-                    ent.getSocNameChanged() != null)
-                return "NCH: MedDRA Name Change";
-            else if(ent.getMergedHlt() != null ||
-                    ent.getMergedHlgt() != null)
-                return "MRG: Term merged";
-            else if(ent.getNewSuccessorPt() != null)
-                return "SDP: New successor PT";
-            else if(ent.getLltCurrencyChange() != null)
-                return "LCN: None-Current LLT";
-            return node.getLevel();
+            return getMeddraDictImpactDesc(ent);
         } else if(node.getEntity() instanceof MeddraDictReverseHierarchySearchDto) {
             MeddraDictReverseHierarchySearchDto ent = (MeddraDictReverseHierarchySearchDto)node.getEntity();
-            return node.getLevel();
-        } else {
-            return node.getLevel();
+            return "";
         }
+        return "";
     }
 	
 	private void deleteRelationFromDb(HierarchyNode hierarchyNode) {

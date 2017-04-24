@@ -1,5 +1,6 @@
 package com.dbms.entity.cqt;
 
+import com.dbms.csmq.CSMQBean;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -493,4 +494,11 @@ public class CmqBaseTarget extends BaseEntity {
 	public void setProductsList(List<CmqProductBaseTarget> productsList) {
 		this.productsList = productsList;
 	}
+    
+    public boolean isImpactedByMeddraVersioning() {
+        if(CSMQBean.IMPACT_TYPE_IMPACTED.equalsIgnoreCase(getImpactType()) || 
+                CSMQBean.IMPACT_TYPE_ICC.equalsIgnoreCase(getImpactType()))
+            return true;
+        return false;
+    }
 }

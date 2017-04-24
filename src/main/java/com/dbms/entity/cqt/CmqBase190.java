@@ -1,5 +1,6 @@
 package com.dbms.entity.cqt;
 
+import com.dbms.csmq.CSMQBean;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -531,6 +532,13 @@ public class CmqBase190 extends BaseEntity {
 					.replaceAll("\\|#\\|", ", "); //replace remaining |#|
 		}
         return null;
+    }
+    
+    public boolean isImpactedByMeddraVersioning() {
+        if(CSMQBean.IMPACT_TYPE_IMPACTED.equalsIgnoreCase(getImpactType()) || 
+                CSMQBean.IMPACT_TYPE_ICC.equalsIgnoreCase(getImpactType()))
+            return true;
+        return false;
     }
 	
 }

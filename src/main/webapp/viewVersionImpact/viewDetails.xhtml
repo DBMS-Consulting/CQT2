@@ -7,33 +7,33 @@
 	xmlns:p="http://primefaces.org/ui">
 	
 	<p:panel>
-		<h:panelGrid columns="4" cellpadding="15" columnClasses="col-25p,col-25p,col-25p,col-25p">
+		<h:panelGrid columns="4" cellpadding="15" >
 
 			<h:panelGrid columns="2" columnClasses="label-cell, value-cell">
-				<p:outputLabel styleClass="label-right" value="Extension:" />
+				<p:outputLabel value="Extension:" />
 				<h:outputText value="#{RefCodeListService.findCodeByInternalCode('LIST_EXTENSION_TYPES', impactSearchController.detailsFormModel.extension)}" />
 				
-				<p:outputLabel styleClass="label-right" value="Name:" />
+				<p:outputLabel value="Name:" />
 				<h:outputText value="#{impactSearchController.detailsFormModel.name}" />
 
-				<p:outputLabel styleClass="label-right" value="Drug Program:" />
+				<p:outputLabel value="Drug Program:" />
 				<h:outputText value="#{RefCodeListService.findCodeByInternalCode('PROGRAM', impactSearchController.detailsFormModel.drugProgram)}" />
 
-				<p:outputLabel styleClass="label-right" value="Protocol:" />
+				<p:outputLabel value="Protocol:" />
 				<h:outputText value="#{RefCodeListService.findCodeByInternalCode('PROTOCOL', impactSearchController.detailsFormModel.protocol)}" />
 
-				<p:outputLabel styleClass="label-right" value="Product:" />
+				<p:outputLabel value="Product:" />
                 <h:outputText value="#{impactSearchController.detailsFormModel.productsLabel}" />
 			</h:panelGrid>
 
 			<h:panelGrid columns="2" columnClasses="label-cell, value-cell">
-				<p:outputLabel styleClass="label-right" value="Level:" />
+				<p:outputLabel value="Level:" />
 				<h:outputText value="#{impactSearchController.detailsFormModel.level}" />
 
-				<p:outputLabel styleClass="label-right" value="Code:" />
+				<p:outputLabel value="Code:" />
 				<h:outputText value="#{impactSearchController.detailsFormModel.code}" />
 
-				<p:outputLabel styleClass="label-right" value="Algorithm:" />
+				<p:outputLabel value="Algorithm:" />
 				<h:outputText value="#{impactSearchController.detailsFormModel.algorithm}" />
 
 				<p:spacer />
@@ -45,24 +45,21 @@
 
 			<h:panelGrid columns="2" columnClasses="label-cell, value-cell">
 
-				<p:outputLabel styleClass="label-right" value="Status:" />
+				<p:outputLabel value="Status:" />
 				<h:outputText value="#{impactSearchController.detailsFormModel.status}" />
 
-				<p:outputLabel styleClass="label-right" value="State:" />
+				<p:outputLabel value="State:" />
 				<h:outputText value="#{impactSearchController.detailsFormModel.state}" />
 
-				<p:outputLabel styleClass="label-right" value="Group:" />
+				<p:outputLabel value="Group:" />
 				<h:outputText value="#{impactSearchController.detailsFormModel.group}" />
 
-				<p:outputLabel value="* Designee" styleClass="label-right" />
-				<p:selectOneMenu
-					value="#{impactSearchController.detailsFormModel.designee}"
-					disabled="true"
-					label="Designee" >
-					<f:selectItem itemLabel="" itemValue=""></f:selectItem>
-					<f:selectItem itemLabel="NONE" itemValue="NONE"></f:selectItem>
-					<!-- <f:selectItems></f:selectItems> -->
-				</p:selectOneMenu>
+				<p:outputLabel value="* Designee" />
+                <p:selectOneMenu
+                    value="#{impactSearchController.detailsFormModel.designee}"
+                    disabled="true" label="Designee" >
+                    <f:selectItems value="#{impactSearchController.detailsFormModel.designeeList}" />
+                </p:selectOneMenu>
 
 				<p:spacer />
 				<p:spacer />
@@ -70,13 +67,12 @@
 
 
 			<h:panelGrid columns="2" columnClasses="label-cell, value-cell">
-
-				<p:outputLabel styleClass="label-right" value="Creation Date: " />
+				<p:outputLabel value="Creation Date: " />
 				<h:outputText value="#{impactSearchController.detailsFormModel.creationDate}">
 					<f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss"/>
 				</h:outputText>
 
-				<p:outputLabel styleClass="label-right" value="Created By: " />
+				<p:outputLabel value="Created By: " />
 				<h:outputText value="#{impactSearchController.detailsFormModel.createdBy}" />
 
 				<p:spacer />

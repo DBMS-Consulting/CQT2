@@ -314,7 +314,29 @@ public class RefCodeListService extends
 		}
 		return internalCode;
 	}
-	
+    
+	/**
+	 * @author Andrius Mielkus(andrius.mielkus@yandex.com)
+	 * 
+	 *         Interprets MedDRA Dictionary Impact Type code to value
+     * 
+     * @param internalCode 
+     * @param impactType
+	 */
+	@Override
+	public String interpretMeddraImpactTypeDesc(String internalCode, String impactType) {
+		List<RefConfigCodeList> codeList = findByConfigType(CqtConstants.CODE_LIST_TYPE_MEDDRA_DICT_IMPACT_TYPE, OrderBy.ASC);
+		
+		if (codeList != null) {
+			for(RefConfigCodeList c : codeList) {
+				if(c.getCodelistInternalValue().equals(internalCode) && c.getValue().startsWith(impactType + ":")) {
+                    return c.getValue().split(":")[1];
+				}
+			}	
+		}
+		return "";
+	}
+    
 	@Override
 	public String[] interpretProductCodesToValues(List<CmqProductBaseCurrent> products)
 	{

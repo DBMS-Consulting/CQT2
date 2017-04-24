@@ -127,7 +127,8 @@
 			</p:column>
 			<p:column headerText="Code" width="60">
 				<h:commandLink action="#{createController.loadCmqBaseByCode(value.cmqCode)}"
-                               value="#{value.cmqCode}">
+                               value="#{value.cmqCode}"
+                               title="#{createController.isImpactedByMeddraVersioning(value) ? 'This List is impacted by MedDRA versioning' : ''}">
 					<p:ajax update="@form:wizardId @form:relations @form:wizardNavbar" />
                     <f:setPropertyActionListener
 						target="#{searchController.clickedCmqCode}"

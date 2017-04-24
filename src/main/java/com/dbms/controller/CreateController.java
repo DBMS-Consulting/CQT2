@@ -164,12 +164,16 @@ public class CreateController implements Serializable {
 	//----------------------- Common to Create/Copy/Update Wizard ------------------------
 	
 	private void goToWizardNextStep() {
-		if(createWizard != null)
+		if(createWizard != null) {
 			createWizard.setStep(createWizardNextStep);
-		else if(copyWizard != null)
+            RequestContext.getCurrentInstance().update("fCreate:wizardNavbar");
+        } else if(copyWizard != null) {
 			copyWizard.setStep(copyWizardNextStep);
-		else if(updateWizard != null)
+            RequestContext.getCurrentInstance().update("fCopy:wizardNavbar");
+        } else if(updateWizard != null) {
 			updateWizard.setStep(updateWizardNextStep);
+            RequestContext.getCurrentInstance().update("fUpdate:wizardNavbar");
+        }
 	}
 
 	public void cancelDetailsAndNextStep() {
@@ -890,8 +894,6 @@ public class CreateController implements Serializable {
 	 * @return boolean
 	 */
 	public boolean isReadOnlyState() {
-        if(isSelectedCmqImpaced())
-            return true;
         if (selectedData != null && selectedData.getCmqState() != null 
                 && (CmqBase190.CMQ_STATE_VALUE_DRAFT.equalsIgnoreCase(selectedData.getCmqState())
                         || CmqBase190.CMQ_STATE_VALUE_REVIEWED.equalsIgnoreCase(selectedData.getCmqState()))){
@@ -948,12 +950,6 @@ public class CreateController implements Serializable {
 		
 		detailsFormModel.loadFromCmqBase190(selectedData);
 		notesFormModel.loadFromCmqBase190(selectedData);
-        
-        if(isSelectedCmqImpaced()) {
-			FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_INFO,
-                        "The List is impacted by MedDRA versioning", ""));
-        }
         
         getActiveWizard().setStep(WIZARD_STEP_DETAILS);
 
@@ -1587,16 +1583,14 @@ public class CreateController implements Serializable {
 		this.appSWJSFRequest = appSWJSFRequest;
 	}
     
-    public boolean isSelectedCmqImpaced() {
-        if(selectedData != null &&
-                (CSMQBean.IMPACT_TYPE_IMPACTED.equalsIgnoreCase(selectedData.getImpactType()) || 
-                    CSMQBean.IMPACT_TYPE_ICC.equalsIgnoreCase(selectedData.getImpactType())))
-            return true;
-        else if(mySelectedCmqTarget != null &&
-                (CSMQBean.IMPACT_TYPE_IMPACTED.equalsIgnoreCase(mySelectedCmqTarget.getImpactType()) || 
-                    CSMQBean.IMPACT_TYPE_ICC.equalsIgnoreCase(mySelectedCmqTarget.getImpactType())))
-            return true;
+    public boolean isImpactedByMeddraVersioning(CmqBase190 cmq) {
+        if(cmq!=null){
+            if(cmq.isImpactedByMeddraVersioning())
+                return true;
+            CmqBaseTarget cmqTarget = myCmqTargetService.findByCode(cmq.getCmqCode());
+            if(cmqTarget.isImpactedByMeddraVersioning())
+                return true;
+        }
         return false;
     }
-
 }

@@ -45,6 +45,9 @@ public class AdminController implements Serializable {
     private static final String CODELIST_WORKFLOW = "WORKFLOW";
     private static final String CODELIST_USERGROUP = "USER_GROUPS";
     private static final String CODELIST_SYSCONFIG = "SYSTEM_CONFIG";
+    private static final String CODELIST_CMQ_RELATION_IMPACT_TYPE = "CMQ_RELATION_IMPACT_TYPE";
+    private static final String CODELIST_SMQ_RELATION_IMPACT_TYPE = "SMQ_RELATION_IMPACT_TYPE";
+    private static final String CODELIST_MEDDRA_DICT_IMPACT_TYPE = "MEDDRA_DICT_IMPACT_TYPE";
 
 	List<CodelistDTO> list;
 	private String codelist;
@@ -55,7 +58,9 @@ public class AdminController implements Serializable {
 	@ManagedProperty("#{AuthenticationService}")
 	private AuthenticationService authService;
 	
-	private List<RefConfigCodeList> extensions, programs, protocols, products, meddras, workflows, usergroups, sysconfigs;
+	private List<RefConfigCodeList> extensions, programs, protocols,
+            products, meddras, workflows, usergroups, sysconfigs,
+            cmqImpactTypes, smqImpactTypes, meddraImpactTypes;
 	
 	private RefConfigCodeList selectedRow, myFocusRef;
 	private StreamedContent excelFile;
@@ -75,6 +80,9 @@ public class AdminController implements Serializable {
 		getWorkflowList();
         getUsergroupList();
         getSysconfigList();
+        getCmqImpactTypeList();
+        getSmqImpactTypeList();
+        getMeddraImpactTypeList();
 	}
 	
 	public String initAddCodelist() {
@@ -112,6 +120,18 @@ public class AdminController implements Serializable {
 			myFocusRef.setCodelistConfigType(CqtConstants.CODE_LIST_TYPE_SYSTEM_CONFIG); 
 			if (sysconfigs != null && !sysconfigs.isEmpty())
 				lastSerial = sysconfigs.get(sysconfigs.size() - 1).getSerialNum();
+		} else if (codelist.equals(CODELIST_CMQ_RELATION_IMPACT_TYPE)) {
+			myFocusRef.setCodelistConfigType(CqtConstants.CODE_LIST_TYPE_CMQ_RELATION_IMPACT_TYPE); 
+			if (getCmqImpactTypes() != null && !cmqImpactTypes.isEmpty())
+				lastSerial = getCmqImpactTypes().get(getCmqImpactTypes().size() - 1).getSerialNum();
+		} else if (codelist.equals(CODELIST_SMQ_RELATION_IMPACT_TYPE)) {
+			myFocusRef.setCodelistConfigType(CqtConstants.CODE_LIST_TYPE_SMQ_RELATION_IMPACT_TYPE); 
+			if (getSmqImpactTypes() != null && !smqImpactTypes.isEmpty())
+				lastSerial = getSmqImpactTypes().get(getSmqImpactTypes().size() - 1).getSerialNum();
+		} else if (codelist.equals(CODELIST_MEDDRA_DICT_IMPACT_TYPE)) {
+			myFocusRef.setCodelistConfigType(CqtConstants.CODE_LIST_TYPE_MEDDRA_DICT_IMPACT_TYPE); 
+			if (getMeddraImpactTypes() != null && !meddraImpactTypes.isEmpty())
+				lastSerial = getMeddraImpactTypes().get(getMeddraImpactTypes().size() - 1).getSerialNum();
 		}
 		myFocusRef.setCreationDate(new Date());
 		myFocusRef.setLastModificationDate(new Date()); 
@@ -141,7 +161,6 @@ public class AdminController implements Serializable {
 	}
 
 	public List<RefConfigCodeList> getExtensionList() {
-		System.out.println("\n\n ************** extensionLIST");
 		extensions = refCodeListService.findAllByConfigType(
 				CqtConstants.CODE_LIST_TYPE_EXTENSION, OrderBy.ASC);
 		if (extensions == null) {
@@ -156,7 +175,6 @@ public class AdminController implements Serializable {
 	 * @return
 	 */
 	public List<RefConfigCodeList> getProgramList() {
-		System.out.println("\n\n ************** programLIST");
 		programs = refCodeListService.findAllByConfigType(
 				CqtConstants.CODE_LIST_TYPE_PROGRAM, OrderBy.ASC);
 		if (programs == null) {
@@ -242,6 +260,42 @@ public class AdminController implements Serializable {
 		}
 		return sysconfigs;
 	}
+    
+    /**
+	 * Returns CMQ List Impact Type Config codelist.
+	 * @return
+	 */
+	public List<RefConfigCodeList> getCmqImpactTypeList() {
+		setCmqImpactTypes(refCodeListService.findAllByConfigType(CqtConstants.CODE_LIST_TYPE_CMQ_RELATION_IMPACT_TYPE, OrderBy.ASC));
+		if (getCmqImpactTypes() == null) {
+			setCmqImpactTypes(new ArrayList<RefConfigCodeList>());
+		}
+		return getCmqImpactTypes();
+	}
+    
+    /**
+	 * Returns SMQ List Impact Type Config codelist.
+	 * @return
+	 */
+	public List<RefConfigCodeList> getSmqImpactTypeList() {
+		setSmqImpactTypes(refCodeListService.findAllByConfigType(CqtConstants.CODE_LIST_TYPE_SMQ_RELATION_IMPACT_TYPE, OrderBy.ASC));
+		if (getSmqImpactTypes() == null) {
+			setSmqImpactTypes(new ArrayList<RefConfigCodeList>());
+		}
+		return getSmqImpactTypes();
+	}
+    
+    /**
+	 * Returns Meddra List Impact Type Config codelist.
+	 * @return
+	 */
+	public List<RefConfigCodeList> getMeddraImpactTypeList() {
+		setMeddraImpactTypes(refCodeListService.findAllByConfigType(CqtConstants.CODE_LIST_TYPE_MEDDRA_DICT_IMPACT_TYPE, OrderBy.ASC));
+		if (getMeddraImpactTypes() == null) {
+			setMeddraImpactTypes(new ArrayList<RefConfigCodeList>());
+		}
+		return getMeddraImpactTypes();
+	}
 	
 	public void addRefCodelist() {
 		Date lastModifiedDate = new Date();
@@ -295,6 +349,15 @@ public class AdminController implements Serializable {
 			} else if (myFocusRef.getCodelistConfigType().equals(CqtConstants.CODE_LIST_TYPE_SYSTEM_CONFIG)) {
 				type = "System Config";
 				getSysconfigList();
+			} else if (myFocusRef.getCodelistConfigType().equals(CqtConstants.CODE_LIST_TYPE_CMQ_RELATION_IMPACT_TYPE)) {
+				type = "CMQ Relation Impact Type";
+				getCmqImpactTypeList();
+			} else if (myFocusRef.getCodelistConfigType().equals(CqtConstants.CODE_LIST_TYPE_SMQ_RELATION_IMPACT_TYPE)) {
+				type = "SMQ Relation Impact Type";
+				getSmqImpactTypeList();
+			} else if (myFocusRef.getCodelistConfigType().equals(CqtConstants.CODE_LIST_TYPE_MEDDRA_DICT_IMPACT_TYPE)) {
+				type = "Meddra Dictionary Impact Type";
+				getMeddraImpactTypeList();
 			}
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					type + " '" + myFocusRef.getCodelistInternalValue() + "' is successfully saved.", "");
@@ -487,4 +550,46 @@ public class AdminController implements Serializable {
 	public void setAuthService(AuthenticationService authService) {
 		this.authService = authService;
 	}
+
+    /**
+     * @return the cmqImpactTypes
+     */
+    public List<RefConfigCodeList> getCmqImpactTypes() {
+        return cmqImpactTypes;
+    }
+
+    /**
+     * @param cmqImpactTypes the cmqImpactTypes to set
+     */
+    public void setCmqImpactTypes(List<RefConfigCodeList> cmqImpactTypes) {
+        this.cmqImpactTypes = cmqImpactTypes;
+    }
+
+    /**
+     * @return the smqImpactTypes
+     */
+    public List<RefConfigCodeList> getSmqImpactTypes() {
+        return smqImpactTypes;
+    }
+
+    /**
+     * @param smqImpactTypes the smqImpactTypes to set
+     */
+    public void setSmqImpactTypes(List<RefConfigCodeList> smqImpactTypes) {
+        this.smqImpactTypes = smqImpactTypes;
+    }
+
+    /**
+     * @return the meddraImpactTypes
+     */
+    public List<RefConfigCodeList> getMeddraImpactTypes() {
+        return meddraImpactTypes;
+    }
+
+    /**
+     * @param meddraImpactTypes the meddraImpactTypes to set
+     */
+    public void setMeddraImpactTypes(List<RefConfigCodeList> meddraImpactTypes) {
+        this.meddraImpactTypes = meddraImpactTypes;
+    }
 }

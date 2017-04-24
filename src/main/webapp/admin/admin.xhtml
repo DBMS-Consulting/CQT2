@@ -32,6 +32,10 @@
 							<f:selectItem itemLabel="WORKFLOW STATE" itemValue="WORKFLOW" />
 							<f:selectItem itemLabel="USER GROUPS" itemValue="USER_GROUPS" />
                             <f:selectItem itemLabel="SYSTEM CONFIG" itemValue="SYSTEM_CONFIG" />
+                            <f:selectItem itemLabel="CMQ RELATION IMPACT TYPE" itemValue="CMQ_RELATION_IMPACT_TYPE" />
+                            <f:selectItem itemLabel="SMQ RELATION IMPACT TYPE" itemValue="SMQ_RELATION_IMPACT_TYPE" />
+                            <f:selectItem itemLabel="MEDDRA DICTIONARY IMPACT TYPE" itemValue="MEDDRA_DICT_IMPACT_TYPE" />
+                            
 
 							<p:ajax update="@form" event="change" />
 						</p:selectOneMenu>
@@ -69,14 +73,24 @@
                     <ui:fragment rendered="#{adminController.codelist eq 'SYSTEM_CONFIG'}">
 						<ui:include src="sysconfigTable.xhtml"></ui:include>
 					</ui:fragment>
+                    
+                    <ui:fragment rendered="#{adminController.codelist eq 'CMQ_RELATION_IMPACT_TYPE'}">
+						<ui:include src="cmqRelImpTypeTable.xhtml"></ui:include>
+					</ui:fragment>
+                    
+                    <ui:fragment rendered="#{adminController.codelist eq 'SMQ_RELATION_IMPACT_TYPE'}">
+						<ui:include src="smqRelImpTypeTable.xhtml"></ui:include>
+					</ui:fragment>
+                    
+                    <ui:fragment rendered="#{adminController.codelist eq 'MEDDRA_DICT_IMPACT_TYPE'}">
+						<ui:include src="meddraDictImpTypeTable.xhtml"></ui:include>
+					</ui:fragment>
 				</p:tab>
 
 				<p:tab title="Mappings">
 					<p:panel style=" padding:5px;">
 						<h3 style="text-align: center"></h3>
 						<p:spacer height="10" />
-
-
 					</p:panel>
 				</p:tab>
 			</p:tabView>
