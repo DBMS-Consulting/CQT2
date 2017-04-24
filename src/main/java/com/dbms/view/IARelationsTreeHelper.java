@@ -437,8 +437,8 @@ public class IARelationsTreeHelper {
 			if ("SCH".equals(cmqRelationTarget.getRelationImpactType()))
 				node.setRowStyleClass("blue-colored");
 		}
-		else
-			node.setRowStyleClass("none");
+//		else
+//			node.setRowStyleClass("none");
 	}
     
 	public void setCMQCurrentNodeStyle(HierarchyNode node,	CmqRelation190 cmqRelation) {
@@ -465,8 +465,8 @@ public class IARelationsTreeHelper {
 //				node.setRowStyleClass("pink-colored");
 		}
 		
-		else
-			node.setRowStyleClass("none");
+//		else
+//			node.setRowStyleClass("none");
 		
 	}
 
@@ -492,32 +492,86 @@ public class IARelationsTreeHelper {
 			node.setRowStyleClass("italic");
 		}
 		
-		if (meddra.getPrimarySocChange() != null && "HPP".equalsIgnoreCase(meddra.getPrimarySocChange()))
-				node.setRowStyleClass("none");
+//		if (meddra.getPrimarySocChange() != null && "HPP".equalsIgnoreCase(meddra.getPrimarySocChange()))
+//				node.setRowStyleClass("none");
 		
 		
 		if (cmqRelationsMap != null) {
+//			
+//			if (meddra.getPtCode() != null) {
+//				entity = cmqRelationsMap.get(Long.valueOf(meddra.getPtCode()));
+//				CmqRelation190 cmqRelation = (CmqRelation190) entity;
+//				
+//				if (cmqRelation.getPtCode().equals(meddra.getPtCode() != null)) {
+//					if (meddra.getMovedLlt() != null || meddra.getDemotedLlt() != null || meddra.getLltNameChanged() != null || meddra.getPromotedLlt() != null )
+//						node.setRowStyleClass("blue-colored");
+//				}
+//			}
 			IEntity entity = cmqRelationsMap.get(Long.valueOf(meddra.getCode()));
 			if (entity != null && entity instanceof CmqRelation190) {
 				CmqRelation190 cmqRelation = (CmqRelation190) entity;
+				
 				if (cmqRelation != null && cmqRelation.getRelationImpactType() == null) {
 					//Blue color on relation SOC level
-					if (cmqRelation.getSocCode() != null && meddra.getSocCode() != null) {
-						if (meddra.getMovedHlgt() != null || meddra.getMergedHlgt() != null || meddra.getHlgtNameChanged() != null)
-							node.setRowStyleClass("blue-colored");
+					if (meddra.getSocCode() != null) {
+						List<Long> codes = new ArrayList<Long>();
+						codes.add(Long.parseLong(meddra.getSocCode()));
+						List<MeddraDictHierarchySearchDto> list = this.meddraDictCurrentService.findChildrenByParentCode("HLGT_", "SOC_", Long.parseLong(meddra.getSocCode()));
+						if (list != null) {
+							for (MeddraDictHierarchySearchDto child : list)
+							if (child.getMovedHlgt() != null || child.getMergedHlgt() != null || child.getHlgtNameChanged() != null) {
+								node.setRowStyleClass("blue-colored");
+							//	RequestContext.getCurrentInstance().update("impactAssessment:currentListsAndSmqs");
+								break;
+							}
+						}
+						
 					}
 					//Blue color on relation HLGT level
-					if (cmqRelation.getHlgtCode() != null && meddra.getHlgtCode() != null) {
+					if (meddra.getHlgtCode() != null) {
+						List<Long> codes = new ArrayList<Long>();
+						codes.add(Long.parseLong(meddra.getHltCode()));
+						List<MeddraDictHierarchySearchDto> list = this.meddraDictCurrentService.findChildrenByParentCode("HLT_", "HLGT_", Long.parseLong(meddra.getHltCode()));//findByCodes("HLT_", codes);
+						if (list != null) {
+							for (MeddraDictHierarchySearchDto child : list)
+							if (child.getMovedHlt() != null || child.getHltNameChanged() != null) {
+								node.setRowStyleClass("blue-colored");
+								break;
+							}
+						}
+
 						if (meddra.getMovedHlt()!= null || meddra.getMergedHlt() != null || meddra.getHltNameChanged() != null)
 							node.setRowStyleClass("blue-colored");
 					}
 					//Blue color on relation HLT level
-					if (cmqRelation.getHltCode() != null && meddra.getHltCode() != null) {
-						if (meddra.getMovedPt() != null || meddra.getPromotedPt() != null || meddra.getDemotedPt() != null || meddra.getPtNameChanged() != null) {
-							node.setRowStyleClass("blue-colored");
-							//RequestContext.getCurrentInstance().update("impactAssessment:currentListsAndSmqs");
+					if (meddra.getHltCode() != null) { 
+						List<Long> codes = new ArrayList<Long>();
+						codes.add(Long.parseLong(meddra.getHltCode()));
+						List<MeddraDictHierarchySearchDto> list = this.meddraDictCurrentService.findChildrenByParentCode("PT_", "HLT_", Long.parseLong(meddra.getHltCode()));//findByCodes("HLT_", codes);
+						if (list != null) {
+							for (MeddraDictHierarchySearchDto child : list)
+							if (child.getMovedLlt() != null || child.getPromotedLlt() != null || child.getDemotedLlt() != null || child.getLltNameChanged() != null) {
+								node.setRowStyleClass("blue-colored");
+								break;
+							}
 						}
+
+						
 					}			
+					//Blue color on relation PT level
+					if (meddra.getPtCode() != null) {
+						List<Long> codes = new ArrayList<Long>();
+						codes.add(Long.parseLong(meddra.getHltCode()));
+						List<MeddraDictHierarchySearchDto> list = this.meddraDictCurrentService.findChildrenByParentCode("LLT_", "PT_", Long.parseLong(meddra.getHltCode()));//findByCodes("HLT_", codes);
+						if (list != null) {
+							for (MeddraDictHierarchySearchDto child : list)
+							if (child.getMovedLlt() != null || child.getPromotedLlt() != null || child.getDemotedLlt() != null || child.getLltNameChanged() != null) {
+								node.setRowStyleClass("blue-colored");
+								break;
+							}
+						}
+						
+					}
 					
 				}
 			}
@@ -560,26 +614,71 @@ public class IARelationsTreeHelper {
 			
 			if (cmqRelationsMap != null) {
 				IEntity entity = cmqRelationsMap.get(Long.valueOf(meddra.getCode()));
+
+				
 				if (entity != null && entity instanceof CmqRelationTarget) {
 					CmqRelationTarget cmqRelation = (CmqRelationTarget) entity;
 					if (cmqRelation != null && cmqRelation.getRelationImpactType() == null) {
 						//Blue color on relation SOC level
-						if (cmqRelation.getSocCode() != null && meddra.getSocCode() != null) {
-							if (meddra.getMovedHlgt() != null || meddra.getMergedHlgt() != null || meddra.getHlgtNameChanged() != null)
-								node.setRowStyleClass("blue-colored");
+						if (meddra.getSocCode() != null) {
+							List<Long> codes = new ArrayList<Long>();
+							codes.add(Long.parseLong(meddra.getSocCode()));
+							List<MeddraDictHierarchySearchDto> list = this.meddraDictCurrentService.findChildrenByParentCode("HLGT_", "SOC_", Long.parseLong(meddra.getSocCode()));
+							if (list != null) {
+								for (MeddraDictHierarchySearchDto child : list)
+								if (child.getMovedHlgt() != null || child.getMergedHlgt() != null || child.getHlgtNameChanged() != null) {
+									node.setRowStyleClass("blue-colored");
+								//	RequestContext.getCurrentInstance().update("impactAssessment:currentListsAndSmqs");
+									break;
+								}
+							}
+							
 						}
 						//Blue color on relation HLGT level
-						if (cmqRelation.getHlgtCode() != null && meddra.getHlgtCode() != null) {
+						if (meddra.getHlgtCode() != null) {
+							List<Long> codes = new ArrayList<Long>();
+							codes.add(Long.parseLong(meddra.getHltCode()));
+							List<MeddraDictHierarchySearchDto> list = this.meddraDictCurrentService.findChildrenByParentCode("HLT_", "HLGT_", Long.parseLong(meddra.getHltCode()));//findByCodes("HLT_", codes);
+							if (list != null) {
+								for (MeddraDictHierarchySearchDto child : list)
+								if (child.getMovedHlt() != null || child.getHltNameChanged() != null) {
+									node.setRowStyleClass("blue-colored");
+									break;
+								}
+							}
+
 							if (meddra.getMovedHlt()!= null || meddra.getMergedHlt() != null || meddra.getHltNameChanged() != null)
 								node.setRowStyleClass("blue-colored");
 						}
 						//Blue color on relation HLT level
-						if (cmqRelation.getHltCode() != null && meddra.getHltCode() != null) {
-							if (meddra.getMovedPt() != null || meddra.getPromotedPt() != null || meddra.getDemotedPt() != null || meddra.getPtNameChanged() != null) {
-								node.setRowStyleClass("blue-colored");
-								//RequestContext.getCurrentInstance().update("impactAssessment:currentListsAndSmqs");
+						if (meddra.getHltCode() != null) { 
+							List<Long> codes = new ArrayList<Long>();
+							codes.add(Long.parseLong(meddra.getHltCode()));
+							List<MeddraDictHierarchySearchDto> list = this.meddraDictCurrentService.findChildrenByParentCode("PT_", "HLT_", Long.parseLong(meddra.getHltCode()));//findByCodes("HLT_", codes);
+							if (list != null) {
+								for (MeddraDictHierarchySearchDto child : list)
+								if (child.getMovedLlt() != null || child.getPromotedLlt() != null || child.getDemotedLlt() != null || child.getLltNameChanged() != null) {
+									node.setRowStyleClass("blue-colored");
+									break;
+								}
 							}
+
+							
 						}			
+						//Blue color on relation PT level
+						if (meddra.getPtCode() != null) {
+							List<Long> codes = new ArrayList<Long>();
+							codes.add(Long.parseLong(meddra.getHltCode()));
+							List<MeddraDictHierarchySearchDto> list = this.meddraDictCurrentService.findChildrenByParentCode("LLT_", "PT_", Long.parseLong(meddra.getHltCode()));//findByCodes("HLT_", codes);
+							if (list != null) {
+								for (MeddraDictHierarchySearchDto child : list)
+								if (child.getMovedLlt() != null || child.getPromotedLlt() != null || child.getDemotedLlt() != null || child.getLltNameChanged() != null) {
+									node.setRowStyleClass("blue-colored");
+									break;
+								}
+							}
+							
+						}
 						
 					}
 				}
