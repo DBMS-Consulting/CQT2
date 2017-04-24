@@ -19,6 +19,8 @@ import com.dbms.entity.cqt.MeddraDictTarget;
 import com.dbms.entity.cqt.dtos.MeddraDictHierarchySearchDto;
 import com.dbms.entity.cqt.dtos.MeddraDictReverseHierarchySearchDto;
 import com.dbms.service.base.CqtPersistenceService;
+import java.util.LinkedList;
+import org.apache.commons.collections4.ListUtils;
 
 /**
  * @author Jay G.(jayshanchn@hotmail.com)
@@ -426,63 +428,69 @@ public class MeddraDictTargetService extends CqtPersistenceService<MeddraDictTar
 				+ " order by MEDDRA_DICT_ID) rn from MEDDRA_DICT_TARGET where " + codeColumnName
 				+ " in :codeList ) where rn = 1";
 		
-		//setParameterList is not working here for somereason so have to do it manually
-		String codesString = " ( ";
-		int i = 0;
-		for (Long code : codes) {
-			codesString += code;
-			if(++i < codes.size()) {
-				codesString += " , ";
-			}
-		}
-		codesString += " ) ";
-		queryString = queryString.replace(":codeList", codesString);
+        // IN clause allows maximum 1000 elements in the list condition, so we will partition the list of codes
+        List<List<Long>> partitionedCodes = ListUtils.partition(codes, 1000);
+        retVal = new LinkedList<>();
 		
 		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
 		Session session = entityManager.unwrap(Session.class);
 		try {
-			SQLQuery query = session.createSQLQuery(queryString);
-			query.addScalar("meddraDictId", StandardBasicTypes.LONG);
-			query.addScalar("term", StandardBasicTypes.STRING);
-//			query.addScalar("code", StandardBasicTypes.STRING);
-			query.addScalar(codeAlias, StandardBasicTypes.STRING);
-			query.addScalar("primaryPathFlag", StandardBasicTypes.STRING);
-			
-			query.addScalar("newPt", StandardBasicTypes.STRING);
-			query.addScalar("promotedPt", StandardBasicTypes.STRING);
-			query.addScalar("newLlt", StandardBasicTypes.STRING);
-			query.addScalar("demotedLlt", StandardBasicTypes.STRING);
-			query.addScalar("promotedLlt", StandardBasicTypes.STRING);
+            for(List<Long> pcds : partitionedCodes ) {
+                //setParameterList is not working here for somereason so have to do it manually
+                String codesString = " ( ";
+                int i = 0;
+                for (Long code : pcds) {
+                    codesString += code;
+                    if(++i < pcds.size()) {
+                        codesString += " , ";
+                    }
+                }
+                codesString += " ) ";
+                String qs = queryString.replace(":codeList", codesString);
 
-			query.addScalar("primarySocChange", StandardBasicTypes.STRING);
-			query.addScalar("demotedPt", StandardBasicTypes.STRING);
-			query.addScalar("movedLlt", StandardBasicTypes.STRING);
-			query.addScalar("demotedLlt", StandardBasicTypes.STRING);
-			query.addScalar("lltCurrencyChange", StandardBasicTypes.STRING);
+                SQLQuery query = session.createSQLQuery(qs);
+                query.addScalar("meddraDictId", StandardBasicTypes.LONG);
+                query.addScalar("term", StandardBasicTypes.STRING);
+    //			query.addScalar("code", StandardBasicTypes.STRING);
+                query.addScalar(codeAlias, StandardBasicTypes.STRING);
+                query.addScalar("primaryPathFlag", StandardBasicTypes.STRING);
 
-			query.addScalar("ptNameChanged", StandardBasicTypes.STRING);
-			query.addScalar("lltNameChanged", StandardBasicTypes.STRING);
-			query.addScalar("newHlt", StandardBasicTypes.STRING);
-			query.addScalar("newHlgt", StandardBasicTypes.STRING);
-			query.addScalar("movedPt", StandardBasicTypes.STRING);
+                query.addScalar("newPt", StandardBasicTypes.STRING);
+                query.addScalar("promotedPt", StandardBasicTypes.STRING);
+                query.addScalar("newLlt", StandardBasicTypes.STRING);
+                query.addScalar("demotedLlt", StandardBasicTypes.STRING);
+                query.addScalar("promotedLlt", StandardBasicTypes.STRING);
 
-			query.addScalar("movedHlt", StandardBasicTypes.STRING);
-			query.addScalar("movedHlgt", StandardBasicTypes.STRING);
-			query.addScalar("hlgtNameChanged", StandardBasicTypes.STRING);
-			query.addScalar("hltNameChanged", StandardBasicTypes.STRING);
-			query.addScalar("socNameChanged", StandardBasicTypes.STRING);
-			query.addScalar("mergedHlt", StandardBasicTypes.STRING);
-			query.addScalar("mergedHlgt", StandardBasicTypes.STRING);
-			query.addScalar("newSuccessorPt", StandardBasicTypes.STRING);
-			
-			query.addScalar(codeAlias, StandardBasicTypes.STRING);
-			
-			
-			query.setFetchSize(400);
-			//query.setParameterList("codeList", codes);
-			query.setResultTransformer(Transformers.aliasToBean(MeddraDictHierarchySearchDto.class));
+                query.addScalar("primarySocChange", StandardBasicTypes.STRING);
+                query.addScalar("demotedPt", StandardBasicTypes.STRING);
+                query.addScalar("movedLlt", StandardBasicTypes.STRING);
+                query.addScalar("demotedLlt", StandardBasicTypes.STRING);
+                query.addScalar("lltCurrencyChange", StandardBasicTypes.STRING);
 
-			retVal = query.list();
+                query.addScalar("ptNameChanged", StandardBasicTypes.STRING);
+                query.addScalar("lltNameChanged", StandardBasicTypes.STRING);
+                query.addScalar("newHlt", StandardBasicTypes.STRING);
+                query.addScalar("newHlgt", StandardBasicTypes.STRING);
+                query.addScalar("movedPt", StandardBasicTypes.STRING);
+
+                query.addScalar("movedHlt", StandardBasicTypes.STRING);
+                query.addScalar("movedHlgt", StandardBasicTypes.STRING);
+                query.addScalar("hlgtNameChanged", StandardBasicTypes.STRING);
+                query.addScalar("hltNameChanged", StandardBasicTypes.STRING);
+                query.addScalar("socNameChanged", StandardBasicTypes.STRING);
+                query.addScalar("mergedHlt", StandardBasicTypes.STRING);
+                query.addScalar("mergedHlgt", StandardBasicTypes.STRING);
+                query.addScalar("newSuccessorPt", StandardBasicTypes.STRING);
+
+                query.addScalar(codeAlias, StandardBasicTypes.STRING);
+
+
+                query.setFetchSize(400);
+                //query.setParameterList("codeList", codes);
+                query.setResultTransformer(Transformers.aliasToBean(MeddraDictHierarchySearchDto.class));
+
+                retVal.addAll(query.list());
+            }
 		} catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
 			msg.append("An error occurred while fetching types from MeddraDictTarget on searchColumnType ")
