@@ -97,8 +97,7 @@
 			<p:selectOneMenu
 				value="#{createController.detailsFormModel.designeeTwo}"
 				disabled="#{createController.detailsFormDisabled}" rendered="true"
-                label="Designee 2"
-				required="#{createController.activeWizard.step eq 'details' and !createController.readOnlyState}">
+                label="Designee 2">
 				<f:selectItems value="#{createController.detailsFormModel.designeeList}" />
 			</p:selectOneMenu>
 			
@@ -106,8 +105,7 @@
 			<p:selectOneMenu
 				value="#{createController.detailsFormModel.designeeThree}"
 				disabled="#{createController.detailsFormDisabled}" rendered="true"
-                label="Designee 2"
-				required="#{createController.activeWizard.step eq 'details' and !createController.readOnlyState}">
+                label="Designee 3">
 				<f:selectItems value="#{createController.detailsFormModel.designeeList}" />
 			</p:selectOneMenu>
 			

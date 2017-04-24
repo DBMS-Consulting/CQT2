@@ -1049,13 +1049,13 @@ public class IARelationsTreeHelper {
 					IEntity entity = lltCodesMap.get(Long.parseLong(meddraDictHierarchySearchDto.getCode()));
 					if(entity instanceof CmqRelationTarget) {
 						CmqRelationTarget cmqRelationTarget = (CmqRelationTarget) entity;
-						
+						node.setRelationEntity(entity);
 						//Set Color
 						setCMQTargetNodeStyle(node, cmqRelationTarget);
 					}
 					if(entity instanceof CmqRelation190) {
 						CmqRelation190 cmqRelation = (CmqRelation190) entity;
-						
+						node.setRelationEntity(entity);
 						//Set Color
 						setCMQCurrentNodeStyle(node, cmqRelation);
 					}

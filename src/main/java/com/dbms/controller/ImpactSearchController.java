@@ -1222,7 +1222,7 @@ public class ImpactSearchController implements Serializable {
         if(ent.getPromotedLlt() != null)
             return refCodeListService.interpretMeddraImpactTypeDesc("promoted_llt", ent.getPromotedLlt());
         else if(ent.getDemotedPt() != null)
-            return refCodeListService.interpretMeddraImpactTypeDesc("demoted_llt", ent.getDemotedPt());
+            return refCodeListService.interpretMeddraImpactTypeDesc("demoted_pt", ent.getDemotedPt());
         else if(ent.getNewLlt() != null)
             return refCodeListService.interpretMeddraImpactTypeDesc("new_llt", ent.getNewLlt());
         else if(ent.getNewPt() != null)
@@ -1290,10 +1290,12 @@ public class ImpactSearchController implements Serializable {
             if(node.getRelationEntity() != null) {
                 if(node.getRelationEntity() instanceof CmqRelation190) {
                     CmqRelation190 ent1 = (CmqRelation190)node.getRelationEntity();
-                    return getCmqRelationImpactDesc(ent1.getRelationImpactType());
+                    if(ent1.getRelationImpactType() != null)
+                        return getCmqRelationImpactDesc(ent1.getRelationImpactType());
                 } else if(node.getRelationEntity() instanceof CmqRelationTarget) {
                     CmqRelationTarget ent1 = (CmqRelationTarget)node.getRelationEntity();
-                    return getCmqRelationImpactDesc(ent1.getRelationImpactType());
+                    if(ent1.getRelationImpactType() != null)
+                        return getCmqRelationImpactDesc(ent1.getRelationImpactType());
                 }
             }
             return getMeddraDictImpactDesc(ent);
