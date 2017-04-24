@@ -1271,16 +1271,8 @@ public class ImpactSearchController implements Serializable {
     public String getImpactDesc(HierarchyNode node) {
         if(node.getEntity() instanceof CmqBase190) {
             CmqBase190 ent = (CmqBase190)node.getEntity();
-            return getCmqRelationImpactDesc(ent.getImpactType());
-        } else if(node.getEntity() instanceof CmqRelation190) {
-            CmqRelation190 ent = (CmqRelation190)node.getEntity();
-            return getCmqRelationImpactDesc(ent.getRelationImpactType());
         } else if(node.getEntity() instanceof CmqBaseTarget) {
             CmqBaseTarget ent = (CmqBaseTarget)node.getEntity();
-            return getCmqRelationImpactDesc(ent.getImpactType());
-        } else if(node.getEntity() instanceof CmqRelationTarget) {
-            CmqRelationTarget ent = (CmqRelationTarget)node.getEntity();
-            return getCmqRelationImpactDesc(ent.getRelationImpactType());
         } else if(node.getEntity() instanceof SmqBase190) {
             SmqBase190 ent = (SmqBase190)node.getEntity();
             return getSmqRelationImpactDesc(ent.getImpactType());
@@ -1295,6 +1287,15 @@ public class ImpactSearchController implements Serializable {
             return getSmqRelationImpactDesc(ent.getRelationImpactType());
         } else if(node.getEntity() instanceof MeddraDictHierarchySearchDto) {
             MeddraDictHierarchySearchDto ent = (MeddraDictHierarchySearchDto)node.getEntity();
+            if(node.getRelationEntity() != null) {
+                if(node.getRelationEntity() instanceof CmqRelation190) {
+                    CmqRelation190 ent1 = (CmqRelation190)node.getRelationEntity();
+                    return getCmqRelationImpactDesc(ent1.getRelationImpactType());
+                } else if(node.getRelationEntity() instanceof CmqRelationTarget) {
+                    CmqRelationTarget ent1 = (CmqRelationTarget)node.getRelationEntity();
+                    return getCmqRelationImpactDesc(ent1.getRelationImpactType());
+                }
+            }
             return getMeddraDictImpactDesc(ent);
         } else if(node.getEntity() instanceof MeddraDictReverseHierarchySearchDto) {
             MeddraDictReverseHierarchySearchDto ent = (MeddraDictReverseHierarchySearchDto)node.getEntity();

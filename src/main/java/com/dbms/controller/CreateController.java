@@ -1592,7 +1592,7 @@ public class CreateController implements Serializable {
             if(cmq.isImpactedByMeddraVersioning())
                 return true;
             CmqBaseTarget cmqTarget = myCmqTargetService.findByCode(cmq.getCmqCode());
-            if(cmqTarget.isImpactedByMeddraVersioning())
+            if(cmqTarget!=null && cmqTarget.isImpactedByMeddraVersioning())
                 return true;
         }
         return false;

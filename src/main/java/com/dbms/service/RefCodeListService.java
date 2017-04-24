@@ -330,7 +330,7 @@ public class RefCodeListService extends
 		if (codeList != null) {
 			for(RefConfigCodeList c : codeList) {
 				if(c.getCodelistInternalValue().equals(internalCode) && c.getValue().startsWith(impactType + ":")) {
-                    return c.getValue().split(":")[1];
+                    return c.getValue();
 				}
 			}	
 		}

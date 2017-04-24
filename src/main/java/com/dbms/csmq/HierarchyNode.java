@@ -20,6 +20,7 @@ public class HierarchyNode implements Serializable, Comparable<HierarchyNode> {
 	private String code;
 
 	private IEntity entity;
+    private IEntity relationEntity;
 
 	private boolean isDataFetchCompleted;
 
@@ -103,6 +104,14 @@ public class HierarchyNode implements Serializable, Comparable<HierarchyNode> {
 
 	public void setEntity(IEntity entity) {
 		this.entity = entity;
+	}
+    
+    public IEntity getRelationEntity() {
+		return relationEntity;
+	}
+
+	public void setRelationEntity(IEntity entity) {
+		this.relationEntity = entity;
 	}
 
 	public boolean isDataFetchCompleted() {
