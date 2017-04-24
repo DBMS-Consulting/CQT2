@@ -44,6 +44,7 @@ import com.dbms.view.ListDetailsFormVM;
 import com.dbms.view.ListNotesFormVM;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.JasperExportManager;
@@ -130,9 +131,21 @@ public class ReportController extends BaseController<CmqBase190> {
 	    try {
 	    
 		    if(genReportType == ReportType.GEN_LIST_DETAILS) {
+                Calendar calSD = Calendar.getInstance();
+                Calendar calED = Calendar.getInstance();
+                calSD.setTime(reportStartDate);
+                calSD.set(Calendar.HOUR_OF_DAY, 0);
+                calSD.set(Calendar.MINUTE, 0);
+                calSD.set(Calendar.SECOND, 0);
+                calSD.set(Calendar.MILLISECOND, 0);
+                calED.setTime(reportEndDate);
+                calED.set(Calendar.HOUR_OF_DAY, 23);
+                calED.set(Calendar.MINUTE, 59);
+                calED.set(Calendar.SECOND, 59);
+                calED.set(Calendar.MILLISECOND, 999);
 
 		    	// TODO: generate report data using filter
-		    	List<CmqBase190> reportData = cmqBaseService.getPublishedListsReportData(reportStartDate, reportEndDate);
+		    	List<CmqBase190> reportData = cmqBaseService.getPublishedListsReportData(calSD.getTime(), calED.getTime());
 		    	String datetimeStr = new SimpleDateFormat("d-MMM-yyyy h:mm a z").format(new Date());
 		    	
 		    	if(reportData.isEmpty()) {
