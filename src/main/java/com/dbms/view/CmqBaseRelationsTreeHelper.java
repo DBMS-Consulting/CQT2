@@ -62,11 +62,23 @@ public class CmqBaseRelationsTreeHelper {
 	 * @return
 	 */
 	public TreeNode getCmqBaseRelationsRootHierarchy(Long cmqCode, boolean requireDrillDown) {
-		ExecutorService executorService = Executors.newFixedThreadPool(10);
 		List<CmqRelation190> cmqRelationList = this.cmqRelationSvc.findByCmqCode(cmqCode);
 		TreeNode rootNode = new DefaultTreeNode("root"
 				, new HierarchyNode("LEVEL", "NAME", "CODE", "SCOPE", "CATEGORY", "WEIGHT", null)
 				, null);
+		ExecutorService executorService = null;
+		if(cmqRelationList != null) {
+			if(cmqRelationList.size() <= 500) {
+				executorService = Executors.newFixedThreadPool(4);
+				LOG.info("Using executor of size 4.");
+			} else if((cmqRelationList.size() > 500) && (cmqRelationList.size() <= 1000)) {
+				executorService = Executors.newFixedThreadPool(8);
+				LOG.info("Using executor of size 8.");
+			}  else {
+				executorService = Executors.newFixedThreadPool(12);
+				LOG.info("Using executor of size 12.");
+			}
+		}
 		List<Future<Boolean>> futures = new ArrayList<>();
 		for (CmqRelation190 cmqRelation : cmqRelationList) {
 			RelationsWorker worker  = new RelationsWorker(cmqRelation, rootNode, requireDrillDown);
