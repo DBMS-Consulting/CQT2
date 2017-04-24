@@ -540,8 +540,6 @@ public class IARelationsTreeHelper {
 							}
 						}
 
-						if (meddra.getMovedHlt()!= null || meddra.getMergedHlt() != null || meddra.getHltNameChanged() != null)
-							node.setRowStyleClass("blue-colored");
 					}
 					//Blue color on relation HLT level
 					if (meddra.getHltCode() != null) { 
@@ -647,8 +645,7 @@ public class IARelationsTreeHelper {
 								}
 							}
 
-							if (meddra.getMovedHlt()!= null || meddra.getMergedHlt() != null || meddra.getHltNameChanged() != null)
-								node.setRowStyleClass("blue-colored");
+						
 						}
 						//Blue color on relation HLT level
 						if (meddra.getHltCode() != null) { 
