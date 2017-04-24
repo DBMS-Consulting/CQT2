@@ -77,7 +77,7 @@
 
 		<br />
 		<p:treeTable value="#{searchController.relationsRoot}" var="node" resizableColumns="true"
-			selectionMode="checkbox" styleClass="hide-sel-chkbox">
+			selectionMode="checkbox" styleClass="hide-sel-chkbox" paginator="true" rows="20">
 			
 			<f:attribute name="uiEventSourceName" value="relations" />
 			<p:ajax event="expand" listener="#{searchController.onNodeExpand}" />
