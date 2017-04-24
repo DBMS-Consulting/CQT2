@@ -744,7 +744,22 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 								List<MeddraDictHierarchySearchDto> pts = this.meddraDictService.findByCodes("PT_", ptCodesList);
 								if (pts != null)
 									for (MeddraDictHierarchySearchDto pt : pts) {
-										mapReport.put(cpt++, new ReportLineDataDto("PT", pt.getCode() + "", pt.getTerm(), "...............")); 
+										mapReport.put(cpt++, new ReportLineDataDto("PT", pt.getCode() + "", pt.getTerm(), "..............."));
+										
+										/**
+										 * LLT.
+										 */
+										List<MeddraDictHierarchySearchDto> listLLT =  meddraDictService.findChildrenByParentCode("LLT_", "PT_", Long.valueOf(pt.getCode()));
+										List<Long> lltCodesList = new ArrayList<>();
+										for (MeddraDictHierarchySearchDto meddra : listLLT) {
+											lltCodesList.add(Long.parseLong(meddra.getCode())); 
+										}
+
+										List<MeddraDictHierarchySearchDto> list = this.meddraDictService.findByCodes("LLT_", lltCodesList);
+										if (list != null)
+											for (MeddraDictHierarchySearchDto llt : list) {
+												mapReport.put(cpt++, new ReportLineDataDto("LLT", llt.getCode() + "", llt.getTerm(), ".............")); 
+											}
 									}
 							}
 					}

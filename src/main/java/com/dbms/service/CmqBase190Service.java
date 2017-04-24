@@ -57,6 +57,7 @@ import com.dbms.util.CqtConstants;
 import com.dbms.util.exceptions.CqtServiceException;
 import com.dbms.view.ListDetailsFormVM;
 import com.dbms.view.ListNotesFormVM;
+
 import org.apache.commons.lang3.ArrayUtils;
 
 /**
@@ -1063,9 +1064,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 
 					SmqBase190 smqSearched = smqBaseService.findByCode(relation.getSmqCode());
 					if (smqSearched != null) {
-						List<SmqBase190> smqBaseList = smqBaseService
-								.findByLevelAndTerm(smqSearched.getSmqLevel(),
-										smqSearched.getSmqName());
+						List<SmqBase190> smqBaseList = smqBaseService.findByLevelAndTerm(smqSearched.getSmqLevel(),	smqSearched.getSmqName());
 						if (smqBaseList != null) {
 							for (SmqBase190 smq : smqBaseList) {
 								if (smq.getSmqLevel() == 1) {
@@ -1081,17 +1080,17 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 								}
 								mapReport.put(cpt++, new ReportLineDataDto(level, smq.getSmqCode() + "", smq.getSmqName(), "")); 
 								
-								if (level.equals("SMQ1")) {
-									smqSearched = smqBaseService.findByCode(smq.getSmqCode());
-									if (smqSearched != null) {
-										System.out.println(" **************************** SMQ1 :: " + smqSearched.getSmqName() + ",   " + smqSearched.getSmqCode()); 
-										List<SmqRelation190> list = smqBaseService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
-										if (list != null)
-											for (SmqRelation190 smq2 : list) {
-												mapReport.put(cpt++, new ReportLineDataDto("PT", smq2.getPtCode() + "", smq2.getPtName(), ".............")); 
-											}
-									}
-								}
+//								if (level.equals("SMQ1")) {
+//									smqSearched = smqBaseService.findByCode(smq.getSmqCode());
+//									if (smqSearched != null) {
+//										System.out.println(" **************************** SMQ1 :: " + smqSearched.getSmqName() + ",   " + smqSearched.getSmqCode()); 
+//										List<SmqRelation190> list = smqBaseService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
+//										if (list != null)
+//											for (SmqRelation190 smq2 : list) {
+//												mapReport.put(cpt++, new ReportLineDataDto("SMQ1", smq2.getPtCode() + "", smq2.getPtName(), ".............")); 
+//											}
+//									}
+//								}
 
 								/**
 								 * Other SMQs
@@ -1121,7 +1120,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 												List<SmqRelation190> list = smqBaseService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
 												if (list != null)
 													for (SmqRelation190 smq2 : list) {
-														mapReport.put(cpt++, new ReportLineDataDto("PT", smq2.getPtCode() + "", smq2.getPtName(), ".............")); 
+														mapReport.put(cpt++, new ReportLineDataDto("SMQ1", smq2.getPtCode() + "", smq2.getPtName(), ".............")); 
 													}
 											}
 										}
@@ -1133,7 +1132,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 												List<SmqRelation190> list = smqBaseService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
 												if (list != null)
 													for (SmqRelation190 smq2 : list) {
-														mapReport.put(cpt++, new ReportLineDataDto("PT", smq2.getPtCode() + "", smq2.getPtName(), "..............")); 
+														mapReport.put(cpt++, new ReportLineDataDto("SMQ2", smq2.getPtCode() + "", smq2.getPtName(), "..............")); 
 
 													}
 											}
@@ -1165,22 +1164,16 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 									if (smqSearched != null) {
 										System.out.println(" **************************** SMQ1 :: " + smqSearched.getSmqName() + ",   " + smqSearched.getSmqCode()); 
 										List<SmqRelation190> list = smqBaseService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
-										if (list != null)
+										/*if (list != null)
 											for (SmqRelation190 smq2 : list) {
 												row = worksheet.createRow(rowCount);
-												buildChildCells("PT", smq2.getPtCode() + "", smq2.getPtName(), cell, row, ".............");
+												buildChildCells("SMQ1", smq2.getPtCode() + "", smq2.getPtName(), cell, row, ".............");
 												rowCount++;
-											}
+											}*/
 									}
 								}
 								
-								if (level.equals("PT")) {
-									
-									
-								}
 							}
-
-
 						}
 					}
 
@@ -1241,79 +1234,23 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 					for (MeddraDictHierarchySearchDto pt : pts) {
 						mapReport.put(cpt++, new ReportLineDataDto("PT", pt.getCode() + "", pt.getTerm(), "")); 
 						
+
 						/**
-						 * Reverse first.
-						 * HLT.
+						 * LLT.
 						 */
-						List<MeddraDictHierarchySearchDto> listHLT =  meddraDictService.findChildrenByParentCode("HLT_", "PT_", Long.valueOf(pt.getCode()));
-						if (listHLT != null) {
-							List<Long> codes = new ArrayList<>();
-							for (MeddraDictHierarchySearchDto meddra : listHLT) {
-								codes.add(Long.parseLong(meddra.getCode())); 
-							}
-							List<MeddraDictHierarchySearchDto> hlts = this.meddraDictService.findByCodes("HLT_", codes);
-							if (hlts != null)
-								for (MeddraDictHierarchySearchDto hlt : hlts) {
-									mapReport.put(cpt++, new ReportLineDataDto("HLT", hlt.getCode() + "", hlt.getTerm(), "......"));
-									
-									/**
-									 * HLGT.
-									 */
-									List<MeddraDictHierarchySearchDto> listHLGT =  meddraDictService.findChildrenByParentCode("HLGT_", "HLT_", Long.valueOf(hlt.getCode()));
-									if (listHLGT != null) {
-										List<Long> codes_1 = new ArrayList<>();
-										for (MeddraDictHierarchySearchDto meddra : listHLGT) {
-											codes_1.add(Long.parseLong(meddra.getCode())); 
-										}
-										List<MeddraDictHierarchySearchDto> hlgts = this.meddraDictService.findByCodes("HLGT_", codes_1);
-										if (hlgts != null)
-											for (MeddraDictHierarchySearchDto hlgt : hlgts) {
-												mapReport.put(cpt++, new ReportLineDataDto("HLGT", hlgt.getCode() + "", hlgt.getTerm(), ".............."));
-												
-
-												/**
-												 * SOC.
-												 */
-												List<MeddraDictHierarchySearchDto> listSOC =  meddraDictService.findChildrenByParentCode("SOC_", "HLGT_", Long.valueOf(hlgt.getCode()));
-												if (listSOC != null) {
-													List<Long> codes_2 = new ArrayList<>();
-													for (MeddraDictHierarchySearchDto meddra : listSOC) {
-														codes_2.add(Long.parseLong(meddra.getCode())); 
-													}
-													List<MeddraDictHierarchySearchDto> socs = this.meddraDictService.findByCodes("SOC_", codes_2);
-													if (socs != null)
-														for (MeddraDictHierarchySearchDto soc : socs) {
-															mapReport.put(cpt++, new ReportLineDataDto("SOC", soc.getCode() + "", soc.getTerm(), "...................."));
-															
-															
-														}
-												}
-											}
-									}
-								}
-						}
-						else {
-							/**
-							 * LLT.
-							 */
-							List<MeddraDictHierarchySearchDto> listPT =  meddraDictService.findChildrenByParentCode("LLT_", "PT_", Long.valueOf(pt.getCode()));
-							List<Long> hlgtCodesList = new ArrayList<>();
-							for (MeddraDictHierarchySearchDto meddra : listPT) {
-								hlgtCodesList.add(Long.parseLong(meddra.getCode())); 
-							}
-
-							List<MeddraDictHierarchySearchDto> llts = this.meddraDictService.findByCodes("LLT_", hlgtCodesList);
-							if (llts != null)
-								for (MeddraDictHierarchySearchDto llt : llts) {
-									mapReport.put(cpt++, new ReportLineDataDto("LLT", llt.getCode() + "", llt.getTerm(), "......"));
-								}
-							
-							
+						List<MeddraDictHierarchySearchDto> listPT =  meddraDictService.findChildrenByParentCode("LLT_", "PT_", Long.valueOf(pt.getCode()));
+						List<Long> hlgtCodesList = new ArrayList<>();
+						for (MeddraDictHierarchySearchDto meddra : listPT) {
+							hlgtCodesList.add(Long.parseLong(meddra.getCode())); 
 						}
 
-
-						
+						List<MeddraDictHierarchySearchDto> llts = this.meddraDictService.findByCodes("LLT_", hlgtCodesList);
+						if (llts != null)
+							for (MeddraDictHierarchySearchDto llt : llts) {
+								mapReport.put(cpt++, new ReportLineDataDto("LLT", llt.getCode() + "", llt.getTerm(), "......"));
+							}
 					}
+					
 				}
 
 				/**
@@ -1428,6 +1365,21 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 								if (pts != null)
 									for (MeddraDictHierarchySearchDto pt : pts) {
 										mapReport.put(cpt++, new ReportLineDataDto("PT", pt.getCode() + "", pt.getTerm(), "...............")); 
+										
+										/**
+										 * LLT.
+										 */
+										List<MeddraDictHierarchySearchDto> listLLT =  meddraDictService.findChildrenByParentCode("LLT_", "PT_", Long.valueOf(pt.getCode()));
+										List<Long> lltCodesList = new ArrayList<>();
+										for (MeddraDictHierarchySearchDto meddra : listLLT) {
+											lltCodesList.add(Long.parseLong(meddra.getCode())); 
+										}
+
+										List<MeddraDictHierarchySearchDto> list = this.meddraDictService.findByCodes("LLT_", lltCodesList);
+										if (list != null)
+											for (MeddraDictHierarchySearchDto llt : list) {
+												mapReport.put(cpt++, new ReportLineDataDto("LLT", llt.getCode() + "", llt.getTerm(), ".............")); 
+											}
 									}
 							}
 					}

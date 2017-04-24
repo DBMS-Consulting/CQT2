@@ -415,13 +415,13 @@ public class MeddraDictTargetService extends CqtPersistenceService<MeddraDictTar
 				+ " order by MEDDRA_DICT_ID) rn from MEDDRA_DICT_TARGET where " + codeColumnName
 				+ " in :codeList ) where rn = 1";*/
 		String queryString = "select MEDDRA_DICT_ID as meddraDictId, " + termColumnName + " as term, " + codeColumnName
-				+ " as " + codeAlias + ", PRIMARY_PATH_FLAG as primaryPathFlag, MOVED_LLT as movedLlt, NEW_PT as newPt, PROMOTED_PT as promotedPt, NEW_LLT as newLlt, DEMOTED_LLT as demotedLlt, "
+				+ " as " + codeAlias + ", PRIMARY_PATH_FLAG as primaryPathFlag, NEW_SUCCESSOR_PT as newSuccessorPt, MOVED_LLT as movedLlt, NEW_PT as newPt, PROMOTED_PT as promotedPt, NEW_LLT as newLlt, DEMOTED_LLT as demotedLlt, "
 				+ " PROMOTED_LLT as promotedLlt, PRIMARY_SOC_CHANGE as primarySocChange, DEMOTED_PT as demotedPt, LLT_CURRENCY_CHANGE as lltCurrencyChange, PT_NAME_CHANGED as ptNameChanged,"
 				+ " LLT_NAME_CHANGED as lltNameChanged, NEW_HLT as newHlt, NEW_HLGT as newHlgt, MOVED_PT as movedPt, MOVED_HLT as movedHlt, MOVED_HLGT as movedHlgt, "
 				+ " HLGT_NAME_CHANGED as hlgtNameChanged, HLT_NAME_CHANGED as hltNameChanged, SOC_NAME_CHANGED as socNameChanged, MERGED_HLT as mergedHlt, MERGED_HLGT as mergedHlgt" 
 				+ " from (select MEDDRA_DICT_ID, " + termColumnName + ", " + codeColumnName 
 				+ " , PRIMARY_PATH_FLAG, MOVED_PT, MOVED_LLT, NEW_PT, PROMOTED_PT, NEW_LLT, DEMOTED_LLT, PROMOTED_LLT, PRIMARY_SOC_CHANGE, DEMOTED_PT, LLT_CURRENCY_CHANGE, PT_NAME_CHANGED, "
-				+ " LLT_NAME_CHANGED, NEW_HLT, NEW_HLGT, MOVED_HLT, MOVED_HLGT, HLGT_NAME_CHANGED, HLT_NAME_CHANGED, SOC_NAME_CHANGED, MERGED_HLT, MERGED_HLGT,"
+				+ " LLT_NAME_CHANGED, NEW_SUCCESSOR_PT, NEW_HLT, NEW_HLGT, MOVED_HLT, MOVED_HLGT, HLGT_NAME_CHANGED, HLT_NAME_CHANGED, SOC_NAME_CHANGED, MERGED_HLT, MERGED_HLGT,"
 				+ " row_number() over (partition by " + codeColumnName
 				+ " order by MEDDRA_DICT_ID) rn from MEDDRA_DICT_TARGET where " + codeColumnName
 				+ " in :codeList ) where rn = 1";
@@ -473,6 +473,7 @@ public class MeddraDictTargetService extends CqtPersistenceService<MeddraDictTar
 			query.addScalar("socNameChanged", StandardBasicTypes.STRING);
 			query.addScalar("mergedHlt", StandardBasicTypes.STRING);
 			query.addScalar("mergedHlgt", StandardBasicTypes.STRING);
+			query.addScalar("newSuccessorPt", StandardBasicTypes.STRING);
 			
 			query.addScalar(codeAlias, StandardBasicTypes.STRING);
 			
@@ -552,12 +553,12 @@ public class MeddraDictTargetService extends CqtPersistenceService<MeddraDictTar
 				+ " = :code ) where rn = 1";*/
 		String queryString = "select MEDDRA_DICT_ID as meddraDictId, " + termColumnName + " as term, " + codeColumnName
 				+ " as " + codeAlias + ", PRIMARY_PATH_FLAG as primaryPathFlag, MOVED_LLT as movedLlt, NEW_PT as newPt, PROMOTED_PT as promotedPt, NEW_LLT as newLlt, DEMOTED_LLT as demotedLlt, "
-				+ " PROMOTED_LLT as promotedLlt, PRIMARY_SOC_CHANGE as primarySocChange, DEMOTED_PT as demotedPt, LLT_CURRENCY_CHANGE as lltCurrencyChange, PT_NAME_CHANGED as ptNameChanged,"
+				+ " NEW_SUCCESSOR_PT as newSuccessorPt, PROMOTED_LLT as promotedLlt, PRIMARY_SOC_CHANGE as primarySocChange, DEMOTED_PT as demotedPt, LLT_CURRENCY_CHANGE as lltCurrencyChange, PT_NAME_CHANGED as ptNameChanged,"
 				+ " LLT_NAME_CHANGED as lltNameChanged, NEW_HLT as newHlt, NEW_HLGT as newHlgt, MOVED_PT as movedPt, MOVED_HLT as movedHlt, MOVED_HLGT as movedHlgt, "
 				+ " HLGT_NAME_CHANGED as hlgtNameChanged, HLT_NAME_CHANGED as hltNameChanged, SOC_NAME_CHANGED as socNameChanged, MERGED_HLT as mergedHlt, MERGED_HLGT as mergedHlgt" 
 				+ " from (select MEDDRA_DICT_ID, " + termColumnName + ", " + codeColumnName 
 				+ " , PRIMARY_PATH_FLAG, MOVED_PT, MOVED_LLT, NEW_PT, PROMOTED_PT, NEW_LLT, DEMOTED_LLT, PROMOTED_LLT, PRIMARY_SOC_CHANGE, DEMOTED_PT, LLT_CURRENCY_CHANGE, PT_NAME_CHANGED, "
-				+ " LLT_NAME_CHANGED, NEW_HLT, NEW_HLGT, MOVED_HLT, MOVED_HLGT, HLGT_NAME_CHANGED, HLT_NAME_CHANGED, SOC_NAME_CHANGED, MERGED_HLT, MERGED_HLGT,"
+				+ " LLT_NAME_CHANGED, NEW_SUCCESSOR_PT, NEW_HLT, NEW_HLGT, MOVED_HLT, MOVED_HLGT, HLGT_NAME_CHANGED, HLT_NAME_CHANGED, SOC_NAME_CHANGED, MERGED_HLT, MERGED_HLGT,"
 				+ " row_number() over (partition by " + codeColumnName
 				+ " order by MEDDRA_DICT_ID) rn from MEDDRA_DICT_TARGET where " + parentCodeColumnName
 				+ " in :" + codeAlias + " ) where rn = 1";
@@ -597,6 +598,7 @@ public class MeddraDictTargetService extends CqtPersistenceService<MeddraDictTar
 			query.addScalar("socNameChanged", StandardBasicTypes.STRING);
 			query.addScalar("mergedHlt", StandardBasicTypes.STRING);
 			query.addScalar("mergedHlgt", StandardBasicTypes.STRING);
+			query.addScalar("newSuccessorPt", StandardBasicTypes.STRING);
 			
 			query.addScalar(codeAlias, StandardBasicTypes.STRING);			
 			
