@@ -299,7 +299,7 @@ public class AdminController implements Serializable {
 	
 	public void addRefCodelist() {
 		Date lastModifiedDate = new Date();
-		String lastModifiedByString = this.authService.getLastModifiedByString();
+		String lastModifiedByString = this.authService.getLastModifiedByUserAsString();
 		//To uppercase for workflow State
 		if (myFocusRef.getCodelistConfigType().equals(CqtConstants.CODE_LIST_TYPE_WORKFLOW_STATES))
 			myFocusRef.setValue(myFocusRef.getValue().toUpperCase());

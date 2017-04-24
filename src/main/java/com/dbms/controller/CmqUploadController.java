@@ -60,7 +60,7 @@ public class CmqUploadController implements Serializable {
 		if (file != null) {
 			try {
 				Date lastModifiedDate = new Date();
-				String lastModifiedByString = this.authService.getLastModifiedByString();
+				String lastModifiedByString = this.authService.getLastModifiedByUserAsString();
 				InputStreamReader isr = new InputStreamReader(
 						file.getInputstream());
 				BufferedReader reader = new BufferedReader(isr);

@@ -134,6 +134,33 @@ public class RefCodeListService extends
 	
 	@Override
 	@SuppressWarnings({ "unchecked" })
+	public List<RefConfigCodeList> findLdapConfig() {
+		List<RefConfigCodeList> retVal = null;
+
+		EntityManager entityManager = this.cqtEntityManagerFactory
+				.getEntityManager();
+
+		StringBuilder queryString = new StringBuilder(
+				"from RefConfigCodeList a");
+		queryString
+				.append(" where a.codelistConfigType = 'SYSTEM_CONFIG' and a.activeFlag = 'Y' and a.codelistInternalValue like 'LDAP%' ");
+		try {
+			Query query = entityManager.createQuery(queryString.toString());
+			query.setHint("org.hibernate.cacheable", true);
+			retVal = query.getResultList();
+		} catch (Exception ex) {
+			StringBuilder msg = new StringBuilder();
+			msg.append("findEnterpriseAdType failed '")
+					.append(". Query used was->").append(queryString);
+			LOG.error(msg.toString(), ex);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
+	
+	@Override
+	@SuppressWarnings({ "unchecked" })
 	public List<RefConfigCodeList> findUserGroups() {
 		List<RefConfigCodeList> retVal = null;
 

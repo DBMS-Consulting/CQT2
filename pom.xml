@@ -10,7 +10,7 @@
 
 
 	<properties>
-		<java.version>1.7</java.version>
+		<java.version>1.8</java.version>
 		<junit.version>4.12</junit.version>
 		<servlet.version>3.1.0</servlet.version>
 		<!-- <mojarra.version>2.1.28</mojarra.version> -->

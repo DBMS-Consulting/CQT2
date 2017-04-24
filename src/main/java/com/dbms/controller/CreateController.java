@@ -238,7 +238,7 @@ public class CreateController implements Serializable {
 		notesFormModel.saveToCmqBase190(selectedData);
 		
 		Date d = new Date();
-		String lastModifiedByString = this.authService.getLastModifiedByString();
+		String lastModifiedByString = this.authService.getLastModifiedByUserAsString();
 		selectedData.setLastModifiedDate(d);
 		selectedData.setLastModifiedBy(lastModifiedByString);
 		
@@ -284,7 +284,7 @@ public class CreateController implements Serializable {
 	public String updateRelations(TreeNode relationsRoot) {
 		if ((relationsRoot != null) && (relationsRoot.getChildCount() > 0)) {
 			Date lastModifiedDate = new Date();
-			String lastModifiedByString = this.authService.getLastModifiedByString();
+			String lastModifiedByString = this.authService.getLastModifiedByUserAsString();
 			
 			List<CmqRelation190> cmqRelationsList = new ArrayList<>();
 			List<CmqBase190> cmqBaseChildrenList = new ArrayList<>();
@@ -303,7 +303,7 @@ public class CreateController implements Serializable {
 					if (entity instanceof CmqBase190) {
 						CmqBase190 cmqEntity = (CmqBase190) entity;
 						Long existingParentCode = cmqEntity.getCmqParentCode();
-						if((null == existingParentCode) || (existingParentCode.longValue() != cmqBase.getCmqParentCode().longValue())) {
+						if((null == existingParentCode) || (existingParentCode.longValue() != cmqBase.getCmqCode().longValue())) {
 							//update only if needed
 							cmqEntity.setCmqParentCode(cmqBase.getCmqCode());
 							cmqEntity.setCmqParentName(cmqBase.getCmqName());
@@ -970,9 +970,9 @@ public class CreateController implements Serializable {
 			cmqRelation190.setCmqCode(savedEntity.getCmqCode());
 			cmqRelation190.setCmqId(savedEntity.getCmqId());
 			cmqRelation190.setLastModifiedDate(creationDate);
-			cmqRelation190.setLastModifiedBy(this.authService.getLastModifiedByString());
+			cmqRelation190.setLastModifiedBy(this.authService.getLastModifiedByUserAsString());
 			cmqRelation190.setCreationDate(creationDate);
-			cmqRelation190.setCreatedBy(this.authService.getLastModifiedByString());
+			cmqRelation190.setCreatedBy(this.authService.getLastModifiedByUserAsString());
 		}
 		//save relations
 		this.cmqRelationService.update(cmqRelationList, this.authService.getUserCn()
