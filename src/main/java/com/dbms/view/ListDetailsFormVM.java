@@ -223,12 +223,6 @@ public class ListDetailsFormVM {
 	 *            AjaxBehaviour
 	 */
 	public void afterChangeExtension(AjaxBehaviorEvent event) {
-		if ("PRO".equals(extension)) {
-			setLevel(2);
-		} else {
-			setLevel(1);
-		}
-		
 		if(wizardType != WizardType.CopyWizard) {
 			//we are not doing copy so change others.
 			/**
@@ -242,16 +236,18 @@ public class ListDetailsFormVM {
 				setProtocol(CqtConstants.CODE_LIST_NO_PROTOCOL_INTERNALCODE);
                 setProducts(new String[0]);
 			} else if("PRO".equals(extension)) {
-				setLevel(2);
+                setLevel(2);
 				setDrugProgram("");
 				setProtocol("");
                 setProducts(new String[0]);
 			} else if("CPT".equals(extension) ||
 					"DME".equals(extension)) {
+                setLevel(1);
 				setDrugProgram(CqtConstants.CODE_LIST_NO_PROGRAM_INTERNALCODE);
 				setProtocol(CqtConstants.CODE_LIST_NO_PROTOCOL_INTERNALCODE);
 				setProducts(new String[] { CqtConstants.CODE_LIST_NO_PRODUCT_INTERNALCODE });
 			} else {
+                setLevel(1);
 				if(refCodeListService != null) {
 					RefConfigCodeList d;
                     List<RefConfigCodeList> ds;
@@ -274,7 +270,14 @@ public class ListDetailsFormVM {
 					setProtocol("");
 				}
 			}
-		}
+		} else {
+            if ("PRO".equals(extension)) {
+                setLevel(2);
+            } else {
+                setLevel(1);
+            }
+
+        }
 	}
 	//--------------------------- Getters & Setters ---------------------------
 	

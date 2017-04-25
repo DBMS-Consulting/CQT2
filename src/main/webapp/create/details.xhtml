@@ -30,9 +30,8 @@
 					itemLabel="#{extension.value}"
 					itemValue="#{extension.codelistInternalValue}" />
 
-				<p:ajax
-					update="level lProtocol protocol drug lDrug product lProduct"
-					listener="#{createController.changeLevel}" />
+                <p:ajax listener="#{createController.changeLevel}" resetValues="true"
+					update="level lProtocol protocol drug lDrug product lProduct" />
 			</p:selectOneMenu>
 
 			<p:outputLabel value="* Name" />
@@ -111,7 +110,7 @@
 			
 			<p:outputLabel value="* Level" />
 			<p:selectOneMenu id="level" value="#{createController.detailsFormModel.level}"
-				rendered="true" required="#{createController.activeWizard.step eq 'details' and !createController.readOnlyState}"
+				required="#{createController.activeWizard.step eq 'details' and !createController.readOnlyState}"
                 label="Level"
 				disabled="#{createController.detailsFormDisabled}">
 				<f:selectItem itemValue="1" itemLabel="1" />    
