@@ -12,6 +12,7 @@ import java.util.Map;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.olap4j.metadata.Member.TreeOp;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
 
@@ -723,6 +724,7 @@ public class IARelationsTreeHelper {
 	
 	public void populateSmqRelations(Long smqCode, TreeNode expandedTreeNode, String smqType, String uiSourceOfEvent) {
 		boolean isRootListNode = isRootListNode(expandedTreeNode);
+		boolean isRootNodeOfSmqType = this.isRootNodeOfSmqType(expandedTreeNode);
 		List<? extends IEntity> childRelations = null;
  		if("current".equalsIgnoreCase(smqType)) {
 			childRelations = this.smqBaseCurrentService.findSmqRelationsForSmqCode(smqCode);
@@ -745,13 +747,13 @@ public class IARelationsTreeHelper {
 							|| (childRelation.getSmqLevel() == 0)
 							|| (childRelation.getSmqLevel() == 5)) {
 						childRelationNode.setLevel("PT");
+						if(null != childRelation.getPtTermScope()) {
+							childRelationNode.setScope(childRelation.getPtTermScope().toString());
+						}
 					}
 					childRelationNode.setTerm(childRelation.getPtName());
 					childRelationNode.setCode(childRelation.getPtCode().toString());
 					childRelationNode.setEntity(childRelation);
-					
-//					if (childRelation.getRelationImpactType() != null && childRelation.getRelationImpactType().equals("LPP"))
-//						System.out.println("***************************** LPP : " + childRelation.getPtName());
 					
 					//Set Color
 					setSMQCurrentNodeStyle(childRelationNode, childRelation);
@@ -774,6 +776,9 @@ public class IARelationsTreeHelper {
 					childRelationNode.setEntity(childRelation);
 					if(!isRootListNode && "target-table".equalsIgnoreCase(uiSourceOfEvent)) {
 						childRelationNode.markNotEditableInRelationstable();
+					}
+					if(isRootNodeOfSmqType) {
+						childRelationNode.setHideDelete(true);
 					}
 					//Set Color
 					setSMQTargetNodeStyle(childRelationNode, childRelation);
@@ -1404,7 +1409,24 @@ public class IARelationsTreeHelper {
 		return false;
 	}
     
-    
+	private boolean isRootNodeOfSmqType(TreeNode treeNode) {
+		if((StringUtils.isNotEmpty(treeNode.getType())) && !(treeNode.getType().equalsIgnoreCase("root"))) {
+			TreeNode parentTreeNode = treeNode.getParent();
+			if(parentTreeNode.getType().equalsIgnoreCase("root")) {
+				HierarchyNode hierarchyNode = (HierarchyNode) treeNode.getData();
+				IEntity entity = hierarchyNode.getEntity();
+				return entity instanceof SmqBaseTarget;
+			} else if(parentTreeNode.getParent().getType().equalsIgnoreCase("root")) {
+				HierarchyNode hierarchyNode = (HierarchyNode) parentTreeNode.getData();
+				IEntity entity = hierarchyNode.getEntity();
+				return entity instanceof SmqBaseTarget;
+			} else {
+				return this.isRootNodeOfSmqType(parentTreeNode);
+			}
+		}
+		return false;
+	}
+	
 	public void updateCurrentTableForCmqList(TreeNode currentTableRootTreeNode,CmqBaseTarget selectedCmqList) {
         IARelationsTreeHelper treeHelper = new IARelationsTreeHelper(cmqBaseTargetService, smqBaseTargetService, meddraDictTargetService, cmqRelationTargetService);
         

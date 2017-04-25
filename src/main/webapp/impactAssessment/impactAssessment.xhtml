@@ -184,7 +184,12 @@
                                         </h:outputLink>
                                     </p:column>
 									<p:column><h:outputText value="#{node.level}" /></p:column>
-									<p:column><h:outputText value="#{node.scope}" /></p:column>
+									<p:column>
+										<p:selectOneMenu value="#{node.scope}" autoWidth="false"
+											style="width:70%">
+                                            <f:selectItems value="#{appCSMQBean.cqtBaseScopes}" var="s" itemLabel="#{s[1]}" itemValue="#{s[0]}" />
+										</p:selectOneMenu>
+									</p:column>
 								</p:treeTable>
 							</p:panel>
 
