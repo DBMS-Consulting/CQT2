@@ -7,7 +7,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
@@ -18,7 +17,6 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.primefaces.component.datatable.DataTable;
 import org.primefaces.component.wizard.Wizard;
@@ -43,7 +41,6 @@ import com.dbms.entity.cqt.CmqBase190;
 import com.dbms.entity.cqt.CmqBaseTarget;
 import com.dbms.entity.cqt.CmqRelation190;
 import com.dbms.entity.cqt.CmqRelationTarget;
-import com.dbms.entity.cqt.MeddraDict190;
 import com.dbms.entity.cqt.RefConfigCodeList;
 import com.dbms.entity.cqt.SmqBase190;
 import com.dbms.entity.cqt.SmqBaseTarget;
@@ -63,12 +60,10 @@ import com.dbms.service.ISmqBaseService;
 import com.dbms.service.ISmqBaseTargetService;
 import com.dbms.util.CmqUtils;
 import com.dbms.util.CqtConstants;
-import com.dbms.util.SMQLevelHelper;
 import com.dbms.util.SWJSFRequest;
-import com.dbms.view.IARelationsTreeHelper;
 import com.dbms.util.exceptions.CqtServiceException;
 import com.dbms.view.CmqBaseHierarchySearchVM;
-import com.dbms.view.CmqBaseRelationsTreeHelper;
+import com.dbms.view.IARelationsTreeHelper;
 import com.dbms.view.ListDetailsFormVM;
 import com.dbms.view.ListNotesFormVM;
 import com.dbms.view.TargetHierarchySearchVM;
@@ -169,7 +164,6 @@ public class ImpactSearchController implements Serializable {
 	private StreamedContent excelFile;
 	private String confirmMessage;
 
-	
 	public ImpactSearchController() {
 		
 	}
@@ -2017,10 +2011,13 @@ public class ImpactSearchController implements Serializable {
 	}
 	
 	public boolean isSelectNewPTButtonEnabled() {
-		return ((selectedImpactedCmqList != null) ||
-				(selectedNotImpactedCmqList != null) ||
-				(selectedImpactedSmqList != null) ||
-				(selectedNotImpactedSmqList != null)); 
+		if(selectedImpactedCmqList != null) {
+			return true;
+		} else if(selectedNotImpactedCmqList != null) {
+			return true;
+		} else {
+			return false;
+		} 
 	}
 	
 	public boolean isHierachySearchButtonEnabled() {

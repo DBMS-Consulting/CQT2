@@ -74,6 +74,14 @@ public class ListNotesFormVM {
 		cmq.setCmqDescription(this.description);
 		cmq.setCmqNote(this.notes);
 		cmq.setCmqSource(this.source);
+		
+		//make it impacted
+		String impactType = cmq.getImpactType();
+		if("NON-IMPACTED".equalsIgnoreCase(impactType)) {
+			cmq.setImpactType("IMPACTED");
+			cmq.setCmqState("PENDING IA");
+			cmq.setCmqStatus("P");
+		}
 	}
 	
 	/**
