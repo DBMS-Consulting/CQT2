@@ -843,6 +843,16 @@ public class CSMQBean {
 			new String[] { SCOPE_CHILD_NARROW, "Child Narrow" },
 		});
 	}
+    
+    public String interpretCqtBaseScope(String scopeVal) {
+        if(SCOPE_NARROW.equals(scopeVal))
+            return "Narrow";
+        else if(SCOPE_BROAD.equals(scopeVal))
+            return "Broad";
+        else if(SCOPE_CHILD_NARROW.equals(scopeVal))
+            return "Child Narrow";
+        return "";
+    }
 	
 	public List<String[]> getCqtBaseCategories() {
 		return Arrays.asList(new String[][] {
@@ -858,7 +868,10 @@ public class CSMQBean {
 			new String[] { CATEGORY_I, "I" }
 		});
 	}
-
+    
+    public String interpretCqtBaseCategory(String categoryVal) {
+        return categoryVal;
+    }
     /**
      * @return the refCodeListService
      */

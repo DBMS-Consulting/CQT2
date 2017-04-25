@@ -77,7 +77,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 
 	@ManagedProperty("#{MeddraDictTargetService}")
 	private IMeddraDictTargetService meddraDictService;
-
+    
 	/* (non-Javadoc)
 	 * @see com.dbms.service.ICmqBaseTargetService#findImpactedWithPaginated(int, int, java.lang.String, org.primefaces.model.SortOrder, java.util.Map)
 	 */
@@ -1266,17 +1266,17 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
     
     @Override
     public boolean isVersionUpgradePending() {
-		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
-		try {
-			Query query = entityManager.createQuery("select count(*) from CmqBaseTarget c");
-			Long retVal = (Long)query.getSingleResult();
+        EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+        try {
+            Query query = entityManager.createQuery("select count(*) from CmqBaseTarget c");
+            Long retVal = (Long)query.getSingleResult();
             if(retVal!=null && retVal>0)
                 return true;
-		} catch (Exception e) {
+        } catch (Exception e) {
             return false;
-		} finally {
-			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
-		}
+        } finally {
+            this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+        }
 		return false;
     }
 

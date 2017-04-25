@@ -8,7 +8,7 @@
 
 
 	<ui:define name="page-content">
-        <h:inputHidden id="hVersionUpgradePending" value="#{CmqBaseTargetService.versionUpgradePending}" />
+        <h:inputHidden id="hVersionUpgradePending" value="#{impactSearchController.versionUpgradePending}" />
         
         <p:dialog widgetVar="vunpDlg" modal="true" id="vunpDlg"
                       closable="true" header="Not Available" resizable="false">
@@ -50,7 +50,7 @@
 
 			<p:wizard
 				flowListener="#{impactSearchController.onIaWizardFlowProcess}"
-                binding="#{impactSearchController.iaWizard}" rendered="#{CmqBaseTargetService.versionUpgradePending}">
+                binding="#{impactSearchController.iaWizard}" rendered="#{impactSearchController.versionUpgradePending}">
 
 				<!-- Impact -->
 				<p:tab id="impact" title="Impact Assessment">
@@ -147,12 +147,14 @@
 									styleClass="ui-treetable-currentListsAndSmqs"
 									selectionMode="single" selection="${impactSearchController.currentTableSelection}"
 									scrollable="true" scrollHeight="400" resizableColumns="true"
-									rowStyleClass="#{node.rowStyleClass}">
+									rowStyleClass="#{node.rowStyleClass}" >
 
 									<f:attribute name="uiEventSourceName" value="current-table" />
 									<p:ajax event="expand"
 										listener="#{impactSearchController.onNodeExpandCurrentTable}"
 										update="currentListsAndSmqs" />
+                                    
+                                    <p:ajax event="collapse" listener="#{impactSearchController.onNodeCollapseCurrentTable}" />
 
 									<!-- Selection of the list fr workflow states -->
 									<p:ajax event="select"
@@ -163,7 +165,7 @@
 									<p:ajax event="unselect"
 										listener="#{impactSearchController.onUnselectCurrentRowTreeTable}"
 										update="@form:iaWorkflowCtrlPanel @form:futureListsAndSmqs" />
-
+                                    
 									<p:columnGroup type="header">
 										<p:row>
 											<p:column headerText="Existing Lists/SMQ" style="width:50%"/>
@@ -184,12 +186,7 @@
                                         </h:outputLink>
                                     </p:column>
 									<p:column><h:outputText value="#{node.level}" /></p:column>
-									<p:column>
-										<p:selectOneMenu value="#{node.scope}" autoWidth="false"
-											style="width:70%">
-                                            <f:selectItems value="#{appCSMQBean.cqtBaseScopes}" var="s" itemLabel="#{s[1]}" itemValue="#{s[0]}" />
-										</p:selectOneMenu>
-									</p:column>
+                                    <p:column><h:outputText value="#{appCSMQBean.interpretCqtBaseScope(node.scope)}" /></p:column>
 								</p:treeTable>
 							</p:panel>
 
@@ -222,6 +219,7 @@
 									<p:ajax event="expand"
 										listener="#{impactSearchController.onNodeExpandTargetTable}"
 										update="futureListsAndSmqs" />
+                                    <p:ajax event="collapse" listener="#{impactSearchController.onNodeCollapseTargetTable}" />
 
 									<!-- Selection of the list fr workflow states -->
 									<p:ajax event="select"
@@ -259,23 +257,25 @@
                                     </p:column>
 									<p:column><h:outputText value="#{node.level}" /></p:column>
 									<p:column>
-										<p:selectOneMenu value="#{node.scope}"
-											rendered="#{not node.hideScope}" autoWidth="false"
-											disabled="#{node.algorithmN}" style="width:70%">
+                                        <h:outputText rendered="#{not node.hideScope and node.algorithmN}" value="#{appCSMQBean.interpretCqtBaseScope(node.scope)}" />
+                                        <p:selectOneMenu value="#{node.scope}"
+                                            rendered="#{not node.hideScope and not node.algorithmN}"
+                                            autoWidth="false" style="width:70%">
                                             <f:selectItems value="#{appCSMQBean.cqtBaseScopes}" var="s" itemLabel="#{s[1]}" itemValue="#{s[0]}" />
-										</p:selectOneMenu>
+                                        </p:selectOneMenu>
 									</p:column>
 									<p:column>
-										<p:selectOneMenu value="#{node.category}"
-											rendered="#{not node.hideCategory}" autoWidth="false"
-											disabled="#{node.algorithmN}" style="width:70%">
+                                        <h:outputText rendered="#{not node.hideCategory and node.algorithmN}" value="#{appCSMQBean.interpretCqtBaseCategory(node.category)}" />
+                                        <p:selectOneMenu value="#{node.category}"
+                                            rendered="#{not node.hideCategory and not node.algorithmN}"
+                                            autoWidth="false" style="width:70%">
                                             <f:selectItems value="#{appCSMQBean.cqtBaseCategories}" var="c" itemLabel="#{c[1]}" itemValue="#{c[0]}" />
-										</p:selectOneMenu>
+                                        </p:selectOneMenu>
 									</p:column>
 									<p:column>
-										<p:spinner value="#{node.weight}" size="2"
-											rendered="#{not node.hideWeight}"
-											disabled="#{node.algorithmN}" />
+                                        <h:outputText rendered="#{not node.hideWeight and node.algorithmN}" value="#{node.weight}" />
+                                        <p:spinner value="#{node.weight}" size="2"
+                                            rendered="#{not node.hideWeight and not node.algorithmN}" />
 									</p:column>
 									<p:column>
 										<p:commandLink

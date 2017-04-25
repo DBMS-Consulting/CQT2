@@ -23,6 +23,7 @@ import org.primefaces.component.wizard.Wizard;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.FlowEvent;
 import org.primefaces.event.NodeExpandEvent;
+import org.primefaces.event.NodeCollapseEvent;
 import org.primefaces.event.NodeSelectEvent;
 import org.primefaces.event.NodeUnselectEvent;
 import org.primefaces.event.SelectEvent;
@@ -49,6 +50,7 @@ import com.dbms.entity.cqt.SmqRelationTarget;
 import com.dbms.entity.cqt.dtos.MeddraDictHierarchySearchDto;
 import com.dbms.entity.cqt.dtos.MeddraDictReverseHierarchySearchDto;
 import com.dbms.service.AuthenticationService;
+import com.dbms.service.CmqBaseTargetService;
 import com.dbms.service.ICmqBase190Service;
 import com.dbms.service.ICmqBaseTargetService;
 import com.dbms.service.ICmqRelation190Service;
@@ -163,6 +165,8 @@ public class ImpactSearchController implements Serializable {
 	private String listName;
 	private StreamedContent excelFile;
 	private String confirmMessage;
+    
+    private Boolean versionUpgradingPending = null;
 
 	public ImpactSearchController() {
 		
@@ -303,11 +307,16 @@ public class ImpactSearchController implements Serializable {
 	
 
 	public void onNodeExpandCurrentTable(NodeExpandEvent event) {
+        event.getTreeNode().setExpanded(true);
         IARelationsTreeHelper treeHelper = new IARelationsTreeHelper(
                 cmqBaseCurrentService, smqBaseCurrentService, meddraDictCurrentService, cmqRelationCurrentService,
                 cmqBaseTargetService, smqBaseTargetService, meddraDictTargetService, cmqRelationTargetService);
         treeHelper.onNodeExpandCurrentTable(currentTableRootTreeNode, event);
 	}
+    
+    public void onNodeCollapseCurrentTable(NodeCollapseEvent event) {
+        event.getTreeNode().setExpanded(false);
+    }
 	
 	public void onNodeExpandTargetTable(NodeExpandEvent event) {
         IARelationsTreeHelper treeHelper = new IARelationsTreeHelper(
@@ -315,7 +324,11 @@ public class ImpactSearchController implements Serializable {
                 cmqBaseTargetService, smqBaseTargetService, meddraDictTargetService, cmqRelationTargetService);
         treeHelper.onNodeExpandTargetTable(targetTableRootTreeNode, event);
 	}
-	
+    
+	public void onNodeCollapseTargetTable(NodeCollapseEvent event) {
+        event.getTreeNode().setExpanded(false);
+    }
+    
 	public void updateCurrentTable() {
         IARelationsTreeHelper treeHelper = new IARelationsTreeHelper(
                 cmqBaseCurrentService, smqBaseCurrentService, meddraDictCurrentService, cmqRelationCurrentService,
@@ -2101,5 +2114,12 @@ public class ImpactSearchController implements Serializable {
         else if(this.selectedNotImpactedCmqList != null)
             return this.selectedNotImpactedCmqList.getCmqTypeCd();
         return "";
+    }
+    
+    public boolean isVersionUpgradePending() {
+        if(versionUpgradingPending == null) {
+            versionUpgradingPending = cmqBaseTargetService.isVersionUpgradePending();
+        }
+        return versionUpgradingPending;
     }
 }
