@@ -2,14 +2,14 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ListDetailsReport" pageWidth="1190" pageHeight="842" orientation="Landscape" columnWidth="1150" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="5fdc5201-3e8e-4967-99e0-e03778d41859">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="24"/>
 	<import value="org.apache.commons.codec.binary.Base64"/>
 	<style name="table">
 		<box>
 			<pen lineWidth="1.0" lineColor="#000000"/>
 		</box>
 	</style>
-	<style name="table_TH" mode="Opaque" backcolor="#F0F8FF" hAlign="Center" vAlign="Middle" fontSize="14">
+	<style name="table_TH" mode="Opaque" backcolor="#F0F8FF" fill="Solid" hAlign="Center" vAlign="Middle" pattern="" fontSize="14" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" isPdfEmbedded="false">
 		<box>
 			<pen lineWidth="0.5" lineColor="#000000"/>
 		</box>
@@ -60,11 +60,12 @@
 		</band>
 	</title>
 	<pageHeader>
-		<band height="71" splitType="Stretch">
+		<band height="97" splitType="Stretch">
 			<staticText>
-				<reportElement x="0" y="0" width="169" height="31" uuid="0c7bb793-95a6-41d0-bd98-c0be6386a2cd"/>
+				<reportElement x="0" y="0" width="168" height="31" uuid="0c7bb793-95a6-41d0-bd98-c0be6386a2cd"/>
 				<textElement>
 					<font size="24"/>
+					<paragraph lineSpacing="1_1_2"/>
 				</textElement>
 				<text><![CDATA[List Details]]></text>
 			</staticText>
@@ -77,11 +78,11 @@
 				<textFieldExpression><![CDATA[$P{reportDatetime}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement style="summary_label" x="0" y="51" width="37" height="20" uuid="7ac8e3bc-f09d-4f41-926b-1a32fa862a86"/>
+				<reportElement style="summary_label" x="0" y="51" width="126" height="20" uuid="7ac8e3bc-f09d-4f41-926b-1a32fa862a86"/>
 				<text><![CDATA[Total:]]></text>
 			</staticText>
 			<textField>
-				<reportElement style="summary_label" x="37" y="51" width="155" height="20" uuid="c1635a45-9d9b-4a03-8764-c729e3a747d1"/>
+				<reportElement style="summary_label" x="126" y="51" width="155" height="20" uuid="c1635a45-9d9b-4a03-8764-c729e3a747d1"/>
 				<textFieldExpression><![CDATA[$P{cmqListTotal}]]></textFieldExpression>
 			</textField>
 		</band>
@@ -115,10 +116,10 @@
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="231" uuid="111929f7-acc7-4603-aeef-c7dbb9d80d64">
+					<jr:column width="204" uuid="111929f7-acc7-4603-aeef-c7dbb9d80d64">
 						<jr:tableHeader style="table_TH" height="56" rowSpan="1">
 							<staticText>
-								<reportElement style="table_TH" x="0" y="0" width="231" height="56" uuid="e6db11b7-8c98-4e69-9e4a-727248459be1"/>
+								<reportElement style="table_TH" x="0" y="0" width="204" height="56" uuid="e6db11b7-8c98-4e69-9e4a-727248459be1"/>
 								<text><![CDATA[Name]]></text>
 							</staticText>
 						</jr:tableHeader>
@@ -127,15 +128,15 @@
 						<jr:columnFooter style="table_CH" height="0" rowSpan="1"/>
 						<jr:detailCell style="table_TD" height="21" rowSpan="1">
 							<textField isStretchWithOverflow="true">
-								<reportElement style="table_TD" stretchType="RelativeToBandHeight" x="0" y="0" width="231" height="20" uuid="bc035d24-cf34-407c-ac76-d4cb19acc87b"/>
+								<reportElement style="table_TD" stretchType="RelativeToBandHeight" x="0" y="0" width="204" height="20" uuid="bc035d24-cf34-407c-ac76-d4cb19acc87b"/>
 								<textFieldExpression><![CDATA[$F{cmqName}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="182" uuid="14e0edb4-2b39-4b99-853e-e1ced91a5b38">
+					<jr:column width="85" uuid="14e0edb4-2b39-4b99-853e-e1ced91a5b38">
 						<jr:tableHeader style="table_TH" height="56" rowSpan="1">
 							<staticText>
-								<reportElement style="table_TH" x="0" y="0" width="182" height="56" uuid="d057327a-b70a-48d0-ad26-6a5fb7584613"/>
+								<reportElement style="table_TH" x="0" y="0" width="85" height="56" uuid="d057327a-b70a-48d0-ad26-6a5fb7584613"/>
 								<text><![CDATA[Extension]]></text>
 							</staticText>
 						</jr:tableHeader>
@@ -144,7 +145,7 @@
 						<jr:columnFooter style="table_CH" height="0" rowSpan="1"/>
 						<jr:detailCell style="table_TD" height="21" rowSpan="1">
 							<textField isStretchWithOverflow="true">
-								<reportElement style="table_TD" stretchType="RelativeToBandHeight" x="0" y="0" width="182" height="20" uuid="20f8786e-fe7f-4aa3-9176-4df141a710e3"/>
+								<reportElement style="table_TD" stretchType="RelativeToBandHeight" x="0" y="0" width="85" height="20" uuid="20f8786e-fe7f-4aa3-9176-4df141a710e3"/>
 								<textFieldExpression><![CDATA[$F{cmqType}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
@@ -183,10 +184,10 @@
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="122" uuid="bd2200e1-be86-4758-a1fc-83061b8056ba">
+					<jr:column width="285" uuid="bd2200e1-be86-4758-a1fc-83061b8056ba">
 						<jr:tableHeader style="table_TH" height="56" rowSpan="1">
 							<staticText>
-								<reportElement style="table_TH" x="0" y="0" width="122" height="56" uuid="083dc59a-6da1-47d1-b6d3-4804cb42423f"/>
+								<reportElement style="table_TH" x="0" y="0" width="285" height="56" uuid="083dc59a-6da1-47d1-b6d3-4804cb42423f"/>
 								<text><![CDATA[Product]]></text>
 							</staticText>
 						</jr:tableHeader>
@@ -195,7 +196,7 @@
 						<jr:columnFooter style="table_CH" height="0" rowSpan="1"/>
 						<jr:detailCell style="table_TD" height="21" rowSpan="1">
 							<textField isStretchWithOverflow="true">
-								<reportElement style="table_TD" stretchType="RelativeToBandHeight" x="0" y="0" width="122" height="20" uuid="40b70d92-fae1-49aa-8567-a315308f9c0e"/>
+								<reportElement style="table_TD" stretchType="RelativeToBandHeight" x="0" y="0" width="285" height="20" uuid="40b70d92-fae1-49aa-8567-a315308f9c0e"/>
 								<textFieldExpression><![CDATA[$F{cmqProduct}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
@@ -268,10 +269,10 @@
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="147" uuid="71544c92-320e-4b1a-8365-6867cf0ddf96">
+					<jr:column width="110" uuid="71544c92-320e-4b1a-8365-6867cf0ddf96">
 						<jr:tableHeader style="table_TH" height="56" rowSpan="1">
 							<staticText>
-								<reportElement style="table_TH" x="0" y="0" width="147" height="56" uuid="03d9d09b-854e-4500-a885-8ad0bd3302a4"/>
+								<reportElement style="table_TH" x="0" y="0" width="110" height="56" uuid="03d9d09b-854e-4500-a885-8ad0bd3302a4"/>
 								<text><![CDATA[Group]]></text>
 							</staticText>
 						</jr:tableHeader>
@@ -280,7 +281,7 @@
 						<jr:columnFooter style="table_CH" height="0" rowSpan="1"/>
 						<jr:detailCell style="table_TD" height="21" rowSpan="1">
 							<textField isStretchWithOverflow="true">
-								<reportElement style="table_TD" stretchType="RelativeToBandHeight" x="0" y="0" width="147" height="20" uuid="bd387ee5-97e3-4671-94a6-e06b6c96e803"/>
+								<reportElement style="table_TD" stretchType="RelativeToBandHeight" x="0" y="0" width="110" height="20" uuid="bd387ee5-97e3-4671-94a6-e06b6c96e803"/>
 								<textFieldExpression><![CDATA[$F{cmqGroup}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
