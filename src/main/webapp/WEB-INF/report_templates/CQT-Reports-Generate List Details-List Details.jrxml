@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ListDetailsReport" pageWidth="1190" pageHeight="842" orientation="Landscape" columnWidth="1150" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="5fdc5201-3e8e-4967-99e0-e03778d41859">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="24"/>
+	<property name="ireport.y" value="7"/>
 	<import value="org.apache.commons.codec.binary.Base64"/>
 	<style name="table">
 		<box>
@@ -150,10 +150,10 @@
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="68" uuid="b43277db-64f7-4dd1-a4c0-a3556bc77a3a">
+					<jr:column width="70" uuid="b43277db-64f7-4dd1-a4c0-a3556bc77a3a">
 						<jr:tableHeader style="table_TH" height="56" rowSpan="1">
 							<staticText>
-								<reportElement style="table_TH" x="0" y="0" width="68" height="56" uuid="c17fff79-de32-41c7-bb8f-3a830206f581"/>
+								<reportElement style="table_TH" x="0" y="0" width="70" height="56" uuid="c17fff79-de32-41c7-bb8f-3a830206f581"/>
 								<text><![CDATA[Drug Program]]></text>
 							</staticText>
 						</jr:tableHeader>
@@ -162,7 +162,7 @@
 						<jr:columnFooter style="table_CH" height="0" rowSpan="1"/>
 						<jr:detailCell style="table_TD" height="21" rowSpan="1">
 							<textField isStretchWithOverflow="true">
-								<reportElement style="table_TD" stretchType="RelativeToBandHeight" x="0" y="0" width="68" height="20" uuid="5af14a25-5b6f-4ccc-8c31-61f60058a317"/>
+								<reportElement style="table_TD" stretchType="RelativeToBandHeight" x="0" y="0" width="70" height="20" uuid="5af14a25-5b6f-4ccc-8c31-61f60058a317"/>
 								<textFieldExpression><![CDATA[$F{cmqProgram}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
@@ -252,10 +252,10 @@
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="64" uuid="92b049ac-4bc7-4f3f-9178-bdbb9972f0a4">
+					<jr:column width="68" uuid="92b049ac-4bc7-4f3f-9178-bdbb9972f0a4">
 						<jr:tableHeader style="table_TH" height="56" rowSpan="1">
 							<staticText>
-								<reportElement style="table_TH" x="0" y="0" width="64" height="56" uuid="eb0b9b12-18d8-4372-a843-aaee436a9401"/>
+								<reportElement style="table_TH" x="0" y="0" width="68" height="56" uuid="eb0b9b12-18d8-4372-a843-aaee436a9401"/>
 								<text><![CDATA[Algorithm]]></text>
 							</staticText>
 						</jr:tableHeader>
@@ -264,15 +264,15 @@
 						<jr:columnFooter style="table_CH" height="0" rowSpan="1"/>
 						<jr:detailCell style="table_TD" height="21" rowSpan="1">
 							<textField isStretchWithOverflow="true">
-								<reportElement style="table_TD" stretchType="RelativeToBandHeight" x="0" y="0" width="64" height="20" uuid="0753f310-82e2-4bf0-8b91-a16a38792bc1"/>
+								<reportElement style="table_TD" stretchType="RelativeToBandHeight" x="0" y="0" width="68" height="20" uuid="0753f310-82e2-4bf0-8b91-a16a38792bc1"/>
 								<textFieldExpression><![CDATA[$F{cmqAlgorithm}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="110" uuid="71544c92-320e-4b1a-8365-6867cf0ddf96">
+					<jr:column width="104" uuid="71544c92-320e-4b1a-8365-6867cf0ddf96">
 						<jr:tableHeader style="table_TH" height="56" rowSpan="1">
 							<staticText>
-								<reportElement style="table_TH" x="0" y="0" width="110" height="56" uuid="03d9d09b-854e-4500-a885-8ad0bd3302a4"/>
+								<reportElement style="table_TH" x="0" y="0" width="104" height="56" uuid="03d9d09b-854e-4500-a885-8ad0bd3302a4"/>
 								<text><![CDATA[Group]]></text>
 							</staticText>
 						</jr:tableHeader>
@@ -281,7 +281,7 @@
 						<jr:columnFooter style="table_CH" height="0" rowSpan="1"/>
 						<jr:detailCell style="table_TD" height="21" rowSpan="1">
 							<textField isStretchWithOverflow="true">
-								<reportElement style="table_TD" stretchType="RelativeToBandHeight" x="0" y="0" width="110" height="20" uuid="bd387ee5-97e3-4671-94a6-e06b6c96e803"/>
+								<reportElement style="table_TD" stretchType="RelativeToBandHeight" x="0" y="0" width="104" height="20" uuid="bd387ee5-97e3-4671-94a6-e06b6c96e803"/>
 								<textFieldExpression><![CDATA[$F{cmqGroup}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
