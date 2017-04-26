@@ -1597,4 +1597,11 @@ public class CreateController implements Serializable {
         }
         return false;
     }
+    
+    public boolean isAuthorized() {
+        if(getAuthService().hasGroup(new String[] {AuthenticationService.REQUESTER_GROUP})) {
+            return false;
+        }
+        return true;
+    }
 }
