@@ -954,11 +954,13 @@ public class IARelationsTreeHelper {
 		boolean isRootListNode = isRootListNode(expandedTreeNode);
         Map<Long, TreeNode> addedNodes = new HashMap<>();
         List<Long> dtoCodes = new ArrayList<>(dtos.size());
+        boolean bCurrentList = "current".equalsIgnoreCase(cmqType);
+        boolean bEventFromTargetTable = "target-table".equalsIgnoreCase(uiSourceOfEvent);
 		for (MeddraDictHierarchySearchDto m : dtos) {
 			HierarchyNode node = this.createMeddraNode(m, nodeType);
             node.setRelationEntity(cmqRelationsMap.get(Long.valueOf(m.getCode())));
 			
-            if(!"current".equalsIgnoreCase(cmqType) && !isRootListNode && "target-table".equalsIgnoreCase(uiSourceOfEvent)) {
+            if(!bCurrentList && !isRootListNode && bEventFromTargetTable) {
                 node.markNotEditableInRelationstable();
             }
 
@@ -969,7 +971,7 @@ public class IARelationsTreeHelper {
 		}
         
         List<Map<String, Object>> countsOfChildren = null;
-        if ("current".equalsIgnoreCase(cmqType)) {
+        if (bCurrentList) {
             setCurrentMeddraColor(dtos, addedNodes, cmqRelationsMap);
             countsOfChildren = this.meddraDictCurrentService.findChldrenCountByParentCodes(childNodeType + "_"
                                             , nodeType + "_", dtoCodes);
@@ -979,7 +981,7 @@ public class IARelationsTreeHelper {
                                             , nodeType + "_", dtoCodes);
         }
         
-        for(TreeNode n: addedNodes.values()) {
+        for (TreeNode n : addedNodes.values()) {
             HierarchyNode hn = (HierarchyNode)n.getData();
             if(hn.getRelationEntity() instanceof CmqRelation190)
                 setCMQCurrentNodeStyle(hn, (CmqRelation190)hn.getRelationEntity());
@@ -993,7 +995,7 @@ public class IARelationsTreeHelper {
                 if(cc.get("PARENT_CODE") != null && cc.get("COUNT") != null) {
                     Long pCode = (Long)cc.get("PARENT_CODE");
                     Long c = (Long)cc.get("COUNT");
-                    TreeNode t = c > 0 ? addedNodes.get(pCode.longValue()) : null;
+                    TreeNode t = c > 0 ? addedNodes.get(pCode) : null;
                     if(t!=null) {
                         // add a dummmy node to show expand arrow
                         createNewDummyNode(t);
@@ -1006,27 +1008,30 @@ public class IARelationsTreeHelper {
     
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void populateCmqBaseChildren(Long cmqCode, TreeNode expandedTreeNode, String cmqType, String uiSourceOfEvent) {
-		List<? extends IEntity> childCmqBaseList = null;
+		List<? extends IEntity> childCmqBaseList;
 		boolean isRootListNode = isRootListNode(expandedTreeNode);
-		if("current".equalsIgnoreCase(cmqType)) {
+        boolean bCurrentList = "current".equalsIgnoreCase(cmqType);
+        boolean bEventFromTargetTable = "target-table".equalsIgnoreCase(uiSourceOfEvent);
+        
+		if(bCurrentList) {
 			childCmqBaseList = cmqBaseCurrentService.findChildCmqsByParentCode(cmqCode);
 		} else {
 			childCmqBaseList = cmqBaseTargetService.findChildCmqsByParentCode(cmqCode);
 		}
 		
 		List<Long> childCmqCodeList = new ArrayList<>();
-		Map<Long, TreeNode> childTreeNodes = new HashMap<Long, TreeNode>();
+		Map<Long, TreeNode> childTreeNodes = new HashMap<>();
 		
 		if ((null != childCmqBaseList) && (childCmqBaseList.size() > 0)) {
 			for (IEntity entity : childCmqBaseList) {
 				HierarchyNode node = new HierarchyNode();
-				if("current".equalsIgnoreCase(cmqType)) {
+				if(bCurrentList) {
 					CmqBase190 childCmqBase = (CmqBase190) entity;
 					node.setLevel(childCmqBase.getCmqTypeCd());
 					node.setTerm(childCmqBase.getCmqName());
 					node.setCode(childCmqBase.getCmqCode().toString());
 					node.setEntity(childCmqBase);
-					if(!isRootListNode && "target-table".equalsIgnoreCase(uiSourceOfEvent)) {
+					if(!isRootListNode && bEventFromTargetTable) {
 						node.markNotEditableInRelationstable();
 					}
 					TreeNode cmqBaseChildNode = new DefaultTreeNode(node, expandedTreeNode);
@@ -1044,7 +1049,7 @@ public class IARelationsTreeHelper {
 					node.setTerm(childCmqBase.getCmqName());
 					node.setCode(childCmqBase.getCmqCode().toString());
 					node.setEntity(childCmqBase);
-					if(!isRootListNode && "target-table".equalsIgnoreCase(uiSourceOfEvent)) {
+					if(!isRootListNode && bEventFromTargetTable) {
 						node.markNotEditableInRelationstable();
 					}
 					TreeNode cmqBaseChildNode = new DefaultTreeNode(node, expandedTreeNode);
@@ -1059,7 +1064,7 @@ public class IARelationsTreeHelper {
 			}
 			
 			List<Map<String, Object>> childrenOfChildCountsList = null;
-			if("current".equalsIgnoreCase(cmqType)) {
+			if(bCurrentList) {
 				childrenOfChildCountsList = this.cmqBaseCurrentService.findCmqChildCountForParentCmqCode(childCmqCodeList);
 			} else {
 				childrenOfChildCountsList = this.cmqBaseTargetService.findCmqChildCountForParentCmqCode(childCmqCodeList);
@@ -1090,7 +1095,7 @@ public class IARelationsTreeHelper {
 			
 			//now find relations for those who don't have children
 			List<Map<String, Object>> relationsCountsList = null;
-			if("current".equalsIgnoreCase(cmqType)) {
+			if(bCurrentList) {
 				relationsCountsList = this.cmqRelationCurrentService.findCountByCmqCodes(childCmqCodeList);
 			} else {
 				relationsCountsList = this.cmqRelationTargetService.findCountByCmqCodes(childCmqCodeList);
@@ -1114,6 +1119,9 @@ public class IARelationsTreeHelper {
 	}
 	
 	public void populateCmqRelations(Long cmqCode, TreeNode expandedTreeNode, String cmqType, String uiSourceOfEvent, IEntity entityExpanded) {
+        boolean bCurrentList = "current".equalsIgnoreCase(cmqType);
+        boolean bEventFromTargetTable = "target-table".equalsIgnoreCase(uiSourceOfEvent);
+        
 		//add cmq relations now
 		Map<Long, IEntity> socCodesMap = new HashMap<>();
 		Map<Long, IEntity> hlgtCodesMap = new HashMap<>();
@@ -1130,7 +1138,7 @@ public class IARelationsTreeHelper {
 		
 		if((null != existingRelations) && (existingRelations.size() > 0)) {
 			for (IEntity entity : existingRelations) {
-				if("current".equalsIgnoreCase(cmqType)) {
+				if(bCurrentList) {
 					CmqRelation190 cmqRelation = (CmqRelation190) entity;
 					if((cmqRelation.getSocCode() != null) && (cmqRelation.getSocCode().longValue() > 0)) {
 						socCodesMap.put(cmqRelation.getSocCode(), cmqRelation);
@@ -1169,7 +1177,7 @@ public class IARelationsTreeHelper {
 			if(socCodesMap.size() > 0) {
 				List<MeddraDictHierarchySearchDto> socDtos = null;
 				List<Long> socCodesList = new ArrayList<>(socCodesMap.keySet());
-				if("current".equalsIgnoreCase(cmqType)) {
+				if(bCurrentList) {
 					socDtos = this.meddraDictCurrentService.findByCodes("SOC_", socCodesList);
 				} else {
 					socDtos = this.meddraDictTargetService.findByCodes("SOC_", socCodesList);
@@ -1180,7 +1188,7 @@ public class IARelationsTreeHelper {
 			if(hlgtCodesMap.size() > 0) {
 				List<MeddraDictHierarchySearchDto> hlgtDtos = null;
 				List<Long> hlgtCodesList = new ArrayList<>(hlgtCodesMap.keySet());
-				if("current".equalsIgnoreCase(cmqType)) {
+				if(bCurrentList) {
 					hlgtDtos = this.meddraDictCurrentService.findByCodes("HLGT_", hlgtCodesList);
 				} else {
 					hlgtDtos = this.meddraDictTargetService.findByCodes("HLGT_", hlgtCodesList);
@@ -1191,7 +1199,7 @@ public class IARelationsTreeHelper {
 			if(hltCodesMap.size() > 0) {
 				List<MeddraDictHierarchySearchDto> hltDtos = null;
 				List<Long> hltCodesList = new ArrayList<>(hltCodesMap.keySet());
-				if("current".equalsIgnoreCase(cmqType)) {
+				if(bCurrentList) {
 					hltDtos = this.meddraDictCurrentService.findByCodes("HLT_", hltCodesList);
 				} else {
 					hltDtos = this.meddraDictTargetService.findByCodes("HLT_", hltCodesList);
@@ -1202,7 +1210,7 @@ public class IARelationsTreeHelper {
 			if(ptCodesMap.size() > 0) {
 				List<MeddraDictHierarchySearchDto> ptDtos = null;
 				List<Long> ptCodesList = new ArrayList<>(ptCodesMap.keySet());
-				if("current".equalsIgnoreCase(cmqType)) {
+				if(bCurrentList) {
 					ptDtos = this.meddraDictCurrentService.findByCodes("PT_", ptCodesList);
 				} else {
 					ptDtos = this.meddraDictTargetService.findByCodes("PT_", ptCodesList);
@@ -1214,7 +1222,7 @@ public class IARelationsTreeHelper {
 				boolean isRootListNode = isRootListNode(expandedTreeNode);
 				List<MeddraDictHierarchySearchDto> lltDtos = null;
 				List<Long> lltCodesList = new ArrayList<>(lltCodesMap.keySet());
-				if("current".equalsIgnoreCase(cmqType)) {
+				if(bCurrentList) {
 					lltDtos = this.meddraDictCurrentService.findByCodes("LLT_", lltCodesList);
 				} else {
 					lltDtos = this.meddraDictTargetService.findByCodes("LLT_", lltCodesList);
@@ -1226,7 +1234,7 @@ public class IARelationsTreeHelper {
 					HierarchyNode node = this.createMeddraNode(m, "LLT");
                     node.setRelationEntity(lltCodesMap.get(Long.parseLong(m.getCode())));
                     
-                    if(!"current".equalsIgnoreCase(cmqType) && !isRootListNode && "target-table".equalsIgnoreCase(uiSourceOfEvent)) {
+                    if(!bCurrentList && !isRootListNode && bEventFromTargetTable) {
                         node.markNotEditableInRelationstable();
                     }
 					
@@ -1234,7 +1242,7 @@ public class IARelationsTreeHelper {
                     lltNodes.put(Long.valueOf(m.getCode()), treeNode);
 				}
                 
-                if ("current".equalsIgnoreCase(cmqType)) {
+                if (bCurrentList) {
                     setCurrentMeddraColor(lltDtos, lltNodes, lltCodesMap);
                 } else {
                     setTargetMeddraColor(lltDtos, lltNodes, lltCodesMap);
@@ -1254,8 +1262,11 @@ public class IARelationsTreeHelper {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void populateSmqBaseChildren(Long smqCode, TreeNode expandedTreeNode, String smqType, String uiSourceOfEvent) {
 		boolean isRootListNode = isRootListNode(expandedTreeNode);
+        boolean bCurrentList = "current".equalsIgnoreCase(smqType);
+        boolean bEventFromTargetTable = "target-table".equalsIgnoreCase(uiSourceOfEvent);
+        
 		List<? extends IEntity> childSmqBaseList = null;
-		if("current".equalsIgnoreCase(smqType)) {
+		if(bCurrentList) {
 			childSmqBaseList = this.smqBaseCurrentService.findChildSmqByParentSmqCode(smqCode);
 		} else {
 			childSmqBaseList = this.smqBaseTargetService.findChildSmqByParentSmqCode(smqCode);
@@ -1266,7 +1277,7 @@ public class IARelationsTreeHelper {
 			for (IEntity entity : childSmqBaseList) {
 				HierarchyNode childNode = new HierarchyNode();
 				Long childSmqCode = null;
-				if("current".equalsIgnoreCase(smqType)) {
+				if(bCurrentList) {
 					SmqBase190 childSmqBase = (SmqBase190) entity;
 					childSmqCode = childSmqBase.getSmqCode();
 					if (childSmqBase.getSmqLevel() == 1) {
@@ -1292,22 +1303,30 @@ public class IARelationsTreeHelper {
 					//for target here
 					SmqBaseTarget childSmqBase = (SmqBaseTarget) entity;
 					childSmqCode = childSmqBase.getSmqCode();
-					if (childSmqBase.getSmqLevel() == 1) {
-						childNode.setLevel("SMQ1");
-					} else if (childSmqBase.getSmqLevel() == 2) {
-						childNode.setLevel("SMQ2");
-					} else if (childSmqBase.getSmqLevel() == 3) {
-						childNode.setLevel("SMQ3");
-					} else if (childSmqBase.getSmqLevel() == 4) {
-						childNode.setLevel("SMQ4");
-					} else if (childSmqBase.getSmqLevel() == 5) {
-						childNode.setLevel("SMQ5");
-					}
+					if (null != childSmqBase.getSmqLevel()) switch (childSmqBase.getSmqLevel()) {
+                        case 1:
+                            childNode.setLevel("SMQ1");
+                            break;
+                        case 2:
+                            childNode.setLevel("SMQ2");
+                            break;
+                        case 3:
+                            childNode.setLevel("SMQ3");
+                            break;
+                        case 4:
+                            childNode.setLevel("SMQ4");
+                            break;
+                        case 5:
+                            childNode.setLevel("SMQ5");
+                            break;
+                        default:
+                            break;
+                    }
 					childNode.setTerm(childSmqBase.getSmqName());
 					childNode.setCode(childSmqBase.getSmqCode().toString());
 					childNode.setEntity(childSmqBase);
 					smqChildCodeList.add(childSmqBase.getSmqCode());
-					if(!isRootListNode && "target-table".equalsIgnoreCase(uiSourceOfEvent)) {
+					if(!isRootListNode && bEventFromTargetTable) {
 						childNode.markNotEditableInRelationstable();
 					}
 					if ("ICS".equalsIgnoreCase(childSmqBase.getImpactType())  || "IMPACTED".equalsIgnoreCase(childSmqBase.getImpactType()))
@@ -1331,7 +1350,7 @@ public class IARelationsTreeHelper {
 			//process the chopped lists now
 			for (List<Long> subList : choppedLists) {
 				List<Map<String, Object>> childSmqRelationsCountList = null;
-				if("current".equalsIgnoreCase(smqType)) {
+				if(bCurrentList) {
 					childSmqRelationsCountList = this.smqBaseCurrentService.findSmqRelationsCountForSmqCodes(subList);
 				} else {
 					childSmqRelationsCountList = this.smqBaseTargetService.findSmqRelationsCountForSmqCodes(subList);
@@ -1358,6 +1377,8 @@ public class IARelationsTreeHelper {
 																		, MeddraDictReverseHierarchySearchDto reverseSearchDto
 																		, boolean chekcForPrimaryPath, String uiSourceOfEvent) {
 		boolean isRootListNode = isRootListNode(expandedTreeNode);
+        boolean bEventFromTargetTable = "target-table".equalsIgnoreCase(uiSourceOfEvent);
+        
 		String partitionColumnPrefix = partitionColumn +"_";
 		List<MeddraDictReverseHierarchySearchDto> childReverseSearchDtos = this.meddraDictTargetService.findReverseByCode(searchColumnTypePrefix
 																															, partitionColumnPrefix, code);
@@ -1374,7 +1395,7 @@ public class IARelationsTreeHelper {
 					childNode = this.createMeddraReverseNode(childReverseSearchDto, partitionColumn, hierarchyNode.isPrimaryPathFlag());
 				}
 				
-				if(!isRootListNode && "target-table".equalsIgnoreCase(uiSourceOfEvent)) {
+				if(!isRootListNode && bEventFromTargetTable) {
 					childNode.markNotEditableInRelationstable();
 				}
 				
@@ -1397,6 +1418,8 @@ public class IARelationsTreeHelper {
 	public void populateMeddraDictHierarchySearchDtoChildren(String parentLevel, Long dtoCode, TreeNode expandedTreeNode
 																, String meddraType, String uiSourceOfEvent) {
 		boolean isRootListNode = isRootListNode(expandedTreeNode);
+        boolean bCurrentList = "current".equalsIgnoreCase(meddraType);
+        boolean bEventFromTargetTable = "target-table".equalsIgnoreCase(uiSourceOfEvent);
 		//child code and term type prefix for the parent i.e: node that was expanded in ui
 		String childLevel = null;
 		String childSearchColumnTypePrefix = null;
@@ -1428,7 +1451,7 @@ public class IARelationsTreeHelper {
 		
 		//fetch children of parent node by code of parent
 		List<MeddraDictHierarchySearchDto> childDtos = null;
-		if("current".equalsIgnoreCase(meddraType)) {
+		if(bCurrentList) {
 			childDtos = this.meddraDictCurrentService.findChildrenByParentCode(childSearchColumnTypePrefix, parentCodeColumnPrefix, dtoCode);
 		} else {
 			childDtos = this.meddraDictTargetService.findChildrenByParentCode(childSearchColumnTypePrefix, parentCodeColumnPrefix, dtoCode);
@@ -1449,12 +1472,12 @@ public class IARelationsTreeHelper {
 				childNode.setPrimaryPathFlag(false);
 			}
 			
-			if(!isRootListNode && "target-table".equalsIgnoreCase(uiSourceOfEvent)) {
+			if(!isRootListNode && bEventFromTargetTable) {
 				childNode.markNotEditableInRelationstable();
 			}
 			
 			//Meddra Color
-			if ("current".equalsIgnoreCase(meddraType))
+			if (bCurrentList)
 				setCurrentMeddraColor(childDto, childNode, null, null);
 			else
 				setTargetMeddraColor(childDto, childNode, null, null);
@@ -1470,7 +1493,7 @@ public class IARelationsTreeHelper {
 		}
     
         List<Map<String, Object>> countsOfChildren = null;
-        if ("current".equalsIgnoreCase(meddraType)) {
+        if (bCurrentList) {
             countsOfChildren = this.meddraDictCurrentService.findChldrenCountByParentCodes(childchildOfChildSearchColumnTypePrefix,
                     childSearchColumnTypePrefix, nodesMapKeys);
         } else {
