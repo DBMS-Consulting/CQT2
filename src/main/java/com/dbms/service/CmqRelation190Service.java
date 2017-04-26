@@ -83,7 +83,7 @@ public class CmqRelation190Service extends CqtPersistenceService<CmqRelation190>
 	public List<Map<String, Object>> findCountByCmqCodes(List<Long> cmqCodes) {
 		List<Map<String, Object>>  retVal = null;
 		StringBuilder sb = new StringBuilder();
-		sb.append("select CMQ_CODE, count(*) as COUNT from CMQ_RELATIONS_CURRENT where CMQ_CODE in :cmqCodes group by CMQ_CODE");
+		sb.append("select CMQ_CODE, count(*) as COUNT from CMQ_RELATIONS_CURRENT where CMQ_CODE in (:cmqCodes) group by CMQ_CODE");
 		
 		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
 		Session session = entityManager.unwrap(Session.class);

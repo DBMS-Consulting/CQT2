@@ -257,7 +257,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 			List<Long> cmqCodes) {
 		List<Map<String, Object>> retVal = null;
 		StringBuilder sb = new StringBuilder();
-		sb.append("select CMQ_CODE, count(*) as COUNT from CMQ_BASE_TARGET where CMQ_PARENT_CODE in :cmqCodes group by CMQ_CODE");
+		sb.append("select CMQ_CODE, count(*) as COUNT from CMQ_BASE_TARGET where CMQ_PARENT_CODE in (:cmqCodes) group by CMQ_CODE");
 
 		EntityManager entityManager = this.cqtEntityManagerFactory
 				.getEntityManager();
@@ -319,7 +319,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 			retVal = query.getResultList();
 		} catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
-			msg.append("findChildCmqsByCodes failed ")
+			msg.append("findChildCmqsByCode failed ")
 					.append("Query used was ->").append(queryString);
 			LOG.error(msg.toString(), e);
 		} finally {
@@ -1204,7 +1204,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 	@Override
 	public List<CmqBaseTarget> findChildCmqsByCodes(List<Long> codes) {
 		List<CmqBaseTarget> retVal = null;
-		String queryString = "from CmqBaseTarget c where c.cmqParentCode in :codeList ";
+		String queryString = "from CmqBaseTarget c where c.cmqParentCode in (:codeList) ";
 		EntityManager entityManager = this.cqtEntityManagerFactory
 				.getEntityManager();
 		try {
@@ -1225,7 +1225,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 	@Override
 	public List<CmqBaseTarget> findParentCmqsByCodes(List<Long> codes) {
 		List<CmqBaseTarget> retVal = null;
-		String queryString = "from CmqBaseTarget c where c.cmqCode in :codeList ";
+		String queryString = "from CmqBaseTarget c where c.cmqCode in (:codeList) ";
 		EntityManager entityManager = this.cqtEntityManagerFactory
 				.getEntityManager();
 		try {

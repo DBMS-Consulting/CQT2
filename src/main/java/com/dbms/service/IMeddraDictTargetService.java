@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.dbms.entity.cqt.dtos.MeddraDictHierarchySearchDto;
 import com.dbms.entity.cqt.dtos.MeddraDictReverseHierarchySearchDto;
+import java.util.Map;
 
 public interface IMeddraDictTargetService {
 
@@ -23,9 +24,12 @@ public interface IMeddraDictTargetService {
 	List<MeddraDictHierarchySearchDto> findByCodes(String searchColumnTypePrefix, List<Long> codes);
 
 	Long findChldrenCountByParentCode(String searchColumnTypePrefix, String parentCodeColumnPrefix, Long parentCode);
+    List<Map<String, Object>> findChldrenCountByParentCodes(String searchColumnTypePrefix, String parentCodeColumnPrefix, List<Long> parentCodes);
 
 	List<MeddraDictHierarchySearchDto> findChildrenByParentCode(String searchColumnTypePrefix,
 			String parentCodeColumnPrefix, Long parentCode);
+    List<MeddraDictHierarchySearchDto> findChildrenByParentCodes(String searchColumnTypePrefix,
+			String parentCodeColumnPrefix, List<Long> parentCodes);
 
 	List<MeddraDictHierarchySearchDto> findNewPtTerm(String socSearchTerm, int firstResult, int fetchSize);
 

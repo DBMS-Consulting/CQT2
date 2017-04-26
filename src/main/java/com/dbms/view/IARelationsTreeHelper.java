@@ -12,7 +12,6 @@ import java.util.Map;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.olap4j.metadata.Member.TreeOp;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
 
@@ -36,11 +35,12 @@ import com.dbms.service.IMeddraDictService;
 import com.dbms.service.IMeddraDictTargetService;
 import com.dbms.service.ISmqBaseService;
 import com.dbms.service.ISmqBaseTargetService;
+import java.util.LinkedList;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import org.apache.commons.collections4.Predicate;
 
-import org.primefaces.context.RequestContext;
 import org.primefaces.event.NodeExpandEvent;
 
 public class IARelationsTreeHelper {
@@ -470,8 +470,89 @@ public class IARelationsTreeHelper {
 //			node.setRowStyleClass("none");
 		
 	}
+    
+    public void setCurrentMeddraColor(List<MeddraDictHierarchySearchDto> meddras, Map<Long, TreeNode> nodes, Map<Long, IEntity> cmqRelationsMap) {
+        List<Long> socCodes = new LinkedList<>();
+        List<Long> hlgtCodes = new LinkedList<>();
+        List<Long> hltCodes = new LinkedList<>();
+        List<Long> ptCodes = new LinkedList<>();
+        for (MeddraDictHierarchySearchDto m : meddras) {
+            if (m.getSocCode() != null)
+                socCodes.add(Long.parseLong(m.getSocCode()));
+            if (m.getHlgtCode() != null)
+                hlgtCodes.add(Long.parseLong(m.getHlgtCode()));
+            if (m.getHltCode() != null)
+                hltCodes.add(Long.parseLong(m.getHltCode()));
+            if (m.getPtCode() != null)
+                ptCodes.add(Long.parseLong(m.getPtCode()));
+        }
+        
+        List<MeddraDictHierarchySearchDto> socMeddras = meddraDictCurrentService.findChildrenByParentCodes("HLGT_", "SOC_",  socCodes);
+        List<MeddraDictHierarchySearchDto> hlgtMeddras = meddraDictCurrentService.findChildrenByParentCodes("HLT_", "HLGT_", hlgtCodes);
+        List<MeddraDictHierarchySearchDto> hltMeddras = meddraDictCurrentService.findChildrenByParentCodes("PT_", "HLT_", hltCodes);
+        List<MeddraDictHierarchySearchDto> ptMeddras = meddraDictCurrentService.findChildrenByParentCodes("LLT_", "PT_", ptCodes);
+        
+        socCodes = hlgtCodes = hltCodes = ptCodes= null;
+        
+        for (MeddraDictHierarchySearchDto m : meddras) {
+            List<MeddraDictHierarchySearchDto> socChMeddras = null;
+            List<MeddraDictHierarchySearchDto> hlgtChMeddras = null;
+            List<MeddraDictHierarchySearchDto> hltChMeddras = null;
+            List<MeddraDictHierarchySearchDto> ptChMeddras = null;
+            
+            IEntity relationEntity = cmqRelationsMap!=null? cmqRelationsMap.get(Long.valueOf(m.getCode())) : null;
+            if(relationEntity instanceof CmqRelation190 && ((CmqRelation190)relationEntity).getRelationImpactType() == null) {
+                if (m.getSocCode() != null) {
+                    final String socCode = m.getSocCode();
+                    socChMeddras = ListUtils.select(socMeddras, new Predicate<MeddraDictHierarchySearchDto>() {
+                        @Override
+                        public boolean evaluate(MeddraDictHierarchySearchDto object) {
+                            return (StringUtils.equals(object.getSocCode(), socCode));
+                        }                 
+                    });
+                }
+                if (m.getHlgtCode() != null) {
+                    final String hlgtCode = m.getHlgtCode();
+                    hlgtChMeddras = ListUtils.select(hlgtMeddras, new Predicate<MeddraDictHierarchySearchDto>() {
+                        @Override
+                        public boolean evaluate(MeddraDictHierarchySearchDto object) {
+                            return (StringUtils.equals(object.getHlgtCode(), hlgtCode));
+                        }                 
+                    });
+                }
+                if (m.getHltCode() != null) {
+                    final String hltCode = m.getHltCode();
+                    hltChMeddras = ListUtils.select(hltMeddras, new Predicate<MeddraDictHierarchySearchDto>() {
+                        @Override
+                        public boolean evaluate(MeddraDictHierarchySearchDto object) {
+                            return (StringUtils.equals(object.getHltCode(), hltCode));
+                        }                 
+                    });
+                }
+                if (m.getPtCode() != null){
+                    final String ptCode = m.getPtCode();
+                    ptChMeddras = ListUtils.select(ptMeddras, new Predicate<MeddraDictHierarchySearchDto>() {
+                        @Override
+                        public boolean evaluate(MeddraDictHierarchySearchDto object) {
+                            return (StringUtils.equals(object.getPtCode(), ptCode));
+                        }                 
+                    });
+                }
+            }
+            Map<String, List<MeddraDictHierarchySearchDto>> chMeddras = new HashMap<>();
+            chMeddras.put("SOC/HLGT", socChMeddras);
+            chMeddras.put("HLGT/HLT", hlgtChMeddras);
+            chMeddras.put("HLT/PT", hltChMeddras);
+            chMeddras.put("PT/LLT", ptChMeddras);
+            
+            Long code = Long.valueOf(m.getCode());
+            HierarchyNode hnode = (HierarchyNode)nodes.get(code).getData();
+            
+            setCurrentMeddraColor(m, hnode, cmqRelationsMap.get(code), chMeddras);
+        }
+    }
 
-	public void setCurrentMeddraColor(MeddraDictHierarchySearchDto meddra, HierarchyNode node, IEntity entityExpanded, Map<Long, IEntity> cmqRelationsMap) {
+	public void setCurrentMeddraColor(MeddraDictHierarchySearchDto meddra, HierarchyNode node, IEntity relationEntity, Map<String, List<MeddraDictHierarchySearchDto>> chMeddras) {
 		if((meddra.getMovedPt() != null && "LDH".equalsIgnoreCase(meddra.getMovedPt()) && (meddra.getPtCode() != null || meddra.getLltCode() != null))
 				|| (meddra.getMovedLlt() != null && "LDP".equalsIgnoreCase(meddra.getMovedLlt()) && meddra.getLltCode() != null)
 				|| (meddra.getMovedHlt() != null && "HDH".equalsIgnoreCase(meddra.getMovedHlt()) && (meddra.getLltCode() != null || meddra.getHltCode() != null || meddra.getPtCode() != null))
@@ -479,8 +560,7 @@ public class IARelationsTreeHelper {
 				|| (meddra.getDemotedPt() != null && "PDL".equalsIgnoreCase(meddra.getDemotedPt()) && (meddra.getPtCode() != null || meddra.getLltCode() != null))
 				|| (meddra.getPromotedLlt() != null && "LPP".equalsIgnoreCase(meddra.getPromotedLlt()) && meddra.getLltCode() != null)
 				|| (meddra.getMergedHlgt() != null && "MRG".equalsIgnoreCase(meddra.getMergedHlgt()) && (meddra.getHlgtCode() != null || meddra.getLltCode() != null || meddra.getHltCode() != null || meddra.getPtCode() != null))
-				|| (meddra.getPrimarySocChange() != null && "HPN".equalsIgnoreCase(meddra.getPrimarySocChange()) 
-						&& (meddra.getHlgtCode() != null || meddra.getLltCode() != null || meddra.getHltCode() != null || meddra.getPtCode() != null))
+				|| (meddra.getPrimarySocChange() != null && "HPN".equalsIgnoreCase(meddra.getPrimarySocChange()) && (meddra.getHlgtCode() != null || meddra.getLltCode() != null || meddra.getHltCode() != null || meddra.getPtCode() != null))
 				|| (meddra.getMergedHlt() != null && "MRG".equalsIgnoreCase(meddra.getMergedHlt()) && (meddra.getLltCode() != null || meddra.getHltCode() != null || meddra.getPtCode() != null))) {
 			node.setRowStyleClass("red-colored");
 		}
@@ -493,91 +573,126 @@ public class IARelationsTreeHelper {
 			node.setRowStyleClass("italic");
 		}
 		
-//		if (meddra.getPrimarySocChange() != null && "HPP".equalsIgnoreCase(meddra.getPrimarySocChange()))
-//				node.setRowStyleClass("none");
-		
-		
-		if (cmqRelationsMap != null) {
-//			
-//			if (meddra.getPtCode() != null) {
-//				entity = cmqRelationsMap.get(Long.valueOf(meddra.getPtCode()));
-//				CmqRelation190 cmqRelation = (CmqRelation190) entity;
-//				
-//				if (cmqRelation.getPtCode().equals(meddra.getPtCode() != null)) {
-//					if (meddra.getMovedLlt() != null || meddra.getDemotedLlt() != null || meddra.getLltNameChanged() != null || meddra.getPromotedLlt() != null )
-//						node.setRowStyleClass("blue-colored");
-//				}
-//			}
-			IEntity entity = cmqRelationsMap.get(Long.valueOf(meddra.getCode()));
-			if (entity != null && entity instanceof CmqRelation190) {
-				CmqRelation190 cmqRelation = (CmqRelation190) entity;
-				
-				if (cmqRelation != null && cmqRelation.getRelationImpactType() == null) {
-					//Blue color on relation SOC level
-					if (meddra.getSocCode() != null) {
-						List<Long> codes = new ArrayList<Long>();
-						codes.add(Long.parseLong(meddra.getSocCode()));
-						List<MeddraDictHierarchySearchDto> list = this.meddraDictCurrentService.findChildrenByParentCode("HLGT_", "SOC_", Long.parseLong(meddra.getSocCode()));
-						if (list != null) {
-							for (MeddraDictHierarchySearchDto child : list)
-							if (child.getMergedHlgt() != null ||child.getMovedHlgt() != null || child.getMergedHlgt() != null || child.getHlgtNameChanged() != null) {
-								node.setRowStyleClass("blue-colored");
-							//	RequestContext.getCurrentInstance().update("impactAssessment:currentListsAndSmqs");
-								break;
-							}
-						}
-						
-					}
-					//Blue color on relation HLGT level
-					if (meddra.getHlgtCode() != null) {
-						List<Long> codes = new ArrayList<Long>();
-						codes.add(Long.parseLong(meddra.getHlgtCode()));
-						List<MeddraDictHierarchySearchDto> list = this.meddraDictCurrentService.findChildrenByParentCode("HLT_", "HLGT_", Long.parseLong(meddra.getHlgtCode()));//findByCodes("HLT_", codes);
-						if (list != null) {
-							for (MeddraDictHierarchySearchDto child : list)
-							if (child.getMovedHlt() != null || child.getHltNameChanged() != null) {
-								node.setRowStyleClass("blue-colored");
-								break;
-							}
-						}
-
-					}
-					//Blue color on relation HLT level
-					if (meddra.getHltCode() != null) { 
-						List<Long> codes = new ArrayList<Long>();
-						codes.add(Long.parseLong(meddra.getHltCode()));
-						List<MeddraDictHierarchySearchDto> list = this.meddraDictCurrentService.findChildrenByParentCode("PT_", "HLT_", Long.parseLong(meddra.getHltCode()));//findByCodes("HLT_", codes);
-						if (list != null) {
-							for (MeddraDictHierarchySearchDto child : list)
-							if (child.getMovedPt() != null ||child.getMovedPt() != null || child.getPromotedPt() != null || child.getDemotedPt() != null || child.getPtNameChanged() != null) {
-								node.setRowStyleClass("blue-colored");
-								break;
-							}
-						}
-
-						
-					}			
-					//Blue color on relation PT level
-					if (meddra.getPtCode() != null) {
-						List<Long> codes = new ArrayList<Long>();
-						codes.add(Long.parseLong(meddra.getPtCode()));
-						List<MeddraDictHierarchySearchDto> list = this.meddraDictCurrentService.findChildrenByParentCode("LLT_", "PT_", Long.parseLong(meddra.getPtCode()));//findByCodes("HLT_", codes);
-						if (list != null) {
-							for (MeddraDictHierarchySearchDto child : list)
-							if (child.getMovedLlt() != null || child.getPromotedLlt() != null || child.getDemotedLlt() != null || child.getLltNameChanged() != null) {
-								node.setRowStyleClass("blue-colored");
-								break;
-							}
-						}
-						
-					}
-					
-				}
-			}
-		}
+        if (relationEntity != null && relationEntity instanceof CmqRelation190
+                && ((CmqRelation190) relationEntity).getRelationImpactType() == null) {
+            //Blue color on relation SOC level
+            if (meddra.getSocCode() != null && chMeddras.get("SOC/HLGT") != null) {
+                List<MeddraDictHierarchySearchDto> list = chMeddras.get("SOC/HLGT");
+                for (MeddraDictHierarchySearchDto child : list)
+                if (child.getMergedHlgt() != null ||child.getMovedHlgt() != null || child.getMergedHlgt() != null || child.getHlgtNameChanged() != null) {
+                    node.setRowStyleClass("blue-colored");
+                    break;
+                }
+            }
+            //Blue color on relation HLGT level
+            if (meddra.getHlgtCode() != null && chMeddras.get("HLGT/HLT") != null) {
+                List<MeddraDictHierarchySearchDto> list = chMeddras.get("HLGT/HLT");
+                for (MeddraDictHierarchySearchDto child : list)
+                if (child.getMovedHlt() != null || child.getHltNameChanged() != null) {
+                    node.setRowStyleClass("blue-colored");
+                    break;
+                }
+            }
+            //Blue color on relation HLT level
+            if (meddra.getHltCode() != null && chMeddras.get("HLT/PT") != null) { 
+                List<MeddraDictHierarchySearchDto> list = chMeddras.get("HLT/PT");
+                for (MeddraDictHierarchySearchDto child : list)
+                if (child.getMovedPt() != null ||child.getMovedPt() != null || child.getPromotedPt() != null || child.getDemotedPt() != null || child.getPtNameChanged() != null) {
+                    node.setRowStyleClass("blue-colored");
+                    break;
+                }
+            }			
+            //Blue color on relation PT level
+            if (meddra.getPtCode() != null && chMeddras.get("PT/LLT") != null) {
+                List<MeddraDictHierarchySearchDto> list = chMeddras.get("PT/LLT");
+                for (MeddraDictHierarchySearchDto child : list)
+                if (child.getMovedLlt() != null || child.getPromotedLlt() != null || child.getDemotedLlt() != null || child.getLltNameChanged() != null) {
+                    node.setRowStyleClass("blue-colored");
+                    break;
+                }
+            }
+        }
 	}
+    
+    public void setTargetMeddraColor(List<MeddraDictHierarchySearchDto> meddras, Map<Long, TreeNode> nodes, Map<Long, IEntity> cmqRelationsMap) {
+        List<Long> socCodes = new LinkedList<>();
+        List<Long> hlgtCodes = new LinkedList<>();
+        List<Long> hltCodes = new LinkedList<>();
+        List<Long> ptCodes = new LinkedList<>();
+        for (MeddraDictHierarchySearchDto m : meddras) {
+            if (m.getSocCode() != null)
+                socCodes.add(Long.parseLong(m.getSocCode()));
+            if (m.getHlgtCode() != null)
+                hlgtCodes.add(Long.parseLong(m.getHlgtCode()));
+            if (m.getHltCode() != null)
+                hltCodes.add(Long.parseLong(m.getHltCode()));
+            if (m.getPtCode() != null)
+                ptCodes.add(Long.parseLong(m.getPtCode()));
+        }
+        
+        List<MeddraDictHierarchySearchDto> socMeddras = meddraDictTargetService.findChildrenByParentCodes("HLGT_", "SOC_",  socCodes);
+        List<MeddraDictHierarchySearchDto> hlgtMeddras = meddraDictTargetService.findChildrenByParentCodes("HLT_", "HLGT_", hlgtCodes);
+        List<MeddraDictHierarchySearchDto> hltMeddras = meddraDictTargetService.findChildrenByParentCodes("PT_", "HLT_", hltCodes);
+        List<MeddraDictHierarchySearchDto> ptMeddras = meddraDictTargetService.findChildrenByParentCodes("LLT_", "PT_", ptCodes);
+        
+        socCodes = hlgtCodes = hltCodes = ptCodes= null;
+        
+        for (MeddraDictHierarchySearchDto m : meddras) {
+            List<MeddraDictHierarchySearchDto> socChMeddras = null;
+            List<MeddraDictHierarchySearchDto> hlgtChMeddras = null;
+            List<MeddraDictHierarchySearchDto> hltChMeddras = null;
+            List<MeddraDictHierarchySearchDto> ptChMeddras = null;
+            
+            if (m.getSocCode() != null) {
+                final String socCode = m.getSocCode();
+                socChMeddras = ListUtils.select(socMeddras, new Predicate<MeddraDictHierarchySearchDto>() {
+                    @Override
+                    public boolean evaluate(MeddraDictHierarchySearchDto object) {
+                        return (StringUtils.equals(object.getSocCode(), socCode));
+                    }                 
+                });
+            }
+            if (m.getHlgtCode() != null) {
+                final String hlgtCode = m.getHlgtCode();
+                hlgtChMeddras = ListUtils.select(hlgtMeddras, new Predicate<MeddraDictHierarchySearchDto>() {
+                    @Override
+                    public boolean evaluate(MeddraDictHierarchySearchDto object) {
+                        return (StringUtils.equals(object.getHlgtCode(), hlgtCode));
+                    }                 
+                });
+            }
+            if (m.getHltCode() != null) {
+                final String hltCode = m.getHltCode();
+                hltChMeddras = ListUtils.select(hltMeddras, new Predicate<MeddraDictHierarchySearchDto>() {
+                    @Override
+                    public boolean evaluate(MeddraDictHierarchySearchDto object) {
+                        return (StringUtils.equals(object.getHltCode(), hltCode));
+                    }                 
+                });
+            }
+            if (m.getPtCode() != null){
+                final String ptCode = m.getPtCode();
+                ptChMeddras = ListUtils.select(ptMeddras, new Predicate<MeddraDictHierarchySearchDto>() {
+                    @Override
+                    public boolean evaluate(MeddraDictHierarchySearchDto object) {
+                        return (StringUtils.equals(object.getPtCode(), ptCode));
+                    }                 
+                });
+            }
+            Map<String, List<MeddraDictHierarchySearchDto>> chMeddras = new HashMap<>();
+            chMeddras.put("SOC/HLGT", socChMeddras);
+            chMeddras.put("HLGT/HLT", hlgtChMeddras);
+            chMeddras.put("HLT/PT", hltChMeddras);
+            chMeddras.put("PT/LLT", ptChMeddras);
+            
+            Long code = Long.valueOf(m.getCode());
+            HierarchyNode hnode = (HierarchyNode)nodes.get(code).getData();
+            
+            setTargetMeddraColor(m, hnode, cmqRelationsMap.get(code), chMeddras);
+        }
+    }
 	
-	 public void setTargetMeddraColor(MeddraDictHierarchySearchDto meddra, HierarchyNode node, Map<Long, IEntity> cmqRelationsMap) {
+	 public void setTargetMeddraColor(MeddraDictHierarchySearchDto meddra, HierarchyNode node, IEntity relationEntity, Map<String, List<MeddraDictHierarchySearchDto>> chMeddras) {
 	    	if ((meddra.getPrimarySocChange() != null && "HPP".equalsIgnoreCase(meddra.getPrimarySocChange()) && meddra.getSocCode() != null)
 	    			|| (meddra.getPrimarySocChange() != null && "HNP".equalsIgnoreCase(meddra.getPrimarySocChange()) && meddra.getSocCode() != null)) {
 	    		node.setRowStyleClass("none");
@@ -610,76 +725,46 @@ public class IARelationsTreeHelper {
 					|| (meddra.getLltNameChanged() != null && "NCH".equalsIgnoreCase(meddra.getLltNameChanged()) && meddra.getLltCode() != null)) {
 				node.setRowStyleClass("italic");
 			}
-			
-			if (cmqRelationsMap != null) {
-				IEntity entity = cmqRelationsMap.get(Long.valueOf(meddra.getCode()));
-
 				
-				if (entity != null && entity instanceof CmqRelationTarget) {
-					CmqRelationTarget cmqRelation = (CmqRelationTarget) entity;
-					if (cmqRelation != null && cmqRelation.getRelationImpactType() == null) {
-						//Blue color on relation SOC level
-						if (meddra.getSocCode() != null) {
-							List<Long> codes = new ArrayList<Long>();
-							codes.add(Long.parseLong(meddra.getSocCode()));
-							List<MeddraDictHierarchySearchDto> list = this.meddraDictTargetService.findChildrenByParentCode("HLGT_", "SOC_", Long.parseLong(meddra.getSocCode()));
-							if (list != null) {
-								for (MeddraDictHierarchySearchDto child : list)
-								if (child.getNewHlgt() != null || child.getMovedHlgt() != null || child.getMergedHlgt() != null || child.getHlgtNameChanged() != null) {
-									node.setRowStyleClass("blue-colored");
-								//	RequestContext.getCurrentInstance().update("impactAssessment:currentListsAndSmqs");
-									break;
-								}
-							}
-						}
-						//Blue color on relation HLGT level
-						if (meddra.getHlgtCode() != null) {
-							List<Long> codes = new ArrayList<Long>();
-							codes.add(Long.parseLong(meddra.getHlgtCode()));
-							List<MeddraDictHierarchySearchDto> list = this.meddraDictTargetService.findChildrenByParentCode("HLT_", "HLGT_", Long.parseLong(meddra.getHlgtCode()));//findByCodes("HLT_", codes);
-							if (list != null) {
-								for (MeddraDictHierarchySearchDto child : list)
-								if (child.getNewHlt() != null || child.getMovedHlt() != null || child.getHltNameChanged() != null) {
-									node.setRowStyleClass("blue-colored");
-									break;
-								}
-							}
-
-						
-						}
-						//Blue color on relation HLT level
-						if (meddra.getHltCode() != null) { 
-							List<Long> codes = new ArrayList<Long>();
-							codes.add(Long.parseLong(meddra.getHltCode()));
-							List<MeddraDictHierarchySearchDto> list = this.meddraDictTargetService.findChildrenByParentCode("PT_", "HLT_", Long.parseLong(meddra.getHltCode()));//findByCodes("HLT_", codes);
-							if (list != null) {
-								for (MeddraDictHierarchySearchDto child : list)
-								if (child.getNewSuccessorPt() != null || child.getNewPt() != null || child.getMovedPt() != null || child.getPromotedPt() != null || child.getDemotedLlt() != null || child.getLltNameChanged() != null) {
-									node.setRowStyleClass("blue-colored");
-									break;
-								}
-							}
-
-							
-						}			
-						//Blue color on relation PT level
-						if (meddra.getPtCode() != null) {
-							List<Long> codes = new ArrayList<Long>();
-							codes.add(Long.parseLong(meddra.getPtCode()));
-							List<MeddraDictHierarchySearchDto> list = this.meddraDictTargetService.findChildrenByParentCode("LLT_", "PT_", Long.parseLong(meddra.getPtCode()));//findByCodes("HLT_", codes);
-							if (list != null) {
-								for (MeddraDictHierarchySearchDto child : list)
-								if (child.getLltCurrencyChange() != null || child.getNewLlt() != null || child.getMovedLlt() != null || child.getPromotedLlt() != null || child.getDemotedLlt() != null || child.getLltNameChanged() != null) {
-									node.setRowStyleClass("blue-colored");
-									break;
-								}
-							}
-							
-						}
-						
-					}
-				}
-			}
+            if (relationEntity != null && relationEntity instanceof CmqRelationTarget
+                    && ((CmqRelationTarget) relationEntity).getRelationImpactType() == null) {
+                //Blue color on relation SOC level
+                if (meddra.getSocCode() != null && chMeddras.get("SOC/HLGT") != null) {
+                    List<MeddraDictHierarchySearchDto> list = chMeddras.get("SOC/HLGT");
+                    for (MeddraDictHierarchySearchDto child : list)
+                    if (child.getNewHlgt() != null || child.getMovedHlgt() != null || child.getMergedHlgt() != null || child.getHlgtNameChanged() != null) {
+                        node.setRowStyleClass("blue-colored");
+                        break;
+                    }
+                }
+                //Blue color on relation HLGT level
+                if (meddra.getHlgtCode() != null && chMeddras.get("HLGT/HLT") != null) {
+                    List<MeddraDictHierarchySearchDto> list = chMeddras.get("HLGT/HLT");
+                    for (MeddraDictHierarchySearchDto child : list)
+                    if (child.getNewHlt() != null || child.getMovedHlt() != null || child.getHltNameChanged() != null) {
+                        node.setRowStyleClass("blue-colored");
+                        break;
+                    }
+                }
+                //Blue color on relation HLT level
+                if (meddra.getHltCode() != null && chMeddras.get("HLT/PT") != null) { 
+                    List<MeddraDictHierarchySearchDto> list = chMeddras.get("HLT/PT");
+                    for (MeddraDictHierarchySearchDto child : list)
+                    if (child.getNewSuccessorPt() != null || child.getNewPt() != null || child.getMovedPt() != null || child.getPromotedPt() != null || child.getDemotedLlt() != null || child.getLltNameChanged() != null) {
+                        node.setRowStyleClass("blue-colored");
+                        break;
+                    }
+                }			
+                //Blue color on relation PT level
+                if (meddra.getPtCode() != null && chMeddras.get("PT/LLT") != null) { 
+                    List<MeddraDictHierarchySearchDto> list = chMeddras.get("PT/LLT");
+                    for (MeddraDictHierarchySearchDto child : list)
+                    if (child.getLltCurrencyChange() != null || child.getNewLlt() != null || child.getMovedLlt() != null || child.getPromotedLlt() != null || child.getDemotedLlt() != null || child.getLltNameChanged() != null) {
+                        node.setRowStyleClass("blue-colored");
+                        break;
+                    }
+                }
+            }
 		}
     
 	public void setSMQCurrentNodeStyle(HierarchyNode childRelationNode, SmqRelation190 childRelation) {
@@ -838,9 +923,7 @@ public class IARelationsTreeHelper {
 				}
 				if((null != smqBaseChildrenCount) && (smqBaseChildrenCount > 0)) {
 					// add a dummmy node to show expand arrow
-					HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
-					dummyNode.setDummyNode(true);
-					new DefaultTreeNode(dummyNode, treeNode);
+					createNewDummyNode(treeNode);
 				} else {
 					Long childSmqrelationsCount = null;
 					if("current".equalsIgnoreCase(cmqType)) {
@@ -850,9 +933,7 @@ public class IARelationsTreeHelper {
 					}
 					if((null != childSmqrelationsCount) && (childSmqrelationsCount > 0)) {
 						// add a dummmy node to show expand arrow
-						HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
-						dummyNode.setDummyNode(true);
-						new DefaultTreeNode(dummyNode, treeNode);
+						createNewDummyNode(treeNode);
 					}
 				}
 			}
@@ -862,51 +943,55 @@ public class IARelationsTreeHelper {
 	public void populateCmqRelationTreeNodes(List<MeddraDictHierarchySearchDto> dtos, TreeNode expandedTreeNode
 			, String nodeType, String childNodeType, String cmqType, Long parentCode, Map<Long, IEntity> cmqRelationsMap, String uiSourceOfEvent, IEntity entityExpanded) {
 		boolean isRootListNode = isRootListNode(expandedTreeNode);
-		for (MeddraDictHierarchySearchDto meddraDictHierarchySearchDto : dtos) {
-			HierarchyNode node = this.createMeddraNode(meddraDictHierarchySearchDto, nodeType);
-			//System.out.println("\n *************** node :: " + node.getTerm());
+        Map<Long, TreeNode> addedNodes = new HashMap<>();
+        List<Long> dtoCodes = new ArrayList<>(dtos.size());
+		for (MeddraDictHierarchySearchDto m : dtos) {
+			HierarchyNode node = this.createMeddraNode(m, nodeType);
+            node.setRelationEntity(cmqRelationsMap.get(Long.valueOf(m.getCode())));
 			
-			//Meddra Color
-			if ("current".equalsIgnoreCase(cmqType))
-				setCurrentMeddraColor(meddraDictHierarchySearchDto, node, entityExpanded, cmqRelationsMap);
-			else {
-				if(!isRootListNode && "target-table".equalsIgnoreCase(uiSourceOfEvent)) {
-					node.markNotEditableInRelationstable();
-				}
-				setTargetMeddraColor(meddraDictHierarchySearchDto, node, cmqRelationsMap);
-			}
-			//convert string to long and match in map
-			IEntity entity = cmqRelationsMap.get(Long.valueOf(meddraDictHierarchySearchDto.getCode()));
-			if(entity instanceof CmqRelationTarget) {
-				CmqRelationTarget cmqRelationTarget = (CmqRelationTarget) entity;
-				node.setRelationEntity(entity);
-				//Color node
-				setCMQTargetNodeStyle(node, cmqRelationTarget); 
-			}
-			if(entity instanceof CmqRelation190) {
-				CmqRelation190 cmqRelation = (CmqRelation190) entity;
-				node.setRelationEntity(entity);
-				//Color node
-				setCMQCurrentNodeStyle(node, cmqRelation);
-			}	
-			TreeNode treeNode = new DefaultTreeNode(node, expandedTreeNode);
+            if(!"current".equalsIgnoreCase(cmqType) && !isRootListNode && "target-table".equalsIgnoreCase(uiSourceOfEvent)) {
+                node.markNotEditableInRelationstable();
+            }
 
-			Long countOfChildren = null;
-			if ("current".equalsIgnoreCase(cmqType))
-				countOfChildren = this.meddraDictCurrentService.findChldrenCountByParentCode(childNodeType + "_"
-													, nodeType + "_", Long.valueOf(meddraDictHierarchySearchDto.getCode()));
-			else {
-				countOfChildren = this.meddraDictTargetService.findChldrenCountByParentCode(childNodeType + "_"
-						, nodeType + "_", Long.valueOf(meddraDictHierarchySearchDto.getCode()));
-			}
-			
-			if((null != countOfChildren) && (countOfChildren > 0)) {
-				// add a dummmy node to show expand arrow
-				HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
-				dummyNode.setDummyNode(true);
-				new DefaultTreeNode(dummyNode, treeNode);
-			}
+            TreeNode treeNode = new DefaultTreeNode(node, expandedTreeNode);
+
+            addedNodes.put(Long.valueOf(m.getCode()), treeNode);
+            dtoCodes.add(Long.valueOf(m.getCode()));
 		}
+        
+        List<Map<String, Object>> countsOfChildren = null;
+        if ("current".equalsIgnoreCase(cmqType)) {
+            setCurrentMeddraColor(dtos, addedNodes, cmqRelationsMap);
+            countsOfChildren = this.meddraDictCurrentService.findChldrenCountByParentCodes(childNodeType + "_"
+                                            , nodeType + "_", dtoCodes);
+        } else {
+            setTargetMeddraColor(dtos, addedNodes, cmqRelationsMap);
+            countsOfChildren = this.meddraDictTargetService.findChldrenCountByParentCodes(childNodeType + "_"
+                                            , nodeType + "_", dtoCodes);
+        }
+        
+        for(TreeNode n: addedNodes.values()) {
+            HierarchyNode hn = (HierarchyNode)n.getData();
+            if(hn.getRelationEntity() instanceof CmqRelation190)
+                setCMQCurrentNodeStyle(hn, (CmqRelation190)hn.getRelationEntity());
+            else if(hn.getRelationEntity() instanceof CmqRelationTarget)
+                setCMQTargetNodeStyle(hn, (CmqRelationTarget)hn.getRelationEntity());
+        }
+
+        if((null != countsOfChildren) && (countsOfChildren.size() > 0)) {
+            //first find and fix child nodes stuff
+            for (Map<String, Object> cc: countsOfChildren) {
+                if(cc.get("PARENT_CODE") != null && cc.get("COUNT") != null) {
+                    Long pCode = (Long)cc.get("PARENT_CODE");
+                    Long c = (Long)cc.get("COUNT");
+                    TreeNode t = c > 0 ? addedNodes.get(pCode.longValue()) : null;
+                    if(t!=null) {
+                        // add a dummmy node to show expand arrow
+                        createNewDummyNode(t);
+                    }
+                }
+            }
+        }
 	}
 	
     
@@ -984,13 +1069,8 @@ public class IARelationsTreeHelper {
 								it.remove();//remove it from parentCmqCodeList
 								Long count = (Long)map.get("COUNT");
 								if(count > 0) {
-									
 									//add a dummy node for this child in parent
-									TreeNode parentTreeNode = childTreeNodes.get(childCmqCode);
-									HierarchyNode dummyNode = new HierarchyNode(null, null,
-											null, null);
-									dummyNode.setDummyNode(true);
-									new DefaultTreeNode(dummyNode, parentTreeNode);
+									createNewDummyNode(childTreeNodes.get(childCmqCode));
 								}
 								break;
 							}//end of if(cmqCode.longValue() == parentCmqCode.longValue())
@@ -1016,11 +1096,7 @@ public class IARelationsTreeHelper {
 						Long count = (Long)map.get("COUNT");
 						if(count > 0) {
 							//add a dummy node for this child in parent
-							TreeNode parentTreeNode = childTreeNodes.get(resultCmqCode);
-							HierarchyNode dummyNode = new HierarchyNode(null, null,
-									null, null);
-							dummyNode.setDummyNode(true);
-							new DefaultTreeNode(dummyNode, parentTreeNode);
+							createNewDummyNode(childTreeNodes.get(resultCmqCode));
 						}
 					}
 				}
@@ -1134,34 +1210,34 @@ public class IARelationsTreeHelper {
 				} else {
 					lltDtos = this.meddraDictTargetService.findByCodes("LLT_", lltCodesList);
 				}
-				for (MeddraDictHierarchySearchDto meddraDictHierarchySearchDto : lltDtos) {
-					HierarchyNode node = this.createMeddraNode(meddraDictHierarchySearchDto, "LLT");
-					//Meddra - Current colors
-					//Meddra Color
-					if ("current".equalsIgnoreCase(cmqType))
-						setCurrentMeddraColor(meddraDictHierarchySearchDto, node, entityExpanded, null);
-					else {
-						if(!isRootListNode && "target-table".equalsIgnoreCase(uiSourceOfEvent)) {
-							node.markNotEditableInRelationstable();
-						}
-						setTargetMeddraColor(meddraDictHierarchySearchDto, node, null);
-					}
-					IEntity entity = lltCodesMap.get(Long.parseLong(meddraDictHierarchySearchDto.getCode()));
-					if(entity instanceof CmqRelationTarget) {
-						CmqRelationTarget cmqRelationTarget = (CmqRelationTarget) entity;
-						node.setRelationEntity(entity);
-						//Set Color
-						setCMQTargetNodeStyle(node, cmqRelationTarget);
-					}
-					if(entity instanceof CmqRelation190) {
-						CmqRelation190 cmqRelation = (CmqRelation190) entity;
-						node.setRelationEntity(entity);
-						//Set Color
-						setCMQCurrentNodeStyle(node, cmqRelation);
-					}
+                
+                Map<Long, TreeNode> lltNodes = new HashMap<>();
+                
+				for (MeddraDictHierarchySearchDto m : lltDtos) {
+					HierarchyNode node = this.createMeddraNode(m, "LLT");
+                    node.setRelationEntity(lltCodesMap.get(Long.parseLong(m.getCode())));
+                    
+                    if(!"current".equalsIgnoreCase(cmqType) && !isRootListNode && "target-table".equalsIgnoreCase(uiSourceOfEvent)) {
+                        node.markNotEditableInRelationstable();
+                    }
 					
 					TreeNode treeNode = new DefaultTreeNode(node, expandedTreeNode);
+                    lltNodes.put(Long.valueOf(m.getCode()), treeNode);
 				}
+                
+                if ("current".equalsIgnoreCase(cmqType)) {
+                    setCurrentMeddraColor(lltDtos, lltNodes, lltCodesMap);
+                } else {
+                    setTargetMeddraColor(lltDtos, lltNodes, lltCodesMap);
+                }
+                
+                for(TreeNode n: lltNodes.values()) {
+                    HierarchyNode hn = (HierarchyNode)n.getData();
+                    if(hn.getRelationEntity() instanceof CmqRelation190)
+                        setCMQCurrentNodeStyle(hn, (CmqRelation190)hn.getRelationEntity());
+                    else if(hn.getRelationEntity() instanceof CmqRelationTarget)
+                        setCMQTargetNodeStyle(hn, (CmqRelationTarget)hn.getRelationEntity());
+                }
 			}
 		}
 	}
@@ -1259,12 +1335,7 @@ public class IARelationsTreeHelper {
 							Long childSmqCode = (Long)map.get("SMQ_CODE");
 							Long count = (Long)map.get("COUNT");
 							if(count > 0) {
-								TreeNode childTreeNode = smqTreeNodeMap.get(childSmqCode);
-								
-								// add a dummmy node to show expand arrow
-								HierarchyNode dummyNode = new HierarchyNode(null, null,null, null);
-								dummyNode.setDummyNode(true);
-								new DefaultTreeNode(dummyNode, childTreeNode);
+								createNewDummyNode(smqTreeNodeMap.get(childSmqCode));
 							}
 						}
 					}
@@ -1306,9 +1377,7 @@ public class IARelationsTreeHelper {
 				if(!"SOC".equalsIgnoreCase(partitionColumn)) {
 					if(StringUtils.isNotBlank(reverseSearchDto.getHltTerm())) {
 						// add a dummmy node to show expand arrow
-						HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
-						dummyNode.setDummyNode(true);
-						new DefaultTreeNode(dummyNode, childTreeNode);
+						createNewDummyNode(childTreeNode);
 					}
 				}
 			}
@@ -1351,11 +1420,13 @@ public class IARelationsTreeHelper {
 		//fetch children of parent node by code of parent
 		List<MeddraDictHierarchySearchDto> childDtos = null;
 		if("current".equalsIgnoreCase(meddraType)) {
-			childDtos = this.meddraDictCurrentService.findChildrenByParentCode(childSearchColumnTypePrefix
-																					, parentCodeColumnPrefix, dtoCode);
+			childDtos = this.meddraDictCurrentService.findChildrenByParentCode(childSearchColumnTypePrefix, parentCodeColumnPrefix, dtoCode);
 		} else {
 			childDtos = this.meddraDictTargetService.findChildrenByParentCode(childSearchColumnTypePrefix, parentCodeColumnPrefix, dtoCode);
 		}
+        
+        Map<Long, TreeNode> nodesMap = new HashMap<>();
+        List<Long> nodesMapKeys = new LinkedList<>();
 		for (MeddraDictHierarchySearchDto childDto : childDtos) {
 			HierarchyNode childNode = this.createMeddraNode(childDto, childLevel);
 			if(childLevel.equalsIgnoreCase("PT")){//add in only PT children
@@ -1377,29 +1448,41 @@ public class IARelationsTreeHelper {
 			if ("current".equalsIgnoreCase(meddraType))
 				setCurrentMeddraColor(childDto, childNode, null, null);
 			else
-				setTargetMeddraColor(childDto, childNode, null);
+				setTargetMeddraColor(childDto, childNode, null, null);
 			
 			TreeNode childTreeNode = new DefaultTreeNode(childNode, expandedTreeNode);
 			
 			//fetch children count of this iterating child node by code of child
 			//no need to do this is the childOfChild is LLT since LT is the leaf ode type
 			if(!"LLT".equalsIgnoreCase(childLevel)) {
-				Long countOfChildrenOfChild = null;
-				if("current".equalsIgnoreCase(meddraType)) {
-					countOfChildrenOfChild = this.meddraDictCurrentService.findChldrenCountByParentCode(childchildOfChildSearchColumnTypePrefix
-																					, childSearchColumnTypePrefix, Long.valueOf(childDto.getCode()));
-				} else {
-					countOfChildrenOfChild = this.meddraDictTargetService.findChldrenCountByParentCode(childchildOfChildSearchColumnTypePrefix
-																					, childSearchColumnTypePrefix, Long.valueOf(childDto.getCode()));
-				}
-				if((countOfChildrenOfChild != null) && (countOfChildrenOfChild > 0)) {
-					// add a dummmy node to show expand arrow
-					HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
-					dummyNode.setDummyNode(true);
-					new DefaultTreeNode(dummyNode, childTreeNode);
-				}
-			}
+                nodesMap.put(Long.valueOf(childDto.getCode()), childTreeNode);
+                nodesMapKeys.add(Long.valueOf(childDto.getCode()));
+            }
 		}
+    
+        List<Map<String, Object>> countsOfChildren = null;
+        if ("current".equalsIgnoreCase(meddraType)) {
+            countsOfChildren = this.meddraDictCurrentService.findChldrenCountByParentCodes(childchildOfChildSearchColumnTypePrefix,
+                    childSearchColumnTypePrefix, nodesMapKeys);
+        } else {
+            countsOfChildren = this.meddraDictTargetService.findChldrenCountByParentCodes(childchildOfChildSearchColumnTypePrefix,
+                    childSearchColumnTypePrefix, nodesMapKeys);
+        }
+
+        if((null != countsOfChildren) && (countsOfChildren.size() > 0)) {
+            //first find and fix child nodes stuff
+            for (Map<String, Object> cc: countsOfChildren) {
+                if(cc.get("PARENT_CODE") != null && cc.get("COUNT") != null) {
+                    Long pCode = (Long)cc.get("PARENT_CODE");
+                    Long c = (Long)cc.get("COUNT");
+                    TreeNode t = c > 0 ? nodesMap.get(pCode.longValue()) : null;
+                    if(t!=null) {
+                        // add a dummmy node to show expand arrow
+                        createNewDummyNode(t);
+                    }
+                }
+            }
+        }
 	}
 			
 	public boolean isRootListNode(TreeNode treeNode) {
@@ -1439,9 +1522,7 @@ public class IARelationsTreeHelper {
 		boolean dummyNodeAdded = false;
 		Long count = this.cmqBaseCurrentService.findCmqChildCountForParentCmqCode(cmqBaseCurrent.getCmqCode());
 		if((count != null) && (count > 0)) {
-			HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
-			dummyNode.setDummyNode(true);
-			new DefaultTreeNode(dummyNode, cmqBaseTreeNode);
+			createNewDummyNode(cmqBaseTreeNode);
 			dummyNodeAdded = true;
 		}
 		
@@ -1449,9 +1530,7 @@ public class IARelationsTreeHelper {
 		if(!dummyNodeAdded) {
 			count = this.cmqRelationCurrentService.findCountByCmqCode(cmqBaseCurrent.getCmqCode());
 			if((count != null) && (count > 0)) {
-				HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
-				dummyNode.setDummyNode(true);
-				new DefaultTreeNode(dummyNode, cmqBaseTreeNode);
+				createNewDummyNode(cmqBaseTreeNode);
 			}
 		}
 	}
@@ -1467,9 +1546,7 @@ public class IARelationsTreeHelper {
 		boolean dummyNodeAdded = false;
 		Long count = this.cmqBaseTargetService.findCmqChildCountForParentCmqCode(selectedCmqList.getCmqCode());
 		if((count != null) && (count > 0)) {
-			HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
-			dummyNode.setDummyNode(true);
-			new DefaultTreeNode(dummyNode, cmqBaseTreeNode);
+			createNewDummyNode(cmqBaseTreeNode);
 			dummyNodeAdded = true;
 		}
 		
@@ -1477,9 +1554,7 @@ public class IARelationsTreeHelper {
 		if(!dummyNodeAdded) {
 			count = this.cmqRelationTargetService.findCountByCmqCode(selectedCmqList.getCmqCode());
 			if((count != null) && (count > 0)) {
-				HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
-				dummyNode.setDummyNode(true);
-				new DefaultTreeNode(dummyNode, cmqBaseTreeNode);
+				createNewDummyNode(cmqBaseTreeNode);
 			}
 		}
 	}
@@ -1496,9 +1571,7 @@ public class IARelationsTreeHelper {
 			boolean dummyNodeAdded = false;
 			Long count = this.smqBaseCurrentService.findChildSmqCountByParentSmqCode(smqBaseCurrent.getSmqCode());
 			if((count != null) && (count > 0)) {
-				HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
-				dummyNode.setDummyNode(true);
-				new DefaultTreeNode(dummyNode, cmqBaseTreeNode);
+				createNewDummyNode(cmqBaseTreeNode);
 				dummyNodeAdded = true;
 			}
 			
@@ -1506,9 +1579,7 @@ public class IARelationsTreeHelper {
 			if(!dummyNodeAdded) {
 				count = this.smqBaseCurrentService.findSmqRelationsCountForSmqCode(smqBaseCurrent.getSmqCode());
 				if((count != null) && (count > 0)) {
-					HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
-					dummyNode.setDummyNode(true);
-					new DefaultTreeNode(dummyNode, cmqBaseTreeNode);
+					createNewDummyNode(cmqBaseTreeNode);
 				}
 			}
 		} else {
@@ -1532,9 +1603,7 @@ public class IARelationsTreeHelper {
 		boolean dummyNodeAdded = false;
 		Long count = this.smqBaseTargetService.findChildSmqCountByParentSmqCode(selectedSmqList.getSmqCode());
 		if((count != null) && (count > 0)) {
-			HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
-			dummyNode.setDummyNode(true);
-			new DefaultTreeNode(dummyNode, cmqBaseTreeNode);
+			createNewDummyNode(cmqBaseTreeNode);
 			dummyNodeAdded = true;
 		}
 		
@@ -1542,10 +1611,14 @@ public class IARelationsTreeHelper {
 		if(!dummyNodeAdded) {
 			count = this.smqBaseTargetService.findSmqRelationsCountForSmqCode(selectedSmqList.getSmqCode());
 			if((count != null) && (count > 0)) {
-				HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
-				dummyNode.setDummyNode(true);
-				new DefaultTreeNode(dummyNode, cmqBaseTreeNode);
+				createNewDummyNode(cmqBaseTreeNode);
 			}
 		}
 	}
+    
+    private void createNewDummyNode(TreeNode parentNode) {
+        HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
+        dummyNode.setDummyNode(true);
+        new DefaultTreeNode(dummyNode, parentNode);
+    }
 }

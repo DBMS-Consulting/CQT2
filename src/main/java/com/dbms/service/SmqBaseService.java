@@ -108,7 +108,7 @@ public class SmqBaseService extends CqtPersistenceService<SmqBase190> implements
 	public List<Map<String, Object>> findSmqRelationsCountForSmqCodes(List<Long> smqCodes) {
 		List<Map<String, Object>> retVal = null;
 		StringBuilder sb = new StringBuilder();
-		sb.append("select count(*) as COUNT, SMQ_CODE from SMQ_RELATIONS_CURRENT where SMQ_CODE in :smqCodes group by SMQ_CODE");
+		sb.append("select count(*) as COUNT, SMQ_CODE from SMQ_RELATIONS_CURRENT where SMQ_CODE in (:smqCodes) group by SMQ_CODE");
 		
 		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
 		Session session = entityManager.unwrap(Session.class);
@@ -200,7 +200,7 @@ public class SmqBaseService extends CqtPersistenceService<SmqBase190> implements
 	public List<SmqRelation190> findSmqRelationsForSmqCodes(List<Long> smqCodes) {
 		List<SmqRelation190> retVal = null;
 		StringBuilder sb = new StringBuilder();
-		sb.append("from SmqRelation190 c where c.smqCode in :smqCodes order by c.smq_Code asc, c.ptName asc");
+		sb.append("from SmqRelation190 c where c.smqCode in (:smqCodes) order by c.smq_Code asc, c.ptName asc");
 		
 		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
 		try {
@@ -230,7 +230,7 @@ public class SmqBaseService extends CqtPersistenceService<SmqBase190> implements
 	public List<SmqBase190> findChildSmqByParentSmqCodes(List<Long> smqCodes) {
 		List<SmqBase190> retVal = null;
 		StringBuilder sb = new StringBuilder();
-		sb.append("from SmqBase190 c where c.smqParentCode in :smqParentCodes order by c.smqParentCode");
+		sb.append("from SmqBase190 c where c.smqParentCode in (:smqParentCodes) order by c.smqParentCode");
 		
 		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
 		try {

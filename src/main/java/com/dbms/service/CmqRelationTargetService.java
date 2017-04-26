@@ -101,7 +101,7 @@ public class CmqRelationTargetService extends CqtPersistenceService<CmqRelationT
 		List<Map<String, Object>> retVal = null;
 		StringBuilder sb = new StringBuilder();
 		sb.append(
-				"select CMQ_CODE, count(*) as COUNT from CMQ_RELATIONS_TARGET where CMQ_CODE in :cmqCodes group by CMQ_CODE");
+				"select CMQ_CODE, count(*) as COUNT from CMQ_RELATIONS_TARGET where CMQ_CODE in (:cmqCodes) group by CMQ_CODE");
 
 		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
 		Session session = entityManager.unwrap(Session.class);
