@@ -1227,7 +1227,9 @@ public class ImpactSearchController implements Serializable {
      */
     private String getMeddraDictImpactDesc(MeddraDictHierarchySearchDto ent, String lvl) {
         if("LLT".equals(lvl)) {
-            if(ent.getNewLlt() != null)
+            if(ent.getLltCurrencyChange() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("llt_currency_change", ent.getLltCurrencyChange());
+            else if(ent.getNewLlt() != null)
                 return refCodeListService.interpretMeddraImpactTypeDesc("new_llt", ent.getNewLlt());
             else if(ent.getLltNameChanged() != null)
                 return refCodeListService.interpretMeddraImpactTypeDesc("llt_name_changed", ent.getLltNameChanged());
@@ -1237,8 +1239,6 @@ public class ImpactSearchController implements Serializable {
                 return refCodeListService.interpretMeddraImpactTypeDesc("moved_llt", ent.getMovedLlt());
             else if(ent.getPrimarySocChange() != null)
                 return refCodeListService.interpretMeddraImpactTypeDesc("primary_soc_change", ent.getPrimarySocChange());
-            else if(ent.getLltCurrencyChange() != null)
-                return refCodeListService.interpretMeddraImpactTypeDesc("llt_currency_change", ent.getLltCurrencyChange());
             else if(ent.getMovedPt() != null)
                 return refCodeListService.interpretMeddraImpactTypeDesc("moved_pt", ent.getMovedPt());
             else if(ent.getDemotedPt() != null)
