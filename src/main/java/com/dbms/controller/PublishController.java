@@ -274,7 +274,7 @@ public class PublishController implements Serializable {
 				//if child is not in the target list then check if its publisher or not
 				if(!targetCmqCodes.contains(cmqBaseTarget.getCmqCode())) {
 					if(!cmqBaseTarget.getCmqState().equalsIgnoreCase(CmqBaseTarget.CMQ_STATE_PUBLISHED_IA)
-							&& cmqBaseTarget.getCmqStatus().equalsIgnoreCase(CmqBaseTarget.CMQ_STATUS_PENDING_IA)) {
+							&& cmqBaseTarget.getCmqStatus().equalsIgnoreCase(CmqBaseTarget.CMQ_STATE_PENDING_IA)) {
 						isListPublishable = false;
 						faultyCmqs.add(cmqBaseTarget);
 					}
@@ -305,7 +305,7 @@ public class PublishController implements Serializable {
 						//if parent is not in the target list then check if its publisher or not
 						if(!targetCmqCodes.contains(cmqBaseTarget.getCmqCode())) {
 							if(!cmqBaseTarget.getCmqState().equalsIgnoreCase(CmqBaseTarget.CMQ_STATE_PUBLISHED_IA)
-									&& cmqBaseTarget.getCmqStatus().equalsIgnoreCase(CmqBaseTarget.CMQ_STATUS_PENDING_IA)) {
+									&& cmqBaseTarget.getCmqStatus().equalsIgnoreCase(CmqBaseTarget.CMQ_STATE_PENDING_IA)) {
 								isListPublishable = false;
 								faultyCmqs.add(cmqBaseTarget);
 							}

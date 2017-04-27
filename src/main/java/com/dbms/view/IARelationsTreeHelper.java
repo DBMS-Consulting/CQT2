@@ -424,11 +424,9 @@ public class IARelationsTreeHelper {
 		if (cmqRelationTarget.getRelationImpactType() != null) {
 			if("MQM".equalsIgnoreCase(cmqRelationTarget.getRelationImpactType())) {
 				node.setRowStyleClass("green-colored");
-			}
-			if("NCH".equals(cmqRelationTarget.getRelationImpactType())) {
+			} else if("NCH".equals(cmqRelationTarget.getRelationImpactType())) {
 				node.setRowStyleClass("italic");
-			}
-			if("PDL".equals(cmqRelationTarget.getRelationImpactType())
+			} else if("PDL".equals(cmqRelationTarget.getRelationImpactType())
 					|| "PDH".equals(cmqRelationTarget.getRelationImpactType())
 					|| "HDH".equals(cmqRelationTarget.getRelationImpactType())
 					|| "HDS".equals(cmqRelationTarget.getRelationImpactType())
@@ -437,12 +435,11 @@ public class IARelationsTreeHelper {
 					|| "HPP".equals(cmqRelationTarget.getRelationImpactType())
 					|| "NTR".equals(cmqRelationTarget.getRelationImpactType())) {
 				node.setRowStyleClass("orange-colored");
-			}
-			
-			if("LCN".equals(cmqRelationTarget.getRelationImpactType()))
+			} else if("LCN".equals(cmqRelationTarget.getRelationImpactType())) {
 				node.setRowStyleClass("mauve-colored");
-			if ("SCH".equals(cmqRelationTarget.getRelationImpactType()))
+            } else if ("SCH".equals(cmqRelationTarget.getRelationImpactType())) {
 				node.setRowStyleClass("blue-colored");
+            }
 		}
 //		else
 //			node.setRowStyleClass("none");
@@ -452,8 +449,7 @@ public class IARelationsTreeHelper {
 		if (cmqRelation.getRelationImpactType() != null) {
 			if("NCH".equals(cmqRelation.getRelationImpactType())) {
 				node.setRowStyleClass("italic");
-			}
-			if("PDL".equals(cmqRelation.getRelationImpactType())
+			} else if("PDL".equals(cmqRelation.getRelationImpactType())
 					|| "PDH".equals(cmqRelation.getRelationImpactType())
 					|| "HDH".equals(cmqRelation.getRelationImpactType())
 					|| "HDS".equals(cmqRelation.getRelationImpactType())
@@ -465,8 +461,8 @@ public class IARelationsTreeHelper {
 					|| "HNP".equals(cmqRelation.getRelationImpactType())
 					|| "LDP".equals(cmqRelation.getRelationImpactType())) {
 				node.setRowStyleClass("red-colored");
-			}
-			if ("SCH".equals(cmqRelation.getRelationImpactType()) || "ICC".equals(cmqRelation.getRelationImpactType()))
+			} else if ("SCH".equals(cmqRelation.getRelationImpactType())
+                    || "ICC".equals(cmqRelation.getRelationImpactType()))
 				node.setRowStyleClass("blue-colored");
 //			if ("SWC".equals(cmqRelation.getRelationImpactType()))
 //				node.setRowStyleClass("pink-colored");
@@ -484,7 +480,8 @@ public class IARelationsTreeHelper {
         List<Long> ptCodes = new LinkedList<>();
         for (MeddraDictHierarchySearchDto m : meddras) {
             IEntity relationEntity = cmqRelationsMap!=null? cmqRelationsMap.get(Long.valueOf(m.getCode())) : null;
-            if(relationEntity instanceof CmqRelation190 && ((CmqRelation190)relationEntity).getRelationImpactType() == null) {
+            if(relationEntity != null && relationEntity instanceof CmqRelation190
+                    && ((CmqRelation190)relationEntity).getRelationImpactType() == null) {
                 if (m.getSocCode() != null)
                     socCodes.add(Long.parseLong(m.getSocCode()));
                 if (m.getHlgtCode() != null)
@@ -554,7 +551,7 @@ public class IARelationsTreeHelper {
                     chMeddras.put("HLT/PT", hltMeddraMap.get(Long.valueOf(m.getHltCode())));
                 }
                 if (m.getPtCode() != null){
-                    chMeddras.put("PT/LLT", hlgtMeddraMap.get(Long.valueOf(m.getPtCode())));
+                    chMeddras.put("PT/LLT", ptMeddraMap.get(Long.valueOf(m.getPtCode())));
                 }
             }
             
@@ -592,7 +589,7 @@ public class IARelationsTreeHelper {
             if (meddra.getSocCode() != null && chMeddras.get("SOC/HLGT") != null) {
                 List<MeddraDictHierarchySearchDto> list = chMeddras.get("SOC/HLGT");
                 for (MeddraDictHierarchySearchDto child : list)
-                if (child.getMergedHlgt() != null ||child.getMovedHlgt() != null || child.getMergedHlgt() != null || child.getHlgtNameChanged() != null) {
+                if (child.getMergedHlgt() != null ||child.getMovedHlgt() != null || child.getHlgtNameChanged() != null) {
                     node.setRowStyleClass("blue-colored");
                     break;
                 }
@@ -601,7 +598,7 @@ public class IARelationsTreeHelper {
             if (meddra.getHlgtCode() != null && chMeddras.get("HLGT/HLT") != null) {
                 List<MeddraDictHierarchySearchDto> list = chMeddras.get("HLGT/HLT");
                 for (MeddraDictHierarchySearchDto child : list)
-                if (child.getMovedHlt() != null || child.getHltNameChanged() != null) {
+                if (child.getMergedHlt() != null || child.getMovedHlt() != null || child.getHltNameChanged() != null) {
                     node.setRowStyleClass("blue-colored");
                     break;
                 }
@@ -610,7 +607,7 @@ public class IARelationsTreeHelper {
             if (meddra.getHltCode() != null && chMeddras.get("HLT/PT") != null) { 
                 List<MeddraDictHierarchySearchDto> list = chMeddras.get("HLT/PT");
                 for (MeddraDictHierarchySearchDto child : list)
-                if (child.getMovedPt() != null ||child.getMovedPt() != null || child.getPromotedPt() != null || child.getDemotedPt() != null || child.getPtNameChanged() != null) {
+                if (child.getMovedPt() != null || child.getPromotedPt() != null || child.getDemotedPt() != null || child.getPtNameChanged() != null) {
                     node.setRowStyleClass("blue-colored");
                     break;
                 }
@@ -705,7 +702,7 @@ public class IARelationsTreeHelper {
                     chMeddras.put("HLT/PT", hltMeddraMap.get(Long.valueOf(m.getHltCode())));
                 }
                 if (m.getPtCode() != null){
-                    chMeddras.put("PT/LLT", hlgtMeddraMap.get(Long.valueOf(m.getPtCode())));
+                    chMeddras.put("PT/LLT", ptMeddraMap.get(Long.valueOf(m.getPtCode())));
                 }
             }
             
@@ -756,7 +753,7 @@ public class IARelationsTreeHelper {
                 if (meddra.getSocCode() != null && chMeddras.get("SOC/HLGT") != null) {
                     List<MeddraDictHierarchySearchDto> list = chMeddras.get("SOC/HLGT");
                     for (MeddraDictHierarchySearchDto child : list)
-                    if (child.getNewHlgt() != null || child.getMovedHlgt() != null || child.getMergedHlgt() != null || child.getHlgtNameChanged() != null) {
+                    if (child.getNewHlgt() != null || child.getMovedHlgt() != null || child.getHlgtNameChanged() != null) {
                         node.setRowStyleClass("blue-colored");
                         break;
                     }
@@ -774,7 +771,7 @@ public class IARelationsTreeHelper {
                 if (meddra.getHltCode() != null && chMeddras.get("HLT/PT") != null) { 
                     List<MeddraDictHierarchySearchDto> list = chMeddras.get("HLT/PT");
                     for (MeddraDictHierarchySearchDto child : list)
-                    if (child.getNewSuccessorPt() != null || child.getNewPt() != null || child.getMovedPt() != null || child.getPromotedPt() != null || child.getDemotedLlt() != null || child.getLltNameChanged() != null) {
+                    if (child.getNewSuccessorPt() != null || child.getNewPt() != null || child.getMovedPt() != null || child.getPromotedPt() != null || child.getDemotedLlt() != null || child.getPtNameChanged() != null) {
                         node.setRowStyleClass("blue-colored");
                         break;
                     }
@@ -783,7 +780,7 @@ public class IARelationsTreeHelper {
                 if (meddra.getPtCode() != null && chMeddras.get("PT/LLT") != null) { 
                     List<MeddraDictHierarchySearchDto> list = chMeddras.get("PT/LLT");
                     for (MeddraDictHierarchySearchDto child : list)
-                    if (child.getLltCurrencyChange() != null || child.getNewLlt() != null || child.getMovedLlt() != null || child.getPromotedLlt() != null || child.getDemotedLlt() != null || child.getLltNameChanged() != null) {
+                    if (child.getNewLlt() != null || child.getMovedLlt() != null || child.getPromotedLlt() != null || child.getDemotedLlt() != null || child.getLltNameChanged() != null || child.getLltCurrencyChange() != null) {
                         node.setRowStyleClass("blue-colored");
                         break;
                     }

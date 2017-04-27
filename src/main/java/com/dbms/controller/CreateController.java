@@ -894,10 +894,17 @@ public class CreateController implements Serializable {
 	
 
 	/**
-	 * Bool when State is 'Draft' or 'Reviewed'.
+	 * List Create/Update/Copy Wizard Forms Readonly state
 	 * @return boolean
 	 */
 	public boolean isReadOnlyState() {
+        
+        // If CMQ_BASE_TARGET.Status != 'PENDING IA', then the list should be read-only in update.
+        // User should not be able to update details, informative notes, relations and workflow form on confirm tab.
+        if(updateWizard!=null && selectedData != null && !isTargetStatusPendingIA(selectedData))
+            return true;
+
+        // List is editable when CMQ_BASE_CURRNET.State is 'Draft' or 'Reviewed'.
         if (selectedData != null && selectedData.getCmqState() != null 
                 && (CmqBase190.CMQ_STATE_VALUE_DRAFT.equalsIgnoreCase(selectedData.getCmqState())
                         || CmqBase190.CMQ_STATE_VALUE_REVIEWED.equalsIgnoreCase(selectedData.getCmqState()))){
@@ -956,6 +963,13 @@ public class CreateController implements Serializable {
 		notesFormModel.loadFromCmqBase190(selectedData);
         
         getActiveWizard().setStep(WIZARD_STEP_DETAILS);
+        
+        // if CMQ_BASE_TARGET.Status != 'PENDING IA'
+        if(!isTargetStatusPendingIA(selectedData)) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "The List moved to higher IA state can not be updated", ""));            
+        } else if(isImpactedByMeddraVersioning(selectedData)) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "The List is impacted by MedDRA Versioning", ""));
+        }
 
 		return null;
 	}
@@ -1576,7 +1590,9 @@ public class CreateController implements Serializable {
     }
     
     public boolean isDetailsFormDisabled() {
-        return this.isReadOnlyState() || this.isFormSaved();
+        // Users should NOT be able to update data on Update-> Details when CMQ_BASE_CURRENT.IMPACT_TYPE IN ('IMPACTED', 'ICC') OR CMQ_BASE_TARGET.IMPACT_TYPE IN ('IMPACTED', 'ICC')
+        return this.isReadOnlyState() || this.isFormSaved() ||
+                (updateWizard!=null && this.isImpactedByMeddraVersioning(selectedData));
     }
 
 	public SWJSFRequest getAppSWJSFRequest() {
@@ -1587,13 +1603,44 @@ public class CreateController implements Serializable {
 		this.appSWJSFRequest = appSWJSFRequest;
 	}
     
+    private void loadCmqBaseTarget(CmqBase190 cmq) {
+        if(!cmq.isCmqBaseTargetSet()) {
+            try{
+                CmqBaseTarget cmqTarget = myCmqTargetService.findByCode(cmq.getCmqCode());
+                cmq.setCmqBaseTarget(cmqTarget);
+            } catch(Exception e) {
+                cmq.setCmqBaseTarget(null);
+            } finally {
+                cmq.setCmqBaseTargetSet(true);
+            }
+        }
+    }
+    
+    /**
+     * Checks if given CMQ_BASE's CMQ_BASE_TARGET's state is "Pending IA"
+     * @param cmq
+     * @return 
+     */
+    public boolean isTargetStatusPendingIA(CmqBase190 cmq) {
+        if(cmq == null || cmq.getCmqCode() == null)
+            return false;
+        
+        loadCmqBaseTarget(cmq);
+        
+        return (cmq.getCmqBaseTarget()==null || CmqBaseTarget.CMQ_STATE_PENDING_IA.equalsIgnoreCase(cmq.getCmqBaseTarget().getCmqState()));
+    }
+    
+    /**
+     * Checks if given CMQ_BASE or CMQ_BASE_TARGET is impacted by Meddra versioning
+     * @param cmq
+     * @return 
+     */
     public boolean isImpactedByMeddraVersioning(CmqBase190 cmq) {
-        if(cmq!=null){
+        if(cmq != null || cmq.getCmqCode() == null){
             if(cmq.isImpactedByMeddraVersioning())
                 return true;
-            CmqBaseTarget cmqTarget = myCmqTargetService.findByCode(cmq.getCmqCode());
-            if(cmqTarget!=null && cmqTarget.isImpactedByMeddraVersioning())
-                return true;
+            loadCmqBaseTarget(cmq);
+            return (cmq.getCmqBaseTarget()!=null && cmq.getCmqBaseTarget().isImpactedByMeddraVersioning());
         }
         return false;
     }

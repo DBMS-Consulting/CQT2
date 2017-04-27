@@ -580,6 +580,7 @@ public class MeddraDictService extends CqtPersistenceService<MeddraDict190> impl
 
                 query.setFetchSize(400);
                 query.setParameterList("parentCodes", pcds);
+                
                 query.setResultTransformer(Transformers.aliasToBean(MeddraDictHierarchySearchDto.class));
                 query.setCacheable(true);
                 retVal.addAll(query.list());

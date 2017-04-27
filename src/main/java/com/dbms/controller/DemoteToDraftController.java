@@ -218,7 +218,7 @@ public class DemoteToDraftController implements Serializable {
 				//add them to the selected cmqs list
 				for (CmqBaseTarget childCmq : childCmqsOftargets) {
 					if(!childCmq.getCmqState().equalsIgnoreCase(CmqBaseTarget.CMQ_STATE_PUBLISHED_IA)
-							&& childCmq.getCmqStatus().equalsIgnoreCase(CmqBaseTarget.CMQ_STATUS_PENDING_IA)) {
+							&& childCmq.getCmqStatus().equalsIgnoreCase(CmqBaseTarget.CMQ_STATE_PENDING_IA)) {
 						isChildDemotedError = true;
 						faultyCmqs.add(childCmq);
 					} else {
@@ -247,7 +247,7 @@ public class DemoteToDraftController implements Serializable {
 				boolean hasErrorOccured = false;
 				for (CmqBaseTarget target : targetCmqsSelected) {
 					target.setCmqStatus("P");
-					target.setCmqState(CmqBaseTarget.CMQ_STATUS_PENDING_IA);
+					target.setCmqState(CmqBaseTarget.CMQ_STATE_PENDING_IA);
 				}
 				
 				try {

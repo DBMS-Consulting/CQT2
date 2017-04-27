@@ -1247,6 +1247,14 @@ public class ImpactSearchController implements Serializable {
                 return refCodeListService.interpretMeddraImpactTypeDesc("promoted_pt", ent.getPromotedPt());
             else if(ent.getNewSuccessorPt() != null)
                 return refCodeListService.interpretMeddraImpactTypeDesc("new_successor_pt", ent.getNewSuccessorPt());
+            else if(ent.getMovedHlt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("moved_hlt", ent.getMovedHlt());
+            else if(ent.getMergedHlt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("merged_hlt", ent.getMergedHlt());
+            else if(ent.getMovedHlgt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("moved_hlgt", ent.getMovedHlgt());
+            else if(ent.getMergedHlt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("merged_hlgt", ent.getMovedHlt());
         } else if("PT".equals(lvl)) {
             if(ent.getNewPt() != null)
                 return refCodeListService.interpretMeddraImpactTypeDesc("new_pt", ent.getNewPt());
@@ -1266,6 +1274,10 @@ public class ImpactSearchController implements Serializable {
                 return refCodeListService.interpretMeddraImpactTypeDesc("moved_hlt", ent.getMovedHlt());
             else if(ent.getMergedHlt() != null)
                 return refCodeListService.interpretMeddraImpactTypeDesc("merged_hlt", ent.getMergedHlt());
+            else if(ent.getMovedHlgt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("moved_hlgt", ent.getMovedHlgt());
+            else if(ent.getMergedHlt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("merged_hlgt", ent.getMovedHlt());
         } else if("HLT".equals(lvl)) {
             if(ent.getNewHlt() != null)
                 return refCodeListService.interpretMeddraImpactTypeDesc("new_hlt", ent.getNewHlt());

@@ -26,6 +26,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import com.dbms.entity.BaseEntity;
+import javax.persistence.Transient;
 
 @Entity
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
@@ -164,7 +165,12 @@ public class CmqBase190 extends BaseEntity {
 	
 	@OneToMany(cascade=CascadeType.ALL, mappedBy="cmqBaseCurrent", fetch=FetchType.EAGER, orphanRemoval=true)
 	private List<CmqProductBaseCurrent> productsList;
-	
+    
+    @Transient
+    private CmqBaseTarget cmqBaseTarget;
+    @Transient
+    private transient boolean cmqBaseTargetSet = false;
+
     @Override
 	public Long getId() {
 		return cmqId;
@@ -534,11 +540,31 @@ public class CmqBase190 extends BaseEntity {
         return null;
     }
     
+    /**
+     * Checks if current CMQ_BASE_TARGET is impacted by Meddra versioning
+     * @return 
+     */
     public boolean isImpactedByMeddraVersioning() {
         if(CSMQBean.IMPACT_TYPE_IMPACTED.equalsIgnoreCase(getImpactType()) || 
                 CSMQBean.IMPACT_TYPE_ICC.equalsIgnoreCase(getImpactType()))
             return true;
         return false;
+    }
+    
+    public CmqBaseTarget getCmqBaseTarget() {
+        return cmqBaseTarget;
+    }
+
+    public void setCmqBaseTarget(CmqBaseTarget cmqBaseTarget) {
+        this.cmqBaseTarget = cmqBaseTarget;
+    }
+    
+    public boolean isCmqBaseTargetSet() {
+        return cmqBaseTargetSet;
+    }
+
+    public void setCmqBaseTargetSet(boolean cmqBaseTargetSet) {
+        this.cmqBaseTargetSet = cmqBaseTargetSet;
     }
 	
 }

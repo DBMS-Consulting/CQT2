@@ -690,7 +690,6 @@ public class MeddraDictTargetService extends CqtPersistenceService<MeddraDictTar
                 query.addScalar("meddraDictId", StandardBasicTypes.LONG);
                 query.addScalar("term", StandardBasicTypes.STRING);
                 //query.addScalar("code", StandardBasicTypes.STRING);
-                query.addScalar(codeAlias, StandardBasicTypes.STRING);
                 query.addScalar("primaryPathFlag", StandardBasicTypes.STRING);
 
                 query.addScalar("newPt", StandardBasicTypes.STRING);
@@ -724,7 +723,7 @@ public class MeddraDictTargetService extends CqtPersistenceService<MeddraDictTar
                 query.addScalar(pacodeAlias, StandardBasicTypes.STRING);
 
                 query.setFetchSize(400);
-                query.setParameter("parentCodes", pcds);
+                query.setParameterList("parentCodes", pcds);
                 
                 query.setResultTransformer(Transformers.aliasToBean(MeddraDictHierarchySearchDto.class));
 
