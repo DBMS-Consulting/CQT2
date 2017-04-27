@@ -362,7 +362,7 @@ public class RefCodeListService extends
 		
 		if (codeList != null) {
 			for(RefConfigCodeList c : codeList) {
-				if(c.getCodelistInternalValue().equals(internalCode) && c.getValue().startsWith(impactType + ":")) {
+				if(c.getCodelistInternalValue().equalsIgnoreCase(internalCode) && c.getValue().startsWith(impactType + ":")) {
                     return c.getValue();
 				}
 			}	
