@@ -483,14 +483,17 @@ public class IARelationsTreeHelper {
         List<Long> hltCodes = new LinkedList<>();
         List<Long> ptCodes = new LinkedList<>();
         for (MeddraDictHierarchySearchDto m : meddras) {
-            if (m.getSocCode() != null)
-                socCodes.add(Long.parseLong(m.getSocCode()));
-            if (m.getHlgtCode() != null)
-                hlgtCodes.add(Long.parseLong(m.getHlgtCode()));
-            if (m.getHltCode() != null)
-                hltCodes.add(Long.parseLong(m.getHltCode()));
-            if (m.getPtCode() != null)
-                ptCodes.add(Long.parseLong(m.getPtCode()));
+            IEntity relationEntity = cmqRelationsMap!=null? cmqRelationsMap.get(Long.valueOf(m.getCode())) : null;
+            if(relationEntity instanceof CmqRelation190 && ((CmqRelation190)relationEntity).getRelationImpactType() == null) {
+                if (m.getSocCode() != null)
+                    socCodes.add(Long.parseLong(m.getSocCode()));
+                if (m.getHlgtCode() != null)
+                    hlgtCodes.add(Long.parseLong(m.getHlgtCode()));
+                if (m.getHltCode() != null)
+                    hltCodes.add(Long.parseLong(m.getHltCode()));
+                if (m.getPtCode() != null)
+                    ptCodes.add(Long.parseLong(m.getPtCode()));
+            }
         }
         
         List<MeddraDictHierarchySearchDto> socMeddras = meddraDictCurrentService.findChildrenByParentCodes("HLGT_", "SOC_",  socCodes);
@@ -498,58 +501,62 @@ public class IARelationsTreeHelper {
         List<MeddraDictHierarchySearchDto> hltMeddras = meddraDictCurrentService.findChildrenByParentCodes("PT_", "HLT_", hltCodes);
         List<MeddraDictHierarchySearchDto> ptMeddras = meddraDictCurrentService.findChildrenByParentCodes("LLT_", "PT_", ptCodes);
         
+        // convert lists to map
+        Map<Long, List<MeddraDictHierarchySearchDto>> socMeddraMap = new HashMap<>();
+        Map<Long, List<MeddraDictHierarchySearchDto>> hlgtMeddraMap = new HashMap<>();
+        Map<Long, List<MeddraDictHierarchySearchDto>> hltMeddraMap = new HashMap<>();
+        Map<Long, List<MeddraDictHierarchySearchDto>> ptMeddraMap = new HashMap<>();
+        
+        for(MeddraDictHierarchySearchDto m: socMeddras) {
+            final Long c = Long.valueOf(m.getSocCode());
+            if(socMeddraMap.get(c) == null)
+                socMeddraMap.put(c, new LinkedList<>());
+            socMeddraMap.get(c).add(m);
+        }
+        for(MeddraDictHierarchySearchDto m: hlgtMeddras) {
+            final Long c = Long.valueOf(m.getHlgtCode());
+            if(hlgtMeddraMap.get(c) == null)
+                hlgtMeddraMap.put(c, new LinkedList<>());
+            hlgtMeddraMap.get(c).add(m);
+        }
+        for(MeddraDictHierarchySearchDto m: hltMeddras) {
+            final Long c = Long.valueOf(m.getHltCode());
+            if(hltMeddraMap.get(c) == null)
+                hltMeddraMap.put(c, new LinkedList<>());
+            hltMeddraMap.get(c).add(m);
+        }
+        for(MeddraDictHierarchySearchDto m: ptMeddras) {
+            final Long c = Long.valueOf(m.getPtCode());
+            if(ptMeddraMap.get(c) == null)
+                ptMeddraMap.put(c, new LinkedList<>());
+            ptMeddraMap.get(c).add(m);
+        }
+        
         socCodes = hlgtCodes = hltCodes = ptCodes= null;
+        socMeddras = hlgtMeddras = hltMeddras = ptMeddras = null;
         
         for (MeddraDictHierarchySearchDto m : meddras) {
-            List<MeddraDictHierarchySearchDto> socChMeddras = null;
-            List<MeddraDictHierarchySearchDto> hlgtChMeddras = null;
-            List<MeddraDictHierarchySearchDto> hltChMeddras = null;
-            List<MeddraDictHierarchySearchDto> ptChMeddras = null;
+            Map<String, List<MeddraDictHierarchySearchDto>> chMeddras = new HashMap<>();
+            chMeddras.put("SOC/HLGT", null);
+            chMeddras.put("HLGT/HLT", null);
+            chMeddras.put("HLT/PT", null);
+            chMeddras.put("PT/LLT", null);
             
             IEntity relationEntity = cmqRelationsMap!=null? cmqRelationsMap.get(Long.valueOf(m.getCode())) : null;
             if(relationEntity instanceof CmqRelation190 && ((CmqRelation190)relationEntity).getRelationImpactType() == null) {
                 if (m.getSocCode() != null) {
-                    final String socCode = m.getSocCode();
-                    socChMeddras = ListUtils.select(socMeddras, new Predicate<MeddraDictHierarchySearchDto>() {
-                        @Override
-                        public boolean evaluate(MeddraDictHierarchySearchDto object) {
-                            return (StringUtils.equals(object.getSocCode(), socCode));
-                        }                 
-                    });
+                    chMeddras.put("SOC/HLGT", socMeddraMap.get(Long.valueOf(m.getSocCode())));
                 }
                 if (m.getHlgtCode() != null) {
-                    final String hlgtCode = m.getHlgtCode();
-                    hlgtChMeddras = ListUtils.select(hlgtMeddras, new Predicate<MeddraDictHierarchySearchDto>() {
-                        @Override
-                        public boolean evaluate(MeddraDictHierarchySearchDto object) {
-                            return (StringUtils.equals(object.getHlgtCode(), hlgtCode));
-                        }                 
-                    });
+                    chMeddras.put("HLGT/HLT", hlgtMeddraMap.get(Long.valueOf(m.getHlgtCode())));
                 }
                 if (m.getHltCode() != null) {
-                    final String hltCode = m.getHltCode();
-                    hltChMeddras = ListUtils.select(hltMeddras, new Predicate<MeddraDictHierarchySearchDto>() {
-                        @Override
-                        public boolean evaluate(MeddraDictHierarchySearchDto object) {
-                            return (StringUtils.equals(object.getHltCode(), hltCode));
-                        }                 
-                    });
+                    chMeddras.put("HLT/PT", hltMeddraMap.get(Long.valueOf(m.getHltCode())));
                 }
                 if (m.getPtCode() != null){
-                    final String ptCode = m.getPtCode();
-                    ptChMeddras = ListUtils.select(ptMeddras, new Predicate<MeddraDictHierarchySearchDto>() {
-                        @Override
-                        public boolean evaluate(MeddraDictHierarchySearchDto object) {
-                            return (StringUtils.equals(object.getPtCode(), ptCode));
-                        }                 
-                    });
+                    chMeddras.put("PT/LLT", hlgtMeddraMap.get(Long.valueOf(m.getPtCode())));
                 }
             }
-            Map<String, List<MeddraDictHierarchySearchDto>> chMeddras = new HashMap<>();
-            chMeddras.put("SOC/HLGT", socChMeddras);
-            chMeddras.put("HLGT/HLT", hlgtChMeddras);
-            chMeddras.put("HLT/PT", hltChMeddras);
-            chMeddras.put("PT/LLT", ptChMeddras);
             
             Long code = Long.valueOf(m.getCode());
             HierarchyNode hnode = (HierarchyNode)nodes.get(code).getData();
@@ -626,14 +633,18 @@ public class IARelationsTreeHelper {
         List<Long> hltCodes = new LinkedList<>();
         List<Long> ptCodes = new LinkedList<>();
         for (MeddraDictHierarchySearchDto m : meddras) {
-            if (m.getSocCode() != null)
-                socCodes.add(Long.parseLong(m.getSocCode()));
-            if (m.getHlgtCode() != null)
-                hlgtCodes.add(Long.parseLong(m.getHlgtCode()));
-            if (m.getHltCode() != null)
-                hltCodes.add(Long.parseLong(m.getHltCode()));
-            if (m.getPtCode() != null)
-                ptCodes.add(Long.parseLong(m.getPtCode()));
+            IEntity relationEntity = cmqRelationsMap!=null? cmqRelationsMap.get(Long.valueOf(m.getCode())) : null;
+            if (relationEntity != null && relationEntity instanceof CmqRelationTarget
+                    && ((CmqRelationTarget) relationEntity).getRelationImpactType() == null) {
+                if (m.getSocCode() != null)
+                    socCodes.add(Long.parseLong(m.getSocCode()));
+                if (m.getHlgtCode() != null)
+                    hlgtCodes.add(Long.parseLong(m.getHlgtCode()));
+                if (m.getHltCode() != null)
+                    hltCodes.add(Long.parseLong(m.getHltCode()));
+                if (m.getPtCode() != null)
+                    ptCodes.add(Long.parseLong(m.getPtCode()));
+            }
         }
         
         List<MeddraDictHierarchySearchDto> socMeddras = meddraDictTargetService.findChildrenByParentCodes("HLGT_", "SOC_",  socCodes);
@@ -641,55 +652,62 @@ public class IARelationsTreeHelper {
         List<MeddraDictHierarchySearchDto> hltMeddras = meddraDictTargetService.findChildrenByParentCodes("PT_", "HLT_", hltCodes);
         List<MeddraDictHierarchySearchDto> ptMeddras = meddraDictTargetService.findChildrenByParentCodes("LLT_", "PT_", ptCodes);
         
+        // convert lists to map
+        Map<Long, List<MeddraDictHierarchySearchDto>> socMeddraMap = new HashMap<>();
+        Map<Long, List<MeddraDictHierarchySearchDto>> hlgtMeddraMap = new HashMap<>();
+        Map<Long, List<MeddraDictHierarchySearchDto>> hltMeddraMap = new HashMap<>();
+        Map<Long, List<MeddraDictHierarchySearchDto>> ptMeddraMap = new HashMap<>();
+        
+        for(MeddraDictHierarchySearchDto m: socMeddras) {
+            final Long c = Long.valueOf(m.getSocCode());
+            if(socMeddraMap.get(c) == null)
+                socMeddraMap.put(c, new LinkedList<>());
+            socMeddraMap.get(c).add(m);
+        }
+        for(MeddraDictHierarchySearchDto m: hlgtMeddras) {
+            final Long c = Long.valueOf(m.getHlgtCode());
+            if(hlgtMeddraMap.get(c) == null)
+                hlgtMeddraMap.put(c, new LinkedList<>());
+            hlgtMeddraMap.get(c).add(m);
+        }
+        for(MeddraDictHierarchySearchDto m: hltMeddras) {
+            final Long c = Long.valueOf(m.getHltCode());
+            if(hltMeddraMap.get(c) == null)
+                hltMeddraMap.put(c, new LinkedList<>());
+            hltMeddraMap.get(c).add(m);
+        }
+        for(MeddraDictHierarchySearchDto m: ptMeddras) {
+            final Long c = Long.valueOf(m.getPtCode());
+            if(ptMeddraMap.get(c) == null)
+                ptMeddraMap.put(c, new LinkedList<>());
+            ptMeddraMap.get(c).add(m);
+        }
+        
         socCodes = hlgtCodes = hltCodes = ptCodes= null;
+        socMeddras = hlgtMeddras = hltMeddras = ptMeddras = null;
         
         for (MeddraDictHierarchySearchDto m : meddras) {
-            List<MeddraDictHierarchySearchDto> socChMeddras = null;
-            List<MeddraDictHierarchySearchDto> hlgtChMeddras = null;
-            List<MeddraDictHierarchySearchDto> hltChMeddras = null;
-            List<MeddraDictHierarchySearchDto> ptChMeddras = null;
-            
-            if (m.getSocCode() != null) {
-                final String socCode = m.getSocCode();
-                socChMeddras = ListUtils.select(socMeddras, new Predicate<MeddraDictHierarchySearchDto>() {
-                    @Override
-                    public boolean evaluate(MeddraDictHierarchySearchDto object) {
-                        return (StringUtils.equals(object.getSocCode(), socCode));
-                    }                 
-                });
-            }
-            if (m.getHlgtCode() != null) {
-                final String hlgtCode = m.getHlgtCode();
-                hlgtChMeddras = ListUtils.select(hlgtMeddras, new Predicate<MeddraDictHierarchySearchDto>() {
-                    @Override
-                    public boolean evaluate(MeddraDictHierarchySearchDto object) {
-                        return (StringUtils.equals(object.getHlgtCode(), hlgtCode));
-                    }                 
-                });
-            }
-            if (m.getHltCode() != null) {
-                final String hltCode = m.getHltCode();
-                hltChMeddras = ListUtils.select(hltMeddras, new Predicate<MeddraDictHierarchySearchDto>() {
-                    @Override
-                    public boolean evaluate(MeddraDictHierarchySearchDto object) {
-                        return (StringUtils.equals(object.getHltCode(), hltCode));
-                    }                 
-                });
-            }
-            if (m.getPtCode() != null){
-                final String ptCode = m.getPtCode();
-                ptChMeddras = ListUtils.select(ptMeddras, new Predicate<MeddraDictHierarchySearchDto>() {
-                    @Override
-                    public boolean evaluate(MeddraDictHierarchySearchDto object) {
-                        return (StringUtils.equals(object.getPtCode(), ptCode));
-                    }                 
-                });
-            }
             Map<String, List<MeddraDictHierarchySearchDto>> chMeddras = new HashMap<>();
-            chMeddras.put("SOC/HLGT", socChMeddras);
-            chMeddras.put("HLGT/HLT", hlgtChMeddras);
-            chMeddras.put("HLT/PT", hltChMeddras);
-            chMeddras.put("PT/LLT", ptChMeddras);
+            chMeddras.put("SOC/HLGT", null);
+            chMeddras.put("HLGT/HLT", null);
+            chMeddras.put("HLT/PT", null);
+            chMeddras.put("PT/LLT", null);
+            
+            IEntity relationEntity = cmqRelationsMap!=null? cmqRelationsMap.get(Long.valueOf(m.getCode())) : null;
+            if(relationEntity instanceof CmqRelationTarget && ((CmqRelationTarget)relationEntity).getRelationImpactType() == null) {
+                if (m.getSocCode() != null) {
+                    chMeddras.put("SOC/HLGT", socMeddraMap.get(Long.valueOf(m.getSocCode())));
+                }
+                if (m.getHlgtCode() != null) {
+                    chMeddras.put("HLGT/HLT", hlgtMeddraMap.get(Long.valueOf(m.getHlgtCode())));
+                }
+                if (m.getHltCode() != null) {
+                    chMeddras.put("HLT/PT", hltMeddraMap.get(Long.valueOf(m.getHltCode())));
+                }
+                if (m.getPtCode() != null){
+                    chMeddras.put("PT/LLT", hlgtMeddraMap.get(Long.valueOf(m.getPtCode())));
+                }
+            }
             
             Long code = Long.valueOf(m.getCode());
             HierarchyNode hnode = (HierarchyNode)nodes.get(code).getData();
@@ -957,8 +975,9 @@ public class IARelationsTreeHelper {
         boolean bCurrentList = "current".equalsIgnoreCase(cmqType);
         boolean bEventFromTargetTable = "target-table".equalsIgnoreCase(uiSourceOfEvent);
 		for (MeddraDictHierarchySearchDto m : dtos) {
+            final Long c = Long.valueOf(m.getCode());
 			HierarchyNode node = this.createMeddraNode(m, nodeType);
-            node.setRelationEntity(cmqRelationsMap.get(Long.valueOf(m.getCode())));
+            node.setRelationEntity(cmqRelationsMap.get(c));
 			
             if(!bCurrentList && !isRootListNode && bEventFromTargetTable) {
                 node.markNotEditableInRelationstable();
@@ -966,11 +985,11 @@ public class IARelationsTreeHelper {
 
             TreeNode treeNode = new DefaultTreeNode(node, expandedTreeNode);
 
-            addedNodes.put(Long.valueOf(m.getCode()), treeNode);
-            dtoCodes.add(Long.valueOf(m.getCode()));
+            addedNodes.put(c, treeNode);
+            dtoCodes.add(c);
 		}
         
-        List<Map<String, Object>> countsOfChildren = null;
+        List<Map<String, Object>> countsOfChildren;
         if (bCurrentList) {
             setCurrentMeddraColor(dtos, addedNodes, cmqRelationsMap);
             countsOfChildren = this.meddraDictCurrentService.findChldrenCountByParentCodes(childNodeType + "_"
@@ -1130,44 +1149,46 @@ public class IARelationsTreeHelper {
 		Map<Long, IEntity> lltCodesMap = new HashMap<>();
 		
 		List<? extends IEntity> existingRelations = null;
-		if("current".equalsIgnoreCase(cmqType)) {
+		if(bCurrentList) {
 			existingRelations = this.cmqRelationCurrentService.findByCmqCode(cmqCode);
 		} else {
 			existingRelations = this.cmqRelationTargetService.findByCmqCode(cmqCode);
 		}
 		
 		if((null != existingRelations) && (existingRelations.size() > 0)) {
-			for (IEntity entity : existingRelations) {
-				if(bCurrentList) {
+            if(bCurrentList) {
+                for (IEntity entity : existingRelations) {
 					CmqRelation190 cmqRelation = (CmqRelation190) entity;
-					if((cmqRelation.getSocCode() != null) && (cmqRelation.getSocCode().longValue() > 0)) {
+					if((cmqRelation.getSocCode() != null) && (cmqRelation.getSocCode() > 0)) {
 						socCodesMap.put(cmqRelation.getSocCode(), cmqRelation);
-					} else if((cmqRelation.getHlgtCode() != null) && (cmqRelation.getHlgtCode().longValue() > 0)) {
+					} else if((cmqRelation.getHlgtCode() != null) && (cmqRelation.getHlgtCode() > 0)) {
 						hlgtCodesMap.put(cmqRelation.getHlgtCode(), cmqRelation);
-					} else if((cmqRelation.getHltCode() != null) && (cmqRelation.getHltCode().longValue() > 0)) {
+					} else if((cmqRelation.getHltCode() != null) && (cmqRelation.getHltCode() > 0)) {
 						hltCodesMap.put(cmqRelation.getHltCode(), cmqRelation);
-					} else if((cmqRelation.getPtCode() != null) && (cmqRelation.getPtCode().longValue() > 0)
+					} else if((cmqRelation.getPtCode() != null) && (cmqRelation.getPtCode() > 0)
 								&& (cmqRelation.getSmqCode() == null)) {
 						ptCodesMap.put(cmqRelation.getPtCode(), cmqRelation);
-					} else if((cmqRelation.getLltCode() != null) && (cmqRelation.getLltCode().longValue() > 0)) {
-						lltCodesMap.put(cmqRelation.getLltCode().longValue(), cmqRelation);
-					} else if((cmqRelation.getSmqCode() != null) && (cmqRelation.getSmqCode().longValue() > 0)) {
+					} else if((cmqRelation.getLltCode() != null) && (cmqRelation.getLltCode() > 0)) {
+						lltCodesMap.put(cmqRelation.getLltCode(), cmqRelation);
+					} else if((cmqRelation.getSmqCode() != null) && (cmqRelation.getSmqCode() > 0)) {
 						this.populateSmqTreeNode(cmqRelation, expandedTreeNode, cmqType, cmqCode, uiSourceOfEvent);
 					}
-				} else {
+                }
+            } else {
+                for (IEntity entity : existingRelations) {
 					CmqRelationTarget cmqRelation = (CmqRelationTarget) entity;
-					if((cmqRelation.getSocCode() != null) && (cmqRelation.getSocCode().longValue() > 0)) {
+					if((cmqRelation.getSocCode() != null) && (cmqRelation.getSocCode() > 0)) {
 						socCodesMap.put(cmqRelation.getSocCode(), cmqRelation);
-					} else if((cmqRelation.getHlgtCode() != null) && (cmqRelation.getHlgtCode().longValue() > 0)) {
+					} else if((cmqRelation.getHlgtCode() != null) && (cmqRelation.getHlgtCode() > 0)) {
 						hlgtCodesMap.put(cmqRelation.getHlgtCode(), cmqRelation);
-					} else if((cmqRelation.getHltCode() != null) && (cmqRelation.getHltCode().longValue() > 0)) {
+					} else if((cmqRelation.getHltCode() != null) && (cmqRelation.getHltCode() > 0)) {
 						hltCodesMap.put(cmqRelation.getHltCode(), cmqRelation);
-					} else if((cmqRelation.getPtCode() != null) && (cmqRelation.getPtCode().longValue() > 0)
+					} else if((cmqRelation.getPtCode() != null) && (cmqRelation.getPtCode() > 0)
 								&& (cmqRelation.getSmqCode() == null)) {
 						ptCodesMap.put(cmqRelation.getPtCode(), cmqRelation);
-					} else if((cmqRelation.getLltCode() != null) && (cmqRelation.getLltCode().longValue() > 0)) {
+					} else if((cmqRelation.getLltCode() != null) && (cmqRelation.getLltCode() > 0)) {
 						lltCodesMap.put(cmqRelation.getLltCode(), cmqRelation);
-					} else if((cmqRelation.getSmqCode() != null) && (cmqRelation.getSmqCode().longValue() > 0)) {
+					} else if((cmqRelation.getSmqCode() != null) && (cmqRelation.getSmqCode() > 0)) {
 						this.populateSmqTreeNode(cmqRelation, expandedTreeNode, cmqType, cmqCode, uiSourceOfEvent);
 					}
 				}
@@ -1175,7 +1196,7 @@ public class IARelationsTreeHelper {
 			
 			//find socs now
 			if(socCodesMap.size() > 0) {
-				List<MeddraDictHierarchySearchDto> socDtos = null;
+				List<MeddraDictHierarchySearchDto> socDtos;
 				List<Long> socCodesList = new ArrayList<>(socCodesMap.keySet());
 				if(bCurrentList) {
 					socDtos = this.meddraDictCurrentService.findByCodes("SOC_", socCodesList);
@@ -1186,7 +1207,7 @@ public class IARelationsTreeHelper {
 			}
 			
 			if(hlgtCodesMap.size() > 0) {
-				List<MeddraDictHierarchySearchDto> hlgtDtos = null;
+				List<MeddraDictHierarchySearchDto> hlgtDtos;
 				List<Long> hlgtCodesList = new ArrayList<>(hlgtCodesMap.keySet());
 				if(bCurrentList) {
 					hlgtDtos = this.meddraDictCurrentService.findByCodes("HLGT_", hlgtCodesList);
@@ -1197,7 +1218,7 @@ public class IARelationsTreeHelper {
 			}
 			
 			if(hltCodesMap.size() > 0) {
-				List<MeddraDictHierarchySearchDto> hltDtos = null;
+				List<MeddraDictHierarchySearchDto> hltDtos;
 				List<Long> hltCodesList = new ArrayList<>(hltCodesMap.keySet());
 				if(bCurrentList) {
 					hltDtos = this.meddraDictCurrentService.findByCodes("HLT_", hltCodesList);
@@ -1208,7 +1229,7 @@ public class IARelationsTreeHelper {
 			}
 			
 			if(ptCodesMap.size() > 0) {
-				List<MeddraDictHierarchySearchDto> ptDtos = null;
+				List<MeddraDictHierarchySearchDto> ptDtos;
 				List<Long> ptCodesList = new ArrayList<>(ptCodesMap.keySet());
 				if(bCurrentList) {
 					ptDtos = this.meddraDictCurrentService.findByCodes("PT_", ptCodesList);
@@ -1220,7 +1241,7 @@ public class IARelationsTreeHelper {
 			
 			if(lltCodesMap.size() > 0) {
 				boolean isRootListNode = isRootListNode(expandedTreeNode);
-				List<MeddraDictHierarchySearchDto> lltDtos = null;
+				List<MeddraDictHierarchySearchDto> lltDtos;
 				List<Long> lltCodesList = new ArrayList<>(lltCodesMap.keySet());
 				if(bCurrentList) {
 					lltDtos = this.meddraDictCurrentService.findByCodes("LLT_", lltCodesList);
@@ -1244,16 +1265,16 @@ public class IARelationsTreeHelper {
                 
                 if (bCurrentList) {
                     setCurrentMeddraColor(lltDtos, lltNodes, lltCodesMap);
+                    for(TreeNode n: lltNodes.values()) {
+                        HierarchyNode hn = (HierarchyNode)n.getData();
+                        setCMQCurrentNodeStyle(hn, (CmqRelation190)hn.getRelationEntity());
+                    }
                 } else {
                     setTargetMeddraColor(lltDtos, lltNodes, lltCodesMap);
-                }
-                
-                for(TreeNode n: lltNodes.values()) {
-                    HierarchyNode hn = (HierarchyNode)n.getData();
-                    if(hn.getRelationEntity() instanceof CmqRelation190)
-                        setCMQCurrentNodeStyle(hn, (CmqRelation190)hn.getRelationEntity());
-                    else if(hn.getRelationEntity() instanceof CmqRelationTarget)
+                    for(TreeNode n: lltNodes.values()) {
+                        HierarchyNode hn = (HierarchyNode)n.getData();
                         setCMQTargetNodeStyle(hn, (CmqRelationTarget)hn.getRelationEntity());
+                    }
                 }
 			}
 		}
@@ -1280,17 +1301,25 @@ public class IARelationsTreeHelper {
 				if(bCurrentList) {
 					SmqBase190 childSmqBase = (SmqBase190) entity;
 					childSmqCode = childSmqBase.getSmqCode();
-					if (childSmqBase.getSmqLevel() == 1) {
-						childNode.setLevel("SMQ1");
-					} else if (childSmqBase.getSmqLevel() == 2) {
-						childNode.setLevel("SMQ2");
-					} else if (childSmqBase.getSmqLevel() == 3) {
-						childNode.setLevel("SMQ3");
-					} else if (childSmqBase.getSmqLevel() == 4) {
-						childNode.setLevel("SMQ4");
-					} else if (childSmqBase.getSmqLevel() == 5) {
-						childNode.setLevel("SMQ5");
-					}
+					if (null != childSmqBase.getSmqLevel()) switch (childSmqBase.getSmqLevel()) {
+                        case 1:
+                            childNode.setLevel("SMQ1");
+                            break;
+                        case 2:
+                            childNode.setLevel("SMQ2");
+                            break;
+                        case 3:
+                            childNode.setLevel("SMQ3");
+                            break;
+                        case 4:
+                            childNode.setLevel("SMQ4");
+                            break;
+                        case 5:
+                            childNode.setLevel("SMQ5");
+                            break;
+                        default:
+                            break;
+                    }
 					childNode.setTerm(childSmqBase.getSmqName());
 					childNode.setCode(childSmqBase.getSmqCode().toString());
 					childNode.setEntity(childSmqBase);
@@ -1339,12 +1368,12 @@ public class IARelationsTreeHelper {
 			
 			//find smqrelations of all child smqs
 			int smqChildCodesSize = smqChildCodeList.size();
-			List<List<Long>> choppedLists = null;
+			List<List<Long>> choppedLists;
 			if(smqChildCodesSize > 400) {
 				//split it into smaller lists
 				choppedLists = ListUtils.partition(smqChildCodeList, 200);
 			}else {
-				choppedLists = new ArrayList<List<Long>>();
+				choppedLists = new ArrayList<>();
 				choppedLists.add(smqChildCodeList);
 			}
 			//process the chopped lists now
@@ -1384,7 +1413,7 @@ public class IARelationsTreeHelper {
 																															, partitionColumnPrefix, code);
 		if(CollectionUtils.isNotEmpty(childReverseSearchDtos)) {
 			for (MeddraDictReverseHierarchySearchDto childReverseSearchDto : childReverseSearchDtos) {
-				HierarchyNode childNode = null;
+				HierarchyNode childNode;
 				if(chekcForPrimaryPath) {
 					boolean isPrimary = false;
 					if("Y".equalsIgnoreCase(childReverseSearchDto.getPrimaryPathFlag())) {
@@ -1450,7 +1479,7 @@ public class IARelationsTreeHelper {
 		}
 		
 		//fetch children of parent node by code of parent
-		List<MeddraDictHierarchySearchDto> childDtos = null;
+		List<MeddraDictHierarchySearchDto> childDtos;
 		if(bCurrentList) {
 			childDtos = this.meddraDictCurrentService.findChildrenByParentCode(childSearchColumnTypePrefix, parentCodeColumnPrefix, dtoCode);
 		} else {
@@ -1461,7 +1490,7 @@ public class IARelationsTreeHelper {
         List<Long> nodesMapKeys = new LinkedList<>();
 		for (MeddraDictHierarchySearchDto childDto : childDtos) {
 			HierarchyNode childNode = this.createMeddraNode(childDto, childLevel);
-			if(childLevel.equalsIgnoreCase("PT")){//add in only PT children
+			if("PT".equalsIgnoreCase(childLevel)){//add in only PT children
 				if(!StringUtils.isBlank(childDto.getPrimaryPathFlag()) 
 						&& (childDto.getPrimaryPathFlag().equalsIgnoreCase("Y"))){
 					childNode.setPrimaryPathFlag(true);
@@ -1492,7 +1521,7 @@ public class IARelationsTreeHelper {
             }
 		}
     
-        List<Map<String, Object>> countsOfChildren = null;
+        List<Map<String, Object>> countsOfChildren;
         if (bCurrentList) {
             countsOfChildren = this.meddraDictCurrentService.findChldrenCountByParentCodes(childchildOfChildSearchColumnTypePrefix,
                     childSearchColumnTypePrefix, nodesMapKeys);
@@ -1507,7 +1536,7 @@ public class IARelationsTreeHelper {
                 if(cc.get("PARENT_CODE") != null && cc.get("COUNT") != null) {
                     Long pCode = (Long)cc.get("PARENT_CODE");
                     Long c = (Long)cc.get("COUNT");
-                    TreeNode t = c > 0 ? nodesMap.get(pCode.longValue()) : null;
+                    TreeNode t = c > 0 ? nodesMap.get(pCode) : null;
                     if(t!=null) {
                         // add a dummmy node to show expand arrow
                         createNewDummyNode(t);
