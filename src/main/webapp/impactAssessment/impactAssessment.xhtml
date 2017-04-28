@@ -181,7 +181,7 @@
 									</p:columnGroup>
 									<p:column><h:outputText value="#{node.term}" /></p:column>
 									<p:column>
-                                        <h:outputLink value="#" title="#{impactSearchController.getImpactDesc(node)}" >
+                                        <h:outputLink value="#" title="#{impactSearchController.getImpactDesc(node, 'current')}" >
                                             <h:outputText value="#{node.code}" />
                                         </h:outputLink>
                                     </p:column>
@@ -251,7 +251,7 @@
 
 									<p:column><h:outputText value="#{node.term}" /></p:column>
                                     <p:column>
-                                        <h:outputLink value="#" title="#{impactSearchController.getImpactDesc(node)}" >
+                                        <h:outputLink value="#" title="#{impactSearchController.getImpactDesc(node, 'target')}" >
                                             <h:outputText value="#{node.code}" />
                                         </h:outputLink>
                                     </p:column>

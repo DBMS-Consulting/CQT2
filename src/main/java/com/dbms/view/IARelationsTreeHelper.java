@@ -33,8 +33,11 @@ import com.dbms.service.ICmqRelation190Service;
 import com.dbms.service.ICmqRelationTargetService;
 import com.dbms.service.IMeddraDictService;
 import com.dbms.service.IMeddraDictTargetService;
+import com.dbms.service.IRefCodeListService;
 import com.dbms.service.ISmqBaseService;
 import com.dbms.service.ISmqBaseTargetService;
+import com.dbms.service.RefCodeListService;
+import com.dbms.util.CqtConstants;
 import java.util.LinkedList;
 
 import javax.faces.application.FacesMessage;
@@ -590,9 +593,8 @@ public class IARelationsTreeHelper {
                     || ("HDS".equalsIgnoreCase(meddra.getMovedHlgt()) && (meddra.getHlgtCode() != null || meddra.getLltCode() != null || meddra.getHltCode() != null || meddra.getPtCode() != null))
                     || ("PDL".equalsIgnoreCase(meddra.getDemotedPt()) && (meddra.getPtCode() != null || meddra.getLltCode() != null))
                     || ("LPP".equalsIgnoreCase(meddra.getPromotedLlt()) && meddra.getLltCode() != null)
-                    || ("MRG".equalsIgnoreCase(meddra.getMergedHlgt()) && (meddra.getHlgtCode() != null || meddra.getLltCode() != null || meddra.getHltCode() != null || meddra.getPtCode() != null))
                     || ("HPN".equalsIgnoreCase(meddra.getPrimarySocChange()) && (meddra.getHlgtCode() != null || meddra.getLltCode() != null || meddra.getHltCode() != null || meddra.getPtCode() != null))
-                    || ("MRG".equalsIgnoreCase(meddra.getMergedHlt()) && (meddra.getLltCode() != null || meddra.getHltCode() != null || meddra.getPtCode() != null))) {
+                    || ("MRG".equalsIgnoreCase(meddra.getMergedHlt()) && (meddra.getHltCode() != null || meddra.getPtCode() != null))) {
                 node.setRowStyleClass("red-colored");
             } else if(("NCH".equalsIgnoreCase(meddra.getHlgtNameChanged()) && meddra.getHlgtCode() != null)
                     || ("NCH".equalsIgnoreCase(meddra.getHltNameChanged()) && meddra.getHltCode() != null)
@@ -1647,6 +1649,252 @@ public class IARelationsTreeHelper {
 			}
 		}
 	}
+    
+    /**
+     * Returns CMQ Impact Type Description
+     * @param refCodeListService
+     * @param impactType
+     * @return 
+     */
+    protected static String getCmqRelationImpactDesc(IRefCodeListService refCodeListService, String impactType) {
+        return refCodeListService.interpretInternalCodeToValueOrDefault(CqtConstants.CODE_LIST_TYPE_CMQ_RELATION_IMPACT_TYPE, impactType, impactType);
+    }
+    /**
+     * Returns SMQ Impact Type Description
+     * @param refCodeListService
+     * @param impactType
+     * @return 
+     */
+    protected static String getSmqRelationImpactDesc(IRefCodeListService refCodeListService, String impactType) {
+        return refCodeListService.interpretInternalCodeToValueOrDefault(CqtConstants.CODE_LIST_TYPE_SMQ_RELATION_IMPACT_TYPE, impactType, impactType);
+    }
+    
+    /**
+     * Returns MedDRA Current Impact Type Description
+     * @param refCodeListService
+     * @param ent
+     * @param lvl
+     * @return 
+     */
+    protected static String getMeddraDictCurrentImpactDesc(IRefCodeListService refCodeListService, MeddraDictHierarchySearchDto ent, String lvl) {
+        if("LLT".equals(lvl)) {
+            if(ent.getLltNameChanged() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("llt_name_changed", ent.getLltNameChanged());
+            else if(ent.getMovedLlt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("moved_llt", ent.getMovedLlt());
+            else if(ent.getPromotedLlt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("promoted_llt", ent.getPromotedLlt());
+            else if(ent.getMovedPt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("moved_pt", ent.getMovedPt());
+            else if(ent.getPrimarySocChange() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("primary_soc_change", ent.getPrimarySocChange());
+            else if(ent.getDemotedPt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("demoted_pt", ent.getDemotedPt());
+            else if(ent.getPromotedPt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("promoted_pt", ent.getPromotedPt());
+            else if(ent.getNewSuccessorPt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("new_successor_pt", ent.getNewSuccessorPt());
+            else if(ent.getMovedHlt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("moved_hlt", ent.getMovedHlt());
+            else if(ent.getMergedHlt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("merged_hlt", ent.getMergedHlt());
+            else if(ent.getMovedHlgt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("moved_hlgt", ent.getMovedHlgt());
+            else if(ent.getMergedHlt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("merged_hlgt", ent.getMovedHlt());
+            else if(ent.getLltCurrencyChange() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("llt_currency_change", ent.getLltCurrencyChange());
+            else if(ent.getNewLlt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("new_llt", ent.getNewLlt());
+        } else if("PT".equals(lvl)) {
+            if(ent.getNewPt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("new_pt", ent.getNewPt());
+            else if(ent.getPtNameChanged() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("pt_name_changed", ent.getPtNameChanged());
+            else if(ent.getMovedPt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("moved_pt", ent.getMovedPt());
+            else if(ent.getDemotedPt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("demoted_pt", ent.getDemotedPt());
+            else if(ent.getPromotedPt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("promoted_pt", ent.getPromotedPt());
+            else if(ent.getNewSuccessorPt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("new_successor_pt", ent.getNewSuccessorPt());
+            else if(ent.getPrimarySocChange() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("primary_soc_change", ent.getPrimarySocChange());
+            else if(ent.getMovedHlt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("moved_hlt", ent.getMovedHlt());
+            else if(ent.getMergedHlt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("merged_hlt", ent.getMergedHlt());
+            else if(ent.getMovedHlgt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("moved_hlgt", ent.getMovedHlgt());
+            else if(ent.getMergedHlt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("merged_hlgt", ent.getMovedHlt());
+        } else if("HLT".equals(lvl)) {
+            if(ent.getNewHlt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("new_hlt", ent.getNewHlt());
+            else if(ent.getHltNameChanged() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("hlt_name_changed", ent.getHltNameChanged());
+            else if(ent.getMovedHlt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("moved_hlt", ent.getMovedHlt());
+            else if(ent.getMergedHlt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("merged_hlt", ent.getMergedHlt());
+            else if(ent.getMovedHlgt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("moved_hlgt", ent.getMovedHlgt());
+            else if(ent.getMergedHlgt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("merged_hlgt", ent.getMergedHlgt());
+        } else if("HLGT".equals(lvl)) {
+            if(ent.getNewHlgt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("new_hlgt", ent.getNewHlgt());
+            else if(ent.getHlgtNameChanged() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("hlgt_name_changed", ent.getHlgtNameChanged());
+            else if(ent.getMovedHlgt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("moved_hlgt", ent.getMovedHlgt());
+            else if(ent.getMergedHlgt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("merged_hlgt", ent.getMergedHlgt());
+        } else if("SOC".equals(lvl)) {
+            if(ent.getNewSoc() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("new_soc", ent.getNewSoc());
+            else if(ent.getSocNameChanged() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("soc_name_changed", ent.getSocNameChanged());
+        }
+        return "";
+    }
+    /**
+     * Returns MedDRA Target Impact Type Description
+     * @param refCodeListService
+     * @param ent
+     * @param lvl
+     * @return 
+     */
+    protected static String getMeddraDictTargetImpactDesc(IRefCodeListService refCodeListService, MeddraDictHierarchySearchDto ent, String lvl) {
+        if("LLT".equals(lvl)) {
+            if(ent.getLltCurrencyChange() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("llt_currency_change", ent.getLltCurrencyChange());
+            else if(ent.getNewLlt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("new_llt", ent.getNewLlt());
+            else if(ent.getLltNameChanged() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("llt_name_changed", ent.getLltNameChanged());
+            else if(ent.getMovedLlt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("moved_llt", ent.getMovedLlt());
+            else if(ent.getPromotedLlt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("promoted_llt", ent.getPromotedLlt());
+            else if(ent.getPrimarySocChange() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("primary_soc_change", ent.getPrimarySocChange());
+            else if(ent.getMovedPt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("moved_pt", ent.getMovedPt());
+            else if(ent.getDemotedPt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("demoted_pt", ent.getDemotedPt());
+            else if(ent.getPromotedPt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("promoted_pt", ent.getPromotedPt());
+            else if(ent.getNewSuccessorPt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("new_successor_pt", ent.getNewSuccessorPt());
+            else if(ent.getMovedHlt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("moved_hlt", ent.getMovedHlt());
+            else if(ent.getMergedHlt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("merged_hlt", ent.getMergedHlt());
+            else if(ent.getMovedHlgt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("moved_hlgt", ent.getMovedHlgt());
+            else if(ent.getMergedHlt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("merged_hlgt", ent.getMovedHlt());
+        } else if("PT".equals(lvl)) {
+            if(ent.getNewPt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("new_pt", ent.getNewPt());
+            else if(ent.getPtNameChanged() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("pt_name_changed", ent.getPtNameChanged());
+            else if(ent.getMovedPt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("moved_pt", ent.getMovedPt());
+            else if(ent.getDemotedPt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("demoted_pt", ent.getDemotedPt());
+            else if(ent.getPromotedPt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("promoted_pt", ent.getPromotedPt());
+            else if(ent.getNewSuccessorPt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("new_successor_pt", ent.getNewSuccessorPt());
+            else if(ent.getPrimarySocChange() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("primary_soc_change", ent.getPrimarySocChange());
+            else if(ent.getMovedHlt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("moved_hlt", ent.getMovedHlt());
+            else if(ent.getMergedHlt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("merged_hlt", ent.getMergedHlt());
+            else if(ent.getMovedHlgt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("moved_hlgt", ent.getMovedHlgt());
+            else if(ent.getMergedHlt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("merged_hlgt", ent.getMovedHlt());
+        } else if("HLT".equals(lvl)) {
+            if(ent.getNewHlt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("new_hlt", ent.getNewHlt());
+            else if(ent.getHltNameChanged() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("hlt_name_changed", ent.getHltNameChanged());
+            else if(ent.getMovedHlt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("moved_hlt", ent.getMovedHlt());
+            else if(ent.getMergedHlt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("merged_hlt", ent.getMergedHlt());
+            else if(ent.getMovedHlgt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("moved_hlgt", ent.getMovedHlgt());
+            else if(ent.getMergedHlgt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("merged_hlgt", ent.getMergedHlgt());
+        } else if("HLGT".equals(lvl)) {
+            if(ent.getNewHlgt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("new_hlgt", ent.getNewHlgt());
+            else if(ent.getHlgtNameChanged() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("hlgt_name_changed", ent.getHlgtNameChanged());
+            else if(ent.getMovedHlgt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("moved_hlgt", ent.getMovedHlgt());
+            else if(ent.getMergedHlgt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("merged_hlgt", ent.getMergedHlgt());
+        } else if("SOC".equals(lvl)) {
+            if(ent.getNewSoc() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("new_soc", ent.getNewSoc());
+            else if(ent.getSocNameChanged() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("soc_name_changed", ent.getSocNameChanged());
+        }
+        return "";
+    }
+    
+    /**
+     * Returns the CMQ/SMQ relation impact type message (Hover text on relations hierarchy row/code column):
+     * @param refCodeListService
+     * @param node
+     * @param currentOrTarget "current" or "target"
+     * @return 
+     */
+    public static String getImpactDesc(IRefCodeListService refCodeListService, HierarchyNode node, String currentOrTarget) {
+        boolean bCurrentList = "current".equalsIgnoreCase(currentOrTarget);
+        
+        if(bCurrentList) {
+            if(node.getEntity() instanceof SmqBase190) {
+                SmqBase190 ent = (SmqBase190)node.getEntity();
+                return getSmqRelationImpactDesc(refCodeListService, ent.getImpactType());
+            } else if(node.getEntity() instanceof SmqRelation190) {
+                SmqRelation190 ent = (SmqRelation190)node.getEntity();
+                return getSmqRelationImpactDesc(refCodeListService, ent.getRelationImpactType());
+            } else if(node.getEntity() instanceof MeddraDictHierarchySearchDto) {
+                MeddraDictHierarchySearchDto ent = (MeddraDictHierarchySearchDto)node.getEntity();
+                if(node.getRelationEntity() != null && node.getRelationEntity() instanceof CmqRelation190) {
+                    CmqRelation190 ent1 = (CmqRelation190)node.getRelationEntity();
+                    if(ent1.getRelationImpactType() != null)
+                        return getCmqRelationImpactDesc(refCodeListService, ent1.getRelationImpactType());
+                }
+                return getMeddraDictCurrentImpactDesc(refCodeListService, ent, node.getLevel());
+            }
+        } else {
+            if(node.getEntity() instanceof SmqBaseTarget) {
+                SmqBaseTarget ent = (SmqBaseTarget)node.getEntity();
+                return getSmqRelationImpactDesc(refCodeListService, ent.getImpactType());
+            } else if(node.getEntity() instanceof SmqRelationTarget) {
+                SmqRelationTarget ent = (SmqRelationTarget)node.getEntity();
+                return getSmqRelationImpactDesc(refCodeListService, ent.getRelationImpactType());
+            } else if(node.getEntity() instanceof MeddraDictHierarchySearchDto) {
+                MeddraDictHierarchySearchDto ent = (MeddraDictHierarchySearchDto)node.getEntity();
+                if(node.getRelationEntity() != null && node.getRelationEntity() instanceof CmqRelationTarget) {
+                    CmqRelationTarget ent1 = (CmqRelationTarget)node.getRelationEntity();
+                    if(ent1.getRelationImpactType() != null)
+                        return getCmqRelationImpactDesc(refCodeListService, ent1.getRelationImpactType());
+                }
+                return getMeddraDictTargetImpactDesc(refCodeListService, ent, node.getLevel());
+            }
+        }
+        return "";
+    }
     
     private TreeNode createNewDummyNode(TreeNode parentNode) {
         HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);

@@ -5,6 +5,9 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:p="http://primefaces.org/ui">
+    
+    <p:tooltip widgetVar="searchTooltip" />
+    
 	<h:panelGrid columns="2" cellpadding="10" id="searchPanel">
 		<h:panelGrid columns="2" columnClasses="label, value">
 			<p:outputLabel value="Extension" styleClass="label-right" />
@@ -128,6 +131,7 @@
 			<p:column headerText="Code" width="60">
 				<h:commandLink action="#{createController.loadCmqBaseByCode(value.cmqCode)}"
                                value="#{value.cmqCode}"
+                               onclick="PF('searchTooltip').hide()"
                                title="#{createController.isImpactedByMeddraVersioning(value) ? 'This List is impacted by MedDRA versioning' : ''}">
 					<p:ajax update="@form:wizardId @form:relations @form:wizardNavbar" />
                     <f:setPropertyActionListener

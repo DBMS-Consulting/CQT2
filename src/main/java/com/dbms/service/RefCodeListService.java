@@ -367,7 +367,7 @@ public class RefCodeListService extends
 				}
 			}	
 		}
-		return "";
+		return impactType;
 	}
     
 	@Override
