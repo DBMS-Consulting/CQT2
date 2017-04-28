@@ -13,7 +13,7 @@
 					value="#{impactSearchController.impactedSmqBaseLazyDataModel}" var="smqList" paginator="true" rows="10"
                 	selection="#{impactSearchController.selectedImpactedSmqList}" selectionMode="single" lazy="true"
                 	paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                	rowsPerPageTemplate="5,10,15,20" resizableColumns="true">
+                    rowsPerPageTemplate="5,10,15,20" resizableColumns="true" filterEvent="enter">
 				
 				<p:ajax event="rowSelect" listener="#{impactSearchController.onRowSelect}" />
 				
@@ -52,7 +52,7 @@
 				widgetVar="notImpactedSmqList" var="smqList" paginator="true" rows="10"
                 selection="#{impactSearchController.selectedNotImpactedSmqList}" selectionMode="single" lazy="true"
                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                rowsPerPageTemplate="5,10,15,20" resizableColumns="true">
+                rowsPerPageTemplate="5,10,15,20" resizableColumns="true" filterEvent="enter">
                 
                 <p:ajax event="rowSelect" listener="#{impactSearchController.onRowSelect}" />
                 
@@ -97,7 +97,7 @@
 					widgetVar="impactedCmqList" var="cmqList" paginator="true" rows="10"
                 	selection="#{impactSearchController.selectedImpactedCmqList}" selectionMode="single" lazy="true"
                 	paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                	rowsPerPageTemplate="5,10,15,20" resizableColumns="true">
+                	rowsPerPageTemplate="5,10,15,20" resizableColumns="true" filterEvent="enter">
                 
                 <p:ajax event="rowSelect" listener="#{impactSearchController.onRowSelect}" />
                 	
@@ -138,7 +138,7 @@
 				widgetVar="notImpactedCmqList" var="cmqList" paginator="true" rows="10"
                 selection="#{impactSearchController.selectedNotImpactedCmqList}" selectionMode="single" lazy="true"
                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                rowsPerPageTemplate="5,10,15,20" resizableColumns="true">
+                rowsPerPageTemplate="5,10,15,20" resizableColumns="true" filterEvent="enter">
                 
                 <p:ajax event="rowSelect" listener="#{impactSearchController.onRowSelect}" />
                 

@@ -22,6 +22,7 @@ import com.dbms.service.base.CqtPersistenceService;
 import com.dbms.util.CmqUtils;
 import java.util.LinkedList;
 import java.util.Map;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.ListUtils;
 
 /**
@@ -406,13 +407,16 @@ public class MeddraDictTargetService extends CqtPersistenceService<MeddraDictTar
 	@Override
 	@SuppressWarnings("unchecked")
 	public List<MeddraDictHierarchySearchDto> findByCodes(String searchColumnTypePrefix, List<Long> codes) {
-		List<MeddraDictHierarchySearchDto> retVal = null;
+		List<MeddraDictHierarchySearchDto> retVal = new LinkedList<>();
 		String termColumnName = searchColumnTypePrefix + "TERM";
 		String codeColumnName = searchColumnTypePrefix + "CODE";
 		
 		//Using this alias to get code - Either PT, HLT, LLT, HLGT, or SOC
 		String codeAlias = searchColumnTypePrefix.replace("_", "").toLowerCase().concat("Code");
 		
+        if(CollectionUtils.isEmpty(codes))
+            return retVal;
+        
 		String queryString = CmqUtils.convertArrayToTableWith(codes, "tempCodes", "code")
                 + "select MEDDRA_DICT_ID as meddraDictId, " + termColumnName + " as term, " + codeColumnName
 				+ " as " + codeAlias + ", PRIMARY_PATH_FLAG as primaryPathFlag, NEW_SUCCESSOR_PT as newSuccessorPt, MOVED_LLT as movedLlt, NEW_PT as newPt, PROMOTED_PT as promotedPt, NEW_LLT as newLlt, DEMOTED_LLT as demotedLlt, "
@@ -426,10 +430,8 @@ public class MeddraDictTargetService extends CqtPersistenceService<MeddraDictTar
                 + " from MEDDRA_DICT_TARGET mt"
                 + " inner join tempCodes on tempCodes.code=mt." + codeColumnName
 				+ " ) where rn = 1";
-		
-        retVal = new LinkedList<>();
-		
-		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+
+        EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
 		Session session = entityManager.unwrap(Session.class);
 		try {
             SQLQuery query = session.createSQLQuery(queryString);
@@ -490,6 +492,9 @@ public class MeddraDictTargetService extends CqtPersistenceService<MeddraDictTar
         String termColumnName = searchColumnTypePrefix + "TERM";
 		String codeColumnName = searchColumnTypePrefix + "CODE";
 		String parentCodeColumnName = parentCodeColumnPrefix + "CODE";
+        
+        if(CollectionUtils.isEmpty(parentCodes))
+            return retVal;
         
 		String queryString = CmqUtils.convertArrayToTableWith(parentCodes, "tempPaCodes", "code")
                 + "select count(*) as COUNT, " + parentCodeColumnName + " as PARENT_CODE"
@@ -660,7 +665,10 @@ public class MeddraDictTargetService extends CqtPersistenceService<MeddraDictTar
 		//Using this alias to get code - Either PT, HLT, LLT, HLGT, or SOC
 		String codeAlias = searchColumnTypePrefix.replace("_", "").toLowerCase().concat("Code");
         String pacodeAlias = parentCodeColumnPrefix.replace("_", "").toLowerCase().concat("Code");
-
+        
+        if(CollectionUtils.isEmpty(parentCodes))
+            return retVal;
+        
 		String queryString = CmqUtils.convertArrayToTableWith(parentCodes, "tempPaCodes", "code")
                 + "select MEDDRA_DICT_ID as meddraDictId, " + termColumnName + " as term, " + codeColumnName + " as " + codeAlias + "," + parentCodeColumnName + " as " + pacodeAlias
 				+ ", PRIMARY_PATH_FLAG as primaryPathFlag, MOVED_LLT as movedLlt, NEW_PT as newPt, PROMOTED_PT as promotedPt, NEW_LLT as newLlt, DEMOTED_LLT as demotedLlt, "

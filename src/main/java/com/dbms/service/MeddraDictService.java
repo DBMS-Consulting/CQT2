@@ -281,11 +281,14 @@ public class MeddraDictService extends CqtPersistenceService<MeddraDict190> impl
 	
 	@SuppressWarnings("unchecked")
 	public List<MeddraDictHierarchySearchDto> findByCodes(String searchColumnTypePrefix, List<Long> codes) {
-		List<MeddraDictHierarchySearchDto> retVal = null;
+		List<MeddraDictHierarchySearchDto> retVal = new LinkedList<>();
 		String termColumnName = searchColumnTypePrefix + "TERM";
 		String codeColumnName = searchColumnTypePrefix + "CODE";
 		
 		String codeAlias = searchColumnTypePrefix.replace("_", "").toLowerCase().concat("Code");
+        
+        if(CollectionUtils.isEmpty(codes))
+            return retVal;
 		
 		String queryString = CmqUtils.convertArrayToTableWith(codes, "tempCodes", "code")
                 + "select MEDDRA_DICT_ID as meddraDictId, " + termColumnName + " as term, " + codeColumnName
@@ -301,8 +304,6 @@ public class MeddraDictService extends CqtPersistenceService<MeddraDict190> impl
                 + " inner join tempCodes on tempCodes.code=mt." + codeColumnName
 				+ " ) where rn = 1";
         
-        retVal = new LinkedList<>();
-		
 		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
 		Session session = entityManager.unwrap(Session.class);
 		try {
