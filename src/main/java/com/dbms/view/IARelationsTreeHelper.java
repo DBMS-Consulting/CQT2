@@ -56,9 +56,9 @@ public class IARelationsTreeHelper {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(IARelationsTreeHelper.class);
 	
-	private static final int DEFAULT_BATCH_SIZE = 100;
+	private static final int DEFAULT_BATCH_SIZE = 500;
 	
-	private static final int DEFAULT_INNER_BATCH_SIZE = 20;
+	private static final int DEFAULT_INNER_BATCH_SIZE = 500;
 	
     private ICmqBase190Service cmqBaseCurrentService;
 	private ISmqBaseService smqBaseCurrentService;
@@ -1161,9 +1161,9 @@ public class IARelationsTreeHelper {
 			cmqRelationsBatchedStopWatch.start();
 			int startPosition = 0;
 			int pageNumber = 0;
-			List<Future<Boolean>> futuresList = new ArrayList<>();
+			/*List<Future<Boolean>> futuresList = new ArrayList<>();
 			ExecutorService executorService = Executors.newFixedThreadPool(4);
-			int i=0;
+			int i=0;*/
 			while((startPosition + DEFAULT_BATCH_SIZE) < relationCount) {
 				/*CmqRelationLoadWorker worker = new CmqRelationLoadWorker(++i, bCurrentList, bEventFromTargetTable
 																			, startPosition, cmqCode, expandedTreeNode
@@ -1180,8 +1180,8 @@ public class IARelationsTreeHelper {
 				} else {
 					existingRelations = cmqRelationTargetService.findByCmqCode(cmqCode, startPosition, DEFAULT_BATCH_SIZE);
 				}
-				LOG.info("Time taken to fetch {} relations from db is: {} millis", existingRelations.size()
-								, cmqRelationsBatchStopWatch.getTime(TimeUnit.MILLISECONDS));
+				LOG.info("Time taken to fetch {} relations from db is: {} sec approx", existingRelations.size()
+								, cmqRelationsBatchStopWatch.getTime(TimeUnit.SECONDS));
 				processCmqRelations(existingRelations, bCurrentList, bEventFromTargetTable, cmqCode
 											, expandedTreeNode, cmqType, uiSourceOfEvent, entityExpanded);	
 				startPosition = ++pageNumber * DEFAULT_BATCH_SIZE;
@@ -1211,13 +1211,13 @@ public class IARelationsTreeHelper {
 			} else {
 				existingRelations = this.cmqRelationTargetService.findByCmqCode(cmqCode);
 			}
-			LOG.info("Time taken to fetch {} relations from db is: {} millis", existingRelations.size()
-							, cmqRelationsBatchStopWatch.getTime(TimeUnit.MILLISECONDS));
+			LOG.info("Time taken to fetch {} relations from db is: {} seconds approx", existingRelations.size()
+							, cmqRelationsBatchStopWatch.getTime(TimeUnit.SECONDS));
 			this.processCmqRelations(existingRelations, bCurrentList, bEventFromTargetTable, cmqCode
 										, expandedTreeNode, cmqType, uiSourceOfEvent, entityExpanded);	
 			cmqRelationsBatchStopWatch.stop();
-			LOG.info("Total Time taken to fetch and process {} relations is: {} millis", existingRelations.size()
-									, cmqRelationsBatchStopWatch.getTime(TimeUnit.MILLISECONDS));
+			LOG.info("Total Time taken to fetch and process {} relations is: {} seconds approx", existingRelations.size()
+									, cmqRelationsBatchStopWatch.getTime(TimeUnit.SECONDS));
 		}
 		LOG.info("Finished laoding CMQ Relations in IA.");
 	}
