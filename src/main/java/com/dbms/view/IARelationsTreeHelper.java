@@ -425,14 +425,8 @@ public class IARelationsTreeHelper {
 				node.setRowStyleClass("green-colored");
 			} else if("NCH".equals(cmqRelationTarget.getRelationImpactType())) {
 				node.setRowStyleClass("italic");
-			} else if("PDL".equals(cmqRelationTarget.getRelationImpactType())
-					|| "PDH".equals(cmqRelationTarget.getRelationImpactType())
-					|| "HDH".equals(cmqRelationTarget.getRelationImpactType())
-					|| "HDS".equals(cmqRelationTarget.getRelationImpactType())
-					|| "LDP".equals(cmqRelationTarget.getRelationImpactType())
-					|| "LPP".equals(cmqRelationTarget.getRelationImpactType())
-					|| "HPP".equals(cmqRelationTarget.getRelationImpactType())
-					|| "NTR".equals(cmqRelationTarget.getRelationImpactType())) {
+			} else if(StringUtils.equalsAny(cmqRelationTarget.getRelationImpactType(),
+                    "PDL","PDH","HDH","HDS","LDP","LPP","HPP","NTR")) {
 				node.setRowStyleClass("orange-colored");
 			} else if("LCN".equals(cmqRelationTarget.getRelationImpactType())) {
 				node.setRowStyleClass("mauve-colored");
@@ -446,23 +440,11 @@ public class IARelationsTreeHelper {
 		if (cmqRelation.getRelationImpactType() != null) {
 			if("NCH".equals(cmqRelation.getRelationImpactType())) {
 				node.setRowStyleClass("italic");
-			} else if("PDL".equals(cmqRelation.getRelationImpactType())
-					|| "PDH".equals(cmqRelation.getRelationImpactType())
-					|| "HDH".equals(cmqRelation.getRelationImpactType())
-					|| "HDS".equals(cmqRelation.getRelationImpactType())
-					|| "DTR".equals(cmqRelation.getRelationImpactType())
-					|| "MRG".equals(cmqRelation.getRelationImpactType())
-					|| "LCN".equals(cmqRelation.getRelationImpactType())
-					|| "HPP".equals(cmqRelation.getRelationImpactType())
-					|| "LPP".equals(cmqRelation.getRelationImpactType())
-					|| "HNP".equals(cmqRelation.getRelationImpactType())
-					|| "LDP".equals(cmqRelation.getRelationImpactType())) {
+			} else if(StringUtils.equalsAny(cmqRelation.getRelationImpactType(),
+                    "PDL","PDH","HDH","HDS","DTR","MRG","LCN","HPP","LPP","HNP","LDP")) {
 				node.setRowStyleClass("red-colored");
-			} else if ("SCH".equals(cmqRelation.getRelationImpactType())
-                    || "ICC".equals(cmqRelation.getRelationImpactType()))
+			} else if (StringUtils.equalsAny(cmqRelation.getRelationImpactType(), "SCH","ICC"))
 				node.setRowStyleClass("blue-colored");
-//			if ("SWC".equals(cmqRelation.getRelationImpactType()))
-//				node.setRowStyleClass("pink-colored");
 		}
 	}
     
@@ -501,24 +483,28 @@ public class IARelationsTreeHelper {
             final Long c = Long.valueOf(m.getSocCode());
             if(socMeddraMap.get(c) == null)
                 socMeddraMap.put(c, new LinkedList<>());
+            m.setSocCode(null);
             socMeddraMap.get(c).add(m);
         }
         for(MeddraDictHierarchySearchDto m: hlgtMeddras) {
             final Long c = Long.valueOf(m.getHlgtCode());
             if(hlgtMeddraMap.get(c) == null)
                 hlgtMeddraMap.put(c, new LinkedList<>());
+            m.setHlgtCode(null);
             hlgtMeddraMap.get(c).add(m);
         }
         for(MeddraDictHierarchySearchDto m: hltMeddras) {
             final Long c = Long.valueOf(m.getHltCode());
             if(hltMeddraMap.get(c) == null)
                 hltMeddraMap.put(c, new LinkedList<>());
+            m.setHltCode(null);
             hltMeddraMap.get(c).add(m);
         }
         for(MeddraDictHierarchySearchDto m: ptMeddras) {
             final Long c = Long.valueOf(m.getPtCode());
             if(ptMeddraMap.get(c) == null)
                 ptMeddraMap.put(c, new LinkedList<>());
+            m.setPtCode(null);
             ptMeddraMap.get(c).add(m);
         }
         
@@ -556,23 +542,23 @@ public class IARelationsTreeHelper {
     }
 
 	public void setCurrentMeddraColor(MeddraDictHierarchySearchDto meddra, HierarchyNode node, IEntity relationEntity, Map<String, List<MeddraDictHierarchySearchDto>> chMeddras) {
-		if((meddra.getMovedPt() != null && "LDH".equalsIgnoreCase(meddra.getMovedPt()) && (meddra.getPtCode() != null || meddra.getLltCode() != null))
-				|| (meddra.getMovedLlt() != null && "LDP".equalsIgnoreCase(meddra.getMovedLlt()) && meddra.getLltCode() != null)
-				|| (meddra.getMovedHlt() != null && "HDH".equalsIgnoreCase(meddra.getMovedHlt()) && (meddra.getLltCode() != null || meddra.getHltCode() != null || meddra.getPtCode() != null))
-				|| (meddra.getMovedHlgt() != null && "HDS".equalsIgnoreCase(meddra.getMovedHlgt()) && (meddra.getHlgtCode() != null || meddra.getLltCode() != null || meddra.getHltCode() != null || meddra.getPtCode() != null))
-				|| (meddra.getDemotedPt() != null && "PDL".equalsIgnoreCase(meddra.getDemotedPt()) && (meddra.getPtCode() != null || meddra.getLltCode() != null))
-				|| (meddra.getPromotedLlt() != null && "LPP".equalsIgnoreCase(meddra.getPromotedLlt()) && meddra.getLltCode() != null)
-				|| (meddra.getMergedHlgt() != null && "MRG".equalsIgnoreCase(meddra.getMergedHlgt()) && (meddra.getHlgtCode() != null || meddra.getLltCode() != null || meddra.getHltCode() != null || meddra.getPtCode() != null))
-				|| (meddra.getPrimarySocChange() != null && "HPN".equalsIgnoreCase(meddra.getPrimarySocChange()) && (meddra.getHlgtCode() != null || meddra.getLltCode() != null || meddra.getHltCode() != null || meddra.getPtCode() != null))
-				|| (meddra.getMergedHlt() != null && "MRG".equalsIgnoreCase(meddra.getMergedHlt()) && (meddra.getLltCode() != null || meddra.getHltCode() != null || meddra.getPtCode() != null))) {
+		if(("LDH".equalsIgnoreCase(meddra.getMovedPt()) && (meddra.getPtCode() != null || meddra.getLltCode() != null))
+                || ("LDP".equalsIgnoreCase(meddra.getMovedLlt()) && meddra.getLltCode() != null)
+				|| ("HDH".equalsIgnoreCase(meddra.getMovedHlt()) && (meddra.getLltCode() != null || meddra.getHltCode() != null || meddra.getPtCode() != null))
+				|| ("HDS".equalsIgnoreCase(meddra.getMovedHlgt()) && (meddra.getHlgtCode() != null || meddra.getLltCode() != null || meddra.getHltCode() != null || meddra.getPtCode() != null))
+				|| ("PDL".equalsIgnoreCase(meddra.getDemotedPt()) && (meddra.getPtCode() != null || meddra.getLltCode() != null))
+				|| ("LPP".equalsIgnoreCase(meddra.getPromotedLlt()) && meddra.getLltCode() != null)
+				|| ("MRG".equalsIgnoreCase(meddra.getMergedHlgt()) && (meddra.getHlgtCode() != null || meddra.getLltCode() != null || meddra.getHltCode() != null || meddra.getPtCode() != null))
+				|| ("HPN".equalsIgnoreCase(meddra.getPrimarySocChange()) && (meddra.getHlgtCode() != null || meddra.getLltCode() != null || meddra.getHltCode() != null || meddra.getPtCode() != null))
+				|| ("MRG".equalsIgnoreCase(meddra.getMergedHlt()) && (meddra.getLltCode() != null || meddra.getHltCode() != null || meddra.getPtCode() != null))) {
 			node.setRowStyleClass("red-colored");
 		}
 		
-		if((meddra.getHlgtNameChanged() != null && "NCH".equalsIgnoreCase(meddra.getHlgtNameChanged()) && meddra.getHlgtCode() != null)
-				|| (meddra.getHltNameChanged() != null && "NCH".equalsIgnoreCase(meddra.getHltNameChanged()) && meddra.getHltCode() != null)
-				|| (meddra.getPtNameChanged()!= null && "NCH".equalsIgnoreCase(meddra.getPtNameChanged()) && meddra.getPtCode() != null)
-				|| (meddra.getSocNameChanged()!= null && "NCH".equalsIgnoreCase(meddra.getSocNameChanged()) && meddra.getSocCode() != null)
-				|| (meddra.getLltNameChanged() != null && "NCH".equalsIgnoreCase(meddra.getLltNameChanged()) && meddra.getLltCode() != null)) {
+		if(("NCH".equalsIgnoreCase(meddra.getHlgtNameChanged()) && meddra.getHlgtCode() != null)
+				|| ("NCH".equalsIgnoreCase(meddra.getHltNameChanged()) && meddra.getHltCode() != null)
+				|| ("NCH".equalsIgnoreCase(meddra.getPtNameChanged()) && meddra.getPtCode() != null)
+				|| ("NCH".equalsIgnoreCase(meddra.getSocNameChanged()) && meddra.getSocCode() != null)
+				|| ("NCH".equalsIgnoreCase(meddra.getLltNameChanged()) && meddra.getLltCode() != null)) {
 			node.setRowStyleClass("italic");
 		}
 		
@@ -652,24 +638,28 @@ public class IARelationsTreeHelper {
             final Long c = Long.valueOf(m.getSocCode());
             if(socMeddraMap.get(c) == null)
                 socMeddraMap.put(c, new LinkedList<>());
+            m.setSocCode(null);
             socMeddraMap.get(c).add(m);
         }
         for(MeddraDictHierarchySearchDto m: hlgtMeddras) {
             final Long c = Long.valueOf(m.getHlgtCode());
             if(hlgtMeddraMap.get(c) == null)
                 hlgtMeddraMap.put(c, new LinkedList<>());
+            m.setHlgtCode(null);
             hlgtMeddraMap.get(c).add(m);
         }
         for(MeddraDictHierarchySearchDto m: hltMeddras) {
             final Long c = Long.valueOf(m.getHltCode());
             if(hltMeddraMap.get(c) == null)
                 hltMeddraMap.put(c, new LinkedList<>());
+            m.setHltCode(null);
             hltMeddraMap.get(c).add(m);
         }
         for(MeddraDictHierarchySearchDto m: ptMeddras) {
             final Long c = Long.valueOf(m.getPtCode());
             if(ptMeddraMap.get(c) == null)
                 ptMeddraMap.put(c, new LinkedList<>());
+            m.setPtCode(null);
             ptMeddraMap.get(c).add(m);
         }
         
@@ -707,36 +697,36 @@ public class IARelationsTreeHelper {
     }
 	
 	 public void setTargetMeddraColor(MeddraDictHierarchySearchDto meddra, HierarchyNode node, IEntity relationEntity, Map<String, List<MeddraDictHierarchySearchDto>> chMeddras) {
-	    	if ((meddra.getPrimarySocChange() != null && "HPP".equalsIgnoreCase(meddra.getPrimarySocChange()) && meddra.getSocCode() != null)
-	    			|| (meddra.getPrimarySocChange() != null && "HNP".equalsIgnoreCase(meddra.getPrimarySocChange()) && meddra.getSocCode() != null)) {
+	    	if (("HPP".equalsIgnoreCase(meddra.getPrimarySocChange()) && meddra.getSocCode() != null)
+	    			|| ("HNP".equalsIgnoreCase(meddra.getPrimarySocChange()) && meddra.getSocCode() != null)) {
 	    		node.setRowStyleClass("none");
 	        }
-	    	if (meddra.getLltCurrencyChange() != null && "LCN".equalsIgnoreCase(meddra.getLltCurrencyChange()) && meddra.getLltCode() != null)
+	    	if ("LCN".equalsIgnoreCase(meddra.getLltCurrencyChange()) && meddra.getLltCode() != null)
 	    		node.setRowStyleClass("mauve-colored");	
 	    	
-			if((meddra.getNewLlt() != null && "NTR".equalsIgnoreCase(meddra.getNewLlt()) && meddra.getLltCode() != null)
-					|| (meddra.getNewPt() != null && "NTR".equalsIgnoreCase(meddra.getNewPt()) && meddra.getPtCode() != null)
-					|| (meddra.getNewHlt() != null && "NTR".equalsIgnoreCase(meddra.getNewHlt()) && meddra.getHltCode() != null)
-					|| (meddra.getNewHlgt() != null && "NTR".equalsIgnoreCase(meddra.getNewHlgt()) && meddra.getHlgtCode() != null)
-					|| (meddra.getNewSoc() != null && "NTR".equalsIgnoreCase(meddra.getNewSoc()) && meddra.getSocCode() != null)
-					|| (meddra.getMovedHlt() != null && "NTR".equalsIgnoreCase(meddra.getMovedHlt()) && (meddra.getHltCode() != null || meddra.getLltCode() != null || meddra.getPtCode() != null))
-					|| (meddra.getMovedHlgt()!= null && "NTR".equalsIgnoreCase(meddra.getMovedHlgt()) && (meddra.getHlgtCode() != null ||meddra.getHltCode() != null || meddra.getLltCode() != null || meddra.getPtCode() != null))
-					|| (meddra.getMovedPt() != null && "LDH".equalsIgnoreCase(meddra.getMovedPt()) && (meddra.getLltCode() != null || meddra.getPtCode() != null))
-					|| (meddra.getDemotedPt() != null && "PDL".equalsIgnoreCase(meddra.getDemotedPt()) && (meddra.getPtCode() != null || meddra.getLltCode() != null))
-					|| (meddra.getPromotedLlt() != null && "LPP".equalsIgnoreCase(meddra.getPromotedLlt()) && meddra.getLltCode() != null)
-					|| (meddra.getPrimarySocChange() != null && "HNP".equalsIgnoreCase(meddra.getPrimarySocChange()) && meddra.getSocCode() != null)
-					|| (meddra.getMovedLlt() != null && "LDP".equalsIgnoreCase(meddra.getMovedLlt()))
-					|| (meddra.getNewSuccessorPt() != null && "SDP".equalsIgnoreCase(meddra.getNewSuccessorPt()) && meddra.getPtCode() != null)
-					|| (meddra.getMovedHlt() != null && "HDH".equalsIgnoreCase(meddra.getMovedHlt()) && (meddra.getHltCode() != null || meddra.getLltCode() != null || meddra.getPtCode() != null))
-					|| (meddra.getMovedHlgt() != null && "HDS".equalsIgnoreCase(meddra.getMovedHlgt())) && (meddra.getHlgtCode() != null || meddra.getHltCode() != null || meddra.getLltCode() != null || meddra.getPtCode() != null)) {
+			if(("NTR".equalsIgnoreCase(meddra.getNewLlt()) && meddra.getLltCode() != null)
+					|| ("NTR".equalsIgnoreCase(meddra.getNewPt()) && meddra.getPtCode() != null)
+					|| ("NTR".equalsIgnoreCase(meddra.getNewHlt()) && meddra.getHltCode() != null)
+					|| ("NTR".equalsIgnoreCase(meddra.getNewHlgt()) && meddra.getHlgtCode() != null)
+					|| ("NTR".equalsIgnoreCase(meddra.getNewSoc()) && meddra.getSocCode() != null)
+					|| ("NTR".equalsIgnoreCase(meddra.getMovedHlt()) && (meddra.getHltCode() != null || meddra.getLltCode() != null || meddra.getPtCode() != null))
+					|| ("NTR".equalsIgnoreCase(meddra.getMovedHlgt()) && (meddra.getHlgtCode() != null ||meddra.getHltCode() != null || meddra.getLltCode() != null || meddra.getPtCode() != null))
+					|| ("LDH".equalsIgnoreCase(meddra.getMovedPt()) && (meddra.getLltCode() != null || meddra.getPtCode() != null))
+					|| ("PDL".equalsIgnoreCase(meddra.getDemotedPt()) && (meddra.getPtCode() != null || meddra.getLltCode() != null))
+					|| ("LPP".equalsIgnoreCase(meddra.getPromotedLlt()) && meddra.getLltCode() != null)
+					|| ("HNP".equalsIgnoreCase(meddra.getPrimarySocChange()) && meddra.getSocCode() != null)
+					|| ("LDP".equalsIgnoreCase(meddra.getMovedLlt()))
+					|| ("SDP".equalsIgnoreCase(meddra.getNewSuccessorPt()) && meddra.getPtCode() != null)
+					|| ("HDH".equalsIgnoreCase(meddra.getMovedHlt()) && (meddra.getHltCode() != null || meddra.getLltCode() != null || meddra.getPtCode() != null))
+					|| ("HDS".equalsIgnoreCase(meddra.getMovedHlgt())) && (meddra.getHlgtCode() != null || meddra.getHltCode() != null || meddra.getLltCode() != null || meddra.getPtCode() != null)) {
 				node.setRowStyleClass("orange-colored");
 			}
 			
-			if((meddra.getHlgtNameChanged() != null && "NCH".equalsIgnoreCase(meddra.getHlgtNameChanged()) && meddra.getHlgtCode() != null)
-					|| (meddra.getHltNameChanged() != null && "NCH".equalsIgnoreCase(meddra.getHltNameChanged()) && meddra.getHltCode() != null)
-					|| (meddra.getPtNameChanged()!= null && "NCH".equalsIgnoreCase(meddra.getPtNameChanged()) && meddra.getPtCode() != null)
-					|| (meddra.getSocNameChanged()!= null && "NCH".equalsIgnoreCase(meddra.getSocNameChanged()) && meddra.getSocCode() != null)
-					|| (meddra.getLltNameChanged() != null && "NCH".equalsIgnoreCase(meddra.getLltNameChanged()) && meddra.getLltCode() != null)) {
+			if(("NCH".equalsIgnoreCase(meddra.getHlgtNameChanged()) && meddra.getHlgtCode() != null)
+					|| ("NCH".equalsIgnoreCase(meddra.getHltNameChanged()) && meddra.getHltCode() != null)
+					|| ("NCH".equalsIgnoreCase(meddra.getPtNameChanged()) && meddra.getPtCode() != null)
+					|| ("NCH".equalsIgnoreCase(meddra.getSocNameChanged()) && meddra.getSocCode() != null)
+					|| ("NCH".equalsIgnoreCase(meddra.getLltNameChanged()) && meddra.getLltCode() != null)) {
 				node.setRowStyleClass("italic");
 			}
 				
@@ -787,8 +777,7 @@ public class IARelationsTreeHelper {
 				childRelationNode.setRowStyleClass("italic");
 			} else if("DTR".equals(childRelation.getRelationImpactType())) {
 				childRelationNode.setRowStyleClass("red-colored");
-			} else if ("SCH".equals(childRelation.getRelationImpactType()) ||
-                    "ICC".equals(childRelation.getRelationImpactType())) {
+			} else if (StringUtils.equalsAny(childRelation.getRelationImpactType(), "SCH", "ICC")) {
 				childRelationNode.setRowStyleClass("blue-colored");	
             } else if ("SWC".equals(childRelation.getRelationImpactType())) {
 				childRelationNode.setRowStyleClass("pink-colored");
@@ -804,10 +793,7 @@ public class IARelationsTreeHelper {
 
 	public void setSMQTargetNodeStyle(HierarchyNode childRelationNode,	SmqRelationTarget childRelation) {
 		if (childRelation.getRelationImpactType() != null) {
-			if("LPP".equalsIgnoreCase(childRelation.getRelationImpactType())
-					|| "PDL".equalsIgnoreCase(childRelation.getRelationImpactType())
-					|| "NTR".equalsIgnoreCase(childRelation.getRelationImpactType())
-					|| "PSA".equalsIgnoreCase(childRelation.getRelationImpactType())) {
+			if(StringUtils.equalsAny(childRelation.getRelationImpactType(), "LPP","PDL","NTR","PSA")) {
 				childRelationNode.setRowStyleClass("orange-colored");
 			} else if ("SCH".equals(childRelation.getRelationImpactType())) {
 				childRelationNode.setRowStyleClass("blue-colored");
@@ -932,7 +918,7 @@ public class IARelationsTreeHelper {
 			//if thsi is not an SQM relation node then its an SMQ node so check for rleations.
 			if(!isSmqRelation) {
 				//add a dummy node for either of the cases, expansion will handle the actuals later
-				Long smqBaseChildrenCount = null;
+				Long smqBaseChildrenCount;
 				if("current".equalsIgnoreCase(cmqType)) {
 					smqBaseChildrenCount = this.smqBaseCurrentService.findChildSmqCountByParentSmqCode(((SmqBase190)entity2).getSmqCode());
 				} else {
@@ -942,7 +928,7 @@ public class IARelationsTreeHelper {
 					// add a dummmy node to show expand arrow
 					createNewDummyNode(treeNode);
 				} else {
-					Long childSmqrelationsCount = null;
+					Long childSmqrelationsCount;
 					if("current".equalsIgnoreCase(cmqType)) {
 						childSmqrelationsCount = this.smqBaseCurrentService.findSmqRelationsCountForSmqCode(((SmqBase190)entity2).getSmqCode());
 					} else {
@@ -1111,9 +1097,7 @@ public class IARelationsTreeHelper {
 			}
 				
 			if((null != relationsCountsList) && (relationsCountsList.size() > 0)) {
-				ListIterator li = relationsCountsList.listIterator();
-				while(li.hasNext()) {
-					Map<String, Object> map = (Map<String, Object>) li.next();
+				for(Map<String, Object> map: relationsCountsList) {
 					if(map.get("CMQ_CODE") != null) {
 						Long resultCmqCode = (Long)map.get("CMQ_CODE");
 						Long count = (Long)map.get("COUNT");
@@ -1375,9 +1359,7 @@ public class IARelationsTreeHelper {
 					childSmqRelationsCountList = this.smqBaseTargetService.findSmqRelationsCountForSmqCodes(subList);
 				}
 				if((null != childSmqRelationsCountList) && (childSmqRelationsCountList.size() > 0)) {
-					ListIterator li = childSmqRelationsCountList.listIterator();
-					while(li.hasNext()) {
-						Map<String, Object> map = (Map<String, Object>) li.next();
+                    for(Map<String, Object> map : childSmqRelationsCountList) {
 						if(map.get("SMQ_CODE") != null) {
 							Long childSmqCode = (Long)map.get("SMQ_CODE");
 							Long count = (Long)map.get("COUNT");
