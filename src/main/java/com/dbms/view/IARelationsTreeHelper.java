@@ -1165,15 +1165,32 @@ public class IARelationsTreeHelper {
 			ExecutorService executorService = Executors.newFixedThreadPool(4);
 			int i=0;
 			while((startPosition + DEFAULT_BATCH_SIZE) < relationCount) {
-				CmqRelationLoadWorker worker = new CmqRelationLoadWorker(++i, bCurrentList, bEventFromTargetTable
+				/*CmqRelationLoadWorker worker = new CmqRelationLoadWorker(++i, bCurrentList, bEventFromTargetTable
 																			, startPosition, cmqCode, expandedTreeNode
 																			, cmqType, uiSourceOfEvent, entityExpanded);
 				Future<Boolean> future = executorService.submit(worker);
-				futuresList.add(future);
+				futuresList.add(future);*/
+				
+				LOG.info("Loading batch of {} relations staring from row {}", DEFAULT_BATCH_SIZE, startPosition);
+				StopWatch cmqRelationsBatchStopWatch = new StopWatch();
+				cmqRelationsBatchStopWatch.start();
+				List<? extends IEntity> existingRelations = null;
+				if(bCurrentList) {
+					existingRelations = cmqRelationCurrentService.findByCmqCode(cmqCode, startPosition, DEFAULT_BATCH_SIZE);
+				} else {
+					existingRelations = cmqRelationTargetService.findByCmqCode(cmqCode, startPosition, DEFAULT_BATCH_SIZE);
+				}
+				LOG.info("Time taken to fetch {} relations from db is: {} millis", existingRelations.size()
+								, cmqRelationsBatchStopWatch.getTime(TimeUnit.MILLISECONDS));
+				processCmqRelations(existingRelations, bCurrentList, bEventFromTargetTable, cmqCode
+											, expandedTreeNode, cmqType, uiSourceOfEvent, entityExpanded);	
 				startPosition = ++pageNumber * DEFAULT_BATCH_SIZE;
+				cmqRelationsBatchStopWatch.stop();
+				LOG.info("Total Time taken to fetch and process {} relations is: {} sec approx.", existingRelations.size()
+										, cmqRelationsBatchStopWatch.getTime(TimeUnit.SECONDS));
 			}
 			
-			for (Future<Boolean> future : futuresList) {
+			/*for (Future<Boolean> future : futuresList) {
 				try {
 					if(!future.get()) {
 						LOG.info("A worker failed to finish successfully.");
@@ -1182,7 +1199,7 @@ public class IARelationsTreeHelper {
 					LOG.error(e.getMessage(), e);
 				}
 			}
-			executorService.shutdownNow();
+			executorService.shutdownNow();*/
 			cmqRelationsBatchedStopWatch.stop();
 			LOG.info("Time taken to fetch {} relations is: {} seconds approx", relationCount, cmqRelationsBatchedStopWatch.getTime(TimeUnit.SECONDS));
 		} else {
