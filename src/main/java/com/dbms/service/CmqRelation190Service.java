@@ -80,6 +80,34 @@ public class CmqRelation190Service extends CqtPersistenceService<CmqRelation190>
 	}
 	
 	@SuppressWarnings("unchecked")
+	@Override
+	public List<CmqRelation190> findByCmqCode(Long cmqCode, int startPosition, int limit) {
+		List<CmqRelation190> retVal = null;
+		StringBuilder sb = new StringBuilder();
+		sb.append("from CmqRelation190 c where c.cmqCode = :cmqCode ");
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		try {
+			Query query = entityManager.createQuery(sb.toString());
+			query.setParameter("cmqCode", cmqCode);
+			query.setFirstResult(startPosition);
+			query.setMaxResults(limit);
+			query.setHint("org.hibernate.cacheable", true);
+			retVal = query.getResultList();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg
+					.append("An error occurred while fetching types from CmqRelation190 on cmqCode ")
+					.append(cmqCode)
+					.append(" Query used was ->")
+					.append(sb.toString());
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
+	
+	@SuppressWarnings("unchecked")
 	public List<Map<String, Object>> findCountByCmqCodes(List<Long> cmqCodes) {
 		List<Map<String, Object>>  retVal = null;
 		StringBuilder sb = new StringBuilder();

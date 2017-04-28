@@ -12,6 +12,8 @@ public interface ICmqRelationTargetService extends ICqtPersistenceService<CmqRel
 	void create(List<CmqRelationTarget> cmqRelations) throws CqtServiceException;
 
 	List<CmqRelationTarget> findByCmqCode(Long cmqCode);
+	
+	List<CmqRelationTarget> findByCmqCode(Long cmqCode, int startPosition, int limit);
 
 	List<Map<String, Object>> findCountByCmqCodes(List<Long> cmqCodes);
 

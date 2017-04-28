@@ -60,12 +60,6 @@ public class CmqRelationTargetService extends CqtPersistenceService<CmqRelationT
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.dbms.service.ICmqRelationTargetService#findByCmqCode(java.lang.Long)
-	 */
 	@Override
 	@SuppressWarnings("unchecked")
 	public List<CmqRelationTarget> findByCmqCode(Long cmqCode) {
@@ -87,7 +81,37 @@ public class CmqRelationTargetService extends CqtPersistenceService<CmqRelationT
 		}
 		return retVal;
 	}
-
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.dbms.service.ICmqRelationTargetService#findByCmqCode(java.lang.Long)
+	 */
+	@Override
+	@SuppressWarnings("unchecked")
+	public List<CmqRelationTarget> findByCmqCode(Long cmqCode, int startPosition, int limit) {
+		List<CmqRelationTarget> retVal = null;
+		StringBuilder sb = new StringBuilder();
+		sb.append("from CmqRelationTarget c where c.cmqCode = :cmqCode ");
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		try {
+			Query query = entityManager.createQuery(sb.toString());
+			query.setParameter("cmqCode", cmqCode);
+			query.setFirstResult(startPosition);
+			query.setMaxResults(limit);
+			retVal = query.getResultList();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg.append("An error occurred while fetching types from CmqRelationTarget on cmqCode ").append(cmqCode)
+					.append(" Query used was ->").append(sb.toString());
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 

@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.dbms.entity.cqt.SmqBase190;
 import com.dbms.entity.cqt.SmqRelation190;
+import com.dbms.util.SmqAndPtCodeHolder;
 
 public interface ISmqBaseService {
 
@@ -27,5 +28,9 @@ public interface ISmqBaseService {
 	Long findChildSmqCountByParentSmqCode(Long smqCode);
 
 	SmqRelation190 findSmqRelationBySmqAndPtCode(Long smqCode, Integer ptCode);
+
+	List<SmqBase190> findByCode(List<Long> smqCodes);
+
+	List<SmqRelation190> findSmqRelationBySmqAndPtCode(List<SmqAndPtCodeHolder> smqAndPtCodeHolders);
 
 }

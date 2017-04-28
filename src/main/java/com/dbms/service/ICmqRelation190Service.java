@@ -16,4 +16,6 @@ public interface ICmqRelation190Service extends ICqtPersistenceService<CmqRelati
 	List<Map<String, Object>> findCountByCmqCodes(List<Long> cmqCodes);
 	
 	Long findCountByCmqCode(Long cmqCode);
+
+	List<CmqRelation190> findByCmqCode(Long cmqCode, int startPosition, int limit);
 }

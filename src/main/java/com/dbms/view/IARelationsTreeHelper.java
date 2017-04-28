@@ -1,20 +1,33 @@
 package com.dbms.view;
 
-import com.dbms.csmq.CSMQBean;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.StopWatch;
+import org.primefaces.event.NodeExpandEvent;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import com.dbms.csmq.CSMQBean;
 import com.dbms.csmq.HierarchyNode;
 import com.dbms.entity.IEntity;
 import com.dbms.entity.cqt.CmqBase190;
@@ -36,17 +49,16 @@ import com.dbms.service.IMeddraDictTargetService;
 import com.dbms.service.IRefCodeListService;
 import com.dbms.service.ISmqBaseService;
 import com.dbms.service.ISmqBaseTargetService;
-import com.dbms.service.RefCodeListService;
 import com.dbms.util.CqtConstants;
-import java.util.LinkedList;
-
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
-
-import org.primefaces.event.NodeExpandEvent;
 
 public class IARelationsTreeHelper {
 	public enum SearchTarget { SMQ_BASE, MEDDRA_DICT, CMQ_BASE }
+	
+	private static final Logger LOG = LoggerFactory.getLogger(IARelationsTreeHelper.class);
+	
+	private static final int DEFAULT_BATCH_SIZE = 100;
+	
+	private static final int DEFAULT_INNER_BATCH_SIZE = 20;
 	
     private ICmqBase190Service cmqBaseCurrentService;
 	private ISmqBaseService smqBaseCurrentService;
@@ -916,7 +928,10 @@ public class IARelationsTreeHelper {
 			setCMQTargetNodeStyle(node, cmqRelation); 
 		}
 		if(null != node) {	
-			TreeNode treeNode = new DefaultTreeNode(node, expandedTreeNode);
+			TreeNode treeNode = null;
+			synchronized (expandedTreeNode) {
+				treeNode = new DefaultTreeNode(node, expandedTreeNode);
+			}
 			
 			//if thsi is not an SQM relation node then its an SMQ node so check for rleations.
 			if(!isSmqRelation) {
@@ -961,8 +976,11 @@ public class IARelationsTreeHelper {
             if(!bCurrentList && !isRootListNode && bEventFromTargetTable) {
                 node.markNotEditableInRelationstable();
             }
-
-            TreeNode treeNode = new DefaultTreeNode(node, expandedTreeNode);
+            
+            TreeNode treeNode = null;
+            synchronized (expandedTreeNode) {
+            	treeNode = new DefaultTreeNode(node, expandedTreeNode);
+			}
 
             addedNodes.put(c, treeNode);
             dtoCodes.add(c);
@@ -970,7 +988,7 @@ public class IARelationsTreeHelper {
         
         List<Map<String, Object>> countsOfChildren;
         if (bCurrentList) {
-            setCurrentMeddraColors(dtos, addedNodes, cmqRelationsMap);
+            //TODO: this seems to load slow--> setCurrentMeddraColors(dtos, addedNodes, cmqRelationsMap);
             countsOfChildren = this.meddraDictCurrentService.findChldrenCountByParentCodes(childNodeType + "_"
                                             , nodeType + "_", dtoCodes);
             for (TreeNode n : addedNodes.values()) {
@@ -1061,56 +1079,67 @@ public class IARelationsTreeHelper {
 				}
 			}
 			
-			List<Map<String, Object>> childrenOfChildCountsList = null;
-			if(bCurrentList) {
-				childrenOfChildCountsList = this.cmqBaseCurrentService.findCmqChildCountForParentCmqCode(childCmqCodeList);
-			} else {
-				childrenOfChildCountsList = this.cmqBaseTargetService.findCmqChildCountForParentCmqCode(childCmqCodeList);
+			int childCmqCodeListSize = childCmqCodeList.size();
+			List<List<Long>> choppedLists;
+			if(childCmqCodeListSize > DEFAULT_BATCH_SIZE) {
+				//split it into smaller lists
+				choppedLists = ListUtils.partition(childCmqCodeList, DEFAULT_BATCH_SIZE);
+			}else {
+				choppedLists = new ArrayList<>();
+				choppedLists.add(childCmqCodeList);
 			}
-			
-			if((null != childrenOfChildCountsList) && (childrenOfChildCountsList.size() > 0)) {
-				//first find and fix child nodes stuff
-				for (Iterator<Long> it = childCmqCodeList.iterator(); it.hasNext();) {
-					ListIterator li = childrenOfChildCountsList.listIterator();
-					Long  childCmqCode = it.next();
-					while(li.hasNext()) {
-						Map<String, Object> map = (Map<String, Object>) li.next();
-						if(map.get("CMQ_CODE") != null) {
-							Long resultCmqCode = (Long)map.get("CMQ_CODE");
-							if(resultCmqCode.longValue() ==  childCmqCode.longValue()) {
-								it.remove();//remove it from parentCmqCodeList
-								Long count = (Long)map.get("COUNT");
-								if(count > 0) {
-									//add a dummy node for this child in parent
-									createNewDummyNode(childTreeNodes.get(childCmqCode));
-								}
-								break;
-							}//end of if(cmqCode.longValue() == parentCmqCode.longValue())
+			for (List<Long> subList : choppedLists) {
+				List<Map<String, Object>> childrenOfChildCountsList = null;
+				if(bCurrentList) {
+					childrenOfChildCountsList = this.cmqBaseCurrentService.findCmqChildCountForParentCmqCode(subList);
+				} else {
+					childrenOfChildCountsList = this.cmqBaseTargetService.findCmqChildCountForParentCmqCode(subList);
+				}
+				if((null != childrenOfChildCountsList) && (childrenOfChildCountsList.size() > 0)) {
+					//first find and fix child nodes stuff
+					for (Iterator<Long> it = childCmqCodeList.iterator(); it.hasNext();) {
+						ListIterator li = childrenOfChildCountsList.listIterator();
+						Long  childCmqCode = it.next();
+						while(li.hasNext()) {
+							Map<String, Object> map = (Map<String, Object>) li.next();
+							if(map.get("CMQ_CODE") != null) {
+								Long resultCmqCode = (Long)map.get("CMQ_CODE");
+								if(resultCmqCode.longValue() ==  childCmqCode.longValue()) {
+									it.remove();//remove it from parentCmqCodeList
+									Long count = (Long)map.get("COUNT");
+									if(count > 0) {
+										//add a dummy node for this child in parent
+										createNewDummyNode(childTreeNodes.get(childCmqCode));
+									}
+									break;
+								}//end of if(cmqCode.longValue() == parentCmqCode.longValue())
+							}
 						}
 					}
 				}
 			}
 			
 			//now find relations for those who don't have children
-			List<Map<String, Object>> relationsCountsList = null;
-			if(bCurrentList) {
-				relationsCountsList = this.cmqRelationCurrentService.findCountByCmqCodes(childCmqCodeList);
-			} else {
-				relationsCountsList = this.cmqRelationTargetService.findCountByCmqCodes(childCmqCodeList);
-			}
-				
-			if((null != relationsCountsList) && (relationsCountsList.size() > 0)) {
-				for(Map<String, Object> map: relationsCountsList) {
-					if(map.get("CMQ_CODE") != null) {
-						Long resultCmqCode = (Long)map.get("CMQ_CODE");
-						Long count = (Long)map.get("COUNT");
-						if(count > 0) {
-							//add a dummy node for this child in parent
-							createNewDummyNode(childTreeNodes.get(resultCmqCode));
+			for (List<Long> subList : choppedLists) {
+				List<Map<String, Object>> relationsCountsList = null;
+				if(bCurrentList) {
+					relationsCountsList = this.cmqRelationCurrentService.findCountByCmqCodes(subList);
+				} else {
+					relationsCountsList = this.cmqRelationTargetService.findCountByCmqCodes(subList);
+				}
+				if((null != relationsCountsList) && (relationsCountsList.size() > 0)) {
+					for(Map<String, Object> map: relationsCountsList) {
+						if(map.get("CMQ_CODE") != null) {
+							Long resultCmqCode = (Long)map.get("CMQ_CODE");
+							Long count = (Long)map.get("COUNT");
+							if(count > 0) {
+								//add a dummy node for this child in parent
+								createNewDummyNode(childTreeNodes.get(resultCmqCode));
+							}
 						}
 					}
 				}
-			}
+			}//end of for (List<Long> subList : choppedLists) {
 		}
 	}
 	
@@ -1119,19 +1148,71 @@ public class IARelationsTreeHelper {
         boolean bEventFromTargetTable = "target-table".equalsIgnoreCase(uiSourceOfEvent);
         
 		//add cmq relations now
+		Long relationCount = null;
+		if(bCurrentList) {
+			relationCount = this.cmqRelationCurrentService.findCountByCmqCode(cmqCode);
+		} else {
+			relationCount = this.cmqRelationTargetService.findCountByCmqCode(cmqCode);
+		}
+		
+		//split it to smaller lists
+		if(relationCount > DEFAULT_BATCH_SIZE) {
+			StopWatch cmqRelationsBatchedStopWatch = new StopWatch();
+			cmqRelationsBatchedStopWatch.start();
+			int startPosition = 0;
+			int pageNumber = 0;
+			List<Future<Boolean>> futuresList = new ArrayList<>();
+			ExecutorService executorService = Executors.newFixedThreadPool(4);
+			int i=0;
+			while((startPosition + DEFAULT_BATCH_SIZE) < relationCount) {
+				CmqRelationLoadWorker worker = new CmqRelationLoadWorker(++i, bCurrentList, bEventFromTargetTable
+																			, startPosition, cmqCode, expandedTreeNode
+																			, cmqType, uiSourceOfEvent, entityExpanded);
+				Future<Boolean> future = executorService.submit(worker);
+				futuresList.add(future);
+				startPosition = ++pageNumber * DEFAULT_BATCH_SIZE;
+			}
+			
+			for (Future<Boolean> future : futuresList) {
+				try {
+					if(!future.get()) {
+						LOG.info("A worker failed to finish successfully.");
+					}
+				} catch (InterruptedException | ExecutionException e) {
+					LOG.error(e.getMessage(), e);
+				}
+			}
+			executorService.shutdownNow();
+			cmqRelationsBatchedStopWatch.stop();
+			LOG.info("Time taken to fetch {} relations is: {} seconds approx", relationCount, cmqRelationsBatchedStopWatch.getTime(TimeUnit.SECONDS));
+		} else {
+			StopWatch cmqRelationsBatchStopWatch = new StopWatch();
+			cmqRelationsBatchStopWatch.start();
+			List<? extends IEntity> existingRelations = null;
+			if(bCurrentList) {
+				existingRelations = this.cmqRelationCurrentService.findByCmqCode(cmqCode);
+			} else {
+				existingRelations = this.cmqRelationTargetService.findByCmqCode(cmqCode);
+			}
+			LOG.info("Time taken to fetch {} relations from db is: {} millis", existingRelations.size()
+							, cmqRelationsBatchStopWatch.getTime(TimeUnit.MILLISECONDS));
+			this.processCmqRelations(existingRelations, bCurrentList, bEventFromTargetTable, cmqCode
+										, expandedTreeNode, cmqType, uiSourceOfEvent, entityExpanded);	
+			cmqRelationsBatchStopWatch.stop();
+			LOG.info("Total Time taken to fetch and process {} relations is: {} millis", existingRelations.size()
+									, cmqRelationsBatchStopWatch.getTime(TimeUnit.MILLISECONDS));
+		}
+		LOG.info("Finished laoding CMQ Relations in IA.");
+	}
+	
+	private void processCmqRelations(List<? extends IEntity> existingRelations, boolean bCurrentList, boolean bEventFromTargetTable
+											, Long cmqCode, TreeNode expandedTreeNode, String cmqType
+											, String uiSourceOfEvent, IEntity entityExpanded) {
 		Map<Long, IEntity> socCodesMap = new HashMap<>();
 		Map<Long, IEntity> hlgtCodesMap = new HashMap<>();
 		Map<Long, IEntity> hltCodesMap = new HashMap<>();
 		Map<Long, IEntity> ptCodesMap = new HashMap<>();
 		Map<Long, IEntity> lltCodesMap = new HashMap<>();
-		
-		List<? extends IEntity> existingRelations = null;
-		if(bCurrentList) {
-			existingRelations = this.cmqRelationCurrentService.findByCmqCode(cmqCode);
-		} else {
-			existingRelations = this.cmqRelationTargetService.findByCmqCode(cmqCode);
-		}
-		
 		if((null != existingRelations) && (existingRelations.size() > 0)) {
             if(bCurrentList) {
                 for (IEntity entity : existingRelations) {
@@ -1171,91 +1252,170 @@ public class IARelationsTreeHelper {
 			
 			//find socs now
 			if(socCodesMap.size() > 0) {
-				List<MeddraDictHierarchySearchDto> socDtos;
 				List<Long> socCodesList = new ArrayList<>(socCodesMap.keySet());
-				if(bCurrentList) {
-					socDtos = this.meddraDictCurrentService.findByCodes("SOC_", socCodesList);
-				} else {
-					socDtos = this.meddraDictTargetService.findByCodes("SOC_", socCodesList);
+				
+				//split it to smaller lists
+				int socCodesListSize = socCodesList.size();
+				List<List<Long>> choppedLists;
+				if(socCodesListSize > DEFAULT_INNER_BATCH_SIZE) {
+					//split it into smaller lists
+					choppedLists = ListUtils.partition(socCodesList, DEFAULT_INNER_BATCH_SIZE);
+				}else {
+					choppedLists = new ArrayList<>();
+					choppedLists.add(socCodesList);
 				}
-				this.populateCmqRelationTreeNodes(socDtos, expandedTreeNode, "SOC", "HLGT", cmqType, cmqCode, socCodesMap, uiSourceOfEvent, entityExpanded);
+				
+				//process the chopped lists now
+				for (List<Long> subList : choppedLists) {
+					List<MeddraDictHierarchySearchDto> socDtos;
+					if(bCurrentList) {
+						socDtos = this.meddraDictCurrentService.findByCodes("SOC_", subList);
+					} else {
+						socDtos = this.meddraDictTargetService.findByCodes("SOC_", subList);
+					}
+					this.populateCmqRelationTreeNodes(socDtos, expandedTreeNode, "SOC", "HLGT", cmqType
+														, cmqCode, socCodesMap, uiSourceOfEvent, entityExpanded);
+				}
 			}
 			
 			if(hlgtCodesMap.size() > 0) {
-				List<MeddraDictHierarchySearchDto> hlgtDtos;
 				List<Long> hlgtCodesList = new ArrayList<>(hlgtCodesMap.keySet());
-				if(bCurrentList) {
-					hlgtDtos = this.meddraDictCurrentService.findByCodes("HLGT_", hlgtCodesList);
-				} else {
-					hlgtDtos = this.meddraDictTargetService.findByCodes("HLGT_", hlgtCodesList);
+				
+				//split it to smaller lists
+				int hlgtCodesListSize = hlgtCodesList.size();
+				List<List<Long>> choppedLists;
+				if(hlgtCodesListSize > DEFAULT_INNER_BATCH_SIZE) {
+					//split it into smaller lists
+					choppedLists = ListUtils.partition(hlgtCodesList, DEFAULT_INNER_BATCH_SIZE);
+				}else {
+					choppedLists = new ArrayList<>();
+					choppedLists.add(hlgtCodesList);
 				}
-				this.populateCmqRelationTreeNodes(hlgtDtos, expandedTreeNode, "HLGT", "HLT", cmqType, cmqCode, hlgtCodesMap, uiSourceOfEvent, entityExpanded);
+				
+				//process the chopped lists now
+				for (List<Long> subList : choppedLists) {
+					List<MeddraDictHierarchySearchDto> hlgtDtos;
+					if(bCurrentList) {
+						hlgtDtos = this.meddraDictCurrentService.findByCodes("HLGT_", subList);
+					} else {
+						hlgtDtos = this.meddraDictTargetService.findByCodes("HLGT_", subList);
+					}
+					this.populateCmqRelationTreeNodes(hlgtDtos, expandedTreeNode, "HLGT", "HLT", cmqType
+															, cmqCode, hlgtCodesMap, uiSourceOfEvent, entityExpanded);
+				}
 			}
 			
 			if(hltCodesMap.size() > 0) {
-				List<MeddraDictHierarchySearchDto> hltDtos;
 				List<Long> hltCodesList = new ArrayList<>(hltCodesMap.keySet());
-				if(bCurrentList) {
-					hltDtos = this.meddraDictCurrentService.findByCodes("HLT_", hltCodesList);
-				} else {
-					hltDtos = this.meddraDictTargetService.findByCodes("HLT_", hltCodesList);
+				
+				//split it to smaller lists
+				int hltCodesListSize = hltCodesList.size();
+				List<List<Long>> choppedLists;
+				if(hltCodesListSize > DEFAULT_INNER_BATCH_SIZE) {
+					//split it into smaller lists
+					choppedLists = ListUtils.partition(hltCodesList, DEFAULT_INNER_BATCH_SIZE);
+				}else {
+					choppedLists = new ArrayList<>();
+					choppedLists.add(hltCodesList);
 				}
-				this.populateCmqRelationTreeNodes(hltDtos, expandedTreeNode, "HLT", "PT", cmqType, cmqCode, hltCodesMap, uiSourceOfEvent, entityExpanded);
+				
+				//process the chopped lists now
+				for (List<Long> subList : choppedLists) {
+					List<MeddraDictHierarchySearchDto> hltDtos;
+					if(bCurrentList) {
+						hltDtos = this.meddraDictCurrentService.findByCodes("HLT_", subList);
+					} else {
+						hltDtos = this.meddraDictTargetService.findByCodes("HLT_", subList);
+					}
+					this.populateCmqRelationTreeNodes(hltDtos, expandedTreeNode, "HLT", "PT", cmqType
+														, cmqCode, hltCodesMap, uiSourceOfEvent, entityExpanded);
+				}
 			}
 			
 			if(ptCodesMap.size() > 0) {
-				List<MeddraDictHierarchySearchDto> ptDtos;
 				List<Long> ptCodesList = new ArrayList<>(ptCodesMap.keySet());
-				if(bCurrentList) {
-					ptDtos = this.meddraDictCurrentService.findByCodes("PT_", ptCodesList);
-				} else {
-					ptDtos = this.meddraDictTargetService.findByCodes("PT_", ptCodesList);
+				
+				//split it to smaller lists
+				int ptCodesListSize = ptCodesList.size();
+				List<List<Long>> choppedLists;
+				if(ptCodesListSize > DEFAULT_INNER_BATCH_SIZE) {
+					//split it into smaller lists
+					choppedLists = ListUtils.partition(ptCodesList, DEFAULT_INNER_BATCH_SIZE);
+				}else {
+					choppedLists = new ArrayList<>();
+					choppedLists.add(ptCodesList);
 				}
-				this.populateCmqRelationTreeNodes(ptDtos, expandedTreeNode, "PT", "LLT", cmqType, cmqCode, ptCodesMap, uiSourceOfEvent, entityExpanded);
+				
+				//process the chopped lists now
+				for (List<Long> subList : choppedLists) {
+					List<MeddraDictHierarchySearchDto> ptDtos;
+					if(bCurrentList) {
+						ptDtos = this.meddraDictCurrentService.findByCodes("PT_", subList);
+					} else {
+						ptDtos = this.meddraDictTargetService.findByCodes("PT_", subList);
+					}
+					this.populateCmqRelationTreeNodes(ptDtos, expandedTreeNode, "PT", "LLT", cmqType
+														, cmqCode, ptCodesMap, uiSourceOfEvent, entityExpanded);
+				}
 			}
 			
 			if(lltCodesMap.size() > 0) {
 				boolean isRootListNode = isRootListNode(expandedTreeNode);
 				List<MeddraDictHierarchySearchDto> lltDtos;
 				List<Long> lltCodesList = new ArrayList<>(lltCodesMap.keySet());
-				if(bCurrentList) {
-					lltDtos = this.meddraDictCurrentService.findByCodes("LLT_", lltCodesList);
-				} else {
-					lltDtos = this.meddraDictTargetService.findByCodes("LLT_", lltCodesList);
+				
+				//split it to smaller lists
+				int lltCodesListSize = lltCodesList.size();
+				List<List<Long>> choppedLists;
+				if(lltCodesListSize > DEFAULT_INNER_BATCH_SIZE) {
+					//split it into smaller lists
+					choppedLists = ListUtils.partition(lltCodesList, DEFAULT_INNER_BATCH_SIZE);
+				}else {
+					choppedLists = new ArrayList<>();
+					choppedLists.add(lltCodesList);
 				}
-                
-                Map<Long, TreeNode> lltNodes = new HashMap<>();
-                
-				for (MeddraDictHierarchySearchDto m : lltDtos) {
-					HierarchyNode node = this.createMeddraNode(m, "LLT");
-                    node.setRelationEntity(lltCodesMap.get(Long.parseLong(m.getCode())));
-                    
-                    if(!bCurrentList && !isRootListNode && bEventFromTargetTable) {
-                        node.markNotEditableInRelationstable();
-                    }
-					
-					TreeNode treeNode = new DefaultTreeNode(node, expandedTreeNode);
-                    lltNodes.put(Long.valueOf(m.getCode()), treeNode);
+				
+				//process the chopped lists now
+				for (List<Long> subList : choppedLists) {
+					if(bCurrentList) {
+						lltDtos = this.meddraDictCurrentService.findByCodes("LLT_", subList);
+					} else {
+						lltDtos = this.meddraDictTargetService.findByCodes("LLT_", subList);
+					}
+	                
+	                Map<Long, TreeNode> lltNodes = new HashMap<>();
+	                
+					for (MeddraDictHierarchySearchDto m : lltDtos) {
+						HierarchyNode node = this.createMeddraNode(m, "LLT");
+	                    node.setRelationEntity(lltCodesMap.get(Long.parseLong(m.getCode())));
+	                    
+	                    if(!bCurrentList && !isRootListNode && bEventFromTargetTable) {
+	                        node.markNotEditableInRelationstable();
+	                    }
+	                    synchronized (expandedTreeNode) {
+	                    	TreeNode treeNode = new DefaultTreeNode(node, expandedTreeNode);
+	                    	lltNodes.put(Long.valueOf(m.getCode()), treeNode);
+						}
+					}
+	                
+	                if (bCurrentList) {
+	                    setCurrentMeddraColors(lltDtos, lltNodes, lltCodesMap);
+	                    for(TreeNode n: lltNodes.values()) {
+	                        HierarchyNode hn = (HierarchyNode)n.getData();
+	                        setCMQCurrentNodeStyle(hn, (CmqRelation190)hn.getRelationEntity());
+	                    }
+	                } else {
+	                    setTargetMeddraColors(lltDtos, lltNodes, lltCodesMap);
+	                    for(TreeNode n: lltNodes.values()) {
+	                        HierarchyNode hn = (HierarchyNode)n.getData();
+	                        setCMQTargetNodeStyle(hn, (CmqRelationTarget)hn.getRelationEntity());
+	                    }
+	                }
 				}
-                
-                if (bCurrentList) {
-                    setCurrentMeddraColors(lltDtos, lltNodes, lltCodesMap);
-                    for(TreeNode n: lltNodes.values()) {
-                        HierarchyNode hn = (HierarchyNode)n.getData();
-                        setCMQCurrentNodeStyle(hn, (CmqRelation190)hn.getRelationEntity());
-                    }
-                } else {
-                    setTargetMeddraColors(lltDtos, lltNodes, lltCodesMap);
-                    for(TreeNode n: lltNodes.values()) {
-                        HierarchyNode hn = (HierarchyNode)n.getData();
-                        setCMQTargetNodeStyle(hn, (CmqRelationTarget)hn.getRelationEntity());
-                    }
-                }
 			}
 		}
 	}
-
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	
 	public void populateSmqBaseChildren(Long smqCode, TreeNode expandedTreeNode, String smqType, String uiSourceOfEvent) {
 		boolean isRootListNode = isRootListNode(expandedTreeNode);
         boolean bCurrentList = "current".equalsIgnoreCase(smqType);
@@ -1344,9 +1504,9 @@ public class IARelationsTreeHelper {
 			//find smqrelations of all child smqs
 			int smqChildCodesSize = smqChildCodeList.size();
 			List<List<Long>> choppedLists;
-			if(smqChildCodesSize > 400) {
+			if(smqChildCodesSize > DEFAULT_INNER_BATCH_SIZE) {
 				//split it into smaller lists
-				choppedLists = ListUtils.partition(smqChildCodeList, 200);
+				choppedLists = ListUtils.partition(smqChildCodeList, DEFAULT_INNER_BATCH_SIZE);
 			}else {
 				choppedLists = new ArrayList<>();
 				choppedLists.add(smqChildCodeList);
@@ -1897,8 +2057,59 @@ public class IARelationsTreeHelper {
     }
     
     private TreeNode createNewDummyNode(TreeNode parentNode) {
-        HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
-        dummyNode.setDummyNode(true);
-        return new DefaultTreeNode(dummyNode, parentNode);
+    	synchronized (parentNode) {
+    		HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
+    		dummyNode.setDummyNode(true);
+    		return new DefaultTreeNode(dummyNode, parentNode);
+    	}
+    }
+    
+    private class CmqRelationLoadWorker implements Callable<Boolean> {
+		
+		private boolean bCurrentList;
+		private boolean bEventFromTargetTable;
+		private int startPosition;
+		private Long cmqCode;
+		private TreeNode expandedTreeNode;
+		private String cmqType;
+		private String uiSourceOfEvent;
+		private IEntity entityExpanded;
+		private String workerName;
+		
+		public CmqRelationLoadWorker(int workerNumber, boolean bCurrentList, boolean bEventFromTargetTable, int startPosition
+										, Long cmqCode, TreeNode expandedTreeNode, String cmqType, String uiSourceOfEvent
+										, IEntity entityExpanded) {
+			this.bCurrentList = bCurrentList;
+			this.bEventFromTargetTable = bEventFromTargetTable;
+			this.startPosition = startPosition;
+			this.cmqCode = cmqCode;
+			this.expandedTreeNode = expandedTreeNode;
+			this.cmqType = cmqType;
+			this.uiSourceOfEvent = uiSourceOfEvent;
+			this.entityExpanded = entityExpanded;
+			this.workerName = "CmqRelationLoadWorker-" + workerNumber;
+		}
+		
+		@Override
+		public Boolean call() throws Exception {
+			LOG.info("In {} loading batch of {} relations staring from row {}", workerName, DEFAULT_BATCH_SIZE, startPosition);
+			StopWatch cmqRelationsBatchStopWatch = new StopWatch();
+			cmqRelationsBatchStopWatch.start();
+			List<? extends IEntity> existingRelations = null;
+			if(bCurrentList) {
+				existingRelations = cmqRelationCurrentService.findByCmqCode(cmqCode, startPosition, DEFAULT_BATCH_SIZE);
+			} else {
+				existingRelations = cmqRelationTargetService.findByCmqCode(cmqCode, startPosition, DEFAULT_BATCH_SIZE);
+			}
+			LOG.info("In {} Time taken to fetch {} relations from db is: {} millis", workerName, existingRelations.size()
+							, cmqRelationsBatchStopWatch.getTime(TimeUnit.MILLISECONDS));
+			processCmqRelations(existingRelations, bCurrentList, bEventFromTargetTable, cmqCode
+										, expandedTreeNode, cmqType, uiSourceOfEvent, entityExpanded);	
+			cmqRelationsBatchStopWatch.stop();
+			LOG.info("In {} total Time taken to fetch and process {} relations is: {} sec approx.", workerName, existingRelations.size()
+									, cmqRelationsBatchStopWatch.getTime(TimeUnit.SECONDS));
+			return true;
+		}
+    	
     }
 }
