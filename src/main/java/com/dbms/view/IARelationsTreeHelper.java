@@ -39,7 +39,6 @@ import java.util.LinkedList;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
-import org.apache.commons.collections4.Predicate;
 
 import org.primefaces.event.NodeExpandEvent;
 
@@ -441,8 +440,6 @@ public class IARelationsTreeHelper {
 				node.setRowStyleClass("blue-colored");
             }
 		}
-//		else
-//			node.setRowStyleClass("none");
 	}
     
 	public void setCMQCurrentNodeStyle(HierarchyNode node,	CmqRelation190 cmqRelation) {
@@ -467,10 +464,6 @@ public class IARelationsTreeHelper {
 //			if ("SWC".equals(cmqRelation.getRelationImpactType()))
 //				node.setRowStyleClass("pink-colored");
 		}
-		
-//		else
-//			node.setRowStyleClass("none");
-		
 	}
     
     public void setCurrentMeddraColor(List<MeddraDictHierarchySearchDto> meddras, Map<Long, TreeNode> nodes, Map<Long, IEntity> cmqRelationsMap) {
@@ -991,18 +984,18 @@ public class IARelationsTreeHelper {
             setCurrentMeddraColor(dtos, addedNodes, cmqRelationsMap);
             countsOfChildren = this.meddraDictCurrentService.findChldrenCountByParentCodes(childNodeType + "_"
                                             , nodeType + "_", dtoCodes);
+            for (TreeNode n : addedNodes.values()) {
+                HierarchyNode hn = (HierarchyNode)n.getData();
+                setCMQCurrentNodeStyle(hn, (CmqRelation190)hn.getRelationEntity());
+            }
         } else {
             setTargetMeddraColor(dtos, addedNodes, cmqRelationsMap);
             countsOfChildren = this.meddraDictTargetService.findChldrenCountByParentCodes(childNodeType + "_"
                                             , nodeType + "_", dtoCodes);
-        }
-        
-        for (TreeNode n : addedNodes.values()) {
-            HierarchyNode hn = (HierarchyNode)n.getData();
-            if(hn.getRelationEntity() instanceof CmqRelation190)
-                setCMQCurrentNodeStyle(hn, (CmqRelation190)hn.getRelationEntity());
-            else if(hn.getRelationEntity() instanceof CmqRelationTarget)
+            for (TreeNode n : addedNodes.values()) {
+                HierarchyNode hn = (HierarchyNode)n.getData();
                 setCMQTargetNodeStyle(hn, (CmqRelationTarget)hn.getRelationEntity());
+            }
         }
 
         if((null != countsOfChildren) && (countsOfChildren.size() > 0)) {

@@ -661,7 +661,8 @@ public class MeddraDictTargetService extends CqtPersistenceService<MeddraDictTar
 		String codeAlias = searchColumnTypePrefix.replace("_", "").toLowerCase().concat("Code");
         String pacodeAlias = parentCodeColumnPrefix.replace("_", "").toLowerCase().concat("Code");
 
-		String queryString = "select MEDDRA_DICT_ID as meddraDictId, " + termColumnName + " as term, " + codeColumnName + " as " + codeAlias + "," + parentCodeColumnName + " as " + pacodeAlias
+		String queryString = CmqUtils.convertArrayToTableWith(parentCodes, "tempPaCodes", "code")
+                + "select MEDDRA_DICT_ID as meddraDictId, " + termColumnName + " as term, " + codeColumnName + " as " + codeAlias + "," + parentCodeColumnName + " as " + pacodeAlias
 				+ ", PRIMARY_PATH_FLAG as primaryPathFlag, MOVED_LLT as movedLlt, NEW_PT as newPt, PROMOTED_PT as promotedPt, NEW_LLT as newLlt, DEMOTED_LLT as demotedLlt, "
 				+ " NEW_SUCCESSOR_PT as newSuccessorPt, PROMOTED_LLT as promotedLlt, PRIMARY_SOC_CHANGE as primarySocChange, DEMOTED_PT as demotedPt, LLT_CURRENCY_CHANGE as lltCurrencyChange, PT_NAME_CHANGED as ptNameChanged,"
 				+ " LLT_NAME_CHANGED as lltNameChanged, NEW_HLT as newHlt, NEW_HLGT as newHlgt, MOVED_PT as movedPt, MOVED_HLT as movedHlt, MOVED_HLGT as movedHlgt, "

@@ -964,10 +964,10 @@ public class CreateController implements Serializable {
         
         getActiveWizard().setStep(WIZARD_STEP_DETAILS);
         
-        // if CMQ_BASE_TARGET.Status != 'PENDING IA'
-        if(!isTargetStatusPendingIA(selectedData)) {
+        // if CMQ_BASE_TARGET.Status != 'PENDING IA' on update wizard
+        if(updateWizard!=null && !isTargetStatusPendingIA(selectedData)) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "The List moved to higher IA state can not be updated", ""));            
-        } else if(isImpactedByMeddraVersioning(selectedData)) {
+        } else if(updateWizard!=null && isImpactedByMeddraVersioning(selectedData)) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "The List is impacted by MedDRA Versioning", ""));
         }
 
