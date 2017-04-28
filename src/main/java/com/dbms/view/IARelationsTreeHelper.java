@@ -1180,14 +1180,14 @@ public class IARelationsTreeHelper {
 				} else {
 					existingRelations = cmqRelationTargetService.findByCmqCode(cmqCode, startPosition, DEFAULT_BATCH_SIZE);
 				}
-				LOG.info("Time taken to fetch {} relations from db is: {} sec approx", existingRelations.size()
-								, cmqRelationsBatchStopWatch.getTime(TimeUnit.SECONDS));
+				LOG.info("Time taken to fetch {} relations from db is: {} millisec approx", existingRelations.size()
+								, cmqRelationsBatchStopWatch.getTime(TimeUnit.MILLISECONDS));
 				processCmqRelations(existingRelations, bCurrentList, bEventFromTargetTable, cmqCode
 											, expandedTreeNode, cmqType, uiSourceOfEvent, entityExpanded);	
 				startPosition = ++pageNumber * DEFAULT_BATCH_SIZE;
 				cmqRelationsBatchStopWatch.stop();
-				LOG.info("Total Time taken to fetch and process {} relations is: {} sec approx.", existingRelations.size()
-										, cmqRelationsBatchStopWatch.getTime(TimeUnit.SECONDS));
+				LOG.info("Total Time taken to fetch and process {} relations is: {} millisec approx.", existingRelations.size()
+										, cmqRelationsBatchStopWatch.getTime(TimeUnit.MILLISECONDS));
 			}
 			
 			/*for (Future<Boolean> future : futuresList) {
@@ -1211,13 +1211,13 @@ public class IARelationsTreeHelper {
 			} else {
 				existingRelations = this.cmqRelationTargetService.findByCmqCode(cmqCode);
 			}
-			LOG.info("Time taken to fetch {} relations from db is: {} seconds approx", existingRelations.size()
-							, cmqRelationsBatchStopWatch.getTime(TimeUnit.SECONDS));
+			LOG.info("Time taken to fetch {} relations from db is: {} millisec approx", existingRelations.size()
+							, cmqRelationsBatchStopWatch.getTime(TimeUnit.MILLISECONDS));
 			this.processCmqRelations(existingRelations, bCurrentList, bEventFromTargetTable, cmqCode
 										, expandedTreeNode, cmqType, uiSourceOfEvent, entityExpanded);	
 			cmqRelationsBatchStopWatch.stop();
-			LOG.info("Total Time taken to fetch and process {} relations is: {} seconds approx", existingRelations.size()
-									, cmqRelationsBatchStopWatch.getTime(TimeUnit.SECONDS));
+			LOG.info("Total Time taken to fetch and process {} relations is: {} millisec approx", existingRelations.size()
+									, cmqRelationsBatchStopWatch.getTime(TimeUnit.MILLISECONDS));
 		}
 		LOG.info("Finished laoding CMQ Relations in IA.");
 	}
