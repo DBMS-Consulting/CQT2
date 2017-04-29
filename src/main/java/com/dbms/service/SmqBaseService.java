@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import com.dbms.entity.cqt.SmqBase190;
 import com.dbms.entity.cqt.SmqRelation190;
 import com.dbms.service.base.CqtPersistenceService;
+import com.dbms.util.SmqAndPtCodeHolder;
 
 /**
  * @author Jay G.(jayshanchn@hotmail.com)
@@ -192,6 +193,41 @@ public class SmqBaseService extends CqtPersistenceService<SmqBase190> implements
 		return retVal;
 	}
 	
+	@Override
+	@SuppressWarnings("unchecked")
+	public List<SmqRelation190> findSmqRelationBySmqAndPtCode(List<SmqAndPtCodeHolder> smqAndPtCodeHolders) {
+		List<SmqRelation190> retVal = null;
+		StringBuilder sb = new StringBuilder();
+		sb.append("from SmqRelation190 c where ");
+		int i = 0;
+		for (SmqAndPtCodeHolder smqAndPtCodeHolder : smqAndPtCodeHolders) {
+			if(i > 0) {
+				sb.append(" or ");
+			}
+			sb.append(" (c.smqCode = ").append(smqAndPtCodeHolder.getSmqCode())
+				.append(" and c.ptCode = ").append(smqAndPtCodeHolder.getPtCode())
+				.append(") ");
+			i++;
+		}
+		
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		try {
+			Query query = entityManager.createQuery(sb.toString());
+			query.setHint("org.hibernate.cacheable", true);
+			retVal = query.getResultList();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg
+					.append("An error occurred while findSmqRelationBySmqAndPtCode.")
+					.append(" Query used was ->")
+					.append(sb.toString());
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
+	
 	/* (non-Javadoc)
 	 * @see com.dbms.service.ISmqBaseService#findSmqRelationsForSmqCodes(java.util.List)
 	 */
@@ -326,6 +362,31 @@ public class SmqBaseService extends CqtPersistenceService<SmqBase190> implements
 			msg
 					.append("An error occurred while findSmqRelationsForSmqCode ")
 					.append(smqCode)
+					.append(" Query used was ->")
+					.append(queryString);
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<SmqBase190> findByCode(List<Long> smqCodes) {
+		List<SmqBase190> retVal = null;
+		String queryString = "from SmqBase190 c where c.smqCode in (:smqCodes) ";
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		try {
+			Query query = entityManager.createQuery("from SmqBase190 c where c.smqCode = :smqCode ");
+			query.setParameter("smqCodes", smqCodes);
+			query.setHint("org.hibernate.cacheable", true);
+			retVal = query.getResultList();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg
+					.append("An error occurred while findByCode ")
+					.append(smqCodes)
 					.append(" Query used was ->")
 					.append(queryString);
 			LOG.error(msg.toString(), e);

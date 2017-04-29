@@ -20,7 +20,7 @@ public class HierarchyNode implements Serializable, Comparable<HierarchyNode> {
 	private String code;
 
 	private IEntity entity;
-    private IEntity relationEntity;
+	private IEntity relationEntity;
 
 	private boolean isDataFetchCompleted;
 
@@ -45,6 +45,14 @@ public class HierarchyNode implements Serializable, Comparable<HierarchyNode> {
 	// for green colored primary rows
 	private String rowStyleClass;
 
+	private boolean paginationNode;
+
+	private int pageNumber;
+
+	private int currentShowingCount;
+
+	private int totalRecordsCount;
+	
 	public HierarchyNode() {
 	}
 
@@ -105,8 +113,8 @@ public class HierarchyNode implements Serializable, Comparable<HierarchyNode> {
 	public void setEntity(IEntity entity) {
 		this.entity = entity;
 	}
-    
-    public IEntity getRelationEntity() {
+
+	public IEntity getRelationEntity() {
 		return relationEntity;
 	}
 
@@ -179,7 +187,7 @@ public class HierarchyNode implements Serializable, Comparable<HierarchyNode> {
 		this.hideScope = true;
 		this.hideWeight = true;
 	}
-	
+
 	public void markEditableInRelationstable() {
 		this.hideCategory = false;
 		this.hideDelete = false;
@@ -263,26 +271,58 @@ public class HierarchyNode implements Serializable, Comparable<HierarchyNode> {
 	public void setRowStyleClass(String rowStyleClass) {
 		this.rowStyleClass = rowStyleClass;
 	}
-	
+
 	public boolean isAlgorithmN() {
-		if(this.entity != null) {
-			if(this.entity instanceof CmqBase190) {
-				return "N".equalsIgnoreCase(((CmqBase190)this.entity).getCmqAlgorithm());
-			} else if(this.entity instanceof CmqBaseTarget) {
-				return "N".equalsIgnoreCase(((CmqBaseTarget)this.entity).getCmqAlgorithm());
+		if (this.entity != null) {
+			if (this.entity instanceof CmqBase190) {
+				return "N".equalsIgnoreCase(((CmqBase190) this.entity).getCmqAlgorithm());
+			} else if (this.entity instanceof CmqBaseTarget) {
+				return "N".equalsIgnoreCase(((CmqBaseTarget) this.entity).getCmqAlgorithm());
 			}
 		}
 		return true;
 	}
-	
+
 	public boolean isInactiveList() {
-		if(this.entity != null) {
-			if(this.entity instanceof CmqBase190) {
-				return CmqBase190.CMQ_STATUS_VALUE_INACTIVE.equals(((CmqBase190)this.entity).getCmqStatus());
-			} else if(this.entity instanceof CmqBaseTarget) {
-				return CmqBase190.CMQ_STATUS_VALUE_INACTIVE.equals(((CmqBaseTarget)this.entity).getCmqStatus());
+		if (this.entity != null) {
+			if (this.entity instanceof CmqBase190) {
+				return CmqBase190.CMQ_STATUS_VALUE_INACTIVE.equals(((CmqBase190) this.entity).getCmqStatus());
+			} else if (this.entity instanceof CmqBaseTarget) {
+				return CmqBase190.CMQ_STATUS_VALUE_INACTIVE.equals(((CmqBaseTarget) this.entity).getCmqStatus());
 			}
 		}
 		return false;
+	}
+
+	public boolean isPaginationNode() {
+		return paginationNode;
+	}
+
+	public void setPaginationNode(boolean paginationNode) {
+		this.paginationNode = paginationNode;
+	}
+
+	public int getCurrentShowingCount() {
+		return currentShowingCount;
+	}
+
+	public void setCurrentShowingCount(int currentShowingCount) {
+		this.currentShowingCount = currentShowingCount;
+	}
+
+	public int getPageNumber() {
+		return pageNumber;
+	}
+
+	public void setPageNumber(int pageNumber) {
+		this.pageNumber = pageNumber;
+	}
+
+	public int getTotalRecordsCount() {
+		return totalRecordsCount;
+	}
+
+	public void setTotalRecordsCount(int totalRecordsCount) {
+		this.totalRecordsCount = totalRecordsCount;
 	}
 }
