@@ -53,10 +53,12 @@ import com.dbms.entity.cqt.dtos.MeddraDictHierarchySearchDto;
 import com.dbms.entity.cqt.dtos.MeddraDictReverseHierarchySearchDto;
 import com.dbms.entity.cqt.dtos.ReportLineDataDto;
 import com.dbms.service.base.CqtPersistenceService;
+import com.dbms.util.CmqUtils;
 import com.dbms.util.CqtConstants;
 import com.dbms.util.exceptions.CqtServiceException;
 import com.dbms.view.ListDetailsFormVM;
 import com.dbms.view.ListNotesFormVM;
+import org.apache.commons.collections4.CollectionUtils;
 
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -342,20 +344,27 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<Map<String, Object>> findCmqChildCountForParentCmqCode(
-			List<Long> cmqCodes) {
+    @Override
+	public List<Map<String, Object>> findCmqChildCountForParentCmqCodes(List<Long> cmqCodes) {
 		List<Map<String, Object>> retVal = null;
-		StringBuilder sb = new StringBuilder();
-		sb.append("select CMQ_CODE, count(*) as COUNT from CMQ_BASE_CURRENT where CMQ_PARENT_CODE in (:cmqCodes) group by CMQ_CODE");
+        
+        if(CollectionUtils.isEmpty(cmqCodes))
+            return null;
+        
+		String queryString = CmqUtils.convertArrayToTableWith(cmqCodes, "tempCmqCodes", "code")
+                + " select CMQ_CODE, count(*) as COUNT"
+                + " from CMQ_BASE_CURRENT cmqTbl"
+                + " inner join tempCmqCodes on tempCmqCodes.code=cmqTbl.CMQ_PARENT_CODE"
+                + " group by CMQ_CODE";
 
 		EntityManager entityManager = this.cqtEntityManagerFactory
 				.getEntityManager();
 		Session session = entityManager.unwrap(Session.class);
 		try {
-			SQLQuery query = session.createSQLQuery(sb.toString());
+			SQLQuery query = session.createSQLQuery(queryString);
 			query.addScalar("CMQ_CODE", StandardBasicTypes.LONG);
 			query.addScalar("COUNT", StandardBasicTypes.LONG);
-			query.setParameterList("cmqCodes", cmqCodes);
+            
 			query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
 			query.setCacheable(true);
 			retVal = query.list();
@@ -364,7 +373,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 			msg.append(
 					"An error occurred while findCmqChildCountForParentCmqCode ")
 					.append(cmqCodes).append(" Query used was ->")
-					.append(sb.toString());
+					.append(queryString);
 			LOG.error(msg.toString(), e);
 		} finally {
 			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
@@ -574,7 +583,6 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		StringBuilder queryStrB = new StringBuilder(
 				"from CmqBase190 c where c.cmqStatus=:cmqStatus and lower(c.cmqState)=lower(:cmqState)");
 
-		// TODO Auto-generated method stub
 		if (filterPublishedBetweenFrom != null)
 			queryStrB.append(" and activationDate >= :pubBtwFrom");
 		if (filterPublishedBetweenTo != null)

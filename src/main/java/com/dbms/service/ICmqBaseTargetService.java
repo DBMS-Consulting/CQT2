@@ -23,7 +23,7 @@ public interface ICmqBaseTargetService  extends ICqtPersistenceService<CmqBaseTa
 
 	CmqBaseTarget findByCode(Long cmqCode);
 
-	List<Map<String, Object>> findCmqChildCountForParentCmqCode(List<Long> cmqCodes);
+	List<Map<String, Object>> findCmqChildCountForParentCmqCodes(List<Long> cmqCodes);
 
 	Long findCmqChildCountForParentCmqCode(Long cmqCode);
 

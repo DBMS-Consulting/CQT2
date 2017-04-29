@@ -1154,7 +1154,7 @@ public class ImpactSearchController implements Serializable {
 					node.setRowStyleClass("green-colored");
 					TreeNode treeNode = new DefaultTreeNode(node, parentTreeNode);
 				
-					Long countOfChildren = this.meddraDictTargetService.findChldrenCountByParentCode("LLT_", "PT_", dtoCode);
+					Long countOfChildren = this.meddraDictTargetService.findChildrenCountByParentCode("LLT_", "PT_", dtoCode);
 					if((null != countOfChildren) && (countOfChildren > 0)) {
 						// add a dummmy node to show expand arrow
 						HierarchyNode dummyNode = new HierarchyNode(null, null,

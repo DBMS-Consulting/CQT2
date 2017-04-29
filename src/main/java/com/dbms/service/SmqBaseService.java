@@ -19,7 +19,9 @@ import org.slf4j.LoggerFactory;
 import com.dbms.entity.cqt.SmqBase190;
 import com.dbms.entity.cqt.SmqRelation190;
 import com.dbms.service.base.CqtPersistenceService;
+import com.dbms.util.CmqUtils;
 import com.dbms.util.SmqAndPtCodeHolder;
+import org.apache.commons.collections4.CollectionUtils;
 
 /**
  * @author Jay G.(jayshanchn@hotmail.com)
@@ -108,17 +110,24 @@ public class SmqBaseService extends CqtPersistenceService<SmqBase190> implements
 	@SuppressWarnings("unchecked")
 	public List<Map<String, Object>> findSmqRelationsCountForSmqCodes(List<Long> smqCodes) {
 		List<Map<String, Object>> retVal = null;
-		StringBuilder sb = new StringBuilder();
-		sb.append("select count(*) as COUNT, SMQ_CODE from SMQ_RELATIONS_CURRENT where SMQ_CODE in (:smqCodes) group by SMQ_CODE");
+        
+        if(CollectionUtils.isEmpty(smqCodes))
+            return null;
+		
+		String queryString = CmqUtils.convertArrayToTableWith(smqCodes, "tempSmqCodes", "code")
+                + " select count(*) as COUNT, SMQ_CODE"
+                + " from SMQ_RELATIONS_CURRENT smqTbl"
+                + " inner join tempSmqCodes on tempSmqCodes.code=smqTbl.SMQ_CODE"
+                + " group by SMQ_CODE";
 		
 		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
 		Session session = entityManager.unwrap(Session.class);
 		try {
-			SQLQuery query = session.createSQLQuery(sb.toString());
+			SQLQuery query = session.createSQLQuery(queryString);
 			query.addScalar("SMQ_CODE", StandardBasicTypes.LONG);
 			query.addScalar("COUNT", StandardBasicTypes.LONG);
-			query.setParameterList("smqCodes", smqCodes);
-			query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+
+            query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
 			query.setCacheable(true);
 			retVal = query.list();
 		} catch (Exception e) {
@@ -127,7 +136,7 @@ public class SmqBaseService extends CqtPersistenceService<SmqBase190> implements
 					.append("An error occurred while findSmqRelationsCountForSmqCodes ")
 					.append(smqCodes)
 					.append(" Query used was ->")
-					.append(sb.toString());
+					.append(queryString);
 			LOG.error(msg.toString(), e);
 		} finally {
 			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
@@ -343,6 +352,43 @@ public class SmqBaseService extends CqtPersistenceService<SmqBase190> implements
 		}
 		return retVal;
 	}
+    
+    @Override
+	public List<Map<String, Object>> findChildSmqCountByParentSmqCodes(List<Long> smqCodes) {
+		List<Map<String, Object>> retVal = null;
+		
+        if(CollectionUtils.isEmpty(smqCodes))
+            return null;
+        
+        String queryString = CmqUtils.convertArrayToTableWith(smqCodes, "tempSmqCodes", "code")
+                + " select count(*) as COUNT, SMQ_PARENT_CODE"
+                + " from SMQ_BASE_CURRENT smqTbl"
+                + " inner join tempSmqCodes on tempSmqCodes.code=smqTbl.SMQ_PARENT_CODE"
+                + " group by SMQ_PARENT_CODE";
+        
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+        Session session = entityManager.unwrap(Session.class);
+		try {
+            SQLQuery query = session.createSQLQuery(queryString);
+			query.addScalar("SMQ_PARENT_CODE", StandardBasicTypes.LONG);
+			query.addScalar("COUNT", StandardBasicTypes.LONG);
+            
+            query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+			query.setCacheable(true);
+			retVal = query.list();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg
+					.append("An error occurred while findChildSmqCountByParentSmqCode ")
+					.append(smqCodes)
+					.append(" Query used was ->")
+					.append(queryString);
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
 	
 	/* (non-Javadoc)
 	 * @see com.dbms.service.ISmqBaseService#findByCode(java.lang.Long)
@@ -373,7 +419,7 @@ public class SmqBaseService extends CqtPersistenceService<SmqBase190> implements
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<SmqBase190> findByCode(List<Long> smqCodes) {
+	public List<SmqBase190> findByCodes(List<Long> smqCodes) {
 		List<SmqBase190> retVal = null;
 		String queryString = "from SmqBase190 c where c.smqCode in (:smqCodes) ";
 		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();

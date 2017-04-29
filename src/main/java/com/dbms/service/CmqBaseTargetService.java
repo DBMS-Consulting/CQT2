@@ -54,6 +54,8 @@ import com.dbms.entity.cqt.SmqRelationTarget;
 import com.dbms.entity.cqt.dtos.MeddraDictHierarchySearchDto;
 import com.dbms.entity.cqt.dtos.ReportLineDataDto;
 import com.dbms.service.base.CqtPersistenceService;
+import com.dbms.util.CmqUtils;
+import org.apache.commons.collections4.CollectionUtils;
 
 /**
  * @author Jay G.(jayshanchn@hotmail.com)
@@ -253,20 +255,26 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Map<String, Object>> findCmqChildCountForParentCmqCode(
-			List<Long> cmqCodes) {
+	public List<Map<String, Object>> findCmqChildCountForParentCmqCodes(List<Long> cmqCodes) {
 		List<Map<String, Object>> retVal = null;
-		StringBuilder sb = new StringBuilder();
-		sb.append("select CMQ_CODE, count(*) as COUNT from CMQ_BASE_TARGET where CMQ_PARENT_CODE in (:cmqCodes) group by CMQ_CODE");
+        
+        if(CollectionUtils.isEmpty(cmqCodes))
+            return null;
+        
+		String queryString = CmqUtils.convertArrayToTableWith(cmqCodes, "tempCmqCodes", "code")
+                + " select CMQ_CODE, count(*) as COUNT"
+                + " from CMQ_BASE_TARGET cmqTbl"
+                + " inner join tempCmqCodes on tempCmqCodes.code=cmqTbl.CMQ_PARENT_CODE"
+                + " group by CMQ_CODE";
 
 		EntityManager entityManager = this.cqtEntityManagerFactory
 				.getEntityManager();
 		Session session = entityManager.unwrap(Session.class);
 		try {
-			SQLQuery query = session.createSQLQuery(sb.toString());
+			SQLQuery query = session.createSQLQuery(queryString);
 			query.addScalar("CMQ_CODE", StandardBasicTypes.LONG);
 			query.addScalar("COUNT", StandardBasicTypes.LONG);
-			query.setParameterList("cmqCodes", cmqCodes);
+            
 			query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
 			retVal = query.list();
 		} catch (Exception e) {
@@ -274,7 +282,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 			msg.append(
 					"An error occurred while findCmqChildCountForParentCmqCode ")
 					.append(cmqCodes).append(" Query used was ->")
-					.append(sb.toString());
+					.append(queryString);
 			LOG.error(msg.toString(), e);
 		} finally {
 			this.cqtEntityManagerFactory.closeEntityManager(entityManager);

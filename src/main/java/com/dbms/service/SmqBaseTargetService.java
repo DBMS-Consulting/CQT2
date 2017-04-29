@@ -57,6 +57,8 @@ import com.dbms.entity.cqt.SmqRelationTarget;
 import com.dbms.entity.cqt.dtos.MeddraDictHierarchySearchDto;
 import com.dbms.entity.cqt.dtos.ReportLineDataDto;
 import com.dbms.service.base.CqtPersistenceService;
+import com.dbms.util.CmqUtils;
+import org.apache.commons.collections4.CollectionUtils;
 
 /**
  * @author Jay G.(jayshanchn@hotmail.com)
@@ -134,13 +136,20 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 	@SuppressWarnings("unchecked")
 	public List<Map<String, Object>> findSmqRelationsCountForSmqCodes(List<Long> smqCodes) {
 		List<Map<String, Object>> retVal = null;
-		StringBuilder sb = new StringBuilder();
-		sb.append("select count(*) as COUNT, SMQ_CODE from SMQ_RELATIONS_TARGET where SMQ_CODE in (:smqCodes) group by SMQ_CODE");
+        
+        if(CollectionUtils.isEmpty(smqCodes))
+            return null;
+		
+        String queryString = CmqUtils.convertArrayToTableWith(smqCodes, "tempSmqCodes", "code")
+                + " select count(*) as COUNT, SMQ_CODE"
+                + " from SMQ_RELATIONS_TARGET smqTbl"
+                + " inner join tempSmqCodes on tempSmqCodes.code=smqTbl.SMQ_CODE"
+                + " group by SMQ_CODE";
 		
 		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
 		Session session = entityManager.unwrap(Session.class);
 		try {
-			SQLQuery query = session.createSQLQuery(sb.toString());
+			SQLQuery query = session.createSQLQuery(queryString);
 			query.addScalar("SMQ_CODE", StandardBasicTypes.LONG);
 			query.addScalar("COUNT", StandardBasicTypes.LONG);
 			query.setParameterList("smqCodes", smqCodes);
@@ -152,7 +161,7 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 					.append("An error occurred while findSmqRelationsCountForSmqCodes ")
 					.append(smqCodes)
 					.append(" Query used was ->")
-					.append(sb.toString());
+					.append(queryString);
 			LOG.error(msg.toString(), e);
 		} finally {
 			this.cqtEntityManagerFactory.closeEntityManager(entityManager);

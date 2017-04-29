@@ -247,10 +247,10 @@ public class TargetHierarchySearchVM {
     
 	
     private void updateHierarchySearchForSmqTaget(SmqBaseTarget smqBaseTarget) {
-        IARelationsTreeHelper relationsTreeHelper = new IARelationsTreeHelper(
+        IARelationsTreeHelper iaTreeHelper = new IARelationsTreeHelper(
                 null, null, null, null,
                 cmqBaseTargetService, smqBaseTargetService, meddraDictTargetService, cmqRelationTargetService);
-		HierarchyNode node = relationsTreeHelper.createSmqBaseTargetNode(smqBaseTarget);
+		HierarchyNode node = iaTreeHelper.createSmqBaseTargetNode(smqBaseTarget, null);
 		TreeNode smqBaseTreeNode = new DefaultTreeNode(node, this.myHierarchyRoot);
 		
 		boolean dummyNodeAdded = false;
@@ -292,7 +292,7 @@ public class TargetHierarchySearchVM {
 	
     @SuppressWarnings({ "unchecked", "rawtypes" })
 	private void updateHierarchySearchCmqChildNodes(List<Long> parentCmqCodeList, Map<Long, TreeNode> parentTreeNodes) {
-		List<Map<String, Object>> childCountsList = this.cmqBaseTargetService.findCmqChildCountForParentCmqCode(parentCmqCodeList);
+		List<Map<String, Object>> childCountsList = this.cmqBaseTargetService.findCmqChildCountForParentCmqCodes(parentCmqCodeList);
 		if((null != childCountsList) && (childCountsList.size() > 0)) {
 			//first find and fix child nodes stuff
 			for (Iterator<Long> it = parentCmqCodeList.iterator(); it.hasNext();) {
@@ -355,7 +355,7 @@ public class TargetHierarchySearchVM {
 		HierarchyNode node = relationsTreeHelper.createMeddraNode(meddraDictDto, myFilterLevel);
 		TreeNode parentTreeNode = new DefaultTreeNode(node, this.myHierarchyRoot);
 		
-		Long countOfChildren = this.meddraDictTargetService.findChldrenCountByParentCode(childSearchColumnTypePrefix,
+		Long countOfChildren = this.meddraDictTargetService.findChildrenCountByParentCode(childSearchColumnTypePrefix,
 				parentCodeColumnPrefix, Long.valueOf(meddraDictDto.getCode()));
 		if((null != countOfChildren) && (countOfChildren > 0)) {
 			// add a dummmy node to show expand arrow

@@ -479,7 +479,9 @@ public class SearchController extends BaseController<CmqBase190> implements IRel
 		boolean isRelationView = "RELATIONS".equalsIgnoreCase(uiSourceOfEvent);
 		boolean isParentListView = "PARENT-LIST".equalsIgnoreCase(uiSourceOfEvent);
 		CmqBaseRelationsTreeHelper relationsSearchHelper = new CmqBaseRelationsTreeHelper(cmqBaseService, smqBaseService, meddraDictService, cmqRelationService);	
-		relationsSearchHelper.getRelationsNodeHierarchy(null, expandedTreeNode, isRelationView, isParentListView);
+        relationsSearchHelper.setRelationView(isRelationView);
+        relationsSearchHelper.setParentListView(isParentListView);
+		relationsSearchHelper.getRelationsNodeHierarchy(null, expandedTreeNode);
 	}
 
 	/**
@@ -850,7 +852,7 @@ public class SearchController extends BaseController<CmqBase190> implements IRel
 		myHierarchyDlgModel.resetForm();
 		CmqBaseRelationsTreeHelper treeHelper = new CmqBaseRelationsTreeHelper(cmqBaseService, smqBaseService, meddraDictService, cmqRelationService);
 		this.clickedCmqCode = clickedCmqCode;
-		this.relationsRoot = treeHelper.getCmqBaseRelationsRootHierarchy(this.clickedCmqCode, true);
+		this.relationsRoot = treeHelper.getCmqBaseRelationsRootHierarchy(this.clickedCmqCode);
 	}
 	
 	public void populateParentCmqByChild(CmqBase190 childCmq) {

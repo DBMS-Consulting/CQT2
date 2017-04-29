@@ -38,6 +38,7 @@ import com.dbms.service.ISmqBaseService;
 import com.dbms.service.ISmqBaseTargetService;
 import com.dbms.service.RefCodeListService;
 import com.dbms.util.CqtConstants;
+import com.dbms.util.SMQLevelHelper;
 import java.util.LinkedList;
 
 import javax.faces.application.FacesMessage;
@@ -277,58 +278,39 @@ public class IARelationsTreeHelper {
 		return node;
 	}
 	
-	public HierarchyNode createSmqBaseCurrrentNode(SmqBase190 smqBase) {
+	public HierarchyNode createSmqBaseCurrrentNode(CmqRelation190 cmqRelation, SmqBase190 smqBase) {
 		HierarchyNode node = null;
 		if(null != smqBase) {
 			node = new HierarchyNode();
-            switch(smqBase.getSmqLevel()) {
-                case 1:
-                    node.setLevel("SMQ1");
-                    break;
-                case 2:
-                    node.setLevel("SMQ2");
-                    break;
-                case 3:
-                    node.setLevel("SMQ3");
-                    break;
-                case 4:
-                    node.setLevel("SMQ4");
-                    break;
-                case 5:
-                    node.setLevel("SMQ5");
-                    break;
-            }
+            if (null != smqBase.getSmqLevel()) 
+                node.setLevel(SMQLevelHelper.getLabel(smqBase.getSmqLevel()));
 			node.setTerm(smqBase.getSmqName());
 			node.setCode(smqBase.getSmqCode().toString());
 			node.setEntity(smqBase);
+            if(cmqRelation != null) {
+                node.setCategory((cmqRelation.getTermCategory() == null) ? "" : cmqRelation.getTermCategory());
+                node.setScope((cmqRelation.getTermScope() == null) ? "" : cmqRelation.getTermScope());
+                node.setWeight((cmqRelation.getTermWeight() == null) ? "" : cmqRelation.getTermWeight() + "");
+            }
 		}
 		return node;
 	}
 	
-	public HierarchyNode createSmqBaseTargetNode(SmqBaseTarget smqBase) {
+	public HierarchyNode createSmqBaseTargetNode(SmqBaseTarget smqBase, CmqRelationTarget cmqRelation) {
 		HierarchyNode node = null;
 		if(null != smqBase) {
 			node = new HierarchyNode();
-            switch(smqBase.getSmqLevel()) {
-                case 1:
-                    node.setLevel("SMQ1");
-                    break;
-                case 2:
-                    node.setLevel("SMQ2");
-                    break;
-                case 3:
-                    node.setLevel("SMQ3");
-                    break;
-                case 4:
-                    node.setLevel("SMQ4");
-                    break;
-                case 5:
-                    node.setLevel("SMQ5");
-                    break;
-            }
+            if (null != smqBase.getSmqLevel()) 
+                node.setLevel(SMQLevelHelper.getLabel(smqBase.getSmqLevel()));
 			node.setTerm(smqBase.getSmqName());
 			node.setCode(smqBase.getSmqCode().toString());
 			node.setEntity(smqBase);
+            node.setRelationEntity(cmqRelation);
+            if(cmqRelation != null) {
+                node.setCategory((cmqRelation.getTermCategory() == null) ? "" : cmqRelation.getTermCategory());
+                node.setScope((cmqRelation.getTermScope() == null) ? "" : cmqRelation.getTermScope());
+                node.setWeight((cmqRelation.getTermWeight() == null) ? "" : cmqRelation.getTermWeight() + "");
+            }
 		}
 		return node;
 	}
@@ -895,7 +877,7 @@ public class IARelationsTreeHelper {
 				isSmqRelation = true;
 			} else {
 				entity2 = this.smqBaseCurrentService.findByCode(cmqRelation.getSmqCode());
-				node = this.createSmqBaseCurrrentNode((SmqBase190) entity2);
+				node = this.createSmqBaseCurrrentNode(cmqRelation, (SmqBase190) entity2);
 			}
 			//Color for node
 			setCMQCurrentNodeStyle(node, cmqRelation);
@@ -907,7 +889,7 @@ public class IARelationsTreeHelper {
 				isSmqRelation = true;
 			} else {
 				entity2 = this.smqBaseTargetService.findByCode(cmqRelation.getSmqCode());
-				node = this.createSmqBaseTargetNode((SmqBaseTarget) entity2);
+				node = this.createSmqBaseTargetNode((SmqBaseTarget) entity2, cmqRelation);
 			}
 			if(!isRootListNode && "target-table".equalsIgnoreCase(uiSourceOfEvent)) {
 				node.markNotEditableInRelationstable();
@@ -915,6 +897,7 @@ public class IARelationsTreeHelper {
 			//color for node
 			setCMQTargetNodeStyle(node, cmqRelation); 
 		}
+        
 		if(null != node) {	
 			TreeNode treeNode = new DefaultTreeNode(node, expandedTreeNode);
 			
@@ -968,25 +951,33 @@ public class IARelationsTreeHelper {
             dtoCodes.add(c);
 		}
         
-        List<Map<String, Object>> countsOfChildren;
+        List<Map<String, Object>> countsOfChildren = null;
         if (bCurrentList) {
+            // styling and coloring
             setCurrentMeddraColors(dtos, addedNodes, cmqRelationsMap);
-            countsOfChildren = this.meddraDictCurrentService.findChldrenCountByParentCodes(childNodeType + "_"
-                                            , nodeType + "_", dtoCodes);
             for (TreeNode n : addedNodes.values()) {
                 HierarchyNode hn = (HierarchyNode)n.getData();
                 setCMQCurrentNodeStyle(hn, (CmqRelation190)hn.getRelationEntity());
             }
+                            
+            if(childNodeType != null) {
+                countsOfChildren = this.meddraDictCurrentService.findChildrenCountByParentCodes(childNodeType + "_"
+                                                , nodeType + "_", dtoCodes);
+            }
         } else {
+            // styling and coloring
             setTargetMeddraColors(dtos, addedNodes, cmqRelationsMap);
-            countsOfChildren = this.meddraDictTargetService.findChldrenCountByParentCodes(childNodeType + "_"
-                                            , nodeType + "_", dtoCodes);
             for (TreeNode n : addedNodes.values()) {
                 HierarchyNode hn = (HierarchyNode)n.getData();
                 setCMQTargetNodeStyle(hn, (CmqRelationTarget)hn.getRelationEntity());
             }
+            if(childNodeType != null) {
+                countsOfChildren = this.meddraDictTargetService.findChildrenCountByParentCodes(childNodeType + "_"
+                                                , nodeType + "_", dtoCodes);
+            }
         }
 
+        // dummy node generation for expanding children
         if((null != countsOfChildren) && (countsOfChildren.size() > 0)) {
             //first find and fix child nodes stuff
             for (Map<String, Object> cc: countsOfChildren) {
@@ -1063,9 +1054,9 @@ public class IARelationsTreeHelper {
 			
 			List<Map<String, Object>> childrenOfChildCountsList = null;
 			if(bCurrentList) {
-				childrenOfChildCountsList = this.cmqBaseCurrentService.findCmqChildCountForParentCmqCode(childCmqCodeList);
+				childrenOfChildCountsList = this.cmqBaseCurrentService.findCmqChildCountForParentCmqCodes(childCmqCodeList);
 			} else {
-				childrenOfChildCountsList = this.cmqBaseTargetService.findCmqChildCountForParentCmqCode(childCmqCodeList);
+				childrenOfChildCountsList = this.cmqBaseTargetService.findCmqChildCountForParentCmqCodes(childCmqCodeList);
 			}
 			
 			if((null != childrenOfChildCountsList) && (childrenOfChildCountsList.size() > 0)) {
@@ -1118,7 +1109,6 @@ public class IARelationsTreeHelper {
         boolean bCurrentList = "current".equalsIgnoreCase(cmqType);
         boolean bEventFromTargetTable = "target-table".equalsIgnoreCase(uiSourceOfEvent);
         
-		//add cmq relations now
 		Map<Long, IEntity> socCodesMap = new HashMap<>();
 		Map<Long, IEntity> hlgtCodesMap = new HashMap<>();
 		Map<Long, IEntity> hltCodesMap = new HashMap<>();
@@ -1223,34 +1213,7 @@ public class IARelationsTreeHelper {
 				} else {
 					lltDtos = this.meddraDictTargetService.findByCodes("LLT_", lltCodesList);
 				}
-                
-                Map<Long, TreeNode> lltNodes = new HashMap<>();
-                
-				for (MeddraDictHierarchySearchDto m : lltDtos) {
-					HierarchyNode node = this.createMeddraNode(m, "LLT");
-                    node.setRelationEntity(lltCodesMap.get(Long.parseLong(m.getCode())));
-                    
-                    if(!bCurrentList && !isRootListNode && bEventFromTargetTable) {
-                        node.markNotEditableInRelationstable();
-                    }
-					
-					TreeNode treeNode = new DefaultTreeNode(node, expandedTreeNode);
-                    lltNodes.put(Long.valueOf(m.getCode()), treeNode);
-				}
-                
-                if (bCurrentList) {
-                    setCurrentMeddraColors(lltDtos, lltNodes, lltCodesMap);
-                    for(TreeNode n: lltNodes.values()) {
-                        HierarchyNode hn = (HierarchyNode)n.getData();
-                        setCMQCurrentNodeStyle(hn, (CmqRelation190)hn.getRelationEntity());
-                    }
-                } else {
-                    setTargetMeddraColors(lltDtos, lltNodes, lltCodesMap);
-                    for(TreeNode n: lltNodes.values()) {
-                        HierarchyNode hn = (HierarchyNode)n.getData();
-                        setCMQTargetNodeStyle(hn, (CmqRelationTarget)hn.getRelationEntity());
-                    }
-                }
+                this.populateCmqRelationTreeNodes(lltDtos, expandedTreeNode, "LLT", null, cmqType, cmqCode, ptCodesMap, uiSourceOfEvent, entityExpanded);
 			}
 		}
 	}
@@ -1276,25 +1239,8 @@ public class IARelationsTreeHelper {
 				if(bCurrentList) {
 					SmqBase190 childSmqBase = (SmqBase190) entity;
 					childSmqCode = childSmqBase.getSmqCode();
-					if (null != childSmqBase.getSmqLevel()) switch (childSmqBase.getSmqLevel()) {
-                        case 1:
-                            childNode.setLevel("SMQ1");
-                            break;
-                        case 2:
-                            childNode.setLevel("SMQ2");
-                            break;
-                        case 3:
-                            childNode.setLevel("SMQ3");
-                            break;
-                        case 4:
-                            childNode.setLevel("SMQ4");
-                            break;
-                        case 5:
-                            childNode.setLevel("SMQ5");
-                            break;
-                        default:
-                            break;
-                    }
+                    if (null != childSmqBase.getSmqLevel())
+                        childNode.setLevel(SMQLevelHelper.getLabel(childSmqBase.getSmqLevel()));
 					childNode.setTerm(childSmqBase.getSmqName());
 					childNode.setCode(childSmqBase.getSmqCode().toString());
 					childNode.setEntity(childSmqBase);
@@ -1307,25 +1253,8 @@ public class IARelationsTreeHelper {
 					//for target here
 					SmqBaseTarget childSmqBase = (SmqBaseTarget) entity;
 					childSmqCode = childSmqBase.getSmqCode();
-					if (null != childSmqBase.getSmqLevel()) switch (childSmqBase.getSmqLevel()) {
-                        case 1:
-                            childNode.setLevel("SMQ1");
-                            break;
-                        case 2:
-                            childNode.setLevel("SMQ2");
-                            break;
-                        case 3:
-                            childNode.setLevel("SMQ3");
-                            break;
-                        case 4:
-                            childNode.setLevel("SMQ4");
-                            break;
-                        case 5:
-                            childNode.setLevel("SMQ5");
-                            break;
-                        default:
-                            break;
-                    }
+                    if (null != childSmqBase.getSmqLevel())
+                        childNode.setLevel(SMQLevelHelper.getLabel(childSmqBase.getSmqLevel()));
 					childNode.setTerm(childSmqBase.getSmqName());
 					childNode.setCode(childSmqBase.getSmqCode().toString());
 					childNode.setEntity(childSmqBase);
@@ -1342,35 +1271,23 @@ public class IARelationsTreeHelper {
 			} // end of for
 			
 			//find smqrelations of all child smqs
-			int smqChildCodesSize = smqChildCodeList.size();
-			List<List<Long>> choppedLists;
-			if(smqChildCodesSize > 400) {
-				//split it into smaller lists
-				choppedLists = ListUtils.partition(smqChildCodeList, 200);
-			}else {
-				choppedLists = new ArrayList<>();
-				choppedLists.add(smqChildCodeList);
-			}
-			//process the chopped lists now
-			for (List<Long> subList : choppedLists) {
-				List<Map<String, Object>> childSmqRelationsCountList = null;
-				if(bCurrentList) {
-					childSmqRelationsCountList = this.smqBaseCurrentService.findSmqRelationsCountForSmqCodes(subList);
-				} else {
-					childSmqRelationsCountList = this.smqBaseTargetService.findSmqRelationsCountForSmqCodes(subList);
-				}
-				if((null != childSmqRelationsCountList) && (childSmqRelationsCountList.size() > 0)) {
-                    for(Map<String, Object> map : childSmqRelationsCountList) {
-						if(map.get("SMQ_CODE") != null) {
-							Long childSmqCode = (Long)map.get("SMQ_CODE");
-							Long count = (Long)map.get("COUNT");
-							if(count > 0) {
-								createNewDummyNode(smqTreeNodeMap.get(childSmqCode));
-							}
-						}
-					}
-				}//end of if((null != childSmqRelationsCountList) &&.....
-			}//end of for (List<Long> subList : choppedLists)
+            List<Map<String, Object>> childSmqRelationsCountList;
+            if(bCurrentList) {
+                childSmqRelationsCountList = this.smqBaseCurrentService.findSmqRelationsCountForSmqCodes(smqChildCodeList);
+            } else {
+                childSmqRelationsCountList = this.smqBaseTargetService.findSmqRelationsCountForSmqCodes(smqChildCodeList);
+            }
+            if((null != childSmqRelationsCountList) && (childSmqRelationsCountList.size() > 0)) {
+                for(Map<String, Object> map : childSmqRelationsCountList) {
+                    if(map.get("SMQ_CODE") != null) {
+                        Long childSmqCode = (Long)map.get("SMQ_CODE");
+                        Long count = (Long)map.get("COUNT");
+                        if(count > 0) {
+                            createNewDummyNode(smqTreeNodeMap.get(childSmqCode));
+                        }
+                    }
+                }
+            }
 		}
 	}
 
@@ -1496,10 +1413,10 @@ public class IARelationsTreeHelper {
     
         List<Map<String, Object>> countsOfChildren;
         if (bCurrentList) {
-            countsOfChildren = this.meddraDictCurrentService.findChldrenCountByParentCodes(childchildOfChildSearchColumnTypePrefix,
+            countsOfChildren = this.meddraDictCurrentService.findChildrenCountByParentCodes(childchildOfChildSearchColumnTypePrefix,
                     childSearchColumnTypePrefix, nodesMapKeys);
         } else {
-            countsOfChildren = this.meddraDictTargetService.findChldrenCountByParentCodes(childchildOfChildSearchColumnTypePrefix,
+            countsOfChildren = this.meddraDictTargetService.findChildrenCountByParentCodes(childchildOfChildSearchColumnTypePrefix,
                     childSearchColumnTypePrefix, nodesMapKeys);
         }
 
@@ -1596,7 +1513,7 @@ public class IARelationsTreeHelper {
     public void updateCurrentTableForSmqList(TreeNode currentTableRootTreeNode, SmqBaseTarget selectedSmqList) {
 		SmqBase190 smqBaseCurrent = this.smqBaseCurrentService.findByCode(selectedSmqList.getSmqCode());
 		if(null != smqBaseCurrent) {
-			HierarchyNode node = this.createSmqBaseCurrrentNode(smqBaseCurrent);
+			HierarchyNode node = this.createSmqBaseCurrrentNode(null, smqBaseCurrent);
 			TreeNode cmqBaseTreeNode = new DefaultTreeNode(node, currentTableRootTreeNode);
 
 			if (smqBaseCurrent.getImpactType().equals(CSMQBean.IMPACT_TYPE_IMPACTED))
@@ -1627,7 +1544,7 @@ public class IARelationsTreeHelper {
         IARelationsTreeHelper treeHelper = new IARelationsTreeHelper(
                 cmqBaseCurrentService, smqBaseCurrentService, meddraDictCurrentService, cmqRelationCurrentService,
                 cmqBaseTargetService, smqBaseTargetService, meddraDictTargetService, cmqRelationTargetService);
-		HierarchyNode node = treeHelper.createSmqBaseTargetNode(selectedSmqList);
+		HierarchyNode node = treeHelper.createSmqBaseTargetNode(selectedSmqList, null);
 		node.markNotEditableInRelationstable();
 		TreeNode cmqBaseTreeNode = new DefaultTreeNode(node, targetTableRootTreeNode);
 

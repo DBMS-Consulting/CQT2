@@ -237,11 +237,11 @@ public class MeddraDictService extends CqtPersistenceService<MeddraDict190> impl
 		String queryString = "select MEDDRA_DICT_ID as meddraDictId, LLT_TERM as lltTerm, LLT_CODE as lltCode"
 									+ ", PT_TERM as ptTerm, PT_CODE as ptCode, HLT_TERM as hltTerm, HLT_CODE as hltCode"
 									+ ", HLGT_TERM as hlgtTerm, HLGT_CODE as hlgtCode, SOC_TERM as socTerm"
-									+ ", SOC_CODE as socCode, PRIMARY_PATH_FLAG as primaryPathFlag "
-								+ "from (select MEDDRA_DICT_ID, LLT_TERM, LLT_CODE, PT_TERM, PT_CODE, HLT_TERM, HLT_CODE, "
-											+ "HLGT_TERM, HLGT_CODE, SOC_TERM, SOC_CODE, PRIMARY_PATH_FLAG, row_number() "
-										+ "over (partition by PT_CODE order by MEDDRA_DICT_ID) rn "
-									+ "from MEDDRA_DICT_CURRENT	where " + codeColumnName + " = :searchCode ) where rn = 1";
+									+ ", SOC_CODE as socCode, PRIMARY_PATH_FLAG as primaryPathFlag"
+								+ " from (select MEDDRA_DICT_ID, LLT_TERM, LLT_CODE, PT_TERM, PT_CODE, HLT_TERM, HLT_CODE, "
+											+ "HLGT_TERM, HLGT_CODE, SOC_TERM, SOC_CODE, PRIMARY_PATH_FLAG"
+                                            + ", row_number() over (partition by PT_CODE order by MEDDRA_DICT_ID) rn"
+									+ " from MEDDRA_DICT_CURRENT	where " + codeColumnName + " = :searchCode ) where rn = 1";
 
 		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
 		Session session = entityManager.unwrap(Session.class);
@@ -278,6 +278,56 @@ public class MeddraDictService extends CqtPersistenceService<MeddraDict190> impl
 		}
 		return retVal;
 	}
+    
+    @Override
+    @SuppressWarnings("unchecked")
+	public List<MeddraDictReverseHierarchySearchDto> findByPtOrLltCodes(String searchColumnTypePrefix, List<Long> codes) {
+		List<MeddraDictReverseHierarchySearchDto> retVal = null;
+		String codeColumnName = searchColumnTypePrefix + "CODE";
+		String queryString = CmqUtils.convertArrayToTableWith(codes, "tempPtCodes", "code")
+                + " select MEDDRA_DICT_ID as meddraDictId, LLT_TERM as lltTerm, LLT_CODE as lltCode"
+                + ", PT_TERM as ptTerm, PT_CODE as ptCode, HLT_TERM as hltTerm, HLT_CODE as hltCode"
+                + ", HLGT_TERM as hlgtTerm, HLGT_CODE as hlgtCode, SOC_TERM as socTerm"
+                + ", SOC_CODE as socCode, PRIMARY_PATH_FLAG as primaryPathFlag"
+                + " from ( select MEDDRA_DICT_ID, LLT_TERM, LLT_CODE, PT_TERM, PT_CODE, HLT_TERM, HLT_CODE"
+                + ",HLGT_TERM, HLGT_CODE, SOC_TERM, SOC_CODE, PRIMARY_PATH_FLAG"
+                + ",row_number() "+ "over (partition by PT_CODE order by MEDDRA_DICT_ID) rn"
+                + " from MEDDRA_DICT_CURRENT mt"
+                + " join tempPtCodes on tempPtCodes.code=mt." + codeColumnName
+                + ") where rn = 1";
+
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		Session session = entityManager.unwrap(Session.class);
+		try {
+			SQLQuery query = session.createSQLQuery(queryString);
+			query.addScalar("meddraDictId", StandardBasicTypes.LONG);
+			query.addScalar("lltTerm", StandardBasicTypes.STRING);
+			query.addScalar("lltCode", StandardBasicTypes.STRING);
+			query.addScalar("ptTerm", StandardBasicTypes.STRING);
+			query.addScalar("ptCode", StandardBasicTypes.STRING);
+			query.addScalar("hltTerm", StandardBasicTypes.STRING);
+			query.addScalar("hltCode", StandardBasicTypes.STRING);
+			query.addScalar("hlgtTerm", StandardBasicTypes.STRING);
+			query.addScalar("hlgtCode", StandardBasicTypes.STRING);
+			query.addScalar("socTerm", StandardBasicTypes.STRING);
+			query.addScalar("socCode", StandardBasicTypes.STRING);
+			query.addScalar("primaryPathFlag", StandardBasicTypes.STRING);
+			
+            query.setResultTransformer(Transformers.aliasToBean(MeddraDictReverseHierarchySearchDto.class));
+			query.setCacheable(true);
+            
+			retVal = query.list();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg.append("An error occurred while fetching types from MeddraDict190 on searchColumnType ")
+					.append(codes).append(" Query used was ->")
+					.append(queryString);
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
 	
 	@SuppressWarnings("unchecked")
 	public List<MeddraDictHierarchySearchDto> findByCodes(String searchColumnTypePrefix, List<Long> codes) {
@@ -291,15 +341,15 @@ public class MeddraDictService extends CqtPersistenceService<MeddraDict190> impl
             return retVal;
 		
 		String queryString = CmqUtils.convertArrayToTableWith(codes, "tempCodes", "code")
-                + "select MEDDRA_DICT_ID as meddraDictId, " + termColumnName + " as term, " + codeColumnName
-				+ " as " + codeAlias + ", PRIMARY_PATH_FLAG as primaryPathFlag, MOVED_LLT as movedLlt, NEW_PT as newPt, PROMOTED_PT as promotedPt, NEW_LLT as newLlt, DEMOTED_LLT as demotedLlt, "
-				+ " PROMOTED_LLT as promotedLlt, PRIMARY_SOC_CHANGE as primarySocChange, DEMOTED_PT as demotedPt, LLT_CURRENCY_CHANGE as lltCurrencyChange, PT_NAME_CHANGED as ptNameChanged,"
-				+ " LLT_NAME_CHANGED as lltNameChanged, NEW_HLT as newHlt, NEW_HLGT as newHlgt, MOVED_PT as movedPt, MOVED_HLT as movedHlt, MOVED_HLGT as movedHlgt, "
-				+ " HLGT_NAME_CHANGED as hlgtNameChanged, HLT_NAME_CHANGED as hltNameChanged, SOC_NAME_CHANGED as socNameChanged, MERGED_HLT as mergedHlt, MERGED_HLGT as mergedHlgt" 
+                + " select MEDDRA_DICT_ID as meddraDictId, " + termColumnName + " as term, " + codeColumnName + " as " + codeAlias
+                + ", PRIMARY_PATH_FLAG as primaryPathFlag, MOVED_LLT as movedLlt, NEW_PT as newPt, PROMOTED_PT as promotedPt, NEW_LLT as newLlt, DEMOTED_LLT as demotedLlt"
+				+ ", PROMOTED_LLT as promotedLlt, PRIMARY_SOC_CHANGE as primarySocChange, DEMOTED_PT as demotedPt, LLT_CURRENCY_CHANGE as lltCurrencyChange, PT_NAME_CHANGED as ptNameChanged"
+				+ ", LLT_NAME_CHANGED as lltNameChanged, NEW_HLT as newHlt, NEW_HLGT as newHlgt, MOVED_PT as movedPt, MOVED_HLT as movedHlt, MOVED_HLGT as movedHlgt"
+				+ ", HLGT_NAME_CHANGED as hlgtNameChanged, HLT_NAME_CHANGED as hltNameChanged, SOC_NAME_CHANGED as socNameChanged, MERGED_HLT as mergedHlt, MERGED_HLGT as mergedHlgt" 
 				+ " from (select MEDDRA_DICT_ID, " + termColumnName + ", " + codeColumnName 
-				+ " , PRIMARY_PATH_FLAG, MOVED_PT, MOVED_LLT, NEW_PT, PROMOTED_PT, NEW_LLT, DEMOTED_LLT, PROMOTED_LLT, PRIMARY_SOC_CHANGE, DEMOTED_PT, LLT_CURRENCY_CHANGE, PT_NAME_CHANGED, "
-				+ " LLT_NAME_CHANGED, NEW_HLT, NEW_HLGT, MOVED_HLT, MOVED_HLGT, HLGT_NAME_CHANGED, HLT_NAME_CHANGED, SOC_NAME_CHANGED, MERGED_HLT, MERGED_HLGT,"
-				+ " row_number() over (partition by " + codeColumnName+ " order by MEDDRA_DICT_ID) rn"
+				+ " , PRIMARY_PATH_FLAG, MOVED_PT, MOVED_LLT, NEW_PT, PROMOTED_PT, NEW_LLT, DEMOTED_LLT, PROMOTED_LLT, PRIMARY_SOC_CHANGE, DEMOTED_PT, LLT_CURRENCY_CHANGE, PT_NAME_CHANGED"
+				+ ", LLT_NAME_CHANGED, NEW_HLT, NEW_HLGT, MOVED_HLT, MOVED_HLGT, HLGT_NAME_CHANGED, HLT_NAME_CHANGED, SOC_NAME_CHANGED, MERGED_HLT, MERGED_HLGT"
+				+ ", row_number() over (partition by " + codeColumnName+ " order by MEDDRA_DICT_ID) rn"
                 + " from MEDDRA_DICT_CURRENT mt"
                 + " inner join tempCodes on tempCodes.code=mt." + codeColumnName
 				+ " ) where rn = 1";
@@ -341,8 +391,6 @@ public class MeddraDictService extends CqtPersistenceService<MeddraDict190> impl
 
             query.addScalar(codeAlias, StandardBasicTypes.STRING);
 
-            query.setFetchSize(400);
-
             query.setResultTransformer(Transformers.aliasToBean(MeddraDictHierarchySearchDto.class));
             query.setCacheable(true);
             retVal.addAll(query.list());
@@ -362,7 +410,7 @@ public class MeddraDictService extends CqtPersistenceService<MeddraDict190> impl
 	}
     
     @Override
-    public List<Map<String, Object>> findChldrenCountByParentCodes(String searchColumnTypePrefix, String parentCodeColumnPrefix, List<Long> parentCodes) {
+    public List<Map<String, Object>> findChildrenCountByParentCodes(String searchColumnTypePrefix, String parentCodeColumnPrefix, List<Long> parentCodes) {
         List<Map<String, Object>> retVal = new LinkedList<>();
         String termColumnName = searchColumnTypePrefix + "TERM";
 		String codeColumnName = searchColumnTypePrefix + "CODE";
@@ -372,10 +420,9 @@ public class MeddraDictService extends CqtPersistenceService<MeddraDict190> impl
             return retVal;
         
 		String queryString = CmqUtils.convertArrayToTableWith(parentCodes, "tempPaCodes", "code")
-                + "select count(*) as COUNT, " + parentCodeColumnName + " as PARENT_CODE"
-				+ " from (select MEDDRA_DICT_ID, " + termColumnName + ", " + codeColumnName + ", " + parentCodeColumnName
-				+ ", row_number() over (partition by " + codeColumnName
-				+ " order by MEDDRA_DICT_ID) rn"
+                + " select count(*) as COUNT, " + parentCodeColumnName + " as PARENT_CODE"
+				+ " from (select MEDDRA_DICT_ID, "  + parentCodeColumnName
+				+ ", row_number() over (partition by " + codeColumnName + " order by MEDDRA_DICT_ID) rn"
                 + " from MEDDRA_DICT_CURRENT mt"
                 + " inner join tempPaCodes on tempPaCodes.code=mt." + parentCodeColumnName
                 + ") where rn = 1 group by " + parentCodeColumnName;
@@ -391,7 +438,7 @@ public class MeddraDictService extends CqtPersistenceService<MeddraDict190> impl
             retVal.addAll(query.list());
 		} catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
-			msg.append("An error occurred while findChldrenCountByParentCodes with parentCodes: ")
+			msg.append("An error occurred while findChildrenCountByParentCodes with parentCodes: ")
 				.append(parentCodes);
 			LOG.error(msg.toString(), e);
 		} finally {
@@ -402,7 +449,7 @@ public class MeddraDictService extends CqtPersistenceService<MeddraDict190> impl
     }
 
     @Override
-	public Long findChldrenCountByParentCode(String searchColumnTypePrefix,
+	public Long findChildrenCountByParentCode(String searchColumnTypePrefix,
 			String parentCodeColumnPrefix, Long parentCode) {
 		Long retVal = null;
 		String termColumnName = searchColumnTypePrefix + "TERM";
@@ -410,9 +457,10 @@ public class MeddraDictService extends CqtPersistenceService<MeddraDict190> impl
 		String parentCodeColumnName = parentCodeColumnPrefix + "CODE";
 		String queryString = "select count(*) "
 				+ " from (select MEDDRA_DICT_ID, " + termColumnName + ", " + codeColumnName
-				+ ", row_number() over (partition by " + codeColumnName
-				+ " order by MEDDRA_DICT_ID) rn from MEDDRA_DICT_CURRENT where " + parentCodeColumnName
-				+ " = :code ) where rn = 1";
+				+ ", row_number() over (partition by " + codeColumnName + " order by MEDDRA_DICT_ID) rn"
+                + " from MEDDRA_DICT_CURRENT"
+                + " where " + parentCodeColumnName + " = :code"
+                + " ) where rn = 1";
 
 		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
 		Session session = entityManager.unwrap(Session.class);
@@ -580,8 +628,6 @@ public class MeddraDictService extends CqtPersistenceService<MeddraDict190> impl
             query.addScalar(codeAlias, StandardBasicTypes.STRING);
             query.addScalar(pacodeAlias, StandardBasicTypes.STRING);
 
-            query.setFetchSize(400);
-                
             query.setResultTransformer(Transformers.aliasToBean(MeddraDictHierarchySearchDto.class));
             query.setCacheable(true);
             retVal.addAll(query.list());

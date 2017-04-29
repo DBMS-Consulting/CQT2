@@ -19,7 +19,10 @@ import org.slf4j.LoggerFactory;
 
 import com.dbms.entity.cqt.CmqRelation190;
 import com.dbms.service.base.CqtPersistenceService;
+import com.dbms.util.CmqUtils;
 import com.dbms.util.exceptions.CqtServiceException;
+import com.sun.faces.util.CollectionsUtils;
+import org.apache.commons.collections.CollectionUtils;
 
 /**
  * @author Jay G.(jayshanchn@hotmail.com)
@@ -110,18 +113,26 @@ public class CmqRelation190Service extends CqtPersistenceService<CmqRelation190>
 	@SuppressWarnings("unchecked")
 	public List<Map<String, Object>> findCountByCmqCodes(List<Long> cmqCodes) {
 		List<Map<String, Object>>  retVal = null;
-		StringBuilder sb = new StringBuilder();
-		sb.append("select CMQ_CODE, count(*) as COUNT from CMQ_RELATIONS_CURRENT where CMQ_CODE in (:cmqCodes) group by CMQ_CODE");
+        
+        if(CollectionUtils.isEmpty(cmqCodes))
+            return null;
+        
+		String queryString = CmqUtils.convertArrayToTableWith(cmqCodes, "tempCmqCodes", "code")
+                + " select CMQ_CODE, count(*) as COUNT"
+                + " from CMQ_RELATIONS_CURRENT cmqTbl"
+                + " inner join tempCmqCodes on tempCmqCodes.code=cmqTbl.CMQ_CODE"
+                + " group by CMQ_CODE";
 		
 		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
 		Session session = entityManager.unwrap(Session.class);
 		try {
-			SQLQuery query = session.createSQLQuery(sb.toString());
+			SQLQuery query = session.createSQLQuery(queryString);
 			query.addScalar("CMQ_CODE", StandardBasicTypes.LONG);
 			query.addScalar("COUNT", StandardBasicTypes.LONG);
-			query.setParameterList("cmqCodes", cmqCodes);
+            
 			query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
 			query.setCacheable(true);
+            
 			retVal = query.list();
 		} catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
@@ -129,7 +140,7 @@ public class CmqRelation190Service extends CqtPersistenceService<CmqRelation190>
 					.append("An error occurred while findCountByCmqCodes ")
 					.append(cmqCodes)
 					.append(" Query used was ->")
-					.append(sb.toString());
+					.append(queryString);
 			LOG.error(msg.toString(), e);
 		} finally {
 			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
