@@ -80,7 +80,7 @@ public class SearchController extends BaseController<CmqBase190> implements IRel
 	private String criticalEvent;
 	private String termName;
 
-	private Long code;
+	private String code;
 
 	private String myFltExtension;
 	private String myFltDrugProgram;
@@ -371,11 +371,11 @@ public class SearchController extends BaseController<CmqBase190> implements IRel
 		this.termName = termName;
 	}
 	
-	public Long getCode() {
+	public String getCode() {
 		return code;
 	}
 
-	public void setCode(Long code) {
+	public void setCode(String code) {
 		this.code = code;
 	}
 
@@ -444,7 +444,7 @@ public class SearchController extends BaseController<CmqBase190> implements IRel
 			myFltGroup = null;
 		}
 
-		if (code != null && code == 0) {
+		if (StringUtils.isBlank(code)) {
 			code = null;
 		}
 
@@ -466,8 +466,12 @@ public class SearchController extends BaseController<CmqBase190> implements IRel
 	}
 
 	public String loadCmqBaseByCode() {
-		this.selctedData = this.cmqBaseService.findByCode(code);
-
+        try {
+            Long codeVal = Long.valueOf(code);
+            this.selctedData = this.cmqBaseService.findByCode(codeVal);
+        } catch (NumberFormatException e) {
+            return "";
+        }
 		return "";
 	}
 

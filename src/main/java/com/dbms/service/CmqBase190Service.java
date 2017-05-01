@@ -109,7 +109,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 	public List<CmqBase190> findByCriterias(String extension,
 			String drugProgramCd, String protocolCd, String[] productCds,
 			Integer level, String status, String state, String criticalEvent,
-			String group, String termName, Long code, String[] designees) {
+			String group, String termName, String code, String[] designees) {
 		List<CmqBase190> retVal = null;
 		StringBuilder sb = new StringBuilder("from CmqBase190 c");
 		boolean first = true;
@@ -176,7 +176,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		}
 		if (code != null) {
 			sb = appendClause(sb, first);
-			sb.append(" c.cmqCode=:cmqCode");
+			sb.append(" CAST(c.cmqCode as string) like :cmqCode");
 			queryParams.put("cmqCode", code);
 			first = false;
 		}
