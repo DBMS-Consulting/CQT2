@@ -30,6 +30,7 @@ import org.apache.poi.ss.usermodel.Drawing;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Picture;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFFont;
@@ -900,6 +901,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 	@Override
 	public StreamedContent generateMQReport(ListDetailsFormVM details, ListNotesFormVM notes, String dictionaryVersion) {
 		XSSFWorkbook workbook = new XSSFWorkbook();
+		
 		XSSFSheet worksheet = null;
 
 		worksheet = workbook.createSheet("MQ Report");
@@ -1094,7 +1096,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 								 */
 								List<SmqBase190> smqs = smqBaseService.findChildSmqByParentSmqCodes(smqChildCodeList);
 								
-								if (smqs != null)
+								if (smqs != null) {
 									for (SmqBase190 smqC : smqs) {
 										if (smqC.getSmqLevel() == 1) {
 											level = "SMQ1";
@@ -1159,10 +1161,14 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 											}
 										}					
 									}
+								}
 							}
 						}
- 
 					}
+					
+					rowCount = fillReport(mapReport, cell, row, rowCount, worksheet);
+					mapReport.clear();
+					cpt = 0;
 				}
 
 				/**
@@ -1187,7 +1193,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 						}
 
 						List<MeddraDictHierarchySearchDto> llts = this.meddraDictService.findByCodes("PT_", ptCodesList);
-						if (llts != null)
+						if (llts != null) {
 							for (MeddraDictHierarchySearchDto llt : llts) {
 								mapReport.put(cpt++, new ReportLineDataDto("PT", llt.getCode() + "", llt.getTerm(), "......")); 
 								
@@ -1201,12 +1207,17 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 								}
 
 								List<MeddraDictHierarchySearchDto> llts_0 = this.meddraDictService.findByCodes("LLT_", lltCodesList_0);
-								if (llts_0 != null)
+								if (llts_0 != null) {
 									for (MeddraDictHierarchySearchDto llt_1 : llts_0) {
 										mapReport.put(cpt++, new ReportLineDataDto("LLT", llt_1.getCode() + "", llt_1.getTerm(), ".............")); 
 									}
+								}
 							}
+						}
 					}
+					rowCount = fillReport(mapReport, cell, row, rowCount, worksheet);
+					mapReport.clear();
+					cpt = 0;
 				}
 				
 				/**
@@ -1220,6 +1231,9 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 					for (MeddraDictHierarchySearchDto llt : llts) {
 						mapReport.put(cpt++, new ReportLineDataDto("LLT", llt.getCode() + "", llt.getTerm(), "")); 
 					}
+					rowCount = fillReport(mapReport, cell, row, rowCount, worksheet);
+					mapReport.clear();
+					cpt = 0;
 				}
 
 				/**
@@ -1243,12 +1257,15 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 						}
 
 						List<MeddraDictHierarchySearchDto> llts = this.meddraDictService.findByCodes("LLT_", hlgtCodesList);
-						if (llts != null)
+						if (llts != null) {
 							for (MeddraDictHierarchySearchDto llt : llts) {
 								mapReport.put(cpt++, new ReportLineDataDto("LLT", llt.getCode() + "", llt.getTerm(), "......"));
 							}
+						}
 					}
-					
+					rowCount = fillReport(mapReport, cell, row, rowCount, worksheet);
+					mapReport.clear();
+					cpt = 0;
 				}
 
 				/**
@@ -1273,7 +1290,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 						}
 
 						List<MeddraDictHierarchySearchDto> hlgts = this.meddraDictService.findByCodes("HLGT_", hlgtCodesList);
-						if (hlgts != null)
+						if (hlgts != null) {
 							for (MeddraDictHierarchySearchDto hlgt : hlgts) {
 								mapReport.put(cpt++, new ReportLineDataDto("HLGT", hlgt.getCode() + "", hlgt.getTerm(), "......"));
 
@@ -1287,7 +1304,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 								}
 
 								List<MeddraDictHierarchySearchDto> hlts = this.meddraDictService.findByCodes("HLT_", hltCodesList);
-								if (hlts != null)
+								if (hlts != null) {
 									for (MeddraDictHierarchySearchDto hlt : hlts) {
 										mapReport.put(cpt++, new ReportLineDataDto("HLT", hlt.getCode() + "", hlt.getTerm(), "...............")); 
 
@@ -1301,7 +1318,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 										}
 
 										List<MeddraDictHierarchySearchDto> pts = this.meddraDictService.findByCodes("PT_", ptCodesList);
-										if (pts != null)
+										if (pts != null) {
 											for (MeddraDictHierarchySearchDto pt : pts) {
 												mapReport.put(cpt++, new ReportLineDataDto("PT", pt.getCode() + "", pt.getTerm(), "....................")); 
 												
@@ -1315,14 +1332,22 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 												}
 
 												List<MeddraDictHierarchySearchDto> llts = this.meddraDictService.findByCodes("LLT_", lltCodesList);
-												if (llts != null)
+												if (llts != null) {
 													for (MeddraDictHierarchySearchDto llt : llts) {
 														mapReport.put(cpt++, new ReportLineDataDto("LLT", llt.getCode() + "", llt.getTerm(), "..........................")); 
 													}
+												}
 											}
+										}
 									}
+								}
 							}
+						}
 					}
+					
+					rowCount = fillReport(mapReport, cell, row, rowCount, worksheet);
+					mapReport.clear();
+					cpt = 0;
 				}
 
 				/**
@@ -1346,7 +1371,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 						}
 
 						List<MeddraDictHierarchySearchDto> hlts = this.meddraDictService.findByCodes("HLT_", hltCodesList);
-						if (hlts != null)
+						if (hlts != null) {
 							for (MeddraDictHierarchySearchDto hlt : hlts) {
 								mapReport.put(cpt++, new ReportLineDataDto("HLT", hlt.getCode() + "", hlt.getTerm(), "......")); 
 								
@@ -1360,7 +1385,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 								}
 
 								List<MeddraDictHierarchySearchDto> pts = this.meddraDictService.findByCodes("PT_", ptCodesList);
-								if (pts != null)
+								if (pts != null) {
 									for (MeddraDictHierarchySearchDto pt : pts) {
 										mapReport.put(cpt++, new ReportLineDataDto("PT", pt.getCode() + "", pt.getTerm(), "...............")); 
 										
@@ -1374,17 +1399,23 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 										}
 
 										List<MeddraDictHierarchySearchDto> list = this.meddraDictService.findByCodes("LLT_", lltCodesList);
-										if (list != null)
+										if (list != null) {
 											for (MeddraDictHierarchySearchDto llt : list) {
 												mapReport.put(cpt++, new ReportLineDataDto("LLT", llt.getCode() + "", llt.getTerm(), ".............")); 
 											}
+										}
 									}
+								}
 							}
+						}
 					}
+					
+					rowCount = fillReport(mapReport, cell, row, rowCount, worksheet);
+					mapReport.clear();
+					cpt = 0;
 				}
 				//////////////////////////////
 			}
-			
 						
 		}
 		
@@ -1449,16 +1480,19 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 										smqSearched = smqBaseService.findByCode(smq.getSmqCode());
 										if (smqSearched != null) {
 											List<SmqRelation190> list = smqBaseService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
-											if (list != null)
+											if (list != null) {
 												for (SmqRelation190 pt : list) {
 													mapReport.put(cpt++, new ReportLineDataDto(level, pt.getPtCode() + "", pt.getPtName(), ""));
 												}
+											}
 										}
-										//}
-
 									}
 								}
 							}
+							
+							rowCount = fillReport(mapReport, cell, row, rowCount, worksheet);
+							mapReport.clear();
+							cpt = 0;
 						}
 
 						/**
@@ -1482,7 +1516,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 								}
 
 								List<MeddraDictHierarchySearchDto> llts = this.meddraDictService.findByCodes("PT_", ptCodesList);
-								if (llts != null)
+								if (llts != null) {
 									for (MeddraDictHierarchySearchDto llt : llts) {
 										mapReport.put(cpt++, new ReportLineDataDto("PT", llt.getCode() + "", llt.getTerm(), ".............."));
 
@@ -1497,13 +1531,19 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 										}
 
 										List<MeddraDictHierarchySearchDto> llts_soc = this.meddraDictService.findByCodes("LLT_", llttCodesList);
-										if (llts_soc != null)
+										if (llts_soc != null) {
 											for (MeddraDictHierarchySearchDto llt_soc : llts_soc) {
 												mapReport.put(cpt++, new ReportLineDataDto("LLT", llt_soc.getCode() + "", llt_soc.getTerm(), "...................."));
 
 											}
+										}
 									}
+								}
 							}
+							
+							rowCount = fillReport(mapReport, cell, row, rowCount, worksheet);
+							mapReport.clear();
+							cpt = 0;
 						}
 						
 
@@ -1519,6 +1559,10 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 								mapReport.put(cpt++, new ReportLineDataDto("LLT", llt.getCode() + "", llt.getTerm(), "......"));
 								
 							}
+							
+							rowCount = fillReport(mapReport, cell, row, rowCount, worksheet);
+							mapReport.clear();
+							cpt = 0;
 						}
 
 						/**
@@ -1542,11 +1586,16 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 								}
 
 								List<MeddraDictHierarchySearchDto> llts = this.meddraDictService.findByCodes("LLT_", hlgtCodesList);
-								if (llts != null)
+								if (llts != null) {
 									for (MeddraDictHierarchySearchDto llt : llts) {
 										mapReport.put(cpt++, new ReportLineDataDto("LLT", llt.getCode() + "", llt.getTerm(), "............."));
 									}
+								}
 							}
+							
+							rowCount = fillReport(mapReport, cell, row, rowCount, worksheet);
+							mapReport.clear();
+							cpt = 0;
 						}
 
 						/**
@@ -1570,7 +1619,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 								}
 
 								List<MeddraDictHierarchySearchDto> hlgts = this.meddraDictService.findByCodes("HLGT_", hlgtCodesList);
-								if (hlgts != null)
+								if (hlgts != null) {
 									for (MeddraDictHierarchySearchDto hlgt : hlgts) {
 										mapReport.put(cpt++, new ReportLineDataDto("HLGT", hlgt.getCode() + "", hlgt.getTerm(), "............."));
 
@@ -1584,7 +1633,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 										}
 
 										List<MeddraDictHierarchySearchDto> hlts = this.meddraDictService.findByCodes("HLT_", hltCodesList);
-										if (hlts != null)
+										if (hlts != null) {
 											for (MeddraDictHierarchySearchDto hlt : hlts) {
 												mapReport.put(cpt++, new ReportLineDataDto("HLT", hlt.getCode() + "", hlt.getTerm(), ".................."));
 
@@ -1598,7 +1647,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 												}
 
 												List<MeddraDictHierarchySearchDto> pts = this.meddraDictService.findByCodes("PT_", ptCodesList);
-												if (pts != null)
+												if (pts != null) {
 													for (MeddraDictHierarchySearchDto pt : pts) {
 														mapReport.put(cpt++, new ReportLineDataDto("PT", pt.getCode() + "", pt.getTerm(), "........................."));
 
@@ -1613,13 +1662,21 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 														}
 
 														List<MeddraDictHierarchySearchDto> llts_soc = this.meddraDictService.findByCodes("LLT_", llttCodesList);
-														if (llts_soc != null)
+														if (llts_soc != null) {
 															for (MeddraDictHierarchySearchDto llt_soc : llts_soc) {
 																mapReport.put(cpt++, new ReportLineDataDto("LLT", llt_soc.getCode() + "", llt_soc.getTerm(), ".................................."));
 															}
+														}
 													}
+												}
 											}
+										}
 									}
+								}
+								
+								rowCount = fillReport(mapReport, cell, row, rowCount, worksheet);
+								mapReport.clear();
+								cpt = 0;
 							}
 						}
 
@@ -1644,7 +1701,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 								}
 
 								List<MeddraDictHierarchySearchDto> hlts = this.meddraDictService.findByCodes("HLT_", hltCodesList);
-								if (hlts != null)
+								if (hlts != null) {
 									for (MeddraDictHierarchySearchDto hlt : hlts) {
 										mapReport.put(cpt++, new ReportLineDataDto("HLT", hlt.getCode() + "", hlt.getTerm(), "..........."));
 
@@ -1659,7 +1716,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 										}
 
 										List<MeddraDictHierarchySearchDto> pts = this.meddraDictService.findByCodes("PT_", ptCodesList);
-										if (pts != null)
+										if (pts != null) {
 											for (MeddraDictHierarchySearchDto pt : pts) {
 												mapReport.put(cpt++, new ReportLineDataDto("PT", pt.getCode() + "", pt.getTerm(), "...................."));
 
@@ -1673,12 +1730,18 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 												}
 
 												List<MeddraDictHierarchySearchDto> llts = this.meddraDictService.findByCodes("LLT_", lltCodesList);
-												if (llts != null)
+												if (llts != null) {
 													for (MeddraDictHierarchySearchDto llt : llts) {
 														mapReport.put(cpt++, new ReportLineDataDto("LLT", llt.getCode() + "", llt.getTerm(), "........................."));
 													}
+												}
 											}
+										}
 									}
+								}
+								rowCount = fillReport(mapReport, cell, row, rowCount, worksheet);
+								mapReport.clear();
+								cpt = 0;
 							}
 						}
 					}
@@ -1686,7 +1749,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 			}
 		}
 			
-		fillReport(mapReport, cell, row, rowCount, worksheet);
+		rowCount = fillReport(mapReport, cell, row, rowCount, worksheet);
 
 		worksheet.autoSizeColumn(0);
 		worksheet.autoSizeColumn(1);
@@ -1714,29 +1777,32 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 	
 	}
 	
-	private void fillReport(Map<Integer, ReportLineDataDto> mapReport, XSSFCell cell, XSSFRow row, int rowCount, XSSFSheet worksheet) {
+	private int fillReport(Map<Integer, ReportLineDataDto> mapReport, XSSFCell cell, XSSFRow row, int rowCount, XSSFSheet worksheet) {
 		int cpt = 0;
-		while (cpt < mapReport.size()) {
-			ReportLineDataDto line = mapReport.get(cpt);
-			
-			row = worksheet.createRow(rowCount);
+		LOG.info("Writing {} ReportLineDataDtos." , mapReport.size());
+		for(Map.Entry<Integer, ReportLineDataDto> entry : mapReport.entrySet()) {
+			ReportLineDataDto line = entry.getValue();
+			if(null != line) {
+				row = worksheet.createRow(rowCount);
 
-			// Cell 0
-			cell = row.createCell(0);
-			cell.setCellValue(line.getDots() + line.getTerm());
+				// Cell 0
+				cell = row.createCell(0);
+				cell.setCellValue(line.getDots() + line.getTerm());
 
-			// Cell 1
-			cell = row.createCell(1);
-			cell.setCellValue(line.getCode());
+				// Cell 1
+				cell = row.createCell(1);
+				cell.setCellValue(line.getCode());
 
-			// Cell 2
-			cell = row.createCell(2);
-			cell.setCellValue(line.getLevel());
-			rowCount++;		
-			
+				// Cell 2
+				cell = row.createCell(2);
+				cell.setCellValue(line.getLevel());
+				rowCount++;		
+			} else {
+				LOG.info("Got null line in map in fillReport");
+			}
 			cpt++;
 		}
-		
+		return rowCount;
 		
 	}
 
