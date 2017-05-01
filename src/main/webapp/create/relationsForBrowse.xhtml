@@ -12,31 +12,7 @@
 		<p:toolbar>
 
 
-			<f:facet name="left">
-
-				 <!-- <p:commandButton id="filter" value="Filter and Sort" type="button"
-					icon="ui-icon-triangle-1-s" />
-				<p:overlayPanel id="filterPanel" for="filter">
-					<h:panelGrid columns="2">
-						<p:outputLabel value="Sort" />
-						<p:selectOneMenu value="TERM">
-							<f:selectItem itemValue="TERM" itemLabel="Term name"></f:selectItem>
-							<f:selectItem itemValue="DEF_LEVEL_REF_SHORT_NAME"
-								itemLabel="Level"></f:selectItem>
-						</p:selectOneMenu>
-
-						<p:outputLabel for="show" value="Show Primary Only"
-							style="min-width: 100px !important" />
-						<p:selectBooleanCheckbox value="false" id="show"
-							label="Show Primary Only"></p:selectBooleanCheckbox>
-
-						<p:spacer />
-						<p:commandButton value="Refresh" id="cb7" icon="fa fa-refresh"
-							rendered="true" />
-					</h:panelGrid>
-				</p:overlayPanel>
-				<p:spacer width="10" /> -->
-				 	
+			<f:facet name="left">				 	
 				<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
 					<p:commandButton value="Yes" type="button"
 						styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
@@ -85,15 +61,15 @@
 				<p:row>
 					<p:column rowspan="2"
 						headerText="#{createController.selectedData.cmqName}"/>
-					<p:column colspan="5" headerText="Hierarchy Details" style="width:50%"/>
+					<p:column colspan="#{impactSearchController.displayScopeCatWeight eq 'false' ? 2 : 5}" headerText="Hierarchy Details" style="width:50%"/>
 				</p:row>
 
 				<p:row>
 					<p:column headerText="Code" style="width:10%" />
 					<p:column headerText="Level" style="width:10%" />
-					<p:column headerText="Scope" style="width:10%" />
-					<p:column headerText="Category" style="width:10%" />
-					<p:column headerText="Weight" style="width:10%" />
+					<p:column rendered="#{impactSearchController.displayScopeCatWeight}" headerText="Scope" style="width:10%" />
+					<p:column rendered="#{impactSearchController.displayScopeCatWeight}" headerText="Category" style="width:10%" />
+					<p:column rendered="#{impactSearchController.displayScopeCatWeight}" headerText="Weight" style="width:10%" />
 				</p:row>
 			</p:columnGroup>
 
@@ -109,17 +85,17 @@
 				<h:outputText value="#{node.level}" rendered="true" />
 			</p:column>
 
-			<p:column style="width:10%">
+			<p:column rendered="#{impactSearchController.displayScopeCatWeight}" style="width:10%">
 				<f:selectItems var="s" value="#{appCSMQBean.cqtBaseScopes}"
 						itemValue="#{s[0]}" itemLabel="#{s[1]}" />
 			</p:column>
 
-			<p:column style="width:10%">
+			<p:column rendered="#{impactSearchController.displayScopeCatWeight}" style="width:10%">
 				<f:selectItems var="s" value="#{appCSMQBean.cqtBaseCategories}"
 						itemValue="#{s[0]}" itemLabel="#{s[1]}" />
 			</p:column>
 
-			<p:column style="width:10%">
+			<p:column rendered="#{impactSearchController.displayScopeCatWeight}" style="width:10%">
 				<h:outputText value="#{node.weight}" />
 			</p:column>
 

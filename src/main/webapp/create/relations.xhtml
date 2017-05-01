@@ -143,15 +143,15 @@
 				<p:row>
 					<p:column rowspan="2"
 						headerText="#{createController.selectedData.cmqName}" />
-					<p:column colspan="6" headerText="Hierarchy Details" style="width:50%"/>
+					<p:column colspan="#{impactSearchController.displayScopeCatWeight eq 'false' ? 3 : 6}" headerText="Hierarchy Details" style="width:50%"/>
 				</p:row>
 
 				<p:row>
 					<p:column headerText="Code"  style="width:10%" />
 					<p:column headerText="Level" style="width:5%" />
-					<p:column headerText="Scope" style="width:10%" />
-					<p:column headerText="Category" style="width:5%" />
-					<p:column headerText="Weight" style="width:10%" />
+					<p:column rendered="#{impactSearchController.displayScopeCatWeight}" headerText="Scope" style="width:10%" />
+					<p:column rendered="#{impactSearchController.displayScopeCatWeight}" headerText="Category" style="width:5%" />
+					<p:column rendered="#{impactSearchController.displayScopeCatWeight}" headerText="Weight" style="width:10%" />
 					<p:column headerText="Delete" style="width:10%" />
 				</p:row>
 			</p:columnGroup>
@@ -169,7 +169,7 @@
 				<h:outputText value="#{node.level}" rendered="true" />
 			</p:column>
 
-			<p:column style="width:10%">
+			<p:column rendered="#{impactSearchController.displayScopeCatWeight}" style="width:10%">
                 <h:outputText value="#{appCSMQBean.interpretCqtBaseScope(node.scope)}"
                               rendered="#{not node.hideScope and (createController.readOnlyState or createController.detailsFormModel.algorithm eq 'N')}" />
 				<p:selectOneMenu id="soc3" value="#{node.scope}" 
@@ -180,7 +180,7 @@
 				</p:selectOneMenu>
 			</p:column>
 
-			<p:column style="width:10%">
+			<p:column rendered="#{impactSearchController.displayScopeCatWeight}" style="width:10%">
                 <h:outputText value="#{appCSMQBean.interpretCqtBaseCategory(node.category)}"
                     rendered="#{not node.hideScope and (createController.readOnlyState or createController.detailsFormModel.algorithm eq 'N')}" />
 				<p:selectOneMenu id="soc2" value="#{node.category}" 
@@ -191,7 +191,7 @@
 				</p:selectOneMenu>
 			</p:column>
 
-			<p:column style="width:5%">
+			<p:column rendered="#{impactSearchController.displayScopeCatWeight}" style="width:5%">
                 <h:outputText value="#{node.weight}"
                     rendered="#{not node.hideWeight and (createController.readOnlyState or createController.detailsFormModel.algorithm eq 'N')}" />
 				<p:spinner value="#{node.weight}" id="ot6" 

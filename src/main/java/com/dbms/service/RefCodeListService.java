@@ -546,4 +546,15 @@ public class RefCodeListService extends
 		final Picture pict = drawing.createPicture(anchor, pictureIndex);
 		pict.resize();
 	}
+	
+	@Override
+	public boolean getLevelScopeCategorySystemConfig() {
+		RefConfigCodeList retVal = null;
+		retVal = findByConfigTypeAndInternalCode(CqtConstants.CODE_LIST_TYPE_SYSTEM_CONFIG, CqtConstants.CODE_LIST_TYPE_DISPLAY_TERM_WEIGHT_SCOPE);
+		if (retVal != null)
+			if (retVal.getValue().equals("Y"))
+				return true;
+		
+		return false;
+	}
 }
