@@ -1,6 +1,7 @@
 package com.dbms.controller;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -22,6 +23,7 @@ import org.slf4j.LoggerFactory;
 
 import com.dbms.entity.cqt.CmqBase190;
 import com.dbms.entity.cqt.CmqBaseTarget;
+import com.dbms.entity.cqt.RefConfigCodeList;
 import com.dbms.service.AuthenticationService;
 import com.dbms.service.ICmqBase190Service;
 import com.dbms.service.ICmqBaseTargetService;
@@ -197,6 +199,22 @@ public class PublishController implements Serializable {
 							cmqBase190.setCreatedBy(lastModifiedByString);
 							cmqBase190.setCreationDate(lastModifiedDate);
 						}
+						
+						RefConfigCodeList dictionary = refCodeListService.getCurrentMeddraVersion();
+						
+						//Subversion increment - Dictionary version
+						if (cmqBase190.getCmqSubversion() != null && dictionary != null) {
+							System.out.println("\n *******************  subversion final " + cmqBase190.getCmqSubversion());
+							if (!cmqBase190.getDictionaryVersion().equals(dictionary.getValue())) {
+								cmqBase190.setCmqSubversion(new BigDecimal(0));
+								cmqBase190.setDictionaryVersion(dictionary.getValue());
+							}
+							else {
+								cmqBase190.setCmqSubversion(cmqBase190.getCmqSubversion().add(new BigDecimal(1)));
+								
+							}
+							System.out.println("\n *******************  subversion final " + cmqBase190.getCmqSubversion());
+						}
 					}
 					this.cmqBaseService.update(targetCmqsSelected, this.authService.getUserCn()
 							, this.authService.getUserGivenName(), this.authService.getUserSurName()
@@ -234,6 +252,7 @@ public class PublishController implements Serializable {
 		
 		return "";
 	}
+	
 	
 	/**
 	 * Event when we pick on the source list
