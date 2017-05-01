@@ -349,11 +349,12 @@ public class CmqBaseRelationsTreeHelper {
             ) {
         Map<Long, TreeNode> addedNodes = new HashMap<>();
         List<Long> dtoCodes = new ArrayList<>(dtos.size());
+        boolean isRootNodeExpanded = isRootListNode(expandedTreeNode);
 
         for (MeddraDictHierarchySearchDto m : dtos) {
             final Long c = Long.valueOf(m.getCode());
             HierarchyNode node = this.createMeddraNode(m, nodeType, cmqRelationsMap.get(c));
-            if(relationView) {
+            if(!isRootNodeExpanded && relationView) {
                 node.markNotEditableInRelationstable();
             }
 
@@ -811,5 +812,9 @@ public class CmqBaseRelationsTreeHelper {
     public void setParentListView(boolean parentView) {
         this.parentListView = parentView;
     }
+    
+    public boolean isRootListNode(TreeNode treeNode) {
+		return (StringUtils.equalsIgnoreCase(treeNode.getType(), "root"));
+	}
 
 }

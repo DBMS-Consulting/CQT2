@@ -855,6 +855,8 @@ public class SearchController extends BaseController<CmqBase190> implements IRel
 	public void setClickedCmqCode(Long clickedCmqCode) {
 		myHierarchyDlgModel.resetForm();
 		CmqBaseRelationsTreeHelper treeHelper = new CmqBaseRelationsTreeHelper(cmqBaseService, smqBaseService, meddraDictService, cmqRelationService);
+        treeHelper.setRelationView(true);
+        treeHelper.setRequireDrillDown(true);
 		this.clickedCmqCode = clickedCmqCode;
 		this.relationsRoot = treeHelper.getCmqBaseRelationsRootHierarchy(this.clickedCmqCode);
 	}
