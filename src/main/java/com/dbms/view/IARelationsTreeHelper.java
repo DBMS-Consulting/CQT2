@@ -467,28 +467,28 @@ public class IARelationsTreeHelper {
         for(MeddraDictHierarchySearchDto m: socMeddras) {
             final Long c = Long.valueOf(m.getSocCode());
             if(socMeddraMap.get(c) == null)
-                socMeddraMap.put(c, new LinkedList<>());
+                socMeddraMap.put(c, new ArrayList<MeddraDictHierarchySearchDto>());
             m.setSocCode(null);
             socMeddraMap.get(c).add(m);
         }
         for(MeddraDictHierarchySearchDto m: hlgtMeddras) {
             final Long c = Long.valueOf(m.getHlgtCode());
             if(hlgtMeddraMap.get(c) == null)
-                hlgtMeddraMap.put(c, new LinkedList<>());
+                hlgtMeddraMap.put(c,  new ArrayList<MeddraDictHierarchySearchDto>());
             m.setHlgtCode(null);
             hlgtMeddraMap.get(c).add(m);
         }
         for(MeddraDictHierarchySearchDto m: hltMeddras) {
             final Long c = Long.valueOf(m.getHltCode());
             if(hltMeddraMap.get(c) == null)
-                hltMeddraMap.put(c, new LinkedList<>());
+                hltMeddraMap.put(c,  new ArrayList<MeddraDictHierarchySearchDto>());
             m.setHltCode(null);
             hltMeddraMap.get(c).add(m);
         }
         for(MeddraDictHierarchySearchDto m: ptMeddras) {
             final Long c = Long.valueOf(m.getPtCode());
             if(ptMeddraMap.get(c) == null)
-                ptMeddraMap.put(c, new LinkedList<>());
+                ptMeddraMap.put(c,  new ArrayList<MeddraDictHierarchySearchDto>());
             m.setPtCode(null);
             ptMeddraMap.get(c).add(m);
         }
@@ -622,28 +622,28 @@ public class IARelationsTreeHelper {
         for(MeddraDictHierarchySearchDto m: socMeddras) {
             final Long c = Long.valueOf(m.getSocCode());
             if(socMeddraMap.get(c) == null)
-                socMeddraMap.put(c, new LinkedList<>());
+                socMeddraMap.put(c,  new ArrayList<MeddraDictHierarchySearchDto>());
             m.setSocCode(null);
             socMeddraMap.get(c).add(m);
         }
         for(MeddraDictHierarchySearchDto m: hlgtMeddras) {
             final Long c = Long.valueOf(m.getHlgtCode());
             if(hlgtMeddraMap.get(c) == null)
-                hlgtMeddraMap.put(c, new LinkedList<>());
+                hlgtMeddraMap.put(c,  new ArrayList<MeddraDictHierarchySearchDto>());
             m.setHlgtCode(null);
             hlgtMeddraMap.get(c).add(m);
         }
         for(MeddraDictHierarchySearchDto m: hltMeddras) {
             final Long c = Long.valueOf(m.getHltCode());
             if(hltMeddraMap.get(c) == null)
-                hltMeddraMap.put(c, new LinkedList<>());
+                hltMeddraMap.put(c,  new ArrayList<MeddraDictHierarchySearchDto>());
             m.setHltCode(null);
             hltMeddraMap.get(c).add(m);
         }
         for(MeddraDictHierarchySearchDto m: ptMeddras) {
             final Long c = Long.valueOf(m.getPtCode());
             if(ptMeddraMap.get(c) == null)
-                ptMeddraMap.put(c, new LinkedList<>());
+                ptMeddraMap.put(c,  new ArrayList<MeddraDictHierarchySearchDto>());
             m.setPtCode(null);
             ptMeddraMap.get(c).add(m);
         }
