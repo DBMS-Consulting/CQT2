@@ -80,9 +80,16 @@ public class AuthenticationService {
 	public void logout(HttpServletRequest request) {
 		ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
 	    ec.invalidateSession();
+	    try {
+			ec.redirect("index.html");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	    
 		FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Logout success!", "");
 		FacesContext.getCurrentInstance().addMessage(null, msg);
+		
+		
 	}
 	
 	public void authenticate(HttpServletRequest request) throws IOException {
