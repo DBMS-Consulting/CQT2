@@ -110,7 +110,7 @@ public class ReactivateController implements Serializable {
 			LOG.info("\n\n ******  " + codes); 
 			FacesContext.getCurrentInstance().addMessage(null, 
                     new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                            "The list being promoted has an associated list that must be Reactivated", ""));
+                            "The list being reactivated has an associated list that must be eactivated", ""));
 			
 			return "";
 		} else {
@@ -145,13 +145,13 @@ public class ReactivateController implements Serializable {
 				//show error dialog with names of faulty cmqs
 				FacesContext.getCurrentInstance().addMessage(null, 
                         new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                                "The list being promoted has an associated list that must be Promoted. ", ""));
+                                "The list being reactivated has an associated list that must be reactivated. ", ""));
 				
 				return "";
 			} else if (cptChildren > 0) {
 				FacesContext.getCurrentInstance().addMessage(null, 
                         new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                                "The list being promoted has an associated list that must be Promoted. ", ""));
+                                "The list being reactivated has an associated list that must be reactivated. ", ""));
 				
 				return "";
 			} else {

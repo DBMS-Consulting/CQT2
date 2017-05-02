@@ -150,14 +150,14 @@
 									<p:columnGroup type="header">
 										<p:row>
 											<p:column headerText="Existing Lists/SMQ" style="width:50%" />
-											<p:column colspan="3" headerText="Hierarchy Details" />
+											<p:column colspan="#{impactSearchController.displayScopeCatWeight eq 'false' ? 2 : 3}" headerText="Hierarchy Details" />
 										</p:row>
 										<p:row>
 											<p:column styleClass="listName"
 												headerText="#{impactSearchController.listName}" />
 											<p:column headerText="Code" style="width:25%" />
 											<p:column headerText="Level" style="width:10%"/>
-											<p:column headerText="Scope" style="width:15%" />
+											<p:column rendered="#{impactSearchController.displayScopeCatWeight}" headerText="Scope" style="width:15%" />
 										</p:row>
 									</p:columnGroup>
 
@@ -168,7 +168,7 @@
                                         </h:outputLink>
                                     </p:column>
 									<p:column><h:outputText value="#{node.level}" /></p:column>
-									<p:column><h:outputText value="#{node.scope}" /></p:column>
+									<p:column rendered="#{impactSearchController.displayScopeCatWeight}"><h:outputText value="#{node.scope}" /></p:column>
 								</p:treeTable>
 							</p:panel>
 
@@ -215,7 +215,7 @@
 										<p:row>
 											<p:column id="targetTitle" style="width:40%"
 												headerText="Future Lists/SMQ" />
-											<p:column colspan="5" headerText="Hierarchy Details" />
+											<p:column colspan="#{impactSearchController.displayScopeCatWeight eq 'false' ? 2 : 5}" headerText="Hierarchy Details" />
 										</p:row>
 
 										<p:row>
@@ -223,9 +223,9 @@
 												headerText="#{impactSearchController.listName}" />
 											<p:column headerText="Code" style="width:15%" />
 											<p:column headerText="Level" style="width:8%" />
-											<p:column headerText="Scope" style="width:15%" />
-											<p:column headerText="Category" style="width:9% " />
-											<p:column headerText="Weight" style="width:8%" />
+											<p:column rendered="#{impactSearchController.displayScopeCatWeight}" headerText="Scope" style="width:15%" />
+											<p:column rendered="#{impactSearchController.displayScopeCatWeight}" headerText="Category" style="width:9% " />
+											<p:column rendered="#{impactSearchController.displayScopeCatWeight}" headerText="Weight" style="width:8%" />
 										</p:row>
 									</p:columnGroup>
 
@@ -236,9 +236,9 @@
                                         </h:outputLink>
                                     </p:column>
 									<p:column><h:outputText value="#{node.level}" /></p:column>
-									<p:column><h:outputText value="#{node.scope}" /></p:column>
-									<p:column><h:outputText value="#{node.category}" /></p:column>
-									<p:column><h:outputText value="#{node.weight}" /></p:column>
+									<p:column rendered="#{impactSearchController.displayScopeCatWeight}"><h:outputText value="#{node.scope}" /></p:column>
+									<p:column rendered="#{impactSearchController.displayScopeCatWeight}"><h:outputText value="#{node.category}" /></p:column>
+									<p:column rendered="#{impactSearchController.displayScopeCatWeight}"><h:outputText value="#{node.weight}" /></p:column>
 									
 								</p:treeTable>
 							</p:panel>

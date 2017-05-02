@@ -167,6 +167,7 @@ public class ImpactSearchController implements Serializable {
 	private String confirmMessage;
     
     private Boolean versionUpgradingPending = null;
+    private boolean displayScopeCatWeight;
 
 	public ImpactSearchController() {
 		
@@ -190,6 +191,7 @@ public class ImpactSearchController implements Serializable {
 		
 		newPtDistinctSocTermsList = this.meddraDictTargetService.findSocsWithNewPt();
 		//changeOccur = false;
+		displayScopeCatWeight = refCodeListService.getLevelScopeCategorySystemConfig();
 	}
 	
 	/**
@@ -2011,4 +2013,12 @@ public class ImpactSearchController implements Serializable {
         }
         return versionUpgradingPending;
     }
+
+	public boolean isDisplayScopeCatWeight() {
+		return displayScopeCatWeight;
+	}
+
+	public void setDisplayScopeCatWeight(boolean displayScopeCatWeight) {
+		this.displayScopeCatWeight = displayScopeCatWeight;
+	}
 }

@@ -184,14 +184,14 @@
 									<p:columnGroup type="header">
 										<p:row>
 											<p:column headerText="Existing Lists/SMQ" style="width:50%"/>
-											<p:column colspan="3" headerText="Hierarchy Details" style="width:50%" />
+											<p:column colspan="#{impactSearchController.displayScopeCatWeight eq 'false' ? 2 : 3}" headerText="Hierarchy Details" style="width:50%" />
 										</p:row>
 										<p:row>
 											<p:column styleClass="listName"
-												headerText="#{impactSearchController.listName}" style="width:50%"/>
+												headerText="#{impactSearchController.listName}" style="width:50%" />
 											<p:column headerText="Code" style="width:30%" />
-											<p:column headerText="Level" style="width:10%" />
-											<p:column headerText="Scope" style="width:10%" />
+											<p:column headerText="Level" style="width:#{impactSearchController.displayScopeCatWeight eq 'false' ? '20%' : '10%'}" />
+											<p:column rendered="#{impactSearchController.displayScopeCatWeight}" headerText="Scope" style="width:10%" />
 										</p:row>
 									</p:columnGroup>
 									<p:column><h:outputText value="#{node.term}" /></p:column>
@@ -201,7 +201,7 @@
                                         </h:outputLink>
                                     </p:column>
 									<p:column><h:outputText value="#{node.level}" /></p:column>
-                                    <p:column><h:outputText value="#{appCSMQBean.interpretCqtBaseScope(node.scope)}" /></p:column>
+                                    <p:column rendered="#{impactSearchController.displayScopeCatWeight}"><h:outputText value="#{appCSMQBean.interpretCqtBaseScope(node.scope)}" /></p:column>
 								</p:treeTable>
 							</p:panel>
 
@@ -249,7 +249,7 @@
 										<p:row>
 											<p:column id="targetTitle" style="width:35%"
 												headerText="Future Lists/SMQ" />
-											<p:column colspan="6" headerText="Hierarchy Details" />
+											<p:column colspan="#{impactSearchController.displayScopeCatWeight eq 'false' ? 3 : 6}" headerText="Hierarchy Details" />
 										</p:row>
 
 										<p:row>
@@ -257,9 +257,9 @@
 												headerText="#{impactSearchController.listName}" style="width:35%" />
 											<p:column headerText="Code" style="width:15%" />
 											<p:column headerText="Level" style="width:8%" />
-											<p:column headerText="Scope" style="width:15%" />
-											<p:column headerText="Category" style="width:9% " />
-											<p:column headerText="Weight" style="width:8%" />
+											<p:column rendered="#{impactSearchController.displayScopeCatWeight}" headerText="Scope" style="width:15%" />
+											<p:column rendered="#{impactSearchController.displayScopeCatWeight}" headerText="Category" style="width:9% " />
+											<p:column rendered="#{impactSearchController.displayScopeCatWeight}" headerText="Weight" style="width:8%" />
 											<p:column headerText="" style="width:5%" />
 										</p:row>
 									</p:columnGroup>
@@ -271,7 +271,7 @@
                                         </h:outputLink>
                                     </p:column>
 									<p:column><h:outputText value="#{node.level}" /></p:column>
-									<p:column>
+									<p:column rendered="#{impactSearchController.displayScopeCatWeight}">
                                         <h:outputText rendered="#{not node.hideScope and node.algorithmN}" value="#{appCSMQBean.interpretCqtBaseScope(node.scope)}" />
                                         <p:selectOneMenu value="#{node.scope}"
                                             rendered="#{not node.hideScope and not node.algorithmN}"
@@ -279,7 +279,7 @@
                                             <f:selectItems value="#{appCSMQBean.cqtBaseScopes}" var="s" itemLabel="#{s[1]}" itemValue="#{s[0]}" />
                                         </p:selectOneMenu>
 									</p:column>
-									<p:column>
+									<p:column rendered="#{impactSearchController.displayScopeCatWeight}">
                                         <h:outputText rendered="#{not node.hideCategory and node.algorithmN}" value="#{appCSMQBean.interpretCqtBaseCategory(node.category)}" />
                                         <p:selectOneMenu value="#{node.category}"
                                             rendered="#{not node.hideCategory and not node.algorithmN}"
@@ -287,7 +287,7 @@
                                             <f:selectItems value="#{appCSMQBean.cqtBaseCategories}" var="c" itemLabel="#{c[1]}" itemValue="#{c[0]}" />
                                         </p:selectOneMenu>
 									</p:column>
-									<p:column>
+									<p:column rendered="#{impactSearchController.displayScopeCatWeight}">
                                         <h:outputText rendered="#{not node.hideWeight and node.algorithmN}" value="#{node.weight}" />
                                         <p:spinner value="#{node.weight}" size="2"
                                             rendered="#{not node.hideWeight and not node.algorithmN}" />

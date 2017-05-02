@@ -1,6 +1,11 @@
 package test;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
+
 import javax.naming.Context;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
@@ -11,6 +16,8 @@ import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 import javax.naming.ldap.InitialLdapContext;
 import javax.naming.ldap.LdapContext;
+
+import com.dbms.view.PXEDUser;
 
 /**
  * Example code for retrieving a Users Primary Group
@@ -33,7 +40,9 @@ Ldap password               ----   H7IMC85R#@4$
 public class LDAPTest {
 
 	public static final String MEMBER_OF = "uniquemember";
-	
+    public static String LDAP_GROUP_TO_LOOKUP = "opencqt*";
+
+    
 	/**
      * @param args the command line arguments
      */
@@ -75,7 +84,8 @@ public class LDAPTest {
         LDAPTest ldap = new LDAPTest();
         
         //1) lookup the ldap account
-        SearchResult srLdapGroups = ldap.findAllGroups(ctx, ldapSearchBase, ldapAccountToLookup);
+        //SearchResult srLdapGroups = ldap.findAllGroups(ctx, ldapSearchBase, ldapAccountToLookup);
+        Map<String, List<PXEDUser>> srLdapGroups = ldap.findAllGroupsMap(ctx, ldapSearchBase, LDAP_GROUP_TO_LOOKUP);
 //        SearchResult srLdapUser = ldap.findAccountByAccountName(ctx, ldapSearchBase, ldapAccountToLookup);
         
         //2) get the SID of the users primary group
@@ -85,7 +95,7 @@ public class LDAPTest {
         //String primaryGroupName = ldap.findGroupBySID(ctx, ldapSearchBase, primaryGroupSID);
     }
     
-    
+
     public SearchResult findAllGroups(DirContext ctx, String ldapSearchBase, String accountName) throws NamingException {
     	SearchResult searchResult = null;
     	SearchControls ctls = new SearchControls();
@@ -134,8 +144,77 @@ public class LDAPTest {
         return searchResult;
 	    
     }    
+
+
+    public Map<String, List<PXEDUser>> findAllGroupsMap(DirContext ctx, String ldapSearchBase, String groupName) throws NamingException {
+    	Map<String, List<PXEDUser>> searchResult = new HashMap<String, List<PXEDUser>>();
+    	SearchControls ctls = new SearchControls();
+	    //String[] attrIDs = { "cn", "memberOf" };	    
+	    //ctls.setReturningAttributes(attrIDs);
+	    //ctls.setSearchScope(SearchControls.ONELEVEL_SCOPE);
+	    ctls.setSearchScope(SearchControls.SUBTREE_SCOPE);
+        
+        //String searchFilter = "(objectclass=pfizerGroup)";
+        //String searchFilter = "(&(objectclass=pfizerGroup)(cn=opencqt*))";
+        String searchFilter = "(&(objectclass=pfizerGroup)(cn=" + groupName + "))";
+        //String searchFilter = "(&(objectCategory=group)(cn=opencqt*))";
+        
+	    
+	    NamingEnumeration<SearchResult> answer = ctx.search(ldapSearchBase, searchFilter, ctls);
+	    while (answer.hasMore()) {
+		    SearchResult rslt = answer.next();
+		    //searchResult = rslt;		    
+		    Attributes gattrs = rslt.getAttributes();
+		    String groups = gattrs.get("cn").toString();
+		    String [] groupname = groups.split(":");
+		    String userGroup = groupname[1];
+		    System.out.println("group name: " + userGroup);
+		    
+		    //Attribute members = attrs.get("uniquemember");
+		    
+		    List<PXEDUser> mlist = new ArrayList<PXEDUser>();
+		    
+            // Look for and process memberOf
+            Attribute memberOf = gattrs.get(MEMBER_OF);
+            if (memberOf != null) {
+                for ( NamingEnumeration<?> e1 = memberOf.getAll() ; e1.hasMoreElements() ; ) {
+                    String unprocessedGroupDN = e1.nextElement().toString();
+                    String unprocessedGroupCN = getCN(unprocessedGroupDN);
+                    System.out.println("-- member: \t" + unprocessedGroupCN);
+
+                    NamingEnumeration<SearchResult> results = findAccountByAccountName(ctx, ldapSearchBase, unprocessedGroupCN);
+                    if (results.hasMore()) {
+                    	SearchResult sr = results.next();
+                    	Attributes mattrs = sr.getAttributes();
+
+                    	PXEDUser usr = new PXEDUser();
+                    	usr.setUserName(getCN(sr.getNameInNamespace()));
+                    	usr.setFirstName(getAttr(mattrs, "sn"));
+                    	usr.setLastName(getAttr(mattrs, "givenname"));
+                    	
+                    	mlist.add(usr);
+                    }
+                }
+                
+                if (mlist.size() > 0) 
+                	searchResult.put(userGroup, mlist);
+                
+            }
+            
+/*            
+	        for (NamingEnumeration<? extends Attribute> vals = attrs.getAll(); vals.hasMoreElements();) {
+	            System.out.println("---\t" + vals.nextElement());
+	        }
+*/		    
+	    }
+        return searchResult;	    
+    }    
+
     
-    public SearchResult findAccountByAccountName(DirContext ctx, String ldapSearchBase, String accountName) throws NamingException {
+    public 
+    	//SearchResult 
+    	NamingEnumeration<SearchResult>
+    	findAccountByAccountName(DirContext ctx, String ldapSearchBase, String accountName) throws NamingException {
 
 //        String searchFilter = "(&(objectClass=user)(sAMAccountName=" + accountName + "))";
 
@@ -147,8 +226,10 @@ public class LDAPTest {
 
         NamingEnumeration<SearchResult> results = ctx.search(ldapSearchBase, searchFilter, searchControls);
         // Print the answer
-        printSearchEnumeration(results);
-        
+        //printSearchEnumeration(results);
+
+        return results;
+/*        
         SearchResult searchResult = null;
         if(results.hasMoreElements()) {
              searchResult = (SearchResult) results.nextElement();
@@ -159,8 +240,9 @@ public class LDAPTest {
                 return null;
             }
         }
-        
+      
         return searchResult;
+*/        
     }
     
     
@@ -276,6 +358,7 @@ public class LDAPTest {
 	        while (retEnum.hasMore()) {
 		        SearchResult sr = retEnum.next();
 		        System.out.println("\t" + ">>" + sr.getNameInNamespace());
+		    	System.out.println("\tCN = " + getCN(sr.getNameInNamespace()));
 		        
 			    Attributes attrs = sr.getAttributes();
 			    

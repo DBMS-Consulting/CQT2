@@ -56,4 +56,6 @@ public interface IRefCodeListService extends ICqtPersistenceService<RefConfigCod
     public String getMedDRAVersioningReportsPath();
 
 	List<RefConfigCodeList> findLdapConfig();
+
+	boolean getLevelScopeCategorySystemConfig();
 }
