@@ -1,6 +1,7 @@
 package com.dbms.view;
 
 import java.io.Serializable;
+import org.apache.commons.lang3.StringUtils;
 
 public class PXEDUser implements Serializable {
 
@@ -9,6 +10,13 @@ public class PXEDUser implements Serializable {
 	private String userName;	
 	private String firstName;
 	private String lastName;
+    
+    public PXEDUser() {}
+    public PXEDUser(String userName, String fname, String lname) {
+        this.userName = userName;
+        this.firstName = fname;
+        this.lastName = lname;
+    }
 	
 	
 	public String getUserName() {
@@ -31,7 +39,17 @@ public class PXEDUser implements Serializable {
 	}
     
     public String getFullName() {
-        return lastName + "," + firstName;
+        if(StringUtils.isBlank(lastName)) {
+            if(StringUtils.isBlank(firstName))
+                return userName;
+            else 
+                return firstName;
+        } else {
+            if(StringUtils.isBlank(firstName))
+                return lastName;
+            else 
+                return lastName + "," + firstName;
+        }
     }
 	
 	@Override

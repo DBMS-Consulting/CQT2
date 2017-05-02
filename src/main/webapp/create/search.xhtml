@@ -92,7 +92,6 @@
         
         <p:selectCheckboxMenu value="#{searchController.fltDesignees}"
                               label="Designees" updateLabel="true">
-            <f:selectItem itemValue="NONE" itemLabel="NONE" />
             <f:selectItems value="#{createController.detailsFormModel.designeeList}" var="d"
                            itemLabel="#{d.fullName}" itemValue="#{d.userName}"/>
             <f:validator validatorId="mySelectCheckboxMenuLimitValidator" />                       

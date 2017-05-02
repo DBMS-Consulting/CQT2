@@ -132,19 +132,40 @@ public class SWJSFRequest
     
     public List<PXEDUser> getPXEDUserList() {
         final LinkedList<PXEDUser> userList = new LinkedList<PXEDUser>();
-        try {
-            Map<String, List<PXEDUser>> allGrps = findAllGroups();
-            allGrps.forEach(new BiConsumer<String, List<PXEDUser>>() {
-                @Override
-                public void accept(String t, List<PXEDUser> us) {
-                    for(PXEDUser u : us) {
-                        if(!userList.contains(u))
-                            userList.add(u);
+        RefConfigCodeList entAdType = refCodeListService.findEnterpriseAdType();
+        if(entAdType != null && "PXED_DUMMY".equals(entAdType.getValue())) {
+            // generate some static user list for test
+            userList.add(new PXEDUser("NONE", "NONE", ""));
+            userList.add(new PXEDUser("cougha02", "Alexander", "Coughlin"));
+            userList.add(new PXEDUser("khosan01", "", ""));
+            userList.add(new PXEDUser("kaura07", "", ""));
+            userList.add(new PXEDUser("sings162", "Sunil", "Singh"));
+            userList.add(new PXEDUser("tirumn", "", ""));
+            userList.add(new PXEDUser("novakm01", "", ""));
+            userList.add(new PXEDUser("arcem", "", ""));
+            userList.add(new PXEDUser("lallr01", "", ""));
+            userList.add(new PXEDUser("szel", "", ""));
+            userList.add(new PXEDUser("nipj03", "", ""));
+            userList.add(new PXEDUser("santod10", "", ""));
+            userList.add(new PXEDUser("tomn", "", ""));
+            userList.add(new PXEDUser("zutshm", "Meenakshi", "Zutushi"));
+            userList.add(new PXEDUser("shuklr04", "", ""));
+        } else {
+            try {
+                Map<String, List<PXEDUser>> allGrps = findAllGroups();
+                allGrps.forEach(new BiConsumer<String, List<PXEDUser>>() {
+                    @Override
+                    public void accept(String t, List<PXEDUser> us) {
+                        for(PXEDUser u : us) {
+                            if(!userList.contains(u))
+                                userList.add(u);
+                        }
                     }
-                }
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+                userList.add(new PXEDUser("NONE", "NONE", ""));
+            }
         }
 		return userList;	
     }
