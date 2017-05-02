@@ -654,10 +654,13 @@ public class ListDetailsFormVM {
 	}
 
     public String getFullnameFromUsername(String username) {
-        if(designeeList != null && username != null) {
+        if("NONE".equalsIgnoreCase(username))
+            return "NONE";
+        
+        if(designeeList != null && username != null) {   
             for(PXEDUser pu: designeeList) {
                 if(username.equals(pu.getUserName()))
-                    return pu.getLastName() + ',' + pu.getFirstName();
+                    return pu.getFullName();
             }
         }
         return "";        

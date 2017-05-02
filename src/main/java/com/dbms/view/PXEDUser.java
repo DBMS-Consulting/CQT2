@@ -29,6 +29,10 @@ public class PXEDUser implements Serializable {
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
 	}
+    
+    public String getFullName() {
+        return lastName + "," + firstName;
+    }
 	
 	@Override
     public boolean equals(Object e) {
