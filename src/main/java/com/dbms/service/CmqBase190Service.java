@@ -1092,7 +1092,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 				LOG.error("Exception while reading MQReportRelationsWorkerDTO", e);
 			}
 		}
-		
+		LOG.info("Processing children now.");
 		//now child relations
 		String level = "", term = "", codeTerm = "";
 		List<CmqBase190> childCmqs = findChildCmqsByParentCode(details.getCode());
@@ -1137,7 +1137,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 				}
 			}
 		}
-		
+		LOG.info("Finished processing all relations and children.");
 		executorService.shutdownNow();
 			
 		rowCount = fillReport(mapReport, cell, row, rowCount, worksheet);
@@ -1163,6 +1163,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		LOG.info("Finished MQ report generation.");
 		return content;
 	}
 	
@@ -1181,9 +1182,10 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 			int cpt = 0;
 			MQReportRelationsWorkerDTO relationsWorkerDTO = new MQReportRelationsWorkerDTO();
 			relationsWorkerDTO.setWorkerName(workerName);
+			LOG.info("In {} Starting Callable.", this.workerName);
 			try {
 				if (relation.getSmqCode() != null) {
-					LOG.info("In {} Loading SMQ code relations.", this.workerName);
+					//LOG.info("In {} Loading SMQ code relations.", this.workerName);
 					List<Long> smqChildCodeList = new ArrayList<>();
 					smqChildCodeList.add(relation.getSmqCode());
 
@@ -1282,7 +1284,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 						}
 					}
 					
-					LOG.info("In {} Finished Loading SMQ code relations.", this.workerName);
+					//LOG.info("In {} Finished Loading SMQ code relations.", this.workerName);
 				}
 				
 				/**
@@ -1290,7 +1292,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 				 * HLT.
 				 */
 				if (relation.getHltCode() != null) {
-					LOG.info("In {} Loading HLT code relations.", this.workerName);
+					//LOG.info("In {} Loading HLT code relations.", this.workerName);
 					List<Long> hltCodesList = new ArrayList<>();
 					hltCodesList.add(relation.getHltCode());
 					List<MeddraDictHierarchySearchDto> hlts = meddraDictService.findByCodes("HLT_", hltCodesList);
@@ -1329,7 +1331,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 							}
 						}
 					}
-					LOG.info("In {} Finished Loading HLT code relations.", this.workerName);
+					//LOG.info("In {} Finished Loading HLT code relations.", this.workerName);
 				}
 				
 				/**
@@ -1337,14 +1339,14 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 				 * LLT.
 				 */
 				if (relation.getLltCode() != null) {
-					LOG.info("In {} Loading LLT code relations.", this.workerName);
+					//LOG.info("In {} Loading LLT code relations.", this.workerName);
 					List<Long> lltCodesList = new ArrayList<>();
 					lltCodesList.add(relation.getLltCode());
 					List<MeddraDictHierarchySearchDto> llts = meddraDictService.findByCodes("LLT_", lltCodesList);
 					for (MeddraDictHierarchySearchDto llt : llts) {
 						relationsWorkerDTO.addToMapReport(cpt++, new ReportLineDataDto("LLT", llt.getCode() + "", llt.getTerm(), "")); 
 					}
-					LOG.info("In {} Finished Loading LLT code relations.", this.workerName);
+					//LOG.info("In {} Finished Loading LLT code relations.", this.workerName);
 				}
 				
 				/**
@@ -1352,7 +1354,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 				 * PT
 				 */
 				if (relation.getPtCode() != null) {
-					LOG.info("In {} Loading PT code relations.", this.workerName);
+					//LOG.info("In {} Loading PT code relations.", this.workerName);
 					List<Long> ptCodesList = new ArrayList<>();
 					ptCodesList.add(relation.getPtCode());
 					List<MeddraDictHierarchySearchDto> pts = meddraDictService.findByCodes("PT_", ptCodesList);
@@ -1375,7 +1377,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 							}
 						}
 					}
-					LOG.info("In {} Finished Loading PT code relations.", this.workerName);
+					//LOG.info("In {} Finished Loading PT code relations.", this.workerName);
 				}
 				
 				
@@ -1384,7 +1386,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 				 * SOC
 				 */
 				if (relation.getSocCode() != null) {
-					LOG.info("In {} Loading SOC code relations.", this.workerName);
+					//LOG.info("In {} Loading SOC code relations.", this.workerName);
 					List<Long> socCodesList = new ArrayList<>();
 					socCodesList.add(relation.getSocCode());
 					List<MeddraDictHierarchySearchDto> socss = meddraDictService.findByCodes("SOC_", socCodesList);
@@ -1457,7 +1459,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 						}
 					}
 					
-					LOG.info("In {} Finished Loading SOC code relations.", this.workerName);
+					//LOG.info("In {} Finished Loading SOC code relations.", this.workerName);
 				}
 				
 				/**
@@ -1465,7 +1467,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 				 * HLGT.
 				 */
 				if (relation.getHlgtCode() != null) {
-					LOG.info("In {} Loading HLGT code relations.", this.workerName);
+					//LOG.info("In {} Loading HLGT code relations.", this.workerName);
 					List<Long> hlgtCodesList = new ArrayList<>();
 					hlgtCodesList.add(relation.getHlgtCode());
 					List<MeddraDictHierarchySearchDto> socDtos = meddraDictService.findByCodes("HLGT_", hlgtCodesList);
@@ -1521,7 +1523,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 						}
 					}
 					
-					LOG.info("In {} Finished Loading HLGT code relations.", this.workerName);
+					//LOG.info("In {} Finished Loading HLGT code relations.", this.workerName);
 				}
 				relationsWorkerDTO.setSuccess(true);
 				LOG.info("In {} Finished Callable.", this.workerName);
