@@ -108,15 +108,15 @@
 
 								<p:outputLabel styleClass="label-right" value="Designee:" />
 								<h:outputText
-									value="#{createController.selectedData.cmqDesignee}" />
+									value="#{createController.detailsFormModel.getFullnameFromUsername(createController.selectedData.cmqDesignee)}" />
 
 								<p:outputLabel styleClass="label-right" value="Designee 2:" />
 								<h:outputText
-									value="#{createController.selectedData.cmqDesignee2}" />
+									value="#{createController.detailsFormModel.getFullnameFromUsername(createController.selectedData.cmqDesignee2)}" />
 									
 								<p:outputLabel styleClass="label-right" value="Designee 3:" />
 								<h:outputText
-									value="#{createController.selectedData.cmqDesignee3}" />
+									value="#{createController.detailsFormModel.getFullnameFromUsername(createController.selectedData.cmqDesignee3)}" />
 							</h:panelGrid>
 
 

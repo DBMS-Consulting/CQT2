@@ -30,5 +30,16 @@ public class PXEDUser implements Serializable {
 		this.lastName = lastName;
 	}
 	
-	
+	@Override
+    public boolean equals(Object e) {
+        if(e instanceof PXEDUser) {
+            if(this.userName == null)
+                return ((PXEDUser) e).userName == null;
+            else
+                return this.userName.equals(((PXEDUser) e).userName);
+        }
+        return false;
+    }
+    
+    
 }

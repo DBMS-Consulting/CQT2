@@ -58,7 +58,7 @@
 				<h:outputText value="#{createController.selectedData.cmqGroup}" />
 
 				<p:outputLabel value="Designee:" />
-				<h:outputText value="#{createController.selectedData.cmqDesignee}" />
+                <h:outputText value="#{createController.detailsFormModel.getFullnameFromUsername(createController.selectedData.cmqDesignee)}" />
 
 				<p:spacer />
 				<p:spacer />

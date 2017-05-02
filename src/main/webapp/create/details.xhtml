@@ -87,7 +87,8 @@
 				disabled="#{createController.detailsFormDisabled}" rendered="true"
                 label="Designee"
 				required="#{createController.activeWizard.step eq 'details' and !createController.readOnlyState}">
-				<f:selectItems value="#{createController.detailsFormModel.designeeList}" />
+                <f:selectItems value="#{createController.detailsFormModel.designeeList}" var="d"
+                           itemLabel="#{d.lastName + ',' + d.firstName}" itemValue="#{d.userName}"/>
 			</p:selectOneMenu>
 		</h:panelGrid>
 
@@ -97,7 +98,8 @@
 				value="#{createController.detailsFormModel.designeeTwo}"
 				disabled="#{createController.detailsFormDisabled}" rendered="true"
                 label="Designee 2">
-				<f:selectItems value="#{createController.detailsFormModel.designeeList}" />
+				<f:selectItems value="#{createController.detailsFormModel.designeeList}" var="d"
+                           itemLabel="#{d.lastName + ',' + d.firstName}" itemValue="#{d.userName}"/>
 			</p:selectOneMenu>
 			
 			<p:outputLabel value="Designee 3" />
@@ -105,7 +107,8 @@
 				value="#{createController.detailsFormModel.designeeThree}"
 				disabled="#{createController.detailsFormDisabled}" rendered="true"
                 label="Designee 3">
-				<f:selectItems value="#{createController.detailsFormModel.designeeList}" />
+				<f:selectItems value="#{createController.detailsFormModel.designeeList}" var="d"
+                           itemLabel="#{d.lastName + ',' + d.firstName}" itemValue="#{d.userName}"/>
 			</p:selectOneMenu>
 			
 			<p:outputLabel value="* Level" />

@@ -101,7 +101,8 @@
 
 		<p:selectCheckboxMenu value="#{searchController.fltDesignees}"
                               label="Designees" updateLabel="true">
-			<f:selectItems value="#{createController.detailsFormModel.designeeList}" />
+			<f:selectItems value="#{createController.detailsFormModel.designeeList}" var="d"
+                           itemLabel="#{d.lastName + ',' + d.firstName}" itemValue="#{d.userName}"/>
             <f:validator validatorId="mySelectCheckboxMenuLimitValidator" />                       
             <f:attribute name="maxLimit" value="3" />
 		</p:selectCheckboxMenu>

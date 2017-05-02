@@ -30,6 +30,8 @@ import org.apache.commons.lang3.StringUtils;
 import com.dbms.entity.cqt.RefConfigCodeList;
 import com.dbms.service.IRefCodeListService;
 import com.dbms.view.PXEDUser;
+import java.util.LinkedList;
+import java.util.function.BiConsumer;
 
 
 @ManagedBean(name="appSWJSFRequest")
@@ -127,12 +129,37 @@ public class SWJSFRequest
 	public Object def(Object value, Object defVal) {
 		return value != null ? value : defVal;
 	}
-	
-	public ArrayList<String> getPXEDUserList(){
-		ArrayList<String> userList = new ArrayList<>(Arrays.asList("NONE", "cougha02", "khosan01", "kaura07",
-				"sings162", "tirumn", "novakm01","arcem", "lallr01","szel","nipj03","santod10","tomn",
-				"zutshm","shuklr04"));
+    
+    public List<PXEDUser> getPXEDUserList() {
+        final LinkedList<PXEDUser> userList = new LinkedList<PXEDUser>();
+        try {
+            Map<String, List<PXEDUser>> allGrps = findAllGroups();
+            allGrps.forEach(new BiConsumer<String, List<PXEDUser>>() {
+                @Override
+                public void accept(String t, List<PXEDUser> us) {
+                    for(PXEDUser u : us) {
+                        if(!userList.contains(u))
+                            userList.add(u);
+                    }
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 		return userList;	
+    }
+
+	public List<String> getPXEDUsernameList(){
+//		ArrayList<String> userList = new ArrayList<>(Arrays.asList("NONE", "cougha02", "khosan01", "kaura07",
+//				"sings162", "tirumn", "novakm01","arcem", "lallr01","szel","nipj03","santod10","tomn",
+//				"zutshm","shuklr04"));
+        List<PXEDUser> puls = getPXEDUserList();
+        ArrayList<String> uls = new ArrayList();
+        
+        for(PXEDUser pul: puls) {
+            uls.add(pul.getUserName());
+        }
+        return uls;
 	}
 	
 	public List<String> getGroupList(String name, String key)

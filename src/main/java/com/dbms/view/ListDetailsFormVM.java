@@ -54,7 +54,7 @@ public class ListDetailsFormVM {
 	private String lastModifiedBy;
 	private Date lastModifiedDate;
 	
-	private List<String> designeeList;
+	private List<PXEDUser> designeeList;
 	
 	public ListDetailsFormVM(AuthenticationService authService, IRefCodeListService refCodeListService, SWJSFRequest appSWJSFRequest) {
 		this.authService = authService;
@@ -629,11 +629,11 @@ public class ListDetailsFormVM {
 		this.refCodeListService = refCodeListService;
 	}
 
-	public List<String> getDesigneeList() {
+	public List<PXEDUser> getDesigneeList() {
 		return designeeList;
 	}
 
-	public void setDesigneeList(List<String> designeeList) {
+	public void setDesigneeList(List<PXEDUser> designeeList) {
 		this.designeeList = designeeList;
 	}
 
@@ -653,4 +653,13 @@ public class ListDetailsFormVM {
 		this.designeeThree = designeeThree;
 	}
 
+    public String getFullnameFromUsername(String username) {
+        if(designeeList != null && username != null) {
+            for(PXEDUser pu: designeeList) {
+                if(username.equals(pu.getUserName()))
+                    return pu.getLastName() + ',' + pu.getFirstName();
+            }
+        }
+        return "";        
+    }
 }
