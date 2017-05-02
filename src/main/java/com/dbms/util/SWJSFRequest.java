@@ -3,8 +3,10 @@ package com.dbms.util;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ApplicationScoped;
@@ -27,6 +29,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.dbms.entity.cqt.RefConfigCodeList;
 import com.dbms.service.IRefCodeListService;
+import com.dbms.view.PXEDUser;
 
 
 @ManagedBean(name="appSWJSFRequest")
@@ -37,12 +40,16 @@ public class SWJSFRequest
 	@ManagedProperty("#{RefCodeListService}")
 	private IRefCodeListService refCodeListService;
 	
+	private static LdapContext ctx = null;
+	
     public static final String MEMBER_OF = "uniquemember";
     public static String LDAP_AD_SERVER;
     public static String LDAP_SEARCH_BASE;
     public static String LDAP_USERNAME;
     public static String LDAP_PASSWORD;
     public static String LDAP_ACCOUNT_TO_LOOKUP = "cougha02";
+    public static String LDAP_GROUP_TO_LOOKUP = "opencqt*";
+    
     
     @PostConstruct
     public void init() {
@@ -61,7 +68,11 @@ public class SWJSFRequest
 		}
     }
     
+    
     public LdapContext initLdapContext() throws NamingException {
+    	
+    	if (ctx != null) return ctx;
+    	
         Hashtable<String, Object> env = new Hashtable<String, Object>();
         env.put(Context.SECURITY_AUTHENTICATION, "simple");
         if(LDAP_USERNAME != null) {
@@ -81,7 +92,7 @@ public class SWJSFRequest
         //env.put("com.sun.jndi.ldap.trace.ber", System.err);
         
         // Create the initial context
-        LdapContext ctx = new InitialLdapContext(env, null);
+        ctx = new InitialLdapContext(env, null);
         return ctx;
     }
         
@@ -207,14 +218,14 @@ public class SWJSFRequest
 		}
 	}
     
-    public SearchResult findAllGroups() throws NamingException {
+    public Map<String, List<PXEDUser>> findAllGroups() throws NamingException {
         LdapContext ctx = initLdapContext();
         //1) lookup the ldap account
-        return findAllGroups(ctx, LDAP_SEARCH_BASE, LDAP_ACCOUNT_TO_LOOKUP);
+        return findAllGroups(ctx, LDAP_SEARCH_BASE, LDAP_GROUP_TO_LOOKUP);
     }
     
-    public SearchResult findAllGroups(DirContext ctx, String ldapSearchBase, String accountName) throws NamingException {
-    	SearchResult searchResult = null;
+    public Map<String, List<PXEDUser>> findAllGroups(DirContext ctx, String ldapSearchBase, String groupName) throws NamingException {
+    	Map<String, List<PXEDUser>> searchResult = new HashMap<String, List<PXEDUser>>();
     	SearchControls ctls = new SearchControls();
 	    //String[] attrIDs = { "cn", "memberOf" };	    
 	    //ctls.setReturningAttributes(attrIDs);
@@ -222,30 +233,50 @@ public class SWJSFRequest
 	    ctls.setSearchScope(SearchControls.SUBTREE_SCOPE);
         
         //String searchFilter = "(objectclass=pfizerGroup)";
-        String searchFilter = "(&(objectclass=pfizerGroup)(cn=opencqt*))";
+        //String searchFilter = "(&(objectclass=pfizerGroup)(cn=opencqt*))";
+        String searchFilter = "(&(objectclass=pfizerGroup)(cn=" + groupName + "))";
         //String searchFilter = "(&(objectCategory=group)(cn=opencqt*))";
         
 	    
 	    NamingEnumeration<SearchResult> answer = ctx.search(ldapSearchBase, searchFilter, ctls);
 	    while (answer.hasMore()) {
 		    SearchResult rslt = answer.next();
-		    searchResult = rslt;		    
-		    Attributes attrs = rslt.getAttributes();
-		    String groups = attrs.get("cn").toString();
+		    //searchResult = rslt;		    
+		    Attributes gattrs = rslt.getAttributes();
+		    String groups = gattrs.get("cn").toString();
 		    String [] groupname = groups.split(":");
 		    String userGroup = groupname[1];
-		    System.out.println(attrs.get("cn"));
+		    System.out.println("group name: " + userGroup);
 		    
 		    //Attribute members = attrs.get("uniquemember");
 		    
+		    List<PXEDUser> mlist = new ArrayList<PXEDUser>();
+		    
             // Look for and process memberOf
-            Attribute memberOf = attrs.get(MEMBER_OF);
+            Attribute memberOf = gattrs.get(MEMBER_OF);
             if (memberOf != null) {
                 for ( NamingEnumeration<?> e1 = memberOf.getAll() ; e1.hasMoreElements() ; ) {
                     String unprocessedGroupDN = e1.nextElement().toString();
                     String unprocessedGroupCN = getCN(unprocessedGroupDN);
-        		    System.out.println("--\t" + unprocessedGroupCN);
+                    System.out.println("-- member: \t" + unprocessedGroupCN);
+
+                    NamingEnumeration<SearchResult> results = findAccountByAccountName(ctx, ldapSearchBase, unprocessedGroupCN);
+                    if (results.hasMore()) {
+                    	SearchResult sr = results.next();
+                    	Attributes mattrs = sr.getAttributes();
+
+                    	PXEDUser usr = new PXEDUser();
+                    	usr.setUserName(getCN(sr.getNameInNamespace()));
+                    	usr.setFirstName(getAttr(mattrs, "sn"));
+                    	usr.setLastName(getAttr(mattrs, "givenname"));
+                    	
+                    	mlist.add(usr);
+                    }
                 }
+                
+                if (mlist.size() > 0) 
+                	searchResult.put(userGroup, mlist);
+                
             }
             
 /*            
@@ -254,17 +285,17 @@ public class SWJSFRequest
 	        }
 */		    
 	    }
-        return searchResult;
-	    
+        return searchResult;	    
     }    
 
-    public SearchResult findAccountByAccountName() throws NamingException {
+    
+    public NamingEnumeration<SearchResult> findAccountByAccountName() throws NamingException {
         LdapContext ctx = initLdapContext();
         return findAccountByAccountName(ctx, LDAP_SEARCH_BASE, LDAP_ACCOUNT_TO_LOOKUP);
     }
     
         
-    public SearchResult findAccountByAccountName(DirContext ctx, String ldapSearchBase, String accountName) throws NamingException {
+    public NamingEnumeration<SearchResult> findAccountByAccountName(DirContext ctx, String ldapSearchBase, String accountName) throws NamingException {
 
 //        String searchFilter = "(&(objectClass=user)(sAMAccountName=" + accountName + "))";
 
@@ -276,8 +307,10 @@ public class SWJSFRequest
 
         NamingEnumeration<SearchResult> results = ctx.search(ldapSearchBase, searchFilter, searchControls);
         // Print the answer
-        printSearchEnumeration(results);
-        
+        //printSearchEnumeration(results);
+
+        return results;
+/*        
         SearchResult searchResult = null;
         if(results.hasMoreElements()) {
              searchResult = (SearchResult) results.nextElement();
@@ -287,9 +320,9 @@ public class SWJSFRequest
                 System.err.println("Matched multiple users for the accountName: " + accountName);
                 return null;
             }
-        }
-        
+        }        
         return searchResult;
+*/        
     }
     
     
@@ -392,16 +425,39 @@ public class SWJSFRequest
         }
     }
 
-    public void printSearchEnumeration(NamingEnumeration<SearchResult> retEnum) {
+    public static void printSearchEnumeration(NamingEnumeration<SearchResult> retEnum) {
+    	
+    	final String[] IDs = {
+    			"pfizerpreferredname",
+    			"displayname",
+    			"sn",
+    			"givenname"
+    	};
+    	
 	    try {
 	        while (retEnum.hasMore()) {
-	        SearchResult sr = retEnum.next();
-	        System.out.println(">>" + sr.getNameInNamespace());
+		        SearchResult sr = retEnum.next();
+		        System.out.println("\t" + ">>" + sr.getNameInNamespace());
+		        
+			    Attributes attrs = sr.getAttributes();
+			    
+			    for (String ID : IDs ) {
+			    	System.out.println("\t" + ID + " = " + getAttr(attrs, ID));
+			    }
 	        }
 	    } catch (NamingException e) {
 	        e.printStackTrace();
 	    }
+    }    
+
+	public static String getAttr(Attributes attrs, String key) {
+	    //Attributes attrs = sr.getAttributes();
+	    String keyStr = attrs.get(key).toString();
+	    String [] keyVal = keyStr.split(":");
+	    String ret = keyVal[1];
+	    return ret;
     }
+
     
     public String extractGroupName(String groupMembership, String defaultGroup) {
         String g;
