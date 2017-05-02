@@ -61,14 +61,29 @@
 						</f:facet>
 
 						<f:facet name="right">
-							<i class="fa fa-file-excel-o"
+                            
+                            <!--Show Confirm Dialog if list has more than 1 children when clicking on "MQ Detailed Report" generation button-->
+                            <p:confirmDialog header="Export"  widgetVar="confirmExport"
+                                             message="The report generation for large lists can take upto an hour. Do you want to continue?">  
+                                <p:commandButton value="Yes" onclick="PF('confirmExport').hide()" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"
+                                                 actionListener="#{impactSearchController.generateExcel}" >
+                                    <p:fileDownload value="#{impactSearchController.excelFile}" />
+                                </p:commandButton>
+                                <p:commandButton value="No" onclick="PF('confirmExport').hide()" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>   
+                            </p:confirmDialog>
+                            
+                            <i class="fa fa-file-excel-o"
 								style="position: absolute; margin-top: 8px; margin-left: 5px"></i>
-							<h:commandLink id="exportBtn" value="Export" disabled="#{!impactSearchController.exportEnabled}"
-								type="button" styleClass="generate"
-								actionListener="#{impactSearchController.generateExcel}">
+                            <h:commandLink rendered="#{impactSearchController.targetTableRootTreeNode.childCount gt 0 and impactSearchController.targetTableRootTreeNode.children.get(0).childCount gt 0}"
+                                           value="Export" type="button" disabled="#{!impactSearchController.exportEnabled}"
+                                       styleClass="generate" onclick="PF('confirmExport').show();return false;" />
 
-								<p:fileDownload value="#{impactSearchController.excelFile}" />
-							</h:commandLink>
+                            <h:commandLink rendered="#{impactSearchController.targetTableRootTreeNode.childCount le 0 or impactSearchController.targetTableRootTreeNode.children.get(0).childCount le 0}"
+                                           value="Export" disabled="#{!impactSearchController.exportEnabled}"
+                                        styleClass="generate"
+                                        actionListener="#{impactSearchController.generateExcel}">
+                                <p:fileDownload value="#{impactSearchController.excelFile}" />
+                            </h:commandLink>
                             
                             <p:spacer width="5" />
 							<p:commandButton value="Legend" actionListener="#"
@@ -148,7 +163,7 @@
 
 									<p:column><h:outputText value="#{node.term}" /></p:column>
 									<p:column>
-                                        <h:outputLink value="#" title="#{impactSearchController.getImpactDesc(node)}" >
+                                        <h:outputLink value="#" title="#{impactSearchController.getImpactDesc(node, 'current')}" >
                                             <h:outputText value="#{node.code}" />
                                         </h:outputLink>
                                     </p:column>
@@ -216,7 +231,7 @@
 
 									<p:column><h:outputText value="#{node.term}" /></p:column>
 									<p:column>
-                                        <h:outputLink value="#" title="#{impactSearchController.getImpactDesc(node)}" >
+                                        <h:outputLink value="#" title="#{impactSearchController.getImpactDesc(node, 'target')}" >
                                             <h:outputText value="#{node.code}" />
                                         </h:outputLink>
                                     </p:column>

@@ -94,12 +94,26 @@
 
 				<p:spacer width="10" />
 				
-				<i class="fa fa-file-excel-o"
+				
+                    
+                <!--Show Confirm Dialog if list has more than 1 children when clicking on "MQ Detailed Report" generation button-->
+                <p:confirmDialog header="MQ Detail Report"  widgetVar="confirmMQReport"
+                                 message="The report generation for large lists can take upto an hour. Do you want to continue?">  
+                    <p:commandButton value="Yes" onclick="PF('confirmMQReport').hide()" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"
+                                     actionListener="#{reportController.generateMQReport(createController.detailsFormModel, createController.notesFormModel)}" >
+                        <p:fileDownload value="#{reportController.excelFile}" />
+                    </p:commandButton>
+                    <p:commandButton value="No" onclick="PF('confirmMQReport').hide()" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>   
+                </p:confirmDialog>
+                
+                <i class="fa fa-file-excel-o"
 					style="position: absolute; margin-top: 8px; margin-left: 5px"></i>
-				<h:commandLink id="generate_MQ" value="MQ Detailed Report" type="button"
+                <h:commandLink rendered="#{searchController.relationsRoot.childCount gt 0}" value="MQ Detailed Report" type="button"
+                               styleClass="generate" onclick="PF('confirmMQReport').show();return false;" />
+                
+                <h:commandLink rendered="#{searchController.relationsRoot.childCount le 0}" value="MQ Detailed Report"
 					styleClass="generate"
 					actionListener="#{reportController.generateMQReport(createController.detailsFormModel, createController.notesFormModel)}">
-
 					<p:fileDownload value="#{reportController.excelFile}" />
 				</h:commandLink>
 				
