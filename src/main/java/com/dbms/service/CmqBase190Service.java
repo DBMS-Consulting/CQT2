@@ -17,6 +17,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
@@ -27,6 +29,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.persistence.TemporalType;
 
+import org.apache.commons.codec.Charsets;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.ClientAnchor;
@@ -35,7 +40,6 @@ import org.apache.poi.ss.usermodel.Drawing;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Picture;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFFont;
@@ -65,10 +69,6 @@ import com.dbms.util.exceptions.CqtServiceException;
 import com.dbms.view.ListDetailsFormVM;
 import com.dbms.view.ListNotesFormVM;
 import com.dbms.web.dto.MQReportRelationsWorkerDTO;
-
-import org.apache.commons.collections4.CollectionUtils;
-
-import org.apache.commons.lang3.ArrayUtils;
 
 /**
  * @author Jay G.(jayshanchn@hotmail.com)
@@ -1153,13 +1153,23 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		try {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			workbook.write(baos);
-			byte[] xls = baos.toByteArray();
-			ByteArrayInputStream bais = new ByteArrayInputStream(xls);
+			//byte[] xls = baos.toByteArray();
+			
+			ByteArrayOutputStream zipBaos = new ByteArrayOutputStream();
+		    ZipOutputStream zos = new ZipOutputStream(zipBaos);
+		    ZipEntry entry = new ZipEntry("Relations_MQ_Detailed_Report_" + details.getName() + ".xlsx");
+		    zos.putNextEntry(entry);
+		    baos.writeTo(zos);
+		    //workbook.write(zipBaos);
+		    //zos.write(xls);
+		    zos.flush();
+		    zos.close();
+			ByteArrayInputStream bais = new ByteArrayInputStream(zipBaos.toByteArray());
 			content = new DefaultStreamedContent(
 					bais,
-					"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+					"application/zip",
 					"Relations_MQ_Detailed_Report_" + details.getName()
-					+ ".xlsx");
+					+ ".zip", Charsets.UTF_8.name());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
