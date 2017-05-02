@@ -211,11 +211,12 @@
 										<p:commandButton value="Hierarchy Search" actionListener="#"
 											disabled="#{not impactSearchController.hierachySearchButtonEnabled}"
 											icon="fa fa-search" onclick="PF('target-hierarchy-search').show();" />
-										<p:commandButton value="New PTs" actionListener="#"
-											disabled="#{not impactSearchController.selectNewPTButtonEnabled}"
+										<p:commandButton value="New PTs" actionListener="#" id="new_pt_btn"
+											disabled="#{impactSearchController.newPTButtonEnabled}"
 											onclick="PF('new_pt').show();" icon="fa fa-book" />
-
-
+											
+											<!-- disabled="#{not impactSearchController.selectNewPTButtonEnabled}" -->
+											
 										<p:spacer width="40px" height="1px" />
 										<h:outputText
 											value="#{configMB.dictionaryName} - #{configMB.targetMeddraVersion.value}" />
@@ -394,7 +395,7 @@
 					<h:panelGrid columns="2">
 						<p:commandButton value="Add selected"
 							onclick="PF('select_mq').hide()"
-							update="currentListsAndSmqs futureListsAndSmqs futureListsToolbar">
+							update="currentListsAndSmqs futureListsAndSmqs futureListsToolbar new_pt_btn">
 							<f:actionListener
 								binding="#{impactSearchController.updateCurrentTable()}" />
 							<f:actionListener
