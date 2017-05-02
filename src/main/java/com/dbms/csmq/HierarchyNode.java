@@ -41,6 +41,8 @@ public class HierarchyNode implements Serializable, Comparable<HierarchyNode> {
 	private boolean hideDelete;
 
 	private boolean primaryPathFlag;
+	
+	private boolean primarypathCheckDone;
 
 	// for green colored primary rows
 	private String rowStyleClass;
@@ -324,5 +326,13 @@ public class HierarchyNode implements Serializable, Comparable<HierarchyNode> {
 
 	public void setTotalRecordsCount(int totalRecordsCount) {
 		this.totalRecordsCount = totalRecordsCount;
+	}
+
+	public boolean isPrimarypathCheckDone() {
+		return primarypathCheckDone;
+	}
+
+	public void setPrimarypathCheckDone(boolean primarypathCheckDone) {
+		this.primarypathCheckDone = primarypathCheckDone;
 	}
 }

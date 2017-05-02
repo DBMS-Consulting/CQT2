@@ -229,7 +229,7 @@ public class CmqBaseRelationsTreeHelper {
             String levelOfExpandedNode = hNode.getLevel();
             if("LLT".equalsIgnoreCase(levelOfExpandedNode)) {
                 Long lltCode = Long.valueOf(reverseSearchDto.getLltCode());
-                this.populateMeddraDictReverseHierarchySearchDtoChildren("LLT_", "PT", lltCode, hNode, expandedNode, reverseSearchDto, false);	
+                this.populateMeddraDictReverseHierarchySearchDtoChildren("LLT_", "PT", lltCode, hNode, expandedNode, reverseSearchDto, true);	
             } else if ("PT".equalsIgnoreCase(levelOfExpandedNode)) {
                 Long ptCode = Long.valueOf(reverseSearchDto.getPtCode());
                 if(relationView) {
@@ -246,10 +246,10 @@ public class CmqBaseRelationsTreeHelper {
                 }
             } else if ("HLT".equalsIgnoreCase(levelOfExpandedNode)) {
                 Long hltCode = Long.valueOf(reverseSearchDto.getHltCode());
-                this.populateMeddraDictReverseHierarchySearchDtoChildren("HLT_", "HLGT", hltCode, hNode, expandedNode, reverseSearchDto, false);	
+                this.populateMeddraDictReverseHierarchySearchDtoChildren("HLT_", "HLGT", hltCode, hNode, expandedNode, reverseSearchDto, true);	
             } else if ("HLGT".equalsIgnoreCase(levelOfExpandedNode)) {
                 Long hlgtCode = Long.valueOf(reverseSearchDto.getHlgtCode());
-                this.populateMeddraDictReverseHierarchySearchDtoChildren("HLGT_", "SOC", hlgtCode, hNode, expandedNode, reverseSearchDto, false);	
+                this.populateMeddraDictReverseHierarchySearchDtoChildren("HLGT_", "SOC", hlgtCode, hNode, expandedNode, reverseSearchDto, true);	
             }
         }
 
@@ -647,19 +647,23 @@ public class CmqBaseRelationsTreeHelper {
             , Long code, HierarchyNode hierarchyNode, TreeNode expandedTreeNode
             , MeddraDictReverseHierarchySearchDto reverseSearchDto
             , boolean chekcForPrimaryPath) {
-        
+        boolean checkPrimaryPathTemp = false;
 		String partitionColumnPrefix = partitionColumn +"_";
 		List<MeddraDictReverseHierarchySearchDto> childReverseSearchDtos = this.meddraDictSvc.findReverseByCode(searchColumnTypePrefix
 																															, partitionColumnPrefix, code);
 		if(CollectionUtils.isNotEmpty(childReverseSearchDtos)) {
+			if(chekcForPrimaryPath && !hierarchyNode.isPrimarypathCheckDone() && (childReverseSearchDtos.size() > 1)) {
+				checkPrimaryPathTemp = true;
+			}
 			for (MeddraDictReverseHierarchySearchDto childReverseSearchDto : childReverseSearchDtos) {
 				HierarchyNode childNode;
-				if(chekcForPrimaryPath) {
+				if(checkPrimaryPathTemp) {
 					boolean isPrimary = false;
 					if("Y".equalsIgnoreCase(childReverseSearchDto.getPrimaryPathFlag())) {
 						isPrimary = true;
 					}
 					childNode = this.createMeddraReverseNode(childReverseSearchDto, partitionColumn, isPrimary, null);
+					childNode.setPrimarypathCheckDone(true);
 				} else {
 					childNode = this.createMeddraReverseNode(childReverseSearchDto, partitionColumn, hierarchyNode.isPrimaryPathFlag(), null);
 				}

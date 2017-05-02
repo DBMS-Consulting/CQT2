@@ -195,7 +195,7 @@ public class IARelationsTreeHelper {
 				if("LLT".equalsIgnoreCase(levelOfExpandedNode)) {
 					Long lltCode = Long.valueOf(reverseSearchDto.getLltCode());
 					this.populateMeddraDictReverseHierarchySearchDtoChildren("LLT_", "PT", lltCode, hierarchyNode
-																				, expandedTreeNode, reverseSearchDto, false, uiSourceOfEvent);	
+																				, expandedTreeNode, reverseSearchDto, true, uiSourceOfEvent);	
 				} else if ("PT".equalsIgnoreCase(levelOfExpandedNode)) {
 					Long ptCode = Long.valueOf(reverseSearchDto.getPtCode());
 					//if its main view tables then show downward hierarchy else its from hierarchySearch so show reverse hierarchy
@@ -208,11 +208,11 @@ public class IARelationsTreeHelper {
 				} else if ("HLT".equalsIgnoreCase(levelOfExpandedNode)) {
 					Long hltCode = Long.valueOf(reverseSearchDto.getHltCode());
 					this.populateMeddraDictReverseHierarchySearchDtoChildren("HLT_", "HLGT", hltCode, hierarchyNode
-																				, expandedTreeNode, reverseSearchDto, false, uiSourceOfEvent);	
+																				, expandedTreeNode, reverseSearchDto, true, uiSourceOfEvent);	
 				} else if ("HLGT".equalsIgnoreCase(levelOfExpandedNode)) {
 					Long hlgtCode = Long.valueOf(reverseSearchDto.getHlgtCode());
 					this.populateMeddraDictReverseHierarchySearchDtoChildren("HLGT_", "SOC", hlgtCode, hierarchyNode
-																				, expandedTreeNode, reverseSearchDto, false, uiSourceOfEvent);	
+																				, expandedTreeNode, reverseSearchDto, true, uiSourceOfEvent);	
 				}
 			}
 			hierarchyNode.setDataFetchCompleted(true);
@@ -1297,19 +1297,23 @@ public class IARelationsTreeHelper {
 																		, boolean chekcForPrimaryPath, String uiSourceOfEvent) {
 		boolean isRootListNode = isRootListNode(expandedTreeNode);
         boolean bEventFromTargetTable = "target-table".equalsIgnoreCase(uiSourceOfEvent);
-        
+        boolean checkPrimaryPathTemp = false;
 		String partitionColumnPrefix = partitionColumn +"_";
 		List<MeddraDictReverseHierarchySearchDto> childReverseSearchDtos = this.meddraDictTargetService.findReverseByCode(searchColumnTypePrefix
 																															, partitionColumnPrefix, code);
 		if(CollectionUtils.isNotEmpty(childReverseSearchDtos)) {
+			if(chekcForPrimaryPath && !hierarchyNode.isPrimarypathCheckDone() && (childReverseSearchDtos.size() > 1)) {
+				checkPrimaryPathTemp = true;
+			}
 			for (MeddraDictReverseHierarchySearchDto childReverseSearchDto : childReverseSearchDtos) {
 				HierarchyNode childNode;
-				if(chekcForPrimaryPath) {
+				if(checkPrimaryPathTemp) {
 					boolean isPrimary = false;
 					if("Y".equalsIgnoreCase(childReverseSearchDto.getPrimaryPathFlag())) {
 						isPrimary = true;
 					}
 					childNode = this.createMeddraReverseNode(childReverseSearchDto, partitionColumn, isPrimary);
+					childNode.setPrimarypathCheckDone(true);
 				} else {
 					childNode = this.createMeddraReverseNode(childReverseSearchDto, partitionColumn, hierarchyNode.isPrimaryPathFlag());
 				}
