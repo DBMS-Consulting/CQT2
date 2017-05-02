@@ -206,11 +206,11 @@ public class PublishController implements Serializable {
 						if (cmqBase190.getCmqSubversion() != null && dictionary != null) {
 							System.out.println("\n *******************  subversion final " + cmqBase190.getCmqSubversion());
 							if (!cmqBase190.getDictionaryVersion().equals(dictionary.getValue())) {
-								cmqBase190.setCmqSubversion(new BigDecimal(0));
+								cmqBase190.setCmqSubversion(new BigDecimal(1));
 								cmqBase190.setDictionaryVersion(dictionary.getValue());
 							}
 							else {
-								cmqBase190.setCmqSubversion(cmqBase190.getCmqSubversion().add(new BigDecimal(1)));
+								cmqBase190.setCmqSubversion(cmqBase190.getCmqSubversion().add(new BigDecimal(0.01)));
 								
 							}
 							System.out.println("\n *******************  subversion final " + cmqBase190.getCmqSubversion());

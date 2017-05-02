@@ -168,6 +168,7 @@ public class ImpactSearchController implements Serializable {
     
     private Boolean versionUpgradingPending = null;
     private boolean displayScopeCatWeight;
+    private boolean newPTButtonEnabled;
 
 	public ImpactSearchController() {
 		
@@ -344,18 +345,22 @@ public class ImpactSearchController implements Serializable {
 			treeHelper.updateCurrentTableForCmqList(currentTableRootTreeNode, this.selectedImpactedCmqList);
 			//Current List name
 			setListName(this.selectedImpactedCmqList.getCmqName());
+			setNewPTButtonEnabled(false);
 		} else if (this.isNonImpactedCmqSelected) {
 			treeHelper.updateCurrentTableForCmqList(currentTableRootTreeNode, this.selectedNotImpactedCmqList);
 			//Current List name
 			setListName(this.selectedNotImpactedCmqList.getCmqName());
+			setNewPTButtonEnabled(false);
 		} else if (this.isImpactedSmqSelected) {
 			treeHelper.updateCurrentTableForSmqList(currentTableRootTreeNode, this.selectedImpactedSmqList);
 			//Current List name
 			setListName(this.selectedImpactedSmqList.getSmqName());
+			setNewPTButtonEnabled(true);
 		} else if (this.isNonImpactedSmqSelected) {
 			treeHelper.updateCurrentTableForSmqList(currentTableRootTreeNode, this.selectedNotImpactedSmqList);
 			//Current List name
 			setListName(this.selectedNotImpactedSmqList.getSmqName());
+			setNewPTButtonEnabled(true);
 		}
 		
 		//reset value of selected to ze
@@ -2020,5 +2025,13 @@ public class ImpactSearchController implements Serializable {
 
 	public void setDisplayScopeCatWeight(boolean displayScopeCatWeight) {
 		this.displayScopeCatWeight = displayScopeCatWeight;
+	}
+
+	public boolean isNewPTButtonEnabled() {
+		return newPTButtonEnabled;
+	}
+
+	public void setNewPTButtonEnabled(boolean newPTButtonEnabled) {
+		this.newPTButtonEnabled = newPTButtonEnabled;
 	}
 }
