@@ -13,12 +13,12 @@
 					value="#{impactSearchController.impactedSmqBaseLazyDataModel}" var="smqList" paginator="true" rows="10"
                 	selection="#{impactSearchController.selectedImpactedSmqList}" selectionMode="single" lazy="true"
                 	paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                    rowsPerPageTemplate="5,10,15,20" resizableColumns="true" filterEvent="enter">
+                    rowsPerPageTemplate="5,10,15,20" resizableColumns="true">
 				
 				<p:ajax event="rowSelect" listener="#{impactSearchController.onRowSelect}" />
 				
-				<p:column sortable="false" headerText="Term" id="c52" styleClass="ia-search-term-col"
-					filterable="true" filterBy="#{smqList.smqName}" filterMatchMode="contains">
+				<p:column sortable="true" sortBy="#{smqList.smqName}" headerText="List" id="c52" styleClass="ia-search-term-col"
+					 filterBy="#{smqList.smqName}" filterMatchMode="contains">
 					<h:outputText value="#{smqList.smqName}" id="ot54" />
 				</p:column>
 				<p:column sortable="false" headerText="Level" id="c51" width="40" styleClass="text-center"
