@@ -191,8 +191,6 @@ public class SWJSFRequest
 	{
 		//value = "CN=OPENCQT_ADMIN,OU=CQT_OU,OU=Applications,OU=Delegated,OU=Groups,DC=pxed,DC=pfizer,DC=com:CN=CQT_Users,OU=CQT_OU,OU=Applications,OU=Delegated,OU=Groups,DC=pxed,DC=pfizer,DC=com:CN=GBL-BTNONColleagues,OU=GBLGroups,OU=Applications,OU=Delegated,OU=Groups,DC=pxed,DC=pfizer,DC=com";
 		//System.out.println("name: " + name);
-		System.out.println("key: " + key);
-		System.out.println("value: " + value);
 
 		List<String> ret = new ArrayList<String>();
 		
@@ -291,7 +289,6 @@ public class SWJSFRequest
 		    String groups = gattrs.get("cn").toString();
 		    String [] groupname = groups.split(":");
 		    String userGroup = groupname[1];
-		    System.out.println("group name: " + userGroup);
 		    
 		    //Attribute members = attrs.get("uniquemember");
 		    
@@ -303,7 +300,6 @@ public class SWJSFRequest
                 for ( NamingEnumeration<?> e1 = memberOf.getAll() ; e1.hasMoreElements() ; ) {
                     String unprocessedGroupDN = e1.nextElement().toString();
                     String unprocessedGroupCN = getCN(unprocessedGroupDN);
-                    System.out.println("-- member: \t" + unprocessedGroupCN);
 
                     NamingEnumeration<SearchResult> results = findAccountByAccountName(ctx, ldapSearchBase, unprocessedGroupCN);
                     if (results.hasMore()) {
