@@ -58,7 +58,9 @@
                 <p:selectOneMenu
                     value="#{impactSearchController.detailsFormModel.designee}"
                     disabled="true" label="Designee" >
-                    <f:selectItems value="#{impactSearchController.detailsFormModel.designeeList}" />
+                    <f:selectItem itemValue="" itemLabel="" noSelectionOption="true" />
+                    <f:selectItems value="#{createController.detailsFormModel.designeeList}" var="d"
+                           itemLabel="#{d.fullName}" itemValue="#{d.userName}"/>
                 </p:selectOneMenu>
 
 				<p:spacer />

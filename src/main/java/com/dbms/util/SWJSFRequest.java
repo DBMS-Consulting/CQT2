@@ -1,10 +1,8 @@
 package com.dbms.util;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
@@ -30,6 +28,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.dbms.entity.cqt.RefConfigCodeList;
 import com.dbms.service.IRefCodeListService;
 import com.dbms.view.PXEDUser;
+import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.function.BiConsumer;
 
@@ -133,9 +132,8 @@ public class SWJSFRequest
     public List<PXEDUser> getPXEDUserList() {
         final LinkedList<PXEDUser> userList = new LinkedList<PXEDUser>();
         RefConfigCodeList entAdType = refCodeListService.findEnterpriseAdType();
-        if(entAdType != null && "PXED-DUMMY".equals(entAdType.getValue())) {
+        if(entAdType != null && entAdType.getValue().endsWith("DUMMY")) {
             // generate some static user list for test
-            userList.add(new PXEDUser("NONE", "NONE", ""));
             userList.add(new PXEDUser("cougha02", "Alexander", "Coughlin"));
             userList.add(new PXEDUser("khosan01", "", ""));
             userList.add(new PXEDUser("kaura07", "", ""));
@@ -164,7 +162,6 @@ public class SWJSFRequest
                 });
             } catch (Exception e) {
                 e.printStackTrace();
-                userList.add(new PXEDUser("NONE", "NONE", ""));
             }
         }
 		return userList;	
