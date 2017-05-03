@@ -133,7 +133,7 @@ public class SWJSFRequest
     public List<PXEDUser> getPXEDUserList() {
         final LinkedList<PXEDUser> userList = new LinkedList<PXEDUser>();
         RefConfigCodeList entAdType = refCodeListService.findEnterpriseAdType();
-        if(entAdType != null && "PXED_DUMMY".equals(entAdType.getValue())) {
+        if(entAdType != null && "PXED-DUMMY".equals(entAdType.getValue())) {
             // generate some static user list for test
             userList.add(new PXEDUser("NONE", "NONE", ""));
             userList.add(new PXEDUser("cougha02", "Alexander", "Coughlin"));
