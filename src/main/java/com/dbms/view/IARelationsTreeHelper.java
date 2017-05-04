@@ -803,49 +803,69 @@ public class IARelationsTreeHelper {
 
 		if (null != childRelations) {
 			for (IEntity entity : childRelations) {
+				boolean isChildSmqNode = true;
 				HierarchyNode childRelationNode = new HierarchyNode();
 				if("current".equalsIgnoreCase(smqType)) {
 					SmqRelation190 childRelation = (SmqRelation190) entity;
-					if (childRelation.getSmqLevel() == 1) {
+					if (childRelation.getSmqLevel() == 0) {
+						SmqBase190 childSmq = new SmqBase190();
+						childSmq.setSmqCode(childRelation.getPtCode().longValue());
+						childSmq.setSmqName(childRelation.getPtName());
+						childRelationNode.setLevel("Child SMQ");
+						childRelationNode.setEntity(childSmq);
+						isChildSmqNode = true;
+					} else if (childRelation.getSmqLevel() == 1) {
 						childRelationNode.setLevel("SMQ1");
+						childRelationNode.setEntity(childRelation);
 					} else if (childRelation.getSmqLevel() == 2) {
 						childRelationNode.setLevel("SMQ2");
+						childRelationNode.setEntity(childRelation);
 					} else if (childRelation.getSmqLevel() == 3) {
 						childRelationNode.setLevel("SMQ3");
+						childRelationNode.setEntity(childRelation);
 					} else if ((childRelation.getSmqLevel() == 4)
-							|| (childRelation.getSmqLevel() == 0)
 							|| (childRelation.getSmqLevel() == 5)) {
 						childRelationNode.setLevel("PT");
                         childRelationNode.setScope(null != childRelation.getPtTermScope() ? childRelation.getPtTermScope().toString() : "");
                         childRelationNode.setCategory(null != childRelation.getPtTermCategory() ? childRelation.getPtTermCategory() : "");
                         childRelationNode.setWeight(null != childRelation.getPtTermWeight()? childRelation.getPtTermWeight().toString() : "");
+                        childRelationNode.setEntity(childRelation);
 					}
 					childRelationNode.setTerm(childRelation.getPtName());
 					childRelationNode.setCode(childRelation.getPtCode().toString());
-					childRelationNode.setEntity(childRelation);
 					
 					//Set Color
 					setSMQCurrentNodeStyle(childRelationNode, childRelation);
 				} else {
 					//for target here
 					SmqRelationTarget childRelation = (SmqRelationTarget) entity;
-					if (childRelation.getSmqLevel() == 1) {
+					if (childRelation.getSmqLevel() == 0) {
+						SmqBase190 childSmq = new SmqBase190();
+						childSmq.setSmqCode(childRelation.getPtCode().longValue());
+						childSmq.setSmqName(childRelation.getPtName());
+						childRelationNode.setLevel("Child SMQ");
+						childRelationNode.setEntity(childSmq);
+						isChildSmqNode = true;
+					} else if (childRelation.getSmqLevel() == 1) {
 						childRelationNode.setLevel("SMQ1");
+						childRelationNode.setEntity(childRelation);
 					} else if (childRelation.getSmqLevel() == 2) {
 						childRelationNode.setLevel("SMQ2");
+						childRelationNode.setEntity(childRelation);
 					} else if (childRelation.getSmqLevel() == 3) {
 						childRelationNode.setLevel("SMQ3");
+						childRelationNode.setEntity(childRelation);
 					} else if ((childRelation.getSmqLevel() == 4)
-							|| (childRelation.getSmqLevel() == 0)
 							|| (childRelation.getSmqLevel() == 5)) {
 						childRelationNode.setLevel("PT");
                         childRelationNode.setScope(null != childRelation.getPtTermScope() ? childRelation.getPtTermScope().toString() : "");
                         childRelationNode.setCategory(null != childRelation.getPtTermCategory() ? childRelation.getPtTermCategory() : "");
                         childRelationNode.setWeight(null != childRelation.getPtTermWeight()? childRelation.getPtTermWeight().toString() : "");
+                        childRelationNode.setEntity(childRelation);
 					}
 					childRelationNode.setTerm(childRelation.getPtName());
 					childRelationNode.setCode(childRelation.getPtCode().toString());
-					childRelationNode.setEntity(childRelation);
+					
 					if(!isRootListNode && "target-table".equalsIgnoreCase(uiSourceOfEvent)) {
 						childRelationNode.markNotEditableInRelationstable();
 					}
@@ -856,7 +876,11 @@ public class IARelationsTreeHelper {
 					setSMQTargetNodeStyle(childRelationNode, childRelation);
 					
 				}
-				new DefaultTreeNode(childRelationNode, expandedTreeNode);
+				
+				TreeNode treeNode = new DefaultTreeNode(childRelationNode, expandedTreeNode);
+				if(isChildSmqNode) {
+					this.createNewDummyNode(treeNode);
+				}
 			}
 		}
 	}
