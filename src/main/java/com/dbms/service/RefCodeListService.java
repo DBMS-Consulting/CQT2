@@ -529,7 +529,7 @@ public class RefCodeListService extends
 	private void insertExporLogoImage(XSSFSheet sheet, XSSFWorkbook wb) throws IOException {
 		FacesContext fc = FacesContext.getCurrentInstance();
 		ExternalContext ec = fc.getExternalContext();
-		final FileInputStream stream = new FileInputStream(ec.getRealPath("/image/logo.png"));
+		final FileInputStream stream = new FileInputStream(ec.getRealPath("/image/logo.jpg"));
 		final CreationHelper helper = wb.getCreationHelper();
 		final Drawing drawing = sheet.createDrawingPatriarch();
 

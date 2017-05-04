@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
@@ -194,6 +195,20 @@ public class ImpactSearchController implements Serializable {
 		//changeOccur = false;
 		displayScopeCatWeight = refCodeListService.getLevelScopeCategorySystemConfig();
 	}
+	
+	
+	public boolean filterByCode(Object value, Object filter, Locale locale) {
+        String filterText = (filter == null) ? null : filter.toString().trim();
+        if(filterText == null||filterText.equals("")) {
+            return true;
+        }
+         
+        if(value == null) {
+            return false;
+        }
+         
+        return ((Comparable) value).compareTo(Integer.valueOf(filterText)) > 0;
+    }
 	
 	/**
 	 * Generate Excel report on target datatable.

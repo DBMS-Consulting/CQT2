@@ -17,8 +17,8 @@
 				
 				<p:ajax event="rowSelect" listener="#{impactSearchController.onRowSelect}" />
 				
-				<p:column sortable="true" sortBy="#{smqList.smqName}" headerText="List" id="c52" styleClass="ia-search-term-col"
-					 filterBy="#{smqList.smqName}" filterMatchMode="contains">
+				<p:column filterFunction="PF('statusDialog').hide()" headerText="SMQ Name" id="c52" styleClass="ia-search-term-col" onkeyup="PF('impactedSmqList').filter();"
+					 filterBy="#{smqList.smqName}" filterMatchMode="contains" >
 					<h:outputText value="#{smqList.smqName}" id="ot54" />
 				</p:column>
 				<p:column sortable="false" headerText="Level" id="c51" width="40" styleClass="text-center"
@@ -35,7 +35,7 @@
 		            </f:facet>
 					<h:outputText value="#{smqList.smqLevel}" id="ot53" />
 				</p:column>
-				<p:column sortable="false" headerText="Code" width="70" id="c53">
+				<p:column sortable="false" headerText="Code" filterMatchMode="contains" filterFunction="#{impactSearchController.filterByCode}" filterable="true" filterBy="#{smqList.smqCode}" width="70" id="c53">
 					<h:outputText value="#{smqList.smqCode}" id="ot55" />
 				</p:column>
 				<p:column sortable="false" headerText="Status" width="40" id="c54">
@@ -52,16 +52,16 @@
 				widgetVar="notImpactedSmqList" var="smqList" paginator="true" rows="10"
                 selection="#{impactSearchController.selectedNotImpactedSmqList}" selectionMode="single" lazy="true"
                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                rowsPerPageTemplate="5,10,15,20" resizableColumns="true" filterEvent="enter">
+                rowsPerPageTemplate="5,10,15,20" resizableColumns="true">
                 
                 <p:ajax event="rowSelect" listener="#{impactSearchController.onRowSelect}" />
                 
-				<p:column sortable="false" headerText="Term" id="c52" styleClass="ia-search-term-col"
+				<p:column headerText="SMQ Name" id="c52" styleClass="ia-search-term-col"
 					filterable="true" filterBy="#{smqList.smqName}" filterMatchMode="contains">
 					<h:outputText value="#{smqList.smqName}" id="ot54" />
 				</p:column>
 				<p:column sortable="false" headerText="Level" id="c51" width="40" styleClass="text-center"
-					filterable="true" filterBy="${smqList.smqLevel}" filterMatchMode="exact">
+					filterable="true" filterBy="${smqList.smqLevel}" filterMatchMode="contains">
 					<f:facet name="filter">
 		                <p:selectOneMenu onchange="PF('notImpactedSmqList').filter()" style="width: 70%;" autoWidth="false">
 		                    <f:selectItem itemLabel="All" itemValue="#{null}" noSelectionOption="true" />
@@ -74,8 +74,8 @@
 		            </f:facet>
 					<h:outputText value="#{smqList.smqLevel}" id="ot53" />
 				</p:column>
-				<p:column sortable="false" headerText="Code" width="70" id="c53">
-					<h:outputText value="#{smqList.smqCode}" id="ot55" />
+				<p:column sortable="false" filterMatchMode="contains" filterable="true" filterFunction="#{impactSearchController.filterByCode}" filterBy="#{smqList.smqCode}" headerText="Code" width="70" id="c53">
+					<h:outputText value="#{smqList.smqCode}"  id="ot55" />
 				</p:column>
 				<p:column sortable="false" headerText="Status" width="40" id="c54">
 					<h:outputText value="#{smqList.smqStatus}" id="ot56" />
@@ -97,11 +97,11 @@
 					widgetVar="impactedCmqList" var="cmqList" paginator="true" rows="10"
                 	selection="#{impactSearchController.selectedImpactedCmqList}" selectionMode="single" lazy="true"
                 	paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                	rowsPerPageTemplate="5,10,15,20" resizableColumns="true" filterEvent="enter">
+                	rowsPerPageTemplate="5,10,15,20" resizableColumns="true">
                 
                 <p:ajax event="rowSelect" listener="#{impactSearchController.onRowSelect}" />
                 	
-				<p:column sortable="false" headerText="Term" id="c52" styleClass="ia-search-term-col"
+				<p:column sortable="false" headerText="List Name" id="c52" styleClass="ia-search-term-col"
 					filterable="true" filterBy="#{cmqList.cmqName}" filterMatchMode="contains">
 					<h:outputText value="#{cmqList.cmqName}" id="ot54" />
 				</p:column>
@@ -120,7 +120,7 @@
 				<p:column sortable="false" headerText="Level" id="c51" width="30" styleClass="text-center">
 					<h:outputText value="#{cmqList.cmqLevel}" id="ot53" />
 				</p:column>
-				<p:column sortable="false" headerText="Code" width="70" id="c53">
+				<p:column sortable="false" headerText="Code" filterFunction="#{impactSearchController.filterByCode}" filterMatchMode="contains" filterable="true" filterBy="#{cmqList.cmqCode}" width="70" id="c53">
 					<h:outputText value="#{cmqList.cmqCode}" id="ot55" />
 				</p:column>
 				<p:column sortable="false" headerText="Status" width="40" id="c54">
@@ -138,11 +138,11 @@
 				widgetVar="notImpactedCmqList" var="cmqList" paginator="true" rows="10"
                 selection="#{impactSearchController.selectedNotImpactedCmqList}" selectionMode="single" lazy="true"
                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                rowsPerPageTemplate="5,10,15,20" resizableColumns="true" filterEvent="enter">
+                rowsPerPageTemplate="5,10,15,20" resizableColumns="true">
                 
                 <p:ajax event="rowSelect" listener="#{impactSearchController.onRowSelect}" />
                 
-				<p:column sortable="false" headerText="Term" id="c52" styleClass="ia-search-term-col"
+				<p:column sortable="false" headerText="List Name" id="c52" styleClass="ia-search-term-col"
 					filterable="true" filterBy="#{cmqList.cmqName}" filterMatchMode="contains">
 					<h:outputText value="#{cmqList.cmqName}" id="ot54" />
 				</p:column>
@@ -161,8 +161,8 @@
 				<p:column sortable="false" headerText="Level" id="c51" width="30" styleClass="text-center">
 					<h:outputText value="#{cmqList.cmqLevel}" id="ot53" />
 				</p:column>
-				<p:column sortable="false" headerText="Code" width="70" id="c53">
-					<h:outputText value="#{cmqList.cmqCode}" id="ot55" />
+				<p:column sortable="false" headerText="Code" filterFunction="#{impactSearchController.filterByCode}" filterMatchMode="contains" filterable="true" filterBy="#{cmqList.cmqCode}" width="70" id="c53">
+					<h:outputText value="#{cmqList.cmqCode}"  id="ot55" />
 				</p:column>
 				<p:column sortable="false" headerText="Status" width="40" id="c54">
 					<h:outputText value="#{cmqList.cmqStatus}" id="ot56" />
@@ -177,5 +177,10 @@
 			</p:dataTable>
 		</p:tab>
 	</p:tabView>
+	
+	<p:ajaxStatus onstart="PF('statusDialog').hide()"
+		onsuccess="PF('statusDialog').hide()" />
+
+	
 
 </ui:composition>

@@ -1610,7 +1610,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		FacesContext fc = FacesContext.getCurrentInstance();
 		ExternalContext ec = fc.getExternalContext();
 		final FileInputStream stream = new FileInputStream(
-				ec.getRealPath("/image/logo.png"));
+				ec.getRealPath("/image/logo.jpg"));
 		final CreationHelper helper = wb.getCreationHelper();
 		final Drawing drawing = sheet.createDrawingPatriarch();
 
