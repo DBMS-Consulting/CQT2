@@ -571,11 +571,11 @@ public class IARelationsTreeHelper {
             // RelationImpactType is NOT null, meaning has some direct impact on others
             if(("LDH".equalsIgnoreCase(meddra.getMovedPt()) && (meddra.getPtCode() != null))
                     || ("LDP".equalsIgnoreCase(meddra.getMovedLlt()) && meddra.getLltCode() != null)
-                    || ("HDH".equalsIgnoreCase(meddra.getMovedHlt()) && (meddra.getHltCode() != null))
-                    || ("HDS".equalsIgnoreCase(meddra.getMovedHlgt()) && (meddra.getHlgtCode() != null))
-                    || ("PDL".equalsIgnoreCase(meddra.getDemotedPt()) && (meddra.getPtCode() != null || meddra.getLltCode() != null))
+                    || ("HDH".equalsIgnoreCase(meddra.getMovedHlt()) && meddra.getHltCode() != null)
+                    || ("HDS".equalsIgnoreCase(meddra.getMovedHlgt()) && meddra.getHlgtCode() != null)
+                    || ("PDL".equalsIgnoreCase(meddra.getDemotedPt()) && meddra.getPtCode() != null)
                     || ("LPP".equalsIgnoreCase(meddra.getPromotedLlt()) && meddra.getLltCode() != null)
-                    || ("HPN".equalsIgnoreCase(meddra.getPrimarySocChange()) && (meddra.getHlgtCode() != null || meddra.getHltCode() != null || meddra.getPtCode() != null || meddra.getLltCode() != null))
+                    || ("HPN".equalsIgnoreCase(meddra.getPrimarySocChange()) && (meddra.getPtCode() != null || meddra.getLltCode() != null))
                     || ("HPP".equalsIgnoreCase(meddra.getPrimarySocChange()) && (meddra.getPtCode() != null || meddra.getLltCode() != null))
                     || ("MRG".equalsIgnoreCase(meddra.getMergedHlgt()) && (meddra.getHlgtCode() != null))
                     || ("MRG".equalsIgnoreCase(meddra.getMergedHlt()) && (meddra.getHltCode() != null))) {
@@ -737,16 +737,13 @@ public class IARelationsTreeHelper {
                         || ("NTR".equalsIgnoreCase(meddra.getNewHlt()) && meddra.getHltCode() != null)
                         || ("NTR".equalsIgnoreCase(meddra.getNewHlgt()) && meddra.getHlgtCode() != null)
                         || ("NTR".equalsIgnoreCase(meddra.getNewSoc()) && meddra.getSocCode() != null)
-                        || ("NTR".equalsIgnoreCase(meddra.getMovedHlt()) && (meddra.getHltCode() != null || meddra.getLltCode() != null || meddra.getPtCode() != null))
-                        || ("NTR".equalsIgnoreCase(meddra.getMovedHlgt()) && (meddra.getHlgtCode() != null ||meddra.getHltCode() != null || meddra.getLltCode() != null || meddra.getPtCode() != null))
-                        || ("LDH".equalsIgnoreCase(meddra.getMovedPt()) && (meddra.getLltCode() != null || meddra.getPtCode() != null))
-                        || ("PDL".equalsIgnoreCase(meddra.getDemotedPt()) && (meddra.getPtCode() != null || meddra.getLltCode() != null))
-                        || ("LPP".equalsIgnoreCase(meddra.getPromotedLlt()) && meddra.getLltCode() != null)
-                        || ("HNP".equalsIgnoreCase(meddra.getPrimarySocChange()) && meddra.getSocCode() != null)
+                        || (("NTR".equalsIgnoreCase(meddra.getMovedHlt()) || "HDH".equalsIgnoreCase(meddra.getMovedHlt())) && meddra.getHltCode() != null)
+                        || (("NTR".equalsIgnoreCase(meddra.getMovedHlgt()) || "HDS".equalsIgnoreCase(meddra.getMovedHlgt())) && meddra.getHlgtCode() != null)
+                        || ("LDH".equalsIgnoreCase(meddra.getMovedPt()) && meddra.getPtCode() != null)
                         || ("LDP".equalsIgnoreCase(meddra.getMovedLlt()))
-                        || ("SDP".equalsIgnoreCase(meddra.getNewSuccessorPt()) && meddra.getPtCode() != null)
-                        || ("HDH".equalsIgnoreCase(meddra.getMovedHlt()) && (meddra.getHltCode() != null || meddra.getLltCode() != null || meddra.getPtCode() != null))
-                        || ("HDS".equalsIgnoreCase(meddra.getMovedHlgt())) && (meddra.getHlgtCode() != null || meddra.getHltCode() != null || meddra.getLltCode() != null || meddra.getPtCode() != null)) {
+                        || ("PDL".equalsIgnoreCase(meddra.getDemotedPt()) && meddra.getPtCode() != null)
+                        || ("LPP".equalsIgnoreCase(meddra.getPromotedLlt()) && meddra.getLltCode() != null)
+                        || ("SDP".equalsIgnoreCase(meddra.getNewSuccessorPt()) && meddra.getPtCode() != null)){
                     node.setRowStyleClass("orange-colored");
                 } else if(("NCH".equalsIgnoreCase(meddra.getHlgtNameChanged()) && meddra.getHlgtCode() != null)
                         || ("NCH".equalsIgnoreCase(meddra.getHltNameChanged()) && meddra.getHltCode() != null)
