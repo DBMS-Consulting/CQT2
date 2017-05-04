@@ -38,4 +38,7 @@ public interface IMeddraDictTargetService {
 
 	List<String> findSocsWithNewPt();
 
+	List<MeddraDictReverseHierarchySearchDto> findFullReverseHierarchyByLevelAndTerm(String searchColumnPrefix,
+			String partitionColumnPrefix, String searchTerm, boolean searchNonCurrentLlt);
+
 }

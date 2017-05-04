@@ -50,7 +50,9 @@ public class TargetHierarchySearchVM {
 
 	private TreeNode myHierarchyRoot;
 	private TreeNode[] mySelectedNodes;
-
+	
+	private boolean nonCurrentLlt;
+	
 	private List<HierarchySearchResultBean> hierarchySearchResults;
 	
 	private IRelationsChangeListener onDropRelationsListener;
@@ -142,7 +144,23 @@ public class TargetHierarchySearchVM {
 				this.updateHierarchySearchCmqChildNodes(parentCmqCodeList, parentTreeNodes);
 				this.updateHierarchySearchCmqRelationChildNodes(parentCmqCodeList, parentTreeNodes);
 			}
-		}
+		} else if ("NC-LLT".equalsIgnoreCase(myFilterLevel)) {
+			String filterLevel = myFilterLevel.substring(3);
+			List<MeddraDictReverseHierarchySearchDto> meddraDictDtoList = this.meddraDictTargetService
+					.findFullReverseHierarchyByLevelAndTerm(filterLevel, filterLevel, myFilterTermName, true);
+			this.myHierarchyRoot = new DefaultTreeNode("root", new HierarchyNode("LEVEL", "NAME", "CODE", null), null);
+			
+			for (MeddraDictReverseHierarchySearchDto meddraDictReverseDto : meddraDictDtoList) {
+				HierarchyNode node = relationsTreeHelper.createMeddraReverseNode(meddraDictReverseDto, filterLevel, true);
+				TreeNode parentTreeNode = new DefaultTreeNode(node, this.myHierarchyRoot);
+				
+				// add a dummmy node to show expand arrow
+				HierarchyNode dummyNode = new HierarchyNode(null, null,
+						null, null);
+				dummyNode.setDummyNode(true);
+				new DefaultTreeNode(dummyNode, parentTreeNode);
+			}
+		} 
 
 		return "";
 	}
@@ -364,6 +382,14 @@ public class TargetHierarchySearchVM {
 			dummyNode.setDummyNode(true);
 			new DefaultTreeNode(dummyNode, parentTreeNode);
 		}
+	}
+
+	public boolean isNonCurrentLlt() {
+		return nonCurrentLlt;
+	}
+
+	public void setNonCurrentLlt(boolean nonCurrentLlt) {
+		this.nonCurrentLlt = nonCurrentLlt;
 	}
 	
 }

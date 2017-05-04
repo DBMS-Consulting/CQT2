@@ -30,6 +30,8 @@ public class MeddraDictReverseHierarchySearchDto implements IEntity {
 
 	private String primaryPathFlag;
 
+	private String lltCurrency;
+
 	public Long getId() {
 		return meddraDictId;
 	}
@@ -124,6 +126,14 @@ public class MeddraDictReverseHierarchySearchDto implements IEntity {
 
 	public void setPrimaryPathFlag(String primaryPathFlag) {
 		this.primaryPathFlag = primaryPathFlag;
+	}
+
+	public String getLltCurrency() {
+		return lltCurrency;
+	}
+
+	public void setLltCurrency(String lltCurrency) {
+		this.lltCurrency = lltCurrency;
 	}
 
 }
