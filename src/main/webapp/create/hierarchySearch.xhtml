@@ -10,7 +10,7 @@
         <h:panelGrid id="hierarchySearchGrid" columns="6">
 			<p:outputLabel value="Level" for="levelH" />
 			<p:selectOneMenu id="levelH" label="Level"  rendered="#{paramParentExtension ne 'PRO' and paramParentExtension ne 'CPT' and paramParentExtension ne 'DME'}"
-				value="#{paramDlgCtrl.filterLevel}">
+				value="#{paramDlgCtrl.filterLevel}" appendTo="@this">
  				<f:selectItem itemValue="PRO" itemLabel="PRO"/> 				
  				<f:selectItem itemValue="SMQ1" itemLabel="SMQ1" />
 				<f:selectItem itemValue="SMQ2" itemLabel="SMQ2" />
@@ -24,7 +24,7 @@
 				<f:selectItem itemValue="LLT" itemLabel="LLT" />
 			</p:selectOneMenu>
 			<p:selectOneMenu id="levelH2" label="Level"  rendered="#{paramParentExtension eq 'PRO' or paramParentExtension eq 'CPT' or paramParentExtension eq 'DME'}"
-				value="#{paramDlgCtrl.filterLevel}">			
+				value="#{paramDlgCtrl.filterLevel}" appendTo="@this">			
  				
  				<f:selectItem itemValue="SMQ1" itemLabel="SMQ1" />
 				<f:selectItem itemValue="SMQ2" itemLabel="SMQ2" />

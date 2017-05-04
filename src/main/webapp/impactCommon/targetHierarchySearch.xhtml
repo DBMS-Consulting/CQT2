@@ -10,7 +10,7 @@
 	<p:panel header="Relations" style="min-height: 450px;height: 90%;height: calc(100% - 40px);position: relative;">
 		<h:panelGrid columns="6">
 			<p:outputLabel value="Level" for="levelHT" />
-			<p:selectOneMenu id="levelHT" label="Level"
+			<p:selectOneMenu id="levelHT" label="Level" appendTo="@this"
                              value="#{impactSearchController.targetHierarchySearchDlgModel.filterLevel}">
 				<f:selectItem itemValue="PRO" itemLabel="PRO" />
 				<f:selectItem itemValue="SMQ1" itemLabel="SMQ1" />
