@@ -36,6 +36,7 @@ public class CmqBaseTarget extends BaseEntity {
 	
 	public static final String CMQ_STATUS_VALUE_ACTIVE = "A";
 	public static final String CMQ_STATE_PENDING_IA = "PENDING IA";
+    public static final String CMQ_STATE_REVIEWED_IA = "REVIEWED IA";
 	public static final String CMQ_STATE_APPROVED_IA = "APPROVED IA";
 	public static final String CMQ_STATE_PUBLISHED_IA = "PUBLISHED IA";
 

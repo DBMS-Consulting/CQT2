@@ -899,9 +899,14 @@ public class CreateController implements Serializable {
 	 */
 	public boolean isReadOnlyState() {
         
-        // If CMQ_BASE_TARGET.Status != 'PENDING IA', then the list should be read-only in update.
-        // User should not be able to update details, informative notes, relations and workflow form on confirm tab.
-        if(updateWizard!=null && selectedData != null && !isTargetStatusPendingIA(selectedData))
+//        // If CMQ_BASE_TARGET.Status != 'PENDING IA', then the list should be read-only in update.
+//        // User should not be able to update details, informative notes, relations and workflow form on confirm tab.
+//        if(updateWizard!=null && selectedData != null && !isTargetStatusPendingIA(selectedData))
+//            return true;
+
+        // If CMQ_BASE_TARGET IN('PENDING IA', 'REVIEWED IA', 'APPROVED IA', 'PUBLISHED IA') then list should be read-only in Update Module.
+        // User should NOT be able to update details, informative notes, relations and workflow from confirm.
+        if(updateWizard != null && selectedData != null && isTargetMovedToHigherIAStatus(selectedData))
             return true;
 
         // List is editable when CMQ_BASE_CURRNET.State is 'Draft' or 'Reviewed'.
@@ -965,7 +970,7 @@ public class CreateController implements Serializable {
         getActiveWizard().setStep(WIZARD_STEP_DETAILS);
         
         // if CMQ_BASE_TARGET.Status != 'PENDING IA' on update wizard
-        if(updateWizard!=null && !isTargetStatusPendingIA(selectedData)) {
+        if(updateWizard!=null && isTargetMovedToHigherIAStatus(selectedData)) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "The List moved to higher IA state can not be updated", ""));            
         } else if(updateWizard!=null && isImpactedByMeddraVersioning(selectedData)) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "The List is impacted by MedDRA Versioning", ""));
@@ -1590,9 +1595,10 @@ public class CreateController implements Serializable {
     }
     
     public boolean isDetailsFormDisabled() {
-        // Users should NOT be able to update data on Update-> Details when CMQ_BASE_CURRENT.IMPACT_TYPE IN ('IMPACTED', 'ICC') OR CMQ_BASE_TARGET.IMPACT_TYPE IN ('IMPACTED', 'ICC')
-        return this.isReadOnlyState() || this.isFormSaved() ||
-                (updateWizard!=null && this.isImpactedByMeddraVersioning(selectedData));
+//        // Users should NOT be able to update data on Update-> Details when CMQ_BASE_CURRENT.IMPACT_TYPE IN ('IMPACTED', 'ICC') OR CMQ_BASE_TARGET.IMPACT_TYPE IN ('IMPACTED', 'ICC')
+//        return this.isReadOnlyState() || this.isFormSaved() ||
+//                (updateWizard!=null && this.isImpactedByMeddraVersioning(selectedData));
+        return this.isReadOnlyState() || this.isFormSaved();
     }
 
 	public SWJSFRequest getAppSWJSFRequest() {
@@ -1614,6 +1620,24 @@ public class CreateController implements Serializable {
                 cmq.setCmqBaseTargetSet(true);
             }
         }
+    }
+    
+    /**
+     * Checks if given CMQ_BASE's CMQ_BASE_TARGET's state is "Pending IA"
+     * @param cmq
+     * @return 
+     */
+    public boolean isTargetMovedToHigherIAStatus(CmqBase190 cmq) {
+        if(cmq == null || cmq.getCmqCode() == null)
+            return false;
+        
+        loadCmqBaseTarget(cmq);
+        
+        return (cmq.getCmqBaseTarget()!=null
+                && ( CmqBaseTarget.CMQ_STATE_PENDING_IA.equalsIgnoreCase(cmq.getCmqBaseTarget().getCmqState())
+                    || CmqBaseTarget.CMQ_STATE_REVIEWED_IA.equalsIgnoreCase(cmq.getCmqBaseTarget().getCmqState())
+                    || CmqBaseTarget.CMQ_STATE_APPROVED_IA.equalsIgnoreCase(cmq.getCmqBaseTarget().getCmqState())
+                    || CmqBaseTarget.CMQ_STATE_PUBLISHED_IA.equalsIgnoreCase(cmq.getCmqBaseTarget().getCmqState())));
     }
     
     /**

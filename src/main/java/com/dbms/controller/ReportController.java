@@ -121,7 +121,7 @@ public class ReportController extends BaseController<CmqBase190> {
 		return cell;
 	}
 	
-	public void generateReport() throws IOException {
+	public void generateListReport() throws IOException {
 		FacesContext fc = FacesContext.getCurrentInstance();
 		ExternalContext ec = fc.getExternalContext();
 	    
