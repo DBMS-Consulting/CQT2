@@ -2,9 +2,8 @@ package com.dbms.view;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -27,7 +26,6 @@ import com.dbms.service.ICmqRelation190Service;
 import com.dbms.service.IMeddraDictService;
 import com.dbms.service.ISmqBaseService;
 import com.dbms.util.SMQLevelHelper;
-import java.util.LinkedList;
 
 public class CmqBaseRelationsTreeHelper {
 	public enum SearchTarget { SMQ_BASE, MEDDRA_DICT, CMQ_BASE }
@@ -533,29 +531,43 @@ public class CmqBaseRelationsTreeHelper {
 
 		if (null != childRelations) {
 			for (SmqRelation190 childRelation : childRelations) {
+				boolean isChildSmqNode = false;
 				HierarchyNode childRelationNode = new HierarchyNode();
-                if (childRelation.getSmqLevel() == 1) {
-                    childRelationNode.setLevel("SMQ1");
-                } else if (childRelation.getSmqLevel() == 2) {
-                    childRelationNode.setLevel("SMQ2");
-                } else if (childRelation.getSmqLevel() == 3) {
-                    childRelationNode.setLevel("SMQ3");
-                } else if ((childRelation.getSmqLevel() == 4)
-                        || (childRelation.getSmqLevel() == 0)
-                        || (childRelation.getSmqLevel() == 5)) {
+				if (childRelation.getSmqLevel() == 0) {
+					SmqBase190 childSmq = new SmqBase190();
+					childSmq.setSmqCode(childRelation.getPtCode().longValue());
+					childSmq.setSmqName(childRelation.getPtName());
+					childRelationNode.setLevel("Child SMQ");
+					childRelationNode.setEntity(childSmq);
+					isChildSmqNode = true;
+				} else if (childRelation.getSmqLevel() == 1) {
+					childRelationNode.setLevel("SMQ1");
+					childRelationNode.setEntity(childRelation);
+				} else if (childRelation.getSmqLevel() == 2) {
+					childRelationNode.setLevel("SMQ2");
+					childRelationNode.setEntity(childRelation);
+				} else if (childRelation.getSmqLevel() == 3) {
+					childRelationNode.setLevel("SMQ3");
+					childRelationNode.setEntity(childRelation);
+				} else if ((childRelation.getSmqLevel() == 4)
+						|| (childRelation.getSmqLevel() == 5)) {
                     childRelationNode.setLevel("PT");
                     childRelationNode.setScope(null != childRelation.getPtTermScope() ? childRelation.getPtTermScope().toString() : "");
                     childRelationNode.setCategory(null != childRelation.getPtTermCategory() ? childRelation.getPtTermCategory() : "");
                     childRelationNode.setWeight(null != childRelation.getPtTermWeight()? childRelation.getPtTermWeight().toString() : "");
-                }
+                    childRelationNode.setEntity(childRelation);
+                } 
                 childRelationNode.setTerm(childRelation.getPtName());
                 childRelationNode.setCode(childRelation.getPtCode().toString());
-                childRelationNode.setEntity(childRelation);
+				
                 if(relationView) {
                     childRelationNode.markNotEditableInRelationstable();
                 }
 
-				new DefaultTreeNode(childRelationNode, expandedTreeNode);
+				TreeNode treeNode = new DefaultTreeNode(childRelationNode, expandedTreeNode);
+				if(isChildSmqNode) {
+					this.createNewDummyNode(treeNode);
+				}
 			}
 		}
 	}
