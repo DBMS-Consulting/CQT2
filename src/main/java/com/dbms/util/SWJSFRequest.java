@@ -262,9 +262,19 @@ public class SWJSFRequest
 	}
     
     public Map<String, List<PXEDUser>> findAllGroups() throws NamingException {
-        LdapContext ctx = initLdapContext();
-        //1) lookup the ldap account
-        return findAllGroups(ctx, LDAP_SEARCH_BASE, LDAP_GROUP_TO_LOOKUP);
+        
+    	for (int i=0; i<2; ++i) {
+
+    		initLdapContext();
+	        try {
+	        	return findAllGroups(ctx, LDAP_SEARCH_BASE, LDAP_GROUP_TO_LOOKUP);
+	        }
+	        catch (javax.naming.CommunicationException ex) {
+	        	ctx = null;
+	        }
+    	}
+    	
+    	return null;
     }
     
     public Map<String, List<PXEDUser>> findAllGroups(DirContext ctx, String ldapSearchBase, String groupName) throws NamingException {
