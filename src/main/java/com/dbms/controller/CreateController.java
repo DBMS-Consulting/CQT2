@@ -899,25 +899,15 @@ public class CreateController implements Serializable {
 	 * @return boolean
 	 */
 	public boolean isReadOnlyState() {
-        
+		/**
+         * Restrictions on users from  REQUESTOR and ADMIN groups
+         */
+    	restrictionsByUserAuthentified();
 //        // If CMQ_BASE_TARGET.Status != 'PENDING IA', then the list should be read-only in update.
 //        // User should not be able to update details, informative notes, relations and workflow form on confirm tab.
 //        if(updateWizard!=null && selectedData != null && !isTargetStatusPendingIA(selectedData))
 //            return true;
 		
-		 /**
-         * Restrictions on users from  REQUESTOR and ADMIN groups
-         */
-        if (authService.getGroupName().equals("REQUESTOR") || authService.getGroupName().equals("ADMIN")) {        	
-        	if (selectedData.getCmqStatus().equals("A") 
-        			|| (selectedData.getCmqDesignee() != null && selectedData.getCmqDesignee().equals(authService.getUserCn()))
-        			|| (selectedData.getCmqDesignee2() != null && selectedData.getCmqDesignee2().equals(authService.getUserCn()))
-        			|| (selectedData.getCmqDesignee3() != null && selectedData.getCmqDesignee3().equals(authService.getUserCn()))) {
-        		System.out.println("\n ******************** LIST TO ENABLE for user " + authService.getUserGivenName());
-        		System.out.println("\n ******************** authService.getUserCn() " + authService.getUserCn());
-        		return  false;
-        	}
-        }
         // If CMQ_BASE_TARGET IN('PENDING IA', 'REVIEWED IA', 'APPROVED IA', 'PUBLISHED IA') then list should be read-only in Update Module.
         // User should NOT be able to update details, informative notes, relations and workflow from confirm.
         if(updateWizard != null && selectedData != null && isTargetMovedToHigherIAStatus(selectedData))
@@ -1609,10 +1599,26 @@ public class CreateController implements Serializable {
     }
     
     public boolean isDetailsFormDisabled() {
-    	 /**
+    	/**
          * Restrictions on users from  REQUESTOR and ADMIN groups
          */
-        if ((updateWizard != null || copyWizard != null) && authService.getGroupName() != null && (authService.getGroupName().equals("REQUESTOR") || authService.getGroupName().equals("ADMIN"))) {        	
+    	restrictionsByUserAuthentified();
+       
+//        // Users should NOT be able to update data on Update-> Details when CMQ_BASE_CURRENT.IMPACT_TYPE IN ('IMPACTED', 'ICC') OR CMQ_BASE_TARGET.IMPACT_TYPE IN ('IMPACTED', 'ICC')
+//        return this.isReadOnlyState() || this.isFormSaved() ||
+//                (updateWizard!=null && this.isImpactedByMeddraVersioning(selectedData));
+        if(updateWizard != null || copyWizard != null)
+            return !WIZARD_STEP_DETAILS.equals(getActiveWizard().getStep()) || this.isReadOnlyState() || this.isFormSaved();
+        else
+            return this.isReadOnlyState() || this.isFormSaved();
+    }
+    
+    /**
+     * Restrictions on users from  REQUESTOR and ADMIN groups
+     */
+    public boolean restrictionsByUserAuthentified() {
+    	
+        if ((updateWizard != null || copyWizard != null) && authService.getGroupName() != null && (authService.getGroupName().equals(AuthenticationService.REQUESTER_GROUP) || authService.getGroupName().equals(AuthenticationService.ADMIN_GROUP))) {        	
         	if (selectedData.getCmqStatus().equals("A") 
         			|| (selectedData.getCmqDesignee() != null && selectedData.getCmqDesignee().equals(authService.getUserCn()))
         			|| (selectedData.getCmqDesignee2() != null && selectedData.getCmqDesignee2().equals(authService.getUserCn()))
@@ -1622,14 +1628,7 @@ public class CreateController implements Serializable {
         		return  false;
         	}
         }
-       
-//        // Users should NOT be able to update data on Update-> Details when CMQ_BASE_CURRENT.IMPACT_TYPE IN ('IMPACTED', 'ICC') OR CMQ_BASE_TARGET.IMPACT_TYPE IN ('IMPACTED', 'ICC')
-//        return this.isReadOnlyState() || this.isFormSaved() ||
-//                (updateWizard!=null && this.isImpactedByMeddraVersioning(selectedData));
-        if(updateWizard != null || copyWizard != null)
-            return !WIZARD_STEP_DETAILS.equals(getActiveWizard().getStep()) || this.isReadOnlyState() || this.isFormSaved();
-        else
-            return this.isReadOnlyState() || this.isFormSaved();
+        return true;
     }
 
 	public SWJSFRequest getAppSWJSFRequest() {
