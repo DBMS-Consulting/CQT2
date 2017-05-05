@@ -1,6 +1,7 @@
 package com.dbms.controller;
 
 import com.dbms.csmq.CSMQBean;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -51,6 +52,7 @@ import com.dbms.view.ListDetailsFormVM;
 import com.dbms.view.ListDetailsFormVM.WizardType;
 import com.dbms.view.ListNotesFormVM;
 import com.dbms.view.ListWorkflowFormVM;
+import com.dbms.view.PXEDUser;
 
 /**
  * @author Jay G.(jayshanchn@hotmail.com)
@@ -903,7 +905,20 @@ public class CreateController implements Serializable {
 //        // User should not be able to update details, informative notes, relations and workflow form on confirm tab.
 //        if(updateWizard!=null && selectedData != null && !isTargetStatusPendingIA(selectedData))
 //            return true;
-
+		
+		 /**
+         * Restrictions on users from  REQUESTOR and ADMIN groups
+         */
+        if (authService.getGroupName().equals("REQUESTOR") || authService.getGroupName().equals("ADMIN")) {        	
+        	if (selectedData.getCmqStatus().equals("A") 
+        			|| (selectedData.getCmqDesignee() != null && selectedData.getCmqDesignee().equals(authService.getUserCn()))
+        			|| (selectedData.getCmqDesignee2() != null && selectedData.getCmqDesignee2().equals(authService.getUserCn()))
+        			|| (selectedData.getCmqDesignee3() != null && selectedData.getCmqDesignee3().equals(authService.getUserCn()))) {
+        		System.out.println("\n ******************** LIST TO ENABLE for user " + authService.getUserGivenName());
+        		System.out.println("\n ******************** authService.getUserCn() " + authService.getUserCn());
+        		return  false;
+        	}
+        }
         // If CMQ_BASE_TARGET IN('PENDING IA', 'REVIEWED IA', 'APPROVED IA', 'PUBLISHED IA') then list should be read-only in Update Module.
         // User should NOT be able to update details, informative notes, relations and workflow from confirm.
         if(updateWizard != null && selectedData != null && isTargetMovedToHigherIAStatus(selectedData))
@@ -1595,6 +1610,20 @@ public class CreateController implements Serializable {
     }
     
     public boolean isDetailsFormDisabled() {
+    	 /**
+         * Restrictions on users from  REQUESTOR and ADMIN groups
+         */
+        if (authService.getGroupName().equals("REQUESTOR") || authService.getGroupName().equals("ADMIN")) {        	
+        	if (selectedData.getCmqStatus().equals("A") 
+        			|| (selectedData.getCmqDesignee() != null && selectedData.getCmqDesignee().equals(authService.getUserCn()))
+        			|| (selectedData.getCmqDesignee2() != null && selectedData.getCmqDesignee2().equals(authService.getUserCn()))
+        			|| (selectedData.getCmqDesignee3() != null && selectedData.getCmqDesignee3().equals(authService.getUserCn()))) {
+        		System.out.println("\n ******************** LIST TO ENABLE for user " + authService.getUserGivenName());
+        		System.out.println("\n ******************** authService.getUserCn() " + authService.getUserCn());
+        		return  false;
+        	}
+        }
+       
 //        // Users should NOT be able to update data on Update-> Details when CMQ_BASE_CURRENT.IMPACT_TYPE IN ('IMPACTED', 'ICC') OR CMQ_BASE_TARGET.IMPACT_TYPE IN ('IMPACTED', 'ICC')
 //        return this.isReadOnlyState() || this.isFormSaved() ||
 //                (updateWizard!=null && this.isImpactedByMeddraVersioning(selectedData));

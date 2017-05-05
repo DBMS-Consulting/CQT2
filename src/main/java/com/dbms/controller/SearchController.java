@@ -27,6 +27,7 @@ import com.dbms.controller.beans.HierarchySearchResultBean;
 import com.dbms.csmq.HierarchyNode;
 import com.dbms.entity.IEntity;
 import com.dbms.entity.cqt.CmqBase190;
+import com.dbms.entity.cqt.CmqBaseTarget;
 import com.dbms.entity.cqt.CmqRelation190;
 import com.dbms.entity.cqt.CreateEntity;
 import com.dbms.entity.cqt.RefConfigCodeList;
@@ -120,6 +121,7 @@ public class SearchController extends BaseController<CmqBase190> implements IRel
 	private Long clickedCmqCode;
 	
 	private CmqBaseHierarchySearchVM myHierarchyDlgModel;
+	private boolean disabledField;
 
 	public CmqBaseHierarchySearchVM getHierarchyDlgModel() {
 		return myHierarchyDlgModel;
@@ -221,6 +223,17 @@ public class SearchController extends BaseController<CmqBase190> implements IRel
 		this.dataModified = false;
 		
 		myHierarchyDlgModel.resetForm();
+		
+		
+		 /**
+         * Restrictions on users from  REQUESTOR and ADMIN groups
+         */
+        if (!authService.getGroupName().equals("REQUESTOR") && !authService.getGroupName().equals("ADMIN") && !authService.getGroupName().equals("MQM")) {        	
+        	this.myFltState = "PUBLISHED";
+    		this.myFltStatus = "A";
+        	
+        	disabledField = true;
+        }
 	}
 
 	/**
@@ -968,4 +981,12 @@ public class SearchController extends BaseController<CmqBase190> implements IRel
     public void setFltDesignees(String[] myFilterDesignees) {
         this.myFltDesignees = myFilterDesignees;
     }
+
+	public boolean isDisabledField() {
+		return disabledField;
+	}
+
+	public void setDisabledField(boolean disabledField) {
+		this.disabledField = disabledField;
+	}
 }

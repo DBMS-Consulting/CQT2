@@ -1867,6 +1867,19 @@ public class ImpactSearchController implements Serializable {
 	}
 	
 	public boolean isNotesFormReadonly() {
+		 /**
+         * Restrictions on users from  REQUESTOR and ADMIN groups
+         */
+        if (authService.getGroupName().equals("REQUESTOR") || authService.getGroupName().equals("ADMIN")) {        	
+        	if (detailsFormModel.getStatus().equals(CmqBaseTarget.CMQ_STATUS_VALUE_ACTIVE) 
+        			|| (detailsFormModel.getDesignee() != null && detailsFormModel.getDesignee().equals(authService.getUserCn()))
+        			|| (detailsFormModel.getDesigneeTwo() != null && detailsFormModel.getDesigneeTwo().equals(authService.getUserCn()))
+        			|| (detailsFormModel.getDesigneeThree() != null && detailsFormModel.getDesigneeThree().equals(authService.getUserCn()))) {
+        		System.out.println("\n ******************** authService.getUserCn() " + authService.getUserCn());
+        		return  false;
+        	}
+        }
+        
 		if (this.currentOrTarget == SELECTED_CURRENT_LIST ||
                 (detailsFormModel.getState().equals(CmqBaseTarget.CMQ_STATE_APPROVED_IA) ||
                 detailsFormModel.getState().equals(CmqBaseTarget.CMQ_STATE_PUBLISHED_IA)))
@@ -1877,6 +1890,20 @@ public class ImpactSearchController implements Serializable {
 	}
 	
 	public boolean isDetailsFormReadonly() {
+		 /**
+         * Restrictions on users from  REQUESTOR and ADMIN groups
+         */
+        if (authService.getGroupName().equals("REQUESTOR") || authService.getGroupName().equals("ADMIN")) {        	
+        	if (detailsFormModel.getStatus().equals(CmqBaseTarget.CMQ_STATUS_VALUE_ACTIVE) 
+        			|| (detailsFormModel.getDesignee() != null && detailsFormModel.getDesignee().equals(authService.getUserCn()))
+        			|| (detailsFormModel.getDesigneeTwo() != null && detailsFormModel.getDesigneeTwo().equals(authService.getUserCn()))
+        			|| (detailsFormModel.getDesigneeThree() != null && detailsFormModel.getDesigneeThree().equals(authService.getUserCn()))) {
+        		System.out.println("\n ******************** authService.getUserCn() " + authService.getUserCn());
+        		return  false;
+        	}
+        }
+        
+		
 		if (this.currentOrTarget == SELECTED_CURRENT_LIST ||
                 (detailsFormModel.getState().equals(CmqBaseTarget.CMQ_STATE_APPROVED_IA) ||
                 detailsFormModel.getState().equals(CmqBaseTarget.CMQ_STATE_PUBLISHED_IA)))
