@@ -902,7 +902,8 @@ public class CreateController implements Serializable {
 		/**
          * Restrictions on users from  REQUESTOR and ADMIN groups
          */
-    	restrictionsByUserAuthentified();
+    	if (authService.getGroupName() != null && (authService.getGroupName().equals(AuthenticationService.REQUESTER_GROUP) || authService.getGroupName().equals(AuthenticationService.ADMIN_GROUP)))
+			return restrictionsByUserAuthentified();
 //        // If CMQ_BASE_TARGET.Status != 'PENDING IA', then the list should be read-only in update.
 //        // User should not be able to update details, informative notes, relations and workflow form on confirm tab.
 //        if(updateWizard!=null && selectedData != null && !isTargetStatusPendingIA(selectedData))
@@ -1602,7 +1603,8 @@ public class CreateController implements Serializable {
     	/**
          * Restrictions on users from  REQUESTOR and ADMIN groups
          */
-    	restrictionsByUserAuthentified();
+    	if (authService.getGroupName() != null && (authService.getGroupName().equals(AuthenticationService.REQUESTER_GROUP) || authService.getGroupName().equals(AuthenticationService.ADMIN_GROUP)))
+    			return restrictionsByUserAuthentified();
        
 //        // Users should NOT be able to update data on Update-> Details when CMQ_BASE_CURRENT.IMPACT_TYPE IN ('IMPACTED', 'ICC') OR CMQ_BASE_TARGET.IMPACT_TYPE IN ('IMPACTED', 'ICC')
 //        return this.isReadOnlyState() || this.isFormSaved() ||
@@ -1618,13 +1620,13 @@ public class CreateController implements Serializable {
      */
     public boolean restrictionsByUserAuthentified() {
     	
-        if ((updateWizard != null || copyWizard != null) && authService.getGroupName() != null && (authService.getGroupName().equals(AuthenticationService.REQUESTER_GROUP) || authService.getGroupName().equals(AuthenticationService.ADMIN_GROUP))) {        	
+        if (updateWizard != null || copyWizard != null) {        	
         	if (selectedData.getCmqStatus().equals("A") 
         			|| (selectedData.getCmqDesignee() != null && selectedData.getCmqDesignee().equals(authService.getUserCn()))
         			|| (selectedData.getCmqDesignee2() != null && selectedData.getCmqDesignee2().equals(authService.getUserCn()))
         			|| (selectedData.getCmqDesignee3() != null && selectedData.getCmqDesignee3().equals(authService.getUserCn()))) {
-        		System.out.println("\n ******************** LIST TO ENABLE for user " + authService.getUserGivenName());
-        		System.out.println("\n ******************** authService.getUserCn() " + authService.getUserCn());
+//        		System.out.println("\n ******************** LIST TO ENABLE for user " + authService.getUserGivenName());
+//        		System.out.println("\n ******************** authService.getUserCn() " + authService.getUserCn());
         		return  false;
         	}
         }
