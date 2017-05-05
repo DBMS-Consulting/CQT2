@@ -1612,7 +1612,7 @@ public class CreateController implements Serializable {
     	 /**
          * Restrictions on users from  REQUESTOR and ADMIN groups
          */
-        if (authService.getGroupName().equals("REQUESTOR") || authService.getGroupName().equals("ADMIN")) {        	
+        if ((updateWizard != null || copyWizard != null) && authService.getGroupName() != null && (authService.getGroupName().equals("REQUESTOR") || authService.getGroupName().equals("ADMIN"))) {        	
         	if (selectedData.getCmqStatus().equals("A") 
         			|| (selectedData.getCmqDesignee() != null && selectedData.getCmqDesignee().equals(authService.getUserCn()))
         			|| (selectedData.getCmqDesignee2() != null && selectedData.getCmqDesignee2().equals(authService.getUserCn()))
