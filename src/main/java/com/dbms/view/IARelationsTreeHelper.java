@@ -400,9 +400,24 @@ public class IARelationsTreeHelper {
 		return node;
 	}
     
-   
+    public void setCurrentCmqBaseNodeStyle(HierarchyNode node, CmqBase190 cmq) {
+        if (CSMQBean.IMPACT_TYPE_ICC.equalsIgnoreCase(cmq.getImpactType())
+                || CSMQBean.IMPACT_TYPE_IMPACTED.equalsIgnoreCase(cmq.getImpactType()))
+            node.setRowStyleClass("blue-colored");
+        if (CmqBase190.CMQ_STATUS_VALUE_INACTIVE.equals(cmq.getCmqStatus()))
+            node.setRowStyleClass("brown-colored");
+    }
     
-    public void setCMQTargetNodeStyle(HierarchyNode node, CmqRelationTarget cmqRelationTarget) {
+    public void setTargetCmqBaseNodeStyle(HierarchyNode node, CmqBaseTarget cmq) {
+        if (CSMQBean.IMPACT_TYPE_IMPACTED.equalsIgnoreCase(cmq.getImpactType()))
+            node.setRowStyleClass("blue-colored");
+        else if(CSMQBean.IMPACT_TYPE_ICC.equalsIgnoreCase(cmq.getImpactType()))
+            node.setRowStyleClass("navyblue-colored");
+        else if(CSMQBean.IMPACT_TYPE_IPC.equalsIgnoreCase(cmq.getImpactType()))
+            node.setRowStyleClass("royalblue-colored");
+    }
+    
+    public void setTargetCmqRelationNodeStyle(HierarchyNode node, CmqRelationTarget cmqRelationTarget) {
 		if (cmqRelationTarget.getRelationImpactType() != null) {
 			if("MQM".equalsIgnoreCase(cmqRelationTarget.getRelationImpactType())) {
 				node.setRowStyleClass("green-colored");
@@ -419,7 +434,7 @@ public class IARelationsTreeHelper {
 		}
 	}
     
-	public void setCMQCurrentNodeStyle(HierarchyNode node,	CmqRelation190 cmqRelation) {
+	public void setCurrentCmqRelationNodeStyle(HierarchyNode node,	CmqRelation190 cmqRelation) {
 		if (cmqRelation.getRelationImpactType() != null) {
 			if("NCH".equals(cmqRelation.getRelationImpactType())) {
 				node.setRowStyleClass("italic");
@@ -901,7 +916,7 @@ public class IARelationsTreeHelper {
 				node = this.createSmqBaseCurrrentNode(cmqRelation, (SmqBase190) entity2);
 			}
 			//Color for node
-			setCMQCurrentNodeStyle(node, cmqRelation);
+			setCurrentCmqRelationNodeStyle(node, cmqRelation);
 		} else {
 			CmqRelationTarget cmqRelation = (CmqRelationTarget) entity;
 			if((cmqRelation.getPtCode() != null) && (cmqRelation.getPtCode().longValue() > 0)) {
@@ -916,7 +931,7 @@ public class IARelationsTreeHelper {
 				node.markNotEditableInRelationstable();
 			}
 			//color for node
-			setCMQTargetNodeStyle(node, cmqRelation); 
+			setTargetCmqRelationNodeStyle(node, cmqRelation); 
 		}
         
 		if(null != node) {	
@@ -978,7 +993,7 @@ public class IARelationsTreeHelper {
             setCurrentMeddraColors(dtos, addedNodes, cmqRelationsMap);
             for (TreeNode n : addedNodes.values()) {
                 HierarchyNode hn = (HierarchyNode)n.getData();
-                setCMQCurrentNodeStyle(hn, (CmqRelation190)hn.getRelationEntity());
+                setCurrentCmqRelationNodeStyle(hn, (CmqRelation190)hn.getRelationEntity());
             }
                             
             if(childNodeType != null) {
@@ -990,7 +1005,7 @@ public class IARelationsTreeHelper {
             setTargetMeddraColors(dtos, addedNodes, cmqRelationsMap);
             for (TreeNode n : addedNodes.values()) {
                 HierarchyNode hn = (HierarchyNode)n.getData();
-                setCMQTargetNodeStyle(hn, (CmqRelationTarget)hn.getRelationEntity());
+                setTargetCmqRelationNodeStyle(hn, (CmqRelationTarget)hn.getRelationEntity());
             }
             if(childNodeType != null) {
                 countsOfChildren = this.meddraDictTargetService.findChildrenCountByParentCodes(childNodeType + "_"
@@ -1049,11 +1064,9 @@ public class IARelationsTreeHelper {
 					childTreeNodes.put(childCmqBase.getCmqCode(), cmqBaseChildNode);
 					childCmqCodeList.add(childCmqBase.getCmqCode());
 					
-					//Color
-					if (CSMQBean.IMPACT_TYPE_ICC.equalsIgnoreCase(childCmqBase.getImpactType())
-                            || CSMQBean.IMPACT_TYPE_IMPACTED.equalsIgnoreCase(childCmqBase.getImpactType()))
-						node.setRowStyleClass("blue-colored");
-					//setCMQCurrentNodeStyle(node, childCmqBase);
+                    //Coloring
+                    setCurrentCmqBaseNodeStyle(node, childCmqBase);
+					
 				} else {
 					CmqBaseTarget childCmqBase = (CmqBaseTarget) entity;
 					node.setLevel(childCmqBase.getCmqTypeCd());
@@ -1068,10 +1081,8 @@ public class IARelationsTreeHelper {
 					childTreeNodes.put(childCmqBase.getCmqCode(), cmqBaseChildNode);
 					childCmqCodeList.add(childCmqBase.getCmqCode());
 					
-					//Color
-					if (CSMQBean.IMPACT_TYPE_ICC.equalsIgnoreCase(childCmqBase.getImpactType())
-                            || CSMQBean.IMPACT_TYPE_IMPACTED.equalsIgnoreCase(childCmqBase.getImpactType()))
-						node.setRowStyleClass("blue-colored");
+                    // Coloring
+                    setTargetCmqBaseNodeStyle(node, childCmqBase);
 				}
 			}
 			

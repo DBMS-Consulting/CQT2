@@ -310,6 +310,33 @@ td.bordered {
 	font-weight: bold;
 }
 
+.navyblue-colored {
+	color: navy; /*#000080*/
+	font-weight: bold;
+}
+.navyblue-colored:HOVER {
+	color: #19198c;
+	font-weight: bold;
+}
+
+.royalblue-colored {
+	color: royalblue; /*#4169e1*/
+	font-weight: bold;
+}
+.royalblue-colored:HOVER {
+	color: #5478e4;
+	font-weight: bold;
+}
+
+.brown-colored {
+	color: brown; /*#a52a2a*/
+	font-weight: bold;
+}
+.brown-colored:HOVER {
+	color: #942525;
+	font-weight: bold;
+}
+
 .grey-colored {
 	color: grey;
 	font-weight: bold;
