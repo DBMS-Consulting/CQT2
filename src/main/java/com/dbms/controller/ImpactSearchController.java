@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Locale;
 import java.util.Map;
 
@@ -524,7 +525,9 @@ public class ImpactSearchController implements Serializable {
 									CmqBaseTarget cmqEntity = (CmqBaseTarget) childEntity;
 									cmqEntity.setCmqParentCode(cmqBaseTarget.getCmqCode());
 									cmqEntity.setCmqParentName(cmqBaseTarget.getCmqName());
-									cmqEntity.setImpactType("ICC");
+									cmqEntity.setImpactType("IPC");
+									cmqEntity.setCmqState("PENDING IA");
+									cmqEntity.setCmqStatus("P");
 									cmqBaseChildrenList.add(cmqEntity);
 								} else {
 									CmqRelationTarget cmqRelation = null;
@@ -652,10 +655,35 @@ public class ImpactSearchController implements Serializable {
 								//mark the cmqbase as Impacted if it is NON-IMPACTED
 								String impactType = cmqBaseTarget.getImpactType();
 								if("NON-IMPACTED".equalsIgnoreCase(impactType)) {
+									List<CmqBaseTarget> impactedCmqsList = new ArrayList<>();
 									cmqBaseTarget.setImpactType("IMPACTED");
 									cmqBaseTarget.setCmqState("PENDING IA");
 									cmqBaseTarget.setCmqStatus("P");
-									this.cmqBaseTargetService.update(cmqBaseTarget, this.authService.getUserCn()
+									impactedCmqsList.add(cmqBaseTarget);
+									
+									//now check for parent of target cmq
+									if(cmqBaseTarget.getCmqParentCode() != null) {
+										CmqBaseTarget parentCmq = this.cmqBaseTargetService.findByCode(cmqBaseTarget.getCmqParentCode());
+										parentCmq.setImpactType("ICC");
+										parentCmq.setCmqState("PENDING IA");
+										parentCmq.setCmqStatus("P");
+										impactedCmqsList.add(parentCmq);
+										
+										List<CmqBaseTarget> childrenOfParentCmq = this.cmqBaseTargetService.findChildCmqsByParentCode(parentCmq.getCmqCode());
+										for (ListIterator<CmqBaseTarget> li = childrenOfParentCmq.listIterator(); li.hasNext();) {
+											CmqBaseTarget childOfParentCmq = li.next();
+											if(childOfParentCmq.getCmqCode().longValue() == cmqBaseTarget.getCmqCode().longValue()) {
+												li.remove();//remvoe this cmq as we are already dealing with it.
+											} else {
+												childOfParentCmq.setImpactType("ICC");
+												childOfParentCmq.setCmqState("PENDING IA");
+												childOfParentCmq.setCmqStatus("P");
+											}
+										}
+										impactedCmqsList.addAll(childrenOfParentCmq);
+									}
+									
+									this.cmqBaseTargetService.update(impactedCmqsList, this.authService.getUserCn()
 											, this.authService.getUserGivenName(), this.authService.getUserSurName()
 											, this.authService.getCombinedMappedGroupMembershipAsString());
 								}

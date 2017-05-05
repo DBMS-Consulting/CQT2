@@ -1076,6 +1076,9 @@ public class IARelationsTreeHelper {
 					if(!isRootListNode && bEventFromTargetTable) {
 						node.markNotEditableInRelationstable();
 					}
+					if("PRO".equalsIgnoreCase(childCmqBase.getCmqTypeCd())) {
+						node.setHideDelete(true);
+					}
 					TreeNode cmqBaseChildNode = new DefaultTreeNode(node, expandedTreeNode);
 					
 					childTreeNodes.put(childCmqBase.getCmqCode(), cmqBaseChildNode);
