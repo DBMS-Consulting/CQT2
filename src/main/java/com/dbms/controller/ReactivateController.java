@@ -167,9 +167,9 @@ public class ReactivateController implements Serializable {
 						cmqBase190.setCmqState(CmqBase190.CMQ_STATE_VALUE_DRAFT);
 	 					cmqBase190.setCmqStatus(CmqBase190.CMQ_STATUS_VALUE_PENDING); 
 	 					cmqBase190.setLastModifiedDate(new Date());
-	 					cmqBase190.setLastModifiedBy("NONE");
+	 					cmqBase190.setLastModifiedBy(authService.getUserCn());
 	 					cmqBase190.setActivationDate(new Date());
-	 					cmqBase190.setActivatedBy("NONE");
+	 					cmqBase190.setActivatedBy(authService.getUserCn());
 	 					if (cmqBase190.getCmqApproveReason() == null)
 	 						cmqBase190.setCmqApproveReason("");
 	 					if (cmqBase190.getCmqDesignee2() == null)

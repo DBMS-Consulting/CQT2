@@ -173,13 +173,14 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		if (StringUtils.isNotEmpty(group)) {
 			sb = appendClause(sb, first);
 			sb.append(" lower(c.cmqGroup) like lower(:cmqGroup)");
-			queryParams.put("cmqGroup", "%" + group + "%");
+            queryParams.put("cmqGroup", group.contains("%") ? group : ("%" + group + "%"));
+			
 			first = false;
 		}
 		if (StringUtils.isNotEmpty(termName)) {
 			sb = appendClause(sb, first);
 			sb.append(" lower(c.cmqName) like lower(:cmqName)");
-			queryParams.put("cmqName", "%" + termName + "%");
+			queryParams.put("cmqName", termName.contains("%") ? termName : ("%" + termName + "%"));
 			first = false;
 		}
 		if (code != null) {

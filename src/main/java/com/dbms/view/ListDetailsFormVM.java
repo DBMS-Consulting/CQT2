@@ -426,8 +426,11 @@ public class ListDetailsFormVM {
 		return designee;
 	}
 	public void setDesignee(String designee) {
-		if(this.designee == null || !this.designee.equals(designee))
-			setModelChanged(true);
+		if(isDesigneeEmpty(this.designee)) {
+            if(!isDesigneeEmpty(designee))
+                setModelChanged(true);
+        } else if(!StringUtils.equals(this.designee, designee))
+            setModelChanged(true);
 		this.designee = designee;
 	}
 
@@ -640,8 +643,19 @@ public class ListDetailsFormVM {
 	public String getDesigneeTwo() {
 		return designeeTwo;
 	}
+    
+    public boolean isDesigneeEmpty(String designee) {
+        return (designee == null
+                || StringUtils.equals("NONE", designee)
+                || StringUtils.isBlank(designee));
+    }
 
 	public void setDesigneeTwo(String designeeTwo) {
+        if(isDesigneeEmpty(this.designeeTwo)) {
+            if(!isDesigneeEmpty(designeeTwo))
+                setModelChanged(true);
+        } else if(!StringUtils.equals(this.designeeTwo, designeeTwo))
+            setModelChanged(true);
 		this.designeeTwo = designeeTwo;
 	}
 
@@ -650,6 +664,11 @@ public class ListDetailsFormVM {
 	}
 
 	public void setDesigneeThree(String designeeThree) {
+        if(isDesigneeEmpty(this.designeeThree)) {
+            if(!isDesigneeEmpty(designeeThree))
+                setModelChanged(true);
+        } else if(!StringUtils.equals(this.designeeThree, designeeThree))
+            setModelChanged(true);
 		this.designeeThree = designeeThree;
 	}
 

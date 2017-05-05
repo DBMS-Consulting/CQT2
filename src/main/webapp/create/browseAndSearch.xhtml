@@ -142,7 +142,7 @@
 								<p:outputLabel styleClass="label-right"
 									value="Last Activation By: " />
 								<h:outputText
-									value="#{createController.selectedData.activatedBy}" />
+									value="#{createController.detailsFormModel.getFullnameFromUsername(createController.selectedData.activatedBy)}" />
 
 								<p:spacer />
 								<p:spacer />

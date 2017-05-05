@@ -24,7 +24,7 @@
 			<p:selectOneMenu
 				value="#{createController.detailsFormModel.extension}"
 				disabled="#{createController.detailsFormDisabled}"
-				required="#{createController.activeWizard.step eq 'details' and !createController.readOnlyState}"
+				required="#{!createController.readOnlyState}"
 				label="Extension">
 				<f:selectItems value="#{configMB.extensionList}" var="extension"
 					itemLabel="#{extension.value}"
@@ -45,7 +45,7 @@
 			<p:selectOneMenu
 				value="#{createController.detailsFormModel.drugProgram}" id="drug"
 				disabled="#{createController.detailsFormDisabled}"
-				required="#{createController.activeWizard.step eq 'details' and createController.detailsFormModel.drugProgramRequired and not createController.readOnlyState}"
+				required="#{createController.detailsFormModel.drugProgramRequired and not createController.readOnlyState}"
                 label="Drug Program">
 				<f:selectItem itemValue="" itemLabel="" noSelectionOption="true" />
 				<f:selectItems value="#{configMB.programList}" var="program"
@@ -58,7 +58,7 @@
 			<p:selectOneMenu
 				value="#{createController.detailsFormModel.protocol}" id="protocol"
 				disabled="#{createController.detailsFormDisabled}"
-				required="#{createController.activeWizard.step eq 'details' and createController.detailsFormModel.protocolRequired and not createController.readOnlyState}"
+				required="#{createController.detailsFormModel.protocolRequired and not createController.readOnlyState}"
                 label="Protocol">
 				
                 <f:selectItem itemValue="" itemLabel="" noSelectionOption="true" />
@@ -71,7 +71,7 @@
 				value="#{createController.detailsFormModel.productRequired ? '* Product' : 'Product'}"
 				rendered="true" />
 			<p:selectCheckboxMenu id="product" value="#{createController.detailsFormModel.products}" widgetVar="product"
-				required="#{createController.activeWizard.step eq 'details' and createController.detailsFormModel.productRequired and not createController.readOnlyState}"
+				required="#{createController.detailsFormModel.productRequired and not createController.readOnlyState}"
                 disabled="#{createController.detailsFormDisabled}"
                 label="#{createController.detailsFormDisabled ? createController.detailsFormModel.productsLabel : 'Product'}" updateLabel="true"
                 filter="true" filterMatchMode="startsWith"
@@ -86,7 +86,7 @@
 				value="#{createController.detailsFormModel.designee}"
 				disabled="#{createController.detailsFormDisabled}" rendered="true"
                 label="Designee"
-				required="#{createController.activeWizard.step eq 'details' and !createController.readOnlyState}">
+				required="#{!createController.readOnlyState}">
 				<f:selectItem itemValue="" itemLabel="" noSelectionOption="true" />
                 <f:selectItems value="#{createController.detailsFormModel.designeeList}" var="d"
                                itemLabel="#{d.fullName}" itemValue="#{d.userName}"/>
@@ -116,7 +116,7 @@
 			
 			<p:outputLabel value="* Level" />
 			<p:selectOneMenu id="level" value="#{createController.detailsFormModel.level}"
-				required="#{createController.activeWizard.step eq 'details' and !createController.readOnlyState}"
+				required="#{!createController.readOnlyState}"
                 label="Level"
 				disabled="#{createController.detailsFormDisabled}">
 				<f:selectItem itemValue="1" itemLabel="1" />    
@@ -162,7 +162,7 @@
             </h:outputText>
 
             <p:outputLabel value="Last Activation By  "/>
-            <h:outputText value="#{createController.selectedData.activatedBy}" />
+            <h:outputText value="#{createController.detailsFormModel.getFullnameFromUsername(createController.selectedData.activatedBy)}" />
 
             <!-- <p:spacer />
 
