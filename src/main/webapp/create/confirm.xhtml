@@ -31,42 +31,44 @@
 			</h:panelGrid>
 
 			<h:panelGrid columns="2" columnClasses="label-cell, value-cell">
+                <p:outputLabel value="Designee:" />
+                <h:outputText value="#{createController.detailsFormModel.getFullnameFromUsername(createController.selectedData.cmqDesignee)}" />
+                
+                <p:outputLabel value="Designee2:" />
+                <h:outputText value="#{createController.detailsFormModel.getFullnameFromUsername(createController.selectedData.cmqDesignee2)}" />
+                
+                <p:outputLabel value="Designee3:" />
+                <h:outputText value="#{createController.detailsFormModel.getFullnameFromUsername(createController.selectedData.cmqDesignee3)}" />
+                
 				<p:outputLabel value="Level:" />
 				<h:outputText value="#{createController.selectedData.cmqLevel}" />
-
-				<p:outputLabel value="Code:" />
-				<h:outputText value="#{createController.selectedData.cmqCode}" />
-
-				<p:outputLabel value="Algorithm:" />
+                
+                <p:outputLabel value="Algorithm:" />
 				<h:outputText value="#{createController.selectedData.cmqAlgorithm}" />
 
-				<p:spacer />
-				<p:spacer />
-
-				<p:spacer />
-				<p:spacer />
+                
 			</h:panelGrid>
 
 			<h:panelGrid columns="2" columnClasses="label-cell, value-cell">
-				<p:outputLabel value="Status:" />
+                <p:outputLabel value="Status:" />
 				<h:outputText value="#{createController.codeSelected eq null ? '' : createController.detailsFormModel.statusLabel}" rendered="true"/>
 
 				<p:outputLabel value="State:" />
 				<h:outputText value="#{createController.codeSelected eq null ? '' : createController.selectedData.cmqState}" styleClass="uppercase" />
-
+                
 				<p:outputLabel value="Group:" />
 				<h:outputText value="#{createController.selectedData.cmqGroup}" />
+                
+                <p:outputLabel value="Code:" />
+				<h:outputText value="#{createController.selectedData.cmqCode}" />
+                
+                <p:spacer />
+                <p:spacer />
 
-				<p:outputLabel value="Designee:" />
-                <h:outputText value="#{createController.detailsFormModel.getFullnameFromUsername(createController.selectedData.cmqDesignee)}" />
-
-				<p:spacer />
-				<p:spacer />
 			</h:panelGrid>
-
-
-			<h:panelGrid columns="2" columnClasses="label-cell, value-cell">
-				<p:outputLabel value="Creation Date: " />
+            
+            <h:panelGrid columns="2" columnClasses="label-cell, value-cell">
+                <p:outputLabel value="Creation Date: " />
 				<h:outputText value="#{createController.selectedData.creationDate}">
 					<f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss"/>
 				</h:outputText>
@@ -82,10 +84,11 @@
 
 				<p:outputLabel value="Last Activation By: " />
 				<h:outputText value="#{createController.selectedData.activatedBy}" />
+                
+                <p:spacer />
+                <p:spacer />
+            </h:panelGrid>
 
-				<p:spacer />
-				<p:spacer />
-			</h:panelGrid>
 		</h:panelGrid>
 
 	</p:panel>
