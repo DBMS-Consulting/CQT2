@@ -96,7 +96,8 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 			List<Predicate> pred = new ArrayList<Predicate>();
 			
 			pred.add(cb.or(cb.equal(cmqRoot.get("impactType"), CSMQBean.IMPACT_TYPE_IMPACTED), 
-					cb.equal(cmqRoot.get("impactType"), CSMQBean.IMPACT_TYPE_ICC)
+					cb.equal(cmqRoot.get("impactType"), CSMQBean.IMPACT_TYPE_ICC),
+					cb.equal(cmqRoot.get("impactType"), CSMQBean.IMPACT_TYPE_IPC)
 			));
 			
 			if(filters.containsKey("cmqName") && filters.get("cmqName") != null)

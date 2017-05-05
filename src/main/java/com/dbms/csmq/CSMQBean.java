@@ -212,6 +212,7 @@ public class CSMQBean {
     public static final String IMPACT_TYPE_IMPACTED = "IMPACTED";
     public static final String IMPACT_TYPE_NONIMPACTED = "NON-IMPACTED";
     public static final String IMPACT_TYPE_ICC = "ICC";
+    public static final String IMPACT_TYPE_IPC = "IPC";
     public static final String IMPACT_TYPE_ICS = "ICS";
     
     // MISC
