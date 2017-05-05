@@ -183,6 +183,9 @@ public class CreateController implements Serializable {
 			createWizard.setStep(WIZARD_STEP_DETAILS);
 		} else {
 			cancel();
+            if(copyWizard != null
+                    && COPY_WIZARD_STEP_SEARCH.equals(copyWizardNextStep))
+                copyingCmqCode = null;
 			goToWizardNextStep();
 		}
 	}
@@ -666,15 +669,15 @@ public class CreateController implements Serializable {
 		if(WIZARD_STEP_DETAILS.equalsIgnoreCase(oldStep) && detailsFormModel.isModelChanged()) {
 			// current step is "Details" and the form has some unsaved changes
 			if(COPY_WIZARD_STEP_SEARCH.equals(event.getNewStep())) {
-				nextStep = event.getNewStep();
+                copyWizardNextStep = COPY_WIZARD_STEP_SEARCH;
 			} else {
 				//----Confirmation on unsaved changes: see onUpdateWizardFlowProcess's "details" step
 				if (codeSelected != null)
 					copyWizardNextStep = event.getNewStep();
 				else
 					copyWizardNextStep = WIZARD_STEP_DETAILS;
-				RequestContext.getCurrentInstance().execute("PF('confirmSaveDetailsDlg').show();");
-			}
+            }
+            RequestContext.getCurrentInstance().execute("PF('confirmSaveDetailsDlg').show();");
 		} else if(codeSelected != null && WIZARD_STEP_INFONOTES.equalsIgnoreCase(oldStep) && notesFormModel.isModelChanged()) {
 			// current step is "Informative Notes" and the form has some unsaved changes
 			//----Confirmation on unsaved changes: see onUpdateWizardFlowProcess's "notes" step
@@ -771,6 +774,8 @@ public class CreateController implements Serializable {
 						"List , Informative Notes and Relations are copied/updated successfully, but Failed to get reference of SearchController to populate the realtions table.", "");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 			}
+            
+            setFormSaved(true);
 		} catch (CqtServiceException e) {
 			// roll back the selectedData
 			selectedData = cmqBaseService.findByCode(copyingCmqCode);
@@ -1626,8 +1631,10 @@ public class CreateController implements Serializable {
 //        // Users should NOT be able to update data on Update-> Details when CMQ_BASE_CURRENT.IMPACT_TYPE IN ('IMPACTED', 'ICC') OR CMQ_BASE_TARGET.IMPACT_TYPE IN ('IMPACTED', 'ICC')
 //        return this.isReadOnlyState() || this.isFormSaved() ||
 //                (updateWizard!=null && this.isImpactedByMeddraVersioning(selectedData));
-        if(updateWizard != null || copyWizard != null)
+        if(updateWizard != null)
             return !WIZARD_STEP_DETAILS.equals(getActiveWizard().getStep()) || this.isReadOnlyState() || this.isFormSaved();
+        if(copyWizard != null)
+            return copyingCmqCode==null || !WIZARD_STEP_DETAILS.equals(getActiveWizard().getStep()) || this.isReadOnlyState() || this.isFormSaved();
         else
             return this.isReadOnlyState() || this.isFormSaved();
     }
@@ -1705,5 +1712,13 @@ public class CreateController implements Serializable {
             return false;
         }
         return true;
+    }
+    
+    
+    public void clearCmqSelection() {
+        codeSelected = null;
+        copyingCmqCode = null;
+        selectedData = new CmqBase190();
+        initAll();        
     }
 }

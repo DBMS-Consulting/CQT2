@@ -98,7 +98,7 @@
             <f:attribute name="maxLimit" value="3" />
 		</p:selectCheckboxMenu>
 
-		<p:commandButton value="Search" action="#{searchController.search}"
+        <p:commandButton value="Search" action="#{searchController.search}" actionListener="#{createController.clearCmqSelection}"
 			update="@form:result" />
 		<p:commandButton action="#{searchController.reset}" value="Reset"
 			process="@this" update="@form:result @form:searchPanel @form:searchPanel2" />
