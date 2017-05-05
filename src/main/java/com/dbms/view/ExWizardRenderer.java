@@ -27,6 +27,7 @@ public class ExWizardRenderer extends org.primefaces.component.wizard.WizardRend
             if(child instanceof Tab && child.isRendered()) {
                 Tab tab = (Tab) child;
                 boolean active = (!currentFound) && (currentStep == null || tab.getId().equals(currentStep));
+                Object isBack = tab.getAttributes().get("isBack");
                 String titleStyleClass = active ? Wizard.ACTIVE_STEP_CLASS : Wizard.STEP_CLASS;
                 if(tab.getTitleStyleClass() != null) {
                     titleStyleClass = titleStyleClass + " " + tab.getTitleStyleClass();
@@ -46,7 +47,10 @@ public class ExWizardRenderer extends org.primefaces.component.wizard.WizardRend
                 writer.writeAttribute("type", "button", null);
                 writer.writeAttribute("id", tabhdr, null);
                 //writer.writeAttribute("onclick", pfWiz+".loadStep("+pfWiz+".cfg.steps["+i+"], false);PrimeFaces.ab({s:'" + tabhdr + "',p:'" + tabhdr + "',u:'" + tabhdr + "'});return false;", null);
-                writer.writeAttribute("onclick", pfWiz+".loadStep("+pfWiz+".cfg.steps["+i+"], false);return false;", null);
+                if(isBack instanceof String && "true".equals(isBack))
+                    writer.writeAttribute("onclick", pfWiz+".loadStep("+pfWiz+".cfg.steps["+i+"], true);return false;", null);
+                else
+                    writer.writeAttribute("onclick", pfWiz+".loadStep("+pfWiz+".cfg.steps["+i+"], false);return false;", null);
                 
                 if (tab.getTitletip() != null) writer.writeAttribute("title", tab.getTitletip(), null);
                 writer.write(tab.getTitle());

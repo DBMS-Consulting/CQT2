@@ -578,7 +578,6 @@ public class CreateController implements Serializable {
 		} else {
 			nextStep = UPDATE_WIZARD_STEP_SEARCH;
 		}
-        RequestContext.getCurrentInstance().reset("fUpdate");
 		RequestContext.getCurrentInstance().update("fUpdate:wizardNavbar");
 		return nextStep;
 	}
@@ -1627,7 +1626,10 @@ public class CreateController implements Serializable {
 //        // Users should NOT be able to update data on Update-> Details when CMQ_BASE_CURRENT.IMPACT_TYPE IN ('IMPACTED', 'ICC') OR CMQ_BASE_TARGET.IMPACT_TYPE IN ('IMPACTED', 'ICC')
 //        return this.isReadOnlyState() || this.isFormSaved() ||
 //                (updateWizard!=null && this.isImpactedByMeddraVersioning(selectedData));
-        return !"details".equals(getActiveWizard().getStep()) || this.isReadOnlyState() || this.isFormSaved();
+        if(updateWizard != null || copyWizard != null)
+            return !WIZARD_STEP_DETAILS.equals(getActiveWizard().getStep()) || this.isReadOnlyState() || this.isFormSaved();
+        else
+            return this.isReadOnlyState() || this.isFormSaved();
     }
 
 	public SWJSFRequest getAppSWJSFRequest() {
