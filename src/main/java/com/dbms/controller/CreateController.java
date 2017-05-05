@@ -1637,6 +1637,8 @@ public class CreateController implements Serializable {
         		return  false;
         	}
         }
+        if (createWizard != null)
+        	return false;
         return true;
     }
 
