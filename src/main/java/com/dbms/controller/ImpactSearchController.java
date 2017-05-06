@@ -24,8 +24,8 @@ import org.primefaces.component.datatable.DataTable;
 import org.primefaces.component.wizard.Wizard;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.FlowEvent;
-import org.primefaces.event.NodeExpandEvent;
 import org.primefaces.event.NodeCollapseEvent;
+import org.primefaces.event.NodeExpandEvent;
 import org.primefaces.event.NodeSelectEvent;
 import org.primefaces.event.NodeUnselectEvent;
 import org.primefaces.event.SelectEvent;
@@ -42,17 +42,14 @@ import com.dbms.csmq.HierarchyNode;
 import com.dbms.entity.IEntity;
 import com.dbms.entity.cqt.CmqBase190;
 import com.dbms.entity.cqt.CmqBaseTarget;
-import com.dbms.entity.cqt.CmqRelation190;
 import com.dbms.entity.cqt.CmqRelationTarget;
 import com.dbms.entity.cqt.RefConfigCodeList;
 import com.dbms.entity.cqt.SmqBase190;
 import com.dbms.entity.cqt.SmqBaseTarget;
-import com.dbms.entity.cqt.SmqRelation190;
 import com.dbms.entity.cqt.SmqRelationTarget;
 import com.dbms.entity.cqt.dtos.MeddraDictHierarchySearchDto;
 import com.dbms.entity.cqt.dtos.MeddraDictReverseHierarchySearchDto;
 import com.dbms.service.AuthenticationService;
-import com.dbms.service.CmqBaseTargetService;
 import com.dbms.service.ICmqBase190Service;
 import com.dbms.service.ICmqBaseTargetService;
 import com.dbms.service.ICmqRelation190Service;
@@ -63,7 +60,6 @@ import com.dbms.service.IRefCodeListService;
 import com.dbms.service.ISmqBaseService;
 import com.dbms.service.ISmqBaseTargetService;
 import com.dbms.util.CmqUtils;
-import com.dbms.util.CqtConstants;
 import com.dbms.util.SWJSFRequest;
 import com.dbms.util.exceptions.CqtServiceException;
 import com.dbms.view.CmqBaseHierarchySearchVM;
@@ -639,6 +635,7 @@ public class ImpactSearchController implements Serializable {
 							}
 						}
 						
+						boolean relationsAndChildUpdated = false;
 						if (!cmqRelationsList.isEmpty() || !cmqBaseChildrenList.isEmpty()) {
 							try {
 								if(!cmqRelationsList.isEmpty()) {
@@ -652,48 +649,7 @@ public class ImpactSearchController implements Serializable {
 											, this.authService.getCombinedMappedGroupMembershipAsString());
 								}
 								
-								//mark the cmqbase as Impacted if it is NON-IMPACTED
-								String impactType = cmqBaseTarget.getImpactType();
-								if("NON-IMPACTED".equalsIgnoreCase(impactType)) {
-									List<CmqBaseTarget> impactedCmqsList = new ArrayList<>();
-									cmqBaseTarget.setImpactType("IMPACTED");
-									cmqBaseTarget.setCmqState("PENDING IA");
-									cmqBaseTarget.setCmqStatus("P");
-									impactedCmqsList.add(cmqBaseTarget);
-									
-									//now check for parent of target cmq
-									if(cmqBaseTarget.getCmqParentCode() != null) {
-										CmqBaseTarget parentCmq = this.cmqBaseTargetService.findByCode(cmqBaseTarget.getCmqParentCode());
-										parentCmq.setImpactType("ICC");
-										parentCmq.setCmqState("PENDING IA");
-										parentCmq.setCmqStatus("P");
-										impactedCmqsList.add(parentCmq);
-										
-										List<CmqBaseTarget> childrenOfParentCmq = this.cmqBaseTargetService.findChildCmqsByParentCode(parentCmq.getCmqCode());
-										for (ListIterator<CmqBaseTarget> li = childrenOfParentCmq.listIterator(); li.hasNext();) {
-											CmqBaseTarget childOfParentCmq = li.next();
-											if(childOfParentCmq.getCmqCode().longValue() == cmqBaseTarget.getCmqCode().longValue()) {
-												li.remove();//remvoe this cmq as we are already dealing with it.
-											} else {
-												childOfParentCmq.setImpactType("ICC");
-												childOfParentCmq.setCmqState("PENDING IA");
-												childOfParentCmq.setCmqStatus("P");
-											}
-										}
-										impactedCmqsList.addAll(childrenOfParentCmq);
-									}
-									
-									this.cmqBaseTargetService.update(impactedCmqsList, this.authService.getUserCn()
-											, this.authService.getUserGivenName(), this.authService.getUserSurName()
-											, this.authService.getCombinedMappedGroupMembershipAsString());
-								}
-								
-								FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-										"Relations are successfully updated for target '" + cmqBaseTarget.getCmqName() + "'", "");
-								FacesContext.getCurrentInstance().addMessage(null, msg);
-								
-								//reset the flag to track target changes
-								targetRelationsUpdated = false;
+								relationsAndChildUpdated = true;
 							} catch (CqtServiceException e) {
 								LOG.error("Exception occurred while updated the list of CmqRelations for CMQ base target code "
 										+ cmqBaseTarget.getCmqCode(), e);
@@ -703,6 +659,62 @@ public class ImpactSearchController implements Serializable {
                                             "An error occurred while updated the list of CmqRelations for CMQ base code " + cmqBaseTarget.getCmqCode(),
                                             "Error:" + e.getMessage()));
 							}
+						}
+						
+						boolean parentAndItsChildrenUpdated = false;
+						//mark the cmqbase as Impacted if it is NON-IMPACTED
+						String impactType = cmqBaseTarget.getImpactType();
+						if("NON-IMPACTED".equalsIgnoreCase(impactType)) {
+							List<CmqBaseTarget> impactedCmqsList = new ArrayList<>();
+							cmqBaseTarget.setImpactType("IMPACTED");
+							cmqBaseTarget.setCmqState("PENDING IA");
+							cmqBaseTarget.setCmqStatus("P");
+							impactedCmqsList.add(cmqBaseTarget);
+							
+							//now check for parent of target cmq
+							if(cmqBaseTarget.getCmqParentCode() != null) {
+								CmqBaseTarget parentCmq = this.cmqBaseTargetService.findByCode(cmqBaseTarget.getCmqParentCode());
+								parentCmq.setImpactType("ICC");
+								parentCmq.setCmqState("PENDING IA");
+								parentCmq.setCmqStatus("P");
+								impactedCmqsList.add(parentCmq);
+								
+								List<CmqBaseTarget> childrenOfParentCmq = this.cmqBaseTargetService.findChildCmqsByParentCode(parentCmq.getCmqCode());
+								for (ListIterator<CmqBaseTarget> li = childrenOfParentCmq.listIterator(); li.hasNext();) {
+									CmqBaseTarget childOfParentCmq = li.next();
+									if(childOfParentCmq.getCmqCode().longValue() == cmqBaseTarget.getCmqCode().longValue()) {
+										li.remove();//remvoe this cmq as we are already dealing with it.
+									} else {
+										childOfParentCmq.setImpactType("ICC");
+										childOfParentCmq.setCmqState("PENDING IA");
+										childOfParentCmq.setCmqStatus("P");
+									}
+								}
+								impactedCmqsList.addAll(childrenOfParentCmq);
+							}
+							
+							try {
+								this.cmqBaseTargetService.update(impactedCmqsList, this.authService.getUserCn()
+										, this.authService.getUserGivenName(), this.authService.getUserSurName()
+										, this.authService.getCombinedMappedGroupMembershipAsString());
+								parentAndItsChildrenUpdated = true;
+							} catch (CqtServiceException e) {
+								LOG.error("Exception occurred while updated the parent and its children for CMQ code "
+										+ cmqBaseTarget.getCmqCode(), e);
+
+								FacesContext.getCurrentInstance().addMessage(null, 
+                                        new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                                            "An error occurred while updated the list of CmqRelations for CMQ base code " + cmqBaseTarget.getCmqCode(),
+                                            "Error:" + e.getMessage()));
+							}
+						}
+						
+						if(relationsAndChildUpdated || parentAndItsChildrenUpdated) {
+							//reset the flag to track target changes
+							targetRelationsUpdated = false;
+							FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+									"Relations are successfully updated for target '" + cmqBaseTarget.getCmqName() + "'", "");
+							FacesContext.getCurrentInstance().addMessage(null, msg);
 						}
 					}//end of if (CollectionUtils.isNotEmpty(childTreeNodes)) 
 				}//end of if(parentEntity instanceof CmqBaseTarget)
@@ -1244,6 +1256,7 @@ public class ImpactSearchController implements Serializable {
 				if (childNode.equals(selectedNode)) {
 					treeNodeIterator.remove(); // remove it from the root node
 					this.deleteRelationFromDb(childNode);
+					this.targetRelationsUpdated = true;
 					break;
 				} else if (childTreeNode.getChildCount() > 0) {
 					// drill down
@@ -1402,8 +1415,6 @@ public class ImpactSearchController implements Serializable {
 				}//end of if(null != entity)
 				
 				if(isDeletSuccessful) {
-					//make the cmq target as impacted.
-					cmqBaseTarget.setImpactType("IMPACTED");
 					try {
 						this.cmqBaseTargetService.update(cmqBaseTarget, this.authService.getUserCn()
 								, this.authService.getUserGivenName(), this.authService.getUserSurName()

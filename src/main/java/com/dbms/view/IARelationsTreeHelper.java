@@ -418,7 +418,7 @@ public class IARelationsTreeHelper {
     }
     
     public void setTargetCmqRelationNodeStyle(HierarchyNode node, CmqRelationTarget cmqRelationTarget) {
-		if (cmqRelationTarget.getRelationImpactType() != null) {
+		if ((null != cmqRelationTarget) && (cmqRelationTarget.getRelationImpactType() != null)) {
 			if("MQM".equalsIgnoreCase(cmqRelationTarget.getRelationImpactType())) {
 				node.setRowStyleClass("green-colored");
 			} else if("NCH".equals(cmqRelationTarget.getRelationImpactType())) {
