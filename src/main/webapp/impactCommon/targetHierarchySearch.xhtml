@@ -8,7 +8,7 @@
 
 
 	<p:panel header="Relations" style="min-height: 450px;height: 90%;height: calc(100% - 40px);position: relative;">
-		<h:panelGrid columns="6">
+		<h:panelGrid columns="7">
 			<p:outputLabel value="Level" for="levelHT" />
 			<p:selectOneMenu id="levelHT" label="Level" appendTo="@this"
                              value="#{impactSearchController.targetHierarchySearchDlgModel.filterLevel}">
@@ -24,15 +24,25 @@
 				<f:selectItem itemValue="PT" itemLabel="PT" />
 				<f:selectItem itemValue="LLT" itemLabel="LLT" />
 				<f:selectItem itemValue="NC-LLT" itemLabel="Non Current LLT" />
+				<p:ajax update="checkTarget" />
 			</p:selectOneMenu>
-			<p:spacer width="10" />
+			<p:spacer width="5" />
 			<p:outputLabel value="Term" for="termHT" />
 			<p:inputText id="termHT" style="text-transform:uppercase"
 				onkeypress="if (event.keyCode == 13) { return false; }"
                 value="#{impactSearchController.targetHierarchySearchDlgModel.filterTermName}" />
 			<p:commandButton value="Search" update="resultHierTarget"
 				action="#{impactSearchController.targetHierarchySearchDlgModel.hierarchySearch}" />
+				
+			<h:panelGrid columns="2">
+				
+				<h:selectBooleanCheckbox id="checkTarget" disabled="#{impactSearchController.targetHierarchySearchDlgModel.filterLevel != 'PT' and impactSearchController.targetHierarchySearchDlgModel.filterLevel != 'LLT'}" value="#{impactSearchController.targetHierarchySearchDlgModel.showPrimaryPath}">
+		           		<p:ajax update="resultHierTarget" listener="#{impactSearchController.targetHierarchySearchDlgModel.collapseForPrimaryPathShowing}"  />
+		        	</h:selectBooleanCheckbox>
+		        <h:outputText style="font-weight: bold" value="Show Primary path" />
+		 	</h:panelGrid>
 		</h:panelGrid>
+		
 
 		<br />
 		<h:panelGroup id="pct3" style="display:block;position: absolute;height:80%;height: calc(100% - 100px);width: 100%;margin-left: -16px;padding: 0 10px;box-sizing: border-box;overflow: auto;">

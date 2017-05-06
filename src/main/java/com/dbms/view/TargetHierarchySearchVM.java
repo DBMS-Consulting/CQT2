@@ -9,6 +9,7 @@ import java.util.Map;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.faces.event.AjaxBehaviorEvent;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.primefaces.event.CloseEvent;
@@ -52,6 +53,8 @@ public class TargetHierarchySearchVM {
 	private TreeNode[] mySelectedNodes;
 	
 	private boolean nonCurrentLlt;
+    private boolean showPrimaryPath;
+
 	
 	private List<HierarchySearchResultBean> hierarchySearchResults;
 	
@@ -128,6 +131,7 @@ public class TargetHierarchySearchVM {
 						null, null);
 				dummyNode.setDummyNode(true);
 				new DefaultTreeNode(dummyNode, parentTreeNode);
+
 			}
 		} else if ("PRO".equalsIgnoreCase(myFilterLevel)) {
 			List<CmqBaseTarget> cmqBaseList = this.cmqBaseTargetService.findByLevelAndTerm(2,
@@ -164,13 +168,34 @@ public class TargetHierarchySearchVM {
 
 		return "";
 	}
+	
+	/**
+	 * Collapse tree.
+	 */
+	public void collapseForPrimaryPathShowing(AjaxBehaviorEvent event) {
+		collapsingORexpanding(myHierarchyRoot, false);
+		hierarchySearch();
+	}
+
+	public void collapsingORexpanding(TreeNode n, boolean option) {
+		if (n.getChildren().size() == 0) {
+			n.setSelected(false);
+		}
+		else {
+			for (TreeNode s : n.getChildren()) {
+				collapsingORexpanding(s, option);
+			}
+			n.setExpanded(option);
+			n.setSelected(false);
+		}
+	}
 
 	//uiEventSourceName is either relations or hierarchy
 	public void onNodeExpand(NodeExpandEvent event) {
 		IARelationsTreeHelper relationsSearchHelper = new IARelationsTreeHelper(
                 null, null, null, null,
                 cmqBaseTargetService, smqBaseTargetService, meddraDictTargetService, cmqRelationTargetService);	
-		relationsSearchHelper.onNodeExpandTargetTable(this.myHierarchyRoot, event);
+		relationsSearchHelper.onNodeExpandTargetTable(this.myHierarchyRoot, event, showPrimaryPath);
 	}
 
 	/**
@@ -278,8 +303,9 @@ public class TargetHierarchySearchVM {
 			dummyNode.setDummyNode(true);
 			new DefaultTreeNode(dummyNode, smqBaseTreeNode);
 			dummyNodeAdded = true;
+
 		}
-		
+
 		//check for relations now
 		if(!dummyNodeAdded) {
 			count = this.smqBaseTargetService.findSmqRelationsCountForSmqCode(smqBaseTarget.getSmqCode());
@@ -289,6 +315,7 @@ public class TargetHierarchySearchVM {
 				new DefaultTreeNode(dummyNode, smqBaseTreeNode);
 			}
 		}
+
 	}
 	
     
@@ -324,13 +351,14 @@ public class TargetHierarchySearchVM {
 							Long count = (Long)map.get("COUNT");
 							if(count > 0) {
 								it.remove();//remove it from parentCmqCodeList
-								
+
 								//add a dummy node for this child in parent
 								TreeNode parentTreeNode = parentTreeNodes.get(parentCmqCode);
 								HierarchyNode dummyNode = new HierarchyNode(null, null,
 										null, null);
 								dummyNode.setDummyNode(true);
 								new DefaultTreeNode(dummyNode, parentTreeNode);
+
 							}
 							break;
 						}//end of if(cmqCode.longValue() == parentCmqCode.longValue())
@@ -359,6 +387,7 @@ public class TargetHierarchySearchVM {
 								null, null);
 						dummyNode.setDummyNode(true);
 						new DefaultTreeNode(dummyNode, parentTreeNode);
+
 					}
 				}
 			}
@@ -375,6 +404,7 @@ public class TargetHierarchySearchVM {
 		
 		Long countOfChildren = this.meddraDictTargetService.findChildrenCountByParentCode(childSearchColumnTypePrefix,
 				parentCodeColumnPrefix, Long.valueOf(meddraDictDto.getCode()));
+		
 		if((null != countOfChildren) && (countOfChildren > 0)) {
 			// add a dummmy node to show expand arrow
 			HierarchyNode dummyNode = new HierarchyNode(null, null,
@@ -382,6 +412,7 @@ public class TargetHierarchySearchVM {
 			dummyNode.setDummyNode(true);
 			new DefaultTreeNode(dummyNode, parentTreeNode);
 		}
+
 	}
 
 	public boolean isNonCurrentLlt() {
@@ -390,6 +421,14 @@ public class TargetHierarchySearchVM {
 
 	public void setNonCurrentLlt(boolean nonCurrentLlt) {
 		this.nonCurrentLlt = nonCurrentLlt;
+	}
+
+	public boolean isShowPrimaryPath() {
+		return showPrimaryPath;
+	}
+
+	public void setShowPrimaryPath(boolean showPrimaryPath) {
+		this.showPrimaryPath = showPrimaryPath;
 	}
 	
 }
