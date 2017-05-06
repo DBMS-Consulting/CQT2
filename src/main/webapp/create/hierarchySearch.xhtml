@@ -7,7 +7,7 @@
 	xmlns:p="http://primefaces.org/ui">
 
 	<p:panel header="Relations" id="hierarchy-modal" style="min-height: 450px;height: 90%;height: calc(100% - 40px);position: relative;">
-        <h:panelGrid id="hierarchySearchGrid" columns="6">
+        <h:panelGrid id="hierarchySearchGrid" columns="8">
 			<p:outputLabel value="Level" for="levelH" />
 			<p:selectOneMenu id="levelH" label="Level"  rendered="#{paramParentExtension ne 'PRO' and paramParentExtension ne 'CPT' and paramParentExtension ne 'DME'}"
 				value="#{paramDlgCtrl.filterLevel}" appendTo="@this">
@@ -22,6 +22,7 @@
 				<f:selectItem itemValue="HLT" itemLabel="HLT" />
 				<f:selectItem itemValue="PT" itemLabel="PT" />
 				<f:selectItem itemValue="LLT" itemLabel="LLT" />
+				<p:ajax update="check" />
 			</p:selectOneMenu>
 			<p:selectOneMenu id="levelH2" label="Level"  rendered="#{paramParentExtension eq 'PRO' or paramParentExtension eq 'CPT' or paramParentExtension eq 'DME'}"
 				value="#{paramDlgCtrl.filterLevel}" appendTo="@this">			
@@ -36,12 +37,21 @@
 				<f:selectItem itemValue="HLT" itemLabel="HLT" />
 				<f:selectItem itemValue="PT" itemLabel="PT" />
 				<f:selectItem itemValue="LLT" itemLabel="LLT" />
+				<p:ajax update="check" />
 			</p:selectOneMenu>
 			<p:spacer width="10" />
 			<p:outputLabel value="Term" for="termH" />
 			<p:inputText id="termH" style="text-transform:uppercase" onkeypress="if (event.keyCode == 13) { return false; }"
 				value="#{paramDlgCtrl.filterTermName}" />
             <p:commandButton value="Search" update="resultHier" action="#{paramDlgCtrl.hierarchySearch}" oncomplete="initRelationDND()"/>
+            
+	         <h:panelGrid columns="3">
+	         	<p:spacer width="10" />
+				<h:selectBooleanCheckbox id="check" disabled="#{paramDlgCtrl.filterLevel != 'PT' and paramDlgCtrl.filterLevel != 'LLT'}"  value="#{paramDlgCtrl.showPrimaryPath}">
+		           		<p:ajax update="resultHier" listener="#{paramDlgCtrl.collapseForPrimaryPathShowing}" />
+		        </h:selectBooleanCheckbox>
+		        <h:outputText style="font-weight: bold" value="Show Primary path" />
+		 	</h:panelGrid>
 		</h:panelGrid>
 
 		<br />

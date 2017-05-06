@@ -9,6 +9,7 @@ import java.util.Map;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.faces.event.AjaxBehaviorEvent;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.primefaces.event.CloseEvent;
@@ -54,6 +55,8 @@ public class CmqBaseHierarchySearchVM {
 	private List<HierarchySearchResultBean> hierarchySearchResults;
 	
 	private IRelationsChangeListener onDropRelationsListener;
+    private boolean showPrimaryPath;
+
 	
 	public CmqBaseHierarchySearchVM(ICmqBase190Service cmqBaseSvc,
 			ISmqBaseService smqBaseSvc,
@@ -232,7 +235,28 @@ public class CmqBaseHierarchySearchVM {
 		CmqBaseRelationsTreeHelper relationsSearchHelper = new CmqBaseRelationsTreeHelper(cmqBaseService, smqBaseService, meddraDictService, cmqRelationService);	
         relationsSearchHelper.setRelationView(isRelationView);
         relationsSearchHelper.setRelationView(isParentListView);
-		this.myHierarchyRoot = relationsSearchHelper.getRelationsNodeHierarchy(this.myHierarchyRoot, expandedTreeNode);
+		this.myHierarchyRoot = relationsSearchHelper.getRelationsNodeHierarchy(this.myHierarchyRoot, expandedTreeNode, showPrimaryPath);
+	}
+	
+	/**
+	 * Collapse tree.
+	 */
+	public void collapseForPrimaryPathShowing(AjaxBehaviorEvent event) {
+		collapsingORexpanding(myHierarchyRoot, false);
+		hierarchySearch();
+	}
+
+	public void collapsingORexpanding(TreeNode n, boolean option) {
+		if (n.getChildren().size() == 0) {
+			n.setSelected(false);
+		}
+		else {
+			for (TreeNode s : n.getChildren()) {
+				collapsingORexpanding(s, option);
+			}
+			n.setExpanded(option);
+			n.setSelected(false);
+		}
 	}
 
 	/**
@@ -323,6 +347,15 @@ public class CmqBaseHierarchySearchVM {
 	public interface IRelationsChangeListener {
 		public void onDropRelations();
 		public void addSelectedRelations(TreeNode[] nodes);
+	}
+
+
+	public boolean isShowPrimaryPath() {
+		return showPrimaryPath;
+	}
+
+	public void setShowPrimaryPath(boolean showPrimaryPath) {
+		this.showPrimaryPath = showPrimaryPath;
 	}
 	
 }

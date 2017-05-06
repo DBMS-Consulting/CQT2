@@ -498,7 +498,7 @@ public class SearchController extends BaseController<CmqBase190> implements IRel
 		CmqBaseRelationsTreeHelper relationsSearchHelper = new CmqBaseRelationsTreeHelper(cmqBaseService, smqBaseService, meddraDictService, cmqRelationService);	
         relationsSearchHelper.setRelationView(isRelationView);
         relationsSearchHelper.setParentListView(isParentListView);
-		relationsSearchHelper.getRelationsNodeHierarchy(null, expandedTreeNode);
+		relationsSearchHelper.getRelationsNodeHierarchy(null, expandedTreeNode, false);
 	}
 
 	/**
