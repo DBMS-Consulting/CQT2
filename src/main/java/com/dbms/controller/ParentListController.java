@@ -91,7 +91,7 @@ public class ParentListController extends BaseController<CmqBase190> {
 	 */
 	public void onNodeExpand(NodeExpandEvent event) {
 		CmqBaseRelationsTreeHelper relationsSearchHelper = new CmqBaseRelationsTreeHelper(cmqBaseService, smqBaseService, meddraDictService, cmqRelationService);	
-		this.parentRelationsRoot = relationsSearchHelper.getRelationsNodeHierarchy(this.parentRelationsRoot, event.getTreeNode()); 
+		this.parentRelationsRoot = relationsSearchHelper.getRelationsNodeHierarchy(this.parentRelationsRoot, event.getTreeNode(), false); 
 	}
 	
 	//-------------------------- Getters and Setters -------------------------------
