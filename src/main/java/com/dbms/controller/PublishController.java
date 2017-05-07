@@ -271,10 +271,10 @@ public class PublishController implements Serializable {
 
 	
 	/**
-	 * Publish IA list.
+	 * Publish IA list.    // OLD CODE
 	 * @return
 	 */
-	public String promoteIATargetList() {
+	/*public String promoteIATargetList() {
 		List<Long> targetCmqCodes = new ArrayList<>();
 		List<Long> targetCmqParentCodes = new ArrayList<>();
 		List<CmqBaseTarget> targetCmqsSelected = new ArrayList<>(publishFutureVersionDualListModel.getTarget());
@@ -408,6 +408,137 @@ public class PublishController implements Serializable {
 					FacesContext.getCurrentInstance().addMessage(null, 
                             new FacesMessage(FacesMessage.SEVERITY_INFO,
                                     "The List(s) were successfully Published", ""));
+				}
+			}
+		}//end 
+		targetCmqsSelected = new ArrayList<CmqBaseTarget>();	
+		
+		return "";
+	}
+	*/
+	
+	
+	/**
+	 * Publish target List.
+	 * @return
+	 */
+	public String promoteIATargetList() {
+		List<Long> targetCmqCodes = new ArrayList<>();
+		List<Long> targetCmqParentCodes = new ArrayList<>();
+		List<CmqBaseTarget> targetCmqsSelected = new ArrayList<>(publishFutureVersionDualListModel.getTarget());
+		for (CmqBaseTarget cmqBase : targetCmqsSelected) {
+			targetCmqCodes.add(cmqBase.getCmqCode());
+			if(null != cmqBase.getCmqParentCode()) {
+				targetCmqParentCodes.add(cmqBase.getCmqParentCode());
+			}
+		}
+		
+		boolean isListPublishable = true;
+		List<CmqBaseTarget> childCmqsOftargets = this.cmqBaseTargetService.findChildCmqsByCodes(targetCmqCodes);
+		if(null != childCmqsOftargets) {
+			for (CmqBaseTarget cmqBaseTarget : childCmqsOftargets) {
+				//if child is not in the target list then check if its publisher or not
+				if(!targetCmqCodes.contains(cmqBaseTarget.getCmqCode()) && (cmqBaseTarget.getCmqLevel() == 1 || cmqBaseTarget.getCmqLevel() == 2)) {
+					if(!cmqBaseTarget.getCmqState().equalsIgnoreCase(CmqBaseTarget.CMQ_STATE_PUBLISHED_IA)
+							&& cmqBaseTarget.getCmqStatus().equalsIgnoreCase(CmqBase190.CMQ_STATUS_VALUE_PENDING)) {
+						isListPublishable = false;
+					}
+				}
+			}
+		}
+		
+		if(!isListPublishable) {
+			//show error dialog 
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"The list being promoted has an associated list that must be Promoted", "");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			
+			return "";
+		} else {
+			//now check the parents of these cmqs
+			if(targetCmqParentCodes.size() > 0) {
+				List<CmqBaseTarget> parentCmqsList = this.cmqBaseTargetService.findParentCmqsByCodes(targetCmqParentCodes);
+				if(null != parentCmqsList) {
+					for (CmqBaseTarget cmqBaseTarget : parentCmqsList) {
+						//if parent is not in the target list then check if its publisher or not
+						if(!targetCmqCodes.contains(cmqBaseTarget.getCmqCode())) {
+							if(!cmqBaseTarget.getCmqState().equalsIgnoreCase(CmqBaseTarget.CMQ_STATE_PUBLISHED_IA)
+									&& cmqBaseTarget.getCmqStatus().equalsIgnoreCase(CmqBase190.CMQ_STATUS_VALUE_PENDING)) {
+								isListPublishable = false;
+							}
+						}
+					}
+				}
+			}
+			
+			if(!isListPublishable) {
+				//show error dialog with names
+				FacesContext.getCurrentInstance().addMessage(null, 
+                        new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                                "The list being promoted has an associated list that must be Promoted. ", ""));
+				
+				return "";
+			} else {
+				boolean hasErrorOccured = false;
+				boolean hasParentError = false;
+				String cmqError = "";
+				//success
+				for (CmqBaseTarget cmqBaseTarget : targetCmqsSelected) {
+					if ((cmqBaseTarget.getCmqLevel() == 2 || cmqBaseTarget.getCmqLevel() == 1) 
+							&& cmqBaseTarget.getCmqParentCode() != null && cmqBaseTarget.getCmqParentName() != null)
+						hasParentError = true;
+					else {
+						Date lastModifiedDate = new Date();
+						String lastModifiedByString = this.authService.getLastModifiedByUserAsString();
+						cmqBaseTarget.setCmqState(CmqBaseTarget.CMQ_STATE_PUBLISHED_IA);
+						cmqBaseTarget.setActivatedBy(lastModifiedByString);
+						cmqBaseTarget.setActivationDate(lastModifiedDate);
+						cmqBaseTarget.setLastModifiedDate(lastModifiedDate);
+						cmqBaseTarget.setLastModifiedBy(lastModifiedByString);
+					}
+
+					if (hasParentError) {
+						cmqError = cmqBaseTarget.getCmqName();
+						break;
+					}
+				}
+				if (hasParentError) {
+					FacesContext.getCurrentInstance().addMessage(null, 
+                            new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                                    "The list being promoted has an associated list that must be Promoted.", ""));
+					
+					return "";
+				}
+				
+				try {
+					this.cmqBaseTargetService.update(targetCmqsSelected, this.authService.getUserCn()
+							, this.authService.getUserGivenName(), this.authService.getUserSurName()
+							, this.authService.getCombinedMappedGroupMembershipAsString());
+				} catch (CqtServiceException e) {
+					LOG.error(e.getMessage(), e);
+					hasErrorOccured = true;
+				}
+				
+				if(hasErrorOccured) {
+					//show error message popup for partial success.
+					String codes = "";
+					if (targetCmqsSelected != null) {
+						for (CmqBaseTarget cmq : targetCmqsSelected) {
+							codes += cmq.getCmqCode() + ";";
+						}
+					}
+					//show error dialog with names of faulty cmqs
+					FacesContext.getCurrentInstance().addMessage(null, 
+                            new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                                    "The system could not publish the following cmqs :" + codes, ""));
+				} else {
+					//update the dualListModel source and target
+					init();
+					
+					//show messages on screen
+					FacesContext.getCurrentInstance().addMessage(null, 
+                            new FacesMessage(FacesMessage.SEVERITY_INFO,
+                                    "The List(s) are Published successfully", ""));
 				}
 			}
 		}//end 
