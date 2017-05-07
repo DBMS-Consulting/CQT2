@@ -814,7 +814,7 @@ public class IARelationsTreeHelper {
 
 		if (null != childRelations) {
 			for (IEntity entity : childRelations) {
-				boolean isChildSmqNode = true;
+				boolean isChildSmqNode = false;
 				HierarchyNode childRelationNode = new HierarchyNode();
 				if("current".equalsIgnoreCase(smqType)) {
 					SmqRelation190 childRelation = (SmqRelation190) entity;
@@ -856,7 +856,7 @@ public class IARelationsTreeHelper {
 					//for target here
 					SmqRelationTarget childRelation = (SmqRelationTarget) entity;
 					if (childRelation.getSmqLevel() == 0) {
-						SmqBase190 childSmq = new SmqBase190();
+						SmqBaseTarget childSmq = new SmqBaseTarget();
 						childSmq.setSmqCode(childRelation.getPtCode().longValue());
 						childSmq.setSmqName(childRelation.getPtName());
 						childRelationNode.setLevel("Child SMQ");
@@ -900,6 +900,7 @@ public class IARelationsTreeHelper {
 				
 				TreeNode treeNode = new DefaultTreeNode(childRelationNode, expandedTreeNode);
 				if(isChildSmqNode) {
+					
 					this.createNewDummyNode(treeNode);
 				}
 			}
