@@ -1,19 +1,23 @@
 package com.dbms.view;
 
-import com.dbms.csmq.CSMQBean;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.primefaces.event.NodeExpandEvent;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
 
+import com.dbms.csmq.CSMQBean;
 import com.dbms.csmq.HierarchyNode;
 import com.dbms.entity.IEntity;
 import com.dbms.entity.cqt.CmqBase190;
@@ -37,12 +41,6 @@ import com.dbms.service.ISmqBaseService;
 import com.dbms.service.ISmqBaseTargetService;
 import com.dbms.util.CqtConstants;
 import com.dbms.util.SMQLevelHelper;
-import java.util.LinkedList;
-
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
-
-import org.primefaces.event.NodeExpandEvent;
 
 public class IARelationsTreeHelper {
 	public enum SearchTarget { SMQ_BASE, MEDDRA_DICT, CMQ_BASE }
@@ -836,9 +834,14 @@ public class IARelationsTreeHelper {
 					} else if (childRelation.getSmqLevel() == 3) {
 						childRelationNode.setLevel("SMQ3");
 						childRelationNode.setEntity(childRelation);
-					} else if ((childRelation.getSmqLevel() == 4)
-							|| (childRelation.getSmqLevel() == 5)) {
+					} else if (childRelation.getSmqLevel() == 4) {
 						childRelationNode.setLevel("PT");
+                        childRelationNode.setScope(null != childRelation.getPtTermScope() ? childRelation.getPtTermScope().toString() : "");
+                        childRelationNode.setCategory(null != childRelation.getPtTermCategory() ? childRelation.getPtTermCategory() : "");
+                        childRelationNode.setWeight(null != childRelation.getPtTermWeight()? childRelation.getPtTermWeight().toString() : "");
+                        childRelationNode.setEntity(childRelation);
+					} else if (childRelation.getSmqLevel() == 5) {
+						childRelationNode.setLevel("LLT");
                         childRelationNode.setScope(null != childRelation.getPtTermScope() ? childRelation.getPtTermScope().toString() : "");
                         childRelationNode.setCategory(null != childRelation.getPtTermCategory() ? childRelation.getPtTermCategory() : "");
                         childRelationNode.setWeight(null != childRelation.getPtTermWeight()? childRelation.getPtTermWeight().toString() : "");
@@ -868,9 +871,14 @@ public class IARelationsTreeHelper {
 					} else if (childRelation.getSmqLevel() == 3) {
 						childRelationNode.setLevel("SMQ3");
 						childRelationNode.setEntity(childRelation);
-					} else if ((childRelation.getSmqLevel() == 4)
-							|| (childRelation.getSmqLevel() == 5)) {
+					} else if (childRelation.getSmqLevel() == 4) {
 						childRelationNode.setLevel("PT");
+                        childRelationNode.setScope(null != childRelation.getPtTermScope() ? childRelation.getPtTermScope().toString() : "");
+                        childRelationNode.setCategory(null != childRelation.getPtTermCategory() ? childRelation.getPtTermCategory() : "");
+                        childRelationNode.setWeight(null != childRelation.getPtTermWeight()? childRelation.getPtTermWeight().toString() : "");
+                        childRelationNode.setEntity(childRelation);
+					}else if (childRelation.getSmqLevel() == 5) {
+						childRelationNode.setLevel("LLT");
                         childRelationNode.setScope(null != childRelation.getPtTermScope() ? childRelation.getPtTermScope().toString() : "");
                         childRelationNode.setCategory(null != childRelation.getPtTermCategory() ? childRelation.getPtTermCategory() : "");
                         childRelationNode.setWeight(null != childRelation.getPtTermWeight()? childRelation.getPtTermWeight().toString() : "");

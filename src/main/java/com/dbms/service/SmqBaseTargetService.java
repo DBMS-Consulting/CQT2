@@ -174,7 +174,7 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 	public List<SmqRelationTarget> findSmqRelationsForSmqCode(Long smqCode) {
 		List<SmqRelationTarget> retVal = null;
 		StringBuilder sb = new StringBuilder();
-		sb.append("from SmqRelationTarget c where c.smqCode = :smqCode order by c.ptName asc");
+		sb.append("from SmqRelationTarget c where c.smqCode = :smqCode order by c.smqLevel asc");
 		
 		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
 		try {

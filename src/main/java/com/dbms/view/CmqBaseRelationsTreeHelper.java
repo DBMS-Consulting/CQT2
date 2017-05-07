@@ -549,9 +549,14 @@ public class CmqBaseRelationsTreeHelper {
 				} else if (childRelation.getSmqLevel() == 3) {
 					childRelationNode.setLevel("SMQ3");
 					childRelationNode.setEntity(childRelation);
-				} else if ((childRelation.getSmqLevel() == 4)
-						|| (childRelation.getSmqLevel() == 5)) {
+				} else if (childRelation.getSmqLevel() == 4) {
                     childRelationNode.setLevel("PT");
+                    childRelationNode.setScope(null != childRelation.getPtTermScope() ? childRelation.getPtTermScope().toString() : "");
+                    childRelationNode.setCategory(null != childRelation.getPtTermCategory() ? childRelation.getPtTermCategory() : "");
+                    childRelationNode.setWeight(null != childRelation.getPtTermWeight()? childRelation.getPtTermWeight().toString() : "");
+                    childRelationNode.setEntity(childRelation);
+                } else if (childRelation.getSmqLevel() == 5) {
+                    childRelationNode.setLevel("LLT");
                     childRelationNode.setScope(null != childRelation.getPtTermScope() ? childRelation.getPtTermScope().toString() : "");
                     childRelationNode.setCategory(null != childRelation.getPtTermCategory() ? childRelation.getPtTermCategory() : "");
                     childRelationNode.setWeight(null != childRelation.getPtTermWeight()? childRelation.getPtTermWeight().toString() : "");
