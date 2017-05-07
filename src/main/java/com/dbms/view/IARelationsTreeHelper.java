@@ -149,7 +149,7 @@ public class IARelationsTreeHelper {
 		//hierarchyNode.setRowStyleClass("blue-colored");
 	}
 	
-	public void onNodeExpandTargetTable(TreeNode rootNode, NodeExpandEvent event, boolean showPrimaryPath) {
+	public void onNodeExpandTargetTable(TreeNode rootNode, NodeExpandEvent event) {
 		String uiSourceOfEvent =  (String) event.getComponent().getAttributes().get("uiEventSourceName");
 		TreeNode expandedTreeNode = event.getTreeNode();
 		HierarchyNode hierarchyNode = (HierarchyNode) expandedTreeNode.getData();
@@ -193,7 +193,7 @@ public class IARelationsTreeHelper {
 				if("LLT".equalsIgnoreCase(levelOfExpandedNode)) {
 					Long lltCode = Long.valueOf(reverseSearchDto.getLltCode());
 					this.populateMeddraDictReverseHierarchySearchDtoChildren("LLT_", "PT", lltCode, hierarchyNode
-																				, expandedTreeNode, reverseSearchDto, true, uiSourceOfEvent, showPrimaryPath);	
+																				, expandedTreeNode, reverseSearchDto, false, uiSourceOfEvent);	
 				} else if ("PT".equalsIgnoreCase(levelOfExpandedNode)) {
 					Long ptCode = Long.valueOf(reverseSearchDto.getPtCode());
 					//if its main view tables then show downward hierarchy else its from hierarchySearch so show reverse hierarchy
@@ -201,16 +201,16 @@ public class IARelationsTreeHelper {
 						this.populateMeddraDictHierarchySearchDtoChildren(levelOfExpandedNode, ptCode, expandedTreeNode, "target", uiSourceOfEvent);
 					} else {
 						this.populateMeddraDictReverseHierarchySearchDtoChildren("PT_", "HLT", ptCode, hierarchyNode
-								, expandedTreeNode, reverseSearchDto, true, uiSourceOfEvent, showPrimaryPath);	
+								, expandedTreeNode, reverseSearchDto, false, uiSourceOfEvent);	
 					}
 				} else if ("HLT".equalsIgnoreCase(levelOfExpandedNode)) {
 					Long hltCode = Long.valueOf(reverseSearchDto.getHltCode());
 					this.populateMeddraDictReverseHierarchySearchDtoChildren("HLT_", "HLGT", hltCode, hierarchyNode
-																				, expandedTreeNode, reverseSearchDto, true, uiSourceOfEvent, showPrimaryPath);	
+																				, expandedTreeNode, reverseSearchDto, false, uiSourceOfEvent);	
 				} else if ("HLGT".equalsIgnoreCase(levelOfExpandedNode)) {
 					Long hlgtCode = Long.valueOf(reverseSearchDto.getHlgtCode());
 					this.populateMeddraDictReverseHierarchySearchDtoChildren("HLGT_", "SOC", hlgtCode, hierarchyNode
-																				, expandedTreeNode, reverseSearchDto, true, uiSourceOfEvent, showPrimaryPath);	
+																				, expandedTreeNode, reverseSearchDto, false, uiSourceOfEvent);	
 				}
 			}
 			hierarchyNode.setDataFetchCompleted(true);
@@ -1333,7 +1333,7 @@ public class IARelationsTreeHelper {
 	public void populateMeddraDictReverseHierarchySearchDtoChildren(String searchColumnTypePrefix, String partitionColumn
 																		, Long code, HierarchyNode hierarchyNode, TreeNode expandedTreeNode
 																		, MeddraDictReverseHierarchySearchDto reverseSearchDto
-																		, boolean chekcForPrimaryPath, String uiSourceOfEvent, boolean showPrimaryPath) {
+																		, boolean chekcForPrimaryPath, String uiSourceOfEvent) {
 		boolean isRootListNode = isRootListNode(expandedTreeNode);
         boolean bEventFromTargetTable = "target-table".equalsIgnoreCase(uiSourceOfEvent);
         boolean checkPrimaryPathTemp = false;
@@ -1346,53 +1346,30 @@ public class IARelationsTreeHelper {
 			}
 			for (MeddraDictReverseHierarchySearchDto childReverseSearchDto : childReverseSearchDtos) {
 				HierarchyNode childNode;
-				boolean primary = false;
 				if(checkPrimaryPathTemp) {
 					boolean isPrimary = false;
 					if("Y".equalsIgnoreCase(childReverseSearchDto.getPrimaryPathFlag())) {
 						isPrimary = true;
-						primary = isPrimary;
 					}
 					childNode = this.createMeddraReverseNode(childReverseSearchDto, partitionColumn, isPrimary);
 					childNode.setPrimarypathCheckDone(true);
 				} else {
 					childNode = this.createMeddraReverseNode(childReverseSearchDto, partitionColumn, hierarchyNode.isPrimaryPathFlag());
-					primary =  hierarchyNode.isPrimaryPathFlag();
 				}
 				
 				if(!isRootListNode && bEventFromTargetTable) {
 					childNode.markNotEditableInRelationstable();
 				}
 				
-				if (showPrimaryPath) {
-					if (primary) {
-						// Meddra Color
-						// setMeddraColor(childReverseSearchDto, childNode);
-						// //TODO A REVOIR
-						TreeNode childTreeNode = new DefaultTreeNode(childNode,
-								expandedTreeNode);
-
-						// dont add any child for last leaf node
-						if (!"SOC".equalsIgnoreCase(partitionColumn)) {
-							if (StringUtils.isNotBlank(reverseSearchDto
-									.getHltTerm())) {
-								// add a dummmy node to show expand arrow
-								createNewDummyNode(childTreeNode);
-							}
-						}
-					}
-				}
-				else {
-					TreeNode childTreeNode = new DefaultTreeNode(childNode,
-							expandedTreeNode);
-
-					// dont add any child for last leaf node
-					if (!"SOC".equalsIgnoreCase(partitionColumn)) {
-						if (StringUtils.isNotBlank(reverseSearchDto
-								.getHltTerm())) {
-							// add a dummmy node to show expand arrow
-							createNewDummyNode(childTreeNode);
-						}
+				//Meddra Color
+				//setMeddraColor(childReverseSearchDto, childNode); //TODO A REVOIR
+				TreeNode childTreeNode = new DefaultTreeNode(childNode, expandedTreeNode);
+				
+				//dont add any child for last leaf node
+				if(!"SOC".equalsIgnoreCase(partitionColumn)) {
+					if(StringUtils.isNotBlank(reverseSearchDto.getHltTerm())) {
+						// add a dummmy node to show expand arrow
+						createNewDummyNode(childTreeNode);
 					}
 				}
 			}

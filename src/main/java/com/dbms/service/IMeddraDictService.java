@@ -30,4 +30,6 @@ public interface IMeddraDictService {
 
 	List<MeddraDictReverseHierarchySearchDto> findFullReverseHierarchyByLevelAndTerm(String searchColumnPrefix
 			, String partitionColumnPrefix, String searchTerm);
+
+	List<MeddraDictReverseHierarchySearchDto> findPtOrLltPrimaryPathsByTerm(String termName, boolean isPtSearch);
 }

@@ -9,7 +9,6 @@ import java.util.Map;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
-import javax.faces.event.AjaxBehaviorEvent;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.primefaces.event.CloseEvent;
@@ -55,8 +54,8 @@ public class CmqBaseHierarchySearchVM {
 	private List<HierarchySearchResultBean> hierarchySearchResults;
 	
 	private IRelationsChangeListener onDropRelationsListener;
-    private boolean showPrimaryPath;
-
+	
+	private boolean showPrimaryPath;
 	
 	public CmqBaseHierarchySearchVM(ICmqBase190Service cmqBaseSvc,
 			ISmqBaseService smqBaseSvc,
@@ -75,7 +74,6 @@ public class CmqBaseHierarchySearchVM {
 		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Canceled", "ZZ"));
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public String hierarchySearch() {
 		CmqBaseRelationsTreeHelper relationsTreeHelper = new CmqBaseRelationsTreeHelper(cmqBaseService, smqBaseService, meddraDictService, cmqRelationService);
         relationsTreeHelper.setRequireDrillDown(true);
@@ -158,16 +156,50 @@ public class CmqBaseHierarchySearchVM {
                 }
             }
 		} else if (meddraLevelH != null && meddraLevelH.getSearchFrom() == MeddraDictLevelHelper.SEARCH_MEDDRA_BASE_REVERSE) {
-			List<MeddraDictReverseHierarchySearchDto> meddraDictDtoList = meddraDictService
-					.findFullReverseHierarchyByLevelAndTerm(myFilterLevel, myFilterLevel, myFilterTermName);
-			this.myHierarchyRoot = new DefaultTreeNode("root", new HierarchyNode("LEVEL", "NAME", "CODE", null), null);
-			
-			for (MeddraDictReverseHierarchySearchDto meddraDictReverseDto : meddraDictDtoList) {
-				HierarchyNode node = relationsTreeHelper.createMeddraReverseNode(meddraDictReverseDto, myFilterLevel, true, null);
-				TreeNode parentTreeNode = new DefaultTreeNode(node, this.myHierarchyRoot);
+			if(this.showPrimaryPath && (myFilterLevel.equals("PT") || myFilterLevel.equals("LLT"))) {
+				this.myHierarchyRoot = new DefaultTreeNode("root", new HierarchyNode("LEVEL", "NAME", "CODE", null), null);
+				boolean isPtSearch = myFilterLevel.equals("PT");
+				List<MeddraDictReverseHierarchySearchDto> meddraDictDtoList = meddraDictService
+																				.findPtOrLltPrimaryPathsByTerm(myFilterTermName, isPtSearch);
+				List<Long> processedCodes = new ArrayList<>();
+				for (MeddraDictReverseHierarchySearchDto meddraDictReverseDto : meddraDictDtoList) {
+					Long ptCode = Long.valueOf(meddraDictReverseDto.getPtCode());
+					if(!processedCodes.contains(ptCode)) {
+						processedCodes.add(ptCode);
+						
+						TreeNode ptTreeNode = null;
+						if(isPtSearch) {
+							HierarchyNode ptNode = relationsTreeHelper.createMeddraReverseNode(meddraDictReverseDto, "PT", false, null);
+							ptTreeNode = new DefaultTreeNode(ptNode, this.myHierarchyRoot);
+						} else {
+							HierarchyNode lltNode = relationsTreeHelper.createMeddraReverseNode(meddraDictReverseDto, "LLT", false, null);
+							TreeNode lltTreeNode = new DefaultTreeNode(lltNode, this.myHierarchyRoot);
+							HierarchyNode ptNode = relationsTreeHelper.createMeddraReverseNode(meddraDictReverseDto, "PT", false, null);
+							ptTreeNode = new DefaultTreeNode(ptNode, lltTreeNode);
+						}
+						
+						HierarchyNode hltNode = relationsTreeHelper.createMeddraReverseNode(meddraDictReverseDto, "HLT", false, null);
+						TreeNode hltTreeNode = new DefaultTreeNode(hltNode, ptTreeNode);
+						
+						HierarchyNode hlgtNode = relationsTreeHelper.createMeddraReverseNode(meddraDictReverseDto, "HLGT", false, null);
+						TreeNode hlgtTreeNode = new DefaultTreeNode(hlgtNode, hltTreeNode);
+						
+						HierarchyNode socNode = relationsTreeHelper.createMeddraReverseNode(meddraDictReverseDto, "SOC", false, null);
+						TreeNode socTreeNode = new DefaultTreeNode(socNode, hlgtTreeNode);
+					}
+				}
+			} else {
+				List<MeddraDictReverseHierarchySearchDto> meddraDictDtoList = meddraDictService
+						.findFullReverseHierarchyByLevelAndTerm(myFilterLevel, myFilterLevel, myFilterTermName);
+				this.myHierarchyRoot = new DefaultTreeNode("root", new HierarchyNode("LEVEL", "NAME", "CODE", null), null);
 				
-				// add a dummmy node to show expand arrow
-				relationsTreeHelper.createNewDummyNode(parentTreeNode);
+				for (MeddraDictReverseHierarchySearchDto meddraDictReverseDto : meddraDictDtoList) {
+					HierarchyNode node = relationsTreeHelper.createMeddraReverseNode(meddraDictReverseDto, myFilterLevel, false, null);
+					TreeNode parentTreeNode = new DefaultTreeNode(node, this.myHierarchyRoot);
+					
+					// add a dummmy node to show expand arrow
+					relationsTreeHelper.createNewDummyNode(parentTreeNode);
+				}
 			}
 		} else if ("PRO".equalsIgnoreCase(myFilterLevel)) {
 			List<CmqBase190> cmqBaseList = cmqBaseService.findByLevelAndTerm(2, myFilterTermName);
@@ -232,30 +264,12 @@ public class CmqBaseHierarchySearchVM {
 		TreeNode expandedTreeNode = event.getTreeNode();
 		boolean isRelationView = "RELATIONS".equalsIgnoreCase(uiSourceOfEvent);
 		boolean isParentListView = "PARENT-LIST".equalsIgnoreCase(uiSourceOfEvent);
-		CmqBaseRelationsTreeHelper relationsSearchHelper = new CmqBaseRelationsTreeHelper(cmqBaseService, smqBaseService, meddraDictService, cmqRelationService);	
-        relationsSearchHelper.setRelationView(isRelationView);
-        relationsSearchHelper.setRelationView(isParentListView);
-		this.myHierarchyRoot = relationsSearchHelper.getRelationsNodeHierarchy(this.myHierarchyRoot, expandedTreeNode, showPrimaryPath);
-	}
-	
-	/**
-	 * Collapse tree.
-	 */
-	public void collapseForPrimaryPathShowing(AjaxBehaviorEvent event) {
-		collapsingORexpanding(myHierarchyRoot, false);
-		hierarchySearch();
-	}
-
-	public void collapsingORexpanding(TreeNode n, boolean option) {
-		if (n.getChildren().size() == 0) {
-			n.setSelected(false);
-		}
-		else {
-			for (TreeNode s : n.getChildren()) {
-				collapsingORexpanding(s, option);
-			}
-			n.setExpanded(option);
-			n.setSelected(false);
+		if(!("hierarchy-search".equalsIgnoreCase(uiSourceOfEvent)) || !(this.showPrimaryPath 
+				&& (myFilterLevel.equals("PT") || myFilterLevel.equals("LLT")))) {
+			CmqBaseRelationsTreeHelper relationsSearchHelper = new CmqBaseRelationsTreeHelper(cmqBaseService, smqBaseService, meddraDictService, cmqRelationService);	
+	        relationsSearchHelper.setRelationView(isRelationView);
+	        relationsSearchHelper.setRelationView(isParentListView);
+			this.myHierarchyRoot = relationsSearchHelper.getRelationsNodeHierarchy(this.myHierarchyRoot, expandedTreeNode);	
 		}
 	}
 
@@ -348,8 +362,7 @@ public class CmqBaseHierarchySearchVM {
 		public void onDropRelations();
 		public void addSelectedRelations(TreeNode[] nodes);
 	}
-
-
+	
 	public boolean isShowPrimaryPath() {
 		return showPrimaryPath;
 	}
@@ -357,5 +370,4 @@ public class CmqBaseHierarchySearchVM {
 	public void setShowPrimaryPath(boolean showPrimaryPath) {
 		this.showPrimaryPath = showPrimaryPath;
 	}
-	
 }

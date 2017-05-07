@@ -192,7 +192,7 @@ public class CmqBaseRelationsTreeHelper {
         this.populateChildCmqsByParent(cmqCode, expandedTreeNode);
 	}
 	
-	public TreeNode getRelationsNodeHierarchy(TreeNode rootNode, TreeNode expandedNode, boolean showPrimaryPath) {
+	public TreeNode getRelationsNodeHierarchy(TreeNode rootNode, TreeNode expandedNode) {
 		HierarchyNode hNode = (HierarchyNode) expandedNode.getData();
 		boolean isDataFetchCompleted = hNode.isDataFetchCompleted();
 		
@@ -227,7 +227,7 @@ public class CmqBaseRelationsTreeHelper {
             String levelOfExpandedNode = hNode.getLevel();
             if("LLT".equalsIgnoreCase(levelOfExpandedNode)) {
                 Long lltCode = Long.valueOf(reverseSearchDto.getLltCode());
-                this.populateMeddraDictReverseHierarchySearchDtoChildren("LLT_", "PT", lltCode, hNode, expandedNode, reverseSearchDto, true, showPrimaryPath);	
+                this.populateMeddraDictReverseHierarchySearchDtoChildren("LLT_", "PT", lltCode, hNode, expandedNode, reverseSearchDto, false);	
             } else if ("PT".equalsIgnoreCase(levelOfExpandedNode)) {
                 Long ptCode = Long.valueOf(reverseSearchDto.getPtCode());
                 if(relationView) {
@@ -240,14 +240,14 @@ public class CmqBaseRelationsTreeHelper {
 					}
                 } else {
                     //if its main view tables then show downward hierarchy else its from hierarchySearch so show reverse hierarchy
-                    this.populateMeddraDictReverseHierarchySearchDtoChildren("PT_", "HLT", ptCode, hNode, expandedNode, reverseSearchDto, true, showPrimaryPath);	
+                    this.populateMeddraDictReverseHierarchySearchDtoChildren("PT_", "HLT", ptCode, hNode, expandedNode, reverseSearchDto, false);	
                 }
             } else if ("HLT".equalsIgnoreCase(levelOfExpandedNode)) {
                 Long hltCode = Long.valueOf(reverseSearchDto.getHltCode());
-                this.populateMeddraDictReverseHierarchySearchDtoChildren("HLT_", "HLGT", hltCode, hNode, expandedNode, reverseSearchDto, true, showPrimaryPath);	
+                this.populateMeddraDictReverseHierarchySearchDtoChildren("HLT_", "HLGT", hltCode, hNode, expandedNode, reverseSearchDto, false);	
             } else if ("HLGT".equalsIgnoreCase(levelOfExpandedNode)) {
                 Long hlgtCode = Long.valueOf(reverseSearchDto.getHlgtCode());
-                this.populateMeddraDictReverseHierarchySearchDtoChildren("HLGT_", "SOC", hlgtCode, hNode, expandedNode, reverseSearchDto, true, showPrimaryPath);	
+                this.populateMeddraDictReverseHierarchySearchDtoChildren("HLGT_", "SOC", hlgtCode, hNode, expandedNode, reverseSearchDto, false);	
             }
         }
 
@@ -324,20 +324,19 @@ public class CmqBaseRelationsTreeHelper {
             
             if(requireDrillDown) {
                 //add a dummy node for either of the cases, expansion will handle the actuals later
-            	Long smqBaseChildrenCount;
-            	smqBaseChildrenCount = this.smqBaseSvc.findChildSmqCountByParentSmqCode(((SmqBase190)entity2).getSmqCode());
-            	if((null != smqBaseChildrenCount) && (smqBaseChildrenCount > 0)) {
-            		// add a dummmy node to show expand arrow
-            		createNewDummyNode(treeNode);
-            	} else {
-            		Long childSmqrelationsCount;
-            		childSmqrelationsCount = this.smqBaseSvc.findSmqRelationsCountForSmqCode(((SmqBase190)entity2).getSmqCode());
-            		if((null != childSmqrelationsCount) && (childSmqrelationsCount > 0)) {
-            			// add a dummmy node to show expand arrow
-            			createNewDummyNode(treeNode);
-            		}
-            	}
-
+                Long smqBaseChildrenCount;
+                smqBaseChildrenCount = this.smqBaseSvc.findChildSmqCountByParentSmqCode(((SmqBase190)entity2).getSmqCode());
+                if((null != smqBaseChildrenCount) && (smqBaseChildrenCount > 0)) {
+                    // add a dummmy node to show expand arrow
+                    createNewDummyNode(treeNode);
+                } else {
+                    Long childSmqrelationsCount;
+                    childSmqrelationsCount = this.smqBaseSvc.findSmqRelationsCountForSmqCode(((SmqBase190)entity2).getSmqCode());
+                    if((null != childSmqrelationsCount) && (childSmqrelationsCount > 0)) {
+                        // add a dummmy node to show expand arrow
+                        createNewDummyNode(treeNode);
+                    }
+                }
             }
         }
         return treeNode;
@@ -368,20 +367,19 @@ public class CmqBaseRelationsTreeHelper {
                                             , nodeType + "_", dtoCodes);
 
             if((null != countsOfChildren) && (countsOfChildren.size() > 0)) {
-            	//first find and fix child nodes stuff
-            	for (Map<String, Object> cc: countsOfChildren) {
-            		if(cc.get("PARENT_CODE") != null && cc.get("COUNT") != null) {
-            			Long pCode = (Long)cc.get("PARENT_CODE");
-            			Long c = (Long)cc.get("COUNT");
-            			TreeNode t = c > 0 ? addedNodes.get(pCode) : null;
-            			if(t!=null) {
-            				// add a dummmy node to show expand arrow
-            				createNewDummyNode(t);
-            			}
-            		}
-            	}
+                //first find and fix child nodes stuff
+                for (Map<String, Object> cc: countsOfChildren) {
+                    if(cc.get("PARENT_CODE") != null && cc.get("COUNT") != null) {
+                        Long pCode = (Long)cc.get("PARENT_CODE");
+                        Long c = (Long)cc.get("COUNT");
+                        TreeNode t = c > 0 ? addedNodes.get(pCode) : null;
+                        if(t!=null) {
+                            // add a dummmy node to show expand arrow
+                            createNewDummyNode(t);
+                        }
+                    }
+                }
             }
-
         }
 	}
     
@@ -405,20 +403,19 @@ public class CmqBaseRelationsTreeHelper {
                                             , nodeType + "_", dtoCodes);
 
             if((null != countsOfChildren) && (countsOfChildren.size() > 0)) {
-            	//first find and fix child nodes stuff
-            	for (Map<String, Object> cc: countsOfChildren) {
-            		if(cc.get("PARENT_CODE") != null && cc.get("COUNT") != null) {
-            			Long pCode = (Long)cc.get("PARENT_CODE");
-            			Long c = (Long)cc.get("COUNT");
-            			TreeNode t = c > 0 ? addedNodes.get(pCode) : null;
-            			if(t!=null) {
-            				// add a dummmy node to show expand arrow
-            				createNewDummyNode(t);
-            			}
-            		}
-            	}
+                //first find and fix child nodes stuff
+                for (Map<String, Object> cc: countsOfChildren) {
+                    if(cc.get("PARENT_CODE") != null && cc.get("COUNT") != null) {
+                        Long pCode = (Long)cc.get("PARENT_CODE");
+                        Long c = (Long)cc.get("COUNT");
+                        TreeNode t = c > 0 ? addedNodes.get(pCode) : null;
+                        if(t!=null) {
+                            // add a dummmy node to show expand arrow
+                            createNewDummyNode(t);
+                        }
+                    }
+                }
             }
-
         }
 	}
     
@@ -471,7 +468,7 @@ public class CmqBaseRelationsTreeHelper {
 			
 			//now find relations for those who don't have children
 			List<Map<String, Object>> relationsCountsList = this.cmqRelationSvc.findCountByCmqCodes(childCmqCodeList);
-
+				
 			if((null != relationsCountsList) && (relationsCountsList.size() > 0)) {
 				for(Map<String, Object> map: relationsCountsList) {
 					if(map.get("CMQ_CODE") != null) {
@@ -483,12 +480,12 @@ public class CmqBaseRelationsTreeHelper {
 					}
 				}
 			}
-
 		}
 	}
     
     @SuppressWarnings({ "rawtypes", "unchecked" })
 	public void populateSmqBaseChildren(Long smqCode, TreeNode expandedTreeNode) {
+        
 		List<SmqBase190> childSmqBaseList = this.smqBaseSvc.findChildSmqByParentSmqCode(smqCode);
 
         if(CollectionUtils.isNotEmpty(childSmqBaseList)) {
@@ -512,23 +509,20 @@ public class CmqBaseRelationsTreeHelper {
 				smqTreeNodeMap.put(childSmqCode, childTreeNode);
 			} // end of for
 			
-							
 			//find smqrelations of all child smqs
-			List<Map<String, Object>> childSmqRelationsCountList = this.smqBaseSvc.findSmqRelationsCountForSmqCodes(smqChildCodeList);
+            List<Map<String, Object>> childSmqRelationsCountList = this.smqBaseSvc.findSmqRelationsCountForSmqCodes(smqChildCodeList);
 
-			if((null != childSmqRelationsCountList) && (childSmqRelationsCountList.size() > 0)) {
-				for(Map<String, Object> map : childSmqRelationsCountList) {
-					if(map.get("SMQ_CODE") != null) {
-						Long childSmqCode = (Long)map.get("SMQ_CODE");
-						Long count = (Long)map.get("COUNT");
-						if(count > 0) {
-							createNewDummyNode(smqTreeNodeMap.get(childSmqCode));
-						}
-					}
-				}
-			}
-
-
+            if((null != childSmqRelationsCountList) && (childSmqRelationsCountList.size() > 0)) {
+                for(Map<String, Object> map : childSmqRelationsCountList) {
+                    if(map.get("SMQ_CODE") != null) {
+                        Long childSmqCode = (Long)map.get("SMQ_CODE");
+                        Long count = (Long)map.get("COUNT");
+                        if(count > 0) {
+                            createNewDummyNode(smqTreeNodeMap.get(childSmqCode));
+                        }
+                    }
+                }
+            }
 		}
 	}
     
@@ -570,10 +564,10 @@ public class CmqBaseRelationsTreeHelper {
                     childRelationNode.markNotEditableInRelationstable();
                 }
 
-                TreeNode treeNode = new DefaultTreeNode(childRelationNode, expandedTreeNode);
-                if(isChildSmqNode) {
-                	this.createNewDummyNode(treeNode);
-                }
+				TreeNode treeNode = new DefaultTreeNode(childRelationNode, expandedTreeNode);
+				if(isChildSmqNode) {
+					this.createNewDummyNode(treeNode);
+				}
 			}
 		}
 	}
@@ -581,7 +575,7 @@ public class CmqBaseRelationsTreeHelper {
     public void populateMeddraDictHierarchySearchDtoChildren(String parentLevel, Long dtoCode, TreeNode expandedTreeNode) {
 		//child code and term type prefix for the parent i.e: node that was expanded in ui
 		String childLevel = null;
-		String childSearchColumnTypePrefix = null; 
+		String childSearchColumnTypePrefix = null;
 		
 		//child of the above child
 		String childOfChildLevel = null;
@@ -631,7 +625,6 @@ public class CmqBaseRelationsTreeHelper {
 				childNode.markNotEditableInRelationstable();
 			}
 			
-			
 			TreeNode childTreeNode = new DefaultTreeNode(childNode, expandedTreeNode);
 			
 			//fetch children count of this iterating child node by code of child
@@ -647,26 +640,25 @@ public class CmqBaseRelationsTreeHelper {
                 childSearchColumnTypePrefix, nodesMapKeys);
 
         if((null != countsOfChildren) && (countsOfChildren.size() > 0)) {
-        	//first find and fix child nodes stuff
-        	for (Map<String, Object> cc: countsOfChildren) {
-        		if(cc.get("PARENT_CODE") != null && cc.get("COUNT") != null) {
-        			Long pCode = (Long)cc.get("PARENT_CODE");
-        			Long c = (Long)cc.get("COUNT");
-        			TreeNode t = c > 0 ? nodesMap.get(pCode) : null;
-        			if(t!=null) {
-        				// add a dummmy node to show expand arrow
-        				createNewDummyNode(t);
-        			}
-        		}
-        	}
+            //first find and fix child nodes stuff
+            for (Map<String, Object> cc: countsOfChildren) {
+                if(cc.get("PARENT_CODE") != null && cc.get("COUNT") != null) {
+                    Long pCode = (Long)cc.get("PARENT_CODE");
+                    Long c = (Long)cc.get("COUNT");
+                    TreeNode t = c > 0 ? nodesMap.get(pCode) : null;
+                    if(t!=null) {
+                        // add a dummmy node to show expand arrow
+                        createNewDummyNode(t);
+                    }
+                }
+            }
         }
-        
 	}
     
     public void populateMeddraDictReverseHierarchySearchDtoChildren(String searchColumnTypePrefix, String partitionColumn
             , Long code, HierarchyNode hierarchyNode, TreeNode expandedTreeNode
             , MeddraDictReverseHierarchySearchDto reverseSearchDto
-            , boolean chekcForPrimaryPath, boolean showPrimaryPath) {
+            , boolean chekcForPrimaryPath) {
         boolean checkPrimaryPathTemp = false;
 		String partitionColumnPrefix = partitionColumn +"_";
 		List<MeddraDictReverseHierarchySearchDto> childReverseSearchDtos = this.meddraDictSvc.findReverseByCode(searchColumnTypePrefix
@@ -677,48 +669,28 @@ public class CmqBaseRelationsTreeHelper {
 			}
 			for (MeddraDictReverseHierarchySearchDto childReverseSearchDto : childReverseSearchDtos) {
 				HierarchyNode childNode;
-				boolean primary = false;
 				if(checkPrimaryPathTemp) {
 					boolean isPrimary = false;
 					if("Y".equalsIgnoreCase(childReverseSearchDto.getPrimaryPathFlag())) {
 						isPrimary = true;
-						primary = isPrimary;
 					}
 					childNode = this.createMeddraReverseNode(childReverseSearchDto, partitionColumn, isPrimary, null);
 					childNode.setPrimarypathCheckDone(true);
 				} else {
-				
 					childNode = this.createMeddraReverseNode(childReverseSearchDto, partitionColumn, hierarchyNode.isPrimaryPathFlag(), null);
-					primary =  hierarchyNode.isPrimaryPathFlag();
 				}
-
+				
 				if(relationView) {
 					childNode.markNotEditableInRelationstable();
 				}
-
-				if (showPrimaryPath) {
-					if (primary) {
-						TreeNode childTreeNode = new DefaultTreeNode(childNode, expandedTreeNode);
-						
-						//dont add any child for last leaf node
-						if(!"SOC".equalsIgnoreCase(partitionColumn)) {
-							if(StringUtils.isNotBlank(reverseSearchDto.getHltTerm())) {
-								// add a dummmy node to show expand arrow
-								createNewDummyNode(childTreeNode);
-							}
-						}
-						
-					}
-					//return;
-				}else {
-					TreeNode childTreeNode = new DefaultTreeNode(childNode, expandedTreeNode);
-	
-					//dont add any child for last leaf node
-					if(!"SOC".equalsIgnoreCase(partitionColumn)) {
-						if(StringUtils.isNotBlank(reverseSearchDto.getHltTerm())) {
-							// add a dummmy node to show expand arrow
-							createNewDummyNode(childTreeNode);
-						}
+				
+				TreeNode childTreeNode = new DefaultTreeNode(childNode, expandedTreeNode);
+				
+				//dont add any child for last leaf node
+				if(!"SOC".equalsIgnoreCase(partitionColumn)) {
+					if(StringUtils.isNotBlank(reverseSearchDto.getHltTerm())) {
+						// add a dummmy node to show expand arrow
+						createNewDummyNode(childTreeNode);
 					}
 				}
 			}

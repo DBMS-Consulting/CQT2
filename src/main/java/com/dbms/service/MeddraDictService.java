@@ -1,10 +1,14 @@
 package com.dbms.service;
 
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
 import javax.persistence.EntityManager;
+
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
@@ -18,10 +22,6 @@ import com.dbms.entity.cqt.dtos.MeddraDictHierarchySearchDto;
 import com.dbms.entity.cqt.dtos.MeddraDictReverseHierarchySearchDto;
 import com.dbms.service.base.CqtPersistenceService;
 import com.dbms.util.CmqUtils;
-import java.util.LinkedList;
-import java.util.Map;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.ListUtils;
 
 /**
  * @author Jay G.(jayshanchn@hotmail.com)
@@ -33,6 +33,55 @@ public class MeddraDictService extends CqtPersistenceService<MeddraDict190> impl
 
 	private static final Logger LOG = LoggerFactory.getLogger(MeddraDictService.class);
 
+	@Override
+	public List<MeddraDictReverseHierarchySearchDto> findPtOrLltPrimaryPathsByTerm(String searchTerm, boolean isPtSearch) {
+		List<MeddraDictReverseHierarchySearchDto> retVal = null;
+		String termSearchColumnName = (isPtSearch) ? "PT_TERM" : "LLT_TERM";
+		String queryString = "select MEDDRA_DICT_ID as meddraDictId, LLT_TERM as lltTerm, LLT_CODE as lltCode"
+								+ ", PT_TERM as ptTerm, PT_CODE as ptCode, HLT_TERM as hltTerm, HLT_CODE as hltCode"
+								+ ", HLGT_TERM as hlgtTerm, HLGT_CODE as hlgtCode, SOC_TERM as socTerm"
+								+ ", SOC_CODE as socCode, PRIMARY_PATH_FLAG as primaryPathFlag "
+								+ " from MEDDRA_DICT_CURRENT where PRIMARY_PATH_FLAG = 'Y' ";
+		if (!StringUtils.isBlank(searchTerm)) {
+			queryString += " and upper(" +termSearchColumnName + ") like :searchTerm";
+		}
+		queryString += " order by " + termSearchColumnName;
+		
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		Session session = entityManager.unwrap(Session.class);
+		try {
+			SQLQuery query = session.createSQLQuery(queryString);
+			query.addScalar("meddraDictId", StandardBasicTypes.LONG);
+			query.addScalar("lltTerm", StandardBasicTypes.STRING);
+			query.addScalar("lltCode", StandardBasicTypes.STRING);
+			query.addScalar("ptTerm", StandardBasicTypes.STRING);
+			query.addScalar("ptCode", StandardBasicTypes.STRING);
+			query.addScalar("hltTerm", StandardBasicTypes.STRING);
+			query.addScalar("hltCode", StandardBasicTypes.STRING);
+			query.addScalar("hlgtTerm", StandardBasicTypes.STRING);
+			query.addScalar("hlgtCode", StandardBasicTypes.STRING);
+			query.addScalar("socTerm", StandardBasicTypes.STRING);
+			query.addScalar("socCode", StandardBasicTypes.STRING);
+			query.addScalar("primaryPathFlag", StandardBasicTypes.STRING);
+			query.setFetchSize(400);
+			if (!StringUtils.isBlank(searchTerm)) {
+				query.setParameter("searchTerm", searchTerm.toUpperCase());
+			}
+			query.setResultTransformer(Transformers.aliasToBean(MeddraDictReverseHierarchySearchDto.class));
+			query.setCacheable(true);
+			retVal = query.list();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg.append("An error occurred while executing findPtOrLltPrimaryPathsByTerm.  Search Term was ")
+					.append(searchTerm).append(" and isPtSearch ").append(isPtSearch).append(" Query used was ->")
+					.append(queryString);
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
+	
 	@Override
 	@SuppressWarnings("unchecked")
 	public List<MeddraDictReverseHierarchySearchDto> findFullReverseHierarchyByLevelAndTerm(String searchColumnPrefix

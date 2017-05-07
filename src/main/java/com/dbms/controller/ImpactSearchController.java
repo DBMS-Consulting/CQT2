@@ -337,7 +337,7 @@ public class ImpactSearchController implements Serializable {
         IARelationsTreeHelper treeHelper = new IARelationsTreeHelper(
                 cmqBaseCurrentService, smqBaseCurrentService, meddraDictCurrentService, cmqRelationCurrentService,
                 cmqBaseTargetService, smqBaseTargetService, meddraDictTargetService, cmqRelationTargetService);
-        treeHelper.onNodeExpandTargetTable(targetTableRootTreeNode, event, false);
+        treeHelper.onNodeExpandTargetTable(targetTableRootTreeNode, event);
 	}
     
 	public void onNodeCollapseTargetTable(NodeCollapseEvent event) {
