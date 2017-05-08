@@ -82,7 +82,7 @@ public class CmqBaseRelationsTreeHelper {
             } else if((cmqRelation.getLltCode() != null) && (cmqRelation.getLltCode() > 0)) {
                 lltCodesMap.put(cmqRelation.getLltCode(), cmqRelation);
             } else if((cmqRelation.getSmqCode() != null) && (cmqRelation.getSmqCode() > 0)) {
-                this.populateSmqTreeNode(cmqRelation, rootNode, cmqCode);
+                this.populateSmqTreeNode(cmqRelation, rootNode, cmqCode, false);
             }
         }
 
@@ -149,7 +149,7 @@ public class CmqBaseRelationsTreeHelper {
             } else if((cmqRelation.getLltCode() != null) && (cmqRelation.getLltCode() > 0)) {
                 lltCodesMap.put(cmqRelation.getLltCode(), cmqRelation);
             } else if((cmqRelation.getSmqCode() != null) && (cmqRelation.getSmqCode() > 0)) {
-                this.populateSmqTreeNode(cmqRelation, expandedTreeNode, cmqCode);
+                this.populateSmqTreeNode(cmqRelation, expandedTreeNode, cmqCode, true);
             }
         }
 
@@ -305,19 +305,24 @@ public class CmqBaseRelationsTreeHelper {
 		}
 	}
 
-    public TreeNode populateSmqTreeNode(CmqRelation190 cmqRelation, TreeNode expandedTreeNode, Long parentCode) {
+    public TreeNode populateSmqTreeNode(CmqRelation190 cmqRelation, TreeNode expandedTreeNode, Long parentCode, boolean hideDeleteButton) {
         TreeNode treeNode = null;
 		HierarchyNode node = null;
-		boolean isSmqRelation = false;
         
         //check if it is a PT relation of smq or not
         if((cmqRelation.getPtCode() != null) && (cmqRelation.getPtCode().longValue() > 0)) {
             SmqRelation190 entity2 = this.smqBaseSvc.findSmqRelationBySmqAndPtCode(cmqRelation.getSmqCode(), cmqRelation.getPtCode().intValue());
             node = this.createSmqRelationNode(entity2);
+            if(hideDeleteButton) {
+            	node.setHideDelete(true);
+            }
             treeNode = new DefaultTreeNode(node, expandedTreeNode);
         } else {
             SmqBase190 entity2 = this.smqBaseSvc.findByCode(cmqRelation.getSmqCode());
             node = this.createSmqBaseNode(entity2, cmqRelation);
+            if(hideDeleteButton) {
+            	node.setHideDelete(true);
+            }
             treeNode = new DefaultTreeNode(node, expandedTreeNode);
             
             if(requireDrillDown) {
