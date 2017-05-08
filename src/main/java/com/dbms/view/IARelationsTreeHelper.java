@@ -409,10 +409,9 @@ public class IARelationsTreeHelper {
     public void setTargetCmqBaseNodeStyle(HierarchyNode node, CmqBaseTarget cmq) {
         if (CSMQBean.IMPACT_TYPE_IMPACTED.equalsIgnoreCase(cmq.getImpactType()))
             node.setRowStyleClass("blue-colored");
-        else if(CSMQBean.IMPACT_TYPE_ICC.equalsIgnoreCase(cmq.getImpactType()))
-            node.setRowStyleClass("navyblue-colored");
-        else if(CSMQBean.IMPACT_TYPE_IPC.equalsIgnoreCase(cmq.getImpactType()))
-            node.setRowStyleClass("royalblue-colored");
+        else if(CSMQBean.IMPACT_TYPE_ICC.equalsIgnoreCase(cmq.getImpactType())
+                || CSMQBean.IMPACT_TYPE_IPC.equalsIgnoreCase(cmq.getImpactType()))
+            node.setRowStyleClass("darkgrey-colored");
     }
     
     public void setTargetCmqRelationNodeStyle(HierarchyNode node, CmqRelationTarget cmqRelationTarget) {
@@ -433,7 +432,7 @@ public class IARelationsTreeHelper {
 	}
     
 	public void setCurrentCmqRelationNodeStyle(HierarchyNode node,	CmqRelation190 cmqRelation) {
-		if (cmqRelation.getRelationImpactType() != null) {
+		if (cmqRelation!= null && cmqRelation.getRelationImpactType() != null) {
 			if("NCH".equals(cmqRelation.getRelationImpactType())) {
 				node.setRowStyleClass("italic");
 			} else if(StringUtils.equalsAny(cmqRelation.getRelationImpactType(),

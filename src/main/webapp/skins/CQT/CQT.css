@@ -363,6 +363,14 @@ td.bordered {
 	font-weight: bold;
 }
 
+.darkgrey-colored {
+	color: darkgrey; /*#A9A9A9*/
+	font-weight: bold;
+}
+.darkgrey-colored:hover {
+	color: #B0B0B0;
+}
+
 .italic {
 	color: #000;
 	font-style: italic;
@@ -511,4 +519,9 @@ ul.nav>li {
 .ia-search-term-col .ui-column-filter {
 	width: auto !important;
 	height: auto !important;
+}
+
+/* making table column filters visible when expanded */
+.ui-filter-column {
+    overflow: visible !important;
 }

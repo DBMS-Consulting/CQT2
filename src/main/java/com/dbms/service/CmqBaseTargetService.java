@@ -106,8 +106,11 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 			if(filters.containsKey("cmqTypeCd") && filters.get("cmqTypeCd") != null)
 				pred.add(cb.equal(cmqRoot.get("cmqTypeCd"), filters.get("cmqTypeCd")));
 			
-			if(filters.containsKey("smqLevel") && filters.get("smqLevel") != null)
-				pred.add(cb.equal(cmqRoot.get("cmqLevel"), filters.get("smqLevel")));
+			if(filters.containsKey("cmqLevel") && filters.get("cmqLevel") != null)
+				pred.add(cb.equal(cmqRoot.get("cmqLevel"), filters.get("cmqLevel")));
+            
+            if(filters.containsKey("cmqState") && filters.get("cmqState") != null)
+				pred.add(cb.equal(cmqRoot.get("cmqState"), filters.get("cmqState")));
 			
 			cq.where(cb.and(pred.toArray(new Predicate[0])));
 			cq.orderBy(cb.asc(cmqRoot.get("cmqName")));
@@ -180,8 +183,11 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 			if(filters.containsKey("cmqTypeCd") && filters.get("cmqTypeCd") != null)
 				pred.add(cb.equal(cmqRoot.get("cmqTypeCd"), filters.get("cmqTypeCd")));
 			
-			if(filters.containsKey("smqLevel") && filters.get("smqLevel") != null)
-				pred.add(cb.equal(cmqRoot.get("cmqLevel"), filters.get("smqLevel")));
+			if(filters.containsKey("cmqLevel") && filters.get("cmqLevel") != null)
+				pred.add(cb.equal(cmqRoot.get("cmqLevel"), filters.get("cmqLevel")));
+            
+            if(filters.containsKey("cmqState") && filters.get("cmqState") != null)
+				pred.add(cb.equal(cmqRoot.get("cmqState"), filters.get("cmqState")));
 			
 			cq.where(cb.and(pred.toArray(new Predicate[0])));
 			

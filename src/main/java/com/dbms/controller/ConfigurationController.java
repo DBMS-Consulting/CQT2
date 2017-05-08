@@ -1,5 +1,7 @@
 package com.dbms.controller;
 
+import com.dbms.entity.cqt.CmqBase190;
+import com.dbms.entity.cqt.CmqBaseTarget;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +14,8 @@ import com.dbms.entity.cqt.RefConfigCodeList;
 import com.dbms.service.IRefCodeListService;
 import com.dbms.util.CqtConstants;
 import com.dbms.util.OrderBy;
+import java.util.Arrays;
+import javax.swing.event.ListSelectionEvent;
 
 /**
  * Controller that will contains codelist methods.
@@ -36,6 +40,9 @@ public class ConfigurationController implements Serializable {
 	private RefConfigCodeList currentMeddraVersionCodeList;
 	
 	private String dictionaryName;
+    
+    private List<String[]> cmqBaseListStates = null;
+    private List<String[]> cmqTargetListStates = null;
 	
 	@PostConstruct
 	public void init() {
@@ -183,4 +190,28 @@ public class ConfigurationController implements Serializable {
 	public void setWorkflows(List<RefConfigCodeList> workflows) {
 		this.workflows = workflows;
 	}
+    
+    public List<String[]> getCmqBaseListStates() {
+        if(cmqBaseListStates == null) {
+            cmqBaseListStates = Arrays.asList(
+                new String[] { CmqBase190.CMQ_STATE_VALUE_DRAFT, CmqBase190.CMQ_STATE_VALUE_DRAFT },
+                new String[] { CmqBase190.CMQ_STATE_VALUE_REVIEWED, CmqBase190.CMQ_STATE_VALUE_REVIEWED },
+                new String[] { CmqBase190.CMQ_STATE_VALUE_APPROVED, CmqBase190.CMQ_STATE_VALUE_APPROVED },
+                new String[] { CmqBase190.CMQ_STATE_VALUE_PUBLISHED, CmqBase190.CMQ_STATE_VALUE_PUBLISHED }
+            );
+        }
+        return cmqBaseListStates;
+    }
+    
+    public List<String[]> getCmqTargetListStates() {
+        if(cmqTargetListStates == null) {
+            cmqTargetListStates = Arrays.asList(
+                new String[] { CmqBaseTarget.CMQ_STATE_PENDING_IA, CmqBaseTarget.CMQ_STATE_PENDING_IA },
+                new String[] { CmqBaseTarget.CMQ_STATE_REVIEWED_IA, CmqBaseTarget.CMQ_STATE_REVIEWED_IA },
+                new String[] { CmqBaseTarget.CMQ_STATE_APPROVED_IA, CmqBaseTarget.CMQ_STATE_APPROVED_IA },
+                new String[] { CmqBaseTarget.CMQ_STATE_PUBLISHED, CmqBaseTarget.CMQ_STATE_PUBLISHED }
+            );
+        }
+        return cmqTargetListStates;
+    }
 }
