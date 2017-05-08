@@ -767,7 +767,9 @@ public class IARelationsTreeHelper {
     
 	public void setSMQCurrentNodeStyle(HierarchyNode childRelationNode, SmqRelation190 childRelation) {
 		if (childRelation.getRelationImpactType() != null) {
-			if("NCH".equals(childRelation.getRelationImpactType())) {
+            if(childRelationNode.getEntity() instanceof SmqBase190)
+                childRelationNode.setRowStyleClass("blue-colored");
+            else if("NCH".equals(childRelation.getRelationImpactType())) {
 				childRelationNode.setRowStyleClass("italic");
 			} else if("DTR".equals(childRelation.getRelationImpactType())) {
 				childRelationNode.setRowStyleClass("red-colored");
@@ -787,7 +789,9 @@ public class IARelationsTreeHelper {
 
 	public void setSMQTargetNodeStyle(HierarchyNode childRelationNode,	SmqRelationTarget childRelation) {
 		if (childRelation.getRelationImpactType() != null) {
-			if(StringUtils.equalsAny(childRelation.getRelationImpactType(), "LPP","PDL","NTR","PSA")) {
+            if(childRelationNode.getEntity() instanceof SmqBaseTarget)
+                childRelationNode.setRowStyleClass("blue-colored");
+            else if(StringUtils.equalsAny(childRelation.getRelationImpactType(), "LPP","PDL","NTR","PSA")) {
 				childRelationNode.setRowStyleClass("orange-colored");
 			} else if ("SCH".equals(childRelation.getRelationImpactType())) {
 				childRelationNode.setRowStyleClass("blue-colored");

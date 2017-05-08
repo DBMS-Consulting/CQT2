@@ -521,9 +521,11 @@ public class ImpactSearchController implements Serializable {
 									CmqBaseTarget cmqEntity = (CmqBaseTarget) childEntity;
 									cmqEntity.setCmqParentCode(cmqBaseTarget.getCmqCode());
 									cmqEntity.setCmqParentName(cmqBaseTarget.getCmqName());
-									cmqEntity.setImpactType("IPC");
-									cmqEntity.setCmqState("PENDING IA");
-									cmqEntity.setCmqStatus("P");
+									if("NON-IMPACTED".equals(cmqEntity.getImpactType())) {
+										cmqEntity.setImpactType("IPC");
+										cmqEntity.setCmqState("PENDING IA");
+										cmqEntity.setCmqStatus("P");
+									}
 									cmqBaseChildrenList.add(cmqEntity);
 								} else {
 									CmqRelationTarget cmqRelation = null;
