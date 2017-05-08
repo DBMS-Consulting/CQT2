@@ -765,9 +765,7 @@ public class IARelationsTreeHelper {
     
 	public void setSMQCurrentNodeStyle(HierarchyNode childRelationNode, SmqRelation190 childRelation) {
 		if (childRelation.getRelationImpactType() != null) {
-            if(childRelationNode.getEntity() instanceof SmqBase190)
-                childRelationNode.setRowStyleClass("blue-colored");
-            else if("NCH".equals(childRelation.getRelationImpactType())) {
+            if("NCH".equals(childRelation.getRelationImpactType())) {
 				childRelationNode.setRowStyleClass("italic");
 			} else if("DTR".equals(childRelation.getRelationImpactType())) {
 				childRelationNode.setRowStyleClass("red-colored");
@@ -787,9 +785,7 @@ public class IARelationsTreeHelper {
 
 	public void setSMQTargetNodeStyle(HierarchyNode childRelationNode,	SmqRelationTarget childRelation) {
 		if (childRelation.getRelationImpactType() != null) {
-            if(childRelationNode.getEntity() instanceof SmqBaseTarget)
-                childRelationNode.setRowStyleClass("blue-colored");
-            else if(StringUtils.equalsAny(childRelation.getRelationImpactType(), "LPP","PDL","NTR","PSA")) {
+            if(StringUtils.equalsAny(childRelation.getRelationImpactType(), "LPP","PDL","NTR","PSA")) {
 				childRelationNode.setRowStyleClass("orange-colored");
 			} else if ("SCH".equals(childRelation.getRelationImpactType())) {
 				childRelationNode.setRowStyleClass("blue-colored");
@@ -806,18 +802,21 @@ public class IARelationsTreeHelper {
 	public void populateSmqRelations(Long smqCode, TreeNode expandedTreeNode, String smqType, String uiSourceOfEvent) {
 		boolean isRootListNode = isRootListNode(expandedTreeNode);
 		boolean isRootNodeOfSmqType = this.isRootNodeOfSmqType(expandedTreeNode);
+        boolean currentList = ("current".equalsIgnoreCase(smqType));
 		List<? extends IEntity> childRelations = null;
- 		if("current".equalsIgnoreCase(smqType)) {
+ 		if(currentList) {
 			childRelations = this.smqBaseCurrentService.findSmqRelationsForSmqCode(smqCode);
 		} else {
 			childRelations = this.smqBaseTargetService.findSmqRelationsForSmqCode(smqCode);
 		}
 
 		if (null != childRelations) {
+            Map<Long, HierarchyNode> childSmqNodes = new HashMap<>();
+            
 			for (IEntity entity : childRelations) {
 				boolean isChildSmqNode = false;
 				HierarchyNode childRelationNode = new HierarchyNode();
-				if("current".equalsIgnoreCase(smqType)) {
+				if(currentList) {
 					SmqRelation190 childRelation = (SmqRelation190) entity;
 					if (childRelation.getSmqLevel() == 0) {
 						SmqBase190 childSmq = new SmqBase190();
@@ -826,6 +825,7 @@ public class IARelationsTreeHelper {
 						childRelationNode.setLevel("Child SMQ");
 						childRelationNode.setEntity(childSmq);
 						isChildSmqNode = true;
+                        childSmqNodes.put(childSmq.getSmqCode(), childRelationNode);
 					} else if (childRelation.getSmqLevel() == 1) {
 						childRelationNode.setLevel("SMQ1");
 						childRelationNode.setEntity(childRelation);
@@ -863,6 +863,7 @@ public class IARelationsTreeHelper {
 						childRelationNode.setLevel("Child SMQ");
 						childRelationNode.setEntity(childSmq);
 						isChildSmqNode = true;
+                        childSmqNodes.put(childSmq.getSmqCode(), childRelationNode);
 					} else if (childRelation.getSmqLevel() == 1) {
 						childRelationNode.setLevel("SMQ1");
 						childRelationNode.setEntity(childRelation);
@@ -905,6 +906,35 @@ public class IARelationsTreeHelper {
 					this.createNewDummyNode(treeNode);
 				}
 			}
+            if(!childSmqNodes.isEmpty()) {
+                if(currentList) {
+                    List<SmqBase190> childSmqs = smqBaseCurrentService.findByCodes(new ArrayList<>(childSmqNodes.keySet()));
+                    if(childSmqs != null) {
+                        for(SmqBase190 cs : childSmqs) {
+                            if(CSMQBean.IMPACT_TYPE_IMPACTED.equals(cs.getImpactType())) {
+                                HierarchyNode hn = childSmqNodes.get(cs.getSmqCode());
+                                if(hn != null) {
+                                    hn.setEntity(cs);
+                                    hn.setRowStyleClass("blue-colored");
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    List<SmqBaseTarget> childSmqs = smqBaseTargetService.findByCodes(new ArrayList<>(childSmqNodes.keySet()));
+                    if(childSmqs != null) {
+                        for(SmqBaseTarget cs : childSmqs) {
+                            if(CSMQBean.IMPACT_TYPE_IMPACTED.equals(cs.getImpactType())) {
+                                HierarchyNode hn = childSmqNodes.get(cs.getSmqCode());
+                                if(hn != null) {
+                                    hn.setEntity(cs);
+                                    hn.setRowStyleClass("blue-colored");
+                                }
+                            }
+                        }
+                    }
+                }
+            }
 		}
 	}
 	

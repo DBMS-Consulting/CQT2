@@ -345,6 +345,31 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 		}
 		return retVal;
 	}
+    
+    @SuppressWarnings("unchecked")
+	@Override
+	public List<SmqBaseTarget> findByCodes(List<Long> smqCodes) {
+		List<SmqBaseTarget> retVal = null;
+		String queryString = "from SmqBaseTarget c where c.smqCode in (:smqCodes) ";
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		try {
+			Query query = entityManager.createQuery(queryString);
+			query.setParameter("smqCodes", smqCodes);
+			query.setHint("org.hibernate.cacheable", true);
+			retVal = query.getResultList();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg
+					.append("An error occurred while findByCodes ")
+					.append(smqCodes)
+					.append(" Query used was ->")
+					.append(queryString);
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
 	
 	@Override
 	public List<SmqBaseTarget> findImpactedWithPaginated(int first, int pageSize, String sortField

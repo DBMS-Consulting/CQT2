@@ -424,14 +424,14 @@ public class SmqBaseService extends CqtPersistenceService<SmqBase190> implements
 		String queryString = "from SmqBase190 c where c.smqCode in (:smqCodes) ";
 		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
 		try {
-			Query query = entityManager.createQuery("from SmqBase190 c where c.smqCode = :smqCode ");
+			Query query = entityManager.createQuery(queryString);
 			query.setParameter("smqCodes", smqCodes);
 			query.setHint("org.hibernate.cacheable", true);
 			retVal = query.getResultList();
 		} catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
 			msg
-					.append("An error occurred while findByCode ")
+					.append("An error occurred while findByCodes ")
 					.append(smqCodes)
 					.append(" Query used was ->")
 					.append(queryString);

@@ -30,6 +30,7 @@ public interface ISmqBaseTargetService {
 	Long findChildSmqCountByParentSmqCode(Long smqCode);
 
 	SmqBaseTarget findByCode(Long smqCode);
+    List<SmqBaseTarget> findByCodes(List<Long> smqCodes);
 
 	List<SmqBaseTarget> findImpactedWithPaginated(int first, int pageSize, String sortField, SortOrder sortOrder,
 			Map<String, Object> filters);
