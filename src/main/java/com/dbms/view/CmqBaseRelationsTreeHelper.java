@@ -188,8 +188,6 @@ public class CmqBaseRelationsTreeHelper {
             lltDtos = this.meddraDictSvc.findByCodes("LLT_", lltCodesList);
             this.populateCmqRelationTreeNodes(lltDtos, expandedTreeNode, "LLT", null, cmqCode, lltCodesMap);
         }
-		
-        this.populateChildCmqsByParent(cmqCode, expandedTreeNode);
 	}
 	
 	public TreeNode getRelationsNodeHierarchy(TreeNode rootNode, TreeNode expandedNode) {
