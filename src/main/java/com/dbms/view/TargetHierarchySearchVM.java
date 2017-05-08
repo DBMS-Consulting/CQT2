@@ -54,7 +54,7 @@ public class TargetHierarchySearchVM {
 	
 	private boolean nonCurrentLlt;
     private boolean showPrimaryPath;
-
+    private boolean showPrimaryPathOnly;
 	
 	private List<HierarchySearchResultBean> hierarchySearchResults;
 	
@@ -77,8 +77,10 @@ public class TargetHierarchySearchVM {
 		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Canceled", "ZZ"));
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public String hierarchySearch() {
+		//need to set this as default. if its a pp search the correct branch will toggle it on its own.
+		this.showPrimaryPathOnly = false;
+		
 		IARelationsTreeHelper relationsTreeHelper = new IARelationsTreeHelper(
                 null, null, null, null,
                 cmqBaseTargetService, smqBaseTargetService, meddraDictTargetService, cmqRelationTargetService);
@@ -119,6 +121,7 @@ public class TargetHierarchySearchVM {
 			}
 		} else if (meddraLevelH != null && meddraLevelH.getSearchFrom() == MeddraDictLevelHelper.SEARCH_MEDDRA_BASE_REVERSE) {
 			if(this.showPrimaryPath && (myFilterLevel.equals("PT") || myFilterLevel.equals("LLT"))) {
+				this.showPrimaryPathOnly = true;
 				this.myHierarchyRoot = new DefaultTreeNode("root", new HierarchyNode("LEVEL", "NAME", "CODE", null), null);
 				boolean isPtSearch = myFilterLevel.equals("PT");
 				List<MeddraDictReverseHierarchySearchDto> meddraDictDtoList = this.meddraDictTargetService
@@ -209,7 +212,7 @@ public class TargetHierarchySearchVM {
 
 	//uiEventSourceName is either relations or hierarchy
 	public void onNodeExpand(NodeExpandEvent event) {
-		if(!this.showPrimaryPath || !(myFilterLevel.equals("PT") || myFilterLevel.equals("LLT"))) {
+		if(!this.showPrimaryPathOnly) {
 			IARelationsTreeHelper relationsSearchHelper = new IARelationsTreeHelper(
 	                null, null, null, null,
 	                cmqBaseTargetService, smqBaseTargetService, meddraDictTargetService, cmqRelationTargetService);	

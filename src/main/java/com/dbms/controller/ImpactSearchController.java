@@ -663,61 +663,62 @@ public class ImpactSearchController implements Serializable {
 							}
 						}
 						
-						boolean parentAndItsChildrenUpdated = false;
+						List<CmqBaseTarget> impactedCmqsList = new ArrayList<>();
+						
 						//mark the cmqbase as Impacted if it is NON-IMPACTED
 						String impactType = cmqBaseTarget.getImpactType();
 						if("NON-IMPACTED".equalsIgnoreCase(impactType)) {
-							List<CmqBaseTarget> impactedCmqsList = new ArrayList<>();
 							cmqBaseTarget.setImpactType("IMPACTED");
 							cmqBaseTarget.setCmqState("PENDING IA");
 							cmqBaseTarget.setCmqStatus("P");
 							impactedCmqsList.add(cmqBaseTarget);
+						}
 							
-							//now check for parent of target cmq
-							if(cmqBaseTarget.getCmqParentCode() != null) {
-								CmqBaseTarget parentCmq = this.cmqBaseTargetService.findByCode(cmqBaseTarget.getCmqParentCode());
+						//now check for parent of target cmq
+						if(cmqBaseTarget.getCmqParentCode() != null) {
+							CmqBaseTarget parentCmq = this.cmqBaseTargetService.findByCode(cmqBaseTarget.getCmqParentCode());
+							if("NON-IMPACTED".equalsIgnoreCase(parentCmq.getImpactType())) {
 								parentCmq.setImpactType("ICC");
 								parentCmq.setCmqState("PENDING IA");
 								parentCmq.setCmqStatus("P");
 								impactedCmqsList.add(parentCmq);
-								
-								List<CmqBaseTarget> childrenOfParentCmq = this.cmqBaseTargetService.findChildCmqsByParentCode(parentCmq.getCmqCode());
-								for (ListIterator<CmqBaseTarget> li = childrenOfParentCmq.listIterator(); li.hasNext();) {
-									CmqBaseTarget childOfParentCmq = li.next();
-									if(childOfParentCmq.getCmqCode().longValue() == cmqBaseTarget.getCmqCode().longValue()) {
-										li.remove();//remvoe this cmq as we are already dealing with it.
-									} else {
-										childOfParentCmq.setImpactType("ICC");
-										childOfParentCmq.setCmqState("PENDING IA");
-										childOfParentCmq.setCmqStatus("P");
-									}
-								}
-								impactedCmqsList.addAll(childrenOfParentCmq);
 							}
-							
-							try {
-								this.cmqBaseTargetService.update(impactedCmqsList, this.authService.getUserCn()
-										, this.authService.getUserGivenName(), this.authService.getUserSurName()
-										, this.authService.getCombinedMappedGroupMembershipAsString());
-								parentAndItsChildrenUpdated = true;
-							} catch (CqtServiceException e) {
-								LOG.error("Exception occurred while updated the parent and its children for CMQ code "
-										+ cmqBaseTarget.getCmqCode(), e);
-
-								FacesContext.getCurrentInstance().addMessage(null, 
-                                        new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                                            "An error occurred while updated the list of CmqRelations for CMQ base code " + cmqBaseTarget.getCmqCode(),
-                                            "Error:" + e.getMessage()));
+							List<CmqBaseTarget> childrenOfParentCmq = this.cmqBaseTargetService.findChildCmqsByParentCode(parentCmq.getCmqCode());
+							for (ListIterator<CmqBaseTarget> li = childrenOfParentCmq.listIterator(); li.hasNext();) {
+								CmqBaseTarget childOfParentCmq = li.next();
+								if(childOfParentCmq.getCmqCode().longValue() == cmqBaseTarget.getCmqCode().longValue()) {
+									li.remove();//Remove this cmq as we are already dealing with it.
+								} else if("NON-IMPACTED".equalsIgnoreCase(childOfParentCmq.getImpactType())) {
+									childOfParentCmq.setImpactType("ICC");
+									childOfParentCmq.setCmqState("PENDING IA");
+									childOfParentCmq.setCmqStatus("P");
+									impactedCmqsList.add(childOfParentCmq);
+								}
 							}
 						}
 						
-						if(relationsAndChildUpdated || parentAndItsChildrenUpdated) {
-							//reset the flag to track target changes
-							targetRelationsUpdated = false;
-							FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-									"Relations are successfully updated for target '" + cmqBaseTarget.getCmqName() + "'", "");
-							FacesContext.getCurrentInstance().addMessage(null, msg);
+						try {
+							if(impactedCmqsList.size() > 0) {
+								this.cmqBaseTargetService.update(impactedCmqsList, this.authService.getUserCn()
+										, this.authService.getUserGivenName(), this.authService.getUserSurName()
+										, this.authService.getCombinedMappedGroupMembershipAsString());
+							}
+						} catch (CqtServiceException e) {
+							LOG.error("Exception occurred while updated the parent and its children for CMQ code "
+									+ cmqBaseTarget.getCmqCode(), e);
+
+							FacesContext.getCurrentInstance().addMessage(null, 
+                                    new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                                        "An error occurred while updated the list of CmqRelations for CMQ base code " + cmqBaseTarget.getCmqCode(),
+                                        "Error:" + e.getMessage()));
 						}
+						
+						
+						//reset the flag to track target changes
+						targetRelationsUpdated = false;
+						FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+								"Relations are successfully updated for target '" + cmqBaseTarget.getCmqName() + "'", "");
+						FacesContext.getCurrentInstance().addMessage(null, msg);
 					}//end of if (CollectionUtils.isNotEmpty(childTreeNodes)) 
 				}//end of if(parentEntity instanceof CmqBaseTarget)
 			}			

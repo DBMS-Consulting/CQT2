@@ -98,8 +98,6 @@ public class IARelationsTreeHelper {
 		this.meddraDictTargetService = meddraDictSvc;
 		this.cmqRelationTargetService = cmqRelationSvc;
 	}
-		
-	
 	
 	public void onNodeExpandCurrentTable(TreeNode rootNode, NodeExpandEvent event) {
 		TreeNode expandedTreeNode = event.getTreeNode();

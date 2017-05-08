@@ -57,6 +57,8 @@ public class CmqBaseHierarchySearchVM {
 	
 	private boolean showPrimaryPath;
 	
+	private boolean showPrimaryPathOnly;
+	
 	public CmqBaseHierarchySearchVM(ICmqBase190Service cmqBaseSvc,
 			ISmqBaseService smqBaseSvc,
 			IMeddraDictService meddraDictSvc,
@@ -75,6 +77,9 @@ public class CmqBaseHierarchySearchVM {
 	}
 
 	public String hierarchySearch() {
+		//need to set this as default. if its a pp search the correct branch will toggle it on its own.
+		this.showPrimaryPathOnly = false;
+		
 		CmqBaseRelationsTreeHelper relationsTreeHelper = new CmqBaseRelationsTreeHelper(cmqBaseService, smqBaseService, meddraDictService, cmqRelationService);
         relationsTreeHelper.setRequireDrillDown(true);
 		
@@ -157,6 +162,7 @@ public class CmqBaseHierarchySearchVM {
             }
 		} else if (meddraLevelH != null && meddraLevelH.getSearchFrom() == MeddraDictLevelHelper.SEARCH_MEDDRA_BASE_REVERSE) {
 			if(this.showPrimaryPath && (myFilterLevel.equals("PT") || myFilterLevel.equals("LLT"))) {
+				this.showPrimaryPathOnly = true;
 				this.myHierarchyRoot = new DefaultTreeNode("root", new HierarchyNode("LEVEL", "NAME", "CODE", null), null);
 				boolean isPtSearch = myFilterLevel.equals("PT");
 				List<MeddraDictReverseHierarchySearchDto> meddraDictDtoList = meddraDictService
@@ -264,8 +270,7 @@ public class CmqBaseHierarchySearchVM {
 		TreeNode expandedTreeNode = event.getTreeNode();
 		boolean isRelationView = "RELATIONS".equalsIgnoreCase(uiSourceOfEvent);
 		boolean isParentListView = "PARENT-LIST".equalsIgnoreCase(uiSourceOfEvent);
-		if(!("hierarchy-search".equalsIgnoreCase(uiSourceOfEvent)) || !(this.showPrimaryPath 
-				&& (myFilterLevel.equals("PT") || myFilterLevel.equals("LLT")))) {
+		if(!showPrimaryPathOnly) {
 			CmqBaseRelationsTreeHelper relationsSearchHelper = new CmqBaseRelationsTreeHelper(cmqBaseService, smqBaseService, meddraDictService, cmqRelationService);	
 	        relationsSearchHelper.setRelationView(isRelationView);
 	        relationsSearchHelper.setRelationView(isParentListView);
