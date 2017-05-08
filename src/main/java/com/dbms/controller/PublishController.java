@@ -484,10 +484,10 @@ public class PublishController implements Serializable {
 				String cmqError = "";
 				//success
 				for (CmqBaseTarget cmqBaseTarget : targetCmqsSelected) {
-					if ((cmqBaseTarget.getCmqLevel() == 2 || cmqBaseTarget.getCmqLevel() == 1) 
-							&& cmqBaseTarget.getCmqParentCode() != null && cmqBaseTarget.getCmqParentName() != null)
-						hasParentError = true;
-					else {
+//					if ((cmqBaseTarget.getCmqLevel() == 2 || cmqBaseTarget.getCmqLevel() == 1) 
+//							&& cmqBaseTarget.getCmqParentCode() == null && cmqBaseTarget.getCmqParentName() == null)
+//						hasParentError = true;
+//					else {
 						Date lastModifiedDate = new Date();
 						String lastModifiedByString = this.authService.getLastModifiedByUserAsString();
 						cmqBaseTarget.setCmqState(CmqBaseTarget.CMQ_STATE_PUBLISHED_IA);
@@ -495,12 +495,12 @@ public class PublishController implements Serializable {
 						cmqBaseTarget.setActivationDate(lastModifiedDate);
 						cmqBaseTarget.setLastModifiedDate(lastModifiedDate);
 						cmqBaseTarget.setLastModifiedBy(lastModifiedByString);
-					}
+					//}
 
-					if (hasParentError) {
-						cmqError = cmqBaseTarget.getCmqName();
-						break;
-					}
+//					if (hasParentError) {
+//						cmqError = cmqBaseTarget.getCmqName();
+//						break;
+//					}
 				}
 				if (hasParentError) {
 					FacesContext.getCurrentInstance().addMessage(null, 
