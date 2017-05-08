@@ -1608,12 +1608,9 @@ public class CreateController implements Serializable {
     	/**
          * Restrictions on users from  REQUESTOR and ADMIN groups
          */
-    	if (authService.getGroupName() != null && (authService.getGroupName().equals(AuthenticationService.REQUESTER_GROUP) || authService.getGroupName().equals(AuthenticationService.ADMIN_GROUP)))
+    	if (authService.getGroupName() != null && (authService.getGroupName().equals(AuthenticationService.REQUESTER_GROUP) 
+    			|| authService.getGroupName().equals(AuthenticationService.ADMIN_GROUP)))
     			return restrictionsByUserAuthentified();
-       
-//        // Users should NOT be able to update data on Update-> Details when CMQ_BASE_CURRENT.IMPACT_TYPE IN ('IMPACTED', 'ICC') OR CMQ_BASE_TARGET.IMPACT_TYPE IN ('IMPACTED', 'ICC')
-//        return this.isReadOnlyState() || this.isFormSaved() ||
-//                (updateWizard!=null && this.isImpactedByMeddraVersioning(selectedData));
         if(updateWizard != null)
             return !WIZARD_STEP_DETAILS.equals(getActiveWizard().getStep()) || this.isReadOnlyState() || this.isFormSaved();
         if(copyWizard != null)
@@ -1627,13 +1624,29 @@ public class CreateController implements Serializable {
      */
     public boolean restrictionsByUserAuthentified() {
     	
-        if (updateWizard != null || copyWizard != null) {        	
-        	if (selectedData.getCmqStatus().equals("A") 
-        			|| (selectedData.getCmqDesignee() != null && selectedData.getCmqDesignee().equals(authService.getUserCn()))
-        			|| (selectedData.getCmqDesignee2() != null && selectedData.getCmqDesignee2().equals(authService.getUserCn()))
-        			|| (selectedData.getCmqDesignee3() != null && selectedData.getCmqDesignee3().equals(authService.getUserCn()))) {
-//        		System.out.println("\n ******************** LIST TO ENABLE for user " + authService.getUserGivenName());
-//        		System.out.println("\n ******************** authService.getUserCn() " + authService.getUserCn());
+        if (updateWizard != null || copyWizard != null) {
+        	//conditions are:
+        	/*	
+        	 	when user is a REQUESTER
+        	 	1) list's state is DRAFT or REVIEWED
+				2) the list's status is P
+				3) they are any designee or they have created the list
+        	 */
+        	if ((authService.getGroupName().equals(AuthenticationService.REQUESTER_GROUP)) 
+        			&& selectedData.getCmqStatus().equals("P") 
+        			&& (selectedData.getCmqState().equals("DRAFT") || selectedData.getCmqState().equals("REVIEWED"))
+        			&& (((selectedData.getCreatedBy() != null) && (selectedData.getCreatedBy().startsWith(authService.getUserCn())))
+        					|| ((selectedData.getCmqDesignee() != null && selectedData.getCmqDesignee().equals(authService.getUserCn()))
+        		        			|| (selectedData.getCmqDesignee2() != null && selectedData.getCmqDesignee2().equals(authService.getUserCn()))
+        		        			|| (selectedData.getCmqDesignee3() != null && selectedData.getCmqDesignee3().equals(authService.getUserCn()))))) {
+        		return  false;
+        	} else if ((authService.getGroupName().equals(AuthenticationService.ADMIN_GROUP)) 
+        			&& selectedData.getCmqStatus().equals("P") 
+        			&& (selectedData.getCmqState().equals("PENDING IA") || selectedData.getCmqState().equals("REVIWED IA"))
+        			&& (((selectedData.getCreatedBy() != null) && (selectedData.getCreatedBy().startsWith(authService.getUserCn())))
+        					|| ((selectedData.getCmqDesignee() != null && selectedData.getCmqDesignee().equals(authService.getUserCn()))
+        		        			|| (selectedData.getCmqDesignee2() != null && selectedData.getCmqDesignee2().equals(authService.getUserCn()))
+        		        			|| (selectedData.getCmqDesignee3() != null && selectedData.getCmqDesignee3().equals(authService.getUserCn()))))) {
         		return  false;
         	}
         }
