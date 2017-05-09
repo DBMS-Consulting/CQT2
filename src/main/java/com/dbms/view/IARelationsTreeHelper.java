@@ -1550,10 +1550,8 @@ public class IARelationsTreeHelper {
 		CmqBase190 cmqBaseCurrent = this.cmqBaseCurrentService.findByCode(selectedCmqList.getCmqCode());
 		HierarchyNode node = treeHelper.createCmqBaseCurrentHierarchyNode(cmqBaseCurrent);
 		TreeNode cmqBaseTreeNode = new DefaultTreeNode(node, currentTableRootTreeNode);
-		if ("IMPACTED".equalsIgnoreCase(cmqBaseCurrent.getImpactType()) || "IMPACTED".equalsIgnoreCase(cmqBaseCurrent.getImpactType()))
-        if (CSMQBean.IMPACT_TYPE_ICC.equals(cmqBaseCurrent.getImpactType()) ||
-                            CSMQBean.IMPACT_TYPE_IMPACTED.equalsIgnoreCase(cmqBaseCurrent.getImpactType()))
-			node.setRowStyleClass("blue-colored");
+        
+        setCurrentCmqBaseNodeStyle(node, cmqBaseCurrent);
 	
 		boolean dummyNodeAdded = false;
 		Long count = this.cmqBaseCurrentService.findCmqChildCountForParentCmqCode(cmqBaseCurrent.getCmqCode());
@@ -1576,9 +1574,7 @@ public class IARelationsTreeHelper {
 		node.markNotEditableInRelationstable();
 		TreeNode cmqBaseTreeNode = new DefaultTreeNode(node, targetTableRootTreeNode);
 
-		if (CSMQBean.IMPACT_TYPE_ICC.equals(selectedCmqList.getImpactType()) ||
-                            CSMQBean.IMPACT_TYPE_IMPACTED.equalsIgnoreCase(selectedCmqList.getImpactType()))
-			node.setRowStyleClass("blue-colored");
+        setTargetCmqBaseNodeStyle(node, selectedCmqList);
 		
 		boolean dummyNodeAdded = false;
 		Long count = this.cmqBaseTargetService.findCmqChildCountForParentCmqCode(selectedCmqList.getCmqCode());
