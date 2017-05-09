@@ -58,6 +58,7 @@ import com.dbms.entity.cqt.dtos.MeddraDictHierarchySearchDto;
 import com.dbms.entity.cqt.dtos.ReportLineDataDto;
 import com.dbms.service.base.CqtPersistenceService;
 import com.dbms.util.CmqUtils;
+
 import org.apache.commons.collections4.CollectionUtils;
 
 /**
@@ -701,6 +702,58 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 							}
 						}
  
+					}
+					
+					//Relations for SMQs
+					Long smqBaseChildrenCount = findChildSmqCountByParentSmqCode(relation.getSmqCode());
+					smqBaseChildrenCount = findSmqRelationsCountForSmqCode(relation.getSmqCode());
+
+					System.out.println("\n\n ------------------   smqBaseChildrenCount count :: " +smqBaseChildrenCount);
+					List<SmqRelationTarget> childSmqs =  findSmqRelationsForSmqCode(relation.getSmqCode());
+
+					if((null != childSmqs) && (childSmqs.size() > 0)) {
+						for (SmqRelationTarget childSmq : childSmqs) {
+							if (childSmq.getSmqLevel() == 0) {
+								level = "Child SMQ";
+							}if (childSmq.getSmqLevel() == 1) {
+								level = "SMQ1";
+							} else if (childSmq.getSmqLevel() == 2) {
+								level = "SMQ2";
+							} else if (childSmq.getSmqLevel() == 3) {
+								level = "SMQ3";
+							} else if (childSmq.getSmqLevel() == 4) {
+								level = "PT";
+							} else if (childSmq.getSmqLevel() == 5) {
+								level = "LLT";
+							} 
+
+							row = worksheet.createRow(rowCount);
+							buildChildCells(level, childSmq.getPtCode() + "", childSmq.getPtName(), cell, row, ".....");
+							setCellStyleColumn(workbook, cell); 
+							rowCount++;
+							
+							List<Long> codes = new ArrayList<>();
+							codes.add(childSmq.getSmqCode());
+							
+							
+							smqSearched = findByCode(Long.parseLong(childSmq.getPtCode() + ""));
+							if (smqSearched != null) {
+								List<SmqRelationTarget> list = findSmqRelationsForSmqCode(smqSearched.getSmqCode());
+								if (list != null) {
+									for (SmqRelationTarget smq3 : list) {
+										if (smq3.getSmqLevel() == 4) {
+											level = "PT";
+										} else if (smq3.getSmqLevel() == 5) {
+											level = "LLT";
+										} 
+										row = worksheet.createRow(rowCount);
+										buildChildCells(level, smq3.getPtCode() + "", smq3.getPtName(), cell, row, "...............");
+										setCellStyleColumn(workbook, cell); 
+										rowCount++;
+									}
+								}
+							}
+						}
 					}
 				}
 				

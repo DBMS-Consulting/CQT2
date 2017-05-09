@@ -965,6 +965,14 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		rowCount++;
 		row = worksheet.createRow(rowCount);
 		cell = row.createCell(0);
+		cell.setCellValue("Designee 2: " + details.getDesigneeTwo());
+		rowCount++;
+		row = worksheet.createRow(rowCount);
+		cell = row.createCell(0);
+		cell.setCellValue("Designee 3: " + details.getDesigneeThree());
+		rowCount++;
+		row = worksheet.createRow(rowCount);
+		cell = row.createCell(0);
 		cell.setCellValue("Level: " + details.getLevel());
 		rowCount++;
 		row = worksheet.createRow(rowCount);
@@ -1092,6 +1100,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 			} catch (InterruptedException | ExecutionException e) {
 				LOG.error("Exception while reading MQReportRelationsWorkerDTO", e);
 			}
+						
 		}
 		LOG.info("Processing children now.");
 		//now child relations
@@ -1138,6 +1147,10 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 				}
 			}
 		}
+		
+	
+		
+		
 		LOG.info("Finished processing all relations and children.");
 		executorService.shutdownNow();
 			
@@ -1255,15 +1268,17 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 											String levelS = "";
 											if (smqSearched.getSmqLevel() == 3) {
 												levelS = "SMQ3";
-											} else if ((smqSearched.getSmqLevel() == 4)
-													|| (smqSearched.getSmqLevel() == 0)
-													|| (smqSearched.getSmqLevel() == 5)) {
+											} else if (smqSearched.getSmqLevel() == 4) {
 												levelS = "PT";
-											}
+											} else if (smqSearched.getSmqLevel() == 5) {
+												levelS = "LLT";
+											} else if (smqSearched.getSmqLevel() == 0) {
+												levelS = "Child SMQ";
+											} 
 											List<SmqBase190> smqChildren = smqBaseService.findChildSmqByParentSmqCodes(codes);
 											if (smqChildren != null) {
 												for (SmqBase190 child : smqChildren) {
-													relationsWorkerDTO.addToMapReport(cpt++, new ReportLineDataDto("SMQ3", child.getSmqCode() + "", child.getSmqName(), ".............")); 
+													relationsWorkerDTO.addToMapReport(cpt++, new ReportLineDataDto(levelS, child.getSmqCode() + "", child.getSmqName(), ".............")); 
 													
 													smqSearched = smqBaseService.findByCode(child.getSmqCode());
 													if (smqSearched != null) {
@@ -1294,6 +1309,88 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 							}
 						}
 					}
+					
+					//Relations for SMQs
+					Long smqBaseChildrenCount = smqBaseService.findChildSmqCountByParentSmqCode(relation.getSmqCode());
+					smqBaseChildrenCount = smqBaseService.findSmqRelationsCountForSmqCode(relation.getSmqCode());
+
+					System.out.println("\n\n ------------------   smqBaseChildrenCount count :: " +smqBaseChildrenCount);
+					List<SmqRelation190> childSmqs =  smqBaseService.findSmqRelationsForSmqCode(relation.getSmqCode());
+
+					if((null != childSmqs) && (childSmqs.size() > 0)) {
+						for (SmqRelation190 childSmq : childSmqs) {
+							if (childSmq.getSmqLevel() == 0) {
+								level = "Child SMQ";
+							}if (childSmq.getSmqLevel() == 1) {
+								level = "SMQ1";
+							} else if (childSmq.getSmqLevel() == 2) {
+								level = "SMQ2";
+							} else if (childSmq.getSmqLevel() == 3) {
+								level = "SMQ3";
+							} else if (childSmq.getSmqLevel() == 4) {
+								level = "PT";
+							} else if (childSmq.getSmqLevel() == 5) {
+								level = "LLT";
+							} 
+
+							relationsWorkerDTO.addToMapReport(cpt++, new ReportLineDataDto(level, childSmq.getPtCode() + "", childSmq.getPtName(), ".......")); 
+							
+							
+							List<Long> codes = new ArrayList<>();
+							codes.add(childSmq.getSmqCode());
+							
+							List<SmqBase190> smqs = smqBaseService.findChildSmqByParentSmqCodes(codes);
+							
+							smqSearched = smqBaseService.findByCode(Long.parseLong(childSmq.getPtCode() + ""));
+							if (smqSearched != null) {
+								List<SmqRelation190> list = smqBaseService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
+								if (list != null) {
+									for (SmqRelation190 smq3 : list) {
+										if (smq3.getSmqLevel() == 4) {
+											level = "PT";
+										} else if (smq3.getSmqLevel() == 5) {
+											level = "LLT";
+										} 
+										relationsWorkerDTO.addToMapReport(cpt++, new ReportLineDataDto(level, smq3.getPtCode() + "", smq3.getPtName(), ".............")); 
+									}
+								}
+							}
+							
+							
+							
+							//Children for relations
+//							smqSearched = smqBaseService.findByCode(childSmq.getSmqCode());
+//							if (smqSearched != null) {
+//								List<SmqRelation190> childRelations = smqBaseService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
+//								if((null != childRelations) && (childRelations.size() > 0)) {
+//									for (SmqRelation190 smqC : childRelations) {
+//										if (smqC.getSmqLevel() == 1) {
+//											level = "SMQ1";
+//										} else if (smqC.getSmqLevel() == 2) {
+//											level = "SMQ2";
+//										} else if (smqC.getSmqLevel() == 3) {
+//											level = "SMQ3";
+//										} else if ((smqC.getSmqLevel() == 4)
+//												|| (smqC.getSmqLevel() == 0)
+//												|| (smqC.getSmqLevel() == 5)) {
+//											level = "PT";
+//										}
+//										relationsWorkerDTO.addToMapReport(cpt++, new ReportLineDataDto(level, smqC.getSmqCode() + "", smqC.getPtName(), "............"));  
+//									}
+//								}
+//							}
+//							
+							
+							
+							
+							
+							
+							
+							
+							 
+						}
+					}
+					
 					
 					//LOG.info("In {} Finished Loading SMQ code relations.", this.workerName);
 				}
@@ -1621,8 +1718,8 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		final int pictureIndex = wb.addPicture(stream,
 				Workbook.PICTURE_TYPE_PNG);
 
-		anchor.setCol1(0);
-		anchor.setRow1(0); // same row is okay
+//		anchor.setCol1(0);
+//		anchor.setRow1(0); // same row is okay
 		final Picture pict = drawing.createPicture(anchor, pictureIndex);
 		pict.resize();
 	}
