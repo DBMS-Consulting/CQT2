@@ -75,9 +75,9 @@ public class ListDetailsFormVM {
 		this.group = "No Group";
 		this.state = CmqBase190.CMQ_STATE_VALUE_DRAFT;
 		this.status = CmqBase190.CMQ_STATUS_DISP_LABEL_PENDING;
-		this.designee = "NONE";
-        this.designeeTwo = "NONE";
-        this.designeeThree = "NONE";
+		this.designee = "";
+        this.designeeTwo = "";
+        this.designeeThree = "";
         
 		this.designeeList = this.appSWJSFRequest.getPXEDUserList();
 		this.modelChanged = false;
@@ -145,15 +145,15 @@ public class ListDetailsFormVM {
 		
 		cmq.setCmqDesignee(designee);
 		if (cmq.getCmqDesignee() == null){
-			cmq.setCmqDesignee("NONE");
+			cmq.setCmqDesignee("");
 		}
 		cmq.setCmqDesignee2(designeeTwo);
 		if (cmq.getCmqDesignee2() == null){
-			cmq.setCmqDesignee2("NONE");
+			cmq.setCmqDesignee2("");
 		}
 		cmq.setCmqDesignee3(designeeThree);
 		if (cmq.getCmqDesignee3() == null){
-			cmq.setCmqDesignee3("NONE");
+			cmq.setCmqDesignee3("");
 		}
 		cmq.setCmqLevel(level);
 		cmq.setCmqAlgorithm(algorithm);
