@@ -409,7 +409,7 @@ public class IARelationsTreeHelper {
             node.setRowStyleClass("blue-colored");
         else if(CSMQBean.IMPACT_TYPE_ICC.equalsIgnoreCase(cmq.getImpactType())
                 || CSMQBean.IMPACT_TYPE_IPC.equalsIgnoreCase(cmq.getImpactType()))
-            node.setRowStyleClass("darkgrey-colored");
+            node.setRowStyleClass("grey-colored");
     }
     
     public void setTargetCmqRelationNodeStyle(HierarchyNode node, CmqRelationTarget cmqRelationTarget) {
