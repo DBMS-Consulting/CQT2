@@ -1577,7 +1577,7 @@ public class CreateController implements Serializable {
 		cmq.setActivationDate(null);
 		cmq.setActivatedBy(null);
 		cmq.setCreationDate(null);
-		cmq.setCreatedBy(null);
+		cmq.setCreatedBy(cmq.getCreatedBy());
 		cmq.setLastModifiedBy(null);
 		cmq.setLastModifiedDate(null);
 	}
@@ -1663,6 +1663,7 @@ public class CreateController implements Serializable {
         		return  false;
         	} else if ((authService.getGroupName().equals(AuthenticationService.ADMIN_GROUP)) 
         			&& selectedData.getCmqStatus().equals("P") 
+        			&& (selectedData.getCreatedBy() != null) && selectedData.getCreatedBy().startsWith(authService.getUserCn())
         			&& (selectedData.getCmqState().equals("DRAFT") || (selectedData.getCmqState().equals("PENDING IA") || selectedData.getCmqState().equals("REVIEWED IA")))) {
         		return  false;
         	}
