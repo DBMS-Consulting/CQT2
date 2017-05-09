@@ -1,5 +1,6 @@
 package com.dbms.controller;
 
+import com.dbms.csmq.CSMQBean;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -241,7 +242,9 @@ public class ImpactSearchController implements Serializable {
 		Object obj = event.getObject();
 		if(obj instanceof CmqBaseTarget) {
 			CmqBaseTarget cmqBase = (CmqBaseTarget) obj;
-			if("IMPACTED".equalsIgnoreCase(cmqBase.getImpactType()) || "ICC".equalsIgnoreCase(cmqBase.getImpactType())){
+			if(CSMQBean.IMPACT_TYPE_IMPACTED.equalsIgnoreCase(cmqBase.getImpactType())
+                    || CSMQBean.IMPACT_TYPE_ICC.equalsIgnoreCase(cmqBase.getImpactType())
+                    || CSMQBean.IMPACT_TYPE_IPC.equalsIgnoreCase(cmqBase.getImpactType())){
 				this.isImpactedCmqSelected = true;
 				this.isNonImpactedCmqSelected = false;
 				this.isImpactedSmqSelected = false;
@@ -254,7 +257,7 @@ public class ImpactSearchController implements Serializable {
 			}
 		} else if(obj instanceof SmqBaseTarget) {
 			SmqBaseTarget smqBase = (SmqBaseTarget) obj;
-			if("IMPACTED".equalsIgnoreCase(smqBase.getImpactType()) || "ICC".equalsIgnoreCase(smqBase.getImpactType())){
+			if(CSMQBean.IMPACT_TYPE_IMPACTED.equalsIgnoreCase(smqBase.getImpactType())){
 				this.isImpactedCmqSelected = false;
 				this.isNonImpactedCmqSelected = false;
 				this.isImpactedSmqSelected = true;
