@@ -101,7 +101,8 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 			));
 			
 			if(filters.containsKey("cmqName") && filters.get("cmqName") != null) {
-                String f = ((String)filters.get("cmqName")).contains("%") ? ((String)filters.get("cmqName")) : ("%" + ((String)filters.get("cmqName")).toLowerCase() + "%");
+                String f = ((String)filters.get("cmqName")).toLowerCase();
+                f = f.contains("%") ? f : ("%" + f + "%");
 				pred.add(cb.like(cb.lower(cmqRoot.<String>get("cmqName")), f));
             }
 			
@@ -115,7 +116,8 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 				pred.add(cb.equal(cmqRoot.get("cmqState"), filters.get("cmqState")));
             
             if(filters.containsKey("cmqCode") && filters.get("cmqCode") != null) {
-                String f = ((String)filters.get("cmqCode")).contains("%") ? ((String)filters.get("cmqCode")) : ("%" + ((String)filters.get("cmqCode")).toLowerCase() + "%");
+                String f = ((String)filters.get("cmqCode"));
+                f = f.contains("%") ? f : ("%" + f + "%");
 				pred.add(cb.like(cmqRoot.get("cmqCode").as(String.class), f));
             }
 			
@@ -185,7 +187,8 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 			pred.add(cb.equal(cmqRoot.get("impactType"), CSMQBean.IMPACT_TYPE_NONIMPACTED));
 			
 			if(filters.containsKey("cmqName") && filters.get("cmqName") != null) {
-                String f = ((String)filters.get("cmqName")).contains("%") ? ((String)filters.get("cmqName")) : ("%" + ((String)filters.get("cmqName")).toLowerCase() + "%");
+                String f = ((String)filters.get("cmqName")).toLowerCase();
+                f = f.contains("%") ? f : ("%" + f + "%");
 				pred.add(cb.like(cb.lower(cmqRoot.<String>get("cmqName")), f));
             }
 			
@@ -199,7 +202,8 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 				pred.add(cb.equal(cmqRoot.get("cmqState"), filters.get("cmqState")));
             
             if(filters.containsKey("cmqCode") && filters.get("cmqCode") != null) {
-                String f = ((String)filters.get("cmqCode")).contains("%") ? ((String)filters.get("cmqCode")) : ("%" + ((String)filters.get("cmqCode")).toLowerCase() + "%");
+                String f = ((String)filters.get("cmqCode"));
+                f = f.contains("%") ? f : ("%" + f + "%");
 				pred.add(cb.like(cmqRoot.get("cmqCode").as(String.class), f));
             }
 			
