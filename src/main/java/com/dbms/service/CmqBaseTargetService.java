@@ -100,8 +100,10 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 					cb.equal(cmqRoot.get("impactType"), CSMQBean.IMPACT_TYPE_IPC)
 			));
 			
-			if(filters.containsKey("cmqName") && filters.get("cmqName") != null)
-				pred.add(cb.like(cb.lower(cmqRoot.<String>get("cmqName")), "%" + ((String)filters.get("cmqName")).toLowerCase() + "%"));
+			if(filters.containsKey("cmqName") && filters.get("cmqName") != null) {
+                String f = ((String)filters.get("cmqName")).contains("%") ? ((String)filters.get("cmqName")) : ("%" + ((String)filters.get("cmqName")).toLowerCase() + "%");
+				pred.add(cb.like(cb.lower(cmqRoot.<String>get("cmqName")), f));
+            }
 			
 			if(filters.containsKey("cmqTypeCd") && filters.get("cmqTypeCd") != null)
 				pred.add(cb.equal(cmqRoot.get("cmqTypeCd"), filters.get("cmqTypeCd")));
@@ -112,8 +114,10 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
             if(filters.containsKey("cmqState") && filters.get("cmqState") != null)
 				pred.add(cb.equal(cmqRoot.get("cmqState"), filters.get("cmqState")));
             
-            if(filters.containsKey("cmqCode") && filters.get("cmqCode") != null)
-				pred.add(cb.like(cmqRoot.get("cmqCode").as(String.class), "%" + ((String)filters.get("cmqCode")) + "%"));
+            if(filters.containsKey("cmqCode") && filters.get("cmqCode") != null) {
+                String f = ((String)filters.get("cmqCode")).contains("%") ? ((String)filters.get("cmqCode")) : ("%" + ((String)filters.get("cmqCode")).toLowerCase() + "%");
+				pred.add(cb.like(cmqRoot.get("cmqCode").as(String.class), f));
+            }
 			
 			cq.where(cb.and(pred.toArray(new Predicate[0])));
 			cq.orderBy(cb.asc(cmqRoot.get("cmqName")));
@@ -180,8 +184,10 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 			
 			pred.add(cb.equal(cmqRoot.get("impactType"), CSMQBean.IMPACT_TYPE_NONIMPACTED));
 			
-			if(filters.containsKey("cmqName") && filters.get("cmqName") != null)
-				pred.add(cb.like(cb.lower(cmqRoot.<String>get("cmqName")), "%" + ((String)filters.get("cmqName")).toLowerCase() + "%"));
+			if(filters.containsKey("cmqName") && filters.get("cmqName") != null) {
+                String f = ((String)filters.get("cmqName")).contains("%") ? ((String)filters.get("cmqName")) : ("%" + ((String)filters.get("cmqName")).toLowerCase() + "%");
+				pred.add(cb.like(cb.lower(cmqRoot.<String>get("cmqName")), f));
+            }
 			
 			if(filters.containsKey("cmqTypeCd") && filters.get("cmqTypeCd") != null)
 				pred.add(cb.equal(cmqRoot.get("cmqTypeCd"), filters.get("cmqTypeCd")));
@@ -192,8 +198,10 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
             if(filters.containsKey("cmqState") && filters.get("cmqState") != null)
 				pred.add(cb.equal(cmqRoot.get("cmqState"), filters.get("cmqState")));
             
-            if(filters.containsKey("cmqCode") && filters.get("cmqCode") != null)
-				pred.add(cb.like(cmqRoot.get("cmqCode").as(String.class), "%" + ((String)filters.get("cmqCode")) + "%"));
+            if(filters.containsKey("cmqCode") && filters.get("cmqCode") != null) {
+                String f = ((String)filters.get("cmqCode")).contains("%") ? ((String)filters.get("cmqCode")) : ("%" + ((String)filters.get("cmqCode")).toLowerCase() + "%");
+				pred.add(cb.like(cmqRoot.get("cmqCode").as(String.class), f));
+            }
 			
 			cq.where(cb.and(pred.toArray(new Predicate[0])));
 			
