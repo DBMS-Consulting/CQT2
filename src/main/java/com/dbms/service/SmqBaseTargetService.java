@@ -386,11 +386,20 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 			
 			pred.add(cb.equal(smqRoot.get("impactType"), CSMQBean.IMPACT_TYPE_IMPACTED));
 			
-			if(filters.containsKey("smqName") && filters.get("smqName") != null)
-				pred.add(cb.like(cb.lower(smqRoot.<String>get("smqName")), "%" + ((String)filters.get("smqName")).toLowerCase() + "%"));
+			if(filters.containsKey("smqName") && filters.get("smqName") != null) {
+                String f = ((String)filters.get("smqName")).toLowerCase();
+                f = f.contains("%") ? f : ("%" + f + "%");
+				pred.add(cb.like(cb.lower(smqRoot.<String>get("smqName")), f));
+            }
 			
 			if(filters.containsKey("smqLevel") && filters.get("smqLevel") != null)
 				pred.add(cb.equal(smqRoot.get("smqLevel"), filters.get("smqLevel")));
+            
+            if(filters.containsKey("smqCode") && filters.get("smqCode") != null) {
+                String f = ((String)filters.get("smqCode"));
+                f = f.contains("%") ? f : ("%" + f + "%");
+				pred.add(cb.like(smqRoot.get("smqCode").as(String.class), f));
+            }
 			
 			cq.where(cb.and(pred.toArray(new Predicate[0])));
 			cq.orderBy(cb.asc(smqRoot.get("smqName")));
@@ -457,10 +466,20 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 			
 			pred.add(cb.equal(smqRoot.get("impactType"), CSMQBean.IMPACT_TYPE_NONIMPACTED));
 			
-			if(filters.containsKey("smqName") && filters.get("smqName") != null)
-				pred.add(cb.like(cb.lower(smqRoot.<String>get("smqName")), "%" + ((String)filters.get("smqName")).toLowerCase() + "%"));			
+            if(filters.containsKey("smqName") && filters.get("smqName") != null) {
+                String f = ((String)filters.get("smqName")).toLowerCase();
+                f = f.contains("%") ? f : ("%" + f + "%");
+				pred.add(cb.like(cb.lower(smqRoot.<String>get("smqName")), f));
+            }
+			
 			if(filters.containsKey("smqLevel") && filters.get("smqLevel") != null)
 				pred.add(cb.equal(smqRoot.get("smqLevel"), filters.get("smqLevel")));
+            
+            if(filters.containsKey("smqCode") && filters.get("smqCode") != null) {
+                String f = ((String)filters.get("smqCode"));
+                f = f.contains("%") ? f : ("%" + f + "%");
+				pred.add(cb.like(smqRoot.get("smqCode").as(String.class), f));
+            }
 			
 			cq.where(cb.and(pred.toArray(new Predicate[0])));
 			
