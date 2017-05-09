@@ -241,7 +241,9 @@ public class ImpactSearchController implements Serializable {
 		Object obj = event.getObject();
 		if(obj instanceof CmqBaseTarget) {
 			CmqBaseTarget cmqBase = (CmqBaseTarget) obj;
-			if("IMPACTED".equalsIgnoreCase(cmqBase.getImpactType()) || "ICC".equalsIgnoreCase(cmqBase.getImpactType())){
+			if("IMPACTED".equalsIgnoreCase(cmqBase.getImpactType()) 
+					|| "ICC".equalsIgnoreCase(cmqBase.getImpactType())
+					|| "IPC".equalsIgnoreCase(cmqBase.getImpactType())){
 				this.isImpactedCmqSelected = true;
 				this.isNonImpactedCmqSelected = false;
 				this.isImpactedSmqSelected = false;
@@ -254,7 +256,9 @@ public class ImpactSearchController implements Serializable {
 			}
 		} else if(obj instanceof SmqBaseTarget) {
 			SmqBaseTarget smqBase = (SmqBaseTarget) obj;
-			if("IMPACTED".equalsIgnoreCase(smqBase.getImpactType()) || "ICC".equalsIgnoreCase(smqBase.getImpactType())){
+			if("IMPACTED".equalsIgnoreCase(smqBase.getImpactType()) 
+					|| "ICC".equalsIgnoreCase(smqBase.getImpactType())
+					|| "IPC".equalsIgnoreCase(smqBase.getImpactType())){
 				this.isImpactedCmqSelected = false;
 				this.isNonImpactedCmqSelected = false;
 				this.isImpactedSmqSelected = true;
