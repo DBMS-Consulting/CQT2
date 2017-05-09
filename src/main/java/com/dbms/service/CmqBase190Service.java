@@ -730,11 +730,22 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 							level = "SMQ2";
 						} else if (childRelation.getSmqLevel() == 3) {
 							level = "SMQ3";
-						} else if ((childRelation.getSmqLevel() == 4)
-								|| (childRelation.getSmqLevel() == 0)
-								|| (childRelation.getSmqLevel() == 5)) {
+							
+						} else if (childRelation.getSmqLevel() == 4) {
 							level = "PT";
+							
+						} else if (childRelation.getSmqLevel() == 5) {
+							level = "LLT";
+							
+						} 
+						else if (childRelation.getSmqLevel() == 0) {
+							level = "Child SMQ";
 						}
+//						} else if ((childRelation.getSmqLevel() == 4)
+//								|| (childRelation.getSmqLevel() == 0)
+//								|| (childRelation.getSmqLevel() == 5)) {
+//							level = "PT";
+//						}
 						codeTerm = childRelation.getPtCode() != null ? childRelation.getPtCode() + "" : "";
 						term = childRelation.getPtName();
 					} else {
