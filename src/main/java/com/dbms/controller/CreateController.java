@@ -978,6 +978,7 @@ public class CreateController implements Serializable {
 		notesFormModel.loadFromCmqBase190(selectedData);
         
         getActiveWizard().setStep(WIZARD_STEP_DETAILS);
+        setFormSaved(false);
         
         // if CMQ_BASE_TARGET.Status != 'PENDING IA' on update wizard
         if(updateWizard!=null && isTargetMovedToHigherIAStatus(selectedData)) {
