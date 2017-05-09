@@ -364,11 +364,11 @@ td.bordered {
 }
 
 .darkgrey-colored {
-	color: darkgrey; /*#A9A9A9*/
+	color: #555; /*#A9A9A9*/
 	font-weight: bold;
 }
 .darkgrey-colored:hover {
-	color: #B0B0B0;
+	color: #666;
 }
 
 .italic {
