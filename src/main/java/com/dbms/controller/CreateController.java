@@ -1624,7 +1624,7 @@ public class CreateController implements Serializable {
      */
     public boolean restrictionsByUserAuthentified() {
     	
-        if (updateWizard != null || copyWizard != null) {
+        if (updateWizard != null) {
         	//conditions are:
         	/*	
         	 	when user is a REQUESTER
@@ -1642,11 +1642,27 @@ public class CreateController implements Serializable {
         		return  false;
         	} else if ((authService.getGroupName().equals(AuthenticationService.ADMIN_GROUP)) 
         			&& selectedData.getCmqStatus().equals("P") 
-        			&& (selectedData.getCmqState().equals("PENDING IA") || selectedData.getCmqState().equals("REVIWED IA"))
+        			&& (selectedData.getCmqState().equals("PENDING IA") || selectedData.getCmqState().equals("REVIEWED IA"))
         			&& (((selectedData.getCreatedBy() != null) && (selectedData.getCreatedBy().startsWith(authService.getUserCn())))
         					|| ((selectedData.getCmqDesignee() != null && selectedData.getCmqDesignee().equals(authService.getUserCn()))
         		        			|| (selectedData.getCmqDesignee2() != null && selectedData.getCmqDesignee2().equals(authService.getUserCn()))
         		        			|| (selectedData.getCmqDesignee3() != null && selectedData.getCmqDesignee3().equals(authService.getUserCn()))))) {
+        		return  false;
+        	}
+        } else if(copyWizard != null) {
+        	//conditions are:
+        	/*	
+        	 	when user is a REQUESTER
+        	 	1) list's state is DRAFT or REVIEWED
+				2) the list's status is P
+        	 */
+        	if ((authService.getGroupName().equals(AuthenticationService.REQUESTER_GROUP)) 
+        			&& selectedData.getCmqStatus().equals("P") 
+        			&& (selectedData.getCmqState().equals("DRAFT") || selectedData.getCmqState().equals("REVIEWED"))) {
+        		return  false;
+        	} else if ((authService.getGroupName().equals(AuthenticationService.ADMIN_GROUP)) 
+        			&& selectedData.getCmqStatus().equals("P") 
+        			&& (selectedData.getCmqState().equals("PENDING IA") || selectedData.getCmqState().equals("REVIEWED IA"))) {
         		return  false;
         	}
         }
