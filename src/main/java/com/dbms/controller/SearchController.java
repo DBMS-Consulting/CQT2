@@ -214,12 +214,13 @@ public class SearchController extends BaseController<CmqBase190> implements IRel
 		this.myFltLevel = null;
 		// this.critical = "No";
 		this.myFltGroup = "No Group";
-
 		this.product = "";
 		this.myFltProtocol = "";
 		this.myFltDrugProgram = "";
 		this.termName = "";
 		this.code = null;
+        myFltDesignees = new String[0];
+        
 		this.dataModified = false;
 		
 		myHierarchyDlgModel.resetForm();
