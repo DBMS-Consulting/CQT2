@@ -1578,7 +1578,7 @@ public class CreateController implements Serializable {
 		cmq.setActivationDate(null);
 		cmq.setActivatedBy(null);
 		cmq.setCreationDate(null);
-		cmq.setCreatedBy(cmq.getCreatedBy());
+		cmq.setCreatedBy(null);
 		cmq.setLastModifiedBy(null);
 		cmq.setLastModifiedDate(null);
 	}
