@@ -209,7 +209,7 @@ public class ConfigurationController implements Serializable {
                 new String[] { CmqBaseTarget.CMQ_STATE_PENDING_IA, CmqBaseTarget.CMQ_STATE_PENDING_IA },
                 new String[] { CmqBaseTarget.CMQ_STATE_REVIEWED_IA, CmqBaseTarget.CMQ_STATE_REVIEWED_IA },
                 new String[] { CmqBaseTarget.CMQ_STATE_APPROVED_IA, CmqBaseTarget.CMQ_STATE_APPROVED_IA },
-                new String[] { CmqBaseTarget.CMQ_STATE_PUBLISHED, CmqBaseTarget.CMQ_STATE_PUBLISHED }
+                new String[] { CmqBaseTarget.CMQ_STATE_PUBLISHED_IA, CmqBaseTarget.CMQ_STATE_PUBLISHED_IA }
             );
         }
         return cmqTargetListStates;
