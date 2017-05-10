@@ -263,6 +263,9 @@ public class AuthenticationService {
 			return retval;
 		}
 	}
+    public boolean hasGroup(String groupName) {
+        return hasGroup(new String[] { groupName });
+    }
 	
 	public boolean hasAccess(HttpServletRequest request) {
 		if(ENTERPRISE_AD_NONE.equals(this.enterpriseAdCodeListValue)) {
