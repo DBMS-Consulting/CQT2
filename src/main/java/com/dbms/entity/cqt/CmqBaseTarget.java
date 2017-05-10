@@ -502,8 +502,9 @@ public class CmqBaseTarget extends BaseEntity {
      * @return 
      */
     public boolean isImpactedByMeddraVersioning() {
-        if(CSMQBean.IMPACT_TYPE_IMPACTED.equalsIgnoreCase(getImpactType()) || 
-                CSMQBean.IMPACT_TYPE_ICC.equalsIgnoreCase(getImpactType()))
+        if(CSMQBean.IMPACT_TYPE_IMPACTED.equalsIgnoreCase(getImpactType())
+                || CSMQBean.IMPACT_TYPE_ICC.equalsIgnoreCase(getImpactType())
+                || CSMQBean.IMPACT_TYPE_IPC.equalsIgnoreCase(getImpactType()))
             return true;
         return false;
     }
