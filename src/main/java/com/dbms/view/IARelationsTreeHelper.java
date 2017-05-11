@@ -121,10 +121,7 @@ public class IARelationsTreeHelper {
 				this.populateCmqBaseChildren(cmqCode, expandedTreeNode, "current", null);
 				this.populateCmqRelations(cmqCode, expandedTreeNode, "current", null, entity);
 				
-				//Color
-				if (CSMQBean.IMPACT_TYPE_ICC.equals(cmqBase.getImpactType()) ||
-                        CSMQBean.IMPACT_TYPE_IMPACTED.equalsIgnoreCase(cmqBase.getImpactType()))
-					hierarchyNode.setRowStyleClass("blue-colored");
+                setCurrentCmqBaseNodeStyle(hierarchyNode, cmqBase);
 			} else if (entity instanceof SmqBase190){
 				SmqBase190 smqBase = (SmqBase190) entity;
 				this.populateSmqBaseChildren(smqBase.getSmqCode(), expandedTreeNode, "current", null);
@@ -165,10 +162,8 @@ public class IARelationsTreeHelper {
 				this.populateCmqBaseChildren(cmqCode, expandedTreeNode, "target", uiSourceOfEvent);
 				this.populateCmqRelations(cmqCode, expandedTreeNode, "target", uiSourceOfEvent, entity);
 				
-				//Color
-				if (CSMQBean.IMPACT_TYPE_ICC.equals(cmqBase.getImpactType()) ||
-                        CSMQBean.IMPACT_TYPE_IMPACTED.equalsIgnoreCase(cmqBase.getImpactType()))
-					hierarchyNode.setRowStyleClass("blue-colored");
+				//Color           
+                setTargetCmqBaseNodeStyle(hierarchyNode, cmqBase);
 			} else if (entity instanceof SmqBaseTarget){
 				SmqBaseTarget smqBase = (SmqBaseTarget) entity;
 				this.populateSmqBaseChildren(smqBase.getSmqCode(), expandedTreeNode, "target", uiSourceOfEvent);
@@ -397,8 +392,7 @@ public class IARelationsTreeHelper {
 	}
     
     public void setCurrentCmqBaseNodeStyle(HierarchyNode node, CmqBase190 cmq) {
-        if (CSMQBean.IMPACT_TYPE_ICC.equalsIgnoreCase(cmq.getImpactType())
-                || CSMQBean.IMPACT_TYPE_IMPACTED.equalsIgnoreCase(cmq.getImpactType()))
+        if (CSMQBean.IMPACT_TYPE_IMPACTED.equalsIgnoreCase(cmq.getImpactType()))
             node.setRowStyleClass("blue-colored");
         if (CmqBase190.CMQ_STATUS_VALUE_INACTIVE.equals(cmq.getCmqStatus()))
             node.setRowStyleClass("brown-colored");
