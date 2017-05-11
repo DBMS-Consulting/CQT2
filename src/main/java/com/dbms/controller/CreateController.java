@@ -115,6 +115,7 @@ public class CreateController implements Serializable {
 	
 	private HtmlInputText dictionaryName;
 	private boolean	formSaved;
+	private String listCreator;
 	
 	@PostConstruct
 	public void init() {
@@ -958,7 +959,9 @@ public class CreateController implements Serializable {
 			//reset the values which are not supposed to be copied.
 			copyingCmqCode = codeSelected;
 			codeSelected = null;
+			setListCreator(selectedData.getCreatedBy());
 			setCopiedCmq(selectedData);
+			
 			
 			String name = selectedData.getCmqName();
 			if(name.contains("-Copy-")) {
@@ -1664,7 +1667,7 @@ public class CreateController implements Serializable {
         		return  false;
         	} else if ((authService.getGroupName().equals(AuthenticationService.ADMIN_GROUP)) 
         			&& selectedData.getCmqStatus().equals("P") 
-        			&& (selectedData.getCreatedBy() != null) && selectedData.getCreatedBy().startsWith(authService.getUserCn())
+        			&& (listCreator != null) && listCreator.startsWith(authService.getUserCn())
         			&& (selectedData.getCmqState().equals("DRAFT") || (selectedData.getCmqState().equals("PENDING IA") || selectedData.getCmqState().equals("REVIEWED IA")))) {
         		return  false;
         	}
@@ -1756,4 +1759,12 @@ public class CreateController implements Serializable {
         selectedData = new CmqBase190();
         initAll();        
     }
+
+	public String getListCreator() {
+		return listCreator;
+	}
+
+	public void setListCreator(String listCreator) {
+		this.listCreator = listCreator;
+	}
 }

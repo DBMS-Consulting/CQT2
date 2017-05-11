@@ -15,6 +15,8 @@ public class ReportLineDataDto {
 	private String weight;
 	private String scope;
 	private String dots;
+	
+	private String impact;
 
 	public ReportLineDataDto(String level, String code, String term, String dots) {
 		super();
@@ -22,6 +24,15 @@ public class ReportLineDataDto {
 		this.code = code;
 		this.level = level;
 		this.dots = dots;
+	}
+	
+	public ReportLineDataDto(String level, String code, String term, String dots, String impact) {
+		super();
+		this.term = term;
+		this.code = code;
+		this.level = level;
+		this.dots = dots;
+		this.impact = impact;
 	}
 
 	public String getTerm() {
@@ -84,6 +95,14 @@ public class ReportLineDataDto {
 	public String toString() {
 		return "ReportLineDataDto [term=" + term + ", code=" + code + ", level=" + level + ", category=" + category
 				+ ", weight=" + weight + ", scope=" + scope + ", dots=" + dots + "]";
+	}
+
+	public String getImpact() {
+		return impact;
+	}
+
+	public void setImpact(String impact) {
+		this.impact = impact;
 	}
 
 }
