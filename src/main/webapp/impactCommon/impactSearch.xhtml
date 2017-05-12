@@ -193,6 +193,7 @@
 		                    <f:selectItem itemLabel="" itemValue="#{null}" noSelectionOption="true"  />
                             <f:selectItems value="#{configMB.cmqTargetListStates}" var="s"
 								itemLabel="#{s[1]}" itemValue="#{s[0]}" />
+                            <f:selectItem itemLabel="PUBLISHED" itemValue="PUBLISHED" />
 		                </p:selectOneMenu>
 		            </f:facet>
 					<h:outputText value="#{cmqList.cmqState}" id="ot57" />
