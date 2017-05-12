@@ -1636,18 +1636,20 @@ public class CreateController implements Serializable {
 				2) the list's status is P
 				3) they are any designee or they have created the list
         	 */
-        	if ((authService.getGroupName().equals(AuthenticationService.REQUESTER_GROUP) || authService.getGroupName().equals("MQM")) 
+        	if (authService.getGroupMembershipHeader().contains("MQM"))
+        		return false;
+        	else if ((authService.getGroupMembershipHeader().contains(AuthenticationService.REQUESTER_GROUP)) 
         			&& selectedData.getCmqStatus().equals("P") 
         			&& (selectedData.getCmqState().equals("DRAFT") || selectedData.getCmqState().equals("REVIEWED"))
-        			&& (((selectedData.getCreatedBy() != null) && (selectedData.getCreatedBy().startsWith(authService.getUserCn())))
+        			&& (((listCreator != null) && (listCreator.startsWith(authService.getUserCn())))
         					|| ((selectedData.getCmqDesignee() != null && selectedData.getCmqDesignee().equals(authService.getUserCn()))
         		        			|| (selectedData.getCmqDesignee2() != null && selectedData.getCmqDesignee2().equals(authService.getUserCn()))
         		        			|| (selectedData.getCmqDesignee3() != null && selectedData.getCmqDesignee3().equals(authService.getUserCn()))))) {
         		return  false;
-        	} else if ((authService.getGroupName().equals(AuthenticationService.ADMIN_GROUP)) 
+        	} else if ((authService.getGroupMembershipHeader().contains(AuthenticationService.ADMIN_GROUP)) 
         			&& selectedData.getCmqStatus().equals("P") 
         			&& (selectedData.getCmqState().equals("DRAFT") || (selectedData.getCmqState().equals("PENDING IA") || selectedData.getCmqState().equals("REVIEWED IA")))
-        			&& (((selectedData.getCreatedBy() != null) && (selectedData.getCreatedBy().startsWith(authService.getUserCn())))
+        			&& (((listCreator != null) && (listCreator.startsWith(authService.getUserCn())))
         					|| ((selectedData.getCmqDesignee() != null && selectedData.getCmqDesignee().equals(authService.getUserCn()))
         		        			|| (selectedData.getCmqDesignee2() != null && selectedData.getCmqDesignee2().equals(authService.getUserCn()))
         		        			|| (selectedData.getCmqDesignee3() != null && selectedData.getCmqDesignee3().equals(authService.getUserCn()))))) {
