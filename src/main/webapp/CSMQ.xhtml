@@ -161,12 +161,12 @@
 				<p:submenu label="Retire/Reactivate" icon="ui-icon-document"
 					style="font-weight:#{userBean.currentMenu eq 'NON_IMPACT_PUBLISH' or userBean.currentMenu eq 'IMPACT_PUBLISH' ? 'bold' : 'normal'};"
 					rendered="#{AuthenticationService.getPermissonByUri('Reactivate/Retire-Menu')}" >
-                    <p:menuitem value="Retire" id="retire-menu"
+                    <p:menuitem value="Retire Current" id="retire-menu"
 						action="IMPACT_PUBLISH"
 						styleClass="#{view.viewId == '/create/retire.xhtml' ? 'ui-state-active2' : ''}"
  						url="/create/retire.xhtml" 
  						rendered="#{AuthenticationService.getPermissonByUri('/create/retire.xhtml')}" />
-					<p:menuitem value="Reactivate" id="reactivate-menu"
+					<p:menuitem value="Reactivate Current" id="reactivate-menu"
 						action="NON_IMPACT_PUBLISH"
 						styleClass="#{view.viewId == '/create/reactivate.xhtml' ? 'ui-state-active2' : ''}"
  						url="/create/reactivate.xhtml" 
