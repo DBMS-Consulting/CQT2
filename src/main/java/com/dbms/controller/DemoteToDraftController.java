@@ -194,62 +194,77 @@ public class DemoteToDraftController implements Serializable {
 		List<Long> targetCmqCodes = new ArrayList<>();
 		List<Long> targetCmqParentCodes = new ArrayList<>();
 		List<CmqBaseTarget> targetCmqsSelected = new ArrayList<CmqBaseTarget>(this.demoteTargetDualListModel.getTarget());
-		if((targetCmqsSelected == null) || (targetCmqsSelected.size() == 0)) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"Please select atleats 1 list to demote.", "");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-		} else {
-			for (CmqBaseTarget cmqBase : targetCmqsSelected) {
-				targetCmqCodes.add(cmqBase.getCmqCode());
-				if(null != cmqBase.getCmqParentCode()) {
-					targetCmqParentCodes.add(cmqBase.getCmqParentCode());
+		for (CmqBaseTarget cmqBase : targetCmqsSelected) {
+			targetCmqCodes.add(cmqBase.getCmqCode());
+			if(null != cmqBase.getCmqParentCode()) {
+				targetCmqParentCodes.add(cmqBase.getCmqParentCode());
+			}
+		}
+		boolean isListPublishable = true;
+ 		List<CmqBaseTarget> childCmqsOftargets = this.cmqBaseTargetService.findChildCmqsByCodes(targetCmqCodes);
+		if(null != childCmqsOftargets) {
+			for (CmqBaseTarget cmq : childCmqsOftargets) {
+				//if child is not in the target list then check if its publisher or not
+				if(!targetCmqCodes.contains(cmq.getCmqCode())) {
+					if(!cmq.getCmqState().equalsIgnoreCase(CmqBaseTarget.CMQ_STATE_PENDING_IA)
+							&& cmq.getCmqStatus().equalsIgnoreCase(CmqBase190.CMQ_STATUS_VALUE_PENDING)) {
+						isListPublishable = false;
+ 					}
 				}
 			}
+		}
+		
+		if(!isListPublishable) {
 			
-			List<CmqBaseTarget> faultyCmqs = new ArrayList<>();
+			FacesContext.getCurrentInstance().addMessage(null, 
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                            "The List being promoted has an associated list that must be Demoted", ""));
 			
-			//now get the children
-			//If a parent is demoted, then child must be demoted 
-			//(If the child is status in active then show a error 
-			//"The list being demoted has an associated active child list hence cannot be demoted.”
-			boolean isChildDemotedError = false;
-			List<CmqBaseTarget> childCmqsOftargets = this.cmqBaseTargetService.findChildCmqsByCodes(targetCmqCodes);
-			if((null != childCmqsOftargets) && (childCmqsOftargets.size() > 0)) {
-				//add them to the selected cmqs list
-				for (CmqBaseTarget childCmq : childCmqsOftargets) {
-					if(!childCmq.getCmqState().equalsIgnoreCase(CmqBaseTarget.CMQ_STATE_PUBLISHED_IA)
-							&& childCmq.getCmqStatus().equalsIgnoreCase(CmqBaseTarget.CMQ_STATE_PENDING_IA)) {
-						isChildDemotedError = true;
-						faultyCmqs.add(childCmq);
-					} else {
-						targetCmqsSelected.add(childCmq);//we need to demote this as well
+			return "";
+		} else {
+			if(targetCmqParentCodes.size() > 0) {
+				List<CmqBaseTarget> parentCmqsList = this.cmqBaseTargetService.findParentCmqsByCodes(targetCmqParentCodes);
+				if(null != parentCmqsList) {
+					for (CmqBaseTarget cmqBaseTarget : parentCmqsList) {
+						//if parent is not in the target list then check if its publisher or not
+						if(!targetCmqCodes.contains(cmqBaseTarget.getCmqCode())) {
+							if(!cmqBaseTarget.getCmqState().equalsIgnoreCase(CmqBaseTarget.CMQ_STATE_PENDING_IA)
+									&& cmqBaseTarget.getCmqStatus().equalsIgnoreCase(CmqBase190.CMQ_STATUS_VALUE_PENDING)) {
+								isListPublishable = false;
+							}
+						}
 					}
 				}
 			}
-			
-			if(isChildDemotedError) {
-				//we show a error on screen that we have one or more parents in the list which has a child which is published and pending.
-				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-						"The lists being demoted have an associated active child list hence cannot be demoted.", "");
-				FacesContext.getCurrentInstance().addMessage(null, msg);
-			} else {
-				//If there is a child is being demoted, and the parent is NOT demoted, 
-				//it should give only a WARNING that the parent is not demoted but it should NOT stop the child from being demoted.
-				//and continue forward
-				if(targetCmqParentCodes.size() > 0) {
-					//we need to show message that parent is not demoted yet but we carry on with the children.
-					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN,
-							"The lists being demoted have parent lists which are not demoted yet.", "");
-					FacesContext.getCurrentInstance().addMessage(null, msg);
-				} 
+			if(!isListPublishable) {
+				//show error dialog with names
+				FacesContext.getCurrentInstance().addMessage(null, 
+                        new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                                "The list being promoted has an associated list that must be Demoted. ", ""));
 				
+				return "";
+			}
+			else {
 				//continue
 				boolean hasErrorOccured = false;
+				boolean hasParentError = false;
+				String cmqError = "";
 				for (CmqBaseTarget target : targetCmqsSelected) {
-					target.setCmqStatus("P");
-					target.setCmqState(CmqBaseTarget.CMQ_STATE_PENDING_IA);
+					if (target.getCmqLevel() == 2 && target.getCmqParentCode() == null && target.getCmqParentName() == null)
+						hasParentError = true;
+				
+					else {
+						target.setCmqStatus("P");
+						target.setCmqState(CmqBaseTarget.CMQ_STATE_PENDING_IA);
+					}
+					
+					if (hasParentError) {
+						cmqError = target.getCmqName();
+						break;
+					}
 				}
 				
+
 				try {
 					this.cmqBaseTargetService.update(targetCmqsSelected, this.authService.getUserCn()
 							, this.authService.getUserGivenName(), this.authService.getUserSurName()
@@ -258,7 +273,7 @@ public class DemoteToDraftController implements Serializable {
 					LOG.error(e.getMessage(), e);
 					hasErrorOccured = true;
 				}
-				
+
 				if(hasErrorOccured) {
 					//show error message popup for partial success.
 					String codes = "";
@@ -274,15 +289,21 @@ public class DemoteToDraftController implements Serializable {
 				} else {
 					//update the dualListModel source and target
 					init();
-					
+
 					//show messages on screen
 					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-							"The List(s) are successfully demoted to Draft", "");
+							"The List(s) are Demoted successfully.", "");
 					FacesContext.getCurrentInstance().addMessage(null, msg);
 				}
 			}
+			
 		}
+
+		targetCmqsSelected = new ArrayList<CmqBaseTarget>();
+
 		
+
+
 		return "";
 	}
 	 

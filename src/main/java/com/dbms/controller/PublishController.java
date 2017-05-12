@@ -120,7 +120,7 @@ public class PublishController implements Serializable {
 			LOG.info("\n\n ******  " + codes); 
 			FacesContext.getCurrentInstance().addMessage(null, 
                     new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                            "The list being promoted has an associated list that must be Promoted", ""));
+                            "The List being promoted has an associated list that must be Promoted", ""));
 			
 			return "";
 		} else {

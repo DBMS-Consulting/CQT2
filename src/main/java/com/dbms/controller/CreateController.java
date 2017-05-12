@@ -1636,7 +1636,7 @@ public class CreateController implements Serializable {
 				2) the list's status is P
 				3) they are any designee or they have created the list
         	 */
-        	if ((authService.getGroupName().equals(AuthenticationService.REQUESTER_GROUP)) 
+        	if ((authService.getGroupName().equals(AuthenticationService.REQUESTER_GROUP) || authService.getGroupName().equals("MQM")) 
         			&& selectedData.getCmqStatus().equals("P") 
         			&& (selectedData.getCmqState().equals("DRAFT") || selectedData.getCmqState().equals("REVIEWED"))
         			&& (((selectedData.getCreatedBy() != null) && (selectedData.getCreatedBy().startsWith(authService.getUserCn())))

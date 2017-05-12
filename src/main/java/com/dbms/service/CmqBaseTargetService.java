@@ -511,13 +511,38 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 										List<SmqRelationTarget> list = smqBaseTargetService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
 										if (list != null)
 											for (SmqRelationTarget smq3 : list) {
-												mapReport.put(cpt++, new ReportLineDataDto("PT", smq3.getPtCode() + "", smq3.getPtName(), ".............", smq3.getRelationImpactType())); 
+												if (smq3.getSmqLevel() == 1) {
+													level = "SMQ1";
+												} else if (smq3.getSmqLevel() == 2) {
+													level = "SMQ2";
+												} else if (smq3.getSmqLevel() == 3) {
+													level = "SMQ3";
+												} else if (smq3.getSmqLevel() == 4) {
+													level = "PT";
+												} else if (smq3.getSmqLevel() == 5) {
+													level = "LLT";
+												} else if (smq3.getSmqLevel() == 0) {
+													level = "Child SMQ";
+												}
+												mapReport.put(cpt++, new ReportLineDataDto(level, smq3.getPtCode() + "", smq3.getPtName(), ".............", smq3.getRelationImpactType())); 
+												
+												if (level.equals("Child SMQ") && smq3.getPtCode() != null) {
+													List<SmqRelationTarget> smqChildren = smqBaseTargetService.findSmqRelationsForSmqCode(Long.parseLong(smq3.getPtCode() + ""));
+													if (smqChildren != null)
+														for (SmqRelationTarget smqChild : smqChildren) {
+															if (smqChild.getSmqLevel() == 4)
+																level = "PT";
+															if (smqChild.getSmqLevel() == 5)
+																level = "LLT";
+															mapReport.put(cpt++, new ReportLineDataDto(level, smqChild.getPtCode() + "", smqChild.getPtName(), "..................", smqChild.getRelationImpactType())); 
+
+ 
+													}
+												}
 											}
 									}
 								}		
 
-//								smqChildCodeList = new ArrayList<Long>();
-//								smqChildCodeList.add(smq.getSmqCode());
 								/**
 								 * Other SMQs
 								 * 
@@ -557,17 +582,19 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 											
 											//Others relations
 											String levelS = "";
-											if (smqSearched.getSmqLevel() == 3) {
+  											if (smqSearched.getSmqLevel() == 3) {
 												levelS = "SMQ3";
-											} else if ((smqSearched.getSmqLevel() == 4)
-													|| (smqSearched.getSmqLevel() == 0)
-													|| (smqSearched.getSmqLevel() == 5)) {
+											} else if (smqSearched.getSmqLevel() == 4) {
 												levelS = "PT";
-											}
+											} else if (smqSearched.getSmqLevel() == 5) {
+												levelS = "LLT";
+											} else if (smqSearched.getSmqLevel() == 0) {
+												levelS = "Child SMQ";
+											} 
 											List<SmqBaseTarget> smqChildren = smqBaseTargetService.findChildSmqByParentSmqCodes(codes);
 											if (smqChildren != null)
 												for (SmqBaseTarget child : smqChildren) {
-													mapReport.put(cpt++, new ReportLineDataDto("SMQ3", child.getSmqCode() + "", child.getSmqName(), ".............", child.getImpactType())); 
+													mapReport.put(cpt++, new ReportLineDataDto(levelS, child.getSmqCode() + "", child.getSmqName(), ".............", child.getImpactType())); 
 													
 													smqSearched = smqBaseTargetService.findByCode(child.getSmqCode());
 													if (smqSearched != null) {
@@ -1522,7 +1549,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
     @Override
 	public List<CmqBaseTarget> findPublishedCmqs() {
 		List<CmqBaseTarget> retVal = null;
-		String queryString = "from CmqBaseTarget c where upper(c.cmqState) = upper('PUBLISHED IA') ";
+		String queryString = "from CmqBaseTarget c where upper(c.cmqState) = upper('PUBLISHED IA') and upper(c.cmqStatus) = upper('P') ";
 		EntityManager entityManager = this.cqtEntityManagerFactory
 				.getEntityManager();
 		try {
