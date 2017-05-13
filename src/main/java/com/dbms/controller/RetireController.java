@@ -20,8 +20,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.dbms.entity.cqt.CmqBase190;
+import com.dbms.entity.cqt.CmqBaseTarget;
 import com.dbms.service.AuthenticationService;
 import com.dbms.service.ICmqBase190Service;
+import com.dbms.service.ICmqBaseTargetService;
 import com.dbms.service.ICmqRelation190Service;
 import com.dbms.service.IRefCodeListService;
 import com.dbms.util.exceptions.CqtServiceException;
@@ -50,6 +52,9 @@ public class RetireController implements Serializable {
 	@ManagedProperty("#{AuthenticationService}")
 	private AuthenticationService authService;
 	
+	@ManagedProperty("#{CmqBaseTargetService}")
+    private ICmqBaseTargetService cmqTargetService;
+	
 	private List<CmqBase190> sourceListToRetire;
 
 	private List<CmqBase190> targetList;
@@ -68,8 +73,10 @@ public class RetireController implements Serializable {
 		targetList = new ArrayList<CmqBase190>();
 		retireDualListModel = new DualListModel<CmqBase190>(
 				sourceListToRetire, targetList);
-		this.cmqBaseDualListConverter = new CmqBaseDualListConverter();
+		this.cmqBaseDualListConverter = new CmqBaseDualListConverter();		
 	}
+	
+	
 	
 	/**
 	 * Event when we pick on the source list
@@ -303,6 +310,18 @@ public class RetireController implements Serializable {
 	public AuthenticationService getAuthService() {
 		return authService;
 	}
+
+	public ICmqBaseTargetService getCmqTargetService() {
+		return cmqTargetService;
+	}
+
+
+
+	public void setCmqTargetService(ICmqBaseTargetService cmqTargetService) {
+		this.cmqTargetService = cmqTargetService;
+	}
+
+
 
 	public void setAuthService(AuthenticationService authService) {
 		this.authService = authService;

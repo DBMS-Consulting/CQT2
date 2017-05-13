@@ -593,9 +593,13 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		return retVal;
 	}
 
+	/**
+	 * Find Current CMQs not in Target CMQs
+	 */
 	public List<CmqBase190> findCmqsToRetire() {
 		List<CmqBase190> retVal = null;
-		String queryString = "from CmqBase190 c where upper(c.cmqState) = upper('Published') and c.cmqStatus = 'A' ";
+		String queryString = "from CmqBase190 c where upper(c.cmqState) = upper('Published') and c.cmqStatus = 'A' "
+				+ "and c.cmqCode not in (select target.cmqCode from CmqBaseTarget target)";
 		EntityManager entityManager = this.cqtEntityManagerFactory
 				.getEntityManager();
 		try {
