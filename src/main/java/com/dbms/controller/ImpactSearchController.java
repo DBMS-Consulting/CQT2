@@ -1,6 +1,5 @@
 package com.dbms.controller;
 
-import com.dbms.csmq.CSMQBean;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,6 +38,7 @@ import org.primefaces.model.TreeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.dbms.csmq.CSMQBean;
 import com.dbms.csmq.HierarchyNode;
 import com.dbms.entity.IEntity;
 import com.dbms.entity.cqt.CmqBase190;
@@ -1086,11 +1086,14 @@ public class ImpactSearchController implements Serializable {
 				cmqBaseTargetService.update((CmqBaseTarget)d, this.authService.getUserCn()
 						, this.authService.getUserGivenName(), this.authService.getUserSurName()
 						, this.authService.getCombinedMappedGroupMembershipAsString());
+				this.setCmqBaseAsImpacted((CmqBaseTarget)d);
 			} else if(d != null && d instanceof SmqBaseTarget) {
 				notesFormModel.saveToSmqBaseTarget((SmqBaseTarget)d);
 				//
 			}
             notesFormModel.setModelChanged(false);
+            
+            
 			FacesContext.getCurrentInstance()
 				.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Successfully saved notes", ""));
 		} catch(CqtServiceException e) {
@@ -1497,6 +1500,73 @@ public class ImpactSearchController implements Serializable {
 					target.setCmqState("PENDING IA");
 			}
 
+		}
+	}
+	
+	private void setCmqBaseAsImpacted(CmqBaseTarget cmqBaseTarget) {
+		if(null != cmqBaseTarget) {
+			List<CmqBaseTarget> impactedCmqsList = new ArrayList<>();
+			
+			//mark the cmqbase as Impacted if it is NON-IMPACTED
+			String impactType = cmqBaseTarget.getImpactType();
+			if("NON-IMPACTED".equalsIgnoreCase(impactType)) {
+				cmqBaseTarget.setImpactType("IMPACTED");
+				cmqBaseTarget.setCmqState("PENDING IA");
+				cmqBaseTarget.setCmqStatus("P");
+				impactedCmqsList.add(cmqBaseTarget);
+			}
+			
+			//find any child relations and update them
+			List<CmqBaseTarget> children = this.cmqBaseTargetService.findChildCmqsByParentCode(cmqBaseTarget.getCmqCode());
+			if(null != children) {
+				for (CmqBaseTarget child : children) {
+					if("NON-IMPACTED".equals(child.getImpactType())) {
+						child.setImpactType("IPC");
+						child.setCmqState("PENDING IA");
+						child.setCmqStatus("P");
+					}
+				}
+			}
+			
+			//find parent relation and the children of that parent and update them all
+			if(cmqBaseTarget.getCmqParentCode() != null) {
+				CmqBaseTarget parentCmq = this.cmqBaseTargetService.findByCode(cmqBaseTarget.getCmqParentCode());
+				if("NON-IMPACTED".equalsIgnoreCase(parentCmq.getImpactType())) {
+					parentCmq.setImpactType("ICC");
+					parentCmq.setCmqState("PENDING IA");
+					parentCmq.setCmqStatus("P");
+					impactedCmqsList.add(parentCmq);
+				}
+				List<CmqBaseTarget> childrenOfParentCmq = this.cmqBaseTargetService.findChildCmqsByParentCode(parentCmq.getCmqCode());
+				for (ListIterator<CmqBaseTarget> li = childrenOfParentCmq.listIterator(); li.hasNext();) {
+					CmqBaseTarget childOfParentCmq = li.next();
+					if(childOfParentCmq.getCmqCode().longValue() == cmqBaseTarget.getCmqCode().longValue()) {
+						li.remove();//Remove this cmq as we are already dealing with it.
+					} else if("NON-IMPACTED".equalsIgnoreCase(childOfParentCmq.getImpactType())) {
+						childOfParentCmq.setImpactType("ICC");
+						childOfParentCmq.setCmqState("PENDING IA");
+						childOfParentCmq.setCmqStatus("P");
+						impactedCmqsList.add(childOfParentCmq);
+					}
+				}
+			}
+			
+			//now update them all in one query
+			try {
+				if(impactedCmqsList.size() > 0) {
+					this.cmqBaseTargetService.update(impactedCmqsList, this.authService.getUserCn()
+							, this.authService.getUserGivenName(), this.authService.getUserSurName()
+							, this.authService.getCombinedMappedGroupMembershipAsString());
+				}
+			} catch (CqtServiceException e) {
+				LOG.error("Exception occurred while updated the cmq, its parent and other children of the parent for base CMQ code "
+						+ cmqBaseTarget.getCmqCode(), e);
+
+				FacesContext.getCurrentInstance().addMessage(null, 
+                        new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                            "An error occurred while updated the impac type for CMQ base code " + cmqBaseTarget.getCmqCode(),
+                            "Error:" + e.getMessage()));
+			}
 		}
 	}
 	
