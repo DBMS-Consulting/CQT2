@@ -1,5 +1,10 @@
 package test;
 
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -42,7 +47,18 @@ public class LDAPTest {
 	public static final String MEMBER_OF = "uniquemember";
     public static String LDAP_GROUP_TO_LOOKUP = "opencqt*";
 
-    
+
+	private static final String DB_DRIVER = "oracle.jdbc.driver.OracleDriver";
+	//private String dbURL = "jdbc:oracle:thin:@//chbsux0119.eu.novartis.net:1521/octrn2.ph.chbs";	
+	private String dbURL = "jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=asc2client02.pfizer.com)(PORT=1570)))(CONNECT_DATA=(SID=cqtdev)))";
+	private String dbUser =  "opencqt"; //  "pdr_daemon"; //;
+	private String dbPassword = "Jan04#2017"; //  "fastpdr1"; //
+
+	
+    //private static final Logger logger = LoggerFactory.getLogger(LDAPTest.class); 
+	
+	
+	
 	/**
      * @param args the command line arguments
      */
@@ -84,7 +100,7 @@ public class LDAPTest {
         LDAPTest ldap = new LDAPTest();
         
         //1) lookup the ldap account
-        //SearchResult srLdapGroups = ldap.findAllGroups(ctx, ldapSearchBase, ldapAccountToLookup);
+//        SearchResult srLdapGroups = ldap.findAllGroups(ctx, ldapSearchBase, ldapAccountToLookup);
         Map<String, List<PXEDUser>> srLdapGroups = ldap.findAllGroupsMap(ctx, ldapSearchBase, LDAP_GROUP_TO_LOOKUP);
 //        SearchResult srLdapUser = ldap.findAccountByAccountName(ctx, ldapSearchBase, ldapAccountToLookup);
         
@@ -93,6 +109,19 @@ public class LDAPTest {
         
         //3) get the users Primary Group
         //String primaryGroupName = ldap.findGroupBySID(ctx, ldapSearchBase, primaryGroupSID);
+        //LDAPTest ttt = new LDAPTest();
+        List<String> ulist = ldap.getUserList(ldap.getDBConnection());
+
+    	System.out.println("");        
+        for (String s : ulist) {
+        	System.out.println("designee: " + s);
+        	NamingEnumeration<SearchResult> srLdapUser = ldap.findAccountByAccountName(ctx, ldapSearchBase, s);
+        	if (!srLdapUser.hasMore()) {
+            	System.out.println("designee NOT in LDAP: " + s);        		
+        	}
+        	else
+        		printSearchEnumeration(srLdapUser);
+        }
     }
     
 
@@ -379,4 +408,81 @@ public class LDAPTest {
 	    return ret;
     }
 
+
+    
+	private Connection getDBConnection() {
+
+		Connection connection = null;
+		 
+		try {
+			Class.forName(DB_DRIVER);
+			connection = DriverManager.getConnection(dbURL, dbUser, dbPassword);
+		} catch (SQLException e) {
+	        //logger.error(e.getMessage(), e);
+	        e.printStackTrace(System.err);
+		} catch (ClassNotFoundException e) {
+	        //logger.error(e.getMessage(), e);
+	        e.printStackTrace(System.err);			
+		}		
+		
+		return connection;
+	}
+ 
+	
+	private List<String> getUserList(Connection conn) {
+		List<String> userList = new ArrayList<String>();
+		if (conn == null)
+			return userList;
+
+		String query = 
+				"select distinct CMQ_DESIGNEE from cmq_base_current"
+				+ " union "
+				+ " select distinct CMQ_DESIGNEE2 from cmq_base_current"
+				+ " union "
+				+ " select distinct CMQ_DESIGNEE3 from cmq_base_current"
+				+ " union "
+				+ " select distinct CMQ_DESIGNEE from cmq_base_target"
+				+ " union "
+				+ " select distinct CMQ_DESIGNEE2 from cmq_base_target"
+				+ " union "
+				+ " select distinct CMQ_DESIGNEE3 from cmq_base_target"
+				;
+		CallableStatement cstmt = null;
+		ResultSet rs = null;
+		try {
+			cstmt = conn.prepareCall(query);
+			//cstmt.setString(1, "OC_CISS INTEGRATION STUDY ID");
+			rs = cstmt.executeQuery();
+			while (rs != null && rs.next()) {
+				String key = rs.getString(1);
+				//String val = rs.getString(2);
+				userList.add(key);
+			}
+			if (rs == null)
+				;
+				//logger.info("**** NO STUDY AVAILABLE TO PROCESS !!!");
+	        	//e.printStackTrace(System.err);
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			if (rs != null)
+				try {
+					rs.close();
+				} catch (SQLException e) {
+					//logger.error(e.getMessage(), e);
+			        e.printStackTrace(System.err);					
+				}
+			if (cstmt != null)
+				try {
+					cstmt.close();
+				} catch (SQLException e) {
+					//logger.error(e.getMessage(), e);
+			        e.printStackTrace(System.err);					
+				}
+		}
+		return userList;
+	}
+	
 }
