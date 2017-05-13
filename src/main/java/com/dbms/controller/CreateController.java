@@ -1,7 +1,5 @@
 package com.dbms.controller;
 
-import com.dbms.csmq.CSMQBean;
-
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -45,14 +43,12 @@ import com.dbms.service.ICmqBaseTargetService;
 import com.dbms.service.ICmqRelation190Service;
 import com.dbms.service.IRefCodeListService;
 import com.dbms.util.CmqUtils;
-import com.dbms.util.CqtConstants;
 import com.dbms.util.SWJSFRequest;
 import com.dbms.util.exceptions.CqtServiceException;
 import com.dbms.view.ListDetailsFormVM;
 import com.dbms.view.ListDetailsFormVM.WizardType;
 import com.dbms.view.ListNotesFormVM;
 import com.dbms.view.ListWorkflowFormVM;
-import com.dbms.view.PXEDUser;
 
 /**
  * @author Jay G.(jayshanchn@hotmail.com)
@@ -747,8 +743,6 @@ public class CreateController implements Serializable {
 			this.copyRelationsToNewCmq(copiedCode, savedEntity);
 			savedRelations = true;
 			
-			//this.copyChildCmqsToNewCmq(copiedCode, savedEntity);
-			
 			LOG.info("All updates completed.");		
 			
 			selectedData = savedEntity;
@@ -962,19 +956,8 @@ public class CreateController implements Serializable {
 			setListCreator(selectedData.getCreatedBy());
 			setCopiedCmq(selectedData);
 			
-			
-			String name = selectedData.getCmqName();
-			if(name.contains("-Copy-")) {
-				String num = name.substring(name.lastIndexOf("-") + 1);
-				int i = Integer.valueOf(num);
-				name = name.substring(0, name.lastIndexOf("-"));
-				name += "-" + (++i);
-			} else if(name.endsWith("-Copy")) {
-				name += "-1";
-			} else {
-				name += "-Copy";
-			}		
-			selectedData.setCmqName(name);
+			String newCopiedCmqName = this.getCopyCmqName(selectedData.getCmqName());
+			selectedData.setCmqName(newCopiedCmqName);
 		}
 		
 		detailsFormModel.loadFromCmqBase190(selectedData);
@@ -1014,42 +997,35 @@ public class CreateController implements Serializable {
 		LOG.info("Cmq relations saved.");
 	}
 	
-	private void copyChildCmqsToNewCmq(Long copiedCode, CmqBase190 savedEntity) throws CqtServiceException{
-		LOG.info("Saving child cmqs for the new cmq.");
-		//save the children now
-		List<CmqBase190> childCmqs = this.cmqBaseService.findChildCmqsByParentCode(copiedCode);
-		Date creationDate = new Date();
-		for (CmqBase190 childCmq : childCmqs) {
-			childCmq.setId(null);
-			//get and set new code value
-			Long codeValue = this.cmqBaseService.getNextCodeValue();
-			childCmq.setCmqCode(codeValue);
-			
-			//set new child name
-			String newChildCmqName = childCmq.getCmqName();
-			if(newChildCmqName.contains("-Copy-")) {
-				String num = newChildCmqName.substring(newChildCmqName.lastIndexOf("-") + 1);
+	private String getCopyCmqName(String newChildCmqName) {
+		if(newChildCmqName.endsWith("-Copy-")) {
+			newChildCmqName = newChildCmqName + "1";
+		} else if(newChildCmqName.contains("-Copy-")) {
+			String num = newChildCmqName.substring(newChildCmqName.lastIndexOf("-Copy") + 6);
+			try{
 				int i = Integer.valueOf(num);
-				newChildCmqName = newChildCmqName.substring(0, newChildCmqName.lastIndexOf("-"));
+				newChildCmqName = newChildCmqName.substring(0, newChildCmqName.lastIndexOf("-Copy") + 5);
 				newChildCmqName += "-" + (++i);
-			} else if(newChildCmqName.endsWith("-Copy")) {
-				newChildCmqName += "-1";
-			} else {
-				newChildCmqName += "-Copy";
+			} catch (Exception e) {
+				LOG.info("The cmq name had -Copy- but the string after that was not a number, going to treat the full name as base. original Cmq name was {}"
+							, newChildCmqName);
+				newChildCmqName = newChildCmqName + "-Copy-1";
 			}
-			childCmq.setCmqName(newChildCmqName);
-			childCmq.setCmqParentCode(savedEntity.getCmqCode());
-			childCmq.setCmqParentName(savedEntity.getCmqName());
-			childCmq.setCreatedBy("Test-User");
-			childCmq.setCreationDate(creationDate);
-			childCmq.setLastModifiedBy(null);
-			childCmq.setLastModifiedDate(null);
+		} else if(newChildCmqName.endsWith("-Copy")) {
+			newChildCmqName = newChildCmqName + "-1";
+		} else {
+			newChildCmqName = newChildCmqName + "-Copy-1";
 		}
-		//save children
-		this.cmqBaseService.update(childCmqs, this.authService.getUserCn()
-				, this.authService.getUserGivenName(), this.authService.getUserSurName()
-				, this.authService.getCombinedMappedGroupMembershipAsString());
-		LOG.info("Cmq children saved.");
+		LOG.info("New name for Copied cmq namq {} in inferred as {}", selectedData.getCmqName(), newChildCmqName);
+
+		//now check in db
+		Boolean exists = this.cmqBaseService.checkIfCmqNamqExists(newChildCmqName);
+		if(exists) {
+			LOG.warn("New name for Copied cmq was inferred as {} but it is already used. Trying a new one.", selectedData.getCmqName(), newChildCmqName);
+			return this.getCopyCmqName(newChildCmqName);
+		} else {
+			return newChildCmqName;
+		}
 	}
 	
 	/**

@@ -102,7 +102,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		}
 		return sb;
 	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -255,7 +255,35 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		}
 		return retVal;
 	}
-
+	
+	@Override
+	public Boolean checkIfCmqNamqExists(String cmqName) {
+		Boolean retVal = false;
+		StringBuilder sb = new StringBuilder();
+		sb.append("select count(*) from CmqBase190 c where c.cmqName = :cmqName");
+		EntityManager entityManager = this.cqtEntityManagerFactory
+				.getEntityManager();
+		try {
+			Query query = entityManager.createQuery(sb.toString());
+			query.setParameter("cmqName", cmqName);
+			
+			Long count = (Long) query.getSingleResult();
+			if(count > 0) {
+				retVal = true;
+			}
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg.append(
+					"An error occurred while executing checkIfCmqNamqExists for cmqName ")
+					.append(cmqName)
+					.append(" Query used was ->").append(sb.toString());
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
