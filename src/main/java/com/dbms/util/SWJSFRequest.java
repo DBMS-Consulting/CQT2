@@ -340,12 +340,38 @@ public class SWJSFRequest
     }    
 
     
-    public NamingEnumeration<SearchResult> findAccountByAccountName() throws NamingException {
-        LdapContext ctx = initLdapContext();
-        return findAccountByAccountName(ctx, LDAP_SEARCH_BASE, LDAP_ACCOUNT_TO_LOOKUP);
-    }
+    //public NamingEnumeration<SearchResult> findAccountByAccountName() throws NamingException {
+    //    LdapContext ctx = initLdapContext();
+    //    return findAccountByAccountName(ctx, LDAP_SEARCH_BASE, LDAP_ACCOUNT_TO_LOOKUP);
+    //}
     
         
+    public PXEDUser findAccountByAccountName(String userName) throws NamingException {
+    	PXEDUser usr = null;
+
+    	for (int i=0; i<2; ++i) { 	
+	    	initLdapContext();
+    	
+	    	try {
+		        NamingEnumeration<SearchResult> results = findAccountByAccountName(ctx, LDAP_SEARCH_BASE, userName);	    
+			    if (results.hasMore()) {
+			    	SearchResult sr = results.next();
+			    	Attributes mattrs = sr.getAttributes();
+			
+			    	usr = new PXEDUser();
+			    	usr.setUserName(getCN(sr.getNameInNamespace()));
+			    	usr.setFirstName(getAttr(mattrs, "sn"));
+			    	usr.setLastName(getAttr(mattrs, "givenname"));
+			    }  
+	        }
+	        catch (javax.naming.CommunicationException ex) {
+	        	ctx = null;
+	        }
+		}
+	    return usr;
+    }
+    	
+    
     public NamingEnumeration<SearchResult> findAccountByAccountName(DirContext ctx, String ldapSearchBase, String accountName) throws NamingException {
 
 //        String searchFilter = "(&(objectClass=user)(sAMAccountName=" + accountName + "))";
