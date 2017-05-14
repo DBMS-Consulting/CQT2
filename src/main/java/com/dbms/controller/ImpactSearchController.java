@@ -1145,6 +1145,7 @@ public class ImpactSearchController implements Serializable {
 				cmqBaseTargetService.update((CmqBaseTarget)d, this.authService.getUserCn()
 						, this.authService.getUserGivenName(), this.authService.getUserSurName()
 						, this.authService.getCombinedMappedGroupMembershipAsString());
+				this.setCmqBaseAsImpacted((CmqBaseTarget)d);
 			}
 			detailsFormModel.setModelChanged(false);
 			FacesContext.getCurrentInstance()
