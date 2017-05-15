@@ -203,14 +203,16 @@ public class CreateController implements Serializable {
 	}
 	
 	public void saveDetailsAndNextStep() {
-		if(createWizard != null)
-			save();
-		else if(copyWizard != null)
-			copy();
-		else if(updateWizard != null)
-			update();
-		
-		goToWizardNextStep();
+        if(detailsFormModel.validateForm()) {
+            if(createWizard != null)
+                save();
+            else if(copyWizard != null)
+                copy();
+            else if(updateWizard != null)
+                update();
+
+            goToWizardNextStep();
+        }
 	}
 
 
@@ -598,6 +600,9 @@ public class CreateController implements Serializable {
 	 * @return
 	 */
 	public String update() {
+        if(!detailsFormModel.validateForm())
+            return "";
+        
 		try {
 			
 			Long count = this.cmqBaseService.findCmqCountByCmqNameAndExtension(detailsFormModel.getExtension(), detailsFormModel.getName());
@@ -711,10 +716,13 @@ public class CreateController implements Serializable {
 	 * @return
 	 */
 	public String copy() {
+        if(!detailsFormModel.validateForm())
+            return "";
+        
 		if(selectedData.getId() != null) { // if already saved
 			return update();
 		} 
-		
+        
 		boolean cmqSaved = false;
 		boolean savedRelations = false;
 		Long savedCmqId = null;
@@ -822,9 +830,13 @@ public class CreateController implements Serializable {
 	 * @return
 	 */
 	public String save() {
+        if(!detailsFormModel.validateForm())
+            return "";
+        
 		if(selectedData.getId() != null) { // if already saved
 			return update();
 		}
+        
 		try {
 			Long count = this.cmqBaseService.findCmqCountByCmqNameAndExtension(detailsFormModel.getExtension(), detailsFormModel.getName());
 

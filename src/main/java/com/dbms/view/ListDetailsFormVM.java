@@ -16,6 +16,8 @@ import com.dbms.service.AuthenticationService;
 import com.dbms.service.IRefCodeListService;
 import com.dbms.util.CqtConstants;
 import com.dbms.util.SWJSFRequest;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 
 /**
  * "Create/Update/Browse&Search" module's "Details" tab form data 
@@ -683,5 +685,33 @@ public class ListDetailsFormVM {
             }
         }
         return "";        
+    }
+    
+    public boolean validateForm() {
+        if(this.designee != null && StringUtils.equals(this.designee, this.designeeTwo)) {
+            if(FacesContext.getCurrentInstance() != null) {
+                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+                        "Designee and Designee 2 can not be the same person", "");
+                FacesContext.getCurrentInstance().addMessage(null, msg);
+            }
+            return false;
+        }
+        if(this.designeeTwo != null && StringUtils.equals(this.designeeTwo, this.designeeThree)) {
+            if(FacesContext.getCurrentInstance() != null) {
+                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+                        "Designee 2 and Designee 3 can not be the same person", "");
+                FacesContext.getCurrentInstance().addMessage(null, msg);
+            }
+            return false;
+        }
+        if(this.designee != null && StringUtils.equals(this.designee, this.designeeThree)) {
+            if(FacesContext.getCurrentInstance() != null) {
+                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+                        "Designee and Designee 3 can not be the same person", "");
+                FacesContext.getCurrentInstance().addMessage(null, msg);
+            }
+            return false;
+        }
+        return true;
     }
 }
