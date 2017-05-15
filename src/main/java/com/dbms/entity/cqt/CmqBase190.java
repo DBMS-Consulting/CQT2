@@ -170,6 +170,12 @@ public class CmqBase190 extends BaseEntity {
     private CmqBaseTarget cmqBaseTarget;
     @Transient
     private transient boolean cmqBaseTargetSet = false;
+    
+    public CmqBase190() {
+        super();
+        cmqState = CmqBase190.CMQ_STATE_VALUE_DRAFT;
+        cmqStatus = CmqBase190.CMQ_STATUS_VALUE_PENDING;
+    }
 
     @Override
 	public Long getId() {

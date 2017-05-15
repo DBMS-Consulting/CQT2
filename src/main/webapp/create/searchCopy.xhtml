@@ -77,8 +77,8 @@
 			<p:selectOneMenu value="#{searchController.state}" id="state" styleClass="hide-disabled">
 				<f:selectItem itemValue="" itemLabel="All" />
 				<f:selectItems></f:selectItems>	
-				<f:selectItems value="#{configMB.workflowStateList}" var="wk"
-					itemLabel="#{wk.value}" itemValue="#{wk.codelistInternalValue}" itemDisabled="#{wk.activeFlag eq 'N'}"/>
+                <f:selectItems value="#{configMB.cmqBaseListStates}" var="wk"
+					itemLabel="#{wk[1]}" itemValue="#{wk[0]}" />
 			</p:selectOneMenu>
 
 			<p:outputLabel value="Group" styleClass="label-right" />

@@ -899,11 +899,16 @@ public class CreateController implements Serializable {
 	 * @return boolean
 	 */
 	public boolean isReadOnlyState() {
+        boolean d;
 		/**
          * Restrictions on users from  REQUESTOR and ADMIN groups
          */
-    	if (authService.getGroupName() != null && (authService.getGroupName().equals(AuthenticationService.REQUESTER_GROUP) || authService.getGroupName().equals(AuthenticationService.ADMIN_GROUP)))
-			return restrictionsByUserAuthentified();
+    	if (authService.getGroupName() != null &&
+                (authService.getGroupName().equals(AuthenticationService.REQUESTER_GROUP)
+                    || authService.getGroupName().equals(AuthenticationService.ADMIN_GROUP)))
+			d = restrictionsByUserAuthentified();
+        else
+            d = false;
 //        // If CMQ_BASE_TARGET.Status != 'PENDING IA', then the list should be read-only in update.
 //        // User should not be able to update details, informative notes, relations and workflow form on confirm tab.
 //        if(updateWizard!=null && selectedData != null && !isTargetStatusPendingIA(selectedData))
@@ -918,9 +923,7 @@ public class CreateController implements Serializable {
         if (selectedData != null && selectedData.getCmqState() != null 
                 && (CmqBase190.CMQ_STATE_VALUE_DRAFT.equalsIgnoreCase(selectedData.getCmqState())
                         || CmqBase190.CMQ_STATE_VALUE_REVIEWED.equalsIgnoreCase(selectedData.getCmqState()))){
-            return false;
-        } else if (selectedData != null && selectedData.getCmqState() == null) {
-            return false;
+            return d || false;
         } else {
             return true;
         }
@@ -1585,18 +1588,23 @@ public class CreateController implements Serializable {
     }
     
     public boolean isDetailsFormDisabled() {
+        boolean d;
     	/**
          * Restrictions on users from  REQUESTOR and ADMIN groups
          */
-    	if (authService.getGroupName() != null && (authService.getGroupName().equals(AuthenticationService.REQUESTER_GROUP) 
-    			|| authService.getGroupName().equals(AuthenticationService.ADMIN_GROUP)))
-    			return restrictionsByUserAuthentified();
-        if(updateWizard != null)
-            return !WIZARD_STEP_DETAILS.equals(getActiveWizard().getStep()) || this.isReadOnlyState() || this.isFormSaved();
-        if(copyWizard != null)
-            return copyingCmqCode==null || !WIZARD_STEP_DETAILS.equals(getActiveWizard().getStep()) || this.isReadOnlyState() || this.isFormSaved();
+    	if (authService.getGroupName() != null &&
+                (authService.getGroupName().equals(AuthenticationService.REQUESTER_GROUP) 
+                    || authService.getGroupName().equals(AuthenticationService.ADMIN_GROUP)))
+            d = restrictionsByUserAuthentified();
         else
-            return this.isReadOnlyState() || this.isFormSaved();
+            d = false;
+        
+        if(updateWizard != null)
+            return d || (!WIZARD_STEP_DETAILS.equals(getActiveWizard().getStep()) || this.isReadOnlyState() || this.isFormSaved());
+        if(copyWizard != null)
+            return d || (copyingCmqCode==null || !WIZARD_STEP_DETAILS.equals(getActiveWizard().getStep()) || this.isReadOnlyState() || this.isFormSaved());
+        else
+            return d || (this.isReadOnlyState() || this.isFormSaved());
     }
     
     /**
