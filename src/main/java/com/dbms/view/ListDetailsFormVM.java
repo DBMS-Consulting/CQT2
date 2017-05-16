@@ -688,7 +688,7 @@ public class ListDetailsFormVM {
     }
     
     public boolean validateForm() {
-        if(this.designee != null && StringUtils.equals(this.designee, this.designeeTwo)) {
+        if(!StringUtils.isBlank(this.designee) && StringUtils.equals(this.designee, this.designeeTwo)) {
             if(FacesContext.getCurrentInstance() != null) {
                 FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
                         "Designee and Designee 2 can not be the same person", "");
@@ -696,7 +696,7 @@ public class ListDetailsFormVM {
             }
             return false;
         }
-        if(this.designeeTwo != null && StringUtils.equals(this.designeeTwo, this.designeeThree)) {
+        if(!StringUtils.isBlank(this.designeeTwo) && StringUtils.equals(this.designeeTwo, this.designeeThree)) {
             if(FacesContext.getCurrentInstance() != null) {
                 FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
                         "Designee 2 and Designee 3 can not be the same person", "");
@@ -704,7 +704,7 @@ public class ListDetailsFormVM {
             }
             return false;
         }
-        if(this.designee != null && StringUtils.equals(this.designee, this.designeeThree)) {
+        if(!StringUtils.isBlank(this.designee) && StringUtils.equals(this.designee, this.designeeThree)) {
             if(FacesContext.getCurrentInstance() != null) {
                 FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
                         "Designee and Designee 3 can not be the same person", "");
