@@ -37,12 +37,12 @@
 
 	<p:remoteCommand name="saveRelationsAndGoToNextStep"
 			update="@form:m1 @form:wizardId"
-			actionListener="#{createController.updateRelationsAndNextStep(searchController.relationsRoot)}"
+            actionListener="#{createController.updateRelationsAndNextStep(createController.relationsModel.relationsRoot)}"
 			onstart="PF('confirmSaveRelationsDlg').hide()" />
 	<p:remoteCommand name="resetRelationsAndGoToNextStep"
 			update="@form:m1 @form:wizardId @form:resultRelations"
 			onstart="PF('confirmSaveRelationsDlg').hide()" >
-		<f:actionListener binding="#{searchController.resetRelations(createController.selectedData)}" />
+		<f:actionListener binding="#{createController.relationsModel.resetRelations(createController.selectedData)}" />
 		<f:actionListener binding="#{createController.resetRelationsAndNextStep()}" />
 	</p:remoteCommand>
 	
@@ -72,16 +72,6 @@
 					</h:panelGrid>
 				</p:overlayPanel>
 				<p:spacer width="10" /> -->
-				
-				 
-
-				<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
-					<p:commandButton value="Yes" type="button"
-						styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
-					<p:commandButton value="No" type="button"
-						styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
-				</p:confirmDialog>
-
  
 				<i class="fa fa-file-excel-o"
 					style="position: absolute; margin-top: 8px; margin-left: 5px"></i>
@@ -109,10 +99,10 @@
                 
                 <i class="fa fa-file-excel-o"
 					style="position: absolute; margin-top: 8px; margin-left: 5px"></i>
-                <h:commandLink rendered="#{searchController.relationsRoot.childCount gt 0}" value="MQ Detailed Report" type="button"
+                <h:commandLink rendered="#{createController.relationsModel.relationsRoot.childCount gt 0}" value="MQ Detailed Report" type="button"
                                styleClass="generate" onclick="PF('confirmMQReport').show();return false;" />
                 
-                <h:commandLink rendered="#{searchController.relationsRoot.childCount le 0}" value="MQ Detailed Report"
+                <h:commandLink rendered="#{createController.relationsModel.relationsRoot.childCount le 0}" value="MQ Detailed Report"
 					styleClass="generate"
 					actionListener="#{reportController.generateMQReport(createController.detailsFormModel, createController.notesFormModel)}">
 					<p:fileDownload value="#{reportController.excelFile}" />
@@ -129,7 +119,7 @@
 				
 				<p:commandButton value="Parent List" id="ctb15"
                     styleClass="#{createController.parentViewable ? '' : 'btn-disabled'}" update="@form"
-                    actionListener="#{searchController.populateParentCmqByChild(createController.selectedData)}"
+                    actionListener="#{createController.relationsModel.populateParentCmqByChild(createController.selectedData)}"
 					disabled="#{createController.parentViewable ? false : true}"
                     oncomplete="PF('parentDlg').show()" icon="fa fa-level-up">
 				</p:commandButton>
@@ -140,33 +130,33 @@
 
 		<br />
 		
-        <p:remoteCommand name="relationSearchToResult" actionListener="#{searchController.onDropRelations}" action="#{createController.notifyRelationsUpdate}"
+        <p:remoteCommand name="relationSearchToResult" actionListener="#{createController.relationsModel.onDropRelations}" action="#{createController.notifyRelationsUpdate}"
                          update="@form:m1 @form:resultRelations @form:resultHier" oncomplete="initRelationDND()"/>
 
-		<p:treeTable value="#{searchController.relationsRoot}" var="node"
+		<p:treeTable value="#{createController.relationsModel.relationsRoot}" var="node"
 			selectionMode="checkbox" id="resultRelations"
 			styleClass="ui-treetable-resultRelations hide-sel-chkbox"
-			selection="#{searchController.relationSelectedInRelationsTable}"
+			selection="#{createController.relationsModel.relationSelectedInRelationsTable}"
 			resizableColumns="true">
 			
 			<script>initRelationDND()</script>
 					
 			<f:attribute name="uiEventSourceName" value="relations" />
-			<p:ajax event="expand" listener="#{searchController.onNodeExpand}" update="resultRelations" />
+			<p:ajax event="expand" listener="#{createController.relationsModel.onNodeExpand}" update="resultRelations" />
 
 			<p:columnGroup type="header">
 				<p:row>
 					<p:column rowspan="2"
 						headerText="#{createController.selectedData.cmqName}" />
-					<p:column colspan="#{impactSearchController.displayScopeCatWeight eq 'false' ? 3 : 6}" headerText="Hierarchy Details" style="width:50%"/>
+					<p:column colspan="#{createController.relationsModel.displayScopeCatWeight eq 'false' ? 3 : 6}" headerText="Hierarchy Details" style="width:50%"/>
 				</p:row>
 
 				<p:row>
 					<p:column headerText="Code"  style="width:10%" />
 					<p:column headerText="Level" style="width:5%" />
-					<p:column rendered="#{impactSearchController.displayScopeCatWeight}" headerText="Scope" style="width:10%" />
-					<p:column rendered="#{impactSearchController.displayScopeCatWeight}" headerText="Category" style="width:5%" />
-					<p:column rendered="#{impactSearchController.displayScopeCatWeight}" headerText="Weight" style="width:10%" />
+					<p:column rendered="#{createController.relationsModel.displayScopeCatWeight}" headerText="Scope" style="width:10%" />
+					<p:column rendered="#{createController.relationsModel.displayScopeCatWeight}" headerText="Category" style="width:5%" />
+					<p:column rendered="#{createController.relationsModel.displayScopeCatWeight}" headerText="Weight" style="width:10%" />
 					<p:column headerText="Delete" style="width:10%" />
 				</p:row>
 			</p:columnGroup>
@@ -184,7 +174,7 @@
 				<h:outputText value="#{node.level}" rendered="true" />
 			</p:column>
 
-			<p:column rendered="#{impactSearchController.displayScopeCatWeight}" style="width:10%">
+			<p:column rendered="#{createController.relationsModel.displayScopeCatWeight}" style="width:10%">
                 <h:outputText value="#{appCSMQBean.interpretCqtBaseScope(node.scope)}"
                               rendered="#{not node.hideScope and (createController.readOnlyState or createController.detailsFormModel.algorithm eq 'N')}" />
 				<p:selectOneMenu id="soc3" value="#{node.scope}" 
@@ -195,7 +185,7 @@
 				</p:selectOneMenu>
 			</p:column>
 
-			<p:column rendered="#{impactSearchController.displayScopeCatWeight}" style="width:10%">
+			<p:column rendered="#{createController.relationsModel.displayScopeCatWeight}" style="width:10%">
                 <h:outputText value="#{appCSMQBean.interpretCqtBaseCategory(node.category)}"
                     rendered="#{not node.hideScope and (createController.readOnlyState or createController.detailsFormModel.algorithm eq 'N')}" />
 				<p:selectOneMenu id="soc2" value="#{node.category}" 
@@ -206,7 +196,7 @@
 				</p:selectOneMenu>
 			</p:column>
 
-			<p:column rendered="#{impactSearchController.displayScopeCatWeight}" style="width:5%">
+			<p:column rendered="#{createController.relationsModel.displayScopeCatWeight}" style="width:5%">
                 <h:outputText value="#{node.weight}"
                     rendered="#{not node.hideWeight and (createController.readOnlyState or createController.detailsFormModel.algorithm eq 'N')}" />
 				<p:spinner value="#{node.weight}" id="ot6" 
@@ -216,7 +206,7 @@
 
             <p:column style="width:10%">
 				<p:commandButton disabled="#{createController.readOnlyState}" rendered="#{not node.hideDelete}"
-					actionListener="#{searchController.deleteRelation(searchController.relationsRoot, node, createController.selectedData.cmqCode)}"
+					actionListener="#{createController.relationsModel.deleteRelation(createController.relationsModel.relationsRoot, node, createController.selectedData.cmqCode)}"
                     action="#{createController.notifyRelationsUpdate}"
 					update="resultRelations" value="Delete">
 
@@ -231,7 +221,7 @@
 
 	<p:dialog widgetVar="search" modal="false" header="Hierarchy search" onShow="initRelationDND()" height="auto" width="auto">
         <ui:include src="hierarchySearch.xhtml">
-            <ui:param name="paramDlgCtrl" value="#{searchController.hierarchyDlgModel}" />
+            <ui:param name="paramDlgCtrl" value="#{createController.relationsModel.hierarchyDlgModel}" />
             <ui:param name="paramParentExtension" value="#{createController.detailsFormModel.extension}" />
         </ui:include>		
 
@@ -239,7 +229,7 @@
 		<h:panelGrid style="float: right" columns="2">
 			<p:commandButton value="Add selected" onclick="PF('search').hide()"
 				update="resultRelations @form:m1"
-                actionListener="#{searchController.addSelectedRelations(searchController.hierarchyDlgModel.selectedNodes)}"
+                actionListener="#{createController.relationsModel.addSelectedRelations(createController.relationsModel.hierarchyDlgModel.selectedNodes)}"
                 action="#{createController.notifyRelationsUpdate}" />
 			<p:commandButton value="Cancel" onclick="PF('search').hide()" type="button" />
 		</h:panelGrid>

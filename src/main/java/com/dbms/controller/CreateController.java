@@ -41,13 +41,16 @@ import com.dbms.service.AuthenticationService;
 import com.dbms.service.ICmqBase190Service;
 import com.dbms.service.ICmqBaseTargetService;
 import com.dbms.service.ICmqRelation190Service;
+import com.dbms.service.IMeddraDictService;
 import com.dbms.service.IRefCodeListService;
+import com.dbms.service.ISmqBaseService;
 import com.dbms.util.CmqUtils;
 import com.dbms.util.SWJSFRequest;
 import com.dbms.util.exceptions.CqtServiceException;
 import com.dbms.view.ListDetailsFormVM;
 import com.dbms.view.ListDetailsFormVM.WizardType;
 import com.dbms.view.ListNotesFormVM;
+import com.dbms.view.ListRelationsVM;
 import com.dbms.view.ListWorkflowFormVM;
 
 /**
@@ -76,9 +79,15 @@ public class CreateController implements Serializable {
 
 	@ManagedProperty("#{CmqRelation190Service}")
 	private ICmqRelation190Service cmqRelationService;
+    
+    @ManagedProperty("#{SmqBaseService}")
+	private ISmqBaseService smqBaseService;
 
 	@ManagedProperty("#{RefCodeListService}")
 	private IRefCodeListService refCodeListService;
+    
+    @ManagedProperty("#{MeddraDictService}")
+	private IMeddraDictService meddraDictService;
     
     @ManagedProperty("#{AuthenticationService}")
 	private AuthenticationService authService;
@@ -91,6 +100,7 @@ public class CreateController implements Serializable {
     
 	private ListDetailsFormVM detailsFormModel;
 	private ListNotesFormVM notesFormModel = new ListNotesFormVM();
+    private ListRelationsVM relationsModel;
 	private ListWorkflowFormVM workflowFormModel;
 	private boolean relationsModified;
 
@@ -116,6 +126,7 @@ public class CreateController implements Serializable {
 	@PostConstruct
 	public void init() {
 		this.detailsFormModel  = new ListDetailsFormVM(this.authService, this.refCodeListService, this.appSWJSFRequest);
+        this.relationsModel = new ListRelationsVM(authService, appSWJSFRequest, refCodeListService, cmqBaseService, smqBaseService, meddraDictService, cmqRelationService);
         this.workflowFormModel = new ListWorkflowFormVM(this.authService);
 		initAll();
 	}
@@ -763,20 +774,10 @@ public class CreateController implements Serializable {
 
 			LOG.info("populating relations table for new cmq with code " + savedCmqCode);
 			
-			FacesContext context = FacesContext.getCurrentInstance();
-			SearchController searchController = context.getApplication()
-															.evaluateExpressionGet(context, "#{searchController}", SearchController.class);
-			if(null != searchController) {
-				searchController.setClickedCmqCode(savedCmqCode);
-				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-						"List , Informative Notes and Relations are copied/updated successfully.", "");
-				FacesContext.getCurrentInstance().addMessage(null, msg);
-			} else {
-				LOG.error("Failed to get reference of SearchController to populate the realtions table.");
-				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-						"List , Informative Notes and Relations are copied/updated successfully, but Failed to get reference of SearchController to populate the realtions table.", "");
-				FacesContext.getCurrentInstance().addMessage(null, msg);
-			}
+            relationsModel.setClickedCmqCode(savedCmqCode);
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+                    "List , Informative Notes and Relations are copied/updated successfully.", "");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
             
             setFormSaved(true);
 		} catch (CqtServiceException e) {
@@ -842,7 +843,7 @@ public class CreateController implements Serializable {
 
 			if (count > 0) {
 				String errorMsg = "Duplicate CMQ name ('"
-						+ selectedData.getCmqName() + "') and extention ('"
+						+ detailsFormModel.getName() + "') and extention ('"
 						+ detailsFormModel.getExtension()
 						+ "') found in db.";
 				
@@ -863,6 +864,8 @@ public class CreateController implements Serializable {
 				selectedData = savedEntity;
 				this.detailsFormModel.loadFromCmqBase190(selectedData);
 				codeSelected = selectedData.getCmqCode();
+                //set relations tab
+                this.relationsModel.setClickedCmqCode(codeSelected);
 
 				// save the cmq code to session
 				FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("NEW-CMQ_BASE-ID",
@@ -977,6 +980,10 @@ public class CreateController implements Serializable {
 		
 		detailsFormModel.loadFromCmqBase190(selectedData);
 		notesFormModel.loadFromCmqBase190(selectedData);
+        if(codeSelected != null) {
+            // set relations model's cmq code
+            relationsModel.setClickedCmqCode(codeSelected);
+        }
         
         getActiveWizard().setStep(WIZARD_STEP_DETAILS);
         setFormSaved(false);
@@ -1765,4 +1772,28 @@ public class CreateController implements Serializable {
 	public void setListCreator(String listCreator) {
 		this.listCreator = listCreator;
 	}
+    
+    public ListRelationsVM getRelationsModel() {
+        return relationsModel;
+    }
+
+    public void setRelationsModel(ListRelationsVM relationsModel) {
+        this.relationsModel = relationsModel;
+    }
+    
+    public ISmqBaseService getSmqBaseService() {
+        return smqBaseService;
+    }
+
+    public void setSmqBaseService(ISmqBaseService smqBaseService) {
+        this.smqBaseService = smqBaseService;
+    }
+
+    public IMeddraDictService getMeddraDictService() {
+        return meddraDictService;
+    }
+
+    public void setMeddraDictService(IMeddraDictService meddraDictService) {
+        this.meddraDictService = meddraDictService;
+    }
 }

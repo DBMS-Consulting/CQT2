@@ -272,6 +272,10 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 			Query query = entityManager.createQuery(queryString);
 			query.setParameter("cmqCode", cmqCode);
 			retVal = (CmqBaseTarget) query.getSingleResult();
+		} catch (javax.persistence.NoResultException e) {
+			StringBuilder msg = new StringBuilder();
+			msg.append("findByCode found no result for CMQ_CODE value'").append(cmqCode);
+			LOG.error(msg.toString());
 		} catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
 			msg.append("findByCode failed for CMQ_CODE value'").append(cmqCode)

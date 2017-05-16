@@ -51,14 +51,14 @@
 						<h:panelGrid columns="2">
 
 							<p:commandButton value="Save" id="cb3" disabled="false" icon="ui-icon-disk"
-								action="#{createController.updateRelations(searchController.relationsRoot)}" update="@form:m1">
+								action="#{createController.updateRelations(createController.relationsModel.relationsRoot)}" update="@form:m1">
 								<f:param name="relationsRoot"
-									value="#{searchController.relationsRoot}"></f:param>
+									value="#{createController.relationsModel.relationsRoot}"></f:param>
 							</p:commandButton>
 
 							<p:commandButton value="Cancel" icon="ui-icon-close"
 								process="@this" update="@form @form:resultRelations"
-								actionListener="#{searchController.resetRelations(createController.selectedData)}">
+								actionListener="#{createController.relationsModel.resetRelations(createController.selectedData)}">
 								<p:confirm icon="ui-icon-alert" header="Confirm"
 										message="Are you sure you want to erase these fields?" />
 							</p:commandButton>

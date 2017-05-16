@@ -135,9 +135,6 @@
                                onclick="PF('searchTooltip').hide()"
                                title="#{createController.isImpactedByMeddraVersioning(value) ? 'This List is impacted by MedDRA versioning' : ''}">
 					<p:ajax update="@form:wizardId @form:relations @form:wizardNavbar" />
-                    <f:setPropertyActionListener
-						target="#{searchController.clickedCmqCode}"
-						value="#{value.cmqCode}" />
 				</h:commandLink>
 			</p:column>
 			<p:column headerText="Drug Program" width="70">

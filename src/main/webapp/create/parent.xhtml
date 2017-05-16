@@ -9,11 +9,11 @@
 	<p:panel style="min-width:700px; min-height:560px; overflow: auto" id="parent-list-modal">
 		<h:panelGrid columns="4" style="width:100%;" styleClass="parent-list-detail-grid" columnClasses="label-cell, value-cell, label-cell, value-cell">
 			<h:outputText value="List Name:" />
-			<h:outputText value="#{searchController.parentCmqEntity.cmqName}" />
+			<h:outputText value="#{createController.relationsModel.parentCmqEntity.cmqName}" />
 			<h:outputText value="List Code:" />
-			<h:outputText value="#{searchController.parentCmqEntity.cmqCode}" />
+			<h:outputText value="#{createController.relationsModel.parentCmqEntity.cmqCode}" />
 			<h:outputText value="Extension" />
-			<h:outputText value="#{searchController.parentCmqEntity.cmqTypeCd}" />
+			<h:outputText value="#{createController.relationsModel.parentCmqEntity.cmqTypeCd}" />
 			<p:spacer></p:spacer>
 			<p:spacer></p:spacer>
 			
@@ -26,7 +26,7 @@
 		<!-- <h:panelGrid style="min-width:700px; min-height:560px; overflow: auto"> -->
 			<p:accordionPanel activeIndex="0" style="width:700px">
 			<p:tab title="Relations" >
-				<p:treeTable value="#{searchController.parentListRoot}" var="node"
+				<p:treeTable value="#{createController.relationsModel.parentListRoot}" var="node"
 					rows="20" resizableColumns="true"
 					scrollable="true" scrollHeight="350"
 					styleClass="ui-treetable-resultHier" 
@@ -35,7 +35,7 @@
 					rowsPerPageTemplate="5,10,25,30">
 					
 					<f:attribute name="uiEventSourceName" value="parent-List" />
-					<p:ajax event="expand" listener="#{searchController.onNodeExpand}" />
+					<p:ajax event="expand" listener="#{createController.relationsModel.onNodeExpand}" />
 	
 					<p:column headerText="Level">
 						<h:outputText value="#{node.level}" />
