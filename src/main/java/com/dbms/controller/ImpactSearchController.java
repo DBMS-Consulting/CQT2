@@ -1525,6 +1525,7 @@ public class ImpactSearchController implements Serializable {
 						child.setImpactType("IPC");
 						child.setCmqState("PENDING IA");
 						child.setCmqStatus("P");
+						impactedCmqsList.add(child);
 					}
 				}
 			}
