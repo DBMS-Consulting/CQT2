@@ -209,10 +209,10 @@
 							<p:panel style="width: 100%; padding: 0">
 								<p:toolbar id="futureListsToolbar">
 									<f:facet name="left">
-										<p:commandButton value="Hierarchy Search" actionListener="#"
+										<p:commandButton value="Hierarchy Search" actionListener="#" update="add-target-hs-btn"
 											disabled="#{not impactSearchController.hierachySearchButtonEnabled}"
 											icon="fa fa-search" onclick="PF('target-hierarchy-search').show();" />
-										<p:commandButton value="New PTs" actionListener="#" id="new_pt_btn"
+										<p:commandButton value="New PTs" actionListener="#" id="new_pt_btn" update="new-pt-btn"
 											disabled="#{impactSearchController.newPTButtonEnabled}"
 											onclick="PF('new_pt').show();" icon="fa fa-book" />
 											
@@ -432,7 +432,7 @@
 				<p:spacer height="10"></p:spacer>
 				<h:panelGrid style="float: right" columns="2">
 					<p:commandButton value="Add selected" onclick="PF('target-hierarchy-search').hide()" disabled="#{impactSearchController.readOnlyIA}"
-						update="futureListsAndSmqs"
+						update="futureListsAndSmqs" id="add-target-hs-btn"
 						action="#{impactSearchController.addSelectedToTargetRelation(impactSearchController.targetHierarchySearchDlgModel.selectedNodes)}" />
 					<p:commandButton value="Cancel" type="button" onclick="PF('target-hierarchy-search').hide()" />
 				</h:panelGrid>
@@ -476,7 +476,7 @@
 				<p:spacer height="10"></p:spacer>
 				<h:panelGrid style="float: right" columns="2">
 					<p:commandButton value="Add selected" onclick="PF('new_pt').hide()" disabled="#{impactSearchController.readOnlyIA}"
-						update="futureListsAndSmqs messages"
+						update="futureListsAndSmqs messages" id="new-pt-btn"
 						action="#{impactSearchController.addSelectedNewPtsToTargetRelation}" />
 					<p:commandButton value="Cancel" type="button" onclick="PF('new_pt').hide()" />
 				</h:panelGrid>
