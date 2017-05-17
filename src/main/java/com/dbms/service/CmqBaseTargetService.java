@@ -509,7 +509,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 									level = "SMQ5";
 								}
 								mapReport.put(cpt++, new ReportLineDataDto(level, smq.getSmqCode() + "", smq.getSmqName(), "", smq.getImpactType())); 
-								if (level.equals("SMQ1")) {
+								if (level.equals("SMQ1") || level.equals("SMQ2") || level.equals("SMQ3") || level.equals("SMQ4")) {
 									smqSearched = smqBaseTargetService.findByCode(smq.getSmqCode());
 									if (smqSearched != null) {
 										List<SmqRelationTarget> list = smqBaseTargetService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
@@ -621,6 +621,8 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 														mapReport.put(cpt++, new ReportLineDataDto("PT", smq3.getPtCode() + "", smq3.getPtName(), ".............", smq3.getRelationImpactType())); 
 													}
 											}
+											
+											
 										}	
 										if (level.equals("SMQ4")) {
 											smqSearched = smqBaseTargetService.findByCode(smqC.getSmqCode());
@@ -631,6 +633,8 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 														mapReport.put(cpt++, new ReportLineDataDto("PT", smq3.getPtCode() + "", smq3.getPtName(), ".............", smq3.getRelationImpactType())); 
 													}
 											}
+											 
+											
 										}
 										if (level.equals("Child SMQ")) {
 											smqSearched = smqBaseTargetService.findByCode(smqC.getSmqCode());
