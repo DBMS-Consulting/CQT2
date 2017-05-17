@@ -168,6 +168,7 @@ public class ImpactSearchController implements Serializable {
     private Boolean versionUpgradingPending = null;
     private boolean displayScopeCatWeight;
     private boolean newPTButtonEnabled;
+    private boolean readOnlyIA;
 
 	public ImpactSearchController() {
 		
@@ -395,10 +396,12 @@ public class ImpactSearchController implements Serializable {
 			treeHelper.updateTargetTableForCmqList(targetTableRootTreeNode, this.selectedImpactedCmqList);
 			//Target List name
 			setListName(this.selectedImpactedCmqList.getCmqName());
+			 
 		} else if(this.isNonImpactedCmqSelected) {
 			treeHelper.updateTargetTableForCmqList(targetTableRootTreeNode, this.selectedNotImpactedCmqList);
 			//Target List name
 			setListName(this.selectedNotImpactedCmqList.getCmqName());
+			 
 		} else if (this.isImpactedSmqSelected) {
 			treeHelper.updateTargetTableForSmqList(targetTableRootTreeNode, this.selectedImpactedSmqList);
 			//Target List name
@@ -410,6 +413,8 @@ public class ImpactSearchController implements Serializable {
 		}
 		//reset value of selected to ze
 		currentOrTarget = SELECTED_NO_LIST;
+		
+		
 	}
 	
 	/**
@@ -2192,5 +2197,17 @@ public class ImpactSearchController implements Serializable {
 
 	public void setNewPTButtonEnabled(boolean newPTButtonEnabled) {
 		this.newPTButtonEnabled = newPTButtonEnabled;
+	}
+
+	public boolean isReadOnlyIA() {
+		return ((selectedImpactedCmqList != null && selectedImpactedCmqList.getCmqState() != null && 
+				(selectedImpactedCmqList.getCmqState().equals("APPROVED IA") || selectedImpactedCmqList.getCmqState().equals("PUBLISHED IA"))) ||
+				(selectedNotImpactedCmqList != null && selectedNotImpactedCmqList.getCmqState() != null 
+				&& (selectedNotImpactedCmqList.getCmqState().equals("PUBLISHED IA") || selectedNotImpactedCmqList.getCmqState().equals("APPROVED IA")))); 
+		//return readOnlyIA;
+	}
+
+	public void setReadOnlyIA(boolean readOnlyIA) {
+		this.readOnlyIA = readOnlyIA;
 	}
 }
