@@ -3,8 +3,11 @@ package com.dbms.util;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ApplicationScoped;
@@ -28,9 +31,6 @@ import org.apache.commons.lang3.StringUtils;
 import com.dbms.entity.cqt.RefConfigCodeList;
 import com.dbms.service.IRefCodeListService;
 import com.dbms.view.PXEDUser;
-import java.util.Hashtable;
-import java.util.LinkedList;
-import java.util.function.BiConsumer;
 
 
 @ManagedBean(name="appSWJSFRequest")
@@ -54,17 +54,18 @@ public class SWJSFRequest
     
     @PostConstruct
     public void init() {
+    	CmqCryptoHandler cryptoHandler = new CmqCryptoHandler();
     	List<RefConfigCodeList> ldapConfigCoeList = this.refCodeListService.findLdapConfig();
     	for (RefConfigCodeList refConfigCodeList : ldapConfigCoeList) {
 			String codeInternalValue = refConfigCodeList.getCodelistInternalValue();
 			if("LDAP_AD_SERVER".equalsIgnoreCase(codeInternalValue)) {
-				LDAP_AD_SERVER = refConfigCodeList.getValue();
+				LDAP_AD_SERVER = cryptoHandler.decrypt(refConfigCodeList.getValue(), null);
 			} else if("LDAP_USERNAME".equalsIgnoreCase(codeInternalValue)) {
-				LDAP_USERNAME = refConfigCodeList.getValue();
+				LDAP_USERNAME = cryptoHandler.decrypt(refConfigCodeList.getValue(), null);
 			} else if("LDAP_PASSWORD".equalsIgnoreCase(codeInternalValue)) {
-				LDAP_PASSWORD = refConfigCodeList.getValue();
+				LDAP_PASSWORD = cryptoHandler.decrypt(refConfigCodeList.getValue(), null);
 			} else if("LDAP_SEARCH_BASE".equalsIgnoreCase(codeInternalValue)) {
-				LDAP_SEARCH_BASE = refConfigCodeList.getValue();
+				LDAP_SEARCH_BASE = cryptoHandler.decrypt(refConfigCodeList.getValue(), null);
 			}
 		}
     }
