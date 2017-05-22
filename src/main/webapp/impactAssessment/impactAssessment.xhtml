@@ -388,24 +388,24 @@
 					styleClass="ui-confirmdialog-no" />
 			</p:confirmDialog>
 
-			<p:dialog header="Impact Search" widgetVar="select_mq" width="840px"
-				minWidth="840">
-				<ui:include src="../impactCommon/impactSearch.xhtml"></ui:include>
-
-				<p:spacer height="10"></p:spacer>
-				<h:panelGrid style="float: right">
-					<h:panelGrid columns="2">
-						<p:commandButton value="Add selected"
-							onclick="PF('select_mq').hide()"
-							update="currentListsAndSmqs futureListsAndSmqs futureListsToolbar new_pt_btn">
-							<f:actionListener
-								binding="#{impactSearchController.updateCurrentTable()}" />
-							<f:actionListener
-								binding="#{impactSearchController.updateTargetTable()}" />
-						</p:commandButton>
-						<p:commandButton value="Cancel" onclick="PF('select_mq').hide()" type="button" />
-					</h:panelGrid>
-				</h:panelGrid>
+			<p:dialog header="Impact Search" widgetVar="select_mq" width="800px"
+                      minWidth="800" minHeight="550">
+                <h:panelGrid columns="1" style="height:100%">
+                    <ui:include src="../impactCommon/impactSearch.xhtml"></ui:include>
+                    <h:panelGrid style="float: right;height:30px">
+                        <h:panelGrid columns="2">
+                            <p:commandButton value="Add selected"
+                                onclick="PF('select_mq').hide()"
+                                update="currentListsAndSmqs futureListsAndSmqs futureListsToolbar new_pt_btn">
+                                <f:actionListener
+                                    binding="#{impactSearchController.updateCurrentTable()}" />
+                                <f:actionListener
+                                    binding="#{impactSearchController.updateTargetTable()}" />
+                            </p:commandButton>
+                            <p:commandButton value="Cancel" onclick="PF('select_mq').hide()" type="button" />
+                        </h:panelGrid>
+                    </h:panelGrid>
+                </h:panelGrid>
 				<f:facet name="buttonBar">
 					<p:outputLabel value="Last Updated:" id="plam1" />
 					<h:outputText value="#{dummyView.value}" id="ot27" />
