@@ -304,8 +304,18 @@ public class AdminController implements Serializable {
 		if (myFocusRef.getCodelistConfigType().equals(CqtConstants.CODE_LIST_TYPE_WORKFLOW_STATES))
 			myFocusRef.setValue(myFocusRef.getValue().toUpperCase());
 			
-		if (myFocusRef.getCodelistInternalValue() != null)
-			myFocusRef.setCodelistInternalValue(myFocusRef.getCodelistInternalValue().toUpperCase());
+		if (myFocusRef.getCodelistInternalValue() != null) {
+			String upper = myFocusRef.getCodelistInternalValue().toUpperCase();
+			RefConfigCodeList searchRefByCode = refCodeListService.findByConfigTypeAndInternalCode(myFocusRef.getCodelistConfigType(), upper);
+			if (searchRefByCode != null && myFocusRef.getActiveFlag().equals("Y")) {
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "A Codelist with that code already exists", "");
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+				return;
+			}
+			myFocusRef.setCodelistInternalValue(upper);
+			
+			
+		}
 		try {
 			if (myFocusRef.getId() != null){
 				myFocusRef.setLastModificationDate(lastModifiedDate);
