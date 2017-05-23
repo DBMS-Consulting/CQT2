@@ -308,7 +308,7 @@ public class AdminController implements Serializable {
 			String upper = myFocusRef.getCodelistInternalValue().toUpperCase();
 			RefConfigCodeList searchRefByCode = refCodeListService.findByConfigTypeAndInternalCode(myFocusRef.getCodelistConfigType(), upper);
 			if (searchRefByCode != null && myFocusRef.getActiveFlag().equals("Y")) {
-				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "A Codelist with that code already exists", "");
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "The Codelist value and Code already exist for " + myFocusRef.getCodelistConfigType(), "");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 				return;
 			}
