@@ -284,6 +284,47 @@ public class RefCodeListService extends
         }
 		return null;
 	}
+	
+	@Override
+	public RefConfigCodeList findByCriterias(String configType, String internalCode, String activeFlag) {
+		RefConfigCodeList ref = null;
+        String cacheKey = "[" + configType + "-" + internalCode + "]";
+        
+        // try to get it from cache first
+        Object cv = (RefConfigCodeList)this.cqtCacheManager.getFromCache(CACHE_NAME, cacheKey);
+        if(cv != null && cv instanceof RefConfigCodeList) {
+            return (RefConfigCodeList) cv;
+        }
+        
+		String queryString = "from RefConfigCodeList a where a.codelistConfigType = :codelistConfigType and a.codelistInternalValue = :codelistInternalValue"
+				+ " and a.activeFlag=:activeFlag";
+
+		EntityManager entityManager = this.cqtEntityManagerFactory
+				.getEntityManager();
+		try {
+			Query query = entityManager.createQuery(queryString);
+			query.setParameter("codelistConfigType", configType);
+			query.setParameter("codelistInternalValue", internalCode);
+			query.setParameter("activeFlag", activeFlag);
+			query.setHint("org.hibernate.cacheable", true);
+			ref = (RefConfigCodeList) query.getSingleResult();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg.append(
+					"findCodeByInternalCode failed for CODELIST_INTERNAL_VALUE value'")
+					.append(internalCode).append("' and codelistConfigType = '")
+					.append(configType).append("' ")
+					.append("Query used was ->").append(queryString);
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		if (ref != null) {
+            this.cqtCacheManager.addToCache(CACHE_NAME, cacheKey, ref);
+			return ref;
+        }
+		return null;
+	}
 
 	@Override
 	public String findCodeByInternalCode(String codelistInternalValue) {
