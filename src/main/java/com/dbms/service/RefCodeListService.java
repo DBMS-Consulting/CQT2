@@ -598,4 +598,17 @@ public class RefCodeListService extends
 		
 		return false;
 	}
+    
+    @Override
+    public RefConfigCodeList getDefaultForConfigType(String configType) {
+        List<RefConfigCodeList> values = findByConfigType(configType, OrderBy.ASC);
+        RefConfigCodeList defaultValue = null;
+        for(RefConfigCodeList rcc : values) {
+            if("Y".equalsIgnoreCase(rcc.getDefaultFlag())) {
+                defaultValue = rcc;
+                break;
+            }
+        }
+        return defaultValue;
+    }
 }

@@ -60,4 +60,6 @@ public interface IRefCodeListService extends ICqtPersistenceService<RefConfigCod
 	List<RefConfigCodeList> findLdapConfig();
 
 	boolean getLevelScopeCategorySystemConfig();
+    
+    public RefConfigCodeList getDefaultForConfigType(String configType);
 }

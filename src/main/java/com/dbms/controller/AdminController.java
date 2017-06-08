@@ -313,10 +313,18 @@ public class AdminController implements Serializable {
 				return;
 			}
 			myFocusRef.setCodelistInternalValue(upperCode);
-			
-			
 		}
 		try {
+            if ("Y".equalsIgnoreCase(myFocusRef.getDefaultFlag())) {
+                // if editing config value is set as default, remove the default flag from the old default config
+                RefConfigCodeList oldDefaultValue = refCodeListService.getDefaultForConfigType(myFocusRef.getCodelistConfigType());
+                if(oldDefaultValue != null && oldDefaultValue.getId() != myFocusRef.getId()) {
+                    oldDefaultValue.setDefaultFlag("N");
+                    refCodeListService.update(oldDefaultValue, this.authService.getUserCn()
+						, this.authService.getUserGivenName(), this.authService.getUserSurName()
+						, this.authService.getCombinedMappedGroupMembershipAsString());
+                }
+            }
 			if (myFocusRef.getId() != null){
 				myFocusRef.setLastModificationDate(lastModifiedDate);
 				myFocusRef.setLastModifiedBy(lastModifiedByString);
@@ -393,6 +401,13 @@ public class AdminController implements Serializable {
             refList.sort(new Comparator<RefConfigCodeList> () {
                 @Override
                 public int compare(RefConfigCodeList o1, RefConfigCodeList o2) {
+                    // make sure Default values always comes first in the list
+                    if("Y".equalsIgnoreCase(o1.getDefaultFlag()) && "Y".equalsIgnoreCase(o1.getActiveFlag()))
+                        return -1;
+                    else if("Y".equalsIgnoreCase(o2.getDefaultFlag()) && "Y".equalsIgnoreCase(o2.getActiveFlag()))
+                        return 1;
+                    
+                    // then compare by serial number
                     int c = Double.compare(o1.getSerialNum().doubleValue(), o2.getSerialNum().doubleValue());
                     if(c == 0) {
                         if(Objects.equals(o1.getId(), lastSavedId))

@@ -89,6 +89,13 @@ public class ListDetailsFormVM {
         this.lastModifiedBy = "";
         this.lastModifiedDate = null;
         this.code = null;
+        
+        // set the defaults from config module
+        RefConfigCodeList rcc = refCodeListService.getDefaultForConfigType(CqtConstants.CODE_LIST_TYPE_EXTENSION);
+        if(rcc != null) {
+            this.extension = rcc.getCodelistInternalValue();
+            this.afterChangeExtension(null);
+        }
 	}
 	
 	/**
