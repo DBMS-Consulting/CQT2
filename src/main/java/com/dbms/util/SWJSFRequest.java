@@ -138,7 +138,7 @@ public class SWJSFRequest
         if(entAdType != null && entAdType.getValue().endsWith("DUMMY")) {
             // generate some static user list for test
             userList.add(new PXEDUser("cougha02", "Alexander", "Coughlin"));
-            userList.add(new PXEDUser("khosan01", "", ""));
+            userList.add(new PXEDUser("khosan01", "Neha", "Khosa"));
             userList.add(new PXEDUser("kaura07", "", ""));
             userList.add(new PXEDUser("sings162", "Sunil", "Singh"));
             userList.add(new PXEDUser("tirumn", "", ""));
