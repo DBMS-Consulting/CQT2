@@ -1,6 +1,8 @@
 package com.dbms.util;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -165,6 +167,7 @@ public class SWJSFRequest
                 e.printStackTrace();
             }
         }
+        Collections.sort(userList, new PxedUserComparator());
 		return userList;	
     }
 
@@ -560,4 +563,14 @@ public class SWJSFRequest
 		this.refCodeListService = refCodeListService;
 	}
     
+	private class PxedUserComparator implements Comparator<PXEDUser> {
+
+		@Override
+		public int compare(PXEDUser o1, PXEDUser o2) {
+			String o1Name = o1.getFullName();
+			String o2Name = o2.getFullName();
+			return o1Name.compareTo(o2Name);
+		}
+		
+	}
 }
