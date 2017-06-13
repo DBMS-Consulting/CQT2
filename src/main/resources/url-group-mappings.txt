@@ -8,9 +8,9 @@ Publish-Menu=MANAGER
 /publish/publishCurrentVersion.xhtml=MANAGER
 /publish/publishFutureVersion.xhtml=MANAGER
 
-Reactivate/Retire-Menu=MANAGER,REQUESTOR
-/create/reactivate.xhtml=MANAGER,REQUESTOR
-/create/retire.xhtml=MANAGER,REQUESTOR
+Reactivate/Retire-Menu=MANAGER
+/create/reactivate.xhtml=MANAGER
+/create/retire.xhtml=MANAGER
 
 /impactAssessment/impactAssessment.xhtml=MANAGER,ADMIN
 

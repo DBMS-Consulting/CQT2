@@ -31,6 +31,7 @@ import com.dbms.csmq.HierarchyNode;
 import com.dbms.entity.IEntity;
 import com.dbms.entity.cqt.CmqBase190;
 import com.dbms.entity.cqt.CmqBaseTarget;
+import com.dbms.entity.cqt.CmqProductBaseCurrent;
 import com.dbms.entity.cqt.CmqRelation190;
 import com.dbms.entity.cqt.RefConfigCodeList;
 import com.dbms.entity.cqt.SmqBase190;
@@ -45,6 +46,8 @@ import com.dbms.service.IMeddraDictService;
 import com.dbms.service.IRefCodeListService;
 import com.dbms.service.ISmqBaseService;
 import com.dbms.util.CmqUtils;
+import com.dbms.util.CqtConstants;
+import com.dbms.util.OrderBy;
 import com.dbms.util.SWJSFRequest;
 import com.dbms.util.exceptions.CqtServiceException;
 import com.dbms.view.ListDetailsFormVM;
@@ -122,6 +125,7 @@ public class CreateController implements Serializable {
 	private HtmlInputText dictionaryName;
 	private boolean	formSaved;
 	private String listCreator;
+	
 	
 	@PostConstruct
 	public void init() {
@@ -995,9 +999,9 @@ public class CreateController implements Serializable {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "The List is impacted by MedDRA Versioning", ""));
         }
 
-		return null;
+      	return null;
 	}
-	
+
 	private void copyRelationsToNewCmq(Long copiedCode, CmqBase190 savedEntity) throws CqtServiceException {
 		LOG.info("Saving relations for the new cmq.");
 		//copy relations now
@@ -1325,6 +1329,30 @@ public class CreateController implements Serializable {
 		}
 		detailsFormModel.afterChangeExtension(event);
 	}
+	
+	/**
+	 * Returns products list with Inactive Products for CMQs selected.
+	 * 
+	 * @return
+	 */
+	public List<RefConfigCodeList> getProductList() {
+		List<RefConfigCodeList> products = refCodeListService.findByConfigType(
+				CqtConstants.CODE_LIST_TYPE_PRODUCT, OrderBy.ASC);
+		if (products == null) {
+			products = new ArrayList<>();
+		}
+		else {
+			if (selectedData.getProductsList() != null)
+				for (CmqProductBaseCurrent prod : selectedData.getProductsList()) {
+					RefConfigCodeList config = refCodeListService.findByConfigTypeAndInternalCode(CqtConstants.CODE_LIST_TYPE_PRODUCT, prod.getCmqProductCd());
+					if (config != null && config.getActiveFlag().equals("N"))
+						products.add(config);
+				}
+					
+		}
+			
+		return products;
+	}
 
 	
 	//--------------------- Getters and Setters -----------------------
@@ -1524,12 +1552,17 @@ public class CreateController implements Serializable {
 	}
 
 	public boolean isReviewedDisabled() {
-        // if AD Group is Requester, disable it
-        if(getAuthService().hasGroup(new String[] {AuthenticationService.REQUESTER_GROUP}))
-            return true;
-        
+		// if AD Group is MANAGER, enable it
+		if (getAuthService().hasGroup(new String[] { AuthenticationService.MANAGER_GROUP }))
+			return false;
+
+		// if AD Group is Requester, disable it
+		if (getAuthService().hasGroup(new String[] { AuthenticationService.REQUESTER_GROUP }))
+			return true;
+
 		if (selectedData != null
-				&& CmqBase190.CMQ_STATE_VALUE_DRAFT.equalsIgnoreCase(selectedData.getCmqState()))
+				&& CmqBase190.CMQ_STATE_VALUE_DRAFT
+						.equalsIgnoreCase(selectedData.getCmqState()))
 			return false;
 		return true;
 	}
@@ -1796,4 +1829,5 @@ public class CreateController implements Serializable {
     public void setMeddraDictService(IMeddraDictService meddraDictService) {
         this.meddraDictService = meddraDictService;
     }
+     
 }
