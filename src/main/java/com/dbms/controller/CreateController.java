@@ -119,7 +119,8 @@ public class CreateController implements Serializable {
 	private String[] selectedDesignees;
 
 	private Long codevalue;
-	private CmqBase190 selectedData = new CmqBase190();
+	private CmqBase190 selectedData;
+    private boolean isSelectedDataApprovedOnce;
     private CmqBaseTarget mySelectedCmqTarget = new CmqBaseTarget();
 	
 	private HtmlInputText dictionaryName;
@@ -129,6 +130,7 @@ public class CreateController implements Serializable {
 	
 	@PostConstruct
 	public void init() {
+        setSelectedData(null);
 		this.detailsFormModel  = new ListDetailsFormVM(this.authService, this.refCodeListService, this.appSWJSFRequest);
         this.relationsModel = new ListRelationsVM(authService, appSWJSFRequest, refCodeListService, cmqBaseService, smqBaseService, meddraDictService, cmqRelationService);
         this.workflowFormModel = new ListWorkflowFormVM(this.authService);
@@ -145,7 +147,7 @@ public class CreateController implements Serializable {
 	}
 
 	public void initCreateForm() {
-		this.selectedData = new CmqBase190();
+		setSelectedData(null);
 		selectedData.setCmqDescription("Please enter the description");
 	}
 	
@@ -631,7 +633,7 @@ public class CreateController implements Serializable {
 				
 				// retrieve the saved cmq base
 				CmqBase190 savedEntity = cmqBaseService.findByCode(selectedData.getCmqCode());		
-				selectedData = savedEntity;
+                setSelectedData(savedEntity);
 				detailsFormModel.loadFromCmqBase190(selectedData);
 
 				// // save the cmq code to session
@@ -658,9 +660,7 @@ public class CreateController implements Serializable {
 			LOG.error("Exception occurred while updating CmqBase190.", e);
 
 			// rollback the data changes to the db's state
-			selectedData = cmqBaseService.findByCode(selectedData.getCmqCode());
-			if(selectedData == null)
-				selectedData = new CmqBase190();
+            setSelectedData(cmqBaseService.findByCode(selectedData.getCmqCode()));
 			
 			String error = CmqUtils.getExceptionMessageChain(e);
 			
@@ -768,7 +768,7 @@ public class CreateController implements Serializable {
 			
 			LOG.info("All updates completed.");		
 			
-			selectedData = savedEntity;
+            setSelectedData(savedEntity);
 			this.detailsFormModel.loadFromCmqBase190(selectedData);
 			this.detailsFormModel.setModelChanged(false);//model is saved now
 			codeSelected = selectedData.getCmqCode();
@@ -786,10 +786,9 @@ public class CreateController implements Serializable {
             setFormSaved(true);
 		} catch (CqtServiceException e) {
 			// roll back the selectedData
-			selectedData = cmqBaseService.findByCode(copyingCmqCode);
-			if(selectedData == null)
-				selectedData = new CmqBase190();
-			setCopiedCmq(selectedData);
+			setSelectedData(cmqBaseService.findByCode(copyingCmqCode));
+
+            setCopiedCmq(selectedData);
 			//
 			LOG.error("Exception occurred while creating CmqBase190.", e);
 			//delete the saves if any
@@ -865,7 +864,7 @@ public class CreateController implements Serializable {
 
 				// retrieve the saved cmq base
 				CmqBase190 savedEntity = cmqBaseService.findByCode(codevalue);
-				selectedData = savedEntity;
+                setSelectedData(savedEntity);
 				this.detailsFormModel.loadFromCmqBase190(selectedData);
 				codeSelected = selectedData.getCmqCode();
                 //set relations tab
@@ -960,7 +959,7 @@ public class CreateController implements Serializable {
 
 		if (cmq != null) {
 			codeSelected = cmq.getCmqCode();
-			selectedData = cmq;
+            setSelectedData(cmq);
             CmqBaseTarget t = myCmqTargetService.findByCode(code);
             mySelectedCmqTarget = (t == null ? new CmqBaseTarget() : t);
 		}
@@ -1092,7 +1091,7 @@ public class CreateController implements Serializable {
 	 */
 	public String cancelRelations() {
 		if (selectedData.getId() == null) {
-			selectedData = new CmqBase190();
+            setSelectedData(null);
 		}
 		FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Form canceled", "");
 		FacesContext.getCurrentInstance().addMessage(null, msg);
@@ -1265,7 +1264,7 @@ public class CreateController implements Serializable {
 						, this.authService.getUserGivenName(), this.authService.getUserSurName()
 						, this.authService.getCombinedMappedGroupMembershipAsString());
 
-                selectedData = new CmqBase190();
+                setSelectedData(null);
 				codeSelected = null;
 				initAll();
                 
@@ -1395,7 +1394,13 @@ public class CreateController implements Serializable {
 	}
 
 	public void setSelectedData(CmqBase190 selectedData) {
-		this.selectedData = selectedData;
+        if(selectedData == null) {
+            selectedData = new CmqBase190();
+            isSelectedDataApprovedOnce = false;
+        } else {
+            this.selectedData = selectedData;
+            isSelectedDataApprovedOnce = cmqBaseService.checkIfApprovedOnce(selectedData.getCmqCode());
+        }
 	}
 
 	public void setCmqBaseService(ICmqBase190Service cmqBaseService) {
@@ -1537,6 +1542,10 @@ public class CreateController implements Serializable {
 				|| !CmqBase190.CMQ_STATE_VALUE_DRAFT.equalsIgnoreCase(selectedData.getCmqState())
 				|| selectedData.getActivationDate() != null)
 			return true;
+        
+        // Disabled delete button if List has been approved once
+        if(isSelectedDataApprovedOnce)
+            return true;
 		return false;
 	}
 
@@ -1794,7 +1803,7 @@ public class CreateController implements Serializable {
     public void clearCmqSelection() {
         codeSelected = null;
         copyingCmqCode = null;
-        selectedData = new CmqBase190();
+        setSelectedData(null);
         initAll();        
     }
 

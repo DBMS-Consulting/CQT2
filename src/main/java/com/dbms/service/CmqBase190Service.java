@@ -417,6 +417,40 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		}
 		return retVal;
 	}
+    
+    @Override
+    public boolean checkIfApprovedOnce(Long cmqCode) {
+        boolean retVal = false;
+        String q = "SELECT CMQ_STATE_OLD FROM CMQ_BASE_CURRENT_AUDIT cmqTblAudit WHERE cmqTblAudit.CMQ_CODE_NEW=:cmqCode ORDER BY AUDIT_TIMESTAMP DESC";
+        EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+        Session session = entityManager.unwrap(Session.class);
+        
+        
+		try {
+			SQLQuery query = session.createSQLQuery(q);
+			query.setParameter("cmqCode", cmqCode);
+            query.addScalar("CMQ_STATE_OLD", StandardBasicTypes.STRING);
+			query.setCacheable(true);
+            
+            List<Object> rows = query.list();
+
+            for(Object row : rows) {
+                if(row != null && CmqBase190.CMQ_STATE_VALUE_APPROVED.equalsIgnoreCase(row.toString())) {
+                    retVal = true;
+                }
+            }
+		} catch (Exception e) {
+			retVal = false;
+            StringBuilder msg = new StringBuilder();
+			msg.append("An error occurred while checkAuditForOldStatus ")
+					.append(cmqCode).append(" Query used was ->")
+					.append(q);
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+    }
 
 	public Long findCmqChildCountForParentCmqCode(Long cmqCode) {
 		Long retVal = null;
@@ -1378,7 +1412,6 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 
 							relationsWorkerDTO.addToMapReport(cpt++, new ReportLineDataDto(level, childSmq.getPtCode() + "", childSmq.getPtName(), ".......")); 
 							
-							
 							List<Long> codes = new ArrayList<>();
 							codes.add(childSmq.getSmqCode());
 							
@@ -1398,9 +1431,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 									}
 								}
 							}
-							
-							
-							
+
 							//Children for relations
 //							smqSearched = smqBaseService.findByCode(childSmq.getSmqCode());
 //							if (smqSearched != null) {
@@ -1423,14 +1454,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 //								}
 //							}
 //							
-							
-							
-							
-							
-							
-							
-							
-							 
+ 
 						}
 					}
 					

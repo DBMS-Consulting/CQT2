@@ -58,4 +58,10 @@ public interface ICmqBase190Service extends ICqtPersistenceService<CmqBase190> {
 
 	Boolean checkIfCmqNamqExists(String cmqName);
 
+    /**
+     * This function will check CMQ_BASE_CURRENT_AUDIT.CMQ_STATE_OLD for a given CMQ_CODE
+     * @param cmqCode
+     * @return 
+     */
+    boolean checkIfApprovedOnce(Long cmqCode);
 }
