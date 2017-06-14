@@ -186,6 +186,7 @@ public class SearchController extends BaseController<CmqBase190> {
 		this.termName = "";
 		this.code = null;
         myFltDesignees = new String[0];
+        myFltProducts = new String[0];
         
 		this.dataModified = false;
 		
