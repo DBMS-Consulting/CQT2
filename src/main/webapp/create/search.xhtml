@@ -91,11 +91,9 @@
 		<p:inputText id="codeSearch" value="#{searchController.code}" />
         
         <p:selectCheckboxMenu value="#{searchController.fltDesignees}"
-                              label="Designees" updateLabel="true">
+                              label="Designees" updateLabel="true" filter="true" filterMatchMode="contains">
             <f:selectItems value="#{createController.detailsFormModel.designeeList}" var="d"
                            itemLabel="#{d.fullName}" itemValue="#{d.userName}"/>
-            <f:validator validatorId="mySelectCheckboxMenuLimitValidator" />                       
-            <f:attribute name="maxLimit" value="3" />
 		</p:selectCheckboxMenu>
 
         <p:commandButton value="Search" action="#{searchController.search}" actionListener="#{createController.clearCmqSelection}"
