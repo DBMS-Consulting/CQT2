@@ -1335,7 +1335,8 @@ public class CreateController implements Serializable {
 	 * @return
 	 */
 	public List<RefConfigCodeList> getProductList() {
-		List<RefConfigCodeList> products = refCodeListService.findByConfigType(
+		List<RefConfigCodeList> products = new ArrayList<>();
+		products = refCodeListService.findByConfigType(
 				CqtConstants.CODE_LIST_TYPE_PRODUCT, OrderBy.ASC);
 		if (products == null) {
 			products = new ArrayList<>();
@@ -1344,7 +1345,7 @@ public class CreateController implements Serializable {
 			if (selectedData.getProductsList() != null)
 				for (CmqProductBaseCurrent prod : selectedData.getProductsList()) {
 					RefConfigCodeList config = refCodeListService.findByConfigTypeAndInternalCode(CqtConstants.CODE_LIST_TYPE_PRODUCT, prod.getCmqProductCd());
-					if (config != null && config.getActiveFlag().equals("N")) {
+					if (config != null && config.getActiveFlag().equals("N") && !products.contains(config)) {
 						config.setValue(config.getCodelistInternalValue());
 						products.add(config);
 					}
