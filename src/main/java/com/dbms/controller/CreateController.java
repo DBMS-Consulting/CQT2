@@ -1344,8 +1344,11 @@ public class CreateController implements Serializable {
 			if (selectedData.getProductsList() != null)
 				for (CmqProductBaseCurrent prod : selectedData.getProductsList()) {
 					RefConfigCodeList config = refCodeListService.findByConfigTypeAndInternalCode(CqtConstants.CODE_LIST_TYPE_PRODUCT, prod.getCmqProductCd());
-					if (config != null && config.getActiveFlag().equals("N"))
+					if (config != null && config.getActiveFlag().equals("N")) {
+						config.setValue(config.getCodelistInternalValue());
 						products.add(config);
+					}
+						
 				}
 					
 		}
