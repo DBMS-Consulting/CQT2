@@ -1553,7 +1553,8 @@ public class CreateController implements Serializable {
 
 	public boolean isApproveDisabled() {
         // if AD Group is Requester, disable it
-        if(getAuthService().hasGroup(new String[] {AuthenticationService.REQUESTER_GROUP}))
+        if(authService.getGroupMembershipHeader() != null &&
+                (authService.getGroupMembershipHeader().contains(AuthenticationService.REQUESTER_GROUP)))
             return true;
         
 		if (selectedData != null && selectedData.getCmqStatus() != null
@@ -1564,11 +1565,15 @@ public class CreateController implements Serializable {
 
 	public boolean isReviewedDisabled() {
 		// if AD Group is MANAGER, enable it
-		if (getAuthService().hasGroup(new String[] { AuthenticationService.MANAGER_GROUP }))
+		if (authService.getGroupMembershipHeader() != null &&
+                (authService.getGroupMembershipHeader().contains("MQM")
+                		&& authService.getGroupMembershipHeader().contains(AuthenticationService.REQUESTER_GROUP)))
 			return false;
 
 		// if AD Group is Requester, disable it
-		if (getAuthService().hasGroup(new String[] { AuthenticationService.REQUESTER_GROUP }))
+		if (authService.getGroupMembershipHeader() != null &&
+                (authService.getGroupMembershipHeader().contains(AuthenticationService.REQUESTER_GROUP)
+                		&& !(authService.getGroupMembershipHeader().contains("MQM"))))
 			return true;
 
 		if (selectedData != null

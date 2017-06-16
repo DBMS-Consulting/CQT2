@@ -841,14 +841,14 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 							.findByPtOrLltCode("PT_", relation.getPtCode());
 					if (search != null) {
 						term = search.getPtTerm();
-						codeTerm = search.getLltCode();			
+						codeTerm = relation.getPtCode() + "";			
 					}
 				} else if (relation.getHlgtCode() != null) {
 					MeddraDictHierarchySearchDto searchDto = this.meddraDictService
 							.findByCode("HLGT_", relation.getHlgtCode());
 					if (searchDto != null) {
 						term = searchDto.getTerm();
-						codeTerm = searchDto.getCode();				
+						codeTerm = relation.getHlgtCode() + "";		
 					}
 					level = "HLGT";
 				} else if (relation.getHltCode() != null) {					
@@ -856,7 +856,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 							.findByCode("HLT_", relation.getHltCode());
 					if (searchDto != null) {
 						term = searchDto.getTerm();
-						codeTerm = searchDto.getCode();				
+						codeTerm = relation.getHltCode() + "";			
 					}
 					level = "HLT";
 				} else if (relation.getSocCode() != null) {
@@ -864,7 +864,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 							.findByCode("SOC_", relation.getSocCode());
 					if (searchDto != null) {
 						term = searchDto.getTerm();
-						codeTerm = searchDto.getCode();				
+						codeTerm = relation.getSocCode() + "";
 					}
 					level = "SOC";
 				} else if (relation.getLltCode() != null) {
@@ -872,7 +872,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 							.findByPtOrLltCode("LLT_", relation.getLltCode());
 					if (searchDto != null) {
 						term = searchDto.getLltTerm();
-						codeTerm = searchDto.getLltCode();				
+						codeTerm = relation.getLltCode() + "";				
 					}
 					level = "LLT";
 				}

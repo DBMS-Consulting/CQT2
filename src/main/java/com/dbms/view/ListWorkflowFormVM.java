@@ -80,19 +80,25 @@ public class ListWorkflowFormVM {
 	}
     
     public boolean isRequestReasonDisabled() {
-        if(authService.hasGroup(new String[] {AuthenticationService.REQUESTER_GROUP}))
+    	if(authService.getGroupMembershipHeader().contains("MQM"))
+            return false;
+        if(authService.getGroupMembershipHeader().contains(AuthenticationService.REQUESTER_GROUP))
             return true;
         return false;
     }
     
     public boolean isDueDateDisabled() {
-        if(authService.hasGroup(new String[] {AuthenticationService.REQUESTER_GROUP}))
+    	if(authService.getGroupMembershipHeader().contains("MQM"))
+            return false;
+        if(authService.getGroupMembershipHeader().contains(AuthenticationService.REQUESTER_GROUP))
             return true;
         return false;
     }
     
     public boolean isApprovalReasonDisabled() {
-        if(authService.hasGroup(new String[] {AuthenticationService.REQUESTER_GROUP}))
+    	if(authService.getGroupMembershipHeader().contains("MQM"))
+            return false;
+        if(authService.getGroupMembershipHeader().contains(AuthenticationService.REQUESTER_GROUP))
             return true;
         return false;
     }
