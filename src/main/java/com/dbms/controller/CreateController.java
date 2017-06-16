@@ -1664,7 +1664,7 @@ public class CreateController implements Serializable {
          if ((createWizard != null || updateWizard != null) && authService.getGroupMembershipHeader() != null &&
                 (authService.getGroupMembershipHeader().contains(AuthenticationService.REQUESTER_GROUP)
                   || authService.getGroupMembershipHeader().contains("MQM")))
-      			return false;
+      			d = false;
     	/**
          * Restrictions on users from  REQUESTOR and ADMIN groups
          */
