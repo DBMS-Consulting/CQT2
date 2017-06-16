@@ -569,7 +569,8 @@ public class CmqBaseRelationsTreeHelper {
                 childRelationNode.setCode(childRelation.getPtCode().toString());
 				
                 if(relationView) {
-                    childRelationNode.markNotEditableInRelationstable();
+                    //childRelationNode.markNotEditableInRelationstable();
+                    childRelationNode.setHideDelete(true);;
                 }
 
 				TreeNode treeNode = new DefaultTreeNode(childRelationNode, expandedTreeNode);
