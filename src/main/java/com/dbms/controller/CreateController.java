@@ -127,10 +127,12 @@ public class CreateController implements Serializable {
 	private boolean	formSaved;
 	private String listCreator;
 	
-	
+	public CreateController() {
+        setSelectedData(null);
+    }
+    
 	@PostConstruct
 	public void init() {
-        setSelectedData(null);
 		this.detailsFormModel  = new ListDetailsFormVM(this.authService, this.refCodeListService, this.appSWJSFRequest);
         this.relationsModel = new ListRelationsVM(authService, appSWJSFRequest, refCodeListService, cmqBaseService, smqBaseService, meddraDictService, cmqRelationService);
         this.workflowFormModel = new ListWorkflowFormVM(this.authService);
@@ -1399,7 +1401,7 @@ public class CreateController implements Serializable {
 
 	public void setSelectedData(CmqBase190 selectedData) {
         if(selectedData == null) {
-            selectedData = new CmqBase190();
+            this.selectedData = new CmqBase190();
             isSelectedDataApprovedOnce = false;
         } else {
             this.selectedData = selectedData;
