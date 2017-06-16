@@ -127,6 +127,9 @@ public class CreateController implements Serializable {
 	private boolean	formSaved;
 	private String listCreator;
 	
+	public CreateController() {
+		setSelectedData(null);
+	}
 	
 	@PostConstruct
 	public void init() {
@@ -926,11 +929,7 @@ public class CreateController implements Serializable {
 			d = restrictionsByUserAuthentified();
         else
             d = false;
-//        // If CMQ_BASE_TARGET.Status != 'PENDING IA', then the list should be read-only in update.
-//        // User should not be able to update details, informative notes, relations and workflow form on confirm tab.
-//        if(updateWizard!=null && selectedData != null && !isTargetStatusPendingIA(selectedData))
-//            return true;
-		
+
         // If CMQ_BASE_TARGET IN('PENDING IA', 'REVIEWED IA', 'APPROVED IA', 'PUBLISHED IA') then list should be read-only in Update Module.
         // User should NOT be able to update details, informative notes, relations and workflow from confirm.
         if(updateWizard != null && selectedData != null && isTargetMovedToHigherIAStatus(selectedData))
@@ -1697,7 +1696,7 @@ public class CreateController implements Serializable {
         	else if (authService.getGroupMembershipHeader() != null && (authService.getGroupMembershipHeader().contains(AuthenticationService.REQUESTER_GROUP)) 
         			&& selectedData.getCmqStatus().equals("P") 
         			&& (selectedData.getCmqState().equals("DRAFT") || selectedData.getCmqState().equals("REVIEWED"))
-        			&& (((listCreator != null) && (listCreator.startsWith(authService.getUserCn())))
+        			&& (((selectedData.getCreatedBy() != null) && (selectedData.getCreatedBy().startsWith(authService.getUserCn())))
         					|| ((selectedData.getCmqDesignee() != null && selectedData.getCmqDesignee().equals(authService.getUserCn()))
         		        			|| (selectedData.getCmqDesignee2() != null && selectedData.getCmqDesignee2().equals(authService.getUserCn()))
         		        			|| (selectedData.getCmqDesignee3() != null && selectedData.getCmqDesignee3().equals(authService.getUserCn()))))) {
@@ -1705,31 +1704,14 @@ public class CreateController implements Serializable {
         	} else if (authService.getGroupMembershipHeader() != null && (authService.getGroupMembershipHeader().contains(AuthenticationService.ADMIN_GROUP)) 
         			&& selectedData.getCmqStatus().equals("P") 
         			&& (selectedData.getCmqState().equals("DRAFT") || (selectedData.getCmqState().equals("PENDING IA") || selectedData.getCmqState().equals("REVIEWED IA")))
-        			&& (((listCreator != null) && (listCreator.startsWith(authService.getUserCn())))
+        			&& (((selectedData.getCreatedBy() != null) && (selectedData.getCreatedBy().startsWith(authService.getUserCn())))
         					|| ((selectedData.getCmqDesignee() != null && selectedData.getCmqDesignee().equals(authService.getUserCn()))
         		        			|| (selectedData.getCmqDesignee2() != null && selectedData.getCmqDesignee2().equals(authService.getUserCn()))
         		        			|| (selectedData.getCmqDesignee3() != null && selectedData.getCmqDesignee3().equals(authService.getUserCn()))))) {
         		return  false;
         	}
         }
-//        	else if(copyWizard != null) {
-//        	//conditions are:
-//        	/*	
-//        	 	when user is a REQUESTER
-//        	 	1) list's state is DRAFT or REVIEWED
-//				2) the list's status is P
-//        	 */
-//        	if ((authService.getGroupName().equals(AuthenticationService.REQUESTER_GROUP)) 
-//        			&& selectedData.getCmqStatus().equals("P") 
-//        			&& (selectedData.getCmqState().equals("DRAFT") || selectedData.getCmqState().equals("REVIEWED"))) {
-//        		return  false;
-//        	} else if ((authService.getGroupName().equals(AuthenticationService.ADMIN_GROUP)) 
-//        			&& selectedData.getCmqStatus().equals("P") 
-//        			&& (listCreator != null) && listCreator.startsWith(authService.getUserCn())
-//        			&& (selectedData.getCmqState().equals("DRAFT") || (selectedData.getCmqState().equals("PENDING IA") || selectedData.getCmqState().equals("REVIEWED IA")))) {
-//        		return  false;
-//        	}
-//        }
+ 
         if (createWizard != null)
         	return false;
         return true;

@@ -20,7 +20,7 @@
 			</p:selectOneMenu>
 			<p:selectOneMenu id="levelH2" label="Level"
 				rendered="#{paramParentExtension eq 'PRO' or paramParentExtension eq 'CPT' or paramParentExtension eq 'DME'}"
-				value="#{paramDlgCtrl.filterLevel}" appendTo="@this">
+				value="#{paramDlgCtrl.filterLevel}" >
  
 				<f:selectItems itemLabel="#{level.codelistInternalValue eq 'PRO' ? '' : level.value}" value="#{configMB.levelList}" itemDisabled="#{level.value eq 'PRO'}" 
 					itemValue="#{level.codelistInternalValue}" var="level"></f:selectItems>
