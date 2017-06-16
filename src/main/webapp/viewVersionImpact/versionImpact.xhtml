@@ -154,9 +154,8 @@
 											<p:column colspan="#{impactSearchController.displayScopeCatWeight eq 'false' ? 2 : 3}" headerText="Hierarchy Details" />
 										</p:row>
 										<p:row>
-											<p:column styleClass="listName"
-												headerText="#{impactSearchController.listName}" />
-											<p:column headerText="Code" style="width:25%" />
+											<p:column styleClass="listName" headerText="#{impactSearchController.listName}" sortBy="#{node.term}" />
+											<p:column headerText="Code" sortBy="#{node.code}" style="width:25%" />
 											<p:column headerText="Level" style="width:10%"/>
 											<p:column rendered="#{impactSearchController.displayScopeCatWeight}" headerText="Scope" style="width:15%" />
 										</p:row>
@@ -220,9 +219,8 @@
 										</p:row>
 
 										<p:row>
-											<p:column styleClass="listName"
-												headerText="#{impactSearchController.listName}" />
-											<p:column headerText="Code" style="width:15%" />
+											<p:column styleClass="listName" headerText="#{impactSearchController.listName}" sortBy="#{node.term}" />
+											<p:column headerText="Code" sortBy="#{node.code}" style="width:15%" />
 											<p:column headerText="Level" style="width:8%" />
 											<p:column rendered="#{impactSearchController.displayScopeCatWeight}" headerText="Scope" style="width:15%" />
 											<p:column rendered="#{impactSearchController.displayScopeCatWeight}" headerText="Category" style="width:9% " />

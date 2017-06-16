@@ -525,3 +525,8 @@ ul.nav>li {
 .ui-filter-column {
     overflow: visible !important;
 }
+
+.ui-treetable .ui-treetable-scrollable-theadclone th .ui-sortable-column-icon{
+    display: block;
+    height: 0;
+}

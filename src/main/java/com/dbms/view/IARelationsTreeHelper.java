@@ -41,6 +41,7 @@ import com.dbms.service.ISmqBaseService;
 import com.dbms.service.ISmqBaseTargetService;
 import com.dbms.util.CqtConstants;
 import com.dbms.util.SMQLevelHelper;
+import java.util.Comparator;
 
 public class IARelationsTreeHelper {
 	public enum SearchTarget { SMQ_BASE, MEDDRA_DICT, CMQ_BASE }
@@ -137,6 +138,7 @@ public class IARelationsTreeHelper {
 				Long dtoCode = Long.valueOf(meddraDictHierarchySearchDto.getCode());
 				this.populateMeddraDictHierarchySearchDtoChildren(parentLevel, dtoCode, expandedTreeNode, "current", null);
 			}
+            
 			hierarchyNode.setDataFetchCompleted(true);
 		}
 		//hierarchyNode.setRowStyleClass("blue-colored");
@@ -1856,13 +1858,13 @@ public class IARelationsTreeHelper {
         boolean bCurrentList = "current".equalsIgnoreCase(currentOrTarget);
         
         if(bCurrentList) {
-            if(node.getEntity() instanceof SmqBase190) {
+            if(node.getEntity() != null && node.getEntity() instanceof SmqBase190) {
                 SmqBase190 ent = (SmqBase190)node.getEntity();
                 return getSmqRelationImpactDesc(refCodeListService, ent.getImpactType());
-            } else if(node.getEntity() instanceof SmqRelation190) {
+            } else if(node.getEntity() != null && node.getEntity() instanceof SmqRelation190) {
                 SmqRelation190 ent = (SmqRelation190)node.getEntity();
                 return getSmqRelationImpactDesc(refCodeListService, ent.getRelationImpactType());
-            } else if(node.getEntity() instanceof MeddraDictHierarchySearchDto) {
+            } else if(node.getEntity() != null && node.getEntity() instanceof MeddraDictHierarchySearchDto) {
                 MeddraDictHierarchySearchDto ent = (MeddraDictHierarchySearchDto)node.getEntity();
                 if(node.getRelationEntity() != null && node.getRelationEntity() instanceof CmqRelation190) {
                     CmqRelation190 ent1 = (CmqRelation190)node.getRelationEntity();
@@ -1872,13 +1874,13 @@ public class IARelationsTreeHelper {
                 return getMeddraDictCurrentImpactDesc(refCodeListService, ent, node.getLevel());
             }
         } else {
-            if(node.getEntity() instanceof SmqBaseTarget) {
+            if(node.getEntity() != null && node.getEntity() instanceof SmqBaseTarget) {
                 SmqBaseTarget ent = (SmqBaseTarget)node.getEntity();
                 return getSmqRelationImpactDesc(refCodeListService, ent.getImpactType());
-            } else if(node.getEntity() instanceof SmqRelationTarget) {
+            } else if(node.getEntity() != null && node.getEntity() instanceof SmqRelationTarget) {
                 SmqRelationTarget ent = (SmqRelationTarget)node.getEntity();
                 return getSmqRelationImpactDesc(refCodeListService, ent.getRelationImpactType());
-            } else if(node.getEntity() instanceof MeddraDictHierarchySearchDto) {
+            } else if(node.getEntity() != null && node.getEntity() instanceof MeddraDictHierarchySearchDto) {
                 MeddraDictHierarchySearchDto ent = (MeddraDictHierarchySearchDto)node.getEntity();
                 if(node.getRelationEntity() != null && node.getRelationEntity() instanceof CmqRelationTarget) {
                     CmqRelationTarget ent1 = (CmqRelationTarget)node.getRelationEntity();
