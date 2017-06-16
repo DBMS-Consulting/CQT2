@@ -22,8 +22,7 @@
 				rendered="#{paramParentExtension eq 'PRO' or paramParentExtension eq 'CPT' or paramParentExtension eq 'DME'}"
 				value="#{paramDlgCtrl.filterLevel}" appendTo="@this">
  
-				<f:selectItem itemValue="PRO" itemLabel="PRO" />
-				<f:selectItems itemLabel="#{level.value}" value="#{configMB.levelList}"
+				<f:selectItems itemLabel="#{level.codelistInternalValue eq 'PRO' ? '' : level.value}" value="#{configMB.levelList}" itemDisabled="#{level.value eq 'PRO'}" 
 					itemValue="#{level.codelistInternalValue}" var="level"></f:selectItems>
 				<p:ajax update="check" />
 			</p:selectOneMenu>
