@@ -40,12 +40,11 @@
 				value="#{createController.detailsFormModel.name}"
 				style="width: 300px !important" />
 
-			<p:outputLabel id="lDrug"
-				value="#{createController.detailsFormModel.drugProgramRequired ? '* Drug Program' : 'Drug Program'}" />
+			<p:outputLabel id="lDrug" value="* Drug Program" />
 			<p:selectOneMenu
 				value="#{createController.detailsFormModel.drugProgram}" id="drug"
 				disabled="#{createController.detailsFormDisabled}"
-				required="#{createController.detailsFormModel.drugProgramRequired and not createController.readOnlyState}"
+				required="#{not createController.readOnlyState}"
                 label="Drug Program">
 				<f:selectItem itemValue="" itemLabel="" noSelectionOption="true" />
 				<f:selectItems value="#{configMB.programList}" var="program"
@@ -53,12 +52,11 @@
 					itemValue="#{program.codelistInternalValue}" />
 			</p:selectOneMenu>
 
-			<p:outputLabel id="lProtocol"
-				value="#{createController.detailsFormModel.protocolRequired ? '* Protocol' : 'Protocol'}" />
+			<p:outputLabel id="lProtocol" value="* Protocol" />
 			<p:selectOneMenu
 				value="#{createController.detailsFormModel.protocol}" id="protocol"
 				disabled="#{createController.detailsFormDisabled}"
-				required="#{createController.detailsFormModel.protocolRequired and not createController.readOnlyState}"
+				required="#{not createController.readOnlyState}"
                 label="Protocol">
 				
                 <f:selectItem itemValue="" itemLabel="" noSelectionOption="true" />
@@ -67,9 +65,7 @@
 					itemValue="#{protocol.codelistInternalValue}" />
 			</p:selectOneMenu>
 
-			<p:outputLabel id="lProduct"
-				value="#{createController.detailsFormModel.productRequired ? '* Product' : 'Product'}"
-				rendered="true" />
+			<p:outputLabel id="lProduct" value="* Product" rendered="true" />
 			<p:selectCheckboxMenu id="product" value="#{createController.detailsFormModel.products}" widgetVar="product"
                 disabled="#{createController.detailsFormDisabled}"
                 label="#{createController.detailsFormDisabled ? createController.detailsFormModel.productsLabel : 'Choose products'}" updateLabel="true"
@@ -78,7 +74,7 @@
 				<f:selectItems value="#{createController.productList}"
                                var="prd" itemLabel="#{prd.value}" itemValue="#{prd.codelistInternalValue}" />
                 <f:validator validatorId="mySelectCheckboxMenuLimitValidator" />                       
-                <f:attribute name="minLimit" value="#{createController.detailsFormModel.productRequired and not createController.readOnlyState ? 1 : 0}" />
+                <f:attribute name="minLimit" value="#{createController.readOnlyState ? 0 : 1}" />
                 <f:attribute name="validatorLabel" value="Product" />
 			</p:selectCheckboxMenu>
 
