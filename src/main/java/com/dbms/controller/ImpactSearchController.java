@@ -1992,7 +1992,8 @@ public class ImpactSearchController implements Serializable {
 		 /**
          * Restrictions on users from  REQUESTOR and ADMIN groups
          */
-        if (authService.getGroupName().equals("REQUESTOR") || authService.getGroupName().equals("ADMIN")) {        	
+        if (authService.getGroupMembershipHeader() != null && (authService.getGroupMembershipHeader().contains(AuthenticationService.REQUESTER_GROUP)
+                || authService.getGroupMembershipHeader().contains("MQM"))) {        	
         	if (detailsFormModel.getStatus().equals(CmqBaseTarget.CMQ_STATUS_VALUE_ACTIVE) 
         			|| (detailsFormModel.getDesignee() != null && detailsFormModel.getDesignee().equals(authService.getUserCn()))
         			|| (detailsFormModel.getDesigneeTwo() != null && detailsFormModel.getDesigneeTwo().equals(authService.getUserCn()))
@@ -2015,7 +2016,8 @@ public class ImpactSearchController implements Serializable {
 		 /**
          * Restrictions on users from  REQUESTOR and ADMIN groups
          */
-        if (authService.getGroupName().equals("REQUESTOR") || authService.getGroupName().equals("ADMIN")) {        	
+        if (authService.getGroupMembershipHeader()!= null && (authService.getGroupMembershipHeader().contains(AuthenticationService.REQUESTER_GROUP) || 
+        		authService.getGroupMembershipHeader().contains(AuthenticationService.ADMIN_GROUP))) {        	
         	if (detailsFormModel.getStatus().equals(CmqBaseTarget.CMQ_STATUS_VALUE_ACTIVE) 
         			|| (detailsFormModel.getDesignee() != null && detailsFormModel.getDesignee().equals(authService.getUserCn()))
         			|| (detailsFormModel.getDesigneeTwo() != null && detailsFormModel.getDesigneeTwo().equals(authService.getUserCn()))

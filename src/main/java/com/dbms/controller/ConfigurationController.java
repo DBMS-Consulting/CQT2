@@ -35,7 +35,7 @@ public class ConfigurationController implements Serializable {
 	@ManagedProperty("#{RefCodeListService}")
 	private IRefCodeListService refCodeListService;
 
-	private List<RefConfigCodeList> extensions, programs, protocols, products, workflows;
+	private List<RefConfigCodeList> extensions, programs, protocols, products, workflows, levels;
 
 	private RefConfigCodeList currentMeddraVersionCodeList;
 	
@@ -125,6 +125,22 @@ public class ConfigurationController implements Serializable {
 		return workflows;
 	}
 
+	
+	/**
+	 * Returns levels list.
+	 * 
+	 * @return
+	 */
+	public List<RefConfigCodeList> getLevelList() {
+		products = refCodeListService.findByConfigType(
+				CqtConstants.CODE_LIST_TYPE_DICTIONARY_LEVELS, OrderBy.ASC);
+		if (products == null) {
+			products = new ArrayList<>();
+		}
+		return products;
+	}
+	
+	
 	public RefConfigCodeList getCurrentMeddraVersion() {
 		this.currentMeddraVersionCodeList = refCodeListService.getCurrentMeddraVersion();
 		return this.currentMeddraVersionCodeList;
@@ -214,4 +230,12 @@ public class ConfigurationController implements Serializable {
         }
         return cmqTargetListStates;
     }
+
+	public List<RefConfigCodeList> getLevels() {
+		return levels;
+	}
+
+	public void setLevels(List<RefConfigCodeList> levels) {
+		this.levels = levels;
+	}
 }

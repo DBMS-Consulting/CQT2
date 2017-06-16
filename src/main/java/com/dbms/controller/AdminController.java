@@ -48,6 +48,8 @@ public class AdminController implements Serializable {
     private static final String CODELIST_CMQ_RELATION_IMPACT_TYPE = "CMQ_RELATION_IMPACT_TYPE";
     private static final String CODELIST_SMQ_RELATION_IMPACT_TYPE = "SMQ_RELATION_IMPACT_TYPE";
     private static final String CODELIST_MEDDRA_DICT_IMPACT_TYPE = "MEDDRA_DICT_IMPACT_TYPE";
+    private static final String CODELIST_DICTIONARY_LEVELS_TYPE = "DICTIONARY_CMQ_LEVELS";
+
 
 	List<CodelistDTO> list;
 	private String codelist;
@@ -60,7 +62,7 @@ public class AdminController implements Serializable {
 	
 	private List<RefConfigCodeList> extensions, programs, protocols,
             products, meddras, workflows, usergroups, sysconfigs,
-            cmqImpactTypes, smqImpactTypes, meddraImpactTypes;
+            cmqImpactTypes, smqImpactTypes, meddraImpactTypes, levels;
 	
 	private RefConfigCodeList selectedRow, myFocusRef;
 	private StreamedContent excelFile;
@@ -83,6 +85,7 @@ public class AdminController implements Serializable {
         getCmqImpactTypeList();
         getSmqImpactTypeList();
         getMeddraImpactTypeList();
+        getLevelList();
 	}
 	
 	public String initAddCodelist() {
@@ -132,6 +135,10 @@ public class AdminController implements Serializable {
 			myFocusRef.setCodelistConfigType(CqtConstants.CODE_LIST_TYPE_MEDDRA_DICT_IMPACT_TYPE); 
 			if (getMeddraImpactTypes() != null && !meddraImpactTypes.isEmpty())
 				lastSerial = getMeddraImpactTypes().get(getMeddraImpactTypes().size() - 1).getSerialNum();
+		} else if (codelist.equals(CODELIST_DICTIONARY_LEVELS_TYPE)) {
+			myFocusRef.setCodelistConfigType(CqtConstants.CODE_LIST_TYPE_DICTIONARY_LEVELS); 
+			if (getLevels()!= null && !levels.isEmpty())
+				lastSerial = getLevels().get(getLevels().size() - 1).getSerialNum();
 		}
 		myFocusRef.setCreationDate(new Date());
 		myFocusRef.setLastModificationDate(new Date()); 
@@ -260,6 +267,19 @@ public class AdminController implements Serializable {
 		}
 		return sysconfigs;
 	}
+	
+	/**
+	 * Returns Dictionary level codelist.
+	 * @return
+	 */
+	public List<RefConfigCodeList> getLevelList() {
+		levels = refCodeListService.findAllByConfigType(
+				CqtConstants.CODE_LIST_TYPE_DICTIONARY_LEVELS, OrderBy.ASC);
+		if (levels == null) {
+			levels = new ArrayList<>();
+		}
+		return levels;
+	}
     
     /**
 	 * Returns CMQ List Impact Type Config codelist.
@@ -376,6 +396,9 @@ public class AdminController implements Serializable {
 			} else if (myFocusRef.getCodelistConfigType().equals(CqtConstants.CODE_LIST_TYPE_MEDDRA_DICT_IMPACT_TYPE)) {
 				type = "Meddra Dictionary Impact Type";
 				getMeddraImpactTypeList();
+			} else if (myFocusRef.getCodelistConfigType().equals(CqtConstants.CODE_LIST_TYPE_DICTIONARY_LEVELS)) {
+				type = "Dictionary CMQ Level Type";
+				getLevelList();
 			}
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					type + " '" + myFocusRef.getCodelistInternalValue() + "' is successfully saved.", "");
@@ -617,4 +640,12 @@ public class AdminController implements Serializable {
     public void setMeddraImpactTypes(List<RefConfigCodeList> meddraImpactTypes) {
         this.meddraImpactTypes = meddraImpactTypes;
     }
+
+	public List<RefConfigCodeList> getLevels() {
+		return levels;
+	}
+
+	public void setLevels(List<RefConfigCodeList> levels) {
+		this.levels = levels;
+	}
 }

@@ -130,7 +130,8 @@ public class CreateController implements Serializable {
 	
 	@PostConstruct
 	public void init() {
-        setSelectedData(null);
+		this.selectedData = new CmqBase190();
+       // setSelectedData(null);
 		this.detailsFormModel  = new ListDetailsFormVM(this.authService, this.refCodeListService, this.appSWJSFRequest);
         this.relationsModel = new ListRelationsVM(authService, appSWJSFRequest, refCodeListService, cmqBaseService, smqBaseService, meddraDictService, cmqRelationService);
         this.workflowFormModel = new ListWorkflowFormVM(this.authService);
@@ -837,7 +838,7 @@ public class CreateController implements Serializable {
         if(!detailsFormModel.validateForm())
             return "";
         
-		if(selectedData.getId() != null) { // if already saved
+		if(selectedData != null && selectedData.getId() != null) { // if already saved
 			return update();
 		}
         
@@ -921,9 +922,9 @@ public class CreateController implements Serializable {
 		/**
          * Restrictions on users from  REQUESTOR and ADMIN groups
          */
-    	if (authService.getGroupName() != null &&
-                (authService.getGroupName().equals(AuthenticationService.REQUESTER_GROUP)
-                    || authService.getGroupName().equals(AuthenticationService.ADMIN_GROUP)))
+    	if (authService.getGroupMembershipHeader() != null &&
+                (authService.getGroupMembershipHeader().contains(AuthenticationService.REQUESTER_GROUP)
+                    || authService.getGroupMembershipHeader().contains(AuthenticationService.ADMIN_GROUP)))
 			d = restrictionsByUserAuthentified();
         else
             d = false;
@@ -1059,7 +1060,7 @@ public class CreateController implements Serializable {
 	 */
 	private void prepareDetailsFormSave() throws CqtServiceException {
 		// fill data
-		if((createWizard != null || copyWizard != null) && selectedData.getId() == null) {
+		if((createWizard != null || copyWizard != null) && (selectedData != null && selectedData.getId() == null)) {
 			// get the next value of code
 			codevalue = this.cmqBaseService.getNextCodeValue();
 			RefConfigCodeList currentMeddraVersionCodeList = this.refCodeListService.getCurrentMeddraVersion();
@@ -1342,7 +1343,7 @@ public class CreateController implements Serializable {
 			products = new ArrayList<>();
 		}
 		else {
-			if (selectedData.getProductsList() != null)
+			if (selectedData != null && selectedData.getProductsList() != null)
 				for (CmqProductBaseCurrent prod : selectedData.getProductsList()) {
 					RefConfigCodeList config = refCodeListService.findByConfigTypeAndInternalCode(CqtConstants.CODE_LIST_TYPE_PRODUCT, prod.getCmqProductCd());
 					if (config != null && config.getActiveFlag().equals("N") && !products.contains(config)) {
@@ -1654,12 +1655,20 @@ public class CreateController implements Serializable {
     
     public boolean isDetailsFormDisabled() {
         boolean d;
+      //Create list abilities for MQM and REQUESTOR
+      	/**
+          * Restrictions on users from  REQUESTOR and ADMIN groups
+        */
+         if ((createWizard != null || updateWizard != null) && authService.getGroupMembershipHeader() != null &&
+                (authService.getGroupMembershipHeader().contains(AuthenticationService.REQUESTER_GROUP)
+                  || authService.getGroupMembershipHeader().contains("MQM")))
+      			return false;
     	/**
          * Restrictions on users from  REQUESTOR and ADMIN groups
          */
-    	if (authService.getGroupName() != null &&
-                (authService.getGroupName().equals(AuthenticationService.REQUESTER_GROUP) 
-                    || authService.getGroupName().equals(AuthenticationService.ADMIN_GROUP)))
+    	if (authService.getGroupMembershipHeader() != null &&
+    			 (authService.getGroupMembershipHeader().contains(AuthenticationService.REQUESTER_GROUP)
+    	                    || authService.getGroupMembershipHeader().contains(AuthenticationService.ADMIN_GROUP)))
             d = restrictionsByUserAuthentified();
         else
             d = false;
@@ -1685,9 +1694,9 @@ public class CreateController implements Serializable {
 				2) the list's status is P
 				3) they are any designee or they have created the list
         	 */
-        	if (authService.getGroupMembershipHeader().contains("MQM"))
+        	if (authService.getGroupMembershipHeader() != null && authService.getGroupMembershipHeader().contains("MQM"))
         		return false;
-        	else if ((authService.getGroupMembershipHeader().contains(AuthenticationService.REQUESTER_GROUP)) 
+        	else if (authService.getGroupMembershipHeader() != null && (authService.getGroupMembershipHeader().contains(AuthenticationService.REQUESTER_GROUP)) 
         			&& selectedData.getCmqStatus().equals("P") 
         			&& (selectedData.getCmqState().equals("DRAFT") || selectedData.getCmqState().equals("REVIEWED"))
         			&& (((listCreator != null) && (listCreator.startsWith(authService.getUserCn())))
@@ -1695,7 +1704,7 @@ public class CreateController implements Serializable {
         		        			|| (selectedData.getCmqDesignee2() != null && selectedData.getCmqDesignee2().equals(authService.getUserCn()))
         		        			|| (selectedData.getCmqDesignee3() != null && selectedData.getCmqDesignee3().equals(authService.getUserCn()))))) {
         		return  false;
-        	} else if ((authService.getGroupMembershipHeader().contains(AuthenticationService.ADMIN_GROUP)) 
+        	} else if (authService.getGroupMembershipHeader() != null && (authService.getGroupMembershipHeader().contains(AuthenticationService.ADMIN_GROUP)) 
         			&& selectedData.getCmqStatus().equals("P") 
         			&& (selectedData.getCmqState().equals("DRAFT") || (selectedData.getCmqState().equals("PENDING IA") || selectedData.getCmqState().equals("REVIEWED IA")))
         			&& (((listCreator != null) && (listCreator.startsWith(authService.getUserCn())))
