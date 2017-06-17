@@ -127,6 +127,9 @@ public class CreateController implements Serializable {
 	private boolean	formSaved;
 	private String listCreator;
 	
+	private List<RefConfigCodeList> products;
+	
+	
 	public CreateController() {
 		setSelectedData(null);
 	}
@@ -146,6 +149,9 @@ public class CreateController implements Serializable {
 		relationsModified = false;
 		maintainDesigBtn = false;
 		formSaved = false;
+		
+		//Init of products when navigationg from UPDATE Details
+		products = new ArrayList<>();
 	}
 
 	public void initCreateForm() {
@@ -1333,7 +1339,6 @@ public class CreateController implements Serializable {
 	 * @return
 	 */
 	public List<RefConfigCodeList> getProductList() {
-		List<RefConfigCodeList> products = new ArrayList<>();
 		products = refCodeListService.findByConfigType(
 				CqtConstants.CODE_LIST_TYPE_PRODUCT, OrderBy.ASC);
 		if (products == null) {

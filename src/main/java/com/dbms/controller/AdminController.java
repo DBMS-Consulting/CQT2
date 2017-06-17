@@ -68,12 +68,12 @@ public class AdminController implements Serializable {
 	private StreamedContent excelFile;
 
 	public AdminController() {
-
+		codelist = CODELIST_EXTENSION;
 	}
 
 	@PostConstruct
 	public void init() {
-		codelist = CODELIST_EXTENSION;
+		
 		getExtensionList();
 		getProductList();
 		getProgramList();
@@ -356,7 +356,7 @@ public class AdminController implements Serializable {
 				myFocusRef.setLastModifiedBy(lastModifiedByString);
 				myFocusRef.setCreationDate(lastModifiedDate);
 				myFocusRef.setCreatedBy(lastModifiedByString);
-				refCodeListService.create(myFocusRef, this.authService.getUserCn()
+ 				refCodeListService.create(myFocusRef, this.authService.getUserCn()
 						, this.authService.getUserGivenName(), this.authService.getUserSurName()
 						, this.authService.getCombinedMappedGroupMembershipAsString());
 			}
@@ -406,7 +406,7 @@ public class AdminController implements Serializable {
 		} catch (CqtServiceException e) {
 			e.printStackTrace();
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"An error occurred while creating an extension code", "Error:" + e.getMessage());
+					"An error occurred while creating an codelist type", "Error:" + e.getMessage());
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}
 		myFocusRef = new RefConfigCodeList();
