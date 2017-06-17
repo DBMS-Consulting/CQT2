@@ -1,8 +1,5 @@
 package com.dbms.csmq;
 
-import com.dbms.entity.cqt.RefConfigCodeList;
-import com.dbms.service.IRefCodeListService;
-import com.dbms.util.CqtConstants;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -11,7 +8,9 @@ import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 
-import org.apache.commons.lang3.ArrayUtils;
+import com.dbms.entity.cqt.RefConfigCodeList;
+import com.dbms.service.IRefCodeListService;
+import com.dbms.util.CqtConstants;
 
 
 
@@ -195,6 +194,7 @@ public class CSMQBean {
     public static final String SCOPE_BROAD = "1";
     public static final String SCOPE_NARROW = "2";
     public static final String SCOPE_CHILD_NARROW = "3";
+    public static final String SCOPE_FULL = "4";
 
     // Categories
     public static final String CATEGORY_A = "A";
@@ -842,6 +842,7 @@ public class CSMQBean {
 			new String[] { SCOPE_NARROW, "Narrow" },
 			new String[] { SCOPE_BROAD, "Broad" },
 			new String[] { SCOPE_CHILD_NARROW, "Child Narrow" },
+			new String[] { SCOPE_FULL, "Full" }
 		});
 	}
     

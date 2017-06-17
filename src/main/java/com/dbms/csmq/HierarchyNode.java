@@ -8,6 +8,7 @@ import org.apache.commons.beanutils.BeanUtils;
 import com.dbms.entity.IEntity;
 import com.dbms.entity.cqt.CmqBase190;
 import com.dbms.entity.cqt.CmqBaseTarget;
+import com.dbms.entity.cqt.SmqBase190;
 
 public class HierarchyNode implements Serializable, Comparable<HierarchyNode> {
 
@@ -27,14 +28,20 @@ public class HierarchyNode implements Serializable, Comparable<HierarchyNode> {
 	private boolean isDummyNode;
 
 	private boolean hideCategory;
+	
+	private boolean readOnlyCategory;
 
 	private String category;
 
 	private boolean hideWeight;
+	
+	private boolean readOnlyWeight;
 
 	private String weight;
 
 	private boolean hideScope;
+	
+	private boolean readOnlyScope;
 
 	private String scope;
 
@@ -54,6 +61,8 @@ public class HierarchyNode implements Serializable, Comparable<HierarchyNode> {
 	private int currentShowingCount;
 
 	private int totalRecordsCount;
+	
+	private boolean drilledDown;
 	
 	public HierarchyNode() {
 	}
@@ -196,6 +205,13 @@ public class HierarchyNode implements Serializable, Comparable<HierarchyNode> {
 		this.hideScope = false;
 		this.hideWeight = false;
 	}
+	
+	public void markReadOnlyInRelationstable() {
+		this.readOnlyCategory = true;
+		this.hideDelete = true;
+		this.readOnlyScope = true;
+		this.readOnlyWeight = true;
+	}
 
 	@Override
 	public String toString() {
@@ -334,5 +350,45 @@ public class HierarchyNode implements Serializable, Comparable<HierarchyNode> {
 
 	public void setPrimarypathCheckDone(boolean primarypathCheckDone) {
 		this.primarypathCheckDone = primarypathCheckDone;
+	}
+	
+	public boolean isSmqNode() {
+		if((this.entity != null) && (this.entity instanceof SmqBase190)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public boolean isReadOnlyCategory() {
+		return readOnlyCategory;
+	}
+
+	public void setReadOnlyCategory(boolean readOnlyCategory) {
+		this.readOnlyCategory = readOnlyCategory;
+	}
+
+	public boolean isReadOnlyWeight() {
+		return readOnlyWeight;
+	}
+
+	public void setReadOnlyWeight(boolean readOnlyWeight) {
+		this.readOnlyWeight = readOnlyWeight;
+	}
+
+	public boolean isReadOnlyScope() {
+		return readOnlyScope;
+	}
+
+	public void setReadOnlyScope(boolean readOnlyScope) {
+		this.readOnlyScope = readOnlyScope;
+	}
+
+	public boolean isDrilledDown() {
+		return drilledDown;
+	}
+
+	public void setDrilledDown(boolean drilledDown) {
+		this.drilledDown = drilledDown;
 	}
 }

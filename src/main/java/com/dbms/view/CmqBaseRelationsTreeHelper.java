@@ -503,7 +503,8 @@ public class CmqBaseRelationsTreeHelper {
                 childNode.setCode(childSmqBase.getSmqCode().toString());
                 childNode.setEntity(childSmqBase);
                 if(relationView) {
-                    childNode.markNotEditableInRelationstable();
+                    //childNode.markNotEditableInRelationstable();
+                	childNode.markReadOnlyInRelationstable();
                 }
 
 				// add child to parent
@@ -570,7 +571,7 @@ public class CmqBaseRelationsTreeHelper {
 				
                 if(relationView) {
                     //childRelationNode.markNotEditableInRelationstable();
-                    childRelationNode.setHideDelete(true);;
+                    childRelationNode.markReadOnlyInRelationstable();
                 }
 
 				TreeNode treeNode = new DefaultTreeNode(childRelationNode, expandedTreeNode);
