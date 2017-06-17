@@ -42,6 +42,7 @@ import com.dbms.service.AuthenticationService;
 import com.dbms.service.ICmqBase190Service;
 import com.dbms.service.ICmqBaseTargetService;
 import com.dbms.service.ICmqRelation190Service;
+import com.dbms.service.ICqtCacheManager;
 import com.dbms.service.IMeddraDictService;
 import com.dbms.service.IRefCodeListService;
 import com.dbms.service.ISmqBaseService;
@@ -101,6 +102,10 @@ public class CreateController implements Serializable {
     @ManagedProperty("#{CmqBaseTargetService}")
     private ICmqBaseTargetService myCmqTargetService;
     
+    @ManagedProperty("#{CqtCacheManager}")
+	private ICqtCacheManager cqtCacheManager;
+	
+    
 	private ListDetailsFormVM detailsFormModel;
 	private ListNotesFormVM notesFormModel = new ListNotesFormVM();
     private ListRelationsVM relationsModel;
@@ -128,6 +133,8 @@ public class CreateController implements Serializable {
 	private String listCreator;
 	
 	private List<RefConfigCodeList> products;
+	
+	private final String CACHE_NAME = "code-list-cache";
 	
 	
 	public CreateController() {
@@ -1339,13 +1346,15 @@ public class CreateController implements Serializable {
 	 * @return
 	 */
 	public List<RefConfigCodeList> getProductList() {
+		cqtCacheManager.removeAllFromCache(CACHE_NAME);
+		products = new ArrayList<>();
 		products = refCodeListService.findByConfigType(
 				CqtConstants.CODE_LIST_TYPE_PRODUCT, OrderBy.ASC);
 		if (products == null) {
 			products = new ArrayList<>();
 		}
 		else {
-			if (selectedData != null && selectedData.getProductsList() != null)
+			if (selectedData != null && selectedData.getProductsList() != null && (updateWizard != null || copyWizard != null))
 				for (CmqProductBaseCurrent prod : selectedData.getProductsList()) {
 					RefConfigCodeList config = refCodeListService.findByConfigTypeAndInternalCode(CqtConstants.CODE_LIST_TYPE_PRODUCT, prod.getCmqProductCd());
 					if (config != null && config.getActiveFlag().equals("N") && !products.contains(config)) {
@@ -1579,6 +1588,11 @@ public class CreateController implements Serializable {
 		if (authService.getGroupMembershipHeader() != null &&
                 (authService.getGroupMembershipHeader().contains(AuthenticationService.REQUESTER_GROUP)
                 		&& !(authService.getGroupMembershipHeader().contains("MQM"))))
+			return true;
+		
+		//Disable Review Button when List is Approved
+		if (selectedData != null && selectedData.getCmqStatus() != null
+				&& CmqBase190.CMQ_STATE_VALUE_APPROVED.equalsIgnoreCase(selectedData.getCmqState()))
 			return true;
 
 		if (selectedData != null
@@ -1841,5 +1855,21 @@ public class CreateController implements Serializable {
     public void setMeddraDictService(IMeddraDictService meddraDictService) {
         this.meddraDictService = meddraDictService;
     }
+
+	public List<RefConfigCodeList> getProducts() {
+		return products;
+	}
+
+	public void setProducts(List<RefConfigCodeList> products) {
+		this.products = products;
+	}
+
+	public ICqtCacheManager getCqtCacheManager() {
+		return cqtCacheManager;
+	}
+
+	public void setCqtCacheManager(ICqtCacheManager cqtCacheManager) {
+		this.cqtCacheManager = cqtCacheManager;
+	}
      
 }

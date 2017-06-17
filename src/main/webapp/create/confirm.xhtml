@@ -182,11 +182,11 @@
         <p:panelGrid columns="2" columnClasses="label-cell,value-cell">
 			<p:outputLabel value="Reason for Request:" />
 			<p:inputText id="request" value="#{createController.workflowFormModel.requestReason}" 
-                         disabled="#{createController.workflowFormModel.requestReasonDisabled}"/>
+                         disabled="#{createController.workflowFormModel.requestReasonDisabled or createController.selectedData.cmqState eq 'APPROVED'}"/>
             
             <p:outputLabel value="Due Date:" />
             <p:calendar value="#{createController.workflowFormModel.dueDate}" id="dueDate" mode="popup" pattern="dd-MMM-yyyy" mindate="#{createController.workflowFormModel.minDueDate}"
-                        disabled="#{createController.workflowFormModel.dueDateDisabled}">
+                        disabled="#{createController.workflowFormModel.dueDateDisabled or createController.selectedData.cmqState eq 'APPROVED'}">
                 <p:ajax event="dateSelect" listener="#{createController.workflowFormModel.onDueDateSelect}" global="false" />
             </p:calendar>
 					
