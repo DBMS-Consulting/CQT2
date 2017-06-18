@@ -384,6 +384,15 @@ public class CreateController implements Serializable {
 							} else if ("LLT".equalsIgnoreCase(hierarchyNode.getLevel())) {
 								code = Long.parseLong(searchDto.getLltCode());
 								matchingMap = this.checkIfReverseMeddraRelationExists(existingRelation, code, hierarchyNode);
+							} else if ("HLGT".equalsIgnoreCase(hierarchyNode.getLevel())) {
+								code = Long.parseLong(searchDto.getHlgtCode());
+								matchingMap = this.checkIfReverseMeddraRelationExists(existingRelation, code, hierarchyNode);
+							} else if ("HLT".equalsIgnoreCase(hierarchyNode.getLevel())) {
+								code = Long.parseLong(searchDto.getHltCode());
+								matchingMap = this.checkIfReverseMeddraRelationExists(existingRelation, code, hierarchyNode);
+							} else if ("SOC".equalsIgnoreCase(hierarchyNode.getLevel())) {
+								code = Long.parseLong(searchDto.getSocCode());
+								matchingMap = this.checkIfReverseMeddraRelationExists(existingRelation, code, hierarchyNode);
 							}
 							
 							matchFound = (boolean) matchingMap.get("MATCH_FOUND");

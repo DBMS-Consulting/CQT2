@@ -150,7 +150,35 @@ public class ListRelationsVM implements IRelationsChangeListener {
 								HierarchyNode relationsHierarchyNode = hierarchyNode.copy();
 								TreeNode relationsTreeNode = new DefaultTreeNode(relationsHierarchyNode, relationsRoot);
 								relationsHierarchyNode. markEditableInRelationstable();
-								if(!"LLT".equalsIgnoreCase(relationsHierarchyNode.getLevel())) {
+								IEntity entity = relationsHierarchyNode.getEntity();
+								if(entity instanceof MeddraDictReverseHierarchySearchDto) {
+									MeddraDictReverseHierarchySearchDto reverseHierarchySearchDto = (MeddraDictReverseHierarchySearchDto)entity;
+									if("SOC".equalsIgnoreCase(relationsHierarchyNode.getLevel())) {
+										Long socCode = Long.valueOf(reverseHierarchySearchDto.getSocCode());
+										MeddraDictHierarchySearchDto socDictHierarchySearchDto = this.meddraDictService.findByCode("SOC_", socCode);
+										relationsHierarchyNode.setEntity(socDictHierarchySearchDto);
+										relationsHierarchyNode.setDataFetchCompleted(false);
+										HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
+										dummyNode.setDummyNode(true);
+										new DefaultTreeNode(dummyNode, relationsTreeNode);
+									} else if("HLT".equalsIgnoreCase(relationsHierarchyNode.getLevel())) {
+										Long hltCode = Long.valueOf(reverseHierarchySearchDto.getHltCode());
+										MeddraDictHierarchySearchDto hltDictHierarchySearchDto = this.meddraDictService.findByCode("HLT_", hltCode);
+										relationsHierarchyNode.setEntity(hltDictHierarchySearchDto);
+										relationsHierarchyNode.setDataFetchCompleted(false);
+										HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
+										dummyNode.setDummyNode(true);
+										new DefaultTreeNode(dummyNode, relationsTreeNode);
+									} else if("HLGT".equalsIgnoreCase(relationsHierarchyNode.getLevel())) {
+										Long hlgtCode = Long.valueOf(reverseHierarchySearchDto.getHlgtCode());
+										MeddraDictHierarchySearchDto hlgtDictHierarchySearchDto = this.meddraDictService.findByCode("HLGT_", hlgtCode);
+										relationsHierarchyNode.setEntity(hlgtDictHierarchySearchDto);
+										relationsHierarchyNode.setDataFetchCompleted(false);
+										HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
+										dummyNode.setDummyNode(true);
+										new DefaultTreeNode(dummyNode, relationsTreeNode);
+									}
+								} else if(!"LLT".equalsIgnoreCase(relationsHierarchyNode.getLevel())) {
 									List<TreeNode> childTreeNodes = treeNode.getChildren();
 									if(CollectionUtils.isNotEmpty(childTreeNodes)) {
 										relationsHierarchyNode.setDataFetchCompleted(false);
