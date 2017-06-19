@@ -38,7 +38,7 @@
 		<br />
 		<h:panelGroup id="pct3" style="display:block;position: absolute;height:80%;height: calc(100% - 100px);width: 100%;margin-left: -16px;padding: 0 10px;box-sizing: border-box;overflow: auto;">
 			<p:treeTable value="#{impactSearchController.targetHierarchySearchDlgModel.hierarchyRoot}"  var="node"
-                id="resultHierTarget" selectionMode="checkbox" selection="#{impactSearchController.targetHierarchySearchDlgModel.selectedNodes}"
+                id="resultHierTarget" selectionMode="multiple" selection="#{impactSearchController.targetHierarchySearchDlgModel.selectedNodes}"
 				styleClass="ui-treetable-resultHierTarget hide-sel-chkbox"
                 rowStyleClass="#{node.rowStyleClass}" resizableColumns="true">
 
