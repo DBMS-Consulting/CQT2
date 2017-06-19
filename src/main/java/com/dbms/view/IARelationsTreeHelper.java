@@ -886,10 +886,12 @@ public class IARelationsTreeHelper {
 					childRelationNode.setCode(childRelation.getPtCode().toString());
 					
 					if(!isRootListNode && "target-table".equalsIgnoreCase(uiSourceOfEvent)) {
-						childRelationNode.markNotEditableInRelationstable();
+						//childRelationNode.markNotEditableInRelationstable();
+						childRelationNode.markReadOnlyInRelationstable();
 					}
 					if(isRootNodeOfSmqType) {
 						childRelationNode.setHideDelete(true);
+						childRelationNode.markReadOnlyInRelationstable();
 					}
 					//Set Color
 					setSMQTargetNodeStyle(childRelationNode, childRelation);
@@ -1567,7 +1569,7 @@ public class IARelationsTreeHelper {
 	
 	public void updateTargetTableForCmqList(TreeNode targetTableRootTreeNode, CmqBaseTarget selectedCmqList) {
 		HierarchyNode node = this.createCmqBaseTargetHierarchyNode(selectedCmqList);
-		node.markNotEditableInRelationstable();
+		node.markReadOnlyInRelationstable();
 		TreeNode cmqBaseTreeNode = new DefaultTreeNode(node, targetTableRootTreeNode);
 
         setTargetCmqBaseNodeStyle(node, selectedCmqList);
@@ -1624,7 +1626,7 @@ public class IARelationsTreeHelper {
                 cmqBaseCurrentService, smqBaseCurrentService, meddraDictCurrentService, cmqRelationCurrentService,
                 cmqBaseTargetService, smqBaseTargetService, meddraDictTargetService, cmqRelationTargetService);
 		HierarchyNode node = treeHelper.createSmqBaseTargetNode(selectedSmqList, null);
-		node.markNotEditableInRelationstable();
+		node.markReadOnlyInRelationstable();
 		TreeNode cmqBaseTreeNode = new DefaultTreeNode(node, targetTableRootTreeNode);
 
 		if (CSMQBean.IMPACT_TYPE_ICS.equals(selectedSmqList.getImpactType())

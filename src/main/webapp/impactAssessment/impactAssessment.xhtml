@@ -273,25 +273,26 @@
                                     </p:column>
 									<p:column><h:outputText value="#{node.level}" /></p:column>
 									<p:column rendered="#{impactSearchController.displayScopeCatWeight}">
-                                        <h:outputText rendered="#{not node.hideScope and node.algorithmN}" value="#{appCSMQBean.interpretCqtBaseScope(node.scope)}" />
+                                        <h:outputText rendered="#{not node.hideScope and node.readOnlyScope}" value="#{appCSMQBean.interpretCqtBaseScope(node.scope)}" />
                                         <p:selectOneMenu value="#{node.scope}"
-                                            rendered="#{not node.hideScope and not node.algorithmN}"
+                                            rendered="#{not node.hideScope and not node.readOnlyScope and (node.isSmqNode() or not node.algorithmN)}"
                                             autoWidth="false" style="width:70%">
                                             <f:selectItems value="#{appCSMQBean.cqtBaseScopes}" var="s" itemLabel="#{s[1]}" itemValue="#{s[0]}" />
                                         </p:selectOneMenu>
 									</p:column>
 									<p:column rendered="#{impactSearchController.displayScopeCatWeight}">
-                                        <h:outputText rendered="#{not node.hideCategory and node.algorithmN}" value="#{appCSMQBean.interpretCqtBaseCategory(node.category)}" />
+                                        <h:outputText rendered="#{not node.hideCategory and node.readOnlyCategory}" 
+                                            value="#{appCSMQBean.interpretCqtBaseCategory(node.category)}" />
                                         <p:selectOneMenu value="#{node.category}"
-                                            rendered="#{not node.hideCategory and not node.algorithmN}"
+                                            rendered="#{not node.hideCategory and not node.readOnlyCategory and (node.isSmqNode() or not node.algorithmN)}"
                                             autoWidth="false" style="width:70%">
                                             <f:selectItems value="#{appCSMQBean.cqtBaseCategories}" var="c" itemLabel="#{c[1]}" itemValue="#{c[0]}" />
                                         </p:selectOneMenu>
 									</p:column>
 									<p:column rendered="#{impactSearchController.displayScopeCatWeight}">
-                                        <h:outputText rendered="#{not node.hideWeight and node.algorithmN}" value="#{node.weight}" />
+                                        <h:outputText rendered="#{not node.hideWeight and node.readOnlyWeight}" value="#{node.weight}" />
                                         <p:spinner value="#{node.weight}" size="2"
-                                            rendered="#{not node.hideWeight and not node.algorithmN}" />
+                                            rendered="#{not node.hideWeight and not node.readOnlyWeight and (node.isSmqNode() or not node.algorithmN)}" />
 									</p:column>
 									<p:column>
 										<p:commandLink

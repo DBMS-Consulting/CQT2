@@ -177,6 +177,14 @@ public class ListRelationsVM implements IRelationsChangeListener {
 										HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
 										dummyNode.setDummyNode(true);
 										new DefaultTreeNode(dummyNode, relationsTreeNode);
+									} else if("PT".equalsIgnoreCase(relationsHierarchyNode.getLevel())) {
+										Long ptCode = Long.valueOf(reverseHierarchySearchDto.getPtCode());
+										MeddraDictHierarchySearchDto ptDictHierarchySearchDto = this.meddraDictService.findByCode("PT_", ptCode);
+										relationsHierarchyNode.setEntity(ptDictHierarchySearchDto);
+										relationsHierarchyNode.setDataFetchCompleted(false);
+										HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
+										dummyNode.setDummyNode(true);
+										new DefaultTreeNode(dummyNode, relationsTreeNode);
 									}
 								} else if(!"LLT".equalsIgnoreCase(relationsHierarchyNode.getLevel())) {
 									List<TreeNode> childTreeNodes = treeNode.getChildren();

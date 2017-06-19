@@ -9,6 +9,7 @@ import com.dbms.entity.IEntity;
 import com.dbms.entity.cqt.CmqBase190;
 import com.dbms.entity.cqt.CmqBaseTarget;
 import com.dbms.entity.cqt.SmqBase190;
+import com.dbms.entity.cqt.SmqBaseTarget;
 
 public class HierarchyNode implements Serializable, Comparable<HierarchyNode> {
 
@@ -353,7 +354,7 @@ public class HierarchyNode implements Serializable, Comparable<HierarchyNode> {
 	}
 	
 	public boolean isSmqNode() {
-		if((this.entity != null) && (this.entity instanceof SmqBase190)) {
+		if((this.entity != null) && ((this.entity instanceof SmqBase190) || (this.entity instanceof SmqBaseTarget))) {
 			return true;
 		} else {
 			return false;

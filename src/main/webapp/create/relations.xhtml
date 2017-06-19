@@ -189,11 +189,11 @@
 
 			<p:column rendered="#{createController.relationsModel.displayScopeCatWeight}" style="width:10%">
                 <h:outputText value="#{appCSMQBean.interpretCqtBaseCategory(node.category)}"
-                    rendered="#{not node.hideScope and node.readOnlyScope}" />
+                    rendered="#{not node.hideScope and node.readOnlyCategory}" />
                 
 				<p:selectOneMenu id="soc2" value="#{node.category}" 
 				        disabled="#{createController.readOnlyState}"
-						rendered="#{not node.hideCategory and not node.readOnlyScope and (node.isSmqNode() or not createController.detailsFormModel.algorithm eq 'N')}" autoWidth="false" style="width:75%">
+						rendered="#{not node.hideCategory and not node.readOnlyCategory and (node.isSmqNode() or not createController.detailsFormModel.algorithm eq 'N')}" autoWidth="false" style="width:75%">
 					<f:selectItem itemLabel="" itemValue="" noSelectionOption="true"/>
 					<f:selectItems var="s" value="#{appCSMQBean.cqtBaseCategories}"
 						itemValue="#{s[0]}" itemLabel="#{s[1]}" />
@@ -202,11 +202,11 @@
 
 			<p:column rendered="#{createController.relationsModel.displayScopeCatWeight}" style="width:5%">
                 <h:outputText value="#{node.weight}"
-                    rendered="#{not node.hideWeight and node.readOnlyScope}" />
+                    rendered="#{not node.hideWeight and node.readOnlyWeight}" />
                 
 				<p:spinner value="#{node.weight}" id="ot6" 
 					disabled="#{createController.readOnlyState}" 
-                    rendered="#{not node.hideWeight  and not node.readOnlyScope and (node.isSmqNode() or not createController.detailsFormModel.algorithm eq 'N')}" size="2" />
+                    rendered="#{not node.hideWeight  and not node.readOnlyWeight and (node.isSmqNode() or not createController.detailsFormModel.algorithm eq 'N')}" size="2" />
 			</p:column>
 
             <p:column style="width:10%">
