@@ -14,7 +14,7 @@
 				rendered="#{paramParentExtension ne 'PRO' and paramParentExtension ne 'CPT' and paramParentExtension ne 'DME'}"
 				value="#{paramDlgCtrl.filterLevel}" appendTo="@this">
 				 
-				<f:selectItems itemLabel="#{level.value}" value="#{configMB.levelList}"
+				<f:selectItems itemLabel="#{level.value}" value="#{impactSearchController.levelListForIA}"
 					itemValue="#{level.codelistInternalValue}" var="level"></f:selectItems>
 				<p:ajax update="check" />
 			</p:selectOneMenu>
@@ -22,7 +22,7 @@
 				rendered="#{paramParentExtension eq 'PRO' or paramParentExtension eq 'CPT' or paramParentExtension eq 'DME'}"
 				value="#{paramDlgCtrl.filterLevel}" >
  
-				<f:selectItems itemLabel="#{level.codelistInternalValue eq 'PRO' ? '' : level.value}" value="#{configMB.levelList}" itemDisabled="#{level.value eq 'PRO'}" 
+				<f:selectItems itemLabel="#{level.codelistInternalValue eq 'PRO' ? '' : level.value}" value="#{impactSearchController.levelListForIA}" itemDisabled="#{level.codelistInternalValue eq 'PRO' or level.codelistInternalValue eq 'NC-LLT'}" 
 					itemValue="#{level.codelistInternalValue}" var="level"></f:selectItems>
 				<p:ajax update="check" />
 			</p:selectOneMenu>

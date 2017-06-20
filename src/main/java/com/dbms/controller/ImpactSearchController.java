@@ -61,6 +61,8 @@ import com.dbms.service.IRefCodeListService;
 import com.dbms.service.ISmqBaseService;
 import com.dbms.service.ISmqBaseTargetService;
 import com.dbms.util.CmqUtils;
+import com.dbms.util.CqtConstants;
+import com.dbms.util.OrderBy;
 import com.dbms.util.SWJSFRequest;
 import com.dbms.util.exceptions.CqtServiceException;
 import com.dbms.view.CmqBaseHierarchySearchVM;
@@ -1793,6 +1795,18 @@ public class ImpactSearchController implements Serializable {
 		}
 
 	}
+	
+	public List<RefConfigCodeList> getLevelListForIA() {
+		List<RefConfigCodeList> levels = refCodeListService.findByConfigType(
+				CqtConstants.CODE_LIST_TYPE_DICTIONARY_LEVELS, OrderBy.ASC);
+		RefConfigCodeList levelToRemove = refCodeListService.findByConfigTypeAndInternalCode(CqtConstants.CODE_LIST_TYPE_DICTIONARY_LEVELS, "NC-LLT");
+		
+		if (levelToRemove != null)
+			levels.remove(levelToRemove);
+		
+		return levels;
+	}
+	
 
 	public IMeddraDictService getMeddraDictCurrentService() {
 		return meddraDictCurrentService;
