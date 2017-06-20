@@ -69,7 +69,7 @@
 			<p:selectCheckboxMenu id="product" value="#{createController.detailsFormModel.products}" widgetVar="product"
                 disabled="#{createController.detailsFormDisabled}"
                 label="#{createController.detailsFormDisabled ? createController.detailsFormModel.productsLabel : 'Choose products'}" updateLabel="true"
-                filter="true" filterMatchMode="startsWith"
+                filter="true" filterMatchMode="contains"
 				style="min-width:270px; max-width: 600px">
 				<f:selectItems value="#{createController.productList}"
                                var="prd" itemLabel="#{prd.value}" itemValue="#{prd.codelistInternalValue}" />
