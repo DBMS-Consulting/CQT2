@@ -573,6 +573,15 @@ public class ImpactSearchController implements Serializable {
 										} else if ("LLT".equalsIgnoreCase(hierarchyNode.getLevel())) {
 											code = Long.parseLong(searchDto.getLltCode());
 											matchingMap = this.checkIfReverseMeddraRelationExists(existingRelations, code, hierarchyNode);
+										} else if ("HLGT".equalsIgnoreCase(hierarchyNode.getLevel())) {
+											code = Long.parseLong(searchDto.getHlgtCode());
+											matchingMap = this.checkIfReverseMeddraRelationExists(existingRelations, code, hierarchyNode);
+										} else if ("HLT".equalsIgnoreCase(hierarchyNode.getLevel())) {
+											code = Long.parseLong(searchDto.getHltCode());
+											matchingMap = this.checkIfReverseMeddraRelationExists(existingRelations, code, hierarchyNode);
+										} else if ("SOC".equalsIgnoreCase(hierarchyNode.getLevel())) {
+											code = Long.parseLong(searchDto.getSocCode());
+											matchingMap = this.checkIfReverseMeddraRelationExists(existingRelations, code, hierarchyNode);
 										}
 										
 										matchFound = (boolean) matchingMap.get("MATCH_FOUND");
@@ -588,6 +597,12 @@ public class ImpactSearchController implements Serializable {
 												cmqRelation.setPtCode(code);
 											} else if ("LLT".equalsIgnoreCase(hierarchyNode.getLevel())) {
 												cmqRelation.setLltCode(code);
+											} else if ("HLGT".equalsIgnoreCase(hierarchyNode.getLevel())) {
+												cmqRelation.setHlgtCode(code);
+											} else if ("HLT".equalsIgnoreCase(hierarchyNode.getLevel())) {
+												cmqRelation.setHltCode(code);
+											} else if ("SOC".equalsIgnoreCase(hierarchyNode.getLevel())) {
+												cmqRelation.setSocCode(code);
 											}
 										}
 									} else if (childEntity instanceof SmqBaseTarget) {
@@ -786,6 +801,12 @@ public class ImpactSearchController implements Serializable {
 			if((null != cmqRelationTarget.getPtCode()) && (cmqRelationTarget.getPtCode().longValue() == code.longValue())){
 				matchingMap.put("MATCH_FOUND", true);
 			} else if ((null != cmqRelationTarget.getLltCode()) && (cmqRelationTarget.getLltCode().longValue() == code.longValue())) {
+				matchingMap.put("MATCH_FOUND", true);
+			} else if ((null != cmqRelationTarget.getHlgtCode()) && (cmqRelationTarget.getHlgtCode().longValue() == code.longValue())) {
+				matchingMap.put("MATCH_FOUND", true);
+			} else if ((null != cmqRelationTarget.getHltCode()) && (cmqRelationTarget.getHltCode().longValue() == code.longValue())) {
+				matchingMap.put("MATCH_FOUND", true);
+			} else if ((null != cmqRelationTarget.getSocCode()) && (cmqRelationTarget.getSocCode().longValue() == code.longValue())) {
 				matchingMap.put("MATCH_FOUND", true);
 			}
 			
