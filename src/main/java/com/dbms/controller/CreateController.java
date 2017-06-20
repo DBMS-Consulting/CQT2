@@ -1593,14 +1593,14 @@ public class CreateController implements Serializable {
 	}
 
 	public boolean isApproveDisabled() {
-        // if AD Group is Requester, disable it
-        if(authService.getGroupMembershipHeader() != null &&
-                (authService.getGroupMembershipHeader().contains(AuthenticationService.REQUESTER_GROUP)))
-            return true;
-        
-		if (selectedData != null && selectedData.getCmqStatus() != null
-				&& CmqBase190.CMQ_STATE_VALUE_REVIEWED.equalsIgnoreCase(selectedData.getCmqState()))
+		if (selectedData != null && selectedData.getCmqStatus() != null	&& CmqBase190.CMQ_STATE_VALUE_REVIEWED.equalsIgnoreCase(selectedData.getCmqState())) {
+			// if AD Group is Requester, disable it
+			if (authService.getGroupMembershipHeader() != null && (authService.getGroupMembershipHeader().contains(AuthenticationService.REQUESTER_GROUP)))
+				return true;
 			return false;
+
+		}
+
 		return true;
 	}
 
@@ -1608,8 +1608,20 @@ public class CreateController implements Serializable {
 		// if AD Group is MANAGER, enable it
 		if (authService.getGroupMembershipHeader() != null &&
                 (authService.getGroupMembershipHeader().contains("MQM")
-                		&& authService.getGroupMembershipHeader().contains(AuthenticationService.REQUESTER_GROUP)))
+                		&& authService.getGroupMembershipHeader().contains(AuthenticationService.REQUESTER_GROUP))) {
+			//Disable Review Button when List is Approved
+			if (selectedData != null && selectedData.getCmqState() != null
+					&& (CmqBase190.CMQ_STATE_VALUE_REVIEWED.equalsIgnoreCase(selectedData.getCmqState())
+							|| CmqBase190.CMQ_STATE_VALUE_APPROVED.equalsIgnoreCase(selectedData.getCmqState())))
+				return true;
+			if (selectedData != null
+					&& CmqBase190.CMQ_STATE_VALUE_DRAFT
+							.equalsIgnoreCase(selectedData.getCmqState()))
+				return false;
 			return false;
+		}
+			
+			
 
 		// if AD Group is Requester, disable it
 		if (authService.getGroupMembershipHeader() != null &&
@@ -1618,7 +1630,7 @@ public class CreateController implements Serializable {
 			return true;
 		
 		//Disable Review Button when List is Approved
-		if (selectedData != null && selectedData.getCmqStatus() != null
+		if (selectedData != null && selectedData.getCmqState() != null
 				&& CmqBase190.CMQ_STATE_VALUE_APPROVED.equalsIgnoreCase(selectedData.getCmqState()))
 			return true;
 
