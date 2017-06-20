@@ -100,13 +100,11 @@
 			</p:column>
 
 			<p:column rendered="#{createController.relationsModel.displayScopeCatWeight}" style="width:10%">
-				<f:selectItems var="s" value="#{appCSMQBean.cqtBaseScopes}"
-						itemValue="#{s[0]}" itemLabel="#{s[1]}" />
+				<h:outputText value="#{appCSMQBean.interpretCqtBaseScope(node.scope)}" />
 			</p:column>
 
 			<p:column rendered="#{createController.relationsModel.displayScopeCatWeight}" style="width:10%">
-				<f:selectItems var="s" value="#{appCSMQBean.cqtBaseCategories}"
-						itemValue="#{s[0]}" itemLabel="#{s[1]}" />
+				 <h:outputText value="#{appCSMQBean.interpretCqtBaseCategory(node.category)}" />
 			</p:column>
 
 			<p:column rendered="#{createController.relationsModel.displayScopeCatWeight}" style="width:10%">
