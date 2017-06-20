@@ -22,7 +22,7 @@
 				rendered="#{paramParentExtension eq 'PRO' or paramParentExtension eq 'CPT' or paramParentExtension eq 'DME'}"
 				value="#{paramDlgCtrl.filterLevel}" >
  
-				<f:selectItems itemLabel="#{level.codelistInternalValue eq 'PRO' ? '' : level.value}" value="#{impactSearchController.levelListForIA}" itemDisabled="#{level.codelistInternalValue eq 'PRO' or level.codelistInternalValue eq 'NC-LLT'}" 
+				<f:selectItems itemLabel="#{level.value}" value="#{createController.levelListWithoutProtocol}"  
 					itemValue="#{level.codelistInternalValue}" var="level"></f:selectItems>
 				<p:ajax update="check" />
 			</p:selectOneMenu>

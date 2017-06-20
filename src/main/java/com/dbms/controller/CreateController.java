@@ -1377,6 +1377,24 @@ public class CreateController implements Serializable {
 			
 		return products;
 	}
+	
+	public List<RefConfigCodeList> getLevelListWithoutProtocol() {
+		cqtCacheManager.removeAllFromCache(CACHE_NAME);
+
+		List<RefConfigCodeList> levels = refCodeListService.findByConfigType(
+				CqtConstants.CODE_LIST_TYPE_DICTIONARY_LEVELS, OrderBy.ASC);
+		RefConfigCodeList levelToRemove = refCodeListService.findByConfigTypeAndInternalCode(CqtConstants.CODE_LIST_TYPE_DICTIONARY_LEVELS, "PRO");
+		
+		if (levelToRemove != null)
+			levels.remove(levelToRemove);
+		
+		levelToRemove = refCodeListService.findByConfigTypeAndInternalCode(CqtConstants.CODE_LIST_TYPE_DICTIONARY_LEVELS, "NC-LLT");
+		
+		if (levelToRemove != null)
+			levels.remove(levelToRemove);
+		
+		return levels;
+	}
 
 	
 	//--------------------- Getters and Setters -----------------------
