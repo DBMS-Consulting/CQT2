@@ -278,6 +278,7 @@
                                             rendered="#{not node.hideScope and not node.readOnlyScope and (node.isSmqNode() or not node.algorithmN)}"
                                             autoWidth="false" style="width:70%">
                                             <f:selectItems value="#{appCSMQBean.cqtBaseScopes}" var="s" itemLabel="#{s[1]}" itemValue="#{s[0]}" />
+                                            <p:ajax listener="#{impactSearchController.setTargetRelationsUpdated()}" />
                                         </p:selectOneMenu>
 									</p:column>
 									<p:column rendered="#{impactSearchController.displayScopeCatWeight}">
@@ -287,12 +288,15 @@
                                             rendered="#{not node.hideCategory and not node.readOnlyCategory and (node.isSmqNode() or not node.algorithmN)}"
                                             autoWidth="false" style="width:70%">
                                             <f:selectItems value="#{appCSMQBean.cqtBaseCategories}" var="c" itemLabel="#{c[1]}" itemValue="#{c[0]}" />
+                                            <p:ajax listener="#{impactSearchController.setTargetRelationsUpdated()}" />
                                         </p:selectOneMenu>
 									</p:column>
 									<p:column rendered="#{impactSearchController.displayScopeCatWeight}">
                                         <h:outputText rendered="#{not node.hideWeight and node.readOnlyWeight}" value="#{node.weight}" />
                                         <p:spinner value="#{node.weight}" size="2"
-                                            rendered="#{not node.hideWeight and not node.readOnlyWeight and (node.isSmqNode() or not node.algorithmN)}" />
+                                            rendered="#{not node.hideWeight and not node.readOnlyWeight and (node.isSmqNode() or not node.algorithmN)}" >
+                                            <p:ajax listener="#{impactSearchController.setTargetRelationsUpdated()}" />
+                                        </p:spinner>
 									</p:column>
 									<p:column>
 										<p:commandLink

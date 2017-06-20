@@ -2212,4 +2212,8 @@ public class ImpactSearchController implements Serializable {
 	public void setReadOnlyIA(boolean readOnlyIA) {
 		this.readOnlyIA = readOnlyIA;
 	}
+    
+    public void setTargetRelationsUpdated() {
+        targetRelationsUpdated = true;
+    }
 }
