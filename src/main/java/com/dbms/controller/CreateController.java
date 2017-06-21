@@ -1594,10 +1594,12 @@ public class CreateController implements Serializable {
 
 	public boolean isApproveDisabled() {
 		if (selectedData != null && selectedData.getCmqStatus() != null	&& CmqBase190.CMQ_STATE_VALUE_REVIEWED.equalsIgnoreCase(selectedData.getCmqState())) {
+			
+			if (authService.getGroupMembershipHeader() != null && (authService.getGroupMembershipHeader().contains("MQM")))
+				return false;
 			// if AD Group is Requester, disable it
 			if (authService.getGroupMembershipHeader() != null && (authService.getGroupMembershipHeader().contains(AuthenticationService.REQUESTER_GROUP)))
 				return true;
-			return false;
 
 		}
 
