@@ -255,8 +255,8 @@
 										</p:row>
 
 										<p:row>
-											<p:column styleClass="listName" headerText="#{impactSearchController.listName}" sortBy="#{node.term}" style="width:35%" />
-											<p:column headerText="Code" sortBy="#{node.code}" style="width:15%" />
+											<p:column styleClass="listName" headerText="#{impactSearchController.listName}" sortBy="#{node.term}" sortable="true" style="width:35%" />
+                                            <p:column headerText="Code" sortBy="#{node.code}" sortable="true" style="width:15%" />
 											<p:column headerText="Level" style="width:8%" />
 											<p:column rendered="#{impactSearchController.displayScopeCatWeight}" headerText="Scope" style="width:15%" />
 											<p:column rendered="#{impactSearchController.displayScopeCatWeight}" headerText="Category" style="width:9% " />
@@ -276,12 +276,32 @@
                                         <h:outputText rendered="#{not node.hideScope and node.readOnlyScope}" value="#{appCSMQBean.interpretCqtBaseScope(node.scope)}" />
                                         <p:selectOneMenu value="#{node.scope}"
                                             rendered="#{not node.hideScope and not node.readOnlyScope and (node.isSmqNode() or not node.algorithmN)}"
+                                            disabled="true" autoWidth="false" style="width:70%">
+                                            <f:selectItems value="#{appCSMQBean.cqtBaseScopes}" var="s" itemLabel="#{s[1]}" itemValue="#{s[0]}" />
+                                            <p:ajax listener="#{impactSearchController.setTargetRelationsUpdated()}" />
+                                        </p:selectOneMenu>
+                                        
+                                        <!-- Disable selection control, remove comments if we need to reactivate the field
+                                        <h:outputText rendered="#{not node.hideScope and node.readOnlyScope}" value="#{appCSMQBean.interpretCqtBaseScope(node.scope)}" />
+                                        <p:selectOneMenu value="#{node.scope}"
+                                            rendered="#{not node.hideScope and not node.readOnlyScope and (node.isSmqNode() or not node.algorithmN)}"
                                             autoWidth="false" style="width:70%">
                                             <f:selectItems value="#{appCSMQBean.cqtBaseScopes}" var="s" itemLabel="#{s[1]}" itemValue="#{s[0]}" />
                                             <p:ajax listener="#{impactSearchController.setTargetRelationsUpdated()}" />
                                         </p:selectOneMenu>
+                                        -->
 									</p:column>
 									<p:column rendered="#{impactSearchController.displayScopeCatWeight}">
+                                        <h:outputText rendered="#{not node.hideCategory and node.readOnlyCategory}" 
+                                            value="#{appCSMQBean.interpretCqtBaseCategory(node.category)}" />
+                                        <p:selectOneMenu value="#{node.category}"
+                                            rendered="#{not node.hideCategory and not node.readOnlyCategory and (node.isSmqNode() or not node.algorithmN)}"
+                                            autoWidth="false" style="width:70%" disabled="true">
+                                            <f:selectItems value="#{appCSMQBean.cqtBaseCategories}" var="c" itemLabel="#{c[1]}" itemValue="#{c[0]}" />
+                                            <p:ajax listener="#{impactSearchController.setTargetRelationsUpdated()}" />
+                                        </p:selectOneMenu>
+                                        
+                                        <!-- Disable selection control, remove comments if we need to reactivate the field
                                         <h:outputText rendered="#{not node.hideCategory and node.readOnlyCategory}" 
                                             value="#{appCSMQBean.interpretCqtBaseCategory(node.category)}" />
                                         <p:selectOneMenu value="#{node.category}"
@@ -290,13 +310,23 @@
                                             <f:selectItems value="#{appCSMQBean.cqtBaseCategories}" var="c" itemLabel="#{c[1]}" itemValue="#{c[0]}" />
                                             <p:ajax listener="#{impactSearchController.setTargetRelationsUpdated()}" />
                                         </p:selectOneMenu>
+                                        -->
 									</p:column>
 									<p:column rendered="#{impactSearchController.displayScopeCatWeight}">
+                                        <h:outputText rendered="#{not node.hideWeight and node.readOnlyWeight}" value="#{node.weight}" />
+                                        <p:spinner value="#{node.weight}" size="2"
+                                            rendered="#{not node.hideWeight and not node.readOnlyWeight and (node.isSmqNode() or not node.algorithmN)}" 
+                                            disabled="true">
+                                            <p:ajax listener="#{impactSearchController.setTargetRelationsUpdated()}" />
+                                        </p:spinner>
+                                        
+                                        <!-- Disable selection control, remove comments if we need to reactivate the field
                                         <h:outputText rendered="#{not node.hideWeight and node.readOnlyWeight}" value="#{node.weight}" />
                                         <p:spinner value="#{node.weight}" size="2"
                                             rendered="#{not node.hideWeight and not node.readOnlyWeight and (node.isSmqNode() or not node.algorithmN)}" >
                                             <p:ajax listener="#{impactSearchController.setTargetRelationsUpdated()}" />
                                         </p:spinner>
+                                        -->
 									</p:column>
 									<p:column>
 										<p:commandLink
