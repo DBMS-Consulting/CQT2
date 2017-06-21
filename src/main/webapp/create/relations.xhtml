@@ -231,8 +231,8 @@
                     rendered="#{not node.hideWeight and node.readOnlyWeight}" />
                 
 				<p:spinner value="#{node.weight}" id="ot6" 
-					disabled="true" 
-                    rendered="#{not node.hideWeight  and not node.readOnlyWeight and (node.isSmqNode() or not createController.detailsFormModel.algorithm eq 'N')}" size="2" /><h:outputText value="#{node.weight}" rendered="#{not node.hideWeight}" />
+                    disabled="true" 
+                    rendered="#{not node.hideWeight and not node.readOnlyWeight and (node.isSmqNode() or not createController.detailsFormModel.algorithm eq 'N')}" size="2" />
                 
                 <!-- Disable selection control, remove comments if we need to reactivate the field
                 <h:outputText value="#{node.weight}"
