@@ -274,12 +274,6 @@
 									<p:column><h:outputText value="#{node.level}" /></p:column>
 									<p:column rendered="#{impactSearchController.displayScopeCatWeight}">
                                         <h:outputText rendered="#{not node.hideScope and node.readOnlyScope}" value="#{appCSMQBean.interpretCqtBaseScope(node.scope)}" />
-                                        <p:selectOneMenu value="#{node.scope}"
-                                            rendered="#{not node.hideScope and not node.readOnlyScope and (node.isSmqNode() or not node.algorithmN)}"
-                                            disabled="true" autoWidth="false" style="width:70%">
-                                            <f:selectItems value="#{appCSMQBean.cqtBaseScopes}" var="s" itemLabel="#{s[1]}" itemValue="#{s[0]}" />
-                                            <p:ajax listener="#{impactSearchController.setTargetRelationsUpdated()}" />
-                                        </p:selectOneMenu>
                                         
                                         <!-- Disable selection control, remove comments if we need to reactivate the field
                                         <h:outputText rendered="#{not node.hideScope and node.readOnlyScope}" value="#{appCSMQBean.interpretCqtBaseScope(node.scope)}" />
@@ -294,12 +288,6 @@
 									<p:column rendered="#{impactSearchController.displayScopeCatWeight}">
                                         <h:outputText rendered="#{not node.hideCategory and node.readOnlyCategory}" 
                                             value="#{appCSMQBean.interpretCqtBaseCategory(node.category)}" />
-                                        <p:selectOneMenu value="#{node.category}"
-                                            rendered="#{not node.hideCategory and not node.readOnlyCategory and (node.isSmqNode() or not node.algorithmN)}"
-                                            autoWidth="false" style="width:70%" disabled="true">
-                                            <f:selectItems value="#{appCSMQBean.cqtBaseCategories}" var="c" itemLabel="#{c[1]}" itemValue="#{c[0]}" />
-                                            <p:ajax listener="#{impactSearchController.setTargetRelationsUpdated()}" />
-                                        </p:selectOneMenu>
                                         
                                         <!-- Disable selection control, remove comments if we need to reactivate the field
                                         <h:outputText rendered="#{not node.hideCategory and node.readOnlyCategory}" 
@@ -314,11 +302,6 @@
 									</p:column>
 									<p:column rendered="#{impactSearchController.displayScopeCatWeight}">
                                         <h:outputText rendered="#{not node.hideWeight and node.readOnlyWeight}" value="#{node.weight}" />
-                                        <p:spinner value="#{node.weight}" size="2"
-                                            rendered="#{not node.hideWeight and not node.readOnlyWeight and (node.isSmqNode() or not node.algorithmN)}" 
-                                            disabled="true">
-                                            <p:ajax listener="#{impactSearchController.setTargetRelationsUpdated()}" />
-                                        </p:spinner>
                                         
                                         <!-- Disable selection control, remove comments if we need to reactivate the field
                                         <h:outputText rendered="#{not node.hideWeight and node.readOnlyWeight}" value="#{node.weight}" />
