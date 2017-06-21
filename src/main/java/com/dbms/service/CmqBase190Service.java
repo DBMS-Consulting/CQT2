@@ -701,7 +701,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 
 		worksheet = workbook.createSheet("List Report");
 		XSSFRow row = null;
-		int rowCount = 4;
+		int rowCount = 6;
 
 		try {
 			insertExporLogoImage(worksheet, workbook);
@@ -897,12 +897,12 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 			}
 		}
 
-		worksheet.autoSizeColumn(0);
-		worksheet.autoSizeColumn(1);
-		worksheet.autoSizeColumn(2);
-		worksheet.autoSizeColumn(3);
-		worksheet.autoSizeColumn(4);
-		worksheet.autoSizeColumn(5);
+//		worksheet.autoSizeColumn(0);
+//		worksheet.autoSizeColumn(1);
+//		worksheet.autoSizeColumn(2);
+//		worksheet.autoSizeColumn(3);
+//		worksheet.autoSizeColumn(4);
+//		worksheet.autoSizeColumn(5);
 
 		StreamedContent content = null;
 		try {
@@ -1233,12 +1233,12 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 			
 		rowCount = fillReport(mapReport, cell, row, rowCount, worksheet);
 
-		worksheet.autoSizeColumn(0);
-		worksheet.autoSizeColumn(1);
-		worksheet.autoSizeColumn(2);
-		worksheet.autoSizeColumn(3);
-		worksheet.autoSizeColumn(4);
-		worksheet.autoSizeColumn(5);
+//		worksheet.autoSizeColumn(0);
+//		worksheet.autoSizeColumn(1);
+//		worksheet.autoSizeColumn(2);
+//		worksheet.autoSizeColumn(3);
+//		worksheet.autoSizeColumn(4);
+//		worksheet.autoSizeColumn(5);
 
 		StreamedContent content = null;
 		try {

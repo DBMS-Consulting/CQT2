@@ -1377,6 +1377,24 @@ public class CreateController implements Serializable {
 			
 		return products;
 	}
+	
+	public List<RefConfigCodeList> getLevelListWithoutProtocol() {
+		cqtCacheManager.removeAllFromCache(CACHE_NAME);
+
+		List<RefConfigCodeList> levels = refCodeListService.findByConfigType(
+				CqtConstants.CODE_LIST_TYPE_DICTIONARY_LEVELS, OrderBy.ASC);
+		RefConfigCodeList levelToRemove = refCodeListService.findByConfigTypeAndInternalCode(CqtConstants.CODE_LIST_TYPE_DICTIONARY_LEVELS, "PRO");
+		
+		if (levelToRemove != null)
+			levels.remove(levelToRemove);
+		
+		levelToRemove = refCodeListService.findByConfigTypeAndInternalCode(CqtConstants.CODE_LIST_TYPE_DICTIONARY_LEVELS, "NC-LLT");
+		
+		if (levelToRemove != null)
+			levels.remove(levelToRemove);
+		
+		return levels;
+	}
 
 	
 	//--------------------- Getters and Setters -----------------------
@@ -1575,14 +1593,16 @@ public class CreateController implements Serializable {
 	}
 
 	public boolean isApproveDisabled() {
-        // if AD Group is Requester, disable it
-        if(authService.getGroupMembershipHeader() != null &&
-                (authService.getGroupMembershipHeader().contains(AuthenticationService.REQUESTER_GROUP)))
-            return true;
-        
-		if (selectedData != null && selectedData.getCmqStatus() != null
-				&& CmqBase190.CMQ_STATE_VALUE_REVIEWED.equalsIgnoreCase(selectedData.getCmqState()))
-			return false;
+		if (selectedData != null && selectedData.getCmqStatus() != null	&& CmqBase190.CMQ_STATE_VALUE_REVIEWED.equalsIgnoreCase(selectedData.getCmqState())) {
+			
+			if (authService.getGroupMembershipHeader() != null && (authService.getGroupMembershipHeader().contains("MQM")))
+				return false;
+			// if AD Group is Requester, disable it
+			if (authService.getGroupMembershipHeader() != null && (authService.getGroupMembershipHeader().contains(AuthenticationService.REQUESTER_GROUP)))
+				return true;
+
+		}
+
 		return true;
 	}
 
@@ -1590,8 +1610,20 @@ public class CreateController implements Serializable {
 		// if AD Group is MANAGER, enable it
 		if (authService.getGroupMembershipHeader() != null &&
                 (authService.getGroupMembershipHeader().contains("MQM")
-                		&& authService.getGroupMembershipHeader().contains(AuthenticationService.REQUESTER_GROUP)))
+                		&& authService.getGroupMembershipHeader().contains(AuthenticationService.REQUESTER_GROUP))) {
+			//Disable Review Button when List is Approved
+			if (selectedData != null && selectedData.getCmqState() != null
+					&& (CmqBase190.CMQ_STATE_VALUE_REVIEWED.equalsIgnoreCase(selectedData.getCmqState())
+							|| CmqBase190.CMQ_STATE_VALUE_APPROVED.equalsIgnoreCase(selectedData.getCmqState())))
+				return true;
+			if (selectedData != null
+					&& CmqBase190.CMQ_STATE_VALUE_DRAFT
+							.equalsIgnoreCase(selectedData.getCmqState()))
+				return false;
 			return false;
+		}
+			
+			
 
 		// if AD Group is Requester, disable it
 		if (authService.getGroupMembershipHeader() != null &&
@@ -1600,7 +1632,7 @@ public class CreateController implements Serializable {
 			return true;
 		
 		//Disable Review Button when List is Approved
-		if (selectedData != null && selectedData.getCmqStatus() != null
+		if (selectedData != null && selectedData.getCmqState() != null
 				&& CmqBase190.CMQ_STATE_VALUE_APPROVED.equalsIgnoreCase(selectedData.getCmqState()))
 			return true;
 

@@ -46,7 +46,7 @@
 				disabled="#{createController.detailsFormDisabled}"
 				required="#{not createController.readOnlyState}"
                 label="Drug Program">
-				<f:selectItem itemValue="" itemLabel="" noSelectionOption="true" />
+				<!-- <f:selectItem itemValue="" itemLabel="" noSelectionOption="true" /> -->
 				<f:selectItems value="#{configMB.programList}" var="program"
 					itemLabel="#{program.value}"
 					itemValue="#{program.codelistInternalValue}" />
@@ -59,7 +59,7 @@
 				required="#{not createController.readOnlyState}"
                 label="Protocol">
 				
-                <f:selectItem itemValue="" itemLabel="" noSelectionOption="true" />
+               <!--  <f:selectItem itemValue="" itemLabel="" noSelectionOption="true" /> -->
 				<f:selectItems value="#{configMB.protocolList}" var="protocol"
 					itemLabel="#{protocol.value}"
 					itemValue="#{protocol.codelistInternalValue}" />
@@ -84,7 +84,7 @@
 				disabled="#{createController.detailsFormDisabled}" rendered="true"
                 label="Designee"
 				required="#{!createController.readOnlyState}">
-				<f:selectItem itemValue="" itemLabel="" noSelectionOption="true" />
+				<!-- <f:selectItem itemValue="" itemLabel="" noSelectionOption="true" /> -->
                 <f:selectItems value="#{createController.detailsFormModel.designeeList}" var="d"
                                itemLabel="#{d.fullName}" itemValue="#{d.userName}"/>
 			</p:selectOneMenu>

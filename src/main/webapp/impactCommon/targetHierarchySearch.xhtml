@@ -15,6 +15,7 @@
 				 
 				<f:selectItems itemLabel="#{level.value}" value="#{configMB.levelList}"
 					itemValue="#{level.codelistInternalValue}" var="level"></f:selectItems>
+					<!-- <f:selectItem itemLabel="Non Current LLT" itemValue="NC-LLT"></f:selectItem> -->
 				<p:ajax update="checkTarget" />
 			</p:selectOneMenu>
 			<p:spacer width="5" />

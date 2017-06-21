@@ -2,6 +2,7 @@ package com.dbms.controller;
 
 import com.dbms.entity.cqt.CmqBase190;
 import com.dbms.entity.cqt.CmqBaseTarget;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,11 +11,15 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
+
 import com.dbms.entity.cqt.RefConfigCodeList;
+import com.dbms.service.ICqtCacheManager;
 import com.dbms.service.IRefCodeListService;
 import com.dbms.util.CqtConstants;
 import com.dbms.util.OrderBy;
+
 import java.util.Arrays;
+
 import javax.swing.event.ListSelectionEvent;
 
 /**
@@ -43,6 +48,11 @@ public class ConfigurationController implements Serializable {
     
     private List<String[]> cmqBaseListStates = null;
     private List<String[]> cmqTargetListStates = null;
+    
+    @ManagedProperty("#{CqtCacheManager}")
+   	private ICqtCacheManager cqtCacheManager;
+	private final String CACHE_NAME = "code-list-cache";
+
 	
 	@PostConstruct
 	public void init() {
@@ -132,6 +142,8 @@ public class ConfigurationController implements Serializable {
 	 * @return
 	 */
 	public List<RefConfigCodeList> getLevelList() {
+		cqtCacheManager.removeAllFromCache(CACHE_NAME);
+
 		products = refCodeListService.findByConfigType(
 				CqtConstants.CODE_LIST_TYPE_DICTIONARY_LEVELS, OrderBy.ASC);
 		if (products == null) {
@@ -237,5 +249,13 @@ public class ConfigurationController implements Serializable {
 
 	public void setLevels(List<RefConfigCodeList> levels) {
 		this.levels = levels;
+	}
+	
+	public ICqtCacheManager getCqtCacheManager() {
+		return cqtCacheManager;
+	}
+
+	public void setCqtCacheManager(ICqtCacheManager cqtCacheManager) {
+		this.cqtCacheManager = cqtCacheManager;
 	}
 }
