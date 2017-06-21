@@ -168,7 +168,7 @@
                                         </h:outputLink>
                                     </p:column>
 									<p:column><h:outputText value="#{node.level}" /></p:column>
-									<p:column rendered="#{impactSearchController.displayScopeCatWeight}"><h:outputText value="#{node.scope}" /></p:column>
+									<p:column rendered="#{impactSearchController.displayScopeCatWeight}"><h:outputText value="#{appCSMQBean.interpretCqtBaseScope(node.scope)}" /></p:column>
 								</p:treeTable>
 							</p:panel>
 
@@ -235,8 +235,8 @@
                                         </h:outputLink>
                                     </p:column>
 									<p:column><h:outputText value="#{node.level}" /></p:column>
-									<p:column rendered="#{impactSearchController.displayScopeCatWeight}"><h:outputText value="#{node.scope}" /></p:column>
-									<p:column rendered="#{impactSearchController.displayScopeCatWeight}"><h:outputText value="#{node.category}" /></p:column>
+									<p:column rendered="#{impactSearchController.displayScopeCatWeight}"><h:outputText value="#{appCSMQBean.interpretCqtBaseScope(node.scope)}" /></p:column>
+									<p:column rendered="#{impactSearchController.displayScopeCatWeight}"><h:outputText value="#{appCSMQBean.interpretCqtBaseCategory(node.category)}" /></p:column>
 									<p:column rendered="#{impactSearchController.displayScopeCatWeight}"><h:outputText value="#{node.weight}" /></p:column>
 									
 								</p:treeTable>
