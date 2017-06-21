@@ -543,16 +543,28 @@ public class CmqBaseRelationsTreeHelper {
 					childSmq.setSmqName(childRelation.getPtName());
 					childRelationNode.setLevel("Child SMQ");
 					childRelationNode.setEntity(childSmq);
+					childRelationNode.setScope(null != childRelation.getPtTermScope() ? childRelation.getPtTermScope().toString() : "");
+					childRelationNode.setCategory(null != childRelation.getPtTermCategory() ? childRelation.getPtTermCategory() : "");
+					childRelationNode.setWeight(null != childRelation.getPtTermWeight()? childRelation.getPtTermWeight().toString() : "");
 					isChildSmqNode = true;
 				} else if (childRelation.getSmqLevel() == 1) {
 					childRelationNode.setLevel("SMQ1");
 					childRelationNode.setEntity(childRelation);
+					childRelationNode.setScope(null != childRelation.getPtTermScope() ? childRelation.getPtTermScope().toString() : "");
+					childRelationNode.setCategory(null != childRelation.getPtTermCategory() ? childRelation.getPtTermCategory() : "");
+					childRelationNode.setWeight(null != childRelation.getPtTermWeight()? childRelation.getPtTermWeight().toString() : "");
 				} else if (childRelation.getSmqLevel() == 2) {
 					childRelationNode.setLevel("SMQ2");
 					childRelationNode.setEntity(childRelation);
+					childRelationNode.setScope(null != childRelation.getPtTermScope() ? childRelation.getPtTermScope().toString() : "");
+					childRelationNode.setCategory(null != childRelation.getPtTermCategory() ? childRelation.getPtTermCategory() : "");
+					childRelationNode.setWeight(null != childRelation.getPtTermWeight()? childRelation.getPtTermWeight().toString() : "");
 				} else if (childRelation.getSmqLevel() == 3) {
 					childRelationNode.setLevel("SMQ3");
 					childRelationNode.setEntity(childRelation);
+					childRelationNode.setScope(null != childRelation.getPtTermScope() ? childRelation.getPtTermScope().toString() : "");
+					childRelationNode.setCategory(null != childRelation.getPtTermCategory() ? childRelation.getPtTermCategory() : "");
+					childRelationNode.setWeight(null != childRelation.getPtTermWeight()? childRelation.getPtTermWeight().toString() : "");
 				} else if (childRelation.getSmqLevel() == 4) {
                     childRelationNode.setLevel("PT");
                     childRelationNode.setScope(null != childRelation.getPtTermScope() ? childRelation.getPtTermScope().toString() : "");
@@ -799,10 +811,10 @@ public class CmqBaseRelationsTreeHelper {
 				|| (smqRelation.getSmqLevel() == 0)
 				|| (smqRelation.getSmqLevel() == 5)) {
 			node.setLevel("PT");
-            node.setScope(null != smqRelation.getPtTermScope() ? smqRelation.getPtTermScope().toString() : "");
-            node.setCategory(null != smqRelation.getPtTermCategory() ? smqRelation.getPtTermCategory() : "");
-            node.setWeight(null != smqRelation.getPtTermWeight()? smqRelation.getPtTermWeight().toString() : "");
 		}
+		node.setScope(null != smqRelation.getPtTermScope() ? smqRelation.getPtTermScope().toString() : "");
+        node.setCategory(null != smqRelation.getPtTermCategory() ? smqRelation.getPtTermCategory() : "");
+        node.setWeight(null != smqRelation.getPtTermWeight()? smqRelation.getPtTermWeight().toString() : "");
 		node.setTerm(smqRelation.getPtName());
 		node.setCode(smqRelation.getPtCode().toString());
 		node.setEntity(smqRelation);
