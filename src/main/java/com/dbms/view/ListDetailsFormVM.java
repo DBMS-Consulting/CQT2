@@ -70,7 +70,7 @@ public class ListDetailsFormVM {
 		this.name = "";
 		this.drugProgram = "";
 		this.protocol = CqtConstants.CODE_LIST_NO_PROTOCOL_INTERNALCODE;
-		this.products = new String[0];
+		//this.products = new String[0];
 		this.level = 1;
 		this.algorithm = "N";
 		this.critical = "No";

@@ -1721,7 +1721,7 @@ public class CreateController implements Serializable {
       	/**
           * Restrictions on users from  REQUESTOR and ADMIN groups
         */
-         if ((createWizard != null || updateWizard != null) && authService.getGroupMembershipHeader() != null &&
+         if ((createWizard != null || updateWizard != null || copyWizard != null) && authService.getGroupMembershipHeader() != null &&
                 (authService.getGroupMembershipHeader().contains(AuthenticationService.REQUESTER_GROUP)
                   || authService.getGroupMembershipHeader().contains("MQM")))
       			d = false;
@@ -1732,6 +1732,7 @@ public class CreateController implements Serializable {
     			 (authService.getGroupMembershipHeader().contains(AuthenticationService.REQUESTER_GROUP)
     	                    || authService.getGroupMembershipHeader().contains(AuthenticationService.ADMIN_GROUP)))
             d = restrictionsByUserAuthentified();
+    	
         else
             d = false;
         
@@ -1761,7 +1762,7 @@ public class CreateController implements Serializable {
         	else if (authService.getGroupMembershipHeader() != null && (authService.getGroupMembershipHeader().contains(AuthenticationService.REQUESTER_GROUP)) 
         			&& selectedData.getCmqStatus().equals("P") 
         			&& (selectedData.getCmqState().equals("DRAFT") || selectedData.getCmqState().equals("REVIEWED"))
-        			&& (((selectedData.getCreatedBy() != null) && (selectedData.getCreatedBy().startsWith(authService.getUserCn())))
+        			&& (((listCreator != null) && (listCreator.startsWith(authService.getUserCn())))
         					|| ((selectedData.getCmqDesignee() != null && selectedData.getCmqDesignee().equals(authService.getUserCn()))
         		        			|| (selectedData.getCmqDesignee2() != null && selectedData.getCmqDesignee2().equals(authService.getUserCn()))
         		        			|| (selectedData.getCmqDesignee3() != null && selectedData.getCmqDesignee3().equals(authService.getUserCn()))))) {
@@ -1769,13 +1770,14 @@ public class CreateController implements Serializable {
         	} else if (authService.getGroupMembershipHeader() != null && (authService.getGroupMembershipHeader().contains(AuthenticationService.ADMIN_GROUP)) 
         			&& selectedData.getCmqStatus().equals("P") 
         			&& (selectedData.getCmqState().equals("DRAFT") || (selectedData.getCmqState().equals("PENDING IA") || selectedData.getCmqState().equals("REVIEWED IA")))
-        			&& (((selectedData.getCreatedBy() != null) && (selectedData.getCreatedBy().startsWith(authService.getUserCn())))
+        			&& (((listCreator != null) && (listCreator.startsWith(authService.getUserCn())))
         					|| ((selectedData.getCmqDesignee() != null && selectedData.getCmqDesignee().equals(authService.getUserCn()))
         		        			|| (selectedData.getCmqDesignee2() != null && selectedData.getCmqDesignee2().equals(authService.getUserCn()))
         		        			|| (selectedData.getCmqDesignee3() != null && selectedData.getCmqDesignee3().equals(authService.getUserCn()))))) {
         		return  false;
         	}
         }
+        
  
         if (createWizard != null)
         	return false;
