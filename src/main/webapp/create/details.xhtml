@@ -84,7 +84,7 @@
 				disabled="#{createController.detailsFormDisabled}" rendered="true"
                 label="Designee"
 				required="#{!createController.readOnlyState}">
-				<!-- <f:selectItem itemValue="" itemLabel="" noSelectionOption="true" /> -->
+				<f:selectItem itemValue="" itemLabel="" noSelectionOption="true" />
                 <f:selectItems value="#{createController.detailsFormModel.designeeList}" var="d"
                                itemLabel="#{d.fullName}" itemValue="#{d.userName}"/>
 			</p:selectOneMenu>
