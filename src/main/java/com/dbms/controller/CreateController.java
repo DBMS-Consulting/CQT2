@@ -53,6 +53,7 @@ import com.dbms.util.SWJSFRequest;
 import com.dbms.util.exceptions.CqtServiceException;
 import com.dbms.view.ListDetailsFormVM;
 import com.dbms.view.ListDetailsFormVM.WizardType;
+import com.dbms.view.IARelationsTreeHelper;
 import com.dbms.view.ListNotesFormVM;
 import com.dbms.view.ListRelationsVM;
 import com.dbms.view.ListWorkflowFormVM;
@@ -136,6 +137,13 @@ public class CreateController implements Serializable {
 	
 	private final String CACHE_NAME = "code-list-cache";
 	
+	/**
+	 * Filter for scope on relations BROWSE AND CREATE/UPDATE/COPY
+	 */
+	private String scopeFilter;
+	private static final String NO_SCOPE_FILTER = "-1";
+
+	
 	
 	public CreateController() {
 		setSelectedData(null);
@@ -164,6 +172,21 @@ public class CreateController implements Serializable {
 	public void initCreateForm() {
 		setSelectedData(null);
 		selectedData.setCmqDescription("Please enter the description");
+	}
+	
+	public void filterRelationsByScope(AjaxBehaviorEvent event) {
+		
+		//For relations.xhtml
+		if (updateWizard != null || copyWizard != null || createWizard != null) {
+			
+		}
+		
+		//For relationsForBrowse.xhtml
+		if (browseWizard != null) {
+			
+		}
+		 
+ 
 	}
 	
 	//----------------------- Browse Wizard ------------------------
@@ -1913,6 +1936,14 @@ public class CreateController implements Serializable {
 
 	public void setCqtCacheManager(ICqtCacheManager cqtCacheManager) {
 		this.cqtCacheManager = cqtCacheManager;
+	}
+
+	public String getScopeFilter() {
+		return scopeFilter;
+	}
+
+	public void setScopeFilter(String scopeFilter) {
+		this.scopeFilter = scopeFilter;
 	}
      
 }
