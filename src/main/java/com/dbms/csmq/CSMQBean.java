@@ -841,7 +841,7 @@ public class CSMQBean {
 		return Arrays.asList(new String[][] {
 			new String[] { SCOPE_NARROW, "Narrow" },
 			new String[] { SCOPE_BROAD, "Broad" },
-			new String[] { SCOPE_CHILD_NARROW, "Child Narrow" },
+//			new String[] { SCOPE_CHILD_NARROW, "Child Narrow" },
 			new String[] { SCOPE_FULL, "Full" }
 		});
 	}
@@ -853,6 +853,8 @@ public class CSMQBean {
             return "Broad";
         else if(SCOPE_CHILD_NARROW.equals(scopeVal))
             return "Child Narrow";
+        else if(SCOPE_FULL.equals(scopeVal))
+            return "Full";
         return "";
     }
 	
