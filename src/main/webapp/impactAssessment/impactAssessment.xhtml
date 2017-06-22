@@ -222,8 +222,27 @@
 										<h:outputText
 											value="#{configMB.dictionaryName} - #{configMB.targetMeddraVersion.value}" />
 									</f:facet>
+									
+									
+									<!-- SEARCH BY SCOPE -->
+									
+									<!-- <f:facet name="right">
+										<p:selectOneMenu value="#{impactSearchController.scopeFilter}" 
+										rendered="#{impactSearchController.impactedSmqSelected or impactSearchController.nonImpactedSmqSelected}"
+											autoWidth="false" style="width:150px !important">
+											<f:selectItem itemLabel="Filter by scope" itemValue="-1"></f:selectItem>
+											<f:selectItems value="#{appCSMQBean.cqtBaseScopes}" var="s"
+												itemLabel="#{s[1]}" itemValue="#{s[0]}" />
+											<p:ajax event="change" process="@this"
+												listener="#{impactSearchController.filterRelationsByScope}"
+												update="@form:futureListsAndSmqs" />
+										</p:selectOneMenu>
+									</f:facet> -->
+									
+									<!-- SEARCH BY SCOPE -->
+									
 								</p:toolbar>
-
+								
 								<p:treeTable
 									value="#{impactSearchController.targetTableRootTreeNode}"
 									var="node" widgetVar="targetLists" id="futureListsAndSmqs"
@@ -263,6 +282,7 @@
 											<p:column rendered="#{impactSearchController.displayScopeCatWeight}" headerText="Weight" style="width:8%" />
 											<p:column headerText="" style="width:5%" />
 										</p:row>
+										 
 									</p:columnGroup>
 
 									<p:column><h:outputText value="#{node.term}" /></p:column>

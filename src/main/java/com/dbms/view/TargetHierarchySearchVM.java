@@ -231,7 +231,7 @@ public class TargetHierarchySearchVM {
 			IARelationsTreeHelper relationsSearchHelper = new IARelationsTreeHelper(
 	                null, null, null, null,
 	                cmqBaseTargetService, smqBaseTargetService, meddraDictTargetService, cmqRelationTargetService);	
-			relationsSearchHelper.onNodeExpandTargetTable(this.myHierarchyRoot, event);
+			relationsSearchHelper.onNodeExpandTargetTable(this.myHierarchyRoot, event, "-1");
 		}
 	}
 

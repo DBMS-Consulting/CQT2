@@ -18,6 +18,7 @@ public interface ISmqBaseTargetService {
 	List<Map<String, Object>> findSmqRelationsCountForSmqCodes(List<Long> smqCodes);
 
 	List<SmqRelationTarget> findSmqRelationsForSmqCode(Long smqCode);
+	List<SmqRelationTarget> findSmqRelationsForSmqCodeByScope(Long smqCode, int scope);
 
 	SmqRelationTarget findSmqRelationBySmqAndPtCode(Long smqCode, Integer ptCode);
 

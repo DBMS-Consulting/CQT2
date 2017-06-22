@@ -17,6 +17,9 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.faces.event.AjaxBehaviorEvent;
+import javax.faces.event.BehaviorEvent;
+import javax.faces.event.ValueChangeEvent;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -85,6 +88,8 @@ public class ImpactSearchController implements Serializable {
 	private static final int SELECTED_NO_LIST = 0;
 	private static final int SELECTED_CURRENT_LIST = 1;
 	private static final int SELECTED_TARGET_LIST = 2;
+	
+	private static final String NO_SCOPE_FILTER = "-1";
 	
 	@ManagedProperty("#{MeddraDictService}")
 	private IMeddraDictService meddraDictCurrentService;
@@ -171,6 +176,8 @@ public class ImpactSearchController implements Serializable {
     private boolean displayScopeCatWeight;
     private boolean newPTButtonEnabled;
     private boolean readOnlyIA;
+    
+    private String		scopeFilter;
 
 	public ImpactSearchController() {
 		
@@ -195,6 +202,7 @@ public class ImpactSearchController implements Serializable {
 		newPtDistinctSocTermsList = this.meddraDictTargetService.findSocsWithNewPt();
 		//changeOccur = false;
 		displayScopeCatWeight = refCodeListService.getLevelScopeCategorySystemConfig();
+		//scopeFilter = NO_SCOPE_FILTER;
 	}
 	
 	
@@ -343,7 +351,36 @@ public class ImpactSearchController implements Serializable {
         IARelationsTreeHelper treeHelper = new IARelationsTreeHelper(
                 cmqBaseCurrentService, smqBaseCurrentService, meddraDictCurrentService, cmqRelationCurrentService,
                 cmqBaseTargetService, smqBaseTargetService, meddraDictTargetService, cmqRelationTargetService);
-        treeHelper.onNodeExpandTargetTable(targetTableRootTreeNode, event);
+        treeHelper.onNodeExpandTargetTable(targetTableRootTreeNode, event, "-1");
+	}
+	
+
+	public void collapsingORexpanding(TreeNode n, boolean option) {
+		if (n.getChildren().size() == 0) {
+			n.setSelected(false);
+		}
+		else {
+			for (TreeNode s : n.getChildren()) {
+				collapsingORexpanding(s, option);
+			}
+			n.setExpanded(option);
+			n.setSelected(false);
+		}
+	}
+	
+	public void filterRelationsByScope(AjaxBehaviorEvent event) {
+		updateTargetRelations();
+
+		IARelationsTreeHelper treeHelper = new IARelationsTreeHelper(
+				cmqBaseCurrentService, smqBaseCurrentService,
+				meddraDictCurrentService, cmqRelationCurrentService,
+				cmqBaseTargetService, smqBaseTargetService,
+				meddraDictTargetService, cmqRelationTargetService);
+		treeHelper.onNodeExpandTargetTableScope(targetTableRootTreeNode, null,
+				scopeFilter);
+ 
+		RequestContext.getCurrentInstance().update("impactAssessment:futureListsAndSmqs");
+
 	}
     
 	public void onNodeCollapseTargetTable(NodeCollapseEvent event) {
@@ -2251,4 +2288,28 @@ public class ImpactSearchController implements Serializable {
     public void setTargetRelationsUpdated() {
         targetRelationsUpdated = true;
     }
+
+	public String getScopeFilter() {
+		return scopeFilter;
+	}
+
+	public void setScopeFilter(String scopeFilter) {
+		this.scopeFilter = scopeFilter;
+	}
+
+	public boolean isImpactedSmqSelected() {
+		return isImpactedSmqSelected;
+	}
+
+	public void setImpactedSmqSelected(boolean isImpactedSmqSelected) {
+		this.isImpactedSmqSelected = isImpactedSmqSelected;
+	}
+
+	public boolean isNonImpactedSmqSelected() {
+		return isNonImpactedSmqSelected;
+	}
+
+	public void setNonImpactedSmqSelected(boolean isNonImpactedSmqSelected) {
+		this.isNonImpactedSmqSelected = isNonImpactedSmqSelected;
+	}
 }

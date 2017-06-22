@@ -198,6 +198,33 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 	}
 	
 	@Override
+	@SuppressWarnings("unchecked")
+	public List<SmqRelationTarget> findSmqRelationsForSmqCodeByScope(Long smqCode, int scope) {
+		List<SmqRelationTarget> retVal = null;
+		StringBuilder sb = new StringBuilder();
+		sb.append("from SmqRelationTarget c where c.smqCode = :smqCode and c.ptTermScope = :ptTermScope order by c.smqLevel asc");
+		
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		try {
+			Query query = entityManager.createQuery(sb.toString());
+			query.setParameter("smqCode", smqCode);
+			query.setParameter("ptTermScope", scope);
+			retVal = query.getResultList();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg
+					.append("An error occurred while findSmqRelationsForSmqCode ")
+					.append(smqCode)
+					.append(" Query used was ->")
+					.append(sb.toString());
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
+	
+	@Override
 	public SmqRelationTarget findSmqRelationBySmqAndPtCode(Long smqCode, Integer ptCode) {
 		SmqRelationTarget retVal = null;
 		StringBuilder sb = new StringBuilder();
