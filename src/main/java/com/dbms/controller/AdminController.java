@@ -324,16 +324,19 @@ public class AdminController implements Serializable {
 		if (myFocusRef.getCodelistConfigType().equals(CqtConstants.CODE_LIST_TYPE_WORKFLOW_STATES))
 			myFocusRef.setValue(myFocusRef.getValue().toUpperCase());
 			
-		if (myFocusRef.getCodelistInternalValue() != null) {
-			String upperCode = myFocusRef.getCodelistInternalValue().toUpperCase();
-			RefConfigCodeList searchRefByCode = refCodeListService.findByCriterias(myFocusRef.getCodelistConfigType(), upperCode, "Y");
+		String upperCode = myFocusRef.getCodelistInternalValue() != null ? myFocusRef.getCodelistInternalValue().toUpperCase() : "";
+		RefConfigCodeList searchRefByCode = refCodeListService.findByCriterias(myFocusRef.getCodelistConfigType(), upperCode, "Y");
+		 
+		if (!upperCode.equals("")) {
 			if (searchRefByCode != null && myFocusRef.getActiveFlag().equals("Y")) {
-				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "The active codelist value exists for the same code", "");
-				FacesContext.getCurrentInstance().addMessage(null, msg);
-				return;
+				if ((myFocusRef.getId() != null && !searchRefByCode.getId().equals(myFocusRef.getId())) || myFocusRef.getId() == null) {
+					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "The active codelist value exists for the same code", "");
+					FacesContext.getCurrentInstance().addMessage(null, msg);
+					return;
+				}
 			}
-			myFocusRef.setCodelistInternalValue(upperCode);
 		}
+		myFocusRef.setCodelistInternalValue(upperCode);
 		try {
             if ("Y".equalsIgnoreCase(myFocusRef.getDefaultFlag())) {
                 // if editing config value is set as default, remove the default flag from the old default config
