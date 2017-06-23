@@ -13,6 +13,7 @@ import org.primefaces.model.TreeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.dbms.csmq.CSMQBean;
 import com.dbms.csmq.HierarchyNode;
 import com.dbms.entity.IEntity;
 import com.dbms.entity.cqt.CmqBase190;
@@ -41,6 +42,8 @@ public class CmqBaseRelationsTreeHelper {
     boolean requireDrillDown = true; //indicates whether it should add dummy nodes for node-expansion for hierarchy drill-down
     boolean relationView = true;
     boolean parentListView = false;
+    
+    private String scopeFromParent;
 	
 	public CmqBaseRelationsTreeHelper(ICmqBase190Service cmqBaseSvc,
 			ISmqBaseService smqBaseSvc,
@@ -49,7 +52,7 @@ public class CmqBaseRelationsTreeHelper {
 		this.cmqBaseSvc = cmqBaseSvc;
 		this.smqBaseSvc = smqBaseSvc;
 		this.meddraDictSvc = meddraDictSvc;
-		this.cmqRelationSvc = cmqRelationSvc;
+		this.cmqRelationSvc = cmqRelationSvc;		
 	}
 	
 	/**
@@ -198,6 +201,10 @@ public class CmqBaseRelationsTreeHelper {
 			return rootNode;
 		
 		IEntity entity = hNode.getEntity();
+		
+		 
+		System.out.println("NODE SCOPE :: " + scopeFromParent); 
+		
 
 		// remove the first dummy node placeholder
 		HierarchyNode dummyChildData = (HierarchyNode) expandedNode.getChildren().get(0).getData();
@@ -214,7 +221,7 @@ public class CmqBaseRelationsTreeHelper {
         } else if (entity instanceof SmqBase190){
             SmqBase190 smqBase = (SmqBase190) entity;
             this.populateSmqBaseChildren(smqBase.getSmqCode(), expandedNode);
-            this.populateSmqRelations(smqBase.getSmqCode(), expandedNode);
+            this.populateSmqRelations(smqBase.getSmqCode(), expandedNode, scopeFromParent != null ? scopeFromParent : hNode.getScope());
         } else if(entity instanceof MeddraDictHierarchySearchDto) {
             String parentLevel = hNode.getLevel();
             MeddraDictHierarchySearchDto meddraDictHierarchySearchDto = (MeddraDictHierarchySearchDto)entity;
@@ -530,7 +537,7 @@ public class CmqBaseRelationsTreeHelper {
 		}
 	}
     
-    public void populateSmqRelations(Long smqCode, TreeNode expandedTreeNode) {
+    public void populateSmqRelations(Long smqCode, TreeNode expandedTreeNode, String scopeFilter) {
         List<SmqRelation190> childRelations = this.smqBaseSvc.findSmqRelationsForSmqCode(smqCode);
 
 		if (null != childRelations) {
@@ -584,12 +591,23 @@ public class CmqBaseRelationsTreeHelper {
                 if(relationView) {
                     //childRelationNode.markNotEditableInRelationstable();
                     childRelationNode.markReadOnlyInRelationstable();
+                }                
+                
+                if ((scopeFilter.equals(CSMQBean.SCOPE_NARROW) || scopeFilter.equals(CSMQBean.SCOPE_BROAD) && childRelationNode.getLevel().equals("LLT") || childRelationNode.getLevel().equals("PT"))) {
+                	if (scopeFilter.equals(childRelationNode.getScope())) {  
+                    	TreeNode treeNode = new DefaultTreeNode(childRelationNode, expandedTreeNode);
+//    					if(isChildSmqNode) {
+//    						this.createNewDummyNode(treeNode);
+//    					}
+    				}
+                	
                 }
-
-				TreeNode treeNode = new DefaultTreeNode(childRelationNode, expandedTreeNode);
-				if(isChildSmqNode) {
-					this.createNewDummyNode(treeNode);
-				}
+                else if (!childRelationNode.getLevel().equals("LLT") || !childRelationNode.getLevel().equals("PT")){
+                	TreeNode treeNode = new DefaultTreeNode(childRelationNode, expandedTreeNode);
+    				if(isChildSmqNode) {
+    					this.createNewDummyNode(treeNode);
+    				}
+                }
 			}
 		}
 	}
@@ -853,6 +871,14 @@ public class CmqBaseRelationsTreeHelper {
     
     public boolean isRootListNode(TreeNode treeNode) {
 		return (StringUtils.equalsIgnoreCase(treeNode.getType(), "root"));
+	}
+
+	public String getScopeFromParent() {
+		return scopeFromParent;
+	}
+
+	public void setScopeFromParent(String scopeFromParent) {
+		this.scopeFromParent = scopeFromParent;
 	}
 
 }

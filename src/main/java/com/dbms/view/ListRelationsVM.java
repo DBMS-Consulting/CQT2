@@ -70,6 +70,9 @@ public class ListRelationsVM implements IRelationsChangeListener {
     
     private boolean displayScopeCatWeight;
     
+    private String scopeFromParent;
+
+    
     public ListRelationsVM(AuthenticationService authService, SWJSFRequest appSWJSFRequest,
             IRefCodeListService refCodeListService, ICmqBase190Service cmqBaseService, ISmqBaseService smqBaseService,
             IMeddraDictService meddraDictService, ICmqRelation190Service cmqRelationService) {
@@ -112,7 +115,17 @@ public class ListRelationsVM implements IRelationsChangeListener {
 		boolean isRelationView = "RELATIONS".equalsIgnoreCase(uiSourceOfEvent);
 		boolean isParentListView = "PARENT-LIST".equalsIgnoreCase(uiSourceOfEvent);
 		CmqBaseRelationsTreeHelper relationsSearchHelper = new CmqBaseRelationsTreeHelper(cmqBaseService, smqBaseService, meddraDictService, cmqRelationService);	
-        relationsSearchHelper.setRelationView(isRelationView);
+		
+		
+		HierarchyNode hNode = (HierarchyNode) expandedTreeNode.getData();
+        if (hNode.getLevel().equals("SMQ1") || hNode.getLevel().equals("SMQ2") | hNode.getLevel().equals("SMQ3")) {
+        	relationsSearchHelper.setScopeFromParent(hNode.getScope()); 
+        	scopeFromParent = hNode.getScope();
+        }
+        else
+        	relationsSearchHelper.setScopeFromParent(scopeFromParent); 
+		
+		relationsSearchHelper.setRelationView(isRelationView);
         relationsSearchHelper.setParentListView(isParentListView);
 		relationsSearchHelper.getRelationsNodeHierarchy(null, expandedTreeNode);
 	}
