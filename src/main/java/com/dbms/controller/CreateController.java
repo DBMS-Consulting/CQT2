@@ -174,11 +174,32 @@ public class CreateController implements Serializable {
 		selectedData.setCmqDescription("Please enter the description");
 	}
 	
+	public void expandRelations(AjaxBehaviorEvent event) {
+		collapsingORexpanding(relationsModel.getRelationsRoot(), true);
+	}
+
+	public void collapseRelations(AjaxBehaviorEvent event) {
+		collapsingORexpanding(relationsModel.getRelationsRoot(), false);
+	}
+
+	public void collapsingORexpanding(TreeNode n, boolean option) {
+		if (n != null && n.getChildren() != null && n.getChildren().size() == 0) {
+			n.setSelected(false);
+		}
+		else {
+			for (TreeNode s : n.getChildren()) {
+				collapsingORexpanding(s, option);
+			}
+			n.setExpanded(option);
+			n.setSelected(false);
+		}
+	}
+	
 	public void filterRelationsByScope(AjaxBehaviorEvent event) {
 		
 		//For relations.xhtml
 		if (updateWizard != null || copyWizard != null || createWizard != null) {
-			
+			collapseRelations(event); 
 		}
 		
 		//For relationsForBrowse.xhtml

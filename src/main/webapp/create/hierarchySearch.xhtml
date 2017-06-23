@@ -63,34 +63,7 @@
 
 		<h:panelGroup id="pc3"
 			style="display:block;position: absolute;height:80%;height: calc(100% - 155px);width: 100%;margin-left: -16px;padding: 0 10px;box-sizing: border-box;overflow: auto;">
-			<!--p:toolbar id="t4">
-				<f:facet name="left">
-					<p:commandButton id="filterH" value="Filter and Sort" type="button"
-						icon="ui-icon-triangle-1-s" />
-					<p:overlayPanel id="filterPanelH" for="filterH"
-						showCloseIcon="true">
-						<h:panelGrid columns="2">
-							<p:outputLabel value="Sort" />
-							<p:selectOneMenu value="TERM">
-								<f:selectItem itemValue="TERM" itemLabel="Term name"></f:selectItem>
-								<f:selectItem itemValue="DEF_LEVEL_REF_SHORT_NAME"
-									itemLabel="Level"></f:selectItem>
- 							</p:selectOneMenu>
-
-							<p:outputLabel for="showH" value="Show Primary Only"
-								style="min-width: 100px !important" />
-							<p:selectBooleanCheckbox value="false" id="showH"
-								label="Show Primary Only"></p:selectBooleanCheckbox>
-
-							<p:spacer />
-							<p:commandButton value="Refresh" id="cbH" icon="fa fa-refresh"
-								rendered="true" />
-						</h:panelGrid>
-					</p:overlayPanel>
-					<p:spacer width="5" />
-
-				</f:facet>
-			</p:toolbar -->
+			 
 			<p:treeTable value="#{paramDlgCtrl.hierarchyRoot}" var="node"
 				resizableColumns="true" id="resultHier" selectionMode="multiple"
 				selection="#{paramDlgCtrl.selectedNodes}"

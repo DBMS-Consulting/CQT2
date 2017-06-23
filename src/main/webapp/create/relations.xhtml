@@ -195,6 +195,8 @@
 					<f:selectItem itemLabel="" itemValue="" noSelectionOption="true"/>
 					<f:selectItems var="s" value="#{appCSMQBean.cqtBaseScopes}"
 						itemValue="#{s[0]}" itemLabel="#{s[1]}" />
+						
+						<p:ajax event="change" listener="#{createController.filterRelationsByScope}" update="resultRelations" />
 				</p:selectOneMenu>
 			</p:column>
 

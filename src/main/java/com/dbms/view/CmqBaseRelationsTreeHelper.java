@@ -593,21 +593,26 @@ public class CmqBaseRelationsTreeHelper {
                     childRelationNode.markReadOnlyInRelationstable();
                 }                
                 
-                if ((scopeFilter.equals(CSMQBean.SCOPE_NARROW) || scopeFilter.equals(CSMQBean.SCOPE_BROAD) && childRelationNode.getLevel().equals("LLT") || childRelationNode.getLevel().equals("PT"))) {
-                	if (scopeFilter.equals(childRelationNode.getScope())) {  
-                    	TreeNode treeNode = new DefaultTreeNode(childRelationNode, expandedTreeNode);
-//    					if(isChildSmqNode) {
-//    						this.createNewDummyNode(treeNode);
-//    					}
-    				}
-                	
+                if (scopeFilter != null) {
+                	 if ((scopeFilter.equals(CSMQBean.SCOPE_NARROW) || scopeFilter.equals(CSMQBean.SCOPE_BROAD) && childRelationNode.getLevel().equals("LLT") || childRelationNode.getLevel().equals("PT"))) {
+                     	if (scopeFilter.equals(childRelationNode.getScope())) {  
+                         	TreeNode treeNode = new DefaultTreeNode(childRelationNode, expandedTreeNode);
+         				}
+                     }
+                     else if (!childRelationNode.getLevel().equals("LLT") || !childRelationNode.getLevel().equals("PT")) {
+                     	TreeNode treeNode = new DefaultTreeNode(childRelationNode, expandedTreeNode);
+         				if(isChildSmqNode) {
+         					this.createNewDummyNode(treeNode);
+         				}
+                     }
                 }
-                else if (!childRelationNode.getLevel().equals("LLT") || !childRelationNode.getLevel().equals("PT")){
+                else {
                 	TreeNode treeNode = new DefaultTreeNode(childRelationNode, expandedTreeNode);
-    				if(isChildSmqNode) {
-    					this.createNewDummyNode(treeNode);
-    				}
+     				if(isChildSmqNode) {
+     					this.createNewDummyNode(treeNode);
+     				}
                 }
+                
 			}
 		}
 	}
