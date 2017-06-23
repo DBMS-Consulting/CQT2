@@ -97,6 +97,28 @@ public class ListDetailsFormVM {
             this.afterChangeExtension(null);
         }
 	}
+    
+    protected void setDefaults() {
+        RefConfigCodeList rcc;
+        if(StringUtils.isEmpty(drugProgram)) {
+            rcc = refCodeListService.getDefaultForConfigType(CqtConstants.CODE_LIST_TYPE_PROGRAM);
+            if(rcc != null) {
+                drugProgram = rcc.getCodelistInternalValue();
+            }
+        }
+        if(StringUtils.isEmpty(protocol)) {
+            rcc = refCodeListService.getDefaultForConfigType(CqtConstants.CODE_LIST_TYPE_PROTOCOL);
+            if(rcc != null) {
+                protocol = rcc.getCodelistInternalValue();
+            }
+        }
+        if(products == null || products.length == 0) {
+            rcc = refCodeListService.getDefaultForConfigType(CqtConstants.CODE_LIST_TYPE_PRODUCT);
+            if(rcc != null) {
+                products = new String[] { rcc.getCodelistInternalValue() };
+            }
+        }
+    }
 	
 	/**
 	 * Load Form data from CmqBase190 Entity
@@ -285,8 +307,8 @@ public class ListDetailsFormVM {
             } else {
                 setLevel(1);
             }
-
         }
+        setDefaults();
 	}
 	//--------------------------- Getters & Setters ---------------------------
 	
