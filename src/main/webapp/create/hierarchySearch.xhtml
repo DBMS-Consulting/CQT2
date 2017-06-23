@@ -8,29 +8,34 @@
 
 	<p:panel header="Relations" id="hierarchy-modal"
 		style="min-height: 450px;height: 90%;height: calc(100% - 40px);position: relative;">
-		<h:panelGrid id="hierarchySearchGrid" columns="8">
+		<h:panelGrid id="hierarchySearchGrid" columns="7">
 			<p:outputLabel value="Level" for="levelH" />
-			<p:selectOneMenu id="levelH" label="Level"
-				rendered="#{paramParentExtension ne 'PRO' and paramParentExtension ne 'CPT' and paramParentExtension ne 'DME'}"
-				value="#{paramDlgCtrl.filterLevel}" appendTo="@this">
-				 
-				<f:selectItems itemLabel="#{level.value}" value="#{impactSearchController.levelListForIA}"
-					itemValue="#{level.codelistInternalValue}" var="level"></f:selectItems>
-				<p:ajax update="check" />
-			</p:selectOneMenu>
-			<p:selectOneMenu id="levelH2" label="Level"
-				rendered="#{paramParentExtension eq 'PRO' or paramParentExtension eq 'CPT' or paramParentExtension eq 'DME'}"
-				value="#{paramDlgCtrl.filterLevel}" >
- 
-				<f:selectItems itemLabel="#{level.value}" value="#{createController.levelListWithoutProtocol}"  
-					itemValue="#{level.codelistInternalValue}" var="level"></f:selectItems>
-				<p:ajax update="check" />
-			</p:selectOneMenu>
+            <h:panelGroup>
+                <p:selectOneMenu id="levelH" label="Level"
+                    rendered="#{paramParentExtension ne 'PRO' and paramParentExtension ne 'CPT' and paramParentExtension ne 'DME'}"
+                    value="#{paramDlgCtrl.filterLevel}" appendTo="@this">
+
+                    <f:selectItems itemLabel="#{level.value}" value="#{impactSearchController.levelListForIA}"
+                        itemValue="#{level.codelistInternalValue}" var="level"></f:selectItems>
+                    <p:ajax update="check search-direction" />
+                </p:selectOneMenu>
+                <p:selectOneMenu id="levelH2" label="Level"
+                    rendered="#{paramParentExtension eq 'PRO' or paramParentExtension eq 'CPT' or paramParentExtension eq 'DME'}"
+                    value="#{paramDlgCtrl.filterLevel}" appendTo="@this">
+
+                    <f:selectItems itemLabel="#{level.value}" value="#{createController.levelListWithoutProtocol}"  
+                        itemValue="#{level.codelistInternalValue}" var="level"></f:selectItems>
+                    <p:ajax update="check" />
+                </p:selectOneMenu>
+            </h:panelGroup>
+                
 			<p:spacer width="10" />
+            
 			<p:outputLabel value="Term" for="termH" />
 			<p:inputText id="termH" style="text-transform:uppercase"
 				onkeypress="if (event.keyCode == 13) { return false; }"
 				value="#{paramDlgCtrl.filterTermName}" />
+            
 			<p:commandButton value="Search" update="resultHier"
 				action="#{paramDlgCtrl.hierarchySearch}"
 				oncomplete="initRelationDND()" />
@@ -46,11 +51,18 @@
 				<h:outputText style="font-weight: bold" value="Show Primary path" />
 			</h:panelGrid>
 		</h:panelGrid>
-
-		<br />
+        <h:panelGrid columns="2">
+            <p:outputLabel value="Search Direction:" for="search-direction" />
+            <p:selectOneRadio id="search-direction" value="#{paramDlgCtrl.searchDirection}">
+                <f:selectItem itemLabel="up" itemValue="1" itemDisabled="#{paramDlgCtrl.searchUpDisabled}" />
+                <f:selectItem itemLabel="down" itemValue="2" itemDisabled="#{paramDlgCtrl.searchDownDisabled}"/>
+            </p:selectOneRadio>
+        </h:panelGrid>
+            
+        <br/>
 
 		<h:panelGroup id="pc3"
-			style="display:block;position: absolute;height:80%;height: calc(100% - 100px);width: 100%;margin-left: -16px;padding: 0 10px;box-sizing: border-box;overflow: auto;">
+			style="display:block;position: absolute;height:80%;height: calc(100% - 155px);width: 100%;margin-left: -16px;padding: 0 10px;box-sizing: border-box;overflow: auto;">
 			<!--p:toolbar id="t4">
 				<f:facet name="left">
 					<p:commandButton id="filterH" value="Filter and Sort" type="button"
