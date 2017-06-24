@@ -55,6 +55,7 @@ import org.primefaces.model.StreamedContent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.dbms.csmq.CSMQBean;
 import com.dbms.entity.cqt.CmqBase190;
 import com.dbms.entity.cqt.CmqRelation190;
 import com.dbms.entity.cqt.SmqBase190;
@@ -975,10 +976,21 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 
 		// Cell 5
 		cell = row.createCell(5);
-		cell.setCellValue(relation.getTermScope() != null ? relation
-				.getTermScope() : "");
+		cell.setCellValue(relation.getTermScope() != null ? returnScopeValue(relation.getTermScope()) : "");
 		
 	}
+
+	private String returnScopeValue(String scopeVal) {
+		if(CSMQBean.SCOPE_NARROW.equals(scopeVal))
+            return "Narrow";
+        else if(CSMQBean.SCOPE_BROAD.equals(scopeVal))
+            return "Broad";
+        else if(CSMQBean.SCOPE_CHILD_NARROW.equals(scopeVal))
+            return "Child Narrow";
+        else if(CSMQBean.SCOPE_FULL.equals(scopeVal))
+            return "Full";
+        return "";
+ 	}
 
 	/**
 	 * MQ Report.
