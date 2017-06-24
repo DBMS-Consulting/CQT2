@@ -34,7 +34,14 @@
 		        <h:outputText style="font-weight: bold" value="Show Primary path" />
 		 	</h:panelGrid>
 		</h:panelGrid>
-		
+		 <h:panelGrid columns="2">
+            <p:outputLabel value="Search Direction:" for="search-direction-target" /> 
+            <p:selectOneRadio id="search-direction-target" value="#{impactSearchController.targetHierarchySearchDlgModel.searchDirection}">
+                <f:selectItem itemLabel="up" itemValue="1" itemDisabled="#{impactSearchController.targetHierarchySearchDlgModel.searchUpDisabled}" />
+                <f:selectItem itemLabel="down" itemValue="2" itemDisabled="#{impactSearchController.targetHierarchySearchDlgModel.searchDownDisabled}"/>
+           		<p:ajax update="resultHierTarget" listener="#{impactSearchController.targetHierarchySearchDlgModel.refreshTHS}" /> 
+           	</p:selectOneRadio>
+        </h:panelGrid>
 
 		<br />
 		<h:panelGroup id="pct3" style="display:block;position: absolute;height:80%;height: calc(100% - 100px);width: 100%;margin-left: -16px;padding: 0 10px;box-sizing: border-box;overflow: auto;">

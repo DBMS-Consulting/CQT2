@@ -9,6 +9,7 @@ import java.util.Map;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.faces.event.AjaxBehaviorEvent;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.primefaces.event.CloseEvent;
@@ -30,7 +31,9 @@ import com.dbms.service.ICmqRelation190Service;
 import com.dbms.service.IMeddraDictService;
 import com.dbms.service.ISmqBaseService;
 import com.dbms.util.MeddraDictLevelHelper;
+
 import static com.dbms.util.MeddraDictLevelHelper.SEARCH_MEDDRA_BASE_REVERSE;
+
 import com.dbms.util.SMQLevelHelper;
 
 /**
@@ -272,6 +275,14 @@ public class CmqBaseHierarchySearchVM {
 		}
 
 		return "";
+	}
+	
+	/**
+	 * Refresh HS after radio button selection.
+	 * @param event AjaxBehaviorEvent
+	 */
+	public void refreshHS(AjaxBehaviorEvent event) {
+		 hierarchySearch();
 	}
 
 	//uiEventSourceName is either relations or hierarchy

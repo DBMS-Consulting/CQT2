@@ -40,6 +40,9 @@ public class TargetHierarchySearchVM {
 
 	private static final Logger LOG = LoggerFactory
 			.getLogger(TargetHierarchySearchVM.class);
+	
+	 public static int SEARCH_DIRECTION_UP = 1;
+	   public static int SEARCH_DIRECTION_DOWN = 2;
 
 	private ICmqBaseTargetService cmqBaseTargetService;
 	private ISmqBaseTargetService smqBaseTargetService;
@@ -55,6 +58,11 @@ public class TargetHierarchySearchVM {
 	private boolean nonCurrentLlt;
     private boolean showPrimaryPath;
     private boolean showPrimaryPathOnly;
+    
+    private int searchDirection;
+    private int appliedSearchDirection;
+    private boolean searchUpDisabled;
+    private boolean searchDownDisabled;
 	
 	private List<HierarchySearchResultBean> hierarchySearchResults;
 	
@@ -71,6 +79,7 @@ public class TargetHierarchySearchVM {
 		
 		myHierarchyRoot = new DefaultTreeNode("root", new HierarchyNode("LEVEL",
 				"NAME", "CODE", null), null);
+		searchDirection = SEARCH_DIRECTION_UP; //UP
 	}
 
 	public void onRowCancel(RowEditEvent event) {
@@ -80,6 +89,7 @@ public class TargetHierarchySearchVM {
 	public String hierarchySearch() {
 		//need to set this as default. if its a pp search the correct branch will toggle it on its own.
 		this.showPrimaryPathOnly = false;
+		appliedSearchDirection = searchDirection;
 		
 		IARelationsTreeHelper relationsTreeHelper = new IARelationsTreeHelper(
                 null, null, null, null,
@@ -98,7 +108,7 @@ public class TargetHierarchySearchVM {
 			for (SmqBaseTarget smqBaseTarget : smqBaseList) {
 				this.updateHierarchySearchForSmqTaget(smqBaseTarget);
 			}
-		} else if (meddraLevelH != null && meddraLevelH.getSearchFrom() == MeddraDictLevelHelper.SEARCH_MEDDRA_BASE) {
+		} else if (meddraLevelH != null && appliedSearchDirection == SEARCH_DIRECTION_DOWN) {
 			List<MeddraDictHierarchySearchDto> meddraDictDtoList = this.meddraDictTargetService
 					.findByLevelAndTerm(meddraLevelH.getTermPrefix(), myFilterTermName);
 			this.myHierarchyRoot = new DefaultTreeNode("root", new HierarchyNode(
@@ -119,7 +129,7 @@ public class TargetHierarchySearchVM {
 			for (MeddraDictHierarchySearchDto meddraDictDto : meddraDictDtoList) {
 				this.updateHierarchySearchForMeddraDict(meddraDictDto, childSearchColumnTypePrefix, parentCodeColumnPrefix);
 			}
-		} else if (meddraLevelH != null && meddraLevelH.getSearchFrom() == MeddraDictLevelHelper.SEARCH_MEDDRA_BASE_REVERSE) {
+		} else if (meddraLevelH != null && appliedSearchDirection == SEARCH_DIRECTION_UP) {
 			if(this.showPrimaryPath && (myFilterLevel.equals("PT") || myFilterLevel.equals("LLT"))) {
 				this.showPrimaryPathOnly = true;
 				this.myHierarchyRoot = new DefaultTreeNode("root", new HierarchyNode("LEVEL", "NAME", "CODE", null), null);
@@ -202,6 +212,14 @@ public class TargetHierarchySearchVM {
 		}
 
 		return "";
+	}
+	
+	/**
+	 * Refresh HS after radio button selection.
+	 * @param event AjaxBehaviorEvent
+	 */
+	public void refreshTHS(AjaxBehaviorEvent event) {
+		 hierarchySearch();
 	}
 	
 	/**
@@ -468,4 +486,34 @@ public class TargetHierarchySearchVM {
 		this.showPrimaryPath = showPrimaryPath;
 	}
 	
+	public int getSearchDirection() {
+		return searchDirection;
+	}
+
+	public void setSearchDirection(int searchDirection) {
+		this.searchDirection = searchDirection;
+	}
+
+	public boolean isSearchUpDisabled() {
+		SMQLevelHelper smqLevelH = SMQLevelHelper.getByLabel(myFilterLevel);
+		if (smqLevelH != null || "PRO".equalsIgnoreCase(myFilterLevel)
+				|| "SOC".equalsIgnoreCase(myFilterLevel)) {
+			searchDirection = SEARCH_DIRECTION_DOWN;
+			return true;
+		}
+		return false;
+	}
+
+	public boolean isSearchDownDisabled() {
+		MeddraDictLevelHelper meddraLevelH = MeddraDictLevelHelper
+				.getByLabel(myFilterLevel);
+
+		if (meddraLevelH != null
+				&& meddraLevelH.getSearchFrom() == MeddraDictLevelHelper.SEARCH_MEDDRA_BASE_REVERSE) {
+			searchDirection = SEARCH_DIRECTION_UP;
+			return true;
+		}
+		return false;
+	}
+
 }
