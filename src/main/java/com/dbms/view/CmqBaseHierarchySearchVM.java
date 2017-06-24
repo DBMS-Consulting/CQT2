@@ -415,7 +415,7 @@ public class CmqBaseHierarchySearchVM {
     public boolean isSearchDownDisabled() {
 		MeddraDictLevelHelper meddraLevelH = MeddraDictLevelHelper.getByLabel(myFilterLevel);
         
-        if(meddraLevelH != null && meddraLevelH.getSearchFrom() == MeddraDictLevelHelper.SEARCH_MEDDRA_BASE_REVERSE){
+        if(meddraLevelH != null && meddraLevelH.getSearchFrom() == MeddraDictLevelHelper.SEARCH_MEDDRA_BASE_REVERSE && (meddraLevelH.getLabel() != null && !meddraLevelH.getLabel().equals("PT"))){
             searchDirection = SEARCH_DIRECTION_UP;
             return true;
         }
