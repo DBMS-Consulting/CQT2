@@ -16,6 +16,7 @@ import org.hibernate.type.StandardBasicTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.dbms.csmq.CSMQBean;
 import com.dbms.entity.cqt.SmqBase190;
 import com.dbms.entity.cqt.SmqRelation190;
 import com.dbms.service.base.CqtPersistenceService;
@@ -179,8 +180,8 @@ public class SmqBaseService extends CqtPersistenceService<SmqBase190> implements
 	public List<SmqRelation190> findSmqRelationsForSmqCodeAndScope(Long smqCode, String scope) {
 		List<SmqRelation190> retVal = null;
 		StringBuilder sb = new StringBuilder();
-		if(StringUtils.isNotBlank(scope)) {
-			sb.append("from SmqRelation190 c where c.smqCode = :smqCode and c.ptTermScope = :ptTermScope order by c.smqLevel asc, c.ptName asc");
+		if (StringUtils.isNotBlank(scope) && (scope.equals(CSMQBean.SCOPE_NARROW) || scope.equals(CSMQBean.SCOPE_BROAD))) {
+			sb.append("from SmqRelation190 c where c.smqCode = :smqCode and (c.ptTermScope = 0 or c.ptTermScope = :ptTermScope) order by c.smqLevel asc, c.ptName asc");
 		} else {
 			sb.append("from SmqRelation190 c where c.smqCode = :smqCode order by c.smqLevel asc, c.ptName asc");
 		}
@@ -189,7 +190,7 @@ public class SmqBaseService extends CqtPersistenceService<SmqBase190> implements
 		try {
 			Query query = entityManager.createQuery(sb.toString());
 			query.setParameter("smqCode", smqCode);
-			if(StringUtils.isNotBlank(scope)) {
+			if (StringUtils.isNotBlank(scope) && (scope.equals(CSMQBean.SCOPE_NARROW) || scope.equals(CSMQBean.SCOPE_BROAD))) {
 				query.setParameter("ptTermScope", Integer.parseInt(scope));
 			}
 			query.setHint("org.hibernate.cacheable", true);

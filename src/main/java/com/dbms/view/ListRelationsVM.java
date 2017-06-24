@@ -119,29 +119,54 @@ public class ListRelationsVM implements IRelationsChangeListener {
 		
 		HierarchyNode hNode = (HierarchyNode) expandedTreeNode.getData();
 		IEntity entity = hNode.getEntity();
-		//scan upto 3 tree levels to find if we have an smq with a scope
+		
+		//scan upto 4 tree levels to find if we have an smq with a scope
 		if(entity instanceof SmqBase190) {
-			String parentScope = hNode.getScope();
-			if(StringUtils.isNoneBlank(parentScope)) {
-				relationsSearchHelper.setScopeFromParent(parentScope); 
+			//level 1 up
+			String parentLevel1Up = hNode.getScope();
+			if(StringUtils.isNoneBlank(parentLevel1Up) 
+					&& (parentLevel1Up.equals("1") || parentLevel1Up.equals("2") 
+							|| parentLevel1Up.equals("3") || parentLevel1Up.equals("4"))) {
+				relationsSearchHelper.setScopeFromParent(parentLevel1Up); 
 			} else {
-				//check parent of parent for scope
-				TreeNode parentOfParent = expandedTreeNode.getParent();
-				HierarchyNode parentOfParentHnode = (HierarchyNode) parentOfParent.getData();
-				IEntity parentOfParentEntity = parentOfParentHnode.getEntity();
-				if(parentOfParentEntity instanceof SmqBase190) {
-					String parentOfParentScope = hNode.getScope();
-					if(StringUtils.isNoneBlank(parentOfParentScope)) {
-						relationsSearchHelper.setScopeFromParent(parentOfParentScope); 
+				//level 2 up
+				TreeNode parentLevel2Up = expandedTreeNode.getParent();
+				HierarchyNode parentLevel2UpHnode = (HierarchyNode) parentLevel2Up.getData();
+				IEntity parentLevel2UpEntity = parentLevel2UpHnode.getEntity();
+				if(parentLevel2UpEntity instanceof SmqBase190) {
+					String parentLevel2UpScope = parentLevel2UpHnode.getScope();
+					if(StringUtils.isNoneBlank(parentLevel2UpScope) 
+							&& (parentLevel2UpScope.equals("1") || parentLevel2UpScope.equals("2") 
+									|| parentLevel2UpScope.equals("3") || parentLevel2UpScope.equals("4"))) {
+						relationsSearchHelper.setScopeFromParent(parentLevel2UpScope); 
 					} else {
-						//check parent of parent of parent for scope
-						TreeNode parentOfParentOfParent = expandedTreeNode.getParent();
-						HierarchyNode parentOfParentOfParentHnode = (HierarchyNode) parentOfParentOfParent.getData();
-						IEntity parentOfParentOfParentEntity = parentOfParentOfParentHnode.getEntity();
-						if(parentOfParentOfParentEntity instanceof SmqBase190) {
-							String parentOfParentOfParentScope = hNode.getScope();
-							if(StringUtils.isNoneBlank(parentOfParentOfParentScope)) {
-								relationsSearchHelper.setScopeFromParent(parentOfParentOfParentScope); 
+						//level 3 up
+						TreeNode parentLevel3Up = expandedTreeNode.getParent().getParent();
+						if(null != parentLevel3Up) {
+							HierarchyNode parentLevel3UpHnode = (HierarchyNode) parentLevel3Up.getData();
+							IEntity parentLevel3UpEntity = parentLevel3UpHnode.getEntity();
+							if(parentLevel3UpEntity instanceof SmqBase190) {
+								String parentLevel3UpScope = parentLevel3UpHnode.getScope();
+								if(StringUtils.isNoneBlank(parentLevel3UpScope) 
+										&& (parentLevel3UpScope.equals("1") || parentLevel3UpScope.equals("2") 
+												|| parentLevel3UpScope.equals("3") || parentLevel3UpScope.equals("4"))) {
+									relationsSearchHelper.setScopeFromParent(parentLevel3UpScope); 
+								} else {
+									//level 4 up
+									TreeNode parentLevel4Up = expandedTreeNode.getParent().getParent();
+									if(null != parentLevel4Up) {
+										HierarchyNode parentLevel4UpHnode = (HierarchyNode) parentLevel4Up.getData();
+										IEntity parentLevel4UpEntity = parentLevel4UpHnode.getEntity();
+										if(parentLevel4UpEntity instanceof SmqBase190) {
+											String parentLevel4UpScope = parentLevel4UpHnode.getScope();
+											if(StringUtils.isNoneBlank(parentLevel4UpScope) 
+													&& (parentLevel4UpScope.equals("1") || parentLevel4UpScope.equals("2") 
+															|| parentLevel4UpScope.equals("3") || parentLevel4UpScope.equals("4"))) {
+												relationsSearchHelper.setScopeFromParent(parentLevel4UpScope); 
+											}
+										}
+									}
+								}
 							}
 						}
 					}
