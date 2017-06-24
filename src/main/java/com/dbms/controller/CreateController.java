@@ -277,6 +277,8 @@ public class CreateController implements Serializable {
 			detailsFormModel.loadFromCmqBase190(selectedData);
 		else
 			detailsFormModel.init();
+		if (copyWizard != null)
+			detailsFormModel.setProducts(new String[0]);
 
 		FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Form canceled", "");
 		FacesContext.getCurrentInstance().addMessage(null, msg);
