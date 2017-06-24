@@ -203,7 +203,7 @@ public class CmqBaseRelationsTreeHelper {
 		IEntity entity = hNode.getEntity();
 		
 		 
-		System.out.println("NODE SCOPE :: " + scopeFromParent); 
+		//System.out.println("NODE SCOPE :: " + scopeFromParent); 
 		
 
 		// remove the first dummy node placeholder
@@ -221,7 +221,7 @@ public class CmqBaseRelationsTreeHelper {
         } else if (entity instanceof SmqBase190){
             SmqBase190 smqBase = (SmqBase190) entity;
             this.populateSmqBaseChildren(smqBase.getSmqCode(), expandedNode);
-            this.populateSmqRelations(smqBase.getSmqCode(), expandedNode, scopeFromParent != null ? scopeFromParent : hNode.getScope());
+            this.populateSmqRelations(smqBase.getSmqCode(), expandedNode, scopeFromParent);
         } else if(entity instanceof MeddraDictHierarchySearchDto) {
             String parentLevel = hNode.getLevel();
             MeddraDictHierarchySearchDto meddraDictHierarchySearchDto = (MeddraDictHierarchySearchDto)entity;
@@ -538,7 +538,13 @@ public class CmqBaseRelationsTreeHelper {
 	}
     
     public void populateSmqRelations(Long smqCode, TreeNode expandedTreeNode, String scopeFilter) {
-        List<SmqRelation190> childRelations = this.smqBaseSvc.findSmqRelationsForSmqCode(smqCode);
+    	List<SmqRelation190> childRelations = null;
+    	if (StringUtils.isNotBlank(scopeFilter) && (scopeFilter.equals(CSMQBean.SCOPE_NARROW) || scopeFilter.equals(CSMQBean.SCOPE_BROAD)
+   			 || scopeFilter.equals(CSMQBean.SCOPE_FULL))) {
+    		childRelations = this.smqBaseSvc.findSmqRelationsForSmqCodeAndScope(smqCode, scopeFilter);
+    	} else {
+    		childRelations = this.smqBaseSvc.findSmqRelationsForSmqCode(smqCode);
+    	}
 
 		if (null != childRelations) {
 			for (SmqRelation190 childRelation : childRelations) {
@@ -593,26 +599,10 @@ public class CmqBaseRelationsTreeHelper {
                     childRelationNode.markReadOnlyInRelationstable();
                 }                
                 
-                if (scopeFilter != null) {
-                	 if ((scopeFilter.equals(CSMQBean.SCOPE_NARROW) || scopeFilter.equals(CSMQBean.SCOPE_BROAD) && childRelationNode.getLevel().equals("LLT") || childRelationNode.getLevel().equals("PT"))) {
-                     	if (scopeFilter.equals(childRelationNode.getScope())) {  
-                         	TreeNode treeNode = new DefaultTreeNode(childRelationNode, expandedTreeNode);
-         				}
-                     }
-                     else if (!childRelationNode.getLevel().equals("LLT") || !childRelationNode.getLevel().equals("PT")) {
-                     	TreeNode treeNode = new DefaultTreeNode(childRelationNode, expandedTreeNode);
-         				if(isChildSmqNode) {
-         					this.createNewDummyNode(treeNode);
-         				}
-                     }
-                }
-                else {
-                	TreeNode treeNode = new DefaultTreeNode(childRelationNode, expandedTreeNode);
-     				if(isChildSmqNode) {
-     					this.createNewDummyNode(treeNode);
-     				}
-                }
-                
+                TreeNode treeNode = new DefaultTreeNode(childRelationNode, expandedTreeNode);
+ 				if(isChildSmqNode) {
+ 					this.createNewDummyNode(treeNode);
+ 				}
 			}
 		}
 	}

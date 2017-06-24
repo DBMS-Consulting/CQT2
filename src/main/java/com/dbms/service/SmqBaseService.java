@@ -176,6 +176,40 @@ public class SmqBaseService extends CqtPersistenceService<SmqBase190> implements
 	
 	@Override
 	@SuppressWarnings("unchecked")
+	public List<SmqRelation190> findSmqRelationsForSmqCodeAndScope(Long smqCode, String scope) {
+		List<SmqRelation190> retVal = null;
+		StringBuilder sb = new StringBuilder();
+		if(StringUtils.isNotBlank(scope)) {
+			sb.append("from SmqRelation190 c where c.smqCode = :smqCode and c.ptTermScope = :ptTermScope order by c.smqLevel asc, c.ptName asc");
+		} else {
+			sb.append("from SmqRelation190 c where c.smqCode = :smqCode order by c.smqLevel asc, c.ptName asc");
+		}
+		
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		try {
+			Query query = entityManager.createQuery(sb.toString());
+			query.setParameter("smqCode", smqCode);
+			if(StringUtils.isNotBlank(scope)) {
+				query.setParameter("ptTermScope", Integer.parseInt(scope));
+			}
+			query.setHint("org.hibernate.cacheable", true);
+			retVal = query.getResultList();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg
+					.append("An error occurred while findSmqRelationsForSmqCode ")
+					.append(smqCode)
+					.append(" Query used was ->")
+					.append(sb.toString());
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
+	
+	@Override
+	@SuppressWarnings("unchecked")
 	public SmqRelation190 findSmqRelationBySmqAndPtCode(Long smqCode, Integer ptCode) {
 		SmqRelation190 retVal = null;
 		StringBuilder sb = new StringBuilder();

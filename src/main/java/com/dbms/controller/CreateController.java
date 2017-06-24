@@ -178,7 +178,7 @@ public class CreateController implements Serializable {
 		collapsingORexpanding(relationsModel.getRelationsRoot(), true);
 	}
 
-	public void collapseRelations(AjaxBehaviorEvent event) {
+	public void collapseRelations(HierarchyNode node) {
 		collapsingORexpanding(relationsModel.getRelationsRoot(), false);
 	}
 
@@ -195,11 +195,16 @@ public class CreateController implements Serializable {
 		}
 	}
 	
-	public void filterRelationsByScope(AjaxBehaviorEvent event) {
+	public void filterRelationsByScope(HierarchyNode node) {
 		
 		//For relations.xhtml
 		if (updateWizard != null || copyWizard != null || createWizard != null) {
-			collapseRelations(event); 
+			IEntity entity = node.getEntity();
+			if(entity instanceof SmqBase190) {
+				node.setDataFetchCompleted(false);
+				this.relationsModel.clearChildrenInTreNode(relationsModel.getRelationsRoot(), node);
+				collapseRelations(node);
+			}
 		}
 		
 		//For relationsForBrowse.xhtml

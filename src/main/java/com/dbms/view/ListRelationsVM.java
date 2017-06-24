@@ -9,6 +9,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.primefaces.event.NodeExpandEvent;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
@@ -116,15 +117,38 @@ public class ListRelationsVM implements IRelationsChangeListener {
 		boolean isParentListView = "PARENT-LIST".equalsIgnoreCase(uiSourceOfEvent);
 		CmqBaseRelationsTreeHelper relationsSearchHelper = new CmqBaseRelationsTreeHelper(cmqBaseService, smqBaseService, meddraDictService, cmqRelationService);	
 		
-		
 		HierarchyNode hNode = (HierarchyNode) expandedTreeNode.getData();
-        if (hNode.getLevel().equals("SMQ1") || hNode.getLevel().equals("SMQ2") | hNode.getLevel().equals("SMQ3")) {
-        	relationsSearchHelper.setScopeFromParent(hNode.getScope()); 
-        	scopeFromParent = hNode.getScope();
-        }
-        else
-        	relationsSearchHelper.setScopeFromParent(scopeFromParent); 
-		
+		IEntity entity = hNode.getEntity();
+		//scan upto 3 tree levels to find if we have an smq with a scope
+		if(entity instanceof SmqBase190) {
+			String parentScope = hNode.getScope();
+			if(StringUtils.isNoneBlank(parentScope)) {
+				relationsSearchHelper.setScopeFromParent(parentScope); 
+			} else {
+				//check parent of parent for scope
+				TreeNode parentOfParent = expandedTreeNode.getParent();
+				HierarchyNode parentOfParentHnode = (HierarchyNode) parentOfParent.getData();
+				IEntity parentOfParentEntity = parentOfParentHnode.getEntity();
+				if(parentOfParentEntity instanceof SmqBase190) {
+					String parentOfParentScope = hNode.getScope();
+					if(StringUtils.isNoneBlank(parentOfParentScope)) {
+						relationsSearchHelper.setScopeFromParent(parentOfParentScope); 
+					} else {
+						//check parent of parent of parent for scope
+						TreeNode parentOfParentOfParent = expandedTreeNode.getParent();
+						HierarchyNode parentOfParentOfParentHnode = (HierarchyNode) parentOfParentOfParent.getData();
+						IEntity parentOfParentOfParentEntity = parentOfParentOfParentHnode.getEntity();
+						if(parentOfParentOfParentEntity instanceof SmqBase190) {
+							String parentOfParentOfParentScope = hNode.getScope();
+							if(StringUtils.isNoneBlank(parentOfParentOfParentScope)) {
+								relationsSearchHelper.setScopeFromParent(parentOfParentOfParentScope); 
+							}
+						}
+					}
+				}
+			}
+		}
+        
 		relationsSearchHelper.setRelationView(isRelationView);
         relationsSearchHelper.setParentListView(isParentListView);
 		relationsSearchHelper.getRelationsNodeHierarchy(null, expandedTreeNode);
@@ -445,6 +469,28 @@ public class ListRelationsVM implements IRelationsChangeListener {
 		}
 	}
 
+	public void clearChildrenInTreNode(TreeNode rootNodeToSearchFrom, HierarchyNode selectedNode) {
+		if (rootNodeToSearchFrom.getChildCount() > 0) {
+			List<TreeNode> childTreeNodes = rootNodeToSearchFrom.getChildren();
+			for (Iterator<TreeNode> treeNodeIterator = childTreeNodes
+					.listIterator(); treeNodeIterator.hasNext();) {
+				TreeNode childTreeNode = treeNodeIterator.next();
+				HierarchyNode childNode = (HierarchyNode) childTreeNode
+						.getData();
+				if (childNode.equals(selectedNode)) {
+					childTreeNode.getChildren().clear(); // clear child list
+					HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
+			        dummyNode.setDummyNode(true);
+			        new DefaultTreeNode(dummyNode, childTreeNode);
+					break;
+				} else if (childTreeNode.getChildCount() > 0) {
+					// drill down
+					this.clearChildrenInTreNode(childTreeNode, selectedNode);
+				}
+			}
+		}
+	}
+	
 	public String[] getSelectedSOCs() {
 		return selectedSOCs;
 	}

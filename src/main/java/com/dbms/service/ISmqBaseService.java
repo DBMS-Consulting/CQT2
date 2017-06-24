@@ -29,4 +29,6 @@ public interface ISmqBaseService {
 	SmqRelation190 findSmqRelationBySmqAndPtCode(Long smqCode, Integer ptCode);
 	List<SmqRelation190> findSmqRelationBySmqAndPtCode(List<SmqAndPtCodeHolder> smqAndPtCodeHolders);
 
+	List<SmqRelation190> findSmqRelationsForSmqCodeAndScope(Long smqCode, String scope);
+
 }
