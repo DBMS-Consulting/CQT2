@@ -64,17 +64,7 @@
 				</p:commandButton>
 			</f:facet>
 
-			<f:facet name="right">
-				<p:selectOneMenu value="#{createController.scopeFilter}"
- 					autoWidth="false" style="width:150px !important">
-					<f:selectItem itemLabel="Filter by scope" itemValue="-1"></f:selectItem>
-					<f:selectItems value="#{appCSMQBean.cqtBaseScopes}" var="s"
-						itemLabel="#{s[1]}" itemValue="#{s[0]}" />
-					<p:ajax event="change" process="@this"
-						listener="#{createController.filterRelationsByScope}"
-						update="@form:relations-tree-table" />
-				</p:selectOneMenu>
-			</f:facet>
+			 
 		</p:toolbar>
 
 		<br />

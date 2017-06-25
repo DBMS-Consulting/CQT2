@@ -63,6 +63,7 @@ public class TargetHierarchySearchVM {
     private int appliedSearchDirection;
     private boolean searchUpDisabled;
     private boolean searchDownDisabled;
+    private boolean enableRadioButtons;
 	
 	private List<HierarchySearchResultBean> hierarchySearchResults;
 	
@@ -80,6 +81,7 @@ public class TargetHierarchySearchVM {
 		myHierarchyRoot = new DefaultTreeNode("root", new HierarchyNode("LEVEL",
 				"NAME", "CODE", null), null);
 		searchDirection = SEARCH_DIRECTION_UP; //UP
+		enableRadioButtons = true;
 	}
 
 	public void onRowCancel(RowEditEvent event) {
@@ -87,6 +89,8 @@ public class TargetHierarchySearchVM {
 	}
 
 	public String hierarchySearch() {
+		if (searchDirection == 0)
+			handleSearchDirection();
 		//need to set this as default. if its a pp search the correct branch will toggle it on its own.
 		this.showPrimaryPathOnly = false;
 		appliedSearchDirection = searchDirection;
@@ -210,8 +214,27 @@ public class TargetHierarchySearchVM {
 				new DefaultTreeNode(dummyNode, parentTreeNode);
 			}
 		}
+		setEnableRadioButtons(false); 
 
 		return "";
+	}
+	
+	private void handleSearchDirection() {
+		if (myFilterLevel != null
+				&& (myFilterLevel.equals("SOC") || myFilterLevel.equals("SMQ1")
+						|| myFilterLevel.equals("SMQ2")
+						|| myFilterLevel.equals("SMQ3")
+						|| myFilterLevel.equals("SMQ4")
+						|| myFilterLevel.equals("SMQ5")
+						|| myFilterLevel.equals("PRO")
+						|| myFilterLevel.equals("HLGT") || myFilterLevel
+							.equals("HLT"))) {
+			searchDirection = SEARCH_DIRECTION_DOWN;
+		}
+		if (myFilterLevel != null && (myFilterLevel.equals("LLT")
+				|| myFilterLevel.equals("PT"))) {
+			searchDirection = SEARCH_DIRECTION_UP;
+		}
 	}
 	
 	/**
@@ -494,25 +517,64 @@ public class TargetHierarchySearchVM {
 		this.searchDirection = searchDirection;
 	}
 
-	public boolean isSearchUpDisabled() {
-		SMQLevelHelper smqLevelH = SMQLevelHelper.getByLabel(myFilterLevel);
-		if (smqLevelH != null || "PRO".equalsIgnoreCase(myFilterLevel)
-				|| "SOC".equalsIgnoreCase(myFilterLevel)) {
-			searchDirection = SEARCH_DIRECTION_DOWN;
-			return true;
+	 public boolean isSearchUpDisabled() {
+//       SMQLevelHelper smqLevelH = SMQLevelHelper.getByLabel(myFilterLevel);
+//       if(smqLevelH != null || "PRO".equalsIgnoreCase(myFilterLevel) || "SOC".equalsIgnoreCase(myFilterLevel)) {
+//           searchDirection = SEARCH_DIRECTION_DOWN;
+//           return true;
+//       }
+//       return false;
+   	
+		if (myFilterLevel != null && (myFilterLevel.equals("LLT")
+				|| myFilterLevel.equals("PT"))) {
+			//searchDirection = SEARCH_DIRECTION_UP;
+			if (myFilterLevel.equals("LLT")) {
+				return true;
+			}
+
 		}
 		return false;
-	}
-
-	public boolean isSearchDownDisabled() {
-		MeddraDictLevelHelper meddraLevelH = MeddraDictLevelHelper
-				.getByLabel(myFilterLevel);
-
-        if(meddraLevelH != null && meddraLevelH.getSearchFrom() == MeddraDictLevelHelper.SEARCH_MEDDRA_BASE_REVERSE && (meddraLevelH.getLabel() != null && !meddraLevelH.getLabel().equals("PT"))){
-			searchDirection = SEARCH_DIRECTION_UP;
+   }
+   public boolean isSearchDownDisabled() {
+//		MeddraDictLevelHelper meddraLevelH = MeddraDictLevelHelper.getByLabel(myFilterLevel);
+//       
+//       if(meddraLevelH != null && meddraLevelH.getSearchFrom() == MeddraDictLevelHelper.SEARCH_MEDDRA_BASE_REVERSE){
+//           searchDirection = SEARCH_DIRECTION_UP;
+//           return true;
+//       }
+//       return false;
+   	
+		if (myFilterLevel != null
+				&& (myFilterLevel.equals("SOC") || myFilterLevel.equals("SMQ1")
+						|| myFilterLevel.equals("SMQ2")
+						|| myFilterLevel.equals("SMQ3")
+						|| myFilterLevel.equals("SMQ4")
+						|| myFilterLevel.equals("SMQ5")
+						|| myFilterLevel.equals("PRO")
+						|| myFilterLevel.equals("HLGT") || myFilterLevel
+							.equals("HLT"))) {
+			//searchDirection = SEARCH_DIRECTION_DOWN;
+			if (myFilterLevel.equals("HLGT") || myFilterLevel.equals("HLT"))
+				return false;
 			return true;
+
 		}
-		return false;
+    	return false;
+   }
+   
+   public void setSearchUpDisabled(boolean searchUpDisabled) {
+		this.searchUpDisabled = searchUpDisabled;
 	}
 
+	public void setSearchDownDisabled(boolean searchDownDisabled) {
+		this.searchDownDisabled = searchDownDisabled;
+	}
+
+	public boolean isEnableRadioButtons() {
+		return enableRadioButtons;
+	}
+
+	public void setEnableRadioButtons(boolean enableRadioButtons) {
+		this.enableRadioButtons = enableRadioButtons;
+	}
 }

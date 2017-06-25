@@ -69,6 +69,8 @@ public class CmqBaseHierarchySearchVM {
     private int appliedSearchDirection;
     private boolean searchUpDisabled;
     private boolean searchDownDisabled;
+    
+    private boolean enableRadioButtons;
 	
 	public CmqBaseHierarchySearchVM(ICmqBase190Service cmqBaseSvc,
 			ISmqBaseService smqBaseSvc,
@@ -83,13 +85,17 @@ public class CmqBaseHierarchySearchVM {
 				"NAME", "CODE", null), null);
         
         searchDirection = SEARCH_DIRECTION_UP; //UP
-	}
+      
+		enableRadioButtons = true;
+ 	}
 
 	public void onRowCancel(RowEditEvent event) {
 		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Canceled", "ZZ"));
 	}
 
 	public String hierarchySearch() {
+		if (searchDirection == 0)
+			handleSearchDirection();
 		//need to set this as default. if its a pp search the correct branch will toggle it on its own.
 		this.showPrimaryPathOnly = false;
         appliedSearchDirection = searchDirection;
@@ -273,16 +279,58 @@ public class CmqBaseHierarchySearchVM {
                 }
             }
 		}
+		setEnableRadioButtons(false); 
 
 		return "";
 	}
 	
+//	public void handleRadioButtonsDisabling() {
+//		if (myFilterLevel != null) {
+//			if (myFilterLevel.equals("SOC") || myFilterLevel.equals("SMQ1") || myFilterLevel.equals("SMQ2")
+//					|| myFilterLevel.equals("SMQ3") || myFilterLevel.equals("SMQ4")
+//					|| myFilterLevel.equals("SMQ5") || myFilterLevel.equals("PRO")) {
+//				searchDirection = SEARCH_DIRECTION_DOWN;
+//				setSearchDownDisabled(true);
+//				setSearchUpDisabled(true);
+//
+//			} else if (myFilterLevel.equals("LLT") || myFilterLevel.equals("PT")) {
+//				searchDirection = SEARCH_DIRECTION_UP;
+//				if (myFilterLevel.equals("LLT")) {
+//					setSearchDownDisabled(true);
+//					setSearchUpDisabled(true);
+//				}
+//
+//			} else if (myFilterLevel.equals("HLGT") || myFilterLevel.equals("HLT")) {
+//				searchDirection = SEARCH_DIRECTION_DOWN;
+//			}
+//		}
+//		
+//	}
+	
+	private void handleSearchDirection() {
+		if (myFilterLevel != null
+				&& (myFilterLevel.equals("SOC") || myFilterLevel.equals("SMQ1")
+						|| myFilterLevel.equals("SMQ2")
+						|| myFilterLevel.equals("SMQ3")
+						|| myFilterLevel.equals("SMQ4")
+						|| myFilterLevel.equals("SMQ5")
+						|| myFilterLevel.equals("PRO")
+						|| myFilterLevel.equals("HLGT") || myFilterLevel
+							.equals("HLT"))) {
+			searchDirection = SEARCH_DIRECTION_DOWN;
+		}
+		if (myFilterLevel != null && (myFilterLevel.equals("LLT")
+				|| myFilterLevel.equals("PT"))) {
+			searchDirection = SEARCH_DIRECTION_UP;
+		}
+	}
+
 	/**
 	 * Refresh HS after radio button selection.
 	 * @param event AjaxBehaviorEvent
 	 */
 	public void refreshHS(AjaxBehaviorEvent event) {
-		 hierarchySearch();
+		hierarchySearch();
 	}
 
 	//uiEventSourceName is either relations or hierarchy
@@ -405,20 +453,63 @@ public class CmqBaseHierarchySearchVM {
     }
        
     public boolean isSearchUpDisabled() {
-        SMQLevelHelper smqLevelH = SMQLevelHelper.getByLabel(myFilterLevel);
-        if(smqLevelH != null || "PRO".equalsIgnoreCase(myFilterLevel) || "SOC".equalsIgnoreCase(myFilterLevel)) {
-            searchDirection = SEARCH_DIRECTION_DOWN;
-            return true;
-        }
-        return false;
+//        SMQLevelHelper smqLevelH = SMQLevelHelper.getByLabel(myFilterLevel);
+//        if(smqLevelH != null || "PRO".equalsIgnoreCase(myFilterLevel) || "SOC".equalsIgnoreCase(myFilterLevel)) {
+//            searchDirection = SEARCH_DIRECTION_DOWN;
+//            return true;
+//        }
+//        return false;
+    	
+		if (myFilterLevel != null && (myFilterLevel.equals("LLT")
+				|| myFilterLevel.equals("PT"))) {
+			//searchDirection = SEARCH_DIRECTION_UP;
+			if (myFilterLevel.equals("LLT")) {
+				return true;
+			}
+
+		}
+		return false;
     }
     public boolean isSearchDownDisabled() {
-		MeddraDictLevelHelper meddraLevelH = MeddraDictLevelHelper.getByLabel(myFilterLevel);
-        
-        if(meddraLevelH != null && meddraLevelH.getSearchFrom() == MeddraDictLevelHelper.SEARCH_MEDDRA_BASE_REVERSE && (meddraLevelH.getLabel() != null && !meddraLevelH.getLabel().equals("PT"))){
-            searchDirection = SEARCH_DIRECTION_UP;
-            return true;
-        }
-        return false;
+//		MeddraDictLevelHelper meddraLevelH = MeddraDictLevelHelper.getByLabel(myFilterLevel);
+//        
+//        if(meddraLevelH != null && meddraLevelH.getSearchFrom() == MeddraDictLevelHelper.SEARCH_MEDDRA_BASE_REVERSE){
+//            searchDirection = SEARCH_DIRECTION_UP;
+//            return true;
+//        }
+//        return false;
+    	
+		if (myFilterLevel != null
+				&& (myFilterLevel.equals("SOC") || myFilterLevel.equals("SMQ1")
+						|| myFilterLevel.equals("SMQ2")
+						|| myFilterLevel.equals("SMQ3")
+						|| myFilterLevel.equals("SMQ4")
+						|| myFilterLevel.equals("SMQ5")
+						|| myFilterLevel.equals("PRO")
+						|| myFilterLevel.equals("HLGT") || myFilterLevel
+							.equals("HLT"))) {
+			//searchDirection = SEARCH_DIRECTION_DOWN;
+			if (myFilterLevel.equals("HLGT") || myFilterLevel.equals("HLT"))
+				return false;
+			return true;
+
+		}
+     	return false;
     }
+    
+    public void setSearchUpDisabled(boolean searchUpDisabled) {
+		this.searchUpDisabled = searchUpDisabled;
+	}
+
+	public void setSearchDownDisabled(boolean searchDownDisabled) {
+		this.searchDownDisabled = searchDownDisabled;
+	}
+
+	public boolean isEnableRadioButtons() {
+		return enableRadioButtons;
+	}
+
+	public void setEnableRadioButtons(boolean enableRadioButtons) {
+		this.enableRadioButtons = enableRadioButtons;
+	}
 }
