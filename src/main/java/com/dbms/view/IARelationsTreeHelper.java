@@ -146,7 +146,7 @@ public class IARelationsTreeHelper {
 		//hierarchyNode.setRowStyleClass("blue-colored");
 	}
 	
-	public void onNodeExpandTargetTable(TreeNode rootNode, NodeExpandEvent event) {
+	public void onNodeExpandTargetTable(TreeNode rootNode, NodeExpandEvent event, boolean applyScope) {
 		String uiSourceOfEvent =  (String) event.getComponent().getAttributes().get("uiEventSourceName");
 		TreeNode expandedTreeNode = event.getTreeNode();
 		HierarchyNode hierarchyNode = (HierarchyNode) expandedTreeNode.getData();
