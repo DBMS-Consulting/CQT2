@@ -23,7 +23,7 @@
 			<p:inputText id="termHT" style="text-transform:uppercase"
 				onkeypress="if (event.keyCode == 13) { return false; }"
                 value="#{impactSearchController.targetHierarchySearchDlgModel.filterTermName}" />
-			<p:commandButton value="Search" update="resultHierTarget"
+			<p:commandButton value="Search" update="resultHierTarget search-direction-target"
 				action="#{impactSearchController.targetHierarchySearchDlgModel.hierarchySearch}" />
 				
 			<h:panelGrid columns="2">
@@ -36,7 +36,8 @@
 		</h:panelGrid>
 		 <h:panelGrid columns="2">
             <p:outputLabel value="Search Direction:" for="search-direction-target" /> 
-            <p:selectOneRadio id="search-direction-target" value="#{impactSearchController.targetHierarchySearchDlgModel.searchDirection}">
+            <p:selectOneRadio id="search-direction-target" value="#{impactSearchController.targetHierarchySearchDlgModel.searchDirection}" 
+            	disabled="#{impactSearchController.targetHierarchySearchDlgModel.enableRadioButtons}">
                 <f:selectItem itemLabel="up" itemValue="1" itemDisabled="#{impactSearchController.targetHierarchySearchDlgModel.searchUpDisabled}" />
                 <f:selectItem itemLabel="down" itemValue="2" itemDisabled="#{impactSearchController.targetHierarchySearchDlgModel.searchDownDisabled}"/>
            		<p:ajax update="resultHierTarget" listener="#{impactSearchController.targetHierarchySearchDlgModel.refreshTHS}" /> 
