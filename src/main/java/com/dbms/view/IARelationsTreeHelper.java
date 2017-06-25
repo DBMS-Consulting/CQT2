@@ -153,7 +153,10 @@ public class IARelationsTreeHelper {
 		
 		boolean isDataFetchCompleted = hierarchyNode.isDataFetchCompleted();
 		if (!isDataFetchCompleted) {
-			String scopeFilter = this.getScopeFromExpandedTreeNodeInTargetTable(expandedTreeNode);
+			String scopeFilter = null;
+			if(applyScope) {
+				scopeFilter = this.getScopeFromExpandedTreeNodeInTargetTable(expandedTreeNode);
+			}
 			IEntity entity = hierarchyNode.getEntity();
 			
 			// remove the first dummy node placeholder
