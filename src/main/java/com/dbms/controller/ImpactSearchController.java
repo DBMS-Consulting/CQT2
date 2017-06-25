@@ -18,8 +18,6 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
-import javax.faces.event.BehaviorEvent;
-import javax.faces.event.ValueChangeEvent;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -351,7 +349,7 @@ public class ImpactSearchController implements Serializable {
         IARelationsTreeHelper treeHelper = new IARelationsTreeHelper(
                 cmqBaseCurrentService, smqBaseCurrentService, meddraDictCurrentService, cmqRelationCurrentService,
                 cmqBaseTargetService, smqBaseTargetService, meddraDictTargetService, cmqRelationTargetService);
-        treeHelper.onNodeExpandTargetTable(targetTableRootTreeNode, event, "-1");
+        treeHelper.onNodeExpandTargetTable(targetTableRootTreeNode, event);
 	}
 	
 
@@ -2280,7 +2278,45 @@ public class ImpactSearchController implements Serializable {
 				&& (selectedNotImpactedCmqList.getCmqState().equals("PUBLISHED IA") || selectedNotImpactedCmqList.getCmqState().equals("APPROVED IA")))); 
 		//return readOnlyIA;
 	}
+	
+	public void filterRelationsByScopeInTargetTable(HierarchyNode node) {
+		IEntity entity = node.getEntity();
+		if(entity instanceof SmqBaseTarget) {
+			node.setDataFetchCompleted(false);
+			TreeNode treeNode = this.clearChildrenInTargetTableTreNode(targetTableRootTreeNode, node);
+			collapseRelationsInTargetTable(treeNode);
+		}
+	}
 
+	public TreeNode clearChildrenInTargetTableTreNode(TreeNode rootNodeToSearchFrom, HierarchyNode selectedNode) {
+		TreeNode treeNode = null;
+		if (rootNodeToSearchFrom.getChildCount() > 0) {
+			List<TreeNode> childTreeNodes = rootNodeToSearchFrom.getChildren();
+			for (Iterator<TreeNode> treeNodeIterator = childTreeNodes
+					.listIterator(); treeNodeIterator.hasNext();) {
+				TreeNode childTreeNode = treeNodeIterator.next();
+				HierarchyNode childNode = (HierarchyNode) childTreeNode
+						.getData();
+				if (childNode.equals(selectedNode)) {
+					childTreeNode.getChildren().clear(); // clear child list
+					HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
+			        dummyNode.setDummyNode(true);
+			        new DefaultTreeNode(dummyNode, childTreeNode);
+			        treeNode = childTreeNode;
+					break;
+				} else if (childTreeNode.getChildCount() > 0) {
+					// drill down
+					return this.clearChildrenInTargetTableTreNode(childTreeNode, selectedNode);
+				}
+			}
+		}
+		return treeNode;
+	}
+	
+	public void collapseRelationsInTargetTable(TreeNode node) {
+		collapsingORexpanding(node, false);
+	}
+	
 	public void setReadOnlyIA(boolean readOnlyIA) {
 		this.readOnlyIA = readOnlyIA;
 	}

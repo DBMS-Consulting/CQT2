@@ -7,6 +7,7 @@ import org.primefaces.model.SortOrder;
 import org.primefaces.model.StreamedContent;
 
 import com.dbms.entity.cqt.SmqBaseTarget;
+import com.dbms.entity.cqt.SmqRelation190;
 import com.dbms.entity.cqt.SmqRelationTarget;
 
 public interface ISmqBaseTargetService {
@@ -18,7 +19,6 @@ public interface ISmqBaseTargetService {
 	List<Map<String, Object>> findSmqRelationsCountForSmqCodes(List<Long> smqCodes);
 
 	List<SmqRelationTarget> findSmqRelationsForSmqCode(Long smqCode);
-	List<SmqRelationTarget> findSmqRelationsForSmqCodeByScope(Long smqCode, int scope);
 
 	SmqRelationTarget findSmqRelationBySmqAndPtCode(Long smqCode, Integer ptCode);
 
@@ -44,5 +44,7 @@ public interface ISmqBaseTargetService {
 	Long findNotImpactedCount();
 
 	StreamedContent generateSMQExcel(SmqBaseTarget selectedImpactedSmqList, String dictionaryVersion);
+
+	List<SmqRelationTarget> findSmqRelationsForSmqCodeAndScope(Long smqCode, String scope);
 
 }

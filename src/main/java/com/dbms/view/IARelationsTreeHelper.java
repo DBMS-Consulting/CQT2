@@ -146,12 +146,14 @@ public class IARelationsTreeHelper {
 		//hierarchyNode.setRowStyleClass("blue-colored");
 	}
 	
-	public void onNodeExpandTargetTable(TreeNode rootNode, NodeExpandEvent event, String scopeFilter) {
+	public void onNodeExpandTargetTable(TreeNode rootNode, NodeExpandEvent event) {
 		String uiSourceOfEvent =  (String) event.getComponent().getAttributes().get("uiEventSourceName");
 		TreeNode expandedTreeNode = event.getTreeNode();
 		HierarchyNode hierarchyNode = (HierarchyNode) expandedTreeNode.getData();
+		
 		boolean isDataFetchCompleted = hierarchyNode.isDataFetchCompleted();
 		if (!isDataFetchCompleted) {
+			String scopeFilter = this.getScopeFromExpandedTreeNodeInTargetTable(expandedTreeNode);
 			IEntity entity = hierarchyNode.getEntity();
 			
 			// remove the first dummy node placeholder
@@ -242,6 +244,98 @@ public class IARelationsTreeHelper {
 			hierarchyNode.setDataFetchCompleted(true);
 			// 
 		}
+	}
+	
+	private String getScopeFromExpandedTreeNodeInTargetTable(TreeNode expandedTreeNode) {
+		HierarchyNode hierarchyNode = (HierarchyNode) expandedTreeNode.getData();
+		IEntity entity = hierarchyNode.getEntity();
+		
+		//scan upto 4 tree levels to find if we have an smq with a scope
+		String scopeFilter = null;
+		if(entity instanceof SmqBaseTarget) {
+			//level 1 up
+			String parentLevel1Up = hierarchyNode.getScope();
+			if(StringUtils.isNoneBlank(parentLevel1Up) 
+					&& (parentLevel1Up.equals("1") || parentLevel1Up.equals("2") 
+							|| parentLevel1Up.equals("3") || parentLevel1Up.equals("4"))) {
+				scopeFilter = parentLevel1Up; 
+			} else {
+				//level 2 up
+				TreeNode parentLevel2Up = expandedTreeNode.getParent();
+				HierarchyNode parentLevel2UpHnode = (HierarchyNode) parentLevel2Up.getData();
+				IEntity parentLevel2UpEntity = parentLevel2UpHnode.getEntity();
+				if(parentLevel2UpEntity instanceof SmqBaseTarget) {
+					String parentLevel2UpScope = parentLevel2UpHnode.getScope();
+					if(StringUtils.isNoneBlank(parentLevel2UpScope) 
+							&& (parentLevel2UpScope.equals("1") || parentLevel2UpScope.equals("2") 
+									|| parentLevel2UpScope.equals("3") || parentLevel2UpScope.equals("4"))) {
+						scopeFilter = parentLevel2UpScope; 
+					} else {
+						//level 3 up
+						TreeNode parentLevel3Up = expandedTreeNode.getParent().getParent();
+						if(null != parentLevel3Up) {
+							HierarchyNode parentLevel3UpHnode = (HierarchyNode) parentLevel3Up.getData();
+							IEntity parentLevel3UpEntity = parentLevel3UpHnode.getEntity();
+							if(parentLevel3UpEntity instanceof SmqBaseTarget) {
+								String parentLevel3UpScope = parentLevel3UpHnode.getScope();
+								if(StringUtils.isNoneBlank(parentLevel3UpScope) 
+										&& (parentLevel3UpScope.equals("1") || parentLevel3UpScope.equals("2") 
+												|| parentLevel3UpScope.equals("3") || parentLevel3UpScope.equals("4"))) {
+									scopeFilter = parentLevel3UpScope; 
+								} else {
+									//level 4 up
+									TreeNode parentLevel4Up = expandedTreeNode.getParent().getParent().getParent();
+									if(null != parentLevel4Up) {
+										HierarchyNode parentLevel4UpHnode = (HierarchyNode) parentLevel4Up.getData();
+										IEntity parentLevel4UpEntity = parentLevel4UpHnode.getEntity();
+										if(parentLevel4UpEntity instanceof SmqBaseTarget) {
+											String parentLevel4UpScope = parentLevel4UpHnode.getScope();
+											if(StringUtils.isNoneBlank(parentLevel4UpScope) 
+													&& (parentLevel4UpScope.equals("1") || parentLevel4UpScope.equals("2") 
+															|| parentLevel4UpScope.equals("3") || parentLevel4UpScope.equals("4"))) {
+												scopeFilter = parentLevel4UpScope; 
+											} else {
+												//level 5 up
+												TreeNode parentLevel5Up = expandedTreeNode.getParent().getParent().getParent().getParent();
+												if(null != parentLevel5Up) {
+													HierarchyNode parentLevel5UpHnode = (HierarchyNode) parentLevel5Up.getData();
+													IEntity parentLevel5UpEntity = parentLevel5UpHnode.getEntity();
+													if(parentLevel5UpEntity instanceof SmqBaseTarget) {
+														String parentLevel5UpScope = parentLevel5UpHnode.getScope();
+														if(StringUtils.isNoneBlank(parentLevel5UpScope) 
+																&& (parentLevel5UpScope.equals("1") || parentLevel5UpScope.equals("2") 
+																		|| parentLevel5UpScope.equals("3") || parentLevel5UpScope.equals("4"))) {
+															scopeFilter = parentLevel5UpScope; 
+														} else {
+															//level 6 up
+															TreeNode parentLevel6Up = expandedTreeNode.getParent().getParent().getParent().getParent().getParent();
+															if(null != parentLevel6Up) {
+																HierarchyNode parentLevel6UpHnode = (HierarchyNode) parentLevel6Up.getData();
+																IEntity parentLevel6UpEntity = parentLevel6UpHnode.getEntity();
+																if(parentLevel6UpEntity instanceof SmqBaseTarget) {
+																	String parentLevel6UpScope = parentLevel6UpHnode.getScope();
+																	if(StringUtils.isNoneBlank(parentLevel6UpScope) 
+																			&& (parentLevel6UpScope.equals("1") || parentLevel6UpScope.equals("2") 
+																					|| parentLevel6UpScope.equals("3") || parentLevel6UpScope.equals("4"))) {
+																		scopeFilter = parentLevel6UpScope; 
+																	}
+																}
+															}
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		return scopeFilter;
 	}
 	
 	public static String[] getAllLevelH() {
@@ -836,11 +930,12 @@ public class IARelationsTreeHelper {
  		if(currentList) {
 			childRelations = this.smqBaseCurrentService.findSmqRelationsForSmqCode(smqCode);
 		} else {
-			
-			childRelations = this.smqBaseTargetService.findSmqRelationsForSmqCode(smqCode);
-			if (!scopeFilter.equals(NO_SCOPE_FILTER))
-				childRelations = this.smqBaseTargetService.findSmqRelationsForSmqCodeByScope(smqCode, Integer.parseInt(scopeFilter));
-			
+			if (StringUtils.isNotBlank(scopeFilter) && (scopeFilter.equals(CSMQBean.SCOPE_NARROW) || scopeFilter.equals(CSMQBean.SCOPE_BROAD)
+		   			 || scopeFilter.equals(CSMQBean.SCOPE_FULL))) {
+	    		childRelations = this.smqBaseTargetService.findSmqRelationsForSmqCodeAndScope(smqCode, scopeFilter);
+	    	} else {
+	    		childRelations = this.smqBaseTargetService.findSmqRelationsForSmqCode(smqCode);
+	    	}
   		}
 
 		if (null != childRelations) {

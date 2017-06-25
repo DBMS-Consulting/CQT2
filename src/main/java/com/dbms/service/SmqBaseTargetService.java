@@ -199,21 +199,28 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 	
 	@Override
 	@SuppressWarnings("unchecked")
-	public List<SmqRelationTarget> findSmqRelationsForSmqCodeByScope(Long smqCode, int scope) {
+	public List<SmqRelationTarget> findSmqRelationsForSmqCodeAndScope(Long smqCode, String scope) {
 		List<SmqRelationTarget> retVal = null;
 		StringBuilder sb = new StringBuilder();
-		sb.append("from SmqRelationTarget c where c.smqCode = :smqCode and c.ptTermScope = :ptTermScope order by c.smqLevel asc");
+		if (StringUtils.isNotBlank(scope) && (scope.equals(CSMQBean.SCOPE_NARROW) || scope.equals(CSMQBean.SCOPE_BROAD))) {
+			sb.append("from SmqRelationTarget c where c.smqCode = :smqCode and (c.ptTermScope = 0 or c.ptTermScope = :ptTermScope) order by c.smqLevel asc, c.ptName asc");
+		} else {
+			sb.append("from SmqRelationTarget c where c.smqCode = :smqCode order by c.smqLevel asc, c.ptName asc");
+		}
 		
 		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
 		try {
 			Query query = entityManager.createQuery(sb.toString());
 			query.setParameter("smqCode", smqCode);
-			query.setParameter("ptTermScope", scope);
+			if (StringUtils.isNotBlank(scope) && (scope.equals(CSMQBean.SCOPE_NARROW) || scope.equals(CSMQBean.SCOPE_BROAD))) {
+				query.setParameter("ptTermScope", Integer.parseInt(scope));
+			}
+			query.setHint("org.hibernate.cacheable", true);
 			retVal = query.getResultList();
 		} catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
 			msg
-					.append("An error occurred while findSmqRelationsForSmqCode ")
+					.append("An error occurred while findSmqRelationsForSmqCodeAndScope ")
 					.append(smqCode)
 					.append(" Query used was ->")
 					.append(sb.toString());

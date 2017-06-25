@@ -120,7 +120,7 @@ public class ListRelationsVM implements IRelationsChangeListener {
 		HierarchyNode hNode = (HierarchyNode) expandedTreeNode.getData();
 		IEntity entity = hNode.getEntity();
 		
-		//scan upto 4 tree levels to find if we have an smq with a scope
+		//scan upto 6 tree levels to find if we have an smq with a scope
 		if(entity instanceof SmqBase190) {
 			//level 1 up
 			String parentLevel1Up = hNode.getScope();
@@ -153,7 +153,7 @@ public class ListRelationsVM implements IRelationsChangeListener {
 									relationsSearchHelper.setScopeFromParent(parentLevel3UpScope); 
 								} else {
 									//level 4 up
-									TreeNode parentLevel4Up = expandedTreeNode.getParent().getParent();
+									TreeNode parentLevel4Up = expandedTreeNode.getParent().getParent().getParent();
 									if(null != parentLevel4Up) {
 										HierarchyNode parentLevel4UpHnode = (HierarchyNode) parentLevel4Up.getData();
 										IEntity parentLevel4UpEntity = parentLevel4UpHnode.getEntity();
@@ -163,6 +163,36 @@ public class ListRelationsVM implements IRelationsChangeListener {
 													&& (parentLevel4UpScope.equals("1") || parentLevel4UpScope.equals("2") 
 															|| parentLevel4UpScope.equals("3") || parentLevel4UpScope.equals("4"))) {
 												relationsSearchHelper.setScopeFromParent(parentLevel4UpScope); 
+											} else {
+												//level 5 up
+												TreeNode parentLevel5Up = expandedTreeNode.getParent().getParent().getParent().getParent();
+												if(null != parentLevel5Up) {
+													HierarchyNode parentLevel5UpHnode = (HierarchyNode) parentLevel5Up.getData();
+													IEntity parentLevel5UpEntity = parentLevel5UpHnode.getEntity();
+													if(parentLevel5UpEntity instanceof SmqBase190) {
+														String parentLevel5UpScope = parentLevel5UpHnode.getScope();
+														if(StringUtils.isNoneBlank(parentLevel5UpScope) 
+																&& (parentLevel5UpScope.equals("1") || parentLevel5UpScope.equals("2") 
+																		|| parentLevel5UpScope.equals("3") || parentLevel5UpScope.equals("4"))) {
+															relationsSearchHelper.setScopeFromParent(parentLevel5UpScope); 
+														} else {
+															//level 5 up
+															TreeNode parentLevel6Up = expandedTreeNode.getParent().getParent().getParent().getParent().getParent();
+															if(null != parentLevel6Up) {
+																HierarchyNode parentLevel6UpHnode = (HierarchyNode) parentLevel6Up.getData();
+																IEntity parentLevel6UpEntity = parentLevel6UpHnode.getEntity();
+																if(parentLevel6UpEntity instanceof SmqBase190) {
+																	String parentLevel6UpScope = parentLevel6UpHnode.getScope();
+																	if(StringUtils.isNoneBlank(parentLevel6UpScope) 
+																			&& (parentLevel6UpScope.equals("1") || parentLevel6UpScope.equals("2") 
+																					|| parentLevel6UpScope.equals("3") || parentLevel6UpScope.equals("4"))) {
+																		relationsSearchHelper.setScopeFromParent(parentLevel6UpScope); 
+																	}
+																}
+															}
+														}
+													}
+												}
 											}
 										}
 									}
