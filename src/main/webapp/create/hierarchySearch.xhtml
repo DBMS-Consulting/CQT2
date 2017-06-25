@@ -54,8 +54,8 @@
         <h:panelGrid columns="2">
             <p:outputLabel value="Search Direction:" for="search-direction" />
             <p:selectOneRadio id="search-direction" value="#{paramDlgCtrl.searchDirection}" disabled="#{paramDlgCtrl.enableRadioButtons}">
-                <f:selectItem itemLabel="up" itemValue="1" itemDisabled="#{paramDlgCtrl.searchUpDisabled}" />
-                <f:selectItem itemLabel="down" itemValue="2" itemDisabled="#{paramDlgCtrl.searchDownDisabled}"/>
+                <f:selectItem itemLabel="Up" itemValue="1" itemDisabled="#{paramDlgCtrl.searchUpDisabled}" />
+                <f:selectItem itemLabel="Down" itemValue="2" itemDisabled="#{paramDlgCtrl.searchDownDisabled}"/>
                 
                 <p:ajax update="resultHier" listener="#{paramDlgCtrl.refreshHS}" /> 
             </p:selectOneRadio>

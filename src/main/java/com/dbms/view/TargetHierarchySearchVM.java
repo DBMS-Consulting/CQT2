@@ -527,10 +527,25 @@ public class TargetHierarchySearchVM {
    	
 		if (myFilterLevel != null && (myFilterLevel.equals("LLT")
 				|| myFilterLevel.equals("PT"))) {
-			//searchDirection = SEARCH_DIRECTION_UP;
+			searchDirection = SEARCH_DIRECTION_UP;
 			if (myFilterLevel.equals("LLT")) {
 				return true;
 			}
+
+		}
+		if (myFilterLevel != null
+				&& (myFilterLevel.equals("SOC") || myFilterLevel.equals("SMQ1")
+						|| myFilterLevel.equals("SMQ2")
+						|| myFilterLevel.equals("SMQ3")
+						|| myFilterLevel.equals("SMQ4")
+						|| myFilterLevel.equals("SMQ5")
+						|| myFilterLevel.equals("PRO")
+						|| myFilterLevel.equals("HLGT") || myFilterLevel
+							.equals("HLT"))) {
+			searchDirection = SEARCH_DIRECTION_DOWN;
+			if (myFilterLevel.equals("HLGT") || myFilterLevel.equals("HLT"))
+				return false;
+			return true;
 
 		}
 		return false;
@@ -553,10 +568,18 @@ public class TargetHierarchySearchVM {
 						|| myFilterLevel.equals("PRO")
 						|| myFilterLevel.equals("HLGT") || myFilterLevel
 							.equals("HLT"))) {
-			//searchDirection = SEARCH_DIRECTION_DOWN;
+			searchDirection = SEARCH_DIRECTION_DOWN;
 			if (myFilterLevel.equals("HLGT") || myFilterLevel.equals("HLT"))
 				return false;
 			return true;
+
+		}
+		if (myFilterLevel != null && (myFilterLevel.equals("LLT")
+				|| myFilterLevel.equals("PT"))) {
+			searchDirection = SEARCH_DIRECTION_UP;
+			if (myFilterLevel.equals("LLT")) {
+				return true;
+			}
 
 		}
     	return false;

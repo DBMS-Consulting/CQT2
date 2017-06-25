@@ -16,7 +16,7 @@
 				<f:selectItems itemLabel="#{level.value}" value="#{configMB.levelList}"
 					itemValue="#{level.codelistInternalValue}" var="level"></f:selectItems>
 					<!-- <f:selectItem itemLabel="Non Current LLT" itemValue="NC-LLT"></f:selectItem> -->
-				<p:ajax update="checkTarget" />
+				<p:ajax update="checkTarget search-direction" />
 			</p:selectOneMenu>
 			<p:spacer width="5" />
 			<p:outputLabel value="Term" for="termHT" />
@@ -38,8 +38,8 @@
             <p:outputLabel value="Search Direction:" for="search-direction-target" /> 
             <p:selectOneRadio id="search-direction-target" value="#{impactSearchController.targetHierarchySearchDlgModel.searchDirection}" 
             	disabled="#{impactSearchController.targetHierarchySearchDlgModel.enableRadioButtons}">
-                <f:selectItem itemLabel="up" itemValue="1" itemDisabled="#{impactSearchController.targetHierarchySearchDlgModel.searchUpDisabled}" />
-                <f:selectItem itemLabel="down" itemValue="2" itemDisabled="#{impactSearchController.targetHierarchySearchDlgModel.searchDownDisabled}"/>
+                <f:selectItem itemLabel="Up" itemValue="1" itemDisabled="#{impactSearchController.targetHierarchySearchDlgModel.searchUpDisabled}" />
+                <f:selectItem itemLabel="Down" itemValue="2" itemDisabled="#{impactSearchController.targetHierarchySearchDlgModel.searchDownDisabled}"/>
            		<p:ajax update="resultHierTarget" listener="#{impactSearchController.targetHierarchySearchDlgModel.refreshTHS}" /> 
            	</p:selectOneRadio>
         </h:panelGrid>
