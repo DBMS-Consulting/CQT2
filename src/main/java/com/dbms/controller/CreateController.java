@@ -277,8 +277,8 @@ public class CreateController implements Serializable {
 			detailsFormModel.loadFromCmqBase190(selectedData);
 		else
 			detailsFormModel.init();
-		if (copyWizard != null)
-			detailsFormModel.setProducts(new String[0]);
+//		if (copyWizard != null)
+//			detailsFormModel.setProducts(new String[0]);
 
 		FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Form canceled", "");
 		FacesContext.getCurrentInstance().addMessage(null, msg);
@@ -993,12 +993,13 @@ public class CreateController implements Serializable {
 	 */
 	public boolean isReadOnlyState() {
         boolean d;
+        String userGroup = authService.getGroupMembershipHeader();
 		/**
          * Restrictions on users from  REQUESTOR and ADMIN groups
          */
-    	if (authService.getGroupMembershipHeader() != null &&
-                (authService.getGroupMembershipHeader().contains(AuthenticationService.REQUESTER_GROUP)
-                    || authService.getGroupMembershipHeader().contains(AuthenticationService.ADMIN_GROUP)))
+    	if (userGroup != null &&
+                (userGroup.contains(AuthenticationService.REQUESTER_GROUP)
+                    || userGroup.contains(AuthenticationService.ADMIN_GROUP)))
 			d = restrictionsByUserAuthentified();
         else
             d = false;
@@ -1644,53 +1645,66 @@ public class CreateController implements Serializable {
 	}
 
 	public boolean isApproveDisabled() {
-		if (selectedData != null && selectedData.getCmqStatus() != null	&& CmqBase190.CMQ_STATE_VALUE_REVIEWED.equalsIgnoreCase(selectedData.getCmqState())) {
-			
-			if (authService.getGroupMembershipHeader() != null && (authService.getGroupMembershipHeader().contains("MQM")))
+        String userGroup = authService.getGroupMembershipHeader();
+        // when List is not INACTIVE status, and is Reviewed state
+		if (selectedData != null
+                && !CmqBase190.CMQ_STATUS_VALUE_INACTIVE.equalsIgnoreCase(selectedData.getCmqStatus())
+                && CmqBase190.CMQ_STATE_VALUE_REVIEWED.equalsIgnoreCase(selectedData.getCmqState())) {
+			if (userGroup != null && (userGroup.contains("MQM")))
 				return false;
 			// if AD Group is Requester, disable it
-			if (authService.getGroupMembershipHeader() != null && (authService.getGroupMembershipHeader().contains(AuthenticationService.REQUESTER_GROUP)))
+			if (userGroup != null && (userGroup.contains(AuthenticationService.REQUESTER_GROUP)))
 				return true;
-
 		}
-
+        
+        // otherwise, disable
 		return true;
 	}
 
 	public boolean isReviewedDisabled() {
+        String userGroup = authService.getGroupMembershipHeader();
 		// if AD Group is MANAGER, enable it
-		if (authService.getGroupMembershipHeader() != null &&
-                (authService.getGroupMembershipHeader().contains("MQM")
-                		&& authService.getGroupMembershipHeader().contains(AuthenticationService.REQUESTER_GROUP))) {
+		if (userGroup != null &&
+                (userGroup.contains("MQM")
+                		&& userGroup.contains(AuthenticationService.REQUESTER_GROUP))) {
 			//Disable Review Button when List is Approved
-			if (selectedData != null && selectedData.getCmqState() != null
-					&& (CmqBase190.CMQ_STATE_VALUE_REVIEWED.equalsIgnoreCase(selectedData.getCmqState())
-							|| CmqBase190.CMQ_STATE_VALUE_APPROVED.equalsIgnoreCase(selectedData.getCmqState())))
-				return true;
-			if (selectedData != null
-					&& CmqBase190.CMQ_STATE_VALUE_DRAFT
+            if(selectedData != null) {
+                // Disable Review button when List is Reviewed or Approved state
+                if (CmqBase190.CMQ_STATE_VALUE_REVIEWED.equalsIgnoreCase(selectedData.getCmqState())
+                        || CmqBase190.CMQ_STATE_VALUE_APPROVED.equalsIgnoreCase(selectedData.getCmqState())) {
+                    return true;
+                }
+                // Disable Review button when List is INACTIVE
+                if(CmqBase190.CMQ_STATUS_VALUE_INACTIVE.equalsIgnoreCase(selectedData.getCmqStatus())) {
+                    return true;
+                }
+                if (CmqBase190.CMQ_STATE_VALUE_DRAFT
 							.equalsIgnoreCase(selectedData.getCmqState()))
-				return false;
-			return false;
+                    return false;
+            } else {
+                return true;
+            }
 		}
-			
-			
 
 		// if AD Group is Requester, disable it
-		if (authService.getGroupMembershipHeader() != null &&
-                (authService.getGroupMembershipHeader().contains(AuthenticationService.REQUESTER_GROUP)
-                		&& !(authService.getGroupMembershipHeader().contains("MQM"))))
+		if (userGroup != null &&
+                (userGroup.contains(AuthenticationService.REQUESTER_GROUP)
+                		&& !(userGroup.contains("MQM"))))
 			return true;
-		
-		//Disable Review Button when List is Approved
-		if (selectedData != null && selectedData.getCmqState() != null
-				&& CmqBase190.CMQ_STATE_VALUE_APPROVED.equalsIgnoreCase(selectedData.getCmqState()))
-			return true;
-
-		if (selectedData != null
-				&& CmqBase190.CMQ_STATE_VALUE_DRAFT
-						.equalsIgnoreCase(selectedData.getCmqState()))
-			return false;
+        
+        if(selectedData != null) {
+            //Disable Review Button when List is Approved
+            if (CmqBase190.CMQ_STATE_VALUE_APPROVED.equalsIgnoreCase(selectedData.getCmqState()))
+                return true;
+            // Disable Review button when List is INACTIVE
+            if (CmqBase190.CMQ_STATUS_VALUE_INACTIVE.equalsIgnoreCase(selectedData.getCmqStatus()))
+                return true;
+            // Enable Review button when List is Draft
+            if (CmqBase190.CMQ_STATE_VALUE_DRAFT
+                            .equalsIgnoreCase(selectedData.getCmqState()))
+                return false;
+        }
+        // otherwise disable
 		return true;
 	}
 
@@ -1768,20 +1782,21 @@ public class CreateController implements Serializable {
     
     public boolean isDetailsFormDisabled() {
         boolean d;
+        String userGroup = authService.getGroupMembershipHeader();
       //Create list abilities for MQM and REQUESTOR
       	/**
           * Restrictions on users from  REQUESTOR and ADMIN groups
         */
-         if ((createWizard != null || updateWizard != null || copyWizard != null) && authService.getGroupMembershipHeader() != null &&
-                (authService.getGroupMembershipHeader().contains(AuthenticationService.REQUESTER_GROUP)
-                  || authService.getGroupMembershipHeader().contains("MQM")))
+         if ((createWizard != null || updateWizard != null || copyWizard != null) && userGroup != null &&
+                (userGroup.contains(AuthenticationService.REQUESTER_GROUP)
+                  || userGroup.contains("MQM")))
       			d = false;
     	/**
          * Restrictions on users from  REQUESTOR and ADMIN groups
          */
-    	if (authService.getGroupMembershipHeader() != null &&
-    			 (authService.getGroupMembershipHeader().contains(AuthenticationService.REQUESTER_GROUP)
-    	                    || authService.getGroupMembershipHeader().contains(AuthenticationService.ADMIN_GROUP)))
+    	if (userGroup != null &&
+    			 (userGroup.contains(AuthenticationService.REQUESTER_GROUP)
+    	                    || userGroup.contains(AuthenticationService.ADMIN_GROUP)))
             d = restrictionsByUserAuthentified();
     	
         else
@@ -1799,6 +1814,7 @@ public class CreateController implements Serializable {
      * Restrictions on users from  REQUESTOR and ADMIN groups
      */
     public boolean restrictionsByUserAuthentified() {
+        String userGroup = authService.getGroupMembershipHeader();
     	
         if (updateWizard != null || copyWizard != null) {
         	//conditions are:
@@ -1808,9 +1824,9 @@ public class CreateController implements Serializable {
 				2) the list's status is P
 				3) they are any designee or they have created the list
         	 */
-        	if (authService.getGroupMembershipHeader() != null && authService.getGroupMembershipHeader().contains("MQM"))
+        	if (userGroup != null && userGroup.contains("MQM"))
         		return false;
-        	else if (authService.getGroupMembershipHeader() != null && (authService.getGroupMembershipHeader().contains(AuthenticationService.REQUESTER_GROUP)) 
+        	else if (userGroup != null && (userGroup.contains(AuthenticationService.REQUESTER_GROUP)) 
         			&& selectedData.getCmqStatus().equals("P") 
         			&& (selectedData.getCmqState().equals("DRAFT") || selectedData.getCmqState().equals("REVIEWED"))
         			&& (((listCreator != null) && (listCreator.startsWith(authService.getUserCn())))
@@ -1818,7 +1834,7 @@ public class CreateController implements Serializable {
         		        			|| (selectedData.getCmqDesignee2() != null && selectedData.getCmqDesignee2().equals(authService.getUserCn()))
         		        			|| (selectedData.getCmqDesignee3() != null && selectedData.getCmqDesignee3().equals(authService.getUserCn()))))) {
         		return  false;
-        	} else if (authService.getGroupMembershipHeader() != null && (authService.getGroupMembershipHeader().contains(AuthenticationService.ADMIN_GROUP)) 
+        	} else if (userGroup != null && (userGroup.contains(AuthenticationService.ADMIN_GROUP)) 
         			&& selectedData.getCmqStatus().equals("P") 
         			&& (selectedData.getCmqState().equals("DRAFT") || (selectedData.getCmqState().equals("PENDING IA") || selectedData.getCmqState().equals("REVIEWED IA")))
         			&& (((listCreator != null) && (listCreator.startsWith(authService.getUserCn())))

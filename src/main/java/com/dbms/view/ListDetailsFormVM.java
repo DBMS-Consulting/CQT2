@@ -89,6 +89,7 @@ public class ListDetailsFormVM {
         this.lastModifiedBy = "";
         this.lastModifiedDate = null;
         this.code = null;
+        this.products = new String[0];
         
         // set the defaults from config module
         RefConfigCodeList rcc = refCodeListService.getDefaultForConfigType(CqtConstants.CODE_LIST_TYPE_EXTENSION);
