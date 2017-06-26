@@ -264,7 +264,7 @@ public class ListDetailsFormVM {
 					"TR1".equals(extension)) {
 				setLevel(1);
 				setDrugProgram("");
-				setProtocol(CqtConstants.CODE_LIST_NO_PROTOCOL_INTERNALCODE);
+				setProtocol(""); //setProtocol(CqtConstants.CODE_LIST_NO_PROTOCOL_INTERNALCODE);
                 setProducts(new String[0]);
 			} else if("PRO".equals(extension)) {
                 setLevel(2);
@@ -274,9 +274,9 @@ public class ListDetailsFormVM {
 			} else if("CPT".equals(extension) ||
 					"DME".equals(extension)) {
                 setLevel(1);
-				setDrugProgram(CqtConstants.CODE_LIST_NO_PROGRAM_INTERNALCODE);
-				setProtocol(CqtConstants.CODE_LIST_NO_PROTOCOL_INTERNALCODE);
-				setProducts(new String[] { CqtConstants.CODE_LIST_NO_PRODUCT_INTERNALCODE });
+				setDrugProgram(""); //setDrugProgram(CqtConstants.CODE_LIST_NO_PROGRAM_INTERNALCODE);
+				setProtocol(""); //setProtocol(CqtConstants.CODE_LIST_NO_PROTOCOL_INTERNALCODE);
+				setProducts(new String[0]); //setProducts(new String[] { CqtConstants.CODE_LIST_NO_PRODUCT_INTERNALCODE });
 			} else {
                 setLevel(1);
 				if(refCodeListService != null) {
