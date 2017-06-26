@@ -1041,6 +1041,7 @@ public class CreateController implements Serializable {
 			detailsFormModel.setWizardType(WizardType.BrowseWizard);
 		} else if (updateWizard != null) {
 			detailsFormModel.setWizardType(WizardType.UpdateWizard);
+			setListCreator(selectedData.getCreatedBy());
 		} else if (copyWizard != null) {
 			detailsFormModel.setWizardType(WizardType.CopyWizard);
 			//reset the values which are not supposed to be copied.

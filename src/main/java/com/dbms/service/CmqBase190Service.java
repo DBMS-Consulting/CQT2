@@ -1281,7 +1281,6 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 	}
 	
 	private class MQReportRelationsWorker implements Callable<MQReportRelationsWorkerDTO> {
-
 		private CmqRelation190 relation;
 		private String level = "", term = "", codeTerm = "", workerName = null;
 		
@@ -1298,8 +1297,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 			LOG.info("In {} Starting Callable.", this.workerName);
 			try {
 				if (relation.getSmqCode() != null) {
-					//LOG.info("In {} Loading SMQ code relations.", this.workerName);
-					List<Long> smqChildCodeList = new ArrayList<>();
+ 					List<Long> smqChildCodeList = new ArrayList<>();
 					smqChildCodeList.add(relation.getSmqCode());
 
 					SmqBase190 smqSearched = smqBaseService.findByCode(relation.getSmqCode());
@@ -1319,6 +1317,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 									level = "SMQ5";
 								}
 								relationsWorkerDTO.addToMapReport(cpt++, new ReportLineDataDto(level, smq.getSmqCode() + "", smq.getSmqName(), ""));
+								
 								/**
 								 * Other SMQs
 								 * 
@@ -1346,7 +1345,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 												List<SmqRelation190> list = smqBaseService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
 												if (list != null) {
 													for (SmqRelation190 smq3 : list) {
-														relationsWorkerDTO.addToMapReport(cpt++, new ReportLineDataDto("PT", smq3.getPtCode() + "", smq3.getPtName(), ".............")); 
+														relationsWorkerDTO.addToMapReport(cpt++, new ReportLineDataDto("PT", smq3.getPtCode() + "", smq3.getPtName(), ".............", smq3.getPtTermScope() + "", smq3.getPtTermWeight() + "", smq3.getPtTermCategory())); 
 													}
 												}
 											}
@@ -1374,7 +1373,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 														List<SmqRelation190> list = smqBaseService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
 														if (list != null) {
 															for (SmqRelation190 smq3 : list) {
-																relationsWorkerDTO.addToMapReport(cpt++, new ReportLineDataDto("PT", smq3.getPtCode() + "", smq3.getPtName(), "....................")); 
+																relationsWorkerDTO.addToMapReport(cpt++, new ReportLineDataDto("PT", smq3.getPtCode() + "", smq3.getPtName(), "....................", smq3.getPtTermScope() + "", smq3.getPtTermWeight() + "", smq3.getPtTermCategory())); 
 															}
 														}
 													}
@@ -1388,7 +1387,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 												List<SmqRelation190> list = smqBaseService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
 												if (list != null) {
 													for (SmqRelation190 smq3 : list) {
-														relationsWorkerDTO.addToMapReport(cpt++, new ReportLineDataDto("PT", smq3.getPtCode() + "", smq3.getPtName(), ".............")); 
+														relationsWorkerDTO.addToMapReport(cpt++, new ReportLineDataDto("PT", smq3.getPtCode() + "", smq3.getPtName(), ".............", smq3.getPtTermScope() + "", smq3.getPtTermWeight() + "", smq3.getPtTermCategory())); 
 													}
 												}
 											}
@@ -1422,7 +1421,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 								level = "LLT";
 							} 
 
-							relationsWorkerDTO.addToMapReport(cpt++, new ReportLineDataDto(level, childSmq.getPtCode() + "", childSmq.getPtName(), ".......")); 
+							relationsWorkerDTO.addToMapReport(cpt++, new ReportLineDataDto(level, childSmq.getPtCode() + "", childSmq.getPtName(), ".......", childSmq.getPtTermScope() + "", childSmq.getPtTermWeight() + "", childSmq.getPtTermCategory())); 
 							
 							List<Long> codes = new ArrayList<>();
 							codes.add(childSmq.getSmqCode());
@@ -1439,33 +1438,10 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 										} else if (smq3.getSmqLevel() == 5) {
 											level = "LLT";
 										} 
-										relationsWorkerDTO.addToMapReport(cpt++, new ReportLineDataDto(level, smq3.getPtCode() + "", smq3.getPtName(), ".............")); 
+										relationsWorkerDTO.addToMapReport(cpt++, new ReportLineDataDto(level, smq3.getPtCode() + "", smq3.getPtName(), ".............", smq3.getPtTermScope() + "", smq3.getPtTermWeight() + "", smq3.getPtTermCategory())); 
 									}
 								}
 							}
-
-							//Children for relations
-//							smqSearched = smqBaseService.findByCode(childSmq.getSmqCode());
-//							if (smqSearched != null) {
-//								List<SmqRelation190> childRelations = smqBaseService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
-//								if((null != childRelations) && (childRelations.size() > 0)) {
-//									for (SmqRelation190 smqC : childRelations) {
-//										if (smqC.getSmqLevel() == 1) {
-//											level = "SMQ1";
-//										} else if (smqC.getSmqLevel() == 2) {
-//											level = "SMQ2";
-//										} else if (smqC.getSmqLevel() == 3) {
-//											level = "SMQ3";
-//										} else if ((smqC.getSmqLevel() == 4)
-//												|| (smqC.getSmqLevel() == 0)
-//												|| (smqC.getSmqLevel() == 5)) {
-//											level = "PT";
-//										}
-//										relationsWorkerDTO.addToMapReport(cpt++, new ReportLineDataDto(level, smqC.getSmqCode() + "", smqC.getPtName(), "............"));  
-//									}
-//								}
-//							}
-//							
  
 						}
 					}
@@ -1741,6 +1717,19 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 				// Cell 2
 				cell = row.createCell(2);
 				cell.setCellValue(line.getLevel());
+				
+				// Cell 3
+				cell = row.createCell(3);
+				cell.setCellValue(line.getCategory());
+				
+				// Cell 4
+				cell = row.createCell(4);
+				cell.setCellValue(line.getWeight());
+				
+				// Cell 5
+				cell = row.createCell(5);
+				cell.setCellValue(returnScopeValue(line.getScope()));
+				
 				rowCount++;		
 			} else {
 				LOG.info("Got null line in map in fillReport");
@@ -1750,6 +1739,8 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		return rowCount;
 		
 	}
+	
+	
 
 	private void setCellStyleTitre(XSSFWorkbook wb, XSSFCell cell) {
 		XSSFCellStyle cellStyle = wb.createCellStyle();

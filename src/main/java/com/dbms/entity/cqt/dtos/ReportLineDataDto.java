@@ -27,6 +27,24 @@ public class ReportLineDataDto {
 		this.dots = dots;
 	}
 	
+	/**
+	 * Constructor with scope, weight, category added.
+	 * @param level
+	 * @param code
+	 * @param term
+	 * @param dots
+	 */
+	public ReportLineDataDto(String level, String code, String term, String dots, String scope, String weight, String categ) {
+		super();
+		this.term = term;
+		this.code = code;
+		this.level = level;
+		this.dots = dots;
+		this.weight = weight;
+		this.scope = scope;
+		this.category = categ;
+	}
+	
 	public ReportLineDataDto(String level, String code, String term, String dots, String impact) {
 		super();
 		this.term = term;
