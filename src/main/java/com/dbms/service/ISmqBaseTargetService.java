@@ -9,6 +9,7 @@ import org.primefaces.model.StreamedContent;
 import com.dbms.entity.cqt.SmqBaseTarget;
 import com.dbms.entity.cqt.SmqRelation190;
 import com.dbms.entity.cqt.SmqRelationTarget;
+import com.dbms.entity.cqt.dtos.SMQReverseHierarchySearchDto;
 
 public interface ISmqBaseTargetService {
 
@@ -46,5 +47,7 @@ public interface ISmqBaseTargetService {
 	StreamedContent generateSMQExcel(SmqBaseTarget selectedImpactedSmqList, String dictionaryVersion);
 
 	List<SmqRelationTarget> findSmqRelationsForSmqCodeAndScope(Long smqCode, String scope);
+	
+	List<SMQReverseHierarchySearchDto> findFullReverseByLevelAndTerm(String level, String myFilterTermName);
 
 }

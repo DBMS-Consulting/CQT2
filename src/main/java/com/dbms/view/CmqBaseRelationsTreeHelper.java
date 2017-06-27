@@ -22,6 +22,7 @@ import com.dbms.entity.cqt.SmqBase190;
 import com.dbms.entity.cqt.SmqRelation190;
 import com.dbms.entity.cqt.dtos.MeddraDictHierarchySearchDto;
 import com.dbms.entity.cqt.dtos.MeddraDictReverseHierarchySearchDto;
+import com.dbms.entity.cqt.dtos.SMQReverseHierarchySearchDto;
 import com.dbms.service.ICmqBase190Service;
 import com.dbms.service.ICmqRelation190Service;
 import com.dbms.service.IMeddraDictService;
@@ -758,6 +759,18 @@ public class CmqBaseRelationsTreeHelper {
         }
 		return node;
 	}
+	
+	public HierarchyNode createSmqBaseReverseNode(SMQReverseHierarchySearchDto smqBase) {
+		HierarchyNode node = new HierarchyNode();
+		if (smqBase.getSmqParentLevel() != null)
+			node.setLevel(SMQLevelHelper.getLabel(Integer.parseInt(smqBase.getSmqParentLevel())));
+		node.setTerm(smqBase.getSmqParentName());
+		node.setCode(smqBase.getSmqParentCode());
+		node.setEntity(smqBase);
+		 
+		return node;
+	}
+
 
 	public HierarchyNode createMeddraNode(MeddraDictHierarchySearchDto searchDto, String level, IEntity relationEntity) {
 		HierarchyNode node = new HierarchyNode();
@@ -876,4 +889,5 @@ public class CmqBaseRelationsTreeHelper {
 		this.scopeFromParent = scopeFromParent;
 	}
 
+	
 }

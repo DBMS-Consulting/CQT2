@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.dbms.entity.cqt.SmqBase190;
 import com.dbms.entity.cqt.SmqRelation190;
+import com.dbms.entity.cqt.dtos.SMQReverseHierarchySearchDto;
 import com.dbms.util.SmqAndPtCodeHolder;
 
 public interface ISmqBaseService {
@@ -30,5 +31,7 @@ public interface ISmqBaseService {
 	List<SmqRelation190> findSmqRelationBySmqAndPtCode(List<SmqAndPtCodeHolder> smqAndPtCodeHolders);
 
 	List<SmqRelation190> findSmqRelationsForSmqCodeAndScope(Long smqCode, String scope);
+
+	List<SMQReverseHierarchySearchDto> findFullReverseByLevelAndTerm(String level, String myFilterTermName);
 
 }

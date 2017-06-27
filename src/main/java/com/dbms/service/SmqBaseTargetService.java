@@ -57,6 +57,7 @@ import com.dbms.entity.cqt.SmqRelation190;
 import com.dbms.entity.cqt.SmqRelationTarget;
 import com.dbms.entity.cqt.dtos.MeddraDictHierarchySearchDto;
 import com.dbms.entity.cqt.dtos.ReportLineDataDto;
+import com.dbms.entity.cqt.dtos.SMQReverseHierarchySearchDto;
 import com.dbms.service.base.CqtPersistenceService;
 import com.dbms.util.CmqUtils;
 
@@ -1006,6 +1007,70 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 		// Cell 2
 		cell = row.createCell(2);
 		cell.setCellValue(level);
+	}
+	
+	@Override
+	public List<SMQReverseHierarchySearchDto> findFullReverseByLevelAndTerm(String level, String myFilterTermName) {
+		String parentLevel = "";
+		if (level != null) {
+			if (level.equals("5"))
+				parentLevel = "4";
+			if (level.equals("4"))
+				parentLevel = "3";
+			if (level.equals("3"))
+				parentLevel = "2";
+			if (level.equals("2"))
+				parentLevel = "1";
+		}
+		List<SMQReverseHierarchySearchDto> retVal = null;
+ 		String queryString = "select   p.SMQ_PARENT_CODE as smqParentCode, "
+									+ "p.SMQ_PARENT_NAME as smqParentName, "
+									+ "s.SMQ_CODE as smqChildCode, "
+									+ "s.SMQ_LEVEL as smqChildLevel, "
+									+ "(select SMQ_LEVEL from SMQ_BASE_TARGET WHERE SMQ_CODE = p.SMQ_PARENT_CODE and SMQ_LEVEL = :parentLevel) as smqParentLevel, "
+									+ "p.SMQ_CHILD_NAME as  smqChildName "
+									+ "from SMQ_PARENT_CHILD_TARGET p, SMQ_BASE_TARGET s "
+									+ "where rownum = 1 "
+									+ "and upper(s.SMQ_NAME) like :myFilterTermName "
+									+ "and p.SMQ_CHILD_CODE = s.SMQ_CODE "
+									+ "and s.SMQ_LEVEL = :level "
+									+ "and (select SMQ_LEVEL from SMQ_BASE_TARGET WHERE SMQ_CODE = p.SMQ_PARENT_CODE and SMQ_LEVEL = :parentLevel) is not null "
+									+ " order by smqParentLevel";
+
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		Session session = entityManager.unwrap(Session.class);
+		try {
+			SQLQuery query = session.createSQLQuery(queryString);
+			query.addScalar("smqParentCode", StandardBasicTypes.STRING);
+			query.addScalar("smqParentName", StandardBasicTypes.STRING);
+			query.addScalar("smqChildCode", StandardBasicTypes.STRING);
+			query.addScalar("smqChildName", StandardBasicTypes.STRING);
+			query.addScalar("smqChildLevel", StandardBasicTypes.STRING);
+			query.addScalar("smqParentLevel", StandardBasicTypes.STRING);
+
+			
+			if (!StringUtils.isBlank(myFilterTermName)) {
+				query.setParameter("myFilterTermName", myFilterTermName.toUpperCase());
+			}
+			if (!StringUtils.isBlank(level)) {
+				query.setParameter("level", level);
+			}
+			query.setParameter("parentLevel", parentLevel);
+			 
+			query.setFetchSize(400);
+ 			query.setResultTransformer(Transformers.aliasToBean(SMQReverseHierarchySearchDto.class));
+			query.setCacheable(true);
+			retVal = query.list();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg.append("An error occurred while fetching findFullReverseByLevelAndTerm on searchColumnType ")
+					.append(" Query used was ->")
+					.append(queryString);
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
 	}
 
 	public IMeddraDictTargetService getMeddraDictService() {
