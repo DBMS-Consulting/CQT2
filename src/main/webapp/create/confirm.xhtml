@@ -18,16 +18,16 @@
 				</h:panelGroup>
 
 				<p:outputLabel value="Name:" />
-				<h:outputText value="#{createController.selectedData.cmqName}" />
+				<h:outputText value="#{createController.codeSelected eq null ? '' : createController.selectedData.cmqName}" />
 
 				<p:outputLabel value="Drug Program:" />
-				<h:outputText value="#{createController.detailsFormModel.drugProgramLabel}" rendered="true"/>
+				<h:outputText value="#{createController.codeSelected eq null ? '' : createController.detailsFormModel.drugProgramLabel}" rendered="true"/>
 
 				<p:outputLabel value="Protocol:" />
 				<h:outputText value="#{createController.codeSelected eq null ? '' : createController.detailsFormModel.protocolLabel}" rendered="true"/>
 
 				<p:outputLabel value="Product:" />
-				<h:outputText value="#{createController.detailsFormModel.productsLabel}" rendered="true"/>
+				<h:outputText value="#{createController.codeSelected eq null ? '' : createController.detailsFormModel.productsLabel}" rendered="true"/>
 			</h:panelGrid>
 
 			<h:panelGrid columns="2" columnClasses="label-cell, value-cell">
