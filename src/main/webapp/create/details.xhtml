@@ -24,14 +24,14 @@
 			<p:selectOneMenu
 				value="#{createController.detailsFormModel.extension}"
 				disabled="#{createController.detailsFormDisabled}"
-				required="#{!createController.readOnlyState}"
-				label="Extension">
-				<f:selectItems value="#{configMB.extensionList}" var="extension"
+                required="#{!createController.readOnlyState}"
+                label="Extension">
+                <f:selectItems value="#{createController.detailsFormModel.extensionList}" var="extension"
 					itemLabel="#{extension.value}"
 					itemValue="#{extension.codelistInternalValue}" />
 
                 <p:ajax listener="#{createController.changeLevel}" resetValues="true"
-					update="level lProtocol protocol drug lDrug product lProduct" />
+					update="level lProtocol protocol drug lDrug product lProduct @this" />
 			</p:selectOneMenu>
 
 			<p:outputLabel value="* Name" />
@@ -47,9 +47,11 @@
 				required="#{not createController.readOnlyState}"
                 label="Drug Program">
 				<!-- <f:selectItem itemValue="" itemLabel="" noSelectionOption="true" /> -->
-				<f:selectItems value="#{configMB.programList}" var="program"
+				<f:selectItems value="#{createController.detailsFormModel.programList}" var="program"
 					itemLabel="#{program.value}"
 					itemValue="#{program.codelistInternalValue}" />
+                
+                <p:ajax update="@this" />
 			</p:selectOneMenu>
 
 			<p:outputLabel id="lProtocol" value="* Protocol" />
@@ -60,9 +62,11 @@
                 label="Protocol">
 				
                <!--  <f:selectItem itemValue="" itemLabel="" noSelectionOption="true" /> -->
-				<f:selectItems value="#{configMB.protocolList}" var="protocol"
+				<f:selectItems value="#{createController.detailsFormModel.protocolList}" var="protocol"
 					itemLabel="#{protocol.value}"
 					itemValue="#{protocol.codelistInternalValue}" />
+                
+                <p:ajax update="@this" />
 			</p:selectOneMenu>
 
 			<p:outputLabel id="lProduct" value="* Product" rendered="true" />

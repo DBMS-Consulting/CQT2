@@ -1063,6 +1063,10 @@ public class CreateController implements Serializable {
         
         getActiveWizard().setStep(WIZARD_STEP_DETAILS);
         setFormSaved(false);
+        if(updateWizard != null)
+            RequestContext.getCurrentInstance().update("fUpdate:detailsPanel");
+        else if(copyWizard != null)
+            RequestContext.getCurrentInstance().update("fCopy:detailsPanel");
         
         // if CMQ_BASE_TARGET.Status != 'PENDING IA' on update wizard
         if(updateWizard!=null && isTargetMovedToHigherIAStatus(selectedData)) {

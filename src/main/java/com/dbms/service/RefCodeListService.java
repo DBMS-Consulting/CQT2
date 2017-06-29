@@ -267,7 +267,9 @@ public class RefCodeListService extends
 			query.setParameter("codelistInternalValue", internalCode);
 			query.setHint("org.hibernate.cacheable", true);
 			ref = (RefConfigCodeList) query.getSingleResult();
-		} catch (Exception e) {
+		} catch (javax.persistence.NoResultException e) {
+            LOG.info("findByConfigTypeAndInternalCode found no result for ConfigType: " + configType + ", InternalCode: " + internalCode);
+        } catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
 			msg.append(
 					"findCodeByInternalCode failed for CODELIST_INTERNAL_VALUE value'")
@@ -308,7 +310,9 @@ public class RefCodeListService extends
 			query.setParameter("activeFlag", activeFlag);
 			query.setHint("org.hibernate.cacheable", true);
 			ref = (RefConfigCodeList) query.getSingleResult();
-		} catch (Exception e) {
+		} catch (javax.persistence.NoResultException e) {
+            LOG.info("findByConfigTypeAndInternalCode found no result for ConfigType: " + configType + ", InternalCode: " + internalCode);
+        } catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
 			msg.append(
 					"findCodeByInternalCode failed for CODELIST_INTERNAL_VALUE value'")
@@ -337,7 +341,9 @@ public class RefCodeListService extends
 			query.setParameter("codelistInternalValue", codelistInternalValue);
 			query.setHint("org.hibernate.cacheable", true);
 			ref = (RefConfigCodeList) query.getSingleResult();
-		} catch (Exception e) {
+		} catch (javax.persistence.NoResultException e) {
+            LOG.info("findByConfigTypeAndInternalCode found no result for InternalCode: " + codelistInternalValue);
+        } catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
 			msg.append("findByCode failed for CODELIST_INTERNAL_VALUE value'")
 					.append(codelistInternalValue).append("' ")

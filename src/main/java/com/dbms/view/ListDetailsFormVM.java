@@ -15,7 +15,9 @@ import com.dbms.entity.cqt.RefConfigCodeList;
 import com.dbms.service.AuthenticationService;
 import com.dbms.service.IRefCodeListService;
 import com.dbms.util.CqtConstants;
+import com.dbms.util.OrderBy;
 import com.dbms.util.SWJSFRequest;
+import java.util.ArrayList;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 
@@ -57,11 +59,12 @@ public class ListDetailsFormVM {
 	private Date lastModifiedDate;
 	
 	private List<PXEDUser> designeeList;
-	
+    
 	public ListDetailsFormVM(AuthenticationService authService, IRefCodeListService refCodeListService, SWJSFRequest appSWJSFRequest) {
 		this.authService = authService;
         this.refCodeListService = refCodeListService;
         this.appSWJSFRequest = appSWJSFRequest;
+        
 		init();
 	}
 	
@@ -126,7 +129,7 @@ public class ListDetailsFormVM {
 	 * @param cmq
 	 */
 	public void loadFromCmqBase190(CmqBase190 cmq) {
-		this.extension = cmq.getCmqTypeCd();
+        this.extension = cmq.getCmqTypeCd();
 		this.name = cmq.getCmqName();
 		this.protocol = cmq.getCmqProtocolCd();
 		this.drugProgram = cmq.getCmqProgramCd();
@@ -346,7 +349,7 @@ public class ListDetailsFormVM {
 	public void setExtension(String extension) {
 		if(this.extension == null || !this.extension.equals(extension))
 			setModelChanged(true);
-		this.extension = extension;
+        this.extension = extension;
 	}
 	public String getExtensionLabel() {
 		if("PRO".equals(this.extension))
@@ -744,4 +747,68 @@ public class ListDetailsFormVM {
         }
         return true;
     }
+    
+    public List<RefConfigCodeList> getExtensionList() {
+		List<RefConfigCodeList> values = refCodeListService.findByConfigType(
+				CqtConstants.CODE_LIST_TYPE_EXTENSION, OrderBy.ASC);
+		if (values == null) {
+			values = new ArrayList<>();
+		}
+        if(this.extension != null) {
+            for (RefConfigCodeList r : values) {
+                if(StringUtils.equals(r.getCodelistInternalValue(), this.extension)) {
+                    return values;
+                }
+            }
+            // if the given value is INACTIVE config value, add the value to the list with the label "Extension"
+            RefConfigCodeList ve = refCodeListService.findByConfigTypeAndInternalCode(CqtConstants.CODE_LIST_TYPE_EXTENSION, extension);
+            if(ve != null && "N".equalsIgnoreCase(ve.getActiveFlag())) {
+                ve.setValue(ve.getCodelistInternalValue());
+                values.add(ve);
+            }
+        }
+		return values;
+	}
+    public List<RefConfigCodeList> getProgramList() {
+		List<RefConfigCodeList> values = refCodeListService.findByConfigType(
+				CqtConstants.CODE_LIST_TYPE_PROGRAM, OrderBy.ASC);
+		if (values == null) {
+			values = new ArrayList<>();
+		}
+        if(this.drugProgram != null) {
+            for (RefConfigCodeList r : values) {
+                if(StringUtils.equals(r.getCodelistInternalValue(), this.drugProgram)) {
+                    return values;
+                }
+            }
+            // if the given value is INACTIVE config value, add the value to the list with the label "Extension"
+            RefConfigCodeList ve = refCodeListService.findByConfigTypeAndInternalCode(CqtConstants.CODE_LIST_TYPE_PROGRAM, drugProgram);
+            if(ve != null && "N".equalsIgnoreCase(ve.getActiveFlag())) {
+                ve.setValue(ve.getCodelistInternalValue());
+                values.add(ve);
+            }
+        }
+		return values;
+	}
+    public List<RefConfigCodeList> getProtocolList() {
+		List<RefConfigCodeList> values = refCodeListService.findByConfigType(
+				CqtConstants.CODE_LIST_TYPE_PROTOCOL, OrderBy.ASC);
+		if (values == null) {
+			values = new ArrayList<>();
+		}
+        if(this.protocol != null) {
+            for (RefConfigCodeList r : values) {
+                if(StringUtils.equals(r.getCodelistInternalValue(), this.protocol)) {
+                    return values;
+                }
+            }
+            // if the given value is INACTIVE config value, add the value to the list with the label "Extension"
+            RefConfigCodeList ve = refCodeListService.findByConfigTypeAndInternalCode(CqtConstants.CODE_LIST_TYPE_PROTOCOL, protocol);
+            if(ve != null && "N".equalsIgnoreCase(ve.getActiveFlag())) {
+                ve.setValue(ve.getCodelistInternalValue());
+                values.add(ve);
+            }
+        }
+		return values;
+	}
 }
