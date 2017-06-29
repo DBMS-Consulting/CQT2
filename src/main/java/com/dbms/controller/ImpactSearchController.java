@@ -44,6 +44,7 @@ import com.dbms.csmq.HierarchyNode;
 import com.dbms.entity.IEntity;
 import com.dbms.entity.cqt.CmqBase190;
 import com.dbms.entity.cqt.CmqBaseTarget;
+import com.dbms.entity.cqt.CmqRelation190;
 import com.dbms.entity.cqt.CmqRelationTarget;
 import com.dbms.entity.cqt.RefConfigCodeList;
 import com.dbms.entity.cqt.SmqBase190;
@@ -51,6 +52,7 @@ import com.dbms.entity.cqt.SmqBaseTarget;
 import com.dbms.entity.cqt.SmqRelationTarget;
 import com.dbms.entity.cqt.dtos.MeddraDictHierarchySearchDto;
 import com.dbms.entity.cqt.dtos.MeddraDictReverseHierarchySearchDto;
+import com.dbms.entity.cqt.dtos.SMQReverseHierarchySearchDto;
 import com.dbms.service.AuthenticationService;
 import com.dbms.service.ICmqBase190Service;
 import com.dbms.service.ICmqBaseTargetService;
@@ -672,6 +674,22 @@ public class ImpactSearchController implements Serializable {
 											cmqRelation.setSmqCode(smqRelation.getSmqCode());
 											cmqRelation.setPtCode(smqRelation.getPtCode().longValue());
 											cmqRelation.setRelationImpactType("MQM");
+										}
+									} else if (childEntity instanceof SMQReverseHierarchySearchDto) {
+										SMQReverseHierarchySearchDto smqReverseHierarchySearchDto = (SMQReverseHierarchySearchDto) childEntity;
+										matchingMap = this.checkIfSmqBaseOrSmqRelationExists(existingRelations, smqReverseHierarchySearchDto.getSmqCode()
+																								, smqReverseHierarchySearchDto.getSmqCode().intValue(), hierarchyNode);
+										matchFound = (boolean) matchingMap.get("MATCH_FOUND");
+										updateNeeded = (boolean) matchingMap.get("UPDATE_NEEDED");
+										if(updateNeeded) {
+											cmqRelation = (CmqRelationTarget) matchingMap.get("TARGET_CMQ_RELATION_FOR_UPDATE");
+										} else if(!matchFound) {
+											cmqRelation = new CmqRelationTarget();
+											cmqRelation.setCmqCode(cmqBaseTarget.getCmqCode());
+											cmqRelation.setCmqId(cmqBaseTarget.getId());
+											//we set both smqcode and pt code to show that this is an smq relation
+											cmqRelation.setSmqCode(smqReverseHierarchySearchDto.getSmqCode());
+											//cmqRelation.setPtCode(smqReverseHierarchySearchDto.getSmqCode());
 										}
 									}
 									
@@ -2281,10 +2299,12 @@ public class ImpactSearchController implements Serializable {
 	
 	public void filterRelationsByScopeInTargetTable(HierarchyNode node) {
 		IEntity entity = node.getEntity();
-		if(entity instanceof SmqBaseTarget) {
+		if((entity instanceof SmqBaseTarget) || (entity instanceof SMQReverseHierarchySearchDto)) {
 			node.setDataFetchCompleted(false);
 			TreeNode treeNode = this.clearChildrenInTargetTableTreNode(targetTableRootTreeNode, node);
-			collapseRelationsInTargetTable(treeNode);
+			if(null != treeNode) {
+				collapseRelationsInTargetTable(treeNode);
+			}
 		}
 	}
 

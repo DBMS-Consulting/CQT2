@@ -174,7 +174,10 @@ public class IARelationsTreeHelper {
 				
 				//Color           
                 setTargetCmqBaseNodeStyle(hierarchyNode, cmqBase);
-			} else if (entity instanceof SmqBaseTarget){
+			} else if (entity instanceof SMQReverseHierarchySearchDto){
+	        	SMQReverseHierarchySearchDto smqBase = (SMQReverseHierarchySearchDto) entity;
+	            this.populateSmqReverseDtoParent(smqBase.getSmqCode(), expandedTreeNode, "target", uiSourceOfEvent);
+	        } else if (entity instanceof SmqBaseTarget){
 				SmqBaseTarget smqBase = (SmqBaseTarget) entity;
 				this.populateSmqBaseChildren(smqBase.getSmqCode(), expandedTreeNode, "target", uiSourceOfEvent);
 				this.populateSmqRelations(smqBase.getSmqCode(), expandedTreeNode, "target", uiSourceOfEvent, scopeFilter);
@@ -441,10 +444,10 @@ public class IARelationsTreeHelper {
 		HierarchyNode node = null;
 		if(null != smqBase) {
 			node = new HierarchyNode();
-            if (null != smqBase.getSmqParentLevel()) 
-                node.setLevel(SMQLevelHelper.getLabel(Integer.parseInt(smqBase.getSmqParentLevel())));
-			node.setTerm(smqBase.getSmqParentName());
-			node.setCode(smqBase.getSmqParentCode().toString());
+            if (null != smqBase.getSmqLevel()) 
+                node.setLevel(SMQLevelHelper.getLabel(Integer.parseInt(smqBase.getSmqLevel())));
+			node.setTerm(smqBase.getSmqName());
+			node.setCode(smqBase.getSmqCode().toString());
 			node.setEntity(smqBase);
 		}
 		return node;
@@ -937,6 +940,55 @@ public class IARelationsTreeHelper {
 		}
 		else
 			childRelationNode.setRowStyleClass("none");
+	}
+	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private void populateSmqReverseDtoParent(Long smqCode, TreeNode expandedTreeNode, String smqType, String uiSourceOfEvent) {
+		boolean isRootListNode = isRootListNode(expandedTreeNode);
+		boolean isRootNodeOfSmqType = this.isRootNodeOfSmqType(expandedTreeNode);
+        boolean currentList = ("current".equalsIgnoreCase(smqType));
+		List<SMQReverseHierarchySearchDto> parentSmqBaseList = this.smqBaseTargetService.findReverseParentByChildCode(smqCode);
+
+        if(CollectionUtils.isNotEmpty(parentSmqBaseList)) {
+			Map<Long, TreeNode> smqTreeNodeMap = new HashMap<>();
+			List<Long> smqChildCodeList = new ArrayList<>();
+			for (SMQReverseHierarchySearchDto parentSmqBase : parentSmqBaseList) {
+                final Long parentSmqCode = parentSmqBase.getSmqCode();
+				HierarchyNode childNode = new HierarchyNode();
+                if (null != parentSmqBase.getSmqLevel())
+                    childNode.setLevel(SMQLevelHelper.getLabel(Integer.parseInt(parentSmqBase.getSmqLevel())));
+                childNode.setTerm(parentSmqBase.getSmqName());
+                childNode.setCode(parentSmqBase.getSmqCode().toString());
+                childNode.setScope(null != parentSmqBase.getPtTermScope() ? parentSmqBase.getPtTermScope().toString() : "");
+                childNode.setCategory(null != parentSmqBase.getPtTermCategory() ? parentSmqBase.getPtTermCategory() : "");
+                childNode.setWeight(null != parentSmqBase.getPtTermWeight()? parentSmqBase.getPtTermWeight().toString() : "");
+                childNode.setEntity(parentSmqBase);
+                if(!isRootListNode && "target-table".equalsIgnoreCase(uiSourceOfEvent)) {
+                    //childNode.markNotEditableInRelationstable();
+                	childNode.markReadOnlyInRelationstable();
+                }
+
+				// add child to parent
+				TreeNode childTreeNode = new DefaultTreeNode(childNode, expandedTreeNode);
+                smqChildCodeList.add(parentSmqBase.getSmqCode());
+				smqTreeNodeMap.put(parentSmqCode, childTreeNode);
+			} // end of for
+			
+			//find smqrelations of all child smqs
+            List<Map<String, Object>> childSmqRelationsCountList = this.smqBaseTargetService.findParentCountSmqCountByChildSmqCodes(smqChildCodeList);
+
+            if((null != childSmqRelationsCountList) && (childSmqRelationsCountList.size() > 0)) {
+                for(Map<String, Object> map : childSmqRelationsCountList) {
+                    if(map.get("PT_CODE") != null) {
+                        Long childSmqCode = (Long)map.get("PT_CODE");
+                        Long count = (Long)map.get("COUNT");
+                        if(count > 0) {
+                            createNewDummyNode(smqTreeNodeMap.get(childSmqCode));
+                        }
+                    }
+                }
+            }
+		}
 	}
 	
 	public void populateSmqRelations(Long smqCode, TreeNode expandedTreeNode, String smqType, String uiSourceOfEvent, String scopeFilter) {

@@ -35,6 +35,7 @@ import com.dbms.entity.cqt.CmqProductBaseCurrent;
 import com.dbms.entity.cqt.CmqRelation190;
 import com.dbms.entity.cqt.RefConfigCodeList;
 import com.dbms.entity.cqt.SmqBase190;
+import com.dbms.entity.cqt.SmqBaseTarget;
 import com.dbms.entity.cqt.SmqRelation190;
 import com.dbms.entity.cqt.dtos.MeddraDictHierarchySearchDto;
 import com.dbms.entity.cqt.dtos.MeddraDictReverseHierarchySearchDto;
@@ -201,7 +202,7 @@ public class CreateController implements Serializable {
 		//For relations.xhtml
 		if (updateWizard != null || copyWizard != null || createWizard != null) {
 			IEntity entity = node.getEntity();
-			if(entity instanceof SmqBase190) {
+			if((entity instanceof SmqBaseTarget) || (entity instanceof SMQReverseHierarchySearchDto)) {
 				node.setDataFetchCompleted(false);
 				this.relationsModel.clearChildrenInTreNode(relationsModel.getRelationsRoot(), node);
 				collapseRelations(node);

@@ -116,17 +116,44 @@ public class TargetHierarchySearchVM {
  				}
 			}
  			else if (appliedSearchDirection == SEARCH_DIRECTION_UP) {
- 				List<SMQReverseHierarchySearchDto> smqBaseList = this.smqBaseTargetService.findFullReverseByLevelAndTerm(smqLevelH.getLevel() + "", myFilterTermName);
+				List<SMQReverseHierarchySearchDto> smqBaseList = smqBaseTargetService
+						.findReverseByLevelAndTerm(smqLevelH.getLevel(), myFilterTermName);
  				LOG.info("smqBaseList values {}", smqBaseList == null ? 0 : smqBaseList.size());
 
  				this.myHierarchyRoot = new DefaultTreeNode("root", new HierarchyNode(
  						"LEVEL", "NAME", "CODE", null), null);
+ 				Map<Long, TreeNode> smqTreeNodeMap = new HashMap<>();
+ 				List<Long> smqChildCodeList = new ArrayList<>();
  				for (SMQReverseHierarchySearchDto smqBaseTarget : smqBaseList) {
- 					this.updateHierarchySearchForSmqTargetReverse(smqBaseTarget);
+ 					IARelationsTreeHelper iaTreeHelper = new IARelationsTreeHelper(
+ 			                null, null, null, null,
+ 			                cmqBaseTargetService, smqBaseTargetService, meddraDictTargetService, cmqRelationTargetService);
+ 					HierarchyNode node = iaTreeHelper.createSmqBaseTargetReverseNode(smqBaseTarget);
+ 					TreeNode smqBaseTreeNode = new DefaultTreeNode(node, this.myHierarchyRoot);
+ 					smqChildCodeList.add(smqBaseTarget.getSmqCode());
+					smqTreeNodeMap.put(smqBaseTarget.getSmqCode(), smqBaseTreeNode);
+					
  				}
+ 					
+				boolean dummyNodeAdded = false;
+				List<Map<String, Object>> smqBaseChildrenCount = this.smqBaseTargetService
+						.findParentCountSmqCountByChildSmqCodes(smqChildCodeList);
+				if ((null != smqBaseChildrenCount)
+						&& (smqBaseChildrenCount.size() > 0)) {
+					for (Map<String, Object> map : smqBaseChildrenCount) {
+						if (map.get("PT_CODE") != null) {
+							Long childSmqCode = (Long) map
+									.get("PT_CODE");
+							if ((Long) map.get("COUNT") > 0) {
+								HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
+								dummyNode.setDummyNode(true);
+								new DefaultTreeNode(dummyNode, smqTreeNodeMap.get(childSmqCode));
+								dummyNodeAdded = true;
+							}
+						}
+					}
+				}
  			}
-			
-			
 		} else if (meddraLevelH != null && appliedSearchDirection == SEARCH_DIRECTION_DOWN) {
 			List<MeddraDictHierarchySearchDto> meddraDictDtoList = this.meddraDictTargetService
 					.findByLevelAndTerm(meddraLevelH.getTermPrefix(), myFilterTermName);
@@ -410,7 +437,7 @@ public class TargetHierarchySearchVM {
 
 	}
     
-    private void updateHierarchySearchForSmqTargetReverse(SMQReverseHierarchySearchDto smqBaseTargetReverse) {
+    /*private void updateHierarchySearchForSmqTargetReverse(SMQReverseHierarchySearchDto smqBaseTargetReverse) {
         IARelationsTreeHelper iaTreeHelper = new IARelationsTreeHelper(
                 null, null, null, null,
                 cmqBaseTargetService, smqBaseTargetService, meddraDictTargetService, cmqRelationTargetService);
@@ -427,7 +454,7 @@ public class TargetHierarchySearchVM {
 
 		}
 
-	}
+	}*/
 	
     
 	private void updateParentCodesAndParentTreeNodesForCmqTaget(List<CmqBaseTarget> cmqBaseList

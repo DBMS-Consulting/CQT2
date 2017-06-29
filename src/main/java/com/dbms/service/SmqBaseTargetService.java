@@ -174,6 +174,93 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 	
 	@Override
 	@SuppressWarnings("unchecked")
+	public List<SMQReverseHierarchySearchDto> findReverseParentByChildCode(Long smqCode) {
+		List<SMQReverseHierarchySearchDto> retVal = null;
+		StringBuilder sb = new StringBuilder();
+		sb.append("select a.SMQ_CODE as smqCode, a.SMQ_NAME as smqName, a.SMQ_LEVEL as smqLevel, a.SMQ_DESCRIPTION as smqDescription, " 
+					+ " a.SMQ_SOURCE as smqSource, a.SMQ_NOTE as smqNote, a.SMQ_STATUS as smqStatus, a.SMQ_ALGORITHM as smqAlgorithm, " 
+					+ " a.DICTIONARY_VERSION as dictionaryVersion, a.IMPACT_TYPE as impactType, a.SMQ_ID as smqId, b.PT_TERM_SCOPE as ptTermScope, "
+					+ " b.PT_TERM_WEIGHT as ptTermWeight, b.PT_TERM_CATEGORY as ptTermCategory, b.PT_TERM_STATUS as ptTermStatus from SMQ_BASE_TARGET a, "
+					+ " SMQ_RELATIONS_TARGET b where a.SMQ_CODE = b.SMQ_CODE and b. PT_CODE = :smqCode"); 
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		Session session = entityManager.unwrap(Session.class);
+		try {
+			SQLQuery query = session.createSQLQuery(sb.toString());
+			query.addScalar("smqCode", StandardBasicTypes.LONG);
+			query.addScalar("smqName", StandardBasicTypes.STRING);
+			query.addScalar("smqLevel", StandardBasicTypes.STRING);
+			query.addScalar("smqDescription", StandardBasicTypes.STRING);
+			query.addScalar("smqSource", StandardBasicTypes.STRING);
+			query.addScalar("smqNote", StandardBasicTypes.STRING);
+			query.addScalar("smqStatus", StandardBasicTypes.STRING);
+			query.addScalar("smqAlgorithm", StandardBasicTypes.STRING);
+			query.addScalar("dictionaryVersion", StandardBasicTypes.STRING);
+			query.addScalar("impactType", StandardBasicTypes.STRING);
+			query.addScalar("smqId", StandardBasicTypes.LONG);
+			query.addScalar("ptTermScope", StandardBasicTypes.INTEGER);
+			query.addScalar("ptTermWeight", StandardBasicTypes.INTEGER);
+			query.addScalar("ptTermCategory", StandardBasicTypes.STRING);
+			query.addScalar("ptTermStatus", StandardBasicTypes.STRING);
+			
+			query.setParameter("smqCode", smqCode);
+			query.setFetchSize(400);
+ 			query.setResultTransformer(Transformers.aliasToBean(SMQReverseHierarchySearchDto.class));
+			query.setCacheable(true);
+			retVal = query.list();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg
+					.append("An error occurred while fetching findReverseParentByChildCode smqCode ")
+					.append(smqCode)
+					.append(" with smqName like ")
+					.append(" Query used was ->")
+					.append(sb.toString());
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
+	
+	@Override
+	public List<Map<String, Object>> findParentCountSmqCountByChildSmqCodes(List<Long> smqCodes) {
+		List<Map<String, Object>> retVal = null;
+		
+        if(CollectionUtils.isEmpty(smqCodes))
+            return null;
+        
+        String queryString = CmqUtils.convertArrayToTableWith(smqCodes, "tempSmqCodes", "code")
+                + " select count(*) as COUNT, PT_CODE"
+                + " from SMQ_RELATIONS_TARGET smqTbl"
+                + " inner join tempSmqCodes on tempSmqCodes.code=smqTbl.PT_CODE"
+                + " group by PT_CODE";
+        
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+        Session session = entityManager.unwrap(Session.class);
+		try {
+            SQLQuery query = session.createSQLQuery(queryString);
+			query.addScalar("PT_CODE", StandardBasicTypes.LONG);
+			query.addScalar("COUNT", StandardBasicTypes.LONG);
+            
+            query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+			query.setCacheable(true);
+			retVal = query.list();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg
+					.append("An error occurred while findChildSmqCountByParentSmqCode ")
+					.append(smqCodes)
+					.append(" Query used was ->")
+					.append(queryString);
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
+	
+	@Override
+	@SuppressWarnings("unchecked")
 	public List<SmqRelationTarget> findSmqRelationsForSmqCode(Long smqCode) {
 		List<SmqRelationTarget> retVal = null;
 		StringBuilder sb = new StringBuilder();
@@ -1007,6 +1094,62 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 		// Cell 2
 		cell = row.createCell(2);
 		cell.setCellValue(level);
+	}
+	
+	@Override
+	@SuppressWarnings("unchecked")
+	public List<SMQReverseHierarchySearchDto> findReverseByLevelAndTerm(Integer smqLevel, String smqName) {
+		List<SMQReverseHierarchySearchDto> retVal = null;
+		StringBuilder sb = new StringBuilder();
+		sb.append("select SMQ_CODE as smqCode, SMQ_NAME as smqName, SMQ_LEVEL as smqLevel, SMQ_DESCRIPTION as smqDescription, "
+				+ " SMQ_SOURCE as smqSource, SMQ_NOTE as smqNote, SMQ_STATUS as smqStatus, SMQ_ALGORITHM as smqAlgorithm, "
+				+ " DICTIONARY_VERSION as dictionaryVersion, IMPACT_TYPE as impactType, SMQ_ID as smqId from SMQ_BASE_TARGET "
+				+ " where SMQ_LEVEL = :smqLevel ");
+		if(!StringUtils.isBlank(smqName)) {
+			sb.append("  and upper(SMQ_NAME) like :smqName");
+		}
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		Session session = entityManager.unwrap(Session.class);
+		try {
+			SQLQuery query = session.createSQLQuery(sb.toString());
+			query.addScalar("smqCode", StandardBasicTypes.LONG);
+			query.addScalar("smqName", StandardBasicTypes.STRING);
+			query.addScalar("smqLevel", StandardBasicTypes.STRING);
+			query.addScalar("smqDescription", StandardBasicTypes.STRING);
+			query.addScalar("smqSource", StandardBasicTypes.STRING);
+			query.addScalar("smqNote", StandardBasicTypes.STRING);
+			query.addScalar("smqStatus", StandardBasicTypes.STRING);
+			query.addScalar("smqAlgorithm", StandardBasicTypes.STRING);
+			query.addScalar("dictionaryVersion", StandardBasicTypes.STRING);
+			query.addScalar("impactType", StandardBasicTypes.STRING);
+			query.addScalar("smqId", StandardBasicTypes.LONG);
+			query.addScalar("smqNote", StandardBasicTypes.STRING);
+			
+			if (!StringUtils.isBlank(smqName)) {
+				query.setParameter("smqName", smqName.toUpperCase());
+			}
+			if (smqLevel != null) {
+				query.setParameter("smqLevel", smqLevel);
+			}
+			 
+			query.setFetchSize(400);
+ 			query.setResultTransformer(Transformers.aliasToBean(SMQReverseHierarchySearchDto.class));
+			query.setCacheable(true);
+			retVal = query.list();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg
+					.append("An error occurred while fetching findReverseByLevelAndTerm from SMQ_BASE_TARGET on smqLevel ")
+					.append(smqLevel)
+					.append(" with smqName like ")
+					.append(smqName.toUpperCase())
+					.append(" Query used was ->")
+					.append(sb.toString());
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
 	}
 	
 	@Override

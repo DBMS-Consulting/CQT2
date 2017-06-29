@@ -50,4 +50,10 @@ public interface ISmqBaseTargetService {
 	
 	List<SMQReverseHierarchySearchDto> findFullReverseByLevelAndTerm(String level, String myFilterTermName);
 
+	List<SMQReverseHierarchySearchDto> findReverseByLevelAndTerm(Integer smqLevel, String smqName);
+
+	List<Map<String, Object>> findParentCountSmqCountByChildSmqCodes(List<Long> smqCodes);
+
+	List<SMQReverseHierarchySearchDto> findReverseParentByChildCode(Long smqCode);
+
 }
