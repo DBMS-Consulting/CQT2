@@ -38,6 +38,7 @@ import com.dbms.entity.cqt.SmqBase190;
 import com.dbms.entity.cqt.SmqRelation190;
 import com.dbms.entity.cqt.dtos.MeddraDictHierarchySearchDto;
 import com.dbms.entity.cqt.dtos.MeddraDictReverseHierarchySearchDto;
+import com.dbms.entity.cqt.dtos.SMQReverseHierarchySearchDto;
 import com.dbms.service.AuthenticationService;
 import com.dbms.service.ICmqBase190Service;
 import com.dbms.service.ICmqBaseTargetService;
@@ -488,6 +489,22 @@ public class CreateController implements Serializable {
 								//we set both smqcode and pt code to show that this is an smq relation
 								cmqRelation.setSmqCode(smqRelation.getSmqCode());
 								cmqRelation.setPtCode(smqRelation.getPtCode().longValue());
+							}
+						} else if (entity instanceof SMQReverseHierarchySearchDto) {
+							SMQReverseHierarchySearchDto smqReverseHierarchySearchDto = (SMQReverseHierarchySearchDto) entity;
+							matchingMap = this.checkIfSmqBaseOrSmqRelationExists(existingRelation, smqReverseHierarchySearchDto.getSmqCode()
+																					, smqReverseHierarchySearchDto.getSmqCode().intValue(), hierarchyNode);
+							matchFound = (boolean) matchingMap.get("MATCH_FOUND");
+							updateNeeded = (boolean) matchingMap.get("UPDATE_NEEDED");
+							if(updateNeeded) {
+								cmqRelation = (CmqRelation190) matchingMap.get("TARGET_CMQ_RELATION_FOR_UPDATE");
+							} else if(!matchFound) {
+								cmqRelation = new CmqRelation190();
+								cmqRelation.setCmqCode(selectedData.getCmqCode());
+								cmqRelation.setCmqId(cmqBase.getId());
+								//we set both smqcode and pt code to show that this is an smq relation
+								cmqRelation.setSmqCode(smqReverseHierarchySearchDto.getSmqCode());
+								//cmqRelation.setPtCode(smqReverseHierarchySearchDto.getSmqCode());
 							}
 						}
 						

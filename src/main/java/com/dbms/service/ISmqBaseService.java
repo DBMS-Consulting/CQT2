@@ -34,4 +34,10 @@ public interface ISmqBaseService {
 
 	List<SMQReverseHierarchySearchDto> findFullReverseByLevelAndTerm(String level, String myFilterTermName);
 
+	List<SMQReverseHierarchySearchDto> findReverseByLevelAndTerm(Integer level, String searchTerm);
+
+	List<Map<String, Object>> findParentCountSmqCountByChildSmqCodes(List<Long> smqCodes);
+
+	List<SMQReverseHierarchySearchDto> findReverseParentByChildCode(Long smqCode);
+
 }

@@ -169,9 +169,9 @@ public class CmqBaseHierarchySearchVM {
 			}
 
 			else if (appliedSearchDirection == SEARCH_DIRECTION_UP) {
+				Integer smqLevel = Integer.parseInt(returnSmqLevel(myFilterLevel));
 				List<SMQReverseHierarchySearchDto> smqBaseList = smqBaseService
-						.findFullReverseByLevelAndTerm(
-								returnSmqLevel(myFilterLevel), myFilterTermName);
+						.findReverseByLevelAndTerm(smqLevel, myFilterTermName);
 
 				myHierarchyRoot = new DefaultTreeNode("root",
 						new HierarchyNode("LEVEL", "NAME", "CODE", null), null);
@@ -182,22 +182,19 @@ public class CmqBaseHierarchySearchVM {
 					TreeNode parentTreeNode = new DefaultTreeNode(node,
 							myHierarchyRoot);
 
-					smqChildCodeList.add(Long.parseLong(smqBase
-							.getSmqParentCode()));
-					smqTreeNodeMap.put(
-							Long.parseLong(smqBase.getSmqParentCode()),
-							parentTreeNode);
+					smqChildCodeList.add(smqBase.getSmqCode());
+					smqTreeNodeMap.put(smqBase.getSmqCode(), parentTreeNode);
 				}
 
 				List<Map<String, Object>> smqBaseChildrenCount = this.smqBaseService
-						.findChildSmqCountByParentSmqCodes(smqChildCodeList);
+						.findParentCountSmqCountByChildSmqCodes(smqChildCodeList);
 
 				if ((null != smqBaseChildrenCount)
 						&& (smqBaseChildrenCount.size() > 0)) {
 					for (Map<String, Object> map : smqBaseChildrenCount) {
-						if (map.get("SMQ_PARENT_CODE") != null) {
+						if (map.get("PT_CODE") != null) {
 							Long childSmqCode = (Long) map
-									.get("SMQ_PARENT_CODE");
+									.get("PT_CODE");
 							if ((Long) map.get("COUNT") > 0) {
 								relationsTreeHelper
 										.createNewDummyNode(smqTreeNodeMap
@@ -358,7 +355,7 @@ public class CmqBaseHierarchySearchVM {
 			if (level.equals("SMQ5"))
 				return "5";
 		}
-		return "";
+		return "1";
 	}
 
 //	public void handleRadioButtonsDisabling() {

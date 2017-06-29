@@ -202,10 +202,6 @@ public class CmqBaseRelationsTreeHelper {
 			return rootNode;
 		
 		IEntity entity = hNode.getEntity();
-		
-		 
-		//System.out.println("NODE SCOPE :: " + scopeFromParent); 
-		
 
 		// remove the first dummy node placeholder
 		HierarchyNode dummyChildData = (HierarchyNode) expandedNode.getChildren().get(0).getData();
@@ -219,6 +215,9 @@ public class CmqBaseRelationsTreeHelper {
             Long cmqCode = cmqBase.getCmqCode();
             this.populateCmqBaseChildren(cmqCode, expandedNode);
             this.populateCmqRelations(cmqCode, expandedNode, entity);
+        } else if (entity instanceof SMQReverseHierarchySearchDto){
+        	SMQReverseHierarchySearchDto smqBase = (SMQReverseHierarchySearchDto) entity;
+            this.populateSmqReverseDtoParent(smqBase.getSmqCode(), expandedNode);
         } else if (entity instanceof SmqBase190){
             SmqBase190 smqBase = (SmqBase190) entity;
             this.populateSmqBaseChildren(smqBase.getSmqCode(), expandedNode);
@@ -495,6 +494,53 @@ public class CmqBaseRelationsTreeHelper {
 	}
     
     @SuppressWarnings({ "rawtypes", "unchecked" })
+	private void populateSmqReverseDtoParent(Long smqCode, TreeNode expandedTreeNode) {
+        
+		List<SMQReverseHierarchySearchDto> parentSmqBaseList = this.smqBaseSvc.findReverseParentByChildCode(smqCode);
+
+        if(CollectionUtils.isNotEmpty(parentSmqBaseList)) {
+			Map<Long, TreeNode> smqTreeNodeMap = new HashMap<>();
+			List<Long> smqChildCodeList = new ArrayList<>();
+			for (SMQReverseHierarchySearchDto parentSmqBase : parentSmqBaseList) {
+                final Long parentSmqCode = parentSmqBase.getSmqCode();
+				HierarchyNode childNode = new HierarchyNode();
+                if (null != parentSmqBase.getSmqLevel())
+                    childNode.setLevel(SMQLevelHelper.getLabel(Integer.parseInt(parentSmqBase.getSmqLevel())));
+                childNode.setTerm(parentSmqBase.getSmqName());
+                childNode.setCode(parentSmqBase.getSmqCode().toString());
+                childNode.setScope(null != parentSmqBase.getPtTermScope() ? parentSmqBase.getPtTermScope().toString() : "");
+                childNode.setCategory(null != parentSmqBase.getPtTermCategory() ? parentSmqBase.getPtTermCategory() : "");
+                childNode.setWeight(null != parentSmqBase.getPtTermWeight()? parentSmqBase.getPtTermWeight().toString() : "");
+                childNode.setEntity(parentSmqBase);
+                if(relationView) {
+                    //childNode.markNotEditableInRelationstable();
+                	childNode.markReadOnlyInRelationstable();
+                }
+
+				// add child to parent
+				TreeNode childTreeNode = new DefaultTreeNode(childNode, expandedTreeNode);
+                smqChildCodeList.add(parentSmqBase.getSmqCode());
+				smqTreeNodeMap.put(parentSmqCode, childTreeNode);
+			} // end of for
+			
+			//find smqrelations of all child smqs
+            List<Map<String, Object>> childSmqRelationsCountList = this.smqBaseSvc.findParentCountSmqCountByChildSmqCodes(smqChildCodeList);
+
+            if((null != childSmqRelationsCountList) && (childSmqRelationsCountList.size() > 0)) {
+                for(Map<String, Object> map : childSmqRelationsCountList) {
+                    if(map.get("PT_CODE") != null) {
+                        Long childSmqCode = (Long)map.get("PT_CODE");
+                        Long count = (Long)map.get("COUNT");
+                        if(count > 0) {
+                            createNewDummyNode(smqTreeNodeMap.get(childSmqCode));
+                        }
+                    }
+                }
+            }
+		}
+	}
+    
+    @SuppressWarnings({ "rawtypes", "unchecked" })
 	public void populateSmqBaseChildren(Long smqCode, TreeNode expandedTreeNode) {
         
 		List<SmqBase190> childSmqBaseList = this.smqBaseSvc.findChildSmqByParentSmqCode(smqCode);
@@ -762,10 +808,12 @@ public class CmqBaseRelationsTreeHelper {
 	
 	public HierarchyNode createSmqBaseReverseNode(SMQReverseHierarchySearchDto smqBase) {
 		HierarchyNode node = new HierarchyNode();
-		if (smqBase.getSmqParentLevel() != null)
-			node.setLevel(SMQLevelHelper.getLabel(Integer.parseInt(smqBase.getSmqParentLevel())));
-		node.setTerm(smqBase.getSmqParentName());
-		node.setCode(smqBase.getSmqParentCode());
+		node.setLevel(SMQLevelHelper.getLabel(Integer.parseInt(smqBase.getSmqLevel())));
+		node.setTerm(smqBase.getSmqName());
+		node.setCode(smqBase.getSmqCode().toString());
+		node.setCategory("");
+		node.setScope("");
+		node.setWeight("0");
 		node.setEntity(smqBase);
 		 
 		return node;
