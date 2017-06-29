@@ -1316,7 +1316,8 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 								} else if (smq.getSmqLevel() == 5) {
 									level = "SMQ5";
 								}
-								relationsWorkerDTO.addToMapReport(cpt++, new ReportLineDataDto(level, smq.getSmqCode() + "", smq.getSmqName(), ""));
+								relationsWorkerDTO.addToMapReport(cpt++, new ReportLineDataDto(level, smq.getSmqCode() + "", smq.getSmqName(), "", relation.getTermScope(),
+										(relation.getTermWeight() != null ? relation.getTermWeight() + "" : ""), relation.getTermCategory()));
 								
 								/**
 								 * Other SMQs
