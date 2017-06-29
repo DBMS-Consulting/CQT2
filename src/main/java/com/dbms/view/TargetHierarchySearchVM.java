@@ -26,6 +26,7 @@ import com.dbms.entity.cqt.CmqBaseTarget;
 import com.dbms.entity.cqt.SmqBaseTarget;
 import com.dbms.entity.cqt.dtos.MeddraDictHierarchySearchDto;
 import com.dbms.entity.cqt.dtos.MeddraDictReverseHierarchySearchDto;
+import com.dbms.entity.cqt.dtos.SMQReverseHierarchySearchDto;
 import com.dbms.service.ICmqBaseTargetService;
 import com.dbms.service.ICmqRelationTargetService;
 import com.dbms.service.IMeddraDictTargetService;
@@ -103,15 +104,56 @@ public class TargetHierarchySearchVM {
 		MeddraDictLevelHelper meddraLevelH = MeddraDictLevelHelper.getByLabel(myFilterLevel);
 
 		if (smqLevelH != null) {
-			List<SmqBaseTarget> smqBaseList = this.smqBaseTargetService.findByLevelAndTerm(
-					smqLevelH.getLevel(), myFilterTermName);
-			LOG.info("smqBaseList values {}", smqBaseList == null ? 0 : smqBaseList.size());
+ 			if (appliedSearchDirection == SEARCH_DIRECTION_DOWN) {
+ 				List<SmqBaseTarget> smqBaseList = this.smqBaseTargetService.findByLevelAndTerm(
+ 						smqLevelH.getLevel(), myFilterTermName);
+ 				LOG.info("smqBaseList values {}", smqBaseList == null ? 0 : smqBaseList.size());
 
-			this.myHierarchyRoot = new DefaultTreeNode("root", new HierarchyNode(
-					"LEVEL", "NAME", "CODE", null), null);
-			for (SmqBaseTarget smqBaseTarget : smqBaseList) {
-				this.updateHierarchySearchForSmqTaget(smqBaseTarget);
+ 				this.myHierarchyRoot = new DefaultTreeNode("root", new HierarchyNode(
+ 						"LEVEL", "NAME", "CODE", null), null);
+ 				for (SmqBaseTarget smqBaseTarget : smqBaseList) {
+ 					this.updateHierarchySearchForSmqTaget(smqBaseTarget);
+ 				}
 			}
+ 			else if (appliedSearchDirection == SEARCH_DIRECTION_UP) {
+				List<SMQReverseHierarchySearchDto> smqBaseList = smqBaseTargetService
+						.findReverseByLevelAndTerm(smqLevelH.getLevel(), myFilterTermName);
+ 				LOG.info("smqBaseList values {}", smqBaseList == null ? 0 : smqBaseList.size());
+
+ 				this.myHierarchyRoot = new DefaultTreeNode("root", new HierarchyNode(
+ 						"LEVEL", "NAME", "CODE", null), null);
+ 				Map<Long, TreeNode> smqTreeNodeMap = new HashMap<>();
+ 				List<Long> smqChildCodeList = new ArrayList<>();
+ 				for (SMQReverseHierarchySearchDto smqBaseTarget : smqBaseList) {
+ 					IARelationsTreeHelper iaTreeHelper = new IARelationsTreeHelper(
+ 			                null, null, null, null,
+ 			                cmqBaseTargetService, smqBaseTargetService, meddraDictTargetService, cmqRelationTargetService);
+ 					HierarchyNode node = iaTreeHelper.createSmqBaseTargetReverseNode(smqBaseTarget);
+ 					TreeNode smqBaseTreeNode = new DefaultTreeNode(node, this.myHierarchyRoot);
+ 					smqChildCodeList.add(smqBaseTarget.getSmqCode());
+					smqTreeNodeMap.put(smqBaseTarget.getSmqCode(), smqBaseTreeNode);
+					
+ 				}
+ 					
+				boolean dummyNodeAdded = false;
+				List<Map<String, Object>> smqBaseChildrenCount = this.smqBaseTargetService
+						.findParentCountSmqCountByChildSmqCodes(smqChildCodeList);
+				if ((null != smqBaseChildrenCount)
+						&& (smqBaseChildrenCount.size() > 0)) {
+					for (Map<String, Object> map : smqBaseChildrenCount) {
+						if (map.get("PT_CODE") != null) {
+							Long childSmqCode = (Long) map
+									.get("PT_CODE");
+							if ((Long) map.get("COUNT") > 0) {
+								HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
+								dummyNode.setDummyNode(true);
+								new DefaultTreeNode(dummyNode, smqTreeNodeMap.get(childSmqCode));
+								dummyNodeAdded = true;
+							}
+						}
+					}
+				}
+ 			}
 		} else if (meddraLevelH != null && appliedSearchDirection == SEARCH_DIRECTION_DOWN) {
 			List<MeddraDictHierarchySearchDto> meddraDictDtoList = this.meddraDictTargetService
 					.findByLevelAndTerm(meddraLevelH.getTermPrefix(), myFilterTermName);
@@ -225,14 +267,13 @@ public class TargetHierarchySearchVM {
 						|| myFilterLevel.equals("SMQ2")
 						|| myFilterLevel.equals("SMQ3")
 						|| myFilterLevel.equals("SMQ4")
-						|| myFilterLevel.equals("SMQ5")
-						|| myFilterLevel.equals("PRO")
+ 						|| myFilterLevel.equals("PRO")
 						|| myFilterLevel.equals("HLGT") || myFilterLevel
 							.equals("HLT"))) {
 			searchDirection = SEARCH_DIRECTION_DOWN;
 		}
 		if (myFilterLevel != null && (myFilterLevel.equals("LLT")
-				|| myFilterLevel.equals("PT"))) {
+				|| myFilterLevel.equals("PT")) || myFilterLevel.equals("SMQ5")) {
 			searchDirection = SEARCH_DIRECTION_UP;
 		}
 	}
@@ -395,6 +436,25 @@ public class TargetHierarchySearchVM {
 		}
 
 	}
+    
+    /*private void updateHierarchySearchForSmqTargetReverse(SMQReverseHierarchySearchDto smqBaseTargetReverse) {
+        IARelationsTreeHelper iaTreeHelper = new IARelationsTreeHelper(
+                null, null, null, null,
+                cmqBaseTargetService, smqBaseTargetService, meddraDictTargetService, cmqRelationTargetService);
+		HierarchyNode node = iaTreeHelper.createSmqBaseTargetReverseNode(smqBaseTargetReverse);
+		TreeNode smqBaseTreeNode = new DefaultTreeNode(node, this.myHierarchyRoot);
+		
+		boolean dummyNodeAdded = false;
+		Long count = this.smqBaseTargetService.findChildSmqCountByParentSmqCode(Long.parseLong(smqBaseTargetReverse.getSmqParentCode()));
+		if((count != null) && (count > 0)) {
+			HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
+			dummyNode.setDummyNode(true);
+			new DefaultTreeNode(dummyNode, smqBaseTreeNode);
+			dummyNodeAdded = true;
+
+		}
+
+	}*/
 	
     
 	private void updateParentCodesAndParentTreeNodesForCmqTaget(List<CmqBaseTarget> cmqBaseList
@@ -525,25 +585,28 @@ public class TargetHierarchySearchVM {
 //       }
 //       return false;
    	
-		if (myFilterLevel != null && (myFilterLevel.equals("LLT")
-				|| myFilterLevel.equals("PT"))) {
+		if (myFilterLevel != null
+				&& (myFilterLevel.equals("LLT") || myFilterLevel.equals("PT") || myFilterLevel
+						.equals("SMQ5"))) {
 			searchDirection = SEARCH_DIRECTION_UP;
 			if (myFilterLevel.equals("LLT")) {
 				return true;
 			}
-
 		}
 		if (myFilterLevel != null
 				&& (myFilterLevel.equals("SOC") || myFilterLevel.equals("SMQ1")
 						|| myFilterLevel.equals("SMQ2")
 						|| myFilterLevel.equals("SMQ3")
 						|| myFilterLevel.equals("SMQ4")
-						|| myFilterLevel.equals("SMQ5")
 						|| myFilterLevel.equals("PRO")
 						|| myFilterLevel.equals("HLGT") || myFilterLevel
 							.equals("HLT"))) {
 			searchDirection = SEARCH_DIRECTION_DOWN;
-			if (myFilterLevel.equals("HLGT") || myFilterLevel.equals("HLT"))
+			if (myFilterLevel.equals("HLGT") || myFilterLevel.equals("HLT")
+					|| myFilterLevel.equals("SMQ1")
+					|| myFilterLevel.equals("SMQ2")
+					|| myFilterLevel.equals("SMQ3")
+					|| myFilterLevel.equals("SMQ4"))
 				return false;
 			return true;
 
@@ -559,23 +622,27 @@ public class TargetHierarchySearchVM {
 //       }
 //       return false;
    	
-		if (myFilterLevel != null
-				&& (myFilterLevel.equals("SOC") || myFilterLevel.equals("SMQ1")
+	   if (myFilterLevel != null
+				&& (myFilterLevel.equals("SOC") 
+						|| myFilterLevel.equals("SMQ1")
 						|| myFilterLevel.equals("SMQ2")
 						|| myFilterLevel.equals("SMQ3")
 						|| myFilterLevel.equals("SMQ4")
-						|| myFilterLevel.equals("SMQ5")
 						|| myFilterLevel.equals("PRO")
 						|| myFilterLevel.equals("HLGT") || myFilterLevel
 							.equals("HLT"))) {
 			searchDirection = SEARCH_DIRECTION_DOWN;
-			if (myFilterLevel.equals("HLGT") || myFilterLevel.equals("HLT"))
+			if (myFilterLevel.equals("HLGT") || myFilterLevel.equals("HLT")
+					|| myFilterLevel.equals("SMQ1")
+					|| myFilterLevel.equals("SMQ2")
+					|| myFilterLevel.equals("SMQ3")
+					|| myFilterLevel.equals("SMQ4"))
 				return false;
 			return true;
 
 		}
-		if (myFilterLevel != null && (myFilterLevel.equals("LLT")
-				|| myFilterLevel.equals("PT"))) {
+		if (myFilterLevel != null
+				&& (myFilterLevel.equals("LLT") || myFilterLevel.equals("PT") || myFilterLevel.equals("SMQ5"))) {
 			searchDirection = SEARCH_DIRECTION_UP;
 			if (myFilterLevel.equals("LLT")) {
 				return true;
