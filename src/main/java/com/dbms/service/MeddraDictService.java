@@ -289,7 +289,7 @@ public class MeddraDictService extends CqtPersistenceService<MeddraDict190> impl
 									+ ", SOC_CODE as socCode, PRIMARY_PATH_FLAG as primaryPathFlag"
 								+ " from (select MEDDRA_DICT_ID, LLT_TERM, LLT_CODE, PT_TERM, PT_CODE, HLT_TERM, HLT_CODE, "
 											+ "HLGT_TERM, HLGT_CODE, SOC_TERM, SOC_CODE, PRIMARY_PATH_FLAG"
-                                            + ", row_number() over (partition by PT_CODE order by MEDDRA_DICT_ID) rn"
+                                            + ", row_number() over (partition by " + codeColumnName + " order by MEDDRA_DICT_ID) rn"
 									+ " from MEDDRA_DICT_CURRENT	where " + codeColumnName + " = :searchCode ) where rn = 1";
 
 		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
@@ -340,7 +340,7 @@ public class MeddraDictService extends CqtPersistenceService<MeddraDict190> impl
                 + ", SOC_CODE as socCode, PRIMARY_PATH_FLAG as primaryPathFlag"
                 + " from ( select MEDDRA_DICT_ID, LLT_TERM, LLT_CODE, PT_TERM, PT_CODE, HLT_TERM, HLT_CODE"
                 + ",HLGT_TERM, HLGT_CODE, SOC_TERM, SOC_CODE, PRIMARY_PATH_FLAG"
-                + ",row_number() "+ "over (partition by PT_CODE order by MEDDRA_DICT_ID) rn"
+                + ",row_number() "+ "over (partition by " + codeColumnName + " order by MEDDRA_DICT_ID) rn"
                 + " from MEDDRA_DICT_CURRENT mt"
                 + " join tempPtCodes on tempPtCodes.code=mt." + codeColumnName
                 + ") where rn = 1";
