@@ -40,4 +40,6 @@ public interface ISmqBaseService {
 
 	List<SMQReverseHierarchySearchDto> findReverseParentByChildCode(Long smqCode);
 
+	SmqRelation190 findSmqRelationsByPtCode(Long ptCode);
+
 }

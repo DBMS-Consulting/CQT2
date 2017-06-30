@@ -25,6 +25,7 @@ import com.dbms.entity.cqt.SmqBase190;
 import com.dbms.entity.cqt.SmqRelation190;
 import com.dbms.entity.cqt.dtos.MeddraDictHierarchySearchDto;
 import com.dbms.entity.cqt.dtos.MeddraDictReverseHierarchySearchDto;
+import com.dbms.entity.cqt.dtos.SMQReverseHierarchySearchDto;
 import com.dbms.service.AuthenticationService;
 import com.dbms.service.ICmqBase190Service;
 import com.dbms.service.ICmqRelation190Service;
@@ -273,6 +274,19 @@ public class ListRelationsVM implements IRelationsChangeListener {
 										Long ptCode = Long.valueOf(reverseHierarchySearchDto.getPtCode());
 										MeddraDictHierarchySearchDto ptDictHierarchySearchDto = this.meddraDictService.findByCode("PT_", ptCode);
 										relationsHierarchyNode.setEntity(ptDictHierarchySearchDto);
+										relationsHierarchyNode.setDataFetchCompleted(false);
+										HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
+										dummyNode.setDummyNode(true);
+										new DefaultTreeNode(dummyNode, relationsTreeNode);
+									}
+								} else if(entity instanceof SMQReverseHierarchySearchDto) {
+									Long ptCode = ((SMQReverseHierarchySearchDto) entity).getSmqCode();
+									SmqBase190 smqBase190 = this.smqBaseService.findByCode(ptCode);
+									relationsHierarchyNode.setEntity(smqBase190);
+									relationsHierarchyNode.setCode(smqBase190.getSmqCode().toString());
+
+									List<TreeNode> childTreeNodes = treeNode.getChildren();
+									if(CollectionUtils.isNotEmpty(childTreeNodes)) {
 										relationsHierarchyNode.setDataFetchCompleted(false);
 										HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
 										dummyNode.setDummyNode(true);

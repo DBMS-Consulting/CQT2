@@ -283,6 +283,32 @@ public class SmqBaseService extends CqtPersistenceService<SmqBase190> implements
 	}
 	
 	@Override
+	public SmqRelation190 findSmqRelationsByPtCode(Long ptCode) {
+		SmqRelation190 retVal = null;
+		StringBuilder sb = new StringBuilder();
+		sb.append("from SmqRelation190 c where c.ptCode = :ptCode");
+		
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		try {
+			Query query = entityManager.createQuery(sb.toString());
+			query.setParameter("ptCode", ptCode.intValue());
+			query.setHint("org.hibernate.cacheable", true);
+			retVal = (SmqRelation190) query.getSingleResult();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg
+					.append("An error occurred while findSmqRelationsByPtCode ")
+					.append(ptCode)
+					.append(" Query used was ->")
+					.append(sb.toString());
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
+	
+	@Override
 	@SuppressWarnings("unchecked")
 	public List<SmqRelation190> findSmqRelationsForSmqCodeAndScope(Long smqCode, String scope) {
 		List<SmqRelation190> retVal = null;
