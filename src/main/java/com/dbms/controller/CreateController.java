@@ -202,7 +202,7 @@ public class CreateController implements Serializable {
 		//For relations.xhtml
 		if (updateWizard != null || copyWizard != null || createWizard != null) {
 			IEntity entity = node.getEntity();
-			if((entity instanceof SmqBaseTarget) || (entity instanceof SMQReverseHierarchySearchDto)) {
+			if((entity instanceof SmqBase190) || (entity instanceof SMQReverseHierarchySearchDto)) {
 				node.setDataFetchCompleted(false);
 				this.relationsModel.clearChildrenInTreNode(relationsModel.getRelationsRoot(), node);
 				collapseRelations(node);
