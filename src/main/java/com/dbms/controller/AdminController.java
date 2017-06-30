@@ -49,6 +49,8 @@ public class AdminController implements Serializable {
     private static final String CODELIST_SMQ_RELATION_IMPACT_TYPE = "SMQ_RELATION_IMPACT_TYPE";
     private static final String CODELIST_MEDDRA_DICT_IMPACT_TYPE = "MEDDRA_DICT_IMPACT_TYPE";
     private static final String CODELIST_DICTIONARY_LEVELS_TYPE = "DICTIONARY_CMQ_LEVELS";
+    private static final String CODELIST_SMQ_LEVELS_TYPE = "SMQ_FILTER_LEVELS";
+
 
 
 	List<CodelistDTO> list;
@@ -62,7 +64,7 @@ public class AdminController implements Serializable {
 	
 	private List<RefConfigCodeList> extensions, programs, protocols,
             products, meddras, workflows, usergroups, sysconfigs,
-            cmqImpactTypes, smqImpactTypes, meddraImpactTypes, levels;
+            cmqImpactTypes, smqImpactTypes, meddraImpactTypes, levels, smqfilters;
 	
 	private RefConfigCodeList selectedRow, myFocusRef;
 	private StreamedContent excelFile;
@@ -86,8 +88,19 @@ public class AdminController implements Serializable {
         getSmqImpactTypeList();
         getMeddraImpactTypeList();
         getLevelList();
+        getSMQFilters();
 	}
 	
+	 
+	public List<RefConfigCodeList> getSMQFilters() {
+		smqfilters = refCodeListService.findAllByConfigType(
+				CqtConstants.CODE_LIST_TYPE_SMQ_FILTER_LEVELS, OrderBy.ASC);
+		if (smqfilters == null) {
+			smqfilters = new ArrayList<>();
+		}
+		return smqfilters;
+	}
+
 	public String initAddCodelist() {
 		BigDecimal lastSerial = new BigDecimal(0);
 		myFocusRef = new RefConfigCodeList();
@@ -139,6 +152,10 @@ public class AdminController implements Serializable {
 			myFocusRef.setCodelistConfigType(CqtConstants.CODE_LIST_TYPE_DICTIONARY_LEVELS); 
 			if (getLevels()!= null && !levels.isEmpty())
 				lastSerial = getLevels().get(getLevels().size() - 1).getSerialNum();
+		} else if (codelist.equals(CODELIST_SMQ_LEVELS_TYPE)) {
+			myFocusRef.setCodelistConfigType(CqtConstants.CODE_LIST_TYPE_SMQ_FILTER_LEVELS); 
+			if (getSmqfilters() != null && !smqfilters.isEmpty())
+				lastSerial = getSmqfilters().get(getSmqfilters().size() - 1).getSerialNum();
 		}
 		myFocusRef.setCreationDate(new Date());
 		myFocusRef.setLastModificationDate(new Date()); 
@@ -403,6 +420,10 @@ public class AdminController implements Serializable {
 				type = "Dictionary CMQ Level Type";
 				getLevelList();
 			}
+			else if (myFocusRef.getCodelistConfigType().equals(CqtConstants.CODE_LIST_TYPE_SMQ_FILTER_LEVELS)) {
+				type = "SMQ Filter Level Type";
+				getSmqfilters();
+			}
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					type + " '" + myFocusRef.getCodelistInternalValue() + "' is successfully saved.", "");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
@@ -650,5 +671,13 @@ public class AdminController implements Serializable {
 
 	public void setLevels(List<RefConfigCodeList> levels) {
 		this.levels = levels;
+	}
+
+	public List<RefConfigCodeList> getSmqfilters() {
+		return smqfilters;
+	}
+
+	public void setSmqfilters(List<RefConfigCodeList> smqfilters) {
+		this.smqfilters = smqfilters;
 	}
 }

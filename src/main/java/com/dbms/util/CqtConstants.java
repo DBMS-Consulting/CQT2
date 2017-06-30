@@ -14,6 +14,8 @@ public class CqtConstants {
     public static final String CODE_LIST_TYPE_MEDDRA_DICT_IMPACT_TYPE = "MEDDRA_DICTIONARY_IMPACT_TYPE";
     public static final String CODE_LIST_TYPE_DISPLAY_TERM_WEIGHT_SCOPE = "DISPLAY_TERM_WEIGHT_SCOPE";
     public static final String CODE_LIST_TYPE_DICTIONARY_LEVELS = "DICTIONARY_CMQ_LEVELS";
+    public static final String CODE_LIST_TYPE_SMQ_FILTER_LEVELS = "SMQ_FILTER_LEVELS";
+
 	
 	public static final String CURRENT_MEDDRA_VERSION = "CURRENT_MEDDRA_VERSION";
 	public static final String TARGET_MEDDRA_VERSION = "TARGET_MEDDRA_VERSION";

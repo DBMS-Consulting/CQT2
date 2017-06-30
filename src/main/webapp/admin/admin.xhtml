@@ -36,6 +36,7 @@
                             <f:selectItem itemLabel="SMQ RELATION IMPACT TYPE" itemValue="SMQ_RELATION_IMPACT_TYPE" />
                             <f:selectItem itemLabel="MEDDRA DICTIONARY IMPACT TYPE" itemValue="MEDDRA_DICT_IMPACT_TYPE" />
                             <f:selectItem itemLabel="DICTIONARY CMQ LEVELS TYPE" itemValue="DICTIONARY_CMQ_LEVELS" />
+                            <f:selectItem itemLabel="SMQ FILTER LEVELS TYPE" itemValue="SMQ_FILTER_LEVELS" />
                             
 
 							<p:ajax update="@form" event="change" />
@@ -89,6 +90,10 @@
 					
 					 <ui:fragment rendered="#{adminController.codelist eq 'DICTIONARY_CMQ_LEVELS'}">
 						<ui:include src="dictionaryLevelTable.xhtml"></ui:include>
+					</ui:fragment>
+					
+					<ui:fragment rendered="#{adminController.codelist eq 'SMQ_FILTER_LEVELS'}">
+						<ui:include src="smqFilterLevelTable.xhtml"></ui:include> 
 					</ui:fragment>
 				</p:tab>
 
