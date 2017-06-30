@@ -497,11 +497,27 @@ public class ImpactSearchController implements Serializable {
 										relationsHierarchyNode.setRowStyleClass("green-colored");//mark this row as green
 										TreeNode relationsTreeNode = new DefaultTreeNode(relationsHierarchyNode, parentTreeNode);
 										relationsHierarchyNode.setDataFetchCompleted(false);
-										List<TreeNode> childTreeNodes = treeNode.getChildren();
-										if(CollectionUtils.isNotEmpty(childTreeNodes)) {
-											HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
-											dummyNode.setDummyNode(true);
-											new DefaultTreeNode(dummyNode, relationsTreeNode);
+										IEntity relationsHierarchyNodeEntity = relationsHierarchyNode.getEntity();
+										if(relationsHierarchyNodeEntity instanceof SMQReverseHierarchySearchDto) {
+											Long ptCode = ((SMQReverseHierarchySearchDto) relationsHierarchyNodeEntity).getSmqCode();
+											SmqBaseTarget smqBaseTarget = this.smqBaseTargetService.findByCode(ptCode);
+											relationsHierarchyNode.setEntity(smqBaseTarget);
+											relationsHierarchyNode.setCode(smqBaseTarget.getSmqCode().toString());
+
+											List<TreeNode> childTreeNodes = treeNode.getChildren();
+											if(CollectionUtils.isNotEmpty(childTreeNodes)) {
+												relationsHierarchyNode.setDataFetchCompleted(false);
+												HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
+												dummyNode.setDummyNode(true);
+												new DefaultTreeNode(dummyNode, relationsTreeNode);
+											}
+										} else {
+											List<TreeNode> childTreeNodes = treeNode.getChildren();
+											if(CollectionUtils.isNotEmpty(childTreeNodes)) {
+												HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
+												dummyNode.setDummyNode(true);
+												new DefaultTreeNode(dummyNode, relationsTreeNode);
+											}
 										}
 										targetRelationsUpdated = true;
 									}
@@ -2311,22 +2327,35 @@ public class ImpactSearchController implements Serializable {
 	public TreeNode clearChildrenInTargetTableTreNode(TreeNode rootNodeToSearchFrom, HierarchyNode selectedNode) {
 		TreeNode treeNode = null;
 		if (rootNodeToSearchFrom.getChildCount() > 0) {
-			List<TreeNode> childTreeNodes = rootNodeToSearchFrom.getChildren();
-			for (Iterator<TreeNode> treeNodeIterator = childTreeNodes
-					.listIterator(); treeNodeIterator.hasNext();) {
-				TreeNode childTreeNode = treeNodeIterator.next();
-				HierarchyNode childNode = (HierarchyNode) childTreeNode
-						.getData();
-				if (childNode.equals(selectedNode)) {
-					childTreeNode.getChildren().clear(); // clear child list
-					HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
-			        dummyNode.setDummyNode(true);
-			        new DefaultTreeNode(dummyNode, childTreeNode);
-			        treeNode = childTreeNode;
-					break;
-				} else if (childTreeNode.getChildCount() > 0) {
-					// drill down
-					return this.clearChildrenInTargetTableTreNode(childTreeNode, selectedNode);
+			List<TreeNode> childTreeNodes = null;
+			if(rootNodeToSearchFrom.getParent() == null) {//root node
+				TreeNode parentTreeNode = rootNodeToSearchFrom.getChildren().get(0);
+				if(parentTreeNode != null) {
+					childTreeNodes = parentTreeNode.getChildren();
+				}
+			} else {
+				childTreeNodes = rootNodeToSearchFrom.getChildren();
+			}
+			if(CollectionUtils.isNotEmpty(childTreeNodes)) {
+				for (Iterator<TreeNode> treeNodeIterator = childTreeNodes
+						.listIterator(); treeNodeIterator.hasNext();) {
+					TreeNode childTreeNode = treeNodeIterator.next();
+					HierarchyNode childNode = (HierarchyNode) childTreeNode
+							.getData();
+					if (childNode.equals(selectedNode)) {
+						childTreeNode.getChildren().clear(); // clear child list
+						HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
+				        dummyNode.setDummyNode(true);
+				        new DefaultTreeNode(dummyNode, childTreeNode);
+				        treeNode = childTreeNode;
+						break;
+					} else if (childTreeNode.getChildCount() > 0) {
+						// drill down
+						treeNode = this.clearChildrenInTargetTableTreNode(childTreeNode, selectedNode);
+						if(treeNode != null) {
+							break;
+						}
+					}
 				}
 			}
 		}
