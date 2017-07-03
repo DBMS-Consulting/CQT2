@@ -748,6 +748,15 @@ public class ListDetailsFormVM {
         return true;
     }
     
+    public List<RefConfigCodeList> getSMQFilterLevels() {
+    	List<RefConfigCodeList>smqfilters = refCodeListService.findByConfigType(
+				CqtConstants.CODE_LIST_TYPE_SMQ_FILTER_LEVELS, true, OrderBy.ASC);
+		if (smqfilters == null) {
+			smqfilters = new ArrayList<>();
+		}
+		return smqfilters;
+    }
+    
     public List<RefConfigCodeList> getExtensionList() {
 		List<RefConfigCodeList> values = refCodeListService.findByConfigType(
 				CqtConstants.CODE_LIST_TYPE_EXTENSION, OrderBy.ASC);
