@@ -323,7 +323,7 @@ public class SWJSFRequest
                     	PXEDUser usr = new PXEDUser();
                     	usr.setUserName(getCN(sr.getNameInNamespace()));
                     	usr.setFirstName(getAttr(mattrs, "sn"));
-                    	usr.setLastName(getAttr(mattrs, "givenname"));
+                    	usr.setLastName(getAttr(mattrs, "givenName"));
                     	
                     	mlist.add(usr);
                     }
@@ -365,7 +365,7 @@ public class SWJSFRequest
 			    	usr = new PXEDUser();
 			    	usr.setUserName(getCN(sr.getNameInNamespace()));
 			    	usr.setFirstName(getAttr(mattrs, "sn"));
-			    	usr.setLastName(getAttr(mattrs, "givenname"));
+			    	usr.setLastName(getAttr(mattrs, "givenName"));
 			    }  
 	        }
 	        catch (javax.naming.CommunicationException ex) {
@@ -512,7 +512,7 @@ public class SWJSFRequest
     			"pfizerpreferredname",
     			"displayname",
     			"sn",
-    			"givenname"
+    			"givenName"
     	};
     	
 	    try {
