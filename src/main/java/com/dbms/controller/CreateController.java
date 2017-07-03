@@ -23,6 +23,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.primefaces.component.wizard.Wizard;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.FlowEvent;
+import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -169,6 +170,14 @@ public class CreateController implements Serializable {
 		
 		//Init of products when navigationg from UPDATE Details
 		products = new ArrayList<>();
+	}
+	
+	public void resetHS() {
+//		myHierarchyRoot = new DefaultTreeNode("root", new HierarchyNode("LEVEL",
+//				"NAME", "CODE", null), null);
+//		setFilterLevel("PT");
+//		setFilterTermName(""); 
+//		RequestContext.getCurrentInstance().update("impactAssessment:levelH_label");
 	}
 
 	public void initCreateForm() {

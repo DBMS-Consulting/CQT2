@@ -12,6 +12,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.CloseEvent;
 import org.primefaces.event.NodeExpandEvent;
 import org.primefaces.event.RowEditEvent;
@@ -358,29 +359,8 @@ public class CmqBaseHierarchySearchVM {
 		return "1";
 	}
 
-//	public void handleRadioButtonsDisabling() {
-//		if (myFilterLevel != null) {
-//			if (myFilterLevel.equals("SOC") || myFilterLevel.equals("SMQ1") || myFilterLevel.equals("SMQ2")
-//					|| myFilterLevel.equals("SMQ3") || myFilterLevel.equals("SMQ4")
-//					|| myFilterLevel.equals("SMQ5") || myFilterLevel.equals("PRO")) {
-//				searchDirection = SEARCH_DIRECTION_DOWN;
-//				setSearchDownDisabled(true);
-//				setSearchUpDisabled(true);
-//
-//			} else if (myFilterLevel.equals("LLT") || myFilterLevel.equals("PT")) {
-//				searchDirection = SEARCH_DIRECTION_UP;
-//				if (myFilterLevel.equals("LLT")) {
-//					setSearchDownDisabled(true);
-//					setSearchUpDisabled(true);
-//				}
-//
-//			} else if (myFilterLevel.equals("HLGT") || myFilterLevel.equals("HLT")) {
-//				searchDirection = SEARCH_DIRECTION_DOWN;
-//			}
-//		}
-//		
-//	}
-	
+ 
+ 	
 	private void handleSearchDirection() {
 		if (myFilterLevel != null
 				&& (myFilterLevel.equals("SOC") || myFilterLevel.equals("SMQ1")
@@ -397,6 +377,17 @@ public class CmqBaseHierarchySearchVM {
 			searchDirection = SEARCH_DIRECTION_UP;
 		}
 	}
+	
+	public void resetHS(AjaxBehaviorEvent event) {
+		myHierarchyRoot = new DefaultTreeNode("root", new HierarchyNode("LEVEL", "NAME", "CODE", null), null);
+		setFilterLevel("PT");
+		setFilterTermName("");
+		 
+		searchDirection = SEARCH_DIRECTION_UP;
+		handleSearchDirection();
+		setSearchDownDisabled(true);
+		setSearchUpDisabled(true); 
+   	}
 
 	/**
 	 * Refresh HS after radio button selection.

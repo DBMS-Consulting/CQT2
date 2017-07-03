@@ -278,6 +278,18 @@ public class TargetHierarchySearchVM {
 		}
 	}
 	
+	public void resetHS(AjaxBehaviorEvent event) {
+		this.myHierarchyRoot = new DefaultTreeNode("root", new HierarchyNode("LEVEL", "NAME", "CODE", null), null);	 
+		
+		myFilterLevel = "PT";
+		myFilterTermName = "";
+ 
+		searchDirection = SEARCH_DIRECTION_UP;
+		handleSearchDirection();
+		setSearchDownDisabled(true);
+		setSearchUpDisabled(true); 
+  	}
+	
 	/**
 	 * Refresh HS after radio button selection.
 	 * @param event AjaxBehaviorEvent

@@ -87,10 +87,12 @@
 				</h:commandLink>
 				
 				<p:spacer width="10" />
-				<p:commandButton value="Hierarchy Search" id="ctb13"
-					styleClass="#{createController.relationsReadonly ? 'btn-disabled' : ''}" update="@form:hierarchy-modal"
+				<p:commandButton value="Hierarchy Search" id="ctb13"  
+					styleClass="#{createController.relationsReadonly ? 'btn-disabled' : ''}"  
 					disabled="#{createController.relationsReadonly ? true : false}"
 					oncomplete="PF('search').show();" icon="fa fa-search">
+					
+					<p:ajax listener="#{createController.relationsModel.hierarchyDlgModel.resetHS}" event="click" update="@form:hierarchy-modal" />
 				</p:commandButton>
 
 				<p:spacer width="10" />
