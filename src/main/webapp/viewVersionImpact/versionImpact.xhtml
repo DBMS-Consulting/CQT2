@@ -113,6 +113,9 @@
 											update="@form:hierarchy-modal"
 											oncomplete="PF('current-hierarchy-search').show();"
 											icon="fa fa-search">
+											
+												<p:ajax listener="#{impactSearchController.currentHierarchySearchDlgModel.resetHS}" event="click" 
+												update="@form:levelH @form:termH @form:search-direction @form:resultHier" />
 										</p:commandButton>
 										<p:spacer width="40px" height="1px" />
 										<h:outputText
@@ -177,7 +180,14 @@
 									<f:facet name="left">
 										<p:commandButton value="Hierarchy Search" actionListener="#"
 											disabled="#{not impactSearchController.hierachySearchButtonEnabled}"
-											icon="fa fa-search" onclick="PF('target-hierarchy-search').show();" />
+											icon="fa fa-search"
+											onclick="PF('target-hierarchy-search').show();">
+
+											<p:ajax
+												listener="#{impactSearchController.targetHierarchySearchDlgModel.resetHS}"
+												event="click"
+												update="@form:levelHT @form:termHT @form:search-direction-target @form:resultHierTarget" />
+										</p:commandButton>
 										<p:commandButton value="New PTs" actionListener="#"
 											disabled="#{not impactSearchController.selectNewPTButtonEnabled}"
 											onclick="PF('new_pt').show();" icon="fa fa-book" />

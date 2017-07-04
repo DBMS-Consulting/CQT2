@@ -12,6 +12,8 @@ import com.dbms.util.OrderBy;
 public interface IRefCodeListService extends ICqtPersistenceService<RefConfigCodeList> {
 
 	public List<RefConfigCodeList> findByConfigType(String codelistConfigType, boolean activeOnly, OrderBy orderBy);
+	public List<RefConfigCodeList> findByConfigTypeOrderByName(String codelistConfigType, boolean activeOnly, OrderBy orderBy);
+
 	
 	public List<RefConfigCodeList> findByConfigType(String codelistConfigType, OrderBy orderBy);
 	

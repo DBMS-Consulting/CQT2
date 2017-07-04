@@ -101,6 +101,56 @@ public class RefCodeListService extends
 		}
 		return retVal;
 	}
+	
+	@Override
+	@SuppressWarnings({ "unchecked" })
+	public List<RefConfigCodeList> findByConfigTypeOrderByName(String codelistConfigType, boolean activeOnly, OrderBy orderBy) {
+		String cacheKey = codelistConfigType + "-" + orderBy.name() + "-" + Boolean.toString(activeOnly);
+		
+		List<RefConfigCodeList> retVal = null;
+		try {
+			retVal = (List<RefConfigCodeList>) this.cqtCacheManager
+				.getFromCache(CACHE_NAME, cacheKey);
+		} catch(Exception e) {
+			retVal = null;
+		}
+
+		if (null == retVal) {
+			EntityManager entityManager = this.cqtEntityManagerFactory
+					.getEntityManager();
+
+			StringBuilder queryString = new StringBuilder(
+					"from RefConfigCodeList a");
+			queryString
+					.append(" where a.codelistConfigType = :codelistConfigType");
+			if(activeOnly == true)
+				queryString .append(" and a.activeFlag = 'Y'");
+			queryString.append(" order by a.value ");
+			queryString.append(orderBy.name());
+			try {
+				Query query = entityManager.createQuery(queryString.toString());
+				query.setParameter("codelistConfigType", codelistConfigType);
+				query.setHint("org.hibernate.cacheable", true);
+				retVal = query.getResultList();
+				if (null == retVal) {
+					retVal = new ArrayList<>();
+				} else {
+					// add them to cache
+					cqtCacheManager.addToCache(CACHE_NAME, cacheKey, retVal);
+				}
+			} catch (Exception ex) {
+				StringBuilder msg = new StringBuilder();
+				msg.append("findByConfigType failed for type '")
+						.append("RefConfigCodeList").append("' and value of ")
+						.append(codelistConfigType)
+						.append(". Query used was->").append(queryString);
+				LOG.error(msg.toString(), ex);
+			} finally {
+				this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+			}
+		}
+		return retVal;
+	}
 
 	@Override
 	@SuppressWarnings({ "unchecked" })
