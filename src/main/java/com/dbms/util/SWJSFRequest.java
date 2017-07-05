@@ -323,8 +323,9 @@ public class SWJSFRequest
                     NamingEnumeration<SearchResult> results = findAccountByAccountName(ctx, ldapSearchBase, unprocessedGroupCN);
                     if (results.hasMore()) {
                     	SearchResult sr = results.next();
+                    	 System.out.println("inner Iterating over " + sr.getName());
                     	Attributes mattrs = sr.getAttributes();
-
+                    	System.out.println("mattrs is:" + mattrs);
                     	PXEDUser usr = new PXEDUser();
                     	usr.setUserName(getCN(sr.getNameInNamespace()));
                     	usr.setFirstName(getAttr(mattrs, "sn"));
