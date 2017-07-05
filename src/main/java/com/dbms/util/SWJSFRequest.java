@@ -326,6 +326,11 @@ public class SWJSFRequest
                     	 System.out.println("inner Iterating over " + sr.getName());
                     	Attributes mattrs = sr.getAttributes();
                     	System.out.println("mattrs is:" + mattrs);
+                    	NamingEnumeration<String> ids = mattrs.getIDs();
+                    	while(ids.hasMore()) {
+                    		String id = ids.next();
+                    		System.out.println("matters: id=" + id +", value=" + mattrs.get(id));
+                    	}
                     	PXEDUser usr = new PXEDUser();
                     	usr.setUserName(getCN(sr.getNameInNamespace()));
                     	usr.setFirstName(getAttr(mattrs, "sn"));
