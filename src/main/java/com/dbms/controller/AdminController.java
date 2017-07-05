@@ -335,6 +335,7 @@ public class AdminController implements Serializable {
 	}
 	
 	public void addRefCodelist() {
+		boolean saved = false;
 		Date lastModifiedDate = new Date();
 		String lastModifiedByString = this.authService.getLastModifiedByUserAsString();
 		//To uppercase for workflow State
@@ -371,6 +372,7 @@ public class AdminController implements Serializable {
 				refCodeListService.update(myFocusRef, this.authService.getUserCn()
 						, this.authService.getUserGivenName(), this.authService.getUserSurName()
 						, this.authService.getCombinedMappedGroupMembershipAsString());
+				saved = true;
 			} else {
 				myFocusRef.setLastModificationDate(lastModifiedDate);
 				myFocusRef.setLastModifiedBy(lastModifiedByString);
@@ -379,6 +381,7 @@ public class AdminController implements Serializable {
  				refCodeListService.create(myFocusRef, this.authService.getUserCn()
 						, this.authService.getUserGivenName(), this.authService.getUserSurName()
 						, this.authService.getCombinedMappedGroupMembershipAsString());
+ 				saved = true;
 			}
 			updateSerialNumbers(myFocusRef.getCodelistConfigType(), myFocusRef);
 			String type = "";
@@ -429,9 +432,11 @@ public class AdminController implements Serializable {
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		} catch (CqtServiceException e) {
 			e.printStackTrace();
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"An error occurred while creating an codelist type", "Error:" + e.getMessage());
-			FacesContext.getCurrentInstance().addMessage(null, msg);
+			if (saved) {
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+						"An error occurred while creating an codelist type", "Error:" + e.getMessage());
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+			}
 		}
 		myFocusRef = new RefConfigCodeList();
 	}
