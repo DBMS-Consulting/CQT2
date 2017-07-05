@@ -266,7 +266,9 @@ public class SWJSFRequest
 	}
     
     public Map<String, List<PXEDUser>> findAllGroups() throws NamingException {
-        
+        System.out.println("using ctx value:" + ctx);
+        System.out.println("using LDAP_SEARCH_BASE value:" + LDAP_SEARCH_BASE);
+        System.out.println("using LDAP_GROUP_TO_LOOKUP value:" + LDAP_GROUP_TO_LOOKUP);
     	for (int i=0; i<2; ++i) {
 
     		initLdapContext();
@@ -293,14 +295,17 @@ public class SWJSFRequest
         //String searchFilter = "(&(objectclass=pfizerGroup)(cn=opencqt*))";
         String searchFilter = "(&(objectclass=pfizerGroup)(cn=" + groupName + "))";
         //String searchFilter = "(&(objectCategory=group)(cn=opencqt*))";
-        
+        System.out.println("using searchFilter value:" + searchFilter);
 	    
 	    NamingEnumeration<SearchResult> answer = ctx.search(ldapSearchBase, searchFilter, ctls);
 	    while (answer.hasMore()) {
 		    SearchResult rslt = answer.next();
+		    System.out.println("Iterating over " + rslt.getName());
 		    //searchResult = rslt;		    
 		    Attributes gattrs = rslt.getAttributes();
+		    System.out.println("Found total " + gattrs.size() + " attributes.");
 		    String groups = gattrs.get("cn").toString();
+		    System.out.println("cn is :" + groups);
 		    String [] groupname = groups.split(":");
 		    String userGroup = groupname[1];
 		    
