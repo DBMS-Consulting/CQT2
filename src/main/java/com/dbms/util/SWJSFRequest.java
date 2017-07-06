@@ -544,10 +544,17 @@ public class SWJSFRequest
 
 	public static String getAttr(Attributes attrs, String key) {
 	    //Attributes attrs = sr.getAttributes();
-	    String keyStr = attrs.get(key).toString();
+		Attribute keyAttr = attrs.get(key);
+		if (keyAttr == null) return "";
+		
+	    String keyStr = keyAttr.toString();
 	    String [] keyVal = keyStr.split(":");
-	    String ret = keyVal[1];
-	    return ret;
+	    if (keyVal.length > 1) {
+		    String ret = keyVal[1];
+		    return ret;
+	    }
+	    else 
+	    	return "";
     }
 
     
