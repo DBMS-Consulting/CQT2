@@ -284,7 +284,7 @@ public class ListRelationsVM implements IRelationsChangeListener {
 									SmqBase190 smqBase190 = this.smqBaseService.findByCode(ptCode);
 									relationsHierarchyNode.setEntity(smqBase190);
 									relationsHierarchyNode.setCode(smqBase190.getSmqCode().toString());
-
+									relationsHierarchyNode.setScope("2");
 									List<TreeNode> childTreeNodes = treeNode.getChildren();
 									if(CollectionUtils.isNotEmpty(childTreeNodes)) {
 										relationsHierarchyNode.setDataFetchCompleted(false);
@@ -293,6 +293,9 @@ public class ListRelationsVM implements IRelationsChangeListener {
 										new DefaultTreeNode(dummyNode, relationsTreeNode);
 									}
 								} else if(!"LLT".equalsIgnoreCase(relationsHierarchyNode.getLevel())) {
+									if(entity instanceof SmqBase190) {
+										relationsHierarchyNode.setScope("2");
+									}
 									List<TreeNode> childTreeNodes = treeNode.getChildren();
 									if(CollectionUtils.isNotEmpty(childTreeNodes)) {
 										relationsHierarchyNode.setDataFetchCompleted(false);
