@@ -19,6 +19,7 @@ import org.primefaces.model.StreamedContent;
 
 import com.dbms.entity.cqt.RefConfigCodeList;
 import com.dbms.service.AuthenticationService;
+import com.dbms.service.ICqtCacheManager;
 import com.dbms.service.IRefCodeListService;
 import com.dbms.util.CqtConstants;
 import com.dbms.util.OrderBy;
@@ -50,6 +51,10 @@ public class AdminController implements Serializable {
     private static final String CODELIST_MEDDRA_DICT_IMPACT_TYPE = "MEDDRA_DICT_IMPACT_TYPE";
     private static final String CODELIST_DICTIONARY_LEVELS_TYPE = "DICTIONARY_CMQ_LEVELS";
     private static final String CODELIST_SMQ_LEVELS_TYPE = "SMQ_FILTER_LEVELS";
+    
+    @ManagedProperty("#{CqtCacheManager}")
+   	private ICqtCacheManager cqtCacheManager;
+	private final String CACHE_NAME = "code-list-cache";
 
 
 
@@ -385,11 +390,12 @@ public class AdminController implements Serializable {
 			}
 			updateSerialNumbers(myFocusRef.getCodelistConfigType(), myFocusRef);
 			String type = "";
-			
+		
+
 			if (myFocusRef.getCodelistConfigType().equals(CqtConstants.CODE_LIST_TYPE_EXTENSION)) {
 				type = "Extension";
 				getExtensionList();
-			} else if (myFocusRef.getCodelistConfigType().equals(CqtConstants.CODE_LIST_TYPE_MEDDRA_VERSIONS)) {
+			} else if (myFocusRef.getCodelistConfigType().equals(CqtConstants.CODE_LIST_TYPE_MEDDRA_VERSIONS)) { 
 				type = "MedDRA Dictionary";
 				getMeddraList();
 			} else if (myFocusRef.getCodelistConfigType().equals(CqtConstants.CODE_LIST_TYPE_PRODUCT)) {
@@ -425,7 +431,7 @@ public class AdminController implements Serializable {
 			}
 			else if (myFocusRef.getCodelistConfigType().equals(CqtConstants.CODE_LIST_TYPE_SMQ_FILTER_LEVELS)) {
 				type = "SMQ Filter Level Type";
-				getSmqfilters();
+				getSMQFilters();
 			}
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 					type + " '" + myFocusRef.getCodelistInternalValue() + "' is successfully saved.", "");
@@ -684,5 +690,13 @@ public class AdminController implements Serializable {
 
 	public void setSmqfilters(List<RefConfigCodeList> smqfilters) {
 		this.smqfilters = smqfilters;
+	}
+	
+	public ICqtCacheManager getCqtCacheManager() {
+		return cqtCacheManager;
+	}
+
+	public void setCqtCacheManager(ICqtCacheManager cqtCacheManager) {
+		this.cqtCacheManager = cqtCacheManager;
 	}
 }
