@@ -266,7 +266,9 @@ public class SWJSFRequest
 	}
     
     public Map<String, List<PXEDUser>> findAllGroups() throws NamingException {
-        
+        System.out.println("using ctx value:" + ctx);
+        System.out.println("using LDAP_SEARCH_BASE value:" + LDAP_SEARCH_BASE);
+        System.out.println("using LDAP_GROUP_TO_LOOKUP value:" + LDAP_GROUP_TO_LOOKUP);
     	for (int i=0; i<2; ++i) {
 
     		initLdapContext();
@@ -293,14 +295,17 @@ public class SWJSFRequest
         //String searchFilter = "(&(objectclass=pfizerGroup)(cn=opencqt*))";
         String searchFilter = "(&(objectclass=pfizerGroup)(cn=" + groupName + "))";
         //String searchFilter = "(&(objectCategory=group)(cn=opencqt*))";
-        
+        System.out.println("using searchFilter value:" + searchFilter);
 	    
 	    NamingEnumeration<SearchResult> answer = ctx.search(ldapSearchBase, searchFilter, ctls);
 	    while (answer.hasMore()) {
 		    SearchResult rslt = answer.next();
+		    System.out.println("Iterating over " + rslt.getName());
 		    //searchResult = rslt;		    
 		    Attributes gattrs = rslt.getAttributes();
+		    System.out.println("Found total " + gattrs.size() + " attributes.");
 		    String groups = gattrs.get("cn").toString();
+		    System.out.println("cn is :" + groups);
 		    String [] groupname = groups.split(":");
 		    String userGroup = groupname[1];
 		    
@@ -318,8 +323,14 @@ public class SWJSFRequest
                     NamingEnumeration<SearchResult> results = findAccountByAccountName(ctx, ldapSearchBase, unprocessedGroupCN);
                     if (results.hasMore()) {
                     	SearchResult sr = results.next();
+                    	 System.out.println("inner Iterating over " + sr.getName());
                     	Attributes mattrs = sr.getAttributes();
-
+                    	System.out.println("mattrs is:" + mattrs);
+                    	NamingEnumeration<String> ids = mattrs.getIDs();
+                    	while(ids.hasMore()) {
+                    		String id = ids.next();
+                    		System.out.println("matters: id=" + id +", value=" + mattrs.get(id));
+                    	}
                     	PXEDUser usr = new PXEDUser();
                     	usr.setUserName(getCN(sr.getNameInNamespace()));
                     	usr.setFirstName(getAttr(mattrs, "sn"));
@@ -533,10 +544,17 @@ public class SWJSFRequest
 
 	public static String getAttr(Attributes attrs, String key) {
 	    //Attributes attrs = sr.getAttributes();
-	    String keyStr = attrs.get(key).toString();
+		Attribute keyAttr = attrs.get(key);
+		if (keyAttr == null) return "";
+		
+	    String keyStr = keyAttr.toString();
 	    String [] keyVal = keyStr.split(":");
-	    String ret = keyVal[1];
-	    return ret;
+	    if (keyVal.length > 1) {
+		    String ret = keyVal[1];
+		    return ret;
+	    }
+	    else 
+	    	return "";
     }
 
     

@@ -70,7 +70,7 @@ public class PXEDUser implements Serializable {
 			if (StringUtils.isBlank(firstName))
 				return lastName;
 			else
-				return firstName + " " + lastName;
+				return firstName + ", " + lastName;
 		}
 	}
 

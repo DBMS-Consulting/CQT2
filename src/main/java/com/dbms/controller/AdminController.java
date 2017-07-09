@@ -364,11 +364,27 @@ public class AdminController implements Serializable {
             if ("Y".equalsIgnoreCase(myFocusRef.getDefaultFlag())) {
                 // if editing config value is set as default, remove the default flag from the old default config
                 RefConfigCodeList oldDefaultValue = refCodeListService.getDefaultForConfigType(myFocusRef.getCodelistConfigType());
-                if(oldDefaultValue != null && oldDefaultValue.getId() != myFocusRef.getId()) {
+                if(oldDefaultValue != null && Long.compare(oldDefaultValue.getId(), myFocusRef.getId()) != 0) {
                     oldDefaultValue.setDefaultFlag("N");
                     refCodeListService.update(oldDefaultValue, this.authService.getUserCn()
 						, this.authService.getUserGivenName(), this.authService.getUserSurName()
 						, this.authService.getCombinedMappedGroupMembershipAsString());
+                } else if(oldDefaultValue != null) {
+                    // this is the case when the updated refcode already had defaultFlag 'Y'
+                    if(myFocusRef.getSerialNum().compareTo(BigDecimal.valueOf(1L)) != 0) {
+                        //if newly set serial number is not 1
+                       if(myFocusRef.getActiveFlag().equals(oldDefaultValue.getActiveFlag())
+                               && myFocusRef.getCodelistInternalValue().equals(oldDefaultValue.getCodelistInternalValue())
+                               && myFocusRef.getValue().equals(oldDefaultValue.getValue()))  {
+                           // if the Serial Number is the only field that has been changed
+                           throw new Exception("Serial# for default codelist value can not be greater than 1");
+                       }
+                    }
+                }
+                
+                // when active flag of the default codelist is set to "N", it should show the error message
+                if("N".equalsIgnoreCase(myFocusRef.getActiveFlag())) {
+                    throw new Exception("Active flag for default codelist cannot be set to 'N'");
                 }
             }
 			if (myFocusRef.getId() != null){
@@ -443,7 +459,11 @@ public class AdminController implements Serializable {
 						"An error occurred while creating an codelist type", "Error:" + e.getMessage());
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 			}
-		}
+		} catch (Exception e) {
+            FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+						e.getMessage(), "");
+            FacesContext.getCurrentInstance().addMessage(null, msg);
+        }
 		myFocusRef = new RefConfigCodeList();
 	}
 
