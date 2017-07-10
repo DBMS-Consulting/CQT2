@@ -57,7 +57,6 @@ public class AdminController implements Serializable {
 	private final String CACHE_NAME = "code-list-cache";
 
 
-
 	List<CodelistDTO> list;
 	private String codelist;
 
@@ -73,7 +72,7 @@ public class AdminController implements Serializable {
 	
 	private RefConfigCodeList selectedRow, myFocusRef;
 	private StreamedContent excelFile;
-
+    
 	public AdminController() {
 		codelist = CODELIST_EXTENSION;
 	}
@@ -340,7 +339,21 @@ public class AdminController implements Serializable {
 	}
 	
 	public void addRefCodelist() {
-		boolean saved = false;
+        // check if changed
+        if(myFocusRef.getId() != null) {
+            RefConfigCodeList oldValue = refCodeListService.findById(myFocusRef.getId());
+            if(oldValue != null
+                    && myFocusRef.getActiveFlag().equals(oldValue.getActiveFlag())
+                    && myFocusRef.getCodelistInternalValue().equals(oldValue.getCodelistInternalValue())
+                    && myFocusRef.getSerialNum().equals(oldValue.getSerialNum())
+                    && myFocusRef.getDefaultFlag().equals(oldValue.getDefaultFlag())
+                    && myFocusRef.getValue().equals(oldValue.getValue())) {
+                // Nothing has been changed
+                return;
+            }
+        }
+
+        boolean saved = false;
 		Date lastModifiedDate = new Date();
 		String lastModifiedByString = this.authService.getLastModifiedByUserAsString();
 		//To uppercase for workflow State
