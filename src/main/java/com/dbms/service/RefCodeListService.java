@@ -576,11 +576,15 @@ public class RefCodeListService extends
 
 		row = worksheet.createRow(rowCount);
 		cell = row.createCell(0);
-		cell.setCellValue("Internal Value");
+		cell.setCellValue("Serial #");
 		cell = row.createCell(1);
-		cell.setCellValue("Value");
+		cell.setCellValue("Internal Value");
 		cell = row.createCell(2);
-		cell.setCellValue("Active");
+		cell.setCellValue("Value");
+		cell = row.createCell(3);
+		cell.setCellValue("Active flag");
+		cell = row.createCell(4);
+		cell.setCellValue("Default flag");
 		rowCount += 2;
 
 		// Retrieval of ConfigList - Loop
@@ -590,15 +594,23 @@ public class RefCodeListService extends
 			row = worksheet.createRow(rowCount);
 			// Cell 0
 			cell = row.createCell(0);
-			cell.setCellValue(ref.getCodelistInternalValue());
-
+			cell.setCellValue(ref.getSerialNum() + "");
+						
 			// Cell 1
 			cell = row.createCell(1);
-			cell.setCellValue(ref.getValue());
+			cell.setCellValue(ref.getCodelistInternalValue());
 
 			// Cell 2
 			cell = row.createCell(2);
+			cell.setCellValue(ref.getValue());
+
+			// Cell 3
+			cell = row.createCell(3);
 			cell.setCellValue(ref.getActiveFlag());
+			
+			// Cell 4
+			cell = row.createCell(4);
+			cell.setCellValue(ref.getDefaultFlag());
 
 			rowCount++;
 		}
