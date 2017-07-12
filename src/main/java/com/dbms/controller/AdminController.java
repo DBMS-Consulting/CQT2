@@ -57,6 +57,7 @@ public class AdminController implements Serializable {
 	private final String CACHE_NAME = "code-list-cache";
 
 
+
 	List<CodelistDTO> list;
 	private String codelist;
 
@@ -72,7 +73,7 @@ public class AdminController implements Serializable {
 	
 	private RefConfigCodeList selectedRow, myFocusRef;
 	private StreamedContent excelFile;
-    
+
 	public AdminController() {
 		codelist = CODELIST_EXTENSION;
 	}
@@ -356,14 +357,12 @@ public class AdminController implements Serializable {
         boolean saved = false;
 		Date lastModifiedDate = new Date();
 		String lastModifiedByString = this.authService.getLastModifiedByUserAsString();
-		//To uppercase for workflow State
-		if (myFocusRef.getCodelistConfigType().equals(CqtConstants.CODE_LIST_TYPE_WORKFLOW_STATES))
-			myFocusRef.setValue(myFocusRef.getValue().toUpperCase());
+ 		 
 			
-		String upperCode = myFocusRef.getCodelistInternalValue() != null ? myFocusRef.getCodelistInternalValue().toUpperCase() : "";
-		RefConfigCodeList searchRefByCode = refCodeListService.findByCriterias(myFocusRef.getCodelistConfigType(), upperCode, "Y");
+//		String upperCode = myFocusRef.getCodelistInternalValue() != null ? myFocusRef.getCodelistInternalValue().toUpperCase() : "";
+		RefConfigCodeList searchRefByCode = refCodeListService.findByCriterias(myFocusRef.getCodelistConfigType(),  myFocusRef.getCodelistInternalValue(), "Y");
 		 
-		if (!upperCode.equals("")) {
+		if (myFocusRef.getCodelistInternalValue() != null && !myFocusRef.getCodelistInternalValue().equals("")) {
 			if (searchRefByCode != null && myFocusRef.getActiveFlag().equals("Y")) {
 				if ((myFocusRef.getId() != null && !searchRefByCode.getId().equals(myFocusRef.getId())) || myFocusRef.getId() == null) {
 					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "The active codelist value exists for the same code", "");
@@ -372,7 +371,7 @@ public class AdminController implements Serializable {
 				}
 			}
 		}
-		myFocusRef.setCodelistInternalValue(upperCode);
+		//myFocusRef.setCodelistInternalValue(upperCode);
 		try {
             if ("Y".equalsIgnoreCase(myFocusRef.getDefaultFlag())) {
                 // if editing config value is set as default, remove the default flag from the old default config
