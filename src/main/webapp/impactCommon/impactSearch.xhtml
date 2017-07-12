@@ -25,7 +25,7 @@
 				<p:column sortable="false" headerText="Level" id="c51" width="40" styleClass="text-center"
 					filterable="true" filterBy="#{smqList.smqLevel}" filterMatchMode="exact">
 					<f:facet name="filter">
-		                <p:selectOneMenu onchange="PF('impactedSmqList').filter()" style="width: 50%;" autoWidth="false" appendTo="@this">
+		                <p:selectOneMenu onchange="PF('impactedSmqList').filter()" style="width: 50%;" autoWidth="false">
 		                    <f:selectItem itemLabel="All" itemValue="#{null}" noSelectionOption="true" />
 		                    <f:selectItem itemLabel="1" itemValue="1" />
 		                    <f:selectItem itemLabel="2" itemValue="2" />
@@ -67,7 +67,7 @@
 				<p:column sortable="false" headerText="Level" id="c51" width="40" styleClass="text-center"
 					filterable="true" filterBy="${smqList.smqLevel}" filterMatchMode="contains">
 					<f:facet name="filter">
-		                <p:selectOneMenu onchange="PF('notImpactedSmqList').filter()" style="width: 50%;" autoWidth="false" appendTo="@this">
+		                <p:selectOneMenu onchange="PF('notImpactedSmqList').filter()" style="width: 50%;" autoWidth="false">
 		                    <f:selectItem itemLabel="All" itemValue="#{null}" noSelectionOption="true" />
 		                    <f:selectItem itemLabel="1" itemValue="1" />
 		                    <f:selectItem itemLabel="2" itemValue="2" />
@@ -115,7 +115,7 @@
 				<p:column sortable="false" headerText="Extension" id="c50" width="70"
 					filterable="true" filterBy="#{cmqList.cmqTypeCd}" filterMatchMode="exact">
 					<f:facet name="filter">
-		                <p:selectOneMenu onchange="PF('impactedCmqList').filter()" style="width: 70%;" autoWidth="false" appendTo="@this">
+		                <p:selectOneMenu onchange="PF('impactedCmqList').filter()" style="width: 70%;" autoWidth="false">
 		                    <f:selectItem itemLabel="" itemValue="#{null}" noSelectionOption="true"  />
 		                    <f:selectItems value="#{configMB.extensionList}" var="extension"
 								itemLabel="#{extension.value}"
@@ -138,7 +138,7 @@
 				<p:column sortable="false" headerText="State" width="80" id="c55"
                           filterable="true" filterBy="#{cmqList.cmqState}" filterMatchMode="exact">
                     <f:facet name="filter">
-		                <p:selectOneMenu onchange="PF('impactedCmqList').filter()" style="width: 70%;" autoWidth="false" appendTo="@this">
+		                <p:selectOneMenu onchange="PF('impactedCmqList').filter()" style="width: 70%;" autoWidth="false">
 		                    <f:selectItem itemLabel="" itemValue="#{null}" noSelectionOption="true"  />
                             <f:selectItems value="#{configMB.cmqTargetListStates}" var="s"
 								itemLabel="#{s[1]}" itemValue="#{s[0]}" />
@@ -167,7 +167,7 @@
 				<p:column sortable="false" headerText="Extension" id="c50" width="70"
 					filterable="true" filterBy="#{cmqList.cmqTypeCd}" filterMatchMode="exact">
 					<f:facet name="filter">
-		                <p:selectOneMenu onchange="PF('notImpactedCmqList').filter()" style="width: 70%;" autoWidth="false" appendTo="@this">
+		                <p:selectOneMenu onchange="PF('notImpactedCmqList').filter()" style="width: 70%;" autoWidth="false">
 		                    <f:selectItem itemLabel="" itemValue="#{null}" noSelectionOption="true"  />
 		                    <f:selectItems value="#{configMB.extensionList}" var="extension"
 								itemLabel="#{extension.value}" itemValue="#{extension.codelistInternalValue}" />
@@ -189,7 +189,7 @@
 				<p:column sortable="false" headerText="State" width="80" id="c55"
                           filterable="true" filterBy="#{cmqList.cmqState}" filterMatchMode="exact">
                     <f:facet name="filter">
-		                <p:selectOneMenu onchange="PF('notImpactedCmqList').filter()" style="width: 70%;" autoWidth="false" appendTo="@this">
+		                <p:selectOneMenu onchange="PF('notImpactedCmqList').filter()" style="width: 70%;" autoWidth="false">
 		                    <f:selectItem itemLabel="" itemValue="#{null}" noSelectionOption="true"  />
                             <f:selectItems value="#{configMB.cmqTargetListStates}" var="s"
 								itemLabel="#{s[1]}" itemValue="#{s[0]}" />
