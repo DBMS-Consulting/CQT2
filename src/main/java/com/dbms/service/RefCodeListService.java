@@ -307,7 +307,7 @@ public class RefCodeListService extends
             return (RefConfigCodeList) cv;
         }
         
-		String queryString = "from RefConfigCodeList a where a.codelistConfigType = :codelistConfigType and a.codelistInternalValue = :codelistInternalValue";
+		String queryString = "from RefConfigCodeList a where a.codelistConfigType = :codelistConfigType and lower(a.codelistInternalValue) = lower(:codelistInternalValue)";
 
 		EntityManager entityManager = this.cqtEntityManagerFactory
 				.getEntityManager();
@@ -348,7 +348,7 @@ public class RefCodeListService extends
             return (RefConfigCodeList) cv;
         }
         
-		String queryString = "from RefConfigCodeList a where a.codelistConfigType = :codelistConfigType and a.codelistInternalValue = :codelistInternalValue"
+		String queryString = "from RefConfigCodeList a where a.codelistConfigType = :codelistConfigType and lower(a.codelistInternalValue) = lower(:codelistInternalValue)"
 				+ " and a.activeFlag=:activeFlag";
 
 		EntityManager entityManager = this.cqtEntityManagerFactory
@@ -383,7 +383,7 @@ public class RefCodeListService extends
 	@Override
 	public String findCodeByInternalCode(String codelistInternalValue) {
 		RefConfigCodeList ref = null;
-		String queryString = "from RefConfigCodeList c where c.codelistInternalValue = :codelistInternalValue";
+		String queryString = "from RefConfigCodeList c where lower(c.codelistInternalValue) = lower(:codelistInternalValue)";
 		EntityManager entityManager = this.cqtEntityManagerFactory
 				.getEntityManager();
 		try {
@@ -431,7 +431,7 @@ public class RefCodeListService extends
 		
 		if (codeList != null) {
 			for(RefConfigCodeList c : codeList) {
-				if(c.getCodelistInternalValue().equals(internalCode)) {
+				if(c.getCodelistInternalValue().equalsIgnoreCase(internalCode)) {
 					return c.getValue();
 				}
 			}	
