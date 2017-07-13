@@ -428,12 +428,10 @@ public class RefCodeListService extends
     public String interpretInternalCodeToValueOrDefault(String configType,
 			String internalCode, String defaultValue) {
         List<RefConfigCodeList> codeList = findByConfigType(configType, OrderBy.ASC);
-        String internalCodeLc = internalCode.toLowerCase();
 		
 		if (codeList != null) {
 			for(RefConfigCodeList c : codeList) {
-				String code = c.getCodelistInternalValue().toLowerCase();
-				if(code.equalsIgnoreCase(internalCodeLc)) {
+				if(c.getCodelistInternalValue().equalsIgnoreCase(internalCode)) {
 					return c.getValue();
 				}
 			}	
