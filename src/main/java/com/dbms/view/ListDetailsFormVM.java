@@ -18,6 +18,7 @@ import com.dbms.util.CqtConstants;
 import com.dbms.util.OrderBy;
 import com.dbms.util.SWJSFRequest;
 import java.util.ArrayList;
+import java.util.Collections;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 
@@ -818,6 +819,39 @@ public class ListDetailsFormVM {
             if(ve != null && "N".equalsIgnoreCase(ve.getActiveFlag())) {
                 ve.setValue(ve.getCodelistInternalValue());
                 values.add(ve);
+            }
+        }
+		return values;
+	}
+    
+    public List<RefConfigCodeList> getProductList() {
+		List<RefConfigCodeList> values = refCodeListService.findByConfigType(
+				CqtConstants.CODE_LIST_TYPE_PRODUCT, OrderBy.ASC);
+		if (values == null) {
+			values = new ArrayList<>();
+		}
+        if(this.products != null && this.products.length > 0) {
+            for(int i=0;i<this.products.length;i++) {
+                boolean found = false;
+                // if the given value is INACTIVE config value, add the value to the list with the label "Extension"
+                for (RefConfigCodeList r : values) {
+                    if(StringUtils.equals(r.getCodelistInternalValue(), products[i])) {
+                        found = true;
+                        break;
+                    }
+                }
+                if(!found) {
+                    RefConfigCodeList ve = refCodeListService.findByConfigTypeAndInternalCode(CqtConstants.CODE_LIST_TYPE_PRODUCT, products[i]);
+                    if(ve == null) {
+                        ve = new RefConfigCodeList();
+                        ve.setCodelistInternalValue(products[i]);
+                        ve.setValue(products[i]);
+                        values.add(ve);
+                    } else if("N".equalsIgnoreCase(ve.getActiveFlag())) {
+                        ve.setValue(ve.getCodelistInternalValue());
+                        values.add(ve);
+                    }
+                }
             }
         }
 		return values;

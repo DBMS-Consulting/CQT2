@@ -59,8 +59,8 @@ public class RefCodeListService extends
 		
 		List<RefConfigCodeList> retVal = null;
 		try {
-			retVal = (List<RefConfigCodeList>) this.cqtCacheManager
-				.getFromCache(CACHE_NAME, cacheKey);
+			retVal = new ArrayList<RefConfigCodeList>((List<RefConfigCodeList>) this.cqtCacheManager
+				.getFromCache(CACHE_NAME, cacheKey));
 		} catch(Exception e) {
 			retVal = null;
 		}

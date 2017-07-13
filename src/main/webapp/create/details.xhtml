@@ -75,12 +75,12 @@
                 label="#{createController.detailsFormDisabled ? createController.detailsFormModel.productsLabel : 'Choose products'}" updateLabel="true"
                 filter="true" filterMatchMode="contains"
 				style="min-width:270px; max-width: 600px">
-				<f:selectItems value="#{createController.productList}"
+				<f:selectItems value="#{createController.detailsFormModel.productList}"
                                var="prd" itemLabel="#{prd.value}" itemValue="#{prd.codelistInternalValue}" />
                 <f:validator validatorId="mySelectCheckboxMenuLimitValidator" />                       
                 <f:attribute name="minLimit" value="#{createController.readOnlyState ? 0 : 1}" />
                 <f:attribute name="validatorLabel" value="Product" />
-			</p:selectCheckboxMenu>
+            </p:selectCheckboxMenu>
 
 			<p:outputLabel value="* Designee" />
 			<p:selectOneMenu
