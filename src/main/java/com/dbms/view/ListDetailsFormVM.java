@@ -768,7 +768,10 @@ public class ListDetailsFormVM {
 		}
         if(this.extension != null) {
             for (RefConfigCodeList r : values) {
-                if(StringUtils.equals(r.getCodelistInternalValue(), this.extension)) {
+                if(StringUtils.equalsIgnoreCase(r.getCodelistInternalValue(), this.extension)) {
+                    if(!StringUtils.equals(r.getCodelistInternalValue(), extension)) {
+                        extension = r.getCodelistInternalValue();
+                    }
                     return values;
                 }
             }
@@ -789,7 +792,10 @@ public class ListDetailsFormVM {
 		}
         if(this.drugProgram != null) {
             for (RefConfigCodeList r : values) {
-                if(StringUtils.equals(r.getCodelistInternalValue(), this.drugProgram)) {
+                if(StringUtils.equalsIgnoreCase(r.getCodelistInternalValue(), this.drugProgram)) {
+                    if(!StringUtils.equals(r.getCodelistInternalValue(), drugProgram)) {
+                        drugProgram = r.getCodelistInternalValue();
+                    }
                     return values;
                 }
             }
@@ -810,7 +816,10 @@ public class ListDetailsFormVM {
 		}
         if(this.protocol != null) {
             for (RefConfigCodeList r : values) {
-                if(StringUtils.equals(r.getCodelistInternalValue(), this.protocol)) {
+                if(StringUtils.equalsIgnoreCase(r.getCodelistInternalValue(), this.protocol)) {
+                    if(!StringUtils.equals(r.getCodelistInternalValue(), protocol)) {
+                        protocol = r.getCodelistInternalValue();
+                    }
                     return values;
                 }
             }
@@ -835,7 +844,10 @@ public class ListDetailsFormVM {
                 boolean found = false;
                 // if the given value is INACTIVE config value, add the value to the list with the label "Extension"
                 for (RefConfigCodeList r : values) {
-                    if(StringUtils.equals(r.getCodelistInternalValue(), products[i])) {
+                    if(StringUtils.equalsIgnoreCase(r.getCodelistInternalValue(), products[i])) {
+                        if(!StringUtils.equals(r.getCodelistInternalValue(), products[i])) {
+                            products[i] = r.getCodelistInternalValue();
+                        }
                         found = true;
                         break;
                     }
