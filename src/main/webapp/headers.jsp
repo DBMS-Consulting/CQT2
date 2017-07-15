@@ -14,6 +14,21 @@
 	
 	    return DatatypeConverter.printHexBinary(myBytes);
 	}
+
+	private Map<String, String> getHeadersInfo(HttpServletRequest request) {
+	
+	    Map<String, String> map = new HashMap<String, String>();
+	
+	    Enumeration headerNames = request.getHeaderNames();
+	    while (headerNames.hasMoreElements()) {
+	        String key = (String) headerNames.nextElement();
+	        String value = request.getHeader(key);
+	        map.put(key, value);
+	    }
+	
+	    return map;
+	}
+
 %>
 <%
 String headerName;
@@ -22,9 +37,10 @@ Enumeration e = request.getHeaderNames();
 while(e.hasMoreElements()) {
     headerName = (String)e.nextElement();
     headerValue = request.getHeader(headerName);
-out.println(headerName +"-----"+ headerValue + ", [" + toHexadecimal(headerValue) + "]");
-out.println("<br>");
+	out.println(headerName +"-----"+ headerValue + ", [" + toHexadecimal(headerValue) + "]");
+	out.println("<br>");
 }
+
 %>
 </body>
 
