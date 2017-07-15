@@ -46,7 +46,7 @@
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-collections4</artifactId>
 			<version>4.1</version>
-		</dependency>
+		</dependency>		
 		<!-- Mojarra JSF -->
 		<dependency>
 			<groupId>com.sun.faces</groupId>
@@ -163,6 +163,11 @@
 			<groupId>org.jasypt</groupId>
 			<artifactId>jasypt-hibernate4</artifactId>
 			<version>${jasypt.version}</version>
+		</dependency>
+		<dependency>
+		    <groupId>javax.mail</groupId>
+		    <artifactId>mail</artifactId>
+		    <version>1.4</version>
 		</dependency>
     				
 	</dependencies>

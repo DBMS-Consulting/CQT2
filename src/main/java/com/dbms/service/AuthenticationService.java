@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +16,8 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.mail.internet.MimeUtility;
+import javax.mail.internet.ParseException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -130,12 +133,23 @@ public class AuthenticationService {
 		}
 	}
 
+	public static String decode(String value) {
+		try {
+			return MimeUtility.decodeWord(value);
+		} catch (ParseException | UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			//e.printStackTrace();
+		}
+		return value;
+	}
+	
 	private void parsePxedHeaderData(HttpServletRequest request) {
-		this.userCn = request.getHeader(IAMPFIZERUSERCN_HEADER);
-		this.userGivenName = request.getHeader(IAMPFIZERUSERGIVENNAME_HEADER);
-		this.userSurName = request.getHeader(IAMPFIZERUSERSURNAME_HEADER);
-		this.userEmail = request.getHeader(IAMPFIZERUSERINTERNETEMAILADDRESS_HEADER);
-		this.groupMembershipHeader = request.getHeader(IAMPFIZERUSERGROUPMEMBERSHIP_HEADER);
+		this.userCn = decode(request.getHeader(IAMPFIZERUSERCN_HEADER));
+		this.userGivenName = decode(request.getHeader(IAMPFIZERUSERGIVENNAME_HEADER));
+		this.userSurName = decode(request.getHeader(IAMPFIZERUSERSURNAME_HEADER));
+		this.userEmail = decode(request.getHeader(IAMPFIZERUSERINTERNETEMAILADDRESS_HEADER));
+		this.groupMembershipHeader = decode(request.getHeader(IAMPFIZERUSERGROUPMEMBERSHIP_HEADER));
+		
 		LOG.info("Group membership header for " + this.userCn + " is : " + this.groupMembershipHeader);
 		this.parseAndSetGroupMemberships();
 	}
