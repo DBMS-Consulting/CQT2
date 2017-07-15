@@ -37,7 +37,7 @@ Enumeration e = request.getHeaderNames();
 while(e.hasMoreElements()) {
     headerName = (String)e.nextElement();
     headerValue = request.getHeader(headerName);
-	out.println(headerName +"-----"+ headerValue + ", [" + toHexadecimal(headerValue) + "]");
+	out.println(headerName +"-----"+ headerValue + " [" + toHexadecimal(headerValue) + "]");
 	out.println("<br>");
 }
 
