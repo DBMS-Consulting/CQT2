@@ -490,6 +490,9 @@ public class CmqBase190 extends BaseEntity {
 			// check if it already exists
 			for(CmqProductBaseCurrent p: productsList) {
 				if(p.getCmqProductCd().equals(productCd)) {
+					p.setCmqProductId(null);
+					p.setCmqCode(this.cmqCode);
+					p.setCmqName(this.cmqName);
 					p.setCmqBaseCurrent(this);
                     if(p.getCreatedBy() == null || p.getLastModifiedBy() == null) {
                         p.setCreatedBy(lastModifiedByString);
