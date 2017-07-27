@@ -359,7 +359,6 @@ public class AdminController implements Serializable {
 		String lastModifiedByString = this.authService.getLastModifiedByUserAsString();
  		 
 			
-//		String upperCode = myFocusRef.getCodelistInternalValue() != null ? myFocusRef.getCodelistInternalValue().toUpperCase() : "";
 		RefConfigCodeList searchRefByCode = refCodeListService.findByCriterias(myFocusRef.getCodelistConfigType(),  myFocusRef.getCodelistInternalValue(), "Y");
 		 
 		if (myFocusRef.getCodelistInternalValue() != null && !myFocusRef.getCodelistInternalValue().equals("")) {
@@ -371,6 +370,26 @@ public class AdminController implements Serializable {
 				}
 			}
 		}
+		
+		//Default flag for another codelist set to Y
+		RefConfigCodeList searchForDefault = refCodeListService.findByDefaultFlag(myFocusRef.getCodelistConfigType(), "Y");
+		if (myFocusRef.getCodelistInternalValue() != null && !myFocusRef.getCodelistInternalValue().equals("")) {
+			if (searchForDefault != null && myFocusRef.getDefaultFlag().equals("Y")) {
+				if ((myFocusRef.getId() != null && !searchForDefault.getId().equals(myFocusRef.getId())) || myFocusRef.getId() == null) {
+					
+					//Reset default for existing codelist to Y and saving new one
+					try {
+						searchForDefault.setDefaultFlag("N");
+						refCodeListService.update(searchForDefault, this.authService.getUserCn()
+								, this.authService.getUserGivenName(), this.authService.getUserSurName()
+								, this.authService.getCombinedMappedGroupMembershipAsString());
+					} catch (CqtServiceException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+		
 		//myFocusRef.setCodelistInternalValue(upperCode);
 		try {
             if ("Y".equalsIgnoreCase(myFocusRef.getDefaultFlag())) {
@@ -472,15 +491,17 @@ public class AdminController implements Serializable {
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 						e.getMessage(), "");
-            FacesContext.getCurrentInstance().addMessage(null, msg);
+            FacesContext.getCurrentInstance().addMessage("An error occured when saving this codelist", msg);
         }
 		myFocusRef = new RefConfigCodeList();
 	}
 
 	private void updateSerialNumbers(String codelistConfigType, RefConfigCodeList savedRef) {
-		double val = 1;
+		//double val = 1;
+		double val = savedRef.getSerialNum().doubleValue();
 		System.out.println("\n\n ********************* serialSaved :  " + savedRef.getSerialNum());
  		List<RefConfigCodeList> refList = refCodeListService.findAllByConfigType(codelistConfigType, OrderBy.ASC);
 		List<RefConfigCodeList> refListToSave = new ArrayList<RefConfigCodeList>();
@@ -508,11 +529,26 @@ public class AdminController implements Serializable {
                     return c;
                 }
             });
-            for (RefConfigCodeList ref : refList) {
-                ref.setSerialNum(new BigDecimal(val));
-                refListToSave.add(ref);
-                ++ val;
-            }
+            //Adding ref to save inside list
+            refListToSave.add(savedRef);
+            val++;
+           // double valInc = val;
+			for (RefConfigCodeList ref : refList) {
+				
+				System.out.println("REF     :" + ref.getSerialNum().doubleValue());
+				System.out.println("TO_SAVE :" + savedRef.getSerialNum().doubleValue());
+
+				if (val > ref.getSerialNum().doubleValue()) {
+					continue;
+				}
+ 
+				ref.setSerialNum(new BigDecimal(val++));
+				refListToSave.add(ref);
+				//val++;
+				
+				
+				System.out.println(" " + ref.getCodelistInternalValue() + " #" + ref.getSerialNum());
+			}
 			
 			if (!refListToSave.isEmpty()) {
 				try {

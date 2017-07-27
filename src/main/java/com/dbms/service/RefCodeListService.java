@@ -379,6 +379,52 @@ public class RefCodeListService extends
         }
 		return null;
 	}
+	
+
+	@Override
+	public RefConfigCodeList findByDefaultFlag(String configType, String defaultFlag) {
+		RefConfigCodeList ref = null;
+        String cacheKey = "[" + configType  + "]";
+        
+        // try to get it from cache first
+        Object cv = (RefConfigCodeList)this.cqtCacheManager.getFromCache(CACHE_NAME, cacheKey);
+        if(cv != null && cv instanceof RefConfigCodeList) {
+            return (RefConfigCodeList) cv;
+        }
+        
+		String queryString = "from RefConfigCodeList a where a.codelistConfigType = :codelistConfigType "
+				+ " and a.defaultFlag=:defaultFlag";
+
+		EntityManager entityManager = this.cqtEntityManagerFactory
+				.getEntityManager();
+		try {
+			Query query = entityManager.createQuery(queryString);
+			query.setParameter("codelistConfigType", configType);
+ 			query.setParameter("defaultFlag", defaultFlag);
+			query.setHint("org.hibernate.cacheable", true);
+			if (query.getSingleResult() == null)
+				return null;
+			ref = (RefConfigCodeList) query.getSingleResult();
+		} catch (javax.persistence.NoResultException e) {
+            LOG.info("findByConfigTypeAndInternalCode found no result for ConfigType: " + configType);
+        } catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg.append(
+					"findCodeByInternalCode failed for CODELIST_INTERNAL_VALUE value'")
+					.append("' and codelistConfigType = '")
+					.append(configType).append("' ")
+					.append("Query used was ->").append(queryString);
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		if (ref != null) {
+            this.cqtCacheManager.addToCache(CACHE_NAME, cacheKey, ref);
+			return ref;
+        }
+		return null;
+	}
+
 
 	@Override
 	public String findCodeByInternalCode(String codelistInternalValue) {
@@ -679,4 +725,44 @@ public class RefCodeListService extends
         }
         return defaultValue;
     }
+    
+    @Override
+	public RefConfigCodeList findBySerialNumber(double serialNum) {
+		RefConfigCodeList ref = null;
+        String cacheKey = "[" + serialNum + "]";
+        
+        // try to get it from cache first
+        Object cv = (RefConfigCodeList)this.cqtCacheManager.getFromCache(CACHE_NAME, cacheKey);
+        if(cv != null && cv instanceof RefConfigCodeList) {
+            return (RefConfigCodeList) cv;
+        }
+        
+		String queryString = "from RefConfigCodeList a where a.serialNum = :serialNum";
+
+		EntityManager entityManager = this.cqtEntityManagerFactory
+				.getEntityManager();
+		try {
+			Query query = entityManager.createQuery(queryString);
+			query.setParameter("serialNum", serialNum);
+ 			query.setHint("org.hibernate.cacheable", true);
+ 			if (query.getSingleResult() == null)
+ 				return null;
+ 			ref = (RefConfigCodeList) query.getSingleResult();
+		} catch (javax.persistence.NoResultException e) {
+            LOG.info("findByConfigTypeAndInternalCode found no result for serialNum: " + serialNum);
+        } catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg.append(" Search failed for serialNum")
+					.append(serialNum).append("' ")
+					.append("Query used was ->").append(queryString);
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		if (ref != null) {
+            this.cqtCacheManager.addToCache(CACHE_NAME, cacheKey, ref);
+			return ref;
+        }
+		return null;
+	}
 }

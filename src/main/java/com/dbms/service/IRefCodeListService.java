@@ -24,6 +24,8 @@ public interface IRefCodeListService extends ICqtPersistenceService<RefConfigCod
 
 	public RefConfigCodeList findByConfigTypeAndInternalCode(String configType, String internalCode);
 	public RefConfigCodeList findByCriterias(String configType, String internalCode, String activeFlag);
+	public RefConfigCodeList findByDefaultFlag(String configType, String defaultFlag);
+
 
 	public RefConfigCodeList findDefaultByConfigType(String configType);
     public List<RefConfigCodeList> findDefaultsByConfigType(String configType);
@@ -64,4 +66,5 @@ public interface IRefCodeListService extends ICqtPersistenceService<RefConfigCod
 	boolean getLevelScopeCategorySystemConfig();
     
     public RefConfigCodeList getDefaultForConfigType(String configType);
+	public RefConfigCodeList findBySerialNumber(double val); 
 }
