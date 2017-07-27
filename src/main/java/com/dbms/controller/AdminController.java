@@ -531,8 +531,7 @@ public class AdminController implements Serializable {
             });
             //Adding ref to save inside list
             refListToSave.add(savedRef);
-            val++;
-           // double valInc = val;
+            // double valInc = val;
 			for (RefConfigCodeList ref : refList) {
 				
 				System.out.println("REF     :" + ref.getSerialNum().doubleValue());
@@ -542,7 +541,7 @@ public class AdminController implements Serializable {
 					continue;
 				}
  
-				ref.setSerialNum(new BigDecimal(val++));
+				ref.setSerialNum(new BigDecimal(++val));
 				refListToSave.add(ref);
 				//val++;
 				
