@@ -9,8 +9,6 @@
 	<ui:define name="page-content">
 
 		<h:form id="f1">
-		<!-- 	<p:growl id="m1" /> -->
-
 			<!-- Extension for search purposes -->
 			<h:panelGrid columns="2" style="width: 100% !important">
  					<p:breadCrumb styleClass="breadcrumb">
@@ -24,27 +22,27 @@
 					<h:panelGrid columns="2">
 						<p:outputLabel value="Codelist Type" />
 						<p:selectOneMenu label="Codelist Type" value="#{adminController.codelist}">
-							<f:selectItem itemLabel="EXTENSION" itemValue="EXTENSION" />
+							<f:selectItem itemLabel="EXTENSION" itemValue="LIST_EXTENSION_TYPES" />
 							<f:selectItem itemLabel="PROGRAM" itemValue="PROGRAM" />
 							<f:selectItem itemLabel="PROTOCOL" itemValue="PROTOCOL" />
 							<f:selectItem itemLabel="PRODUCT" itemValue="PRODUCT" />
-							<f:selectItem itemLabel="MEDDRA DICTIONARY" itemValue="MEDDRA" />
-							<f:selectItem itemLabel="WORKFLOW STATE" itemValue="WORKFLOW" />
+							<f:selectItem itemLabel="MEDDRA DICTIONARY" itemValue="MEDDRA_VERSIONS" />
+							<f:selectItem itemLabel="WORKFLOW STATE" itemValue="WORKFLOW_STATES" />
 							<f:selectItem itemLabel="USER GROUPS" itemValue="USER_GROUPS" />
                             <f:selectItem itemLabel="SYSTEM CONFIG" itemValue="SYSTEM_CONFIG" />
                             <f:selectItem itemLabel="CMQ RELATION IMPACT TYPE" itemValue="CMQ_RELATION_IMPACT_TYPE" />
                             <f:selectItem itemLabel="SMQ RELATION IMPACT TYPE" itemValue="SMQ_RELATION_IMPACT_TYPE" />
-                            <f:selectItem itemLabel="MEDDRA DICTIONARY IMPACT TYPE" itemValue="MEDDRA_DICT_IMPACT_TYPE" />
+                            <f:selectItem itemLabel="MEDDRA DICTIONARY IMPACT TYPE" itemValue="MEDDRA_DICTIONARY_IMPACT_TYPE" />
                             <f:selectItem itemLabel="DICTIONARY CMQ LEVELS TYPE" itemValue="DICTIONARY_CMQ_LEVELS" />
                             <f:selectItem itemLabel="SMQ FILTER LEVELS TYPE" itemValue="SMQ_FILTER_LEVELS" />
                             
 
-							<p:ajax update="@form" event="change" />
+							<p:ajax update="@form" event="change" listener="#{adminController.switchCodelist}" />
 						</p:selectOneMenu>
 					</h:panelGrid>
 					<p:spacer height="10" />
 
-					<ui:fragment rendered="#{adminController.codelist eq 'EXTENSION'}">
+					<ui:fragment rendered="#{adminController.codelist eq 'LIST_EXTENSION_TYPES'}">
 						<ui:include src="extensionTable.xhtml"></ui:include>
 					</ui:fragment>
 
@@ -60,11 +58,11 @@
 						<ui:include src="protocolsTable.xhtml"></ui:include>
 					</ui:fragment>
 					
-					<ui:fragment rendered="#{adminController.codelist eq 'MEDDRA'}">
+					<ui:fragment rendered="#{adminController.codelist eq 'MEDDRA_VERSIONS'}">
 						<ui:include src="meddraTable.xhtml"></ui:include>
 					</ui:fragment>
 					
-					<ui:fragment rendered="#{adminController.codelist eq 'WORKFLOW'}">
+					<ui:fragment rendered="#{adminController.codelist eq 'WORKFLOW_STATES'}">
 						<ui:include src="workflowStateTable.xhtml"></ui:include>
 					</ui:fragment>
 
@@ -84,7 +82,7 @@
 						<ui:include src="smqRelImpTypeTable.xhtml"></ui:include>
 					</ui:fragment>
                     
-                    <ui:fragment rendered="#{adminController.codelist eq 'MEDDRA_DICT_IMPACT_TYPE'}">
+                    <ui:fragment rendered="#{adminController.codelist eq 'MEDDRA_DICTIONARY_IMPACT_TYPE'}">
 						<ui:include src="meddraDictImpTypeTable.xhtml"></ui:include>
 					</ui:fragment>
 					
