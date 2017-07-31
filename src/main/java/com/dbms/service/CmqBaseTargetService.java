@@ -472,7 +472,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 		cell = row.createCell(5);
 		cell.setCellValue("Scope");
 		setCellStyleColumn(workbook, cell);
-		cell = row.createCell(5);
+		cell = row.createCell(6);
 		cell.setCellValue("Impact Relation Type");
 		setCellStyleColumn(workbook, cell);
 		rowCount++;
@@ -508,7 +508,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 								} else if (smq.getSmqLevel() == 5) {
 									level = "SMQ5";
 								}
-								mapReport.put(cpt++, new ReportLineDataDto(level, smq.getSmqCode() + "", smq.getSmqName(), "", smq.getImpactType())); 
+								mapReport.put(cpt++, new ReportLineDataDto(level, smq.getSmqCode() + "", smq.getSmqName(), "", smq.getImpactType(), "")); 
 								if (level.equals("SMQ1") || level.equals("SMQ2") || level.equals("SMQ3") || level.equals("SMQ4")) {
 									smqSearched = smqBaseTargetService.findByCode(smq.getSmqCode());
 									if (smqSearched != null) {
@@ -528,7 +528,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 												} else if (smq3.getSmqLevel() == 0) {
 													level = "Child SMQ";
 												}
-												mapReport.put(cpt++, new ReportLineDataDto(level, smq3.getPtCode() + "", smq3.getPtName(), ".............", smq3.getRelationImpactType())); 
+												mapReport.put(cpt++, new ReportLineDataDto(level, smq3.getPtCode() + "", smq3.getPtName(), ".............", smq3.getRelationImpactType(), smq3.getPtTermScope() + "")); 
 												
 												if (level.equals("Child SMQ") && smq3.getPtCode() != null) {
 													List<SmqRelationTarget> smqChildren = smqBaseTargetService.findSmqRelationsForSmqCode(Long.parseLong(smq3.getPtCode() + ""));
@@ -538,7 +538,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 																level = "PT";
 															if (smqChild.getSmqLevel() == 5)
 																level = "LLT";
-															mapReport.put(cpt++, new ReportLineDataDto(level, smqChild.getPtCode() + "", smqChild.getPtName(), "..................", smqChild.getRelationImpactType())); 
+															mapReport.put(cpt++, new ReportLineDataDto(level, smqChild.getPtCode() + "", smqChild.getPtName(), "..................", smqChild.getRelationImpactType(), smqChild.getPtTermScope() + "")); 
 
  
 													}
@@ -569,7 +569,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 											level = "Child SMQ";
 										}
 										
-										mapReport.put(cpt++, new ReportLineDataDto(level, smqC.getSmqCode() + "", smqC.getSmqName(), "......", smqC.getImpactType()));  
+										mapReport.put(cpt++, new ReportLineDataDto(level, smqC.getSmqCode() + "", smqC.getSmqName(), "......", smqC.getImpactType(), ""));  
 										
 										if (level.equals("SMQ2")) {						
 											smqSearched = smqBaseTargetService.findByCode(smqC.getSmqCode());
@@ -577,7 +577,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 												List<SmqRelationTarget> list = smqBaseTargetService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
 												if (list != null)
 													for (SmqRelationTarget smq3 : list) {
-														mapReport.put(cpt++, new ReportLineDataDto("PT", smq3.getPtCode() + "", smq3.getPtName(), ".............", smq3.getRelationImpactType())); 
+														mapReport.put(cpt++, new ReportLineDataDto("PT", smq3.getPtCode() + "", smq3.getPtName(), ".............", smq3.getRelationImpactType(), smq3.getPtTermScope() + "")); 
 													}
 											}
 											List<Long> codes = new ArrayList<>();
@@ -598,17 +598,62 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 											List<SmqBaseTarget> smqChildren = smqBaseTargetService.findChildSmqByParentSmqCodes(codes);
 											if (smqChildren != null)
 												for (SmqBaseTarget child : smqChildren) {
-													mapReport.put(cpt++, new ReportLineDataDto(levelS, child.getSmqCode() + "", child.getSmqName(), ".............", child.getImpactType())); 
+													mapReport.put(cpt++, new ReportLineDataDto(levelS, child.getSmqCode() + "", child.getSmqName(), ".............", child.getImpactType(), "")); 
 													
 													smqSearched = smqBaseTargetService.findByCode(child.getSmqCode());
 													if (smqSearched != null) {
 														List<SmqRelationTarget> list = smqBaseTargetService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
 														if (list != null)
 															for (SmqRelationTarget smq3 : list) {
-																mapReport.put(cpt++, new ReportLineDataDto("PT", smq3.getPtCode() + "", smq3.getPtName(), "....................", smq3.getRelationImpactType())); 
+																mapReport.put(cpt++, new ReportLineDataDto("PT", smq3.getPtCode() + "", smq3.getPtName(), "....................", smq3.getRelationImpactType(), smq3.getPtTermScope() + "")); 
 															}
 													}
+													
+													
+													if (levelS.equals("Child SMQ")) {										
+														smqSearched = smqBaseTargetService.findByCode(Long.parseLong(child.getSmqCode() + ""));
+														if (smqSearched != null) {
+															List<SmqRelation190> otherChilds =  smqBaseService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
+										 					System.out.println("\n ************ test size for " + smqSearched.getSmqName() + " = " + otherChilds.size());
+										 					
+										 					
+										 					if (otherChilds != null) {
+																for (SmqRelation190 other : otherChilds) {
+																	if (other.getSmqLevel() == 4) {
+																		level = "PT";
+																	} else if (other.getSmqLevel() == 5) {
+																		level = "LLT";
+																	} else if (other.getSmqLevel() == 0) {
+																		level = "Child SMQ";
+																	} 
+												 					
+																	mapReport.put(cpt++, new ReportLineDataDto(level, other.getPtCode() + "", other.getPtName(), ".........................", other.getRelationImpactType())); 
+
+																	
+																	if (level.equals("Child SMQ")) {										
+																		smqSearched = smqBaseTargetService.findByCode(Long.parseLong(other.getSmqCode() + ""));
+																		if (smqSearched != null) {
+																			List<SmqRelation190> test3 =  smqBaseService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
+ 															 					
+														 					if (test3 != null) {
+																				for (SmqRelation190 tt3 : test3) {
+																					if (tt3.getSmqLevel() == 4) {
+																						level = "PT";
+																					} else if (tt3.getSmqLevel() == 5) {
+																						level = "LLT";
+																					}  
+																 					
+																					mapReport.put(cpt++, new ReportLineDataDto(level, tt3.getPtCode() + "", tt3.getPtName(), ".........................", tt3.getRelationImpactType())); 
+																				}
+														 					}
+																		}
+																	}
+																}
+										 					}
+														}
+													}
 												}
+											
 											
 										}
 										
@@ -618,7 +663,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 												List<SmqRelationTarget> list = smqBaseTargetService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
 												if (list != null)
 													for (SmqRelationTarget smq3 : list) {
-														mapReport.put(cpt++, new ReportLineDataDto("PT", smq3.getPtCode() + "", smq3.getPtName(), ".............", smq3.getRelationImpactType())); 
+														mapReport.put(cpt++, new ReportLineDataDto("PT", smq3.getPtCode() + "", smq3.getPtName(), ".............", smq3.getRelationImpactType(), smq3.getPtTermScope() + "")); 
 													}
 											}
 											
@@ -630,20 +675,55 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 												List<SmqRelationTarget> list = smqBaseTargetService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
 												if (list != null)
 													for (SmqRelationTarget smq3 : list) {
-														mapReport.put(cpt++, new ReportLineDataDto("PT", smq3.getPtCode() + "", smq3.getPtName(), ".............", smq3.getRelationImpactType())); 
+														mapReport.put(cpt++, new ReportLineDataDto("PT", smq3.getPtCode() + "", smq3.getPtName(), ".............", smq3.getRelationImpactType(), smq3.getPtTermScope() + "")); 
 													}
 											}
 											 
 											
 										}
-										if (level.equals("Child SMQ")) {
-											smqSearched = smqBaseTargetService.findByCode(smqC.getSmqCode());
+										if (level.equals("Child SMQ")) {										
+											smqSearched = smqBaseTargetService.findByCode(Long.parseLong(smqC.getSmqCode() + ""));
 											if (smqSearched != null) {
-												List<SmqRelationTarget> list = smqBaseTargetService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
-												if (list != null)
-													for (SmqRelationTarget smq3 : list) {
-														mapReport.put(cpt++, new ReportLineDataDto("PT", smq3.getPtCode() + "", smq3.getPtName(), ".............", smq3.getRelationImpactType())); 
+												List<SmqRelation190> test3 =  smqBaseService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
+							 					System.out.println("\n ************ test size for " + smqSearched.getSmqName() + " = " + test3.size());
+								 					
+							 					if (test3 != null) {
+													for (SmqRelation190 tt3 : test3) {
+														if (tt3.getSmqLevel() == 4) {
+															level = "PT";
+														} else if (tt3.getSmqLevel() == 5) {
+															level = "LLT";
+														} else if (tt3.getSmqLevel() == 0) {
+															level = "Child SMQ";
+														} 
+									 					
+														mapReport.put(cpt++, new ReportLineDataDto(level, tt3.getPtCode() + "", tt3.getPtName(), ".........................", tt3.getRelationImpactType())); 
+														
+														if (level.equals("Child SMQ")) {										
+															smqSearched = smqBaseTargetService.findByCode(Long.parseLong(tt3.getPtCode() + ""));
+															if (smqSearched != null) {
+																List<SmqRelation190> otherChilds =  smqBaseService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
+											 					System.out.println("\n ************ test size for " + smqSearched.getSmqName() + " = " + test3.size());
+											 					
+											 					
+											 					if (test3 != null) {
+																	for (SmqRelation190 other : otherChilds) {
+																		if (other.getSmqLevel() == 4) {
+																			level = "PT";
+																		} else if (other.getSmqLevel() == 5) {
+																			level = "LLT";
+																		} else if (other.getSmqLevel() == 0) {
+																			level = "Child SMQ";
+																		} 
+													 					
+																		mapReport.put(cpt++, new ReportLineDataDto(level, other.getPtCode() + "", other.getPtName(), ".........................", other.getRelationImpactType())); 
+
+																	}
+											 					}
+															}
+														}
 													}
+							 					}
 											}
 										}		
 										if (level.equals("SMQ1")) {
@@ -652,7 +732,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 												List<SmqRelationTarget> list = smqBaseTargetService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
 												if (list != null)
 													for (SmqRelationTarget smq3 : list) {
-														mapReport.put(cpt++, new ReportLineDataDto("PT", smq3.getPtCode() + "", smq3.getPtName(), ".............", smq3.getRelationImpactType())); 
+														mapReport.put(cpt++, new ReportLineDataDto("PT", smq3.getPtCode() + "", smq3.getPtName(), ".............", smq3.getRelationImpactType(), smq3.getPtTermScope() + "")); 
 													}
 											}
 										}		
@@ -935,7 +1015,55 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 														List<SmqRelationTarget> list = smqBaseTargetService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
 														if (list != null)
 															for (SmqRelationTarget smq3 : list) {
-																mapReport.put(cpt++, new ReportLineDataDto("PT", smq3.getPtCode() + "", smq3.getPtName(), ".............", smq3.getRelationImpactType())); 
+																
+																
+																if (smqSearched.getSmqLevel() == 0) {										
+																	smqSearched = smqBaseTargetService.findByCode(Long.parseLong(smq3.getPtCode() + ""));
+																	if (smqSearched != null) {
+																		List<SmqRelation190> test3 =  smqBaseService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
+													 					System.out.println("\n ************ test size for " + smqSearched.getSmqName() + " = " + test3.size());
+														 					
+													 					if (test3 != null) {
+																			for (SmqRelation190 tt3 : test3) {
+																				if (tt3.getSmqLevel() == 4) {
+																					level = "PT";
+																				} else if (tt3.getSmqLevel() == 5) {
+																					level = "LLT";
+																				} else if (tt3.getSmqLevel() == 0) {
+																					level = "Child SMQ";
+																				} 
+															 					
+																				mapReport.put(cpt++, new ReportLineDataDto(level, tt3.getPtCode() + "", tt3.getPtName(), ".........................", tt3.getRelationImpactType())); 
+																				
+																				if (level.equals("Child SMQ")) {										
+																					smqSearched = smqBaseTargetService.findByCode(Long.parseLong(tt3.getPtCode() + ""));
+																					if (smqSearched != null) {
+																						List<SmqRelation190> otherChilds =  smqBaseService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
+																	 					System.out.println("\n ************ test size for " + smqSearched.getSmqName() + " = " + test3.size());
+																	 					
+																	 					
+																	 					if (test3 != null) {
+																							for (SmqRelation190 other : otherChilds) {
+																								if (other.getSmqLevel() == 4) {
+																									level = "PT";
+																								} else if (other.getSmqLevel() == 5) {
+																									level = "LLT";
+																								} else if (other.getSmqLevel() == 0) {
+																									level = "Child SMQ";
+																								} 
+																			 					
+																								mapReport.put(cpt++, new ReportLineDataDto(level, other.getPtCode() + "", other.getPtName(), ".........................", other.getRelationImpactType())); 
+
+																							}
+																	 					}
+			 																		}
+																				}
+																			}
+													 					}
+																		}
+																}
+																//mapReport.put(cpt++, new ReportLineDataDto("PT", smq3.getPtCode() + "", smq3.getPtName(), ".............", smq3.getRelationImpactType())); 
+																
 															}
 													}
 													List<Long> codes = new ArrayList<>();
@@ -946,15 +1074,20 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 													String levelS = "";
 													if (smqSearched.getSmqLevel() == 3) {
 														levelS = "SMQ3";
-													} else if ((smqSearched.getSmqLevel() == 4)
-															|| (smqSearched.getSmqLevel() == 0)
-															|| (smqSearched.getSmqLevel() == 5)) {
-														levelS = "PT";
 													}
+//													} else if (smqSearched.getSmqLevel() == 0) {
+//														levelS = "Child SMQ";
+													//} 
+												else if (smqSearched.getSmqLevel() == 4) {
+ 														levelS = "PT";
+													} else if (smqSearched.getSmqLevel() == 5) {
+ 														levelS = "LLT";
+													}
+													
 													List<SmqBaseTarget> smqChildren = smqBaseTargetService.findChildSmqByParentSmqCodes(codes);
 													if (smqChildren != null)
 														for (SmqBaseTarget child : smqChildren) {
-															mapReport.put(cpt++, new ReportLineDataDto("SMQ3", child.getSmqCode() + "", child.getSmqName(), ".............", child.getImpactType())); 
+															mapReport.put(cpt++, new ReportLineDataDto(levelS, child.getSmqCode() + "", child.getSmqName(), ".............", child.getImpactType())); 
 															
 															smqSearched = smqBaseTargetService.findByCode(child.getSmqCode());
 															if (smqSearched != null) {
@@ -962,6 +1095,8 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 																if (list != null)
 																	for (SmqRelationTarget smq3 : list) {
 																		mapReport.put(cpt++, new ReportLineDataDto("PT", smq3.getPtCode() + "", smq3.getPtName(), "....................", smq3.getRelationImpactType())); 
+																	
+																		
 																	}
 															}
 														}
@@ -984,20 +1119,43 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 														List<SmqRelationTarget> list = smqBaseTargetService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
 														if (list != null)
 															for (SmqRelationTarget smq3 : list) {
-																mapReport.put(cpt++, new ReportLineDataDto("PT", smq3.getPtCode() + "", smq3.getPtName(), ".............", smq3.getRelationImpactType())); 
+																if (smq3.getSmqLevel() == 4) {
+																	level = "PT";
+																} else if (smq3.getSmqLevel() == 5) {
+																	level = "LLT";
+																} else if (smq3.getSmqLevel() == 0) {
+																	level = "Child SMQ";
+																} 
+																mapReport.put(cpt++, new ReportLineDataDto(level, smq3.getPtCode() + "", smq3.getPtName(), ".............", smq3.getRelationImpactType())); 
 															}
 													}
 												}
-												if (level.equals("Child SMQ")) {
+												/*if (level.equals("Child SMQ")) {
 													smqSearched = smqBaseTargetService.findByCode(smqC.getSmqCode());
 													if (smqSearched != null) {
 														List<SmqRelationTarget> list = smqBaseTargetService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
 														if (list != null)
 															for (SmqRelationTarget smq3 : list) {
 																mapReport.put(cpt++, new ReportLineDataDto("PT", smq3.getPtCode() + "", smq3.getPtName(), ".............", smq3.getRelationImpactType())); 
+															
+																smqSearched = smqBaseTargetService.findByCode(smq3.getSmqCode());
+																if (smqSearched != null) {
+																	level = "PT";
+																	List<SmqRelationTarget> childOfSMQ = smqBaseTargetService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
+																	if (list != null) 
+																		for (SmqRelationTarget child : childOfSMQ) {
+																			if (child.getSmqLevel() == 4)
+																				level = "PT";
+																			if (child.getSmqLevel() == 5)
+																				level = "LLT";
+																				
+																			mapReport.put(cpt++, new ReportLineDataDto(level, child.getPtCode() + "", child.getPtName(), "...................", child.getRelationImpactType(), child.getPtTermScope() + "")); 
+																		}
+																}
 															}
 													}
-												}		
+												}	*/
+												
 											}
 									}
 								}
@@ -1288,6 +1446,10 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 			
 			// Cell 5
 			cell = row.createCell(5);
+			cell.setCellValue(line.getScope() != null ? interpretCqtBaseScope(line.getScope()) : "");	
+			
+			// Cell 6
+			cell = row.createCell(6);
 			cell.setCellValue(impact);	
 			
 			//rowCount++;
@@ -1298,6 +1460,18 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 		
 		
 	}
+	 public String interpretCqtBaseScope(String scopeVal) {
+	        if("2".equals(scopeVal))
+	            return "Narrow";
+	        else if("2".equals(scopeVal))
+	            return "Broad";
+	        else if("3".equals(scopeVal))
+	            return "Child Narrow";
+	        else if("4".equals(scopeVal))
+	            return "Full";
+	        return "";
+	    }
+	
 	
 	 private String getMeddraDictTargetImpactDesc(MeddraDictHierarchySearchDto ent, String lvl) {
 	        if("LLT".equals(lvl)) {

@@ -1053,15 +1053,15 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		rowCount++;
 		row = worksheet.createRow(rowCount);
 		cell = row.createCell(0);
-		cell.setCellValue("Designee: " + details.getDesignee());
+		cell.setCellValue("Designee: " + details.getDesignee() != null ? details.getDesignee() : "");
 		rowCount++;
 		row = worksheet.createRow(rowCount);
 		cell = row.createCell(0);
-		cell.setCellValue("Designee 2: " + details.getDesigneeTwo());
+		cell.setCellValue("Designee 2: " + details.getDesigneeTwo() != null ? details.getDesigneeTwo() : "");
 		rowCount++;
 		row = worksheet.createRow(rowCount);
 		cell = row.createCell(0);
-		cell.setCellValue("Designee 3: " + details.getDesigneeThree());
+		cell.setCellValue("Designee 3: " + details.getDesigneeThree() != null ? details.getDesigneeThree() : "");
 		rowCount++;
 		row = worksheet.createRow(rowCount);
 		cell = row.createCell(0);

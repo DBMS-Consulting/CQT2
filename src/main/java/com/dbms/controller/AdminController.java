@@ -574,7 +574,7 @@ public class AdminController implements Serializable {
 			System.out.println("val -> " + val);
 			System.out.println("ref -> " + ref.getSerialNum().doubleValue());
 			
-			if (valS > ref.getSerialNum().doubleValue()) {
+			if (valS >= ref.getSerialNum().doubleValue()) {
 				continue;
 			}
 			

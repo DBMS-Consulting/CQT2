@@ -53,6 +53,16 @@ public class ReportLineDataDto {
 		this.dots = dots;
 		this.impact = impact;
 	}
+	
+	public ReportLineDataDto(String level, String code, String term, String dots, String impact, String scope) {
+		super();
+		this.term = term;
+		this.code = code;
+		this.level = level;
+		this.dots = dots;
+		this.impact = impact;
+		this.scope = scope;
+	}
 
 	public ReportLineDataDto(String level, String code, String term, String dots, MeddraDictHierarchySearchDto meddra) {
 		super();
