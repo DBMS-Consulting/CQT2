@@ -223,19 +223,22 @@ public class ImpactSearchController implements Serializable {
 	 * Generate Excel report on target datatable.
 	 */
 	public void generateExcel() {
-		String dict = "";
+		String dict = "", dictTarget = "";
 		RefConfigCodeList currentMeddraVersionCodeList = this.refCodeListService.getCurrentMeddraVersion();
+		RefConfigCodeList targetMeddraVersionCodeList = this.refCodeListService.getTargetMeddraVersion();
 		if (currentMeddraVersionCodeList != null)
 			dict = currentMeddraVersionCodeList.getValue();
+		if (targetMeddraVersionCodeList != null)
+			dictTarget = targetMeddraVersionCodeList.getValue();
 		StreamedContent content = null;
 		if (selectedImpactedCmqList != null)
-			content = cmqBaseTargetService.generateCMQExcel(selectedImpactedCmqList, dict);
+			content = cmqBaseTargetService.generateCMQExcel(selectedImpactedCmqList, dictTarget);
 		if (selectedNotImpactedCmqList != null)
-			content = cmqBaseTargetService.generateCMQExcel(selectedNotImpactedCmqList, dict);
+			content = cmqBaseTargetService.generateCMQExcel(selectedNotImpactedCmqList, dictTarget);
 		if (selectedImpactedSmqList != null)
-			content = smqBaseTargetService.generateSMQExcel(selectedImpactedSmqList, dict);
+			content = smqBaseTargetService.generateSMQExcel(selectedImpactedSmqList, dictTarget);
 		if (selectedNotImpactedSmqList != null)
-			content = smqBaseTargetService.generateSMQExcel(selectedNotImpactedSmqList, dict);
+			content = smqBaseTargetService.generateSMQExcel(selectedNotImpactedSmqList, dictTarget);
 		setExcelFile(content); 
 	}
 	
