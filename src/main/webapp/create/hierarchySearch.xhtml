@@ -15,7 +15,7 @@
                     rendered="#{paramParentExtension ne 'PRO' and paramParentExtension ne 'CPT' and paramParentExtension ne 'DME'}"
                     value="#{paramDlgCtrl.filterLevel}" appendTo="@this">
 
-                    <f:selectItems itemLabel="#{level.value}" value="#{impactSearchController.levelListForIA}"
+                    <f:selectItems itemLabel="#{level.value}" value="#{createController.levelListProtocol}"
                         itemValue="#{level.codelistInternalValue}" var="level"></f:selectItems>
                     <p:ajax update="check search-direction" />
                 </p:selectOneMenu>

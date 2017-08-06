@@ -37,6 +37,7 @@ import com.dbms.util.MeddraDictLevelHelper;
 import static com.dbms.util.MeddraDictLevelHelper.SEARCH_MEDDRA_BASE_REVERSE;
 
 import com.dbms.util.SMQLevelHelper;
+import com.ibm.icu.impl.locale.Extension;
 
 /**
  * @date Feb 7, 2017 7:39:34 AM
@@ -73,7 +74,8 @@ public class CmqBaseHierarchySearchVM {
     private boolean searchDownDisabled;
     
     private boolean enableRadioButtons;
-	
+    
+ 	
 	public CmqBaseHierarchySearchVM(ICmqBase190Service cmqBaseSvc,
 			ISmqBaseService smqBaseSvc,
 			IMeddraDictService meddraDictSvc,
@@ -85,7 +87,7 @@ public class CmqBaseHierarchySearchVM {
 		
 		myHierarchyRoot = new DefaultTreeNode("root", new HierarchyNode("LEVEL",
 				"NAME", "CODE", null), null);
-        
+		        
         searchDirection = SEARCH_DIRECTION_UP; //UP
       
 		enableRadioButtons = true;
@@ -381,6 +383,12 @@ public class CmqBaseHierarchySearchVM {
 	public void resetHS(AjaxBehaviorEvent event) {
 		myHierarchyRoot = new DefaultTreeNode("root", new HierarchyNode("LEVEL", "NAME", "CODE", null), null);
 		setFilterLevel("PT");
+//		if (!extension.equals("PRO") && !extension.equals("CPT") && !extension.equals("DME"))
+//			setFilterLevel("PRO");
+//		
+//		if (extension.equals("PRO") && extension.equals("CPT") && extension.equals("DME"))
+//			setFilterLevel("PT");
+		
 		setFilterTermName("");
 		 
 		searchDirection = SEARCH_DIRECTION_UP;
@@ -603,4 +611,6 @@ public class CmqBaseHierarchySearchVM {
 	public void setEnableRadioButtons(boolean enableRadioButtons) {
 		this.enableRadioButtons = enableRadioButtons;
 	}
+
+ 
 }

@@ -1479,6 +1479,16 @@ public class CreateController implements Serializable {
 		
 		return levels;
 	}
+	
+
+	public List<RefConfigCodeList> getLevelListProtocol() {
+		cqtCacheManager.removeAllFromCache(CACHE_NAME);
+
+		List<RefConfigCodeList> levels = refCodeListService.findByConfigType(
+				CqtConstants.CODE_LIST_TYPE_DICTIONARY_LEVELS, OrderBy.ASC);
+		 
+		return levels;
+	}
 
 	
 	//--------------------- Getters and Setters -----------------------
