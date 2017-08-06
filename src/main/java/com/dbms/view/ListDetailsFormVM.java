@@ -1,9 +1,12 @@
 package com.dbms.view;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
 
 import org.apache.commons.lang.StringUtils;
@@ -17,10 +20,6 @@ import com.dbms.service.IRefCodeListService;
 import com.dbms.util.CqtConstants;
 import com.dbms.util.OrderBy;
 import com.dbms.util.SWJSFRequest;
-import java.util.ArrayList;
-import java.util.Collections;
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
 
 /**
  * "Create/Update/Browse&Search" module's "Details" tab form data 
@@ -204,6 +203,7 @@ public class ListDetailsFormVM {
 			cmq.setCmqState(CmqBase190.CMQ_STATE_VALUE_DRAFT);
 			cmq.setCmqGroup("No Group");
 			if(wizardType == WizardType.CopyWizard) {
+				cmq.setImpactType(null);
 				//remove product ids since these are new products for the copied cmq
 				List<CmqProductBaseCurrent> products = cmq.getProductsList();
 				for (CmqProductBaseCurrent cmqProductBaseCurrent : products) {
