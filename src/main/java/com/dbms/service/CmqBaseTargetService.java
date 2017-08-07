@@ -1024,8 +1024,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 																		List<SmqRelationTarget> childSMQs =  smqBaseTargetService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
  													 					
 													 					for (SmqRelationTarget smqTest : childSMQs) {
-														 					System.out.println("\n @ :  " + smqTest.getPtName());
-																			level = getLevelFromValue(smqTest.getSmqLevel());
+ 																			level = getLevelFromValue(smqTest.getSmqLevel());
 
 								 											mapReport.put(cpt++, new ReportLineDataDto(level, smqTest.getPtCode() + "", smqTest.getPtName(), "..........................", smqTest.getPtTermScope() + "", smqTest.getPtTermWeight() + "", smqTest.getPtTermCategory())); 
 													 					  
@@ -1037,8 +1036,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 																			List<SmqBaseTarget> smqChildren = smqBaseTargetService.findChildSmqByParentSmqCodes(codes);
 																			if (smqChildren != null) {
 																				for (SmqBaseTarget child : smqChildren) {
-																 					System.out.println("\n $ :  " + child.getSmqName());
-																					mapReport.put(cpt++, new ReportLineDataDto(getLevelFromValue(child.getSmqLevel()), child.getSmqCode() + "", child.getSmqName(), ".............................", child.getImpactType())); 
+ 																					mapReport.put(cpt++, new ReportLineDataDto(getLevelFromValue(child.getSmqLevel()), child.getSmqCode() + "", child.getSmqName(), ".............................", child.getImpactType())); 
 		  																		}
 																			}
 								 											
@@ -1210,8 +1208,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 																					smqSearched22 = smqBaseService.findByCode(Long.parseLong(tt2.getPtCode() + ""));
 																					if (smqSearched22 != null) {
 																						List<SmqRelation190> test4 =  smqBaseService.findSmqRelationsForSmqCode(smqSearched22.getSmqCode());
-																	 					System.out.println("\n ************ test4 size for " + smqSearched22.getSmqName() + " = " + test4.size());
-																	 					
+ 																	 					
 																						if (test4 != null) {
 																							for (SmqRelation190 tt4 : test4) {
 																								if (tt4.getSmqLevel() == 4) {
