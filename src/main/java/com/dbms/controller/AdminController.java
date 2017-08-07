@@ -540,12 +540,12 @@ public class AdminController implements Serializable {
  		List<RefConfigCodeList> refList = refCodeListService.findAllByConfigType(codelistConfigType, OrderBy.ASC);
 		List<RefConfigCodeList> refListToSave = new ArrayList<RefConfigCodeList>();
         
-       // final Long lastSavedId = savedRef.getId();
+        final Long lastSavedId = savedRef.getId();
         
         /**
          * Since default codeList is always #1, don't need to sort. Codelist already ordered by serial #
          */
-		/*if (refList != null && !refList.isEmpty()) {
+		if (refList != null && !refList.isEmpty()) {
             refList.sort(new Comparator<RefConfigCodeList> () {
                 @Override
                 public int compare(RefConfigCodeList o1, RefConfigCodeList o2) {
@@ -565,7 +565,8 @@ public class AdminController implements Serializable {
                     }
                     return c;
                 }
-            });*/
+            });
+		}
  
 		// Adding ref to save inside list
 		double valS = val;
@@ -574,7 +575,7 @@ public class AdminController implements Serializable {
 			System.out.println("val -> " + val);
 			System.out.println("ref -> " + ref.getSerialNum().doubleValue());
 			
-			if (valS >= ref.getSerialNum().doubleValue()) {
+			if (valS > ref.getSerialNum().doubleValue()) {
 				continue;
 			}
 			
