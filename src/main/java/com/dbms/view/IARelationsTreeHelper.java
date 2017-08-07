@@ -1090,7 +1090,12 @@ public class IARelationsTreeHelper {
         boolean currentList = ("current".equalsIgnoreCase(smqType));
 		List<? extends IEntity> childRelations = null;
  		if(currentList) {
-			childRelations = this.smqBaseCurrentService.findSmqRelationsForSmqCode(smqCode);
+ 			if (StringUtils.isNotBlank(scopeFilter) && (scopeFilter.equals(CSMQBean.SCOPE_NARROW) || scopeFilter.equals(CSMQBean.SCOPE_BROAD)
+		   			 || scopeFilter.equals(CSMQBean.SCOPE_FULL))) {
+	    		childRelations = this.smqBaseCurrentService.findSmqRelationsForSmqCodeAndScope(smqCode, scopeFilter);
+	    	} else {
+	    		childRelations = this.smqBaseCurrentService.findSmqRelationsForSmqCode(smqCode);
+	    	}
 		} else {
 			if (StringUtils.isNotBlank(scopeFilter) && (scopeFilter.equals(CSMQBean.SCOPE_NARROW) || scopeFilter.equals(CSMQBean.SCOPE_BROAD)
 		   			 || scopeFilter.equals(CSMQBean.SCOPE_FULL))) {
