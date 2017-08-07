@@ -615,7 +615,7 @@ public class SmqBaseService extends CqtPersistenceService<SmqBase190> implements
 					.append(smqCode)
 					.append(" Query used was ->")
 					.append(queryString);
-			LOG.error(msg.toString(), e);
+		//	LOG.error(msg.toString(), e);
 		} finally {
 			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
 		}
