@@ -1155,6 +1155,9 @@ public class IARelationsTreeHelper {
 						SmqBaseTarget childSmq = new SmqBaseTarget();
 						childSmq.setSmqCode(childRelation.getPtCode().longValue());
 						childSmq.setSmqName(childRelation.getPtName());
+						childRelationNode.setScope(null != childRelation.getPtTermScope() ? childRelation.getPtTermScope().toString() : "");
+                        childRelationNode.setCategory(null != childRelation.getPtTermCategory() ? childRelation.getPtTermCategory() : "");
+                        childRelationNode.setWeight(null != childRelation.getPtTermWeight()? childRelation.getPtTermWeight().toString() : "");
 						childRelationNode.setLevel("Child SMQ");
 						childRelationNode.setEntity(childSmq);
 						isChildSmqNode = true;
@@ -1592,7 +1595,6 @@ public class IARelationsTreeHelper {
 		}
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void populateSmqBaseChildren(Long smqCode, TreeNode expandedTreeNode, String smqType, String uiSourceOfEvent) {
 		boolean isRootListNode = isRootListNode(expandedTreeNode);
         boolean bCurrentList = "current".equalsIgnoreCase(smqType);

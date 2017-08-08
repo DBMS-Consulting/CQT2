@@ -1665,11 +1665,19 @@ public class CreateController implements Serializable {
 	}
 
 	public boolean isDemoteDisabled() {
-		if (selectedData != null
-				&& (CmqBase190.CMQ_STATE_VALUE_REVIEWED.equalsIgnoreCase(selectedData.getCmqState())
-						|| CmqBase190.CMQ_STATE_VALUE_APPROVED.equalsIgnoreCase(selectedData.getCmqState())))
+		String userGroup = authService.getGroupMembershipHeader();
+		/**
+         * Restrictions on users from  REQUESTOR and ADMIN groups
+         */
+		if(userGroup == null) { 
+			return true;
+		} else if(!userGroup.contains(AuthenticationService.REQUESTER_GROUP) 
+				&& ((selectedData != null) && (CmqBase190.CMQ_STATE_VALUE_REVIEWED.equalsIgnoreCase(selectedData.getCmqState())
+						|| CmqBase190.CMQ_STATE_VALUE_APPROVED.equalsIgnoreCase(selectedData.getCmqState())))) {
 			return false;
-		return true;
+		} else {
+			return true;
+		}
 	}
 
 	public boolean isDeleteDisabled() {
