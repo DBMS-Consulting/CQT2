@@ -449,6 +449,9 @@ public class AdminController implements Serializable {
                     throw new Exception("Active flag for default codelist cannot be set to 'N'");
                 }
             }
+            if ("N".equalsIgnoreCase(myFocusRef.getDefaultFlag()) && myFocusRef.getSerialNum().compareTo(BigDecimal.valueOf(1L)) == 0) {
+            	throw new Exception("The serial# can be set to 1 only for default codelist value.");
+            }
 			if (myFocusRef.getId() != null){
 				myFocusRef.setLastModificationDate(lastModifiedDate);
 				myFocusRef.setLastModifiedBy(lastModifiedByString);
