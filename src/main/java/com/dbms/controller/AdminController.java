@@ -573,24 +573,29 @@ public class AdminController implements Serializable {
  
 		// Adding ref to save inside list
 		double valS = val;
+		boolean decrease = false;
+		RefConfigCodeList searchForDefault = refCodeListService.findById(myFocusRef.getId());
+		if (searchForDefault != null)
+			if (valS > searchForDefault.getSerialNum().doubleValue())
+				decrease = true;
+
 		refListToSave.add(savedRef);
-		for (RefConfigCodeList ref : refList) {
-			System.out.println("val -> " + val);
-			System.out.println("ref -> " + ref.getSerialNum().doubleValue());
-			
+		System.out.println("#serial to save -> " + val);
+		for (RefConfigCodeList ref : refList) {			
 			if (valS > ref.getSerialNum().doubleValue()) {
 				continue;
 			}
-			
 
-//			if (savedRef.getId().equals(ref.getId()))
-//				continue;
+			if (decrease && val == valS) {
+				val--;
+				decrease = false;
+				System.out.println("decreasing val to save -> " + val);
+			}
 
 			ref.setSerialNum(new BigDecimal(val++));
 			refListToSave.add(ref);
-
-			System.out.println("REF     : #" + ref.getSerialNum().doubleValue()
-					+ ", code : " + ref.getCodelistInternalValue());
+			
+ 
 		}
 
 		if (!refListToSave.isEmpty()) {
