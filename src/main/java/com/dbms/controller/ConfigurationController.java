@@ -146,6 +146,13 @@ public class ConfigurationController implements Serializable {
 
 		products = refCodeListService.findByConfigType(
 				CqtConstants.CODE_LIST_TYPE_DICTIONARY_LEVELS, OrderBy.ASC);
+		
+	 
+		RefConfigCodeList levelToRemove = refCodeListService.findByConfigTypeAndInternalCode(CqtConstants.CODE_LIST_TYPE_DICTIONARY_LEVELS, "NC-LLT");
+		
+		if (levelToRemove != null)
+			products.remove(levelToRemove);
+		
 		if (products == null) {
 			products = new ArrayList<>();
 		}

@@ -1490,6 +1490,51 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 							}
 		 				}
 					}
+ 						
+ 						/**
+ 						 * 
+ 						 * LLT.
+ 						 */
+ 						if (relation.getLltCode() != null) {
+ 							List<Long> lltCodesList = new ArrayList<>();
+ 							lltCodesList.add(relation.getLltCode());
+ 							List<MeddraDictHierarchySearchDto> llts = meddraDictService
+ 									.findByCodes("LLT_", lltCodesList);
+ 							for (MeddraDictHierarchySearchDto llt : llts) {
+ 								mapReport.put(
+ 										cpt++,
+ 										new ReportLineDataDto("LLT", llt
+ 												.getCode() + "", llt.getTerm(),
+ 												"", llt));
+ 							}
+ 						}
+ 						
+ 						/**
+ 						 * 
+ 						 * PT
+ 						 */
+ 						if (relation.getPtCode() != null) {
+ 							List<Long> ptCodesList = new ArrayList<>();
+ 							ptCodesList.add(relation.getPtCode());
+ 							List<MeddraDictHierarchySearchDto> pts = this.meddraDictService.findByCodes("PT_", ptCodesList);
+ 							for (MeddraDictHierarchySearchDto pt : pts) {
+ 								mapReport.put(cpt++, new ReportLineDataDto("PT", pt.getCode() + "", pt.getTerm(), "", pt));  
+ 		 						
+ 								/**
+ 								 * LLT.
+ 								 */
+ 								List<MeddraDictHierarchySearchDto> listPT =  meddraDictService.findChildrenByParentCode("LLT_", "PT_", Long.valueOf(pt.getCode()));
+ 								List<Long> hlgtCodesList = new ArrayList<>();
+ 								for (MeddraDictHierarchySearchDto meddra : listPT) {
+ 									hlgtCodesList.add(Long.parseLong(meddra.getCode())); 
+ 								}
+
+ 								List<MeddraDictHierarchySearchDto> llts = this.meddraDictService.findByCodes("LLT_", hlgtCodesList);
+ 		 						for (MeddraDictHierarchySearchDto llt : llts) {
+ 		 							mapReport.put(cpt++, new ReportLineDataDto("LLT", llt.getCode() + "", llt.getTerm(), "......", llt));
+ 								}
+ 							}
+ 						}
 				}
 			}
 		}
@@ -1594,7 +1639,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 	 public String interpretCqtBaseScope(String scopeVal) {
 	        if("2".equals(scopeVal))
 	            return "Narrow";
-	        else if("2".equals(scopeVal))
+	        else if("1".equals(scopeVal))
 	            return "Broad";
 	        else if("3".equals(scopeVal))
 	            return "Child Narrow";
