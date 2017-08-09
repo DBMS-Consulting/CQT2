@@ -12,7 +12,7 @@
 			<p:outputLabel value="Level" for="levelH" />
             <h:panelGroup>
                 <p:selectOneMenu id="levelH" label="Level"
-                    rendered="#{paramParentExtension ne 'PRO' and paramParentExtension ne 'CPT' and paramParentExtension ne 'DME' or paramParentExtension eq 'TME'}"
+                    rendered="#{paramParentExtension ne 'PRO' and paramParentExtension ne 'CPT' and paramParentExtension ne 'DME' and paramParentExtension ne 'TME'}"
                     value="#{paramDlgCtrl.filterLevel}" appendTo="@this">
 
                     <f:selectItems itemLabel="#{level.value}" value="#{createController.levelListProtocol}"
@@ -20,7 +20,7 @@
                     <p:ajax update="check search-direction" />
                 </p:selectOneMenu>
                 <p:selectOneMenu id="levelH2" label="Level"
-                    rendered="#{paramParentExtension eq 'PRO' or paramParentExtension eq 'CPT' or paramParentExtension eq 'DME' or paramParentExtension eq 'TME'}"
+                    rendered="#{paramParentExtension eq 'PRO' or paramParentExtension eq 'CPT' or paramParentExtension eq 'DME'  or paramParentExtension eq 'TME'}"
                     value="#{paramDlgCtrl.filterLevel}" appendTo="@this">
 
                     <f:selectItems itemLabel="#{level.value}" value="#{createController.levelListWithoutProtocol}"  
