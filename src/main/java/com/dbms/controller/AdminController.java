@@ -566,6 +566,15 @@ public class AdminController implements Serializable {
 				throw new Exception(
 						"The serial# can be set to 1 only for default codelist value.");
 			}
+			 
+			// Increasing #serial
+			if (oldCodelist != null && myFocusRef.getSerialNum().compareTo(oldCodelist.getSerialNum()) == 1) {
+				System.out.println("\n #### Increasing");
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN,	"This re-ordering of Serial Number is not currently allowed.",	"");
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+				return;
+			}
+			 
 			if (myFocusRef.getId() != null) {
 				myFocusRef.setLastModificationDate(lastModifiedDate);
 				myFocusRef.setLastModifiedBy(lastModifiedByString);
@@ -589,8 +598,7 @@ public class AdminController implements Serializable {
 								.getCombinedMappedGroupMembershipAsString());
 				saved = true;
 			}
-			updateSerialNumbers(myFocusRef.getCodelistConfigType(), myFocusRef,
-					oldCodelist);
+			updateSerialNumbers(myFocusRef.getCodelistConfigType(), myFocusRef, oldCodelist);
 			String type = "";
 
 			if (myFocusRef.getCodelistConfigType().equals(
@@ -669,120 +677,100 @@ public class AdminController implements Serializable {
 		myFocusRef = new RefConfigCodeList();
 	}
 
-	private void updateSerialNumbers(String codelistConfigType,
-			RefConfigCodeList savedRef, RefConfigCodeList oldCodelist) {
-		double val = savedRef.getSerialNum().doubleValue();
-		
-		List<RefConfigCodeList> refList = refCodeListService
-				.findAllByConfigType(codelistConfigType, OrderBy.ASC);
+	private void updateSerialNumbers(String codelistConfigType, RefConfigCodeList savedRef, RefConfigCodeList oldRef) {
+ 		double val = savedRef.getSerialNum().doubleValue();
+		System.out.println("********************* serialSaved :  " + savedRef.getSerialNum().doubleValue());
+		if (oldRef != null)
+			System.out.println(" ******************** Old #serial :  " + oldRef.getSerialNum().doubleValue());
+ 		List<RefConfigCodeList> refList = refCodeListService.findAllByConfigType(codelistConfigType, OrderBy.ASC);
 		List<RefConfigCodeList> refListToSave = new ArrayList<RefConfigCodeList>();
-		Map<BigDecimal, RefConfigCodeList> map = new HashMap<BigDecimal, RefConfigCodeList>();
-		Map<BigDecimal, RefConfigCodeList> mapLast = new HashMap<BigDecimal, RefConfigCodeList>();
-
-
-		final Long lastSavedId = savedRef.getId();
-
-		/**
-		 * Since default codeList is always #1, don't need to sort. Codelist
-		 * already ordered by serial #
-		 */
-//		if (refList != null && !refList.isEmpty()) {
-//			refList.sort(new Comparator<RefConfigCodeList>() {
-//				@Override
-//				public int compare(RefConfigCodeList o1, RefConfigCodeList o2) {
-//					// make sure Default values always comes first in the list
-//					if ("Y".equalsIgnoreCase(o1.getDefaultFlag())
-//							&& "Y".equalsIgnoreCase(o1.getActiveFlag()))
-//						return -1;
-//					else if ("Y".equalsIgnoreCase(o2.getDefaultFlag())
-//							&& "Y".equalsIgnoreCase(o2.getActiveFlag()))
-//						return 1;
-//
-//					// then compare by serial number
-//					int c = Double.compare(o1.getSerialNum().doubleValue(), o2
-//							.getSerialNum().doubleValue());
-//					if (c == 0) {
-//						if (Objects.equals(o1.getId(), lastSavedId))
-//							return -1;
-//						else if (Objects.equals(lastSavedId, o2.getId()))
-//							return 1;
-//					}
-//					return c;
-//				}
-//			});
-//		}
-
+        
+        final Long lastSavedId = savedRef.getId();
+        
+        /**
+         * Since default codeList is always #1, don't need to sort. Codelist already ordered by serial #
+         */
+		if (refList != null && !refList.isEmpty()) {
+            refList.sort(new Comparator<RefConfigCodeList> () {
+                @Override
+                public int compare(RefConfigCodeList o1, RefConfigCodeList o2) {
+                    // make sure Default values always comes first in the list
+                    if("Y".equalsIgnoreCase(o1.getDefaultFlag()) && "Y".equalsIgnoreCase(o1.getActiveFlag()))
+                        return -1;
+                    else if("Y".equalsIgnoreCase(o2.getDefaultFlag()) && "Y".equalsIgnoreCase(o2.getActiveFlag()))
+                        return 1;
+                    
+                    // then compare by serial number
+                    int c = Double.compare(o1.getSerialNum().doubleValue(), o2.getSerialNum().doubleValue());
+                    if(c == 0) {
+                        if(Objects.equals(o1.getId(), lastSavedId))
+                            return -1;
+                        else if(Objects.equals(lastSavedId, o2.getId()))
+                            return 1;
+                    }
+                    return c;
+                }
+            });
+		}
+ 
+		// Adding ref to save inside list
 		double valS = val;
+		refListToSave.add(savedRef);
 		
-		if (val > oldCodelist.getSerialNum().doubleValue())
-			val = oldCodelist.getSerialNum().doubleValue();
-		
-		//if ()
-		 
-		System.out.println("#serial to save -> " + val);
-		map.put(savedRef.getSerialNum(), savedRef);
-		
-		if (refList != null && !refList.isEmpty())
-			if (val > Double.parseDouble(refList.size() + "")) {
-				val = Double.parseDouble(refList.size() + "");
-				valS = val;
-			} 
-
-		for (RefConfigCodeList ref : refList) {
-//			if (myFocusRef.getSerialNum().doubleValue() == val)
-//				val++;
-			if (valS > ref.getSerialNum().doubleValue()) {
-				map.put(ref.getSerialNum(), ref);
-			}
-			else {
- 				if (savedRef.getId().equals(ref.getId())) {
-					map.put(savedRef.getSerialNum(), savedRef);
-					val = oldCodelist.getSerialNum().doubleValue();
-				}
-				else {
-// 					ref.setSerialNum(new BigDecimal(val));
-// 					map.put(ref.getSerialNum(), ref);
-// 					
-// 					val++;
- 				}
- 			}
-		}
-		refListToSave = new ArrayList<> (map.values());
-		for (RefConfigCodeList r : new ArrayList<>(map.values())) {
-			System.out.println("**** # num, code : " +  r.getSerialNum() + ", " + r.getCodelistInternalValue());
-		}
-		//val--;
-		for (RefConfigCodeList r : refList) {
-			if (map.get(r) != null)
-				continue;
-			mapLast.put(new BigDecimal(val), r);
-			val++;
-		}
-		
-		for (RefConfigCodeList r : new ArrayList<>(mapLast.values())) {
-			System.out.println("__________________ # num, code : " +  r.getSerialNum() + ", " + r.getCodelistInternalValue());
+ 		boolean increase = false, decrease = false;
+ 		if (oldRef != null) {
+			if (valS > oldRef.getSerialNum().doubleValue())
+				increase = true;
 			
-			map.put(r.getSerialNum(), r);
-  		}
-  		
-		if (!map.isEmpty()) {
-			refListToSave = new ArrayList<> (map.values());
-			try {
-				refCodeListService.update(refListToSave, this.authService
-						.getUserCn(), this.authService.getUserGivenName(),
-						this.authService.getUserSurName(), this.authService
-								.getCombinedMappedGroupMembershipAsString());
-			} catch (CqtServiceException e) {
-				e.printStackTrace();
-				FacesMessage msg = new FacesMessage(
-						FacesMessage.SEVERITY_ERROR,
-						"An error occurred while saving the codelist",
-						"Error: " + e.getMessage());
-				FacesContext.getCurrentInstance().addMessage(null, msg);
-			}
+			if (valS < oldRef.getSerialNum().doubleValue())
+				decrease = true;
 		}
 		
-	}
+		//Decreasing  #serial
+			System.out.println("\n #### Decreasing");
+//			for (RefConfigCodeList ref : refList) {			
+//				if (valS > ref.getSerialNum().doubleValue()) {
+//					continue;
+//				}
+//				
+//				ref.setSerialNum(new BigDecimal(val++));
+//				refListToSave.add(ref);
+// 
+//			}
+			
+			for (RefConfigCodeList ref : refList) {			
+				if (valS > ref.getSerialNum().doubleValue()) {
+					continue;
+				}
+ 
+				if (decrease) {
+ 					decrease = false;
+					System.out.println("\n\n****decreasing val to save -> " + val);
+				}
+				
+				ref.setSerialNum(new BigDecimal(val));
+				refListToSave.add(ref);		
+				
+				val++;
+			}
+
+			if (!refListToSave.isEmpty()) {
+				try {
+					refCodeListService.update(refListToSave, this.authService
+							.getUserCn(), this.authService.getUserGivenName(),
+							this.authService.getUserSurName(), this.authService
+									.getCombinedMappedGroupMembershipAsString());
+				} catch (CqtServiceException e) {
+					e.printStackTrace();
+					FacesMessage msg = new FacesMessage(
+							FacesMessage.SEVERITY_ERROR,
+							"An error occurred while saving the codelist",
+							"Error: " + e.getMessage());
+					FacesContext.getCurrentInstance().addMessage(null, msg);
+				}
+			}
+		
+  	}
 
 	public void generateConfigReport() {
 		StreamedContent content = refCodeListService

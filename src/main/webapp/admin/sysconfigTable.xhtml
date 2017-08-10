@@ -73,7 +73,7 @@
 					style="width: 100px !important;  float: left" />
 
 				<p:outputLabel value="Value" styleClass="label-right" />
-				<p:inputText required="true" label="Value"
+				<p:inputText required="true" label="Value" disabled="#{adminController.ref.codelistInternalValue eq 'LDAP_PASSWORD'}"
 					value="#{adminController.ref.value}"
 					style="width: 300px !important; float: left; " />
 
