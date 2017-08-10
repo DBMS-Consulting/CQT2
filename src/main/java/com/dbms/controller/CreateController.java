@@ -1484,6 +1484,11 @@ public class CreateController implements Serializable {
 
 		List<RefConfigCodeList> levels = refCodeListService.findByConfigType(
 				CqtConstants.CODE_LIST_TYPE_DICTIONARY_LEVELS, OrderBy.ASC);
+		
+		
+		RefConfigCodeList levelToRemove = refCodeListService.findByConfigTypeAndInternalCode(CqtConstants.CODE_LIST_TYPE_DICTIONARY_LEVELS, "NC-LLT");
+		if (levelToRemove != null)
+			levels.remove(levelToRemove);
 		 
 		return levels;
 	}

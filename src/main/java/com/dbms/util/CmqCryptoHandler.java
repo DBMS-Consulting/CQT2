@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 public class CmqCryptoHandler {
 	private static final Logger LOG = LoggerFactory.getLogger(CmqCryptoHandler.class);
 	
-	private static final String TOKEN_KEY = "TOKEN_KEY";
+	private static final String TOKEN_KEY = "OpenCqt#123";
 	private static final String ALGORITHM = "PBEWITHMD5ANDDES";
 	private StandardPBEStringEncryptor encryptor;
 	
@@ -54,7 +54,7 @@ public class CmqCryptoHandler {
 				return this.encryptor.encrypt(plainText);
 			} catch (Exception e) {
 				LOG.error("An error occured while encrypting plain text {}", plainText, e);
-				return null;
+				return e.getMessage();
 			}
 		} else {
 			return null; 
