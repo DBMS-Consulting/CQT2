@@ -380,6 +380,10 @@ public class CmqBaseHierarchySearchVM {
 		}
 	}
 	
+	public void selectLevelEvent(AjaxBehaviorEvent event) {
+		handleSearchDirection();
+	}
+	
 	public void resetHS(AjaxBehaviorEvent event) {
 		myHierarchyRoot = new DefaultTreeNode("root", new HierarchyNode("LEVEL", "NAME", "CODE", null), null);
 		setFilterLevel("PT");
