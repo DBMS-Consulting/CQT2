@@ -4,9 +4,12 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
@@ -38,6 +41,7 @@ import com.dbms.service.base.CqtPersistenceService;
 import com.dbms.util.CqtConstants;
 import com.dbms.util.OrderBy;
 import com.dbms.util.exceptions.CqtServiceException;
+
 import java.util.HashSet;
 
 @ManagedBean(name = "RefCodeListService")
@@ -616,8 +620,13 @@ public class RefCodeListService extends
 		cell = row.createCell(0);
 		cell.setCellValue("Report Date:");
 		cell = row.createCell(1);
-		cell.setCellValue(cal.get(Calendar.DATE) + "-"
-				+ cal.get(Calendar.MONTH) + "-" + cal.get(Calendar.YEAR));
+		DateFormat dateFormat = DateFormat.getDateTimeInstance(
+		        DateFormat.LONG,
+		        DateFormat.LONG, new Locale("EN","en"));
+		
+//		cell.setCellValue(cal.get(Calendar.DATE) + "-"
+//				+ cal.get(Calendar.MONTH) + "-" + cal.get(Calendar.YEAR));
+		cell.setCellValue(dateFormat.format(new Date()));
 		rowCount += 2;
 
 		row = worksheet.createRow(rowCount);
