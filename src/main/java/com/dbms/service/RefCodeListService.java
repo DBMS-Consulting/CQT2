@@ -626,7 +626,8 @@ public class RefCodeListService extends
 		
 //		cell.setCellValue(cal.get(Calendar.DATE) + "-"
 //				+ cal.get(Calendar.MONTH) + "-" + cal.get(Calendar.YEAR));
-		cell.setCellValue(dateFormat.format(new Date()));
+		//cell.setCellValue(dateFormat.format(new Date()));
+		cell.setCellValue(new Date().toString());
 		rowCount += 2;
 
 		row = worksheet.createRow(rowCount);
