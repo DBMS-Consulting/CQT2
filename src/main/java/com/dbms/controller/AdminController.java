@@ -573,6 +573,7 @@ public class AdminController implements Serializable {
 			RefConfigCodeList savedRefConfigCodeList = myFocusRef;
 			boolean wasSerialNumAdjusted = false;
 			double actualSerialNumUsed = 0.0d;
+			boolean newAddedInMiddle = false;
 			if (myFocusRef.getId() != null) {
 				myFocusRef.setLastModificationDate(lastModifiedDate);
 				myFocusRef.setLastModifiedBy(lastModifiedByString);
@@ -600,6 +601,9 @@ public class AdminController implements Serializable {
 						myFocusRef.setSerialNum(new BigDecimal(nextSerialNum));
 						actualSerialNumUsed = nextSerialNum;
 						wasSerialNumAdjusted=true;
+					} else if(myFocusRef.getSerialNum().doubleValue() < nextSerialNum) {
+						//make a copy of the saved one and
+						newAddedInMiddle = true;
 					}
 				}
 				refCodeListService.create(myFocusRef, this.authService
@@ -612,7 +616,11 @@ public class AdminController implements Serializable {
 								.getCodelistInternalValue());
 				saved = true;
 			}
-			updateSerialNumbers(savedRefConfigCodeList.getCodelistConfigType(), savedRefConfigCodeList, oldCodelist);
+			if(newAddedInMiddle) {
+				updateSerialNumberOfNewAdd(savedRefConfigCodeList.getCodelistConfigType(), savedRefConfigCodeList);
+			} else {
+				updateSerialNumbers(savedRefConfigCodeList.getCodelistConfigType(), savedRefConfigCodeList, oldCodelist);
+			}
 			String type = "";
 
 			if (myFocusRef.getCodelistConfigType().equals(
@@ -700,6 +708,70 @@ public class AdminController implements Serializable {
 		}
 		myFocusRef = new RefConfigCodeList();
 	}
+
+	private void updateSerialNumberOfNewAdd(String codelistConfigType, RefConfigCodeList savedRef) {
+ 		double newVal = savedRef.getSerialNum().doubleValue();
+ 		double val = newVal;
+
+		System.out.println("updateSerialNumberOfNewAdd new value " + savedRef.getSerialNum().doubleValue() + " for " + savedRef.getCodelistInternalValue());
+		
+ 		List<RefConfigCodeList> refList = refCodeListService.findAllByConfigType(codelistConfigType, OrderBy.ASC);
+		//List<RefConfigCodeList> refListToSave = new ArrayList<RefConfigCodeList>();
+        
+ 		if (refList != null && !refList.isEmpty()) {
+            refList.sort(new Comparator<RefConfigCodeList> () {
+                @Override
+                public int compare(RefConfigCodeList o1, RefConfigCodeList o2) {
+                	// make sure Default values always comes first in the list
+                    if("Y".equalsIgnoreCase(o1.getDefaultFlag()) && "Y".equalsIgnoreCase(o1.getActiveFlag()))
+                        return -1;
+                    else if("Y".equalsIgnoreCase(o2.getDefaultFlag()) && "Y".equalsIgnoreCase(o2.getActiveFlag()))
+                        return 1;
+                    
+                    return Double.compare(o1.getSerialNum().doubleValue(), o2.getSerialNum().doubleValue());
+                }
+            });
+		}
+ 		
+        final Long lastSavedId = savedRef.getId();
+        boolean matchFound = false;
+        if(refList != null && !refList.isEmpty()) {
+    		for (RefConfigCodeList refConfigCodeList : refList) {
+				if(!matchFound && (refConfigCodeList.getId().longValue() == lastSavedId.longValue())) {
+					matchFound = true;
+					System.out.println("updateSerialNumberOfNewAdd match found decrease..." + refConfigCodeList.getCodelistInternalValue());
+					continue;
+				} else if (refConfigCodeList.getSerialNum().doubleValue() == newVal){
+					BigDecimal newSerialNum = new BigDecimal(++val);
+					System.out.println("updateSerialNumberOfNewAdd incrementing " + refConfigCodeList.getCodelistInternalValue() + " from " 
+											+ refConfigCodeList.getSerialNum().doubleValue() + " to " + newSerialNum.doubleValue());
+					refConfigCodeList.setSerialNum(newSerialNum);
+				} else if(matchFound) {
+					BigDecimal newSerialNum = new BigDecimal(++val);
+					System.out.println("updateSerialNumberOfNewAdd incrementing " + refConfigCodeList.getCodelistInternalValue() + " from " 
+											+ refConfigCodeList.getSerialNum().doubleValue() + " to " + newSerialNum.doubleValue());
+					refConfigCodeList.setSerialNum(newSerialNum);
+				}
+			}
+        }
+        
+		if (matchFound) {
+			try {
+				refCodeListService.update(refList, this.authService
+						.getUserCn(), this.authService.getUserGivenName(),
+						this.authService.getUserSurName(), this.authService
+								.getCombinedMappedGroupMembershipAsString());
+			} catch (CqtServiceException e) {
+				e.printStackTrace();
+				FacesMessage msg = new FacesMessage(
+						FacesMessage.SEVERITY_ERROR,
+						"An error occurred while saving the codelist",
+						"Error: " + e.getMessage());
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+			}
+		}
+		
+  	}
 
 	private void updateSerialNumbers(String codelistConfigType, RefConfigCodeList savedRef, RefConfigCodeList oldRef) {
  		double newVal = savedRef.getSerialNum().doubleValue();
