@@ -788,6 +788,9 @@ public class AdminController implements Serializable {
 			
 			if (newVal < oldRef.getSerialNum().doubleValue())
 				decrease = true;
+		} else if(savedRef.getSerialNum().doubleValue() == 1.0d) {
+			//new add at 1
+			decrease = true;
 		}
 		
  		List<RefConfigCodeList> refList = refCodeListService.findAllByConfigType(codelistConfigType, OrderBy.ASC);
