@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -1006,7 +1007,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 
 		worksheet = workbook.createSheet("MQ Report");
 		XSSFRow row = null;
-		int rowCount = 4;
+		int rowCount = 6;
 
 		try {
 			insertExporLogoImage(worksheet, workbook);
@@ -1106,17 +1107,24 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		rowCount++;
 		row = worksheet.createRow(rowCount);
 		cell = row.createCell(0);
-		cell.setCellValue("Initial Creation Date: " + details.getCreationDate());
-		rowCount++;
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(details.getCreationDate());
+		String creationDate = cal.get(Calendar.YEAR) + "-" + getTwoDigits(cal.get(Calendar.MONTH) + 1) + "-" + getTwoDigits(cal.get(Calendar.DAY_OF_MONTH)) 
+				+ " " + getTwoDigits(cal.get(Calendar.HOUR)) + ":" + getTwoDigits(cal.get(Calendar.MINUTE)) + ":" + getTwoDigits(cal.get(Calendar.SECOND));
+		cell.setCellValue("Initial Creation Date: " + creationDate);
+ 		rowCount++;
 		row = worksheet.createRow(rowCount);
 		cell = row.createCell(0);
 		cell.setCellValue("Last Modified By: " + details.getLastModifiedBy());
 		rowCount++;
 		row = worksheet.createRow(rowCount);
 		cell = row.createCell(0);
-		cell.setCellValue("Last Modification Date: "
-				+ details.getLastModifiedDate());
-
+		cal = Calendar.getInstance();
+		cal.setTime(details.getLastModifiedDate());
+		System.out.println("******* DATE : " + details.getLastModifiedDate());
+		String modificationDate = cal.get(Calendar.YEAR) + "-" + getTwoDigits(cal.get(Calendar.MONTH) + 1) + "-" + getTwoDigits(cal.get(Calendar.DAY_OF_MONTH)) 
+				+ " " + getTwoDigits(cal.get(Calendar.HOUR)) + ":" + getTwoDigits(cal.get(Calendar.MINUTE)) + ":" + getTwoDigits(cal.get(Calendar.SECOND));
+ 		cell.setCellValue("Last Modification Date: " + modificationDate);
 		rowCount++;
 		row = worksheet.createRow(rowCount);
 		cell = row.createCell(0);
@@ -1853,6 +1861,13 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		}
 	}
 	
+	private String getTwoDigits(int number) {
+		if (number < 10)
+			return "0"+number;
+		else return number+"";
+		
+	}
+	
 	private int fillReport(Map<Integer, ReportLineDataDto> mapReport, XSSFCell cell, XSSFRow row, int rowCount, XSSFSheet worksheet) {
 		int cpt = 0;
 		LOG.info("Writing {} ReportLineDataDtos." , mapReport.size());
@@ -1938,7 +1953,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		final Drawing drawing = sheet.createDrawingPatriarch();
 
 		final ClientAnchor anchor = helper.createClientAnchor();
-		anchor.setAnchorType(ClientAnchor.MOVE_AND_RESIZE);
+		anchor.setAnchorType(ClientAnchor.DONT_MOVE_AND_RESIZE);
 
 		final int pictureIndex = wb.addPicture(stream,
 				Workbook.PICTURE_TYPE_PNG);
