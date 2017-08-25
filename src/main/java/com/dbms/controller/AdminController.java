@@ -792,7 +792,11 @@ public class AdminController implements Serializable {
 		
  		List<RefConfigCodeList> refList = refCodeListService.findAllByConfigType(codelistConfigType, OrderBy.ASC);
 		//List<RefConfigCodeList> refListToSave = new ArrayList<RefConfigCodeList>();
-        
+ 		double modifiedSrNo = -1d;
+        if(newVal > refList.size()) {
+        	modifiedSrNo = refList.size();
+        	System.out.println("Defaulting new valeu to " + modifiedSrNo + " as it is mroe than max in list.");
+        }
  		if (refList != null && !refList.isEmpty()) {
             refList.sort(new Comparator<RefConfigCodeList> () {
                 @Override
@@ -831,12 +835,23 @@ public class AdminController implements Serializable {
     			}
         	} else if(increase) {
         		double oldVal = oldRef.getSerialNum().doubleValue();
-        		for(int i=(int)(newVal - 1); i>=(oldVal -1); i--) {
+        		double start = newVal;
+        		double end = oldVal;
+        		if(modifiedSrNo != -1) {
+        			start = modifiedSrNo;
+        		}
+        		for(int i=(int)(start - 1); i>=(end -1); i--) {
         			System.out.println("i = " + i);
         			RefConfigCodeList refConfigCodeList = refList.get(i);
         			if(!matchFound && (refConfigCodeList.getId().longValue() == lastSavedId.longValue())) {
     					matchFound = true;
     					System.out.println("match found increase..." + refConfigCodeList.getCodelistInternalValue());
+    					if(modifiedSrNo != -1) {
+    						BigDecimal newSerialNum = new BigDecimal(modifiedSrNo);
+    						System.out.println("modifiedSrNo is not -1....changing " + refConfigCodeList.getCodelistInternalValue() + " from " 
+													+ refConfigCodeList.getSerialNum().doubleValue() + " to " + modifiedSrNo);
+    						refConfigCodeList.setSerialNum(newSerialNum);
+    					}
     					continue;
     				} else if (refConfigCodeList.getSerialNum().doubleValue() == newVal){
     					double existingval = refConfigCodeList.getSerialNum().doubleValue();
