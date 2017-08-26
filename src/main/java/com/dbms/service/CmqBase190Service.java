@@ -1398,8 +1398,6 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 													//smqChildren = smqBaseService.findChildSmqByParentSmqCodes(codes);
 													
 													
-													
-													
 													smqSearched = smqBaseService.findByCode(child.getSmqCode());
 													if (smqSearched != null) {
 														List<SmqRelation190> list = smqBaseService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());

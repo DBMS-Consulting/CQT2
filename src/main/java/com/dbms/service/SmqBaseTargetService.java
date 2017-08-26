@@ -288,6 +288,32 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 	
 	@Override
 	@SuppressWarnings("unchecked")
+	public List<SmqRelationTarget> findSmqRelationsForSmqCodeOrderByName(Long smqCode) {
+		List<SmqRelationTarget> retVal = null;
+		StringBuilder sb = new StringBuilder();
+		sb.append("from SmqRelationTarget c where c.smqCode = :smqCode order by c.ptName asc");
+		
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		try {
+			Query query = entityManager.createQuery(sb.toString());
+			query.setParameter("smqCode", smqCode);
+			retVal = query.getResultList();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg
+					.append("An error occurred while findSmqRelationsForSmqCode ")
+					.append(smqCode)
+					.append(" Query used was ->")
+					.append(sb.toString());
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
+	
+	@Override
+	@SuppressWarnings("unchecked")
 	public List<SmqRelationTarget> findSmqRelationsForSmqCodeAndScope(Long smqCode, String scope) {
 		List<SmqRelationTarget> retVal = null;
 		StringBuilder sb = new StringBuilder();
@@ -377,6 +403,31 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 		List<SmqBaseTarget> retVal = null;
 		StringBuilder sb = new StringBuilder();
 		sb.append("from SmqBaseTarget c where c.smqParentCode in (:smqParentCodes) order by c.smqParentCode");
+		
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		try {
+			Query query = entityManager.createQuery(sb.toString());
+			query.setParameter("smqParentCodes", smqCodes);
+			retVal = query.getResultList();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg
+					.append("An error occurred while findChildSmqByParentSmqCodes ")
+					.append(smqCodes)
+					.append(" Query used was ->")
+					.append(sb.toString());
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
+	
+	@Override
+	public List<SmqBaseTarget> findChildSmqByParentSmqCodesOrderByName(List<Long> smqCodes) {
+		List<SmqBaseTarget> retVal = null;
+		StringBuilder sb = new StringBuilder();
+		sb.append("from SmqBaseTarget c where c.smqParentCode in (:smqParentCodes) order by c.smqName");
 		
 		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
 		try {
