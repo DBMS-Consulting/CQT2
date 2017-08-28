@@ -19,7 +19,7 @@ public interface ISmqBaseTargetService {
 	List<Map<String, Object>> findSmqRelationsCountForSmqCodes(List<Long> smqCodes);
 
 	List<SmqRelationTarget> findSmqRelationsForSmqCode(Long smqCode);
-	public List<SmqRelationTarget> findSmqRelationsForSmqCodeOrderByName(Long smqCode);
+	//public List<SmqRelationTarget> findSmqRelationsForSmqCodeOrderByName(Long smqCode);
 
 	SmqRelationTarget findSmqRelationBySmqAndPtCode(Long smqCode, Integer ptCode);
 
