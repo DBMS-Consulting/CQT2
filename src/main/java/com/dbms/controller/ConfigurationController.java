@@ -159,6 +159,24 @@ public class ConfigurationController implements Serializable {
 		return products;
 	}
 	
+	/**
+	 * Returns levels list.
+	 * 
+	 * @return
+	 */
+	public List<RefConfigCodeList> getAllLevelList() {
+		cqtCacheManager.removeAllFromCache(CACHE_NAME);
+
+		List<RefConfigCodeList> levels = refCodeListService.findByConfigType(
+				CqtConstants.CODE_LIST_TYPE_DICTIONARY_LEVELS, OrderBy.ASC);
+		
+	  
+		if (levels == null) {
+			levels = new ArrayList<>();
+		}
+		return levels;
+	}
+	
 	
 	public RefConfigCodeList getCurrentMeddraVersion() {
 		this.currentMeddraVersionCodeList = refCodeListService.getCurrentMeddraVersion();

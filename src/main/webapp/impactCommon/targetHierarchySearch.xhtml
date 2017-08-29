@@ -13,7 +13,7 @@
 			<p:selectOneMenu id="levelHT" label="Level" appendTo="@this"
                              value="#{impactSearchController.targetHierarchySearchDlgModel.filterLevel}">
 				 
-				<f:selectItems itemLabel="#{level.value}" value="#{configMB.levelList}"
+				<f:selectItems itemLabel="#{level.value}" value="#{configMB.allLevelList}"
 					itemValue="#{level.codelistInternalValue}" var="level"></f:selectItems>
 					<!-- <f:selectItem itemLabel="Non Current LLT" itemValue="NC-LLT"></f:selectItem> -->
 				<p:ajax update="checkTarget search-direction" />
