@@ -610,7 +610,7 @@ public class MeddraDictTargetService extends CqtPersistenceService<MeddraDictTar
 				+ " from (select MEDDRA_DICT_ID, " + termColumnName + ", " + codeColumnName 
 				+ ", PRIMARY_PATH_FLAG, MOVED_PT, MOVED_LLT, NEW_PT, PROMOTED_PT, NEW_LLT, DEMOTED_LLT, PROMOTED_LLT, PRIMARY_SOC_CHANGE, DEMOTED_PT, LLT_CURRENCY_CHANGE, PT_NAME_CHANGED"
 				+ ", LLT_NAME_CHANGED, NEW_SUCCESSOR_PT, NEW_HLT, NEW_HLGT, MOVED_HLT, MOVED_HLGT, HLGT_NAME_CHANGED, HLT_NAME_CHANGED, SOC_NAME_CHANGED, MERGED_HLT, MERGED_HLGT"
-				+ ", row_number() over (partition by " + codeColumnName + " order by MEDDRA_DICT_ID) rn"
+				+ ", row_number() over (partition by " + codeColumnName + " order by MEDDRA_DICT_ID, term) rn"
                 + " from MEDDRA_DICT_TARGET mt"
                 + " inner join tempCodes on tempCodes.code=mt." + codeColumnName
 				+ " ) where rn = 1";

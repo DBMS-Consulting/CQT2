@@ -265,7 +265,7 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 	public List<SmqRelationTarget> findSmqRelationsForSmqCode(Long smqCode) {
 		List<SmqRelationTarget> retVal = null;
 		StringBuilder sb = new StringBuilder();
-		sb.append("from SmqRelationTarget c where c.smqCode = :smqCode order by c.smqLevel asc");
+		sb.append("from SmqRelationTarget c where c.smqCode = :smqCode order by c.smqLevel asc, c.ptName asc");
 		
 		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
 		try {
@@ -402,7 +402,7 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 	public List<SmqBaseTarget> findChildSmqByParentSmqCodes(List<Long> smqCodes) {
 		List<SmqBaseTarget> retVal = null;
 		StringBuilder sb = new StringBuilder();
-		sb.append("from SmqBaseTarget c where c.smqParentCode in (:smqParentCodes) order by c.smqParentCode");
+		sb.append("from SmqBaseTarget c where c.smqParentCode in (:smqParentCodes) order by c.smqParentCode, c.smqName");
 		
 		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
 		try {
@@ -766,6 +766,10 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 		cell.setCellValue("Scope");
 		setCellStyleColumn(workbook, cell);
 		rowCount++;
+		cell = row.createCell(6);
+		cell.setCellValue("Impact Type");
+		setCellStyleColumn(workbook, cell);
+		rowCount++;
 		
 		XSSFCellStyle cellStyle = workbook.createCellStyle();
 		cellStyle.setFillForegroundColor(HSSFColor.BLUE.index);
@@ -780,316 +784,205 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 
 		if (relations != null) {
 			for (SmqRelationTarget relation : relations) {
-				/**
-				 * 
-				 * SMQs
-				 */
-				if (relation.getSmqCode() != null) {
-					List<Long> smqChildCodeList = new ArrayList<>();
-					smqChildCodeList.add(relation.getSmqCode());
-
-					SmqBaseTarget smqSearched = findByCode(relation.getSmqCode());
+				
+			/**
+			 * 
+			 * SMQs
+			 */
+				
+				if (relation.getSmqLevel() == 1) {
+					level = "SMQ1";
+				} else if (relation.getSmqLevel() == 2) {
+					level = "SMQ2";
+				} else if (relation.getSmqLevel() == 3) {
+					level = "SMQ3";
+				} else if (relation.getSmqLevel() == 3) {
+					level = "SMQ4";
+				} else if (relation.getSmqLevel() == 3) {
+					level = "SMQ5";
+				} else if (relation.getSmqLevel() == 4) {
+					level = "PT";
+				} else if (relation.getSmqLevel() == 5) {
+					level = "LLT";
+				} else if (relation.getSmqLevel() == 0) {
+					level = "Child SMQ";
+				}
+				
+				row = worksheet.createRow(rowCount);
+				buildChildCellsSMQ(level, relation.getPtCode() + "", relation.getPtName(), relation.getPtTermCategory(), relation.getPtTermWeight() + "", relation.getPtTermScope() + "",  cell, row, "", relation.getRelationImpactType(), cellStyle); 
+				setCellStyleColumn(workbook, cell); 
+				rowCount++;
+					
+				if (level.equals("SMQ1")) {
+					SmqBaseTarget smqSearched = findByCode(Long.parseLong(relation.getPtCode() + "")); 
 					if (smqSearched != null) {
-						List<SmqBaseTarget> smqBaseList = findByLevelAndTerm(smqSearched.getSmqLevel(),	smqSearched.getSmqName());
-						if (smqBaseList != null) {
-							for (SmqBaseTarget smq : smqBaseList) {
-								if (smq.getSmqLevel() == 1) {
-									level = "SMQ1";
-								} else if (smq.getSmqLevel() == 2) {
+						List<SmqRelationTarget> list = findSmqRelationsForSmqCode(smqSearched.getSmqCode());
+						if (list != null)
+							for (SmqRelationTarget smq3 : list) {
+								if (smq3.getSmqLevel() == 2) {
 									level = "SMQ2";
-								} else if (smq.getSmqLevel() == 3) {
+								} else if (smq3.getSmqLevel() == 3) {
 									level = "SMQ3";
-								} else if (smq.getSmqLevel() == 4) {
+								} else if (smq3.getSmqLevel() == 3) {
 									level = "SMQ4";
-								} else if (smq.getSmqLevel() == 5) {
+								} else if (smq3.getSmqLevel() == 3) {
 									level = "SMQ5";
-								}
+								} else if (smq3.getSmqLevel() == 4) {
+									level = "PT";
+								} else if (smq3.getSmqLevel() == 5) {
+									level = "LLT";
+								} else if (smq3.getSmqLevel() == 0) {
+									level = "Child SMQ";
+									}
 								row = worksheet.createRow(rowCount);
-								buildCells(level, smq.getSmqCode() + "", smq.getSmqName(), cell, row, smq.getImpactType(), cellStyle); 
+								buildChildCellsSMQ(level, smq3.getSmqCode() + "", smq3.getPtName(), smq3.getPtTermCategory(), smq3.getPtTermWeight() + "", smq3.getPtTermScope() + "",  cell, row, "..........", smq3.getRelationImpactType(), cellStyle); 
 								setCellStyleColumn(workbook, cell); 
 								rowCount++;
 								
-								if (level.equals("SMQ1")) {
-									smqSearched = findByCode(smq.getSmqCode());
-									if (smqSearched != null) {
-										List<SmqRelationTarget> list = findSmqRelationsForSmqCode(smqSearched.getSmqCode());
-										if (list != null)
-											for (SmqRelationTarget smq3 : list) {
-												if (smq3.getSmqLevel() == 1) {
-													level = "SMQ1";
-												} else if (smq3.getSmqLevel() == 2) {
-													level = "SMQ2";
-												} else if (smq3.getSmqLevel() == 3) {
-													level = "SMQ3";
-												} else if (smq3.getSmqLevel() == 4) {
-													level = "PT";
-												} else if (smq3.getSmqLevel() == 5) {
-													level = "LLT";
-												} else if (smq3.getSmqLevel() == 0) {
-													level = "Child SMQ";
-													System.out.println("\n ************ A");
-												}
-												row = worksheet.createRow(rowCount);
-												buildChildCellsSMQ(level, smq3.getSmqCode() + "", smq3.getPtName(), smq3.getPtTermCategory(), smq3.getPtTermWeight() + "", smq3.getPtTermScope() + "",  cell, row, "..........", smq3.getRelationImpactType(), cellStyle); 
-												setCellStyleColumn(workbook, cell); 
-												rowCount++;
-												
-												if (level.equals("Child SMQ") && smq3.getPtCode() != null) {
-													List<SmqRelationTarget> smqChildren = findSmqRelationsForSmqCode(Long.parseLong(smq3.getPtCode() + ""));
-													if (smqChildren != null)
-														for (SmqRelationTarget smqChild : smqChildren) {
-															if (smqChild.getSmqLevel() == 4)
-																level = "PT";
-															if (smqChild.getSmqLevel() == 5)
-																level = "LLT";
-															row = worksheet.createRow(rowCount);
-															buildChildCellsSMQ(level, smqChild.getSmqCode() + "", smqChild.getPtName(), smqChild.getPtTermCategory(), smqChild.getPtTermWeight() + "", smqChild.getPtTermScope() + "", cell, row, "..................", smqChild.getRelationImpactType(), cellStyle); 
-															setCellStyleColumn(workbook, cell); 
-															rowCount++;
- 
-													}
-												}
-											}
-									}
-								}		
-								
-								if (level.equals("SMQ2")) {						
-									smqSearched = findByCode(smq.getSmqCode());
-									if (smqSearched != null) {
-										List<SmqRelationTarget> list = findSmqRelationsForSmqCode(smqSearched.getSmqCode());
-										if (list != null)
-											for (SmqRelationTarget smq3 : list) {
-												row = worksheet.createRow(rowCount);
-												buildChildCellsSMQ("PT", smq3.getPtCode() + "", smq3.getPtName(), smq3.getPtTermCategory(), smq3.getPtTermWeight() + "", smq3.getPtTermScope() + "", cell, row, "............", smq3.getRelationImpactType(), cellStyle);
-												setCellStyleColumn(workbook, cell); 
-												rowCount++;
-											}
-									}
-									List<Long> codes = new ArrayList<>();
-									codes.add(smq.getSmqCode());
-									
-									
-									//Others relations
-									String levelS = "";
-									if (smqSearched.getSmqLevel() == 3) {
-										levelS = "SMQ3";
-									} 
-									else if (smqSearched.getSmqLevel() == 4) {
-										levelS = "PT";
-									} else if (smqSearched.getSmqLevel() == 5) {
-										levelS = "LLT";
-									} else if (smqSearched.getSmqLevel() == 0) {
-										levelS = "Child SMQ";
-					 					System.out.println("\n ************ E");
-									} 
-									List<SmqBaseTarget> smqChildren = findChildSmqByParentSmqCodes(codes);
+								if (level.equals("Child SMQ") && smq3.getPtCode() != null) {
+									List<SmqRelationTarget> smqChildren = findSmqRelationsForSmqCode(Long.parseLong(smq3.getPtCode() + ""));
 									if (smqChildren != null)
-										for (SmqBaseTarget child : smqChildren) {
+										for (SmqRelationTarget smqChild : smqChildren) {
+											if (smqChild.getSmqLevel() == 4)
+												level = "PT";
+											if (smqChild.getSmqLevel() == 5)
+												level = "LLT";
+											
+												
 											row = worksheet.createRow(rowCount);
-											buildChildCellsSMQ(levelS, child.getSmqCode() + "", child.getSmqName(), "", "", "",cell, row, "............", child.getImpactType(), cellStyle);
+											buildChildCellsSMQ(level, smqChild.getSmqCode() + "", smqChild.getPtName(), smqChild.getPtTermCategory(), smqChild.getPtTermWeight() + "", smqChild.getPtTermScope() + "", cell, row, "..................", smqChild.getRelationImpactType(), cellStyle); 
 											setCellStyleColumn(workbook, cell); 
 											rowCount++;
 											
-											smqSearched = findByCode(child.getSmqCode());
-											if (smqSearched != null) {
-												List<SmqRelationTarget> list = findSmqRelationsForSmqCode(smqSearched.getSmqCode());
-												if (list != null)
-													for (SmqRelationTarget smq3 : list) {
+											if (level.equals("Child SMQ") && smqChild.getPtCode() != null) {
+												smqChildren = findSmqRelationsForSmqCode(Long.parseLong(smq3.getPtCode() + ""));
+												List<SmqBaseTarget> smqChilds = findByLevelAndTerm(smqSearched.getSmqLevel(), smqChild.getPtName());
+												if (smqChildren != null)
+													for (SmqBaseTarget smqChildBis : smqChilds) {
+														if (smqChildBis.getSmqLevel() == 4)
+															level = "PT";
+														if (smqChildBis.getSmqLevel() == 5)
+															level = "LLT";
+														
+															
 														row = worksheet.createRow(rowCount);
-														buildChildCellsSMQ("PT", smq3.getPtCode() + "", smq3.getPtName(), smq3.getPtTermCategory(), smq3.getPtTermWeight() + "", smq3.getPtTermScope() + "",cell, row, ".....................", smq3.getRelationImpactType(), cellStyle);
+														buildChildCellsSMQ(level + "111", smqChildBis.getSmqCode() + "", smqChildBis.getSmqName(), "?", "" + "", "" + "", cell, row, ".........................", "", cellStyle); 
+														setCellStyleColumn(workbook, cell); 
+														rowCount++;
+													}
+											}
+									}
+								}
+							}
+					}
+				}		 
+				
+				if (level.equals("Child SMQ")) {
+					SmqBaseTarget smqSearched = findByCode(Long.parseLong(relation.getPtCode() + "")); 
+					if (smqSearched != null) {
+						List<SmqRelationTarget> list = findSmqRelationsForSmqCode(smqSearched.getSmqCode());
+						if (list != null)
+							for (SmqRelationTarget smq3 : list) {
+								if (smq3.getSmqLevel() == 4) {
+									level = "PT";
+								} else if (smq3.getSmqLevel() == 5) {
+									level = "LLT";
+								} else if (smq3.getSmqLevel() == 0) {
+									level = "Child SMQ";
+								}
+								
+								row = worksheet.createRow(rowCount);
+								buildChildCellsSMQ(level, smq3.getPtCode() + "", smq3.getPtName(), smq3.getPtTermCategory(), smq3.getPtTermWeight() + "", smq3.getPtTermScope() + "", cell, row, "...........", smq3.getRelationImpactType(), cellStyle); 
+								setCellStyleColumn(workbook, cell); 
+								rowCount++;
+								
+								if (level.equals("Child SMQ")) {
+ 									List<SmqRelationTarget> smqChilds = findSmqRelationsForSmqCode(Long.parseLong(smq3.getPtCode() + ""));
+									if (smqChilds != null)
+										for (SmqRelationTarget smqChildBis : smqChilds) {
+											if (smqChildBis.getSmqLevel() == 4)
+												level = "PT";
+											if (smqChildBis.getSmqLevel() == 5)
+												level = "LLT";
+											
+												
+											row = worksheet.createRow(rowCount);
+											buildChildCellsSMQ(level, smqChildBis.getPtCode() + "", smqChildBis.getPtName(), smqChildBis.getPtTermCategory(), smqChildBis.getPtTermWeight() + "", smqChildBis.getPtTermScope() + "", cell, row, "....................", "", cellStyle); 
+											setCellStyleColumn(workbook, cell); 
+											rowCount++;
+											
+											if (level.equals("Child SMQ")) {
+												List<SmqRelationTarget> smqChildren = findSmqRelationsForSmqCode(Long.parseLong(smqChildBis.getPtCode() + ""));
+												if (smqChilds != null)
+													for (SmqRelationTarget smqChildTer : smqChildren) {
+														if (smqChildTer.getSmqLevel() == 4)
+															level = "PT";
+														if (smqChildTer.getSmqLevel() == 5)
+															level = "LLT";
+														
+															
+														row = worksheet.createRow(rowCount);
+														buildChildCellsSMQ(level, smqChildTer.getPtCode() + "", smqChildTer.getPtName(), smqChildTer.getPtTermCategory(), smqChildTer.getPtTermWeight() + "", smqChildTer.getPtTermScope() + "", cell, row, ".............................", "", cellStyle); 
 														setCellStyleColumn(workbook, cell); 
 														rowCount++;
 													}
 											}
 										}
-									
 								}
 								
-								if (level.equals("SMQ3")) {
-									smqSearched = findByCode(smq.getSmqCode());
-									if (smqSearched != null) {
-										List<SmqRelationTarget> list = findSmqRelationsForSmqCode(smqSearched.getSmqCode());
-										if (list != null)
-											for (SmqRelationTarget smq3 : list) {
-												row = worksheet.createRow(rowCount);
-												buildChildCellsSMQ("PT", smq3.getPtCode() + "", smq3.getPtName(), smq3.getPtTermCategory(), smq3.getPtTermWeight() + "", smq3.getPtTermScope() + "",cell, row, "...............", smq3.getRelationImpactType(), cellStyle);
-												setCellStyleColumn(workbook, cell); 
-												rowCount++;
-											}
-									}
-								}
-								if (level.equals("SMQ4")) {
-									smqSearched = findByCode(smq.getSmqCode());
-									if (smqSearched != null) {
-										List<SmqRelationTarget> list = findSmqRelationsForSmqCode(smqSearched.getSmqCode());
-										if (list != null)
-											for (SmqRelationTarget smq3 : list) {
-												row = worksheet.createRow(rowCount);
-												buildChildCellsSMQ("PT", smq3.getPtCode() + "", smq3.getPtName(), smq3.getPtTermCategory(), smq3.getPtTermWeight() + "", smq3.getPtTermScope() + "",cell, row, "...............", smq3.getRelationImpactType(), cellStyle);
-												setCellStyleColumn(workbook, cell); 
-												rowCount++;
-											}
-									}
-								}
-									
-//								if (level.equals("SMQ1")) {
-//									smqSearched = findByCode(smq.getSmqCode());
-//									if (smqSearched != null) {
-//										List<SmqRelationTarget> list = findSmqRelationsForSmqCode(smqSearched.getSmqCode());
-//										if (list != null)
-//											for (SmqRelationTarget smq3 : list) {
-//												row = worksheet.createRow(rowCount);
-//												buildChildCellsSMQ("PT", smq3.getPtCode() + "", smq3.getPtName(), smq3.getPtTermCategory(), smq3.getPtTermWeight() + "", smq3.getPtTermScope() + "",cell, row, "...............", smq3.getRelationImpactType(), cellStyle);
-//												setCellStyleColumn(workbook, cell); 
-//												rowCount++;
-//											}
-//									}
-//								}	
- 
-							 
 							}
-						}
- 
 					}
-					
-					//Relations for SMQs
-					Long smqBaseChildrenCount = findChildSmqCountByParentSmqCode(relation.getSmqCode());
-					smqBaseChildrenCount = findSmqRelationsCountForSmqCode(relation.getSmqCode());
-
- 					List<SmqRelationTarget> childSmqs =  findSmqRelationsForSmqCode(relation.getSmqCode());
-
-//					if((null != childSmqs) && (childSmqs.size() > 0)) {
-//						for (SmqRelationTarget childSmq : childSmqs) {
-//							if (childSmq.getSmqLevel() == 0) {
-//								level = "Child SMQ";
-//			 					System.out.println("\n ************ C");
-//
-//							}if (childSmq.getSmqLevel() == 1) {
-//								level = "SMQ1";
-//							} else if (childSmq.getSmqLevel() == 2) {
-//								level = "SMQ2";
-//							} else if (childSmq.getSmqLevel() == 3) {
-//								level = "SMQ3";
-//							} else if (childSmq.getSmqLevel() == 4) {
-//								level = "PT";
-//							} else if (childSmq.getSmqLevel() == 5) {
-//								level = "LLT";
-//							} 
-//							
-//							row = worksheet.createRow(rowCount);
-//							buildChildCellsSMQ(level, childSmq.getPtCode() + "", childSmq.getPtName(), childSmq.getPtTermCategory(), childSmq.getPtTermWeight() + "", childSmq.getPtTermScope() + "",cell, row, "...............", childSmq.getRelationImpactType(), cellStyle);
-//							setCellStyleColumn(workbook, cell); 
-//							rowCount++;
-//
-// 							
-//							List<Long> codes = new ArrayList<>();
-//							codes.add(childSmq.getSmqCode());
-//							
-//							List<SmqBaseTarget> smqs = findChildSmqByParentSmqCodes(codes);
-//							
-//							smqSearched = findByCode(Long.parseLong(childSmq.getPtCode() + ""));
-//							if (smqSearched != null) {
-//								List<SmqRelationTarget> firstRelation = findSmqRelationsForSmqCode(smqSearched.getSmqCode());
-//								if (firstRelation != null) {
-//									for (SmqRelationTarget first : firstRelation) {
-//										if (first.getSmqLevel() == 4) {
-//											level = "PT";
-//										} else if (first.getSmqLevel() == 5) {
-//											level = "LLT";
-//										} else if (first.getSmqLevel() == 0) {
-//											level = "Child SMQ";
-//						 					System.out.println("\n ************ D");
-//
-//										} 
-//										row = worksheet.createRow(rowCount);
-//										buildChildCellsSMQ(level, first.getPtCode() + "", first.getPtName(), first.getPtTermCategory(), first.getPtTermWeight() + "", first.getPtTermScope() + "",cell, row, "...............", first.getRelationImpactType(), cellStyle);
-//										setCellStyleColumn(workbook, cell); 
-//										rowCount++;
-//										
-// 									 
-//										if (level.equals("Child SMQ")) {			
-// 											smqSearched = findByCode(Long.parseLong(first.getPtCode() + ""));
-//											if (smqSearched != null) {
-//												List<SmqRelationTarget> secondRelation =  findSmqRelationsForSmqCode(smqSearched.getSmqCode());					 					
-//							 					
-//							 					if (secondRelation != null) {
-//													for (SmqRelationTarget second : secondRelation) {
-//														if (second.getSmqLevel() == 4) {
-//															level = "PT";
-//														} else if (second.getSmqLevel() == 5) {
-//															level = "LLT";
-//														} else if (second.getSmqLevel() == 0) {
-//															level = "Child SMQ";
-//										 					System.out.println("\n ************ F");
-//														} 
-//														row = worksheet.createRow(rowCount);
-//														buildChildCellsSMQ(level, second.getPtCode() + "", second.getPtName(), second.getPtTermCategory(), second.getPtTermWeight() + "", second.getPtTermScope() + "", cell, row, "...............", second.getRelationImpactType(), cellStyle);
-//														setCellStyleColumn(workbook, cell); 
-//														rowCount++;
-//									 				 
-//														smqSearched = findByCode(Long.parseLong(second.getPtCode() + ""));
-//														
-//														if (smqSearched != null) {
-//															List<SmqRelationTarget> thirdRelation =  findSmqRelationsForSmqCode(smqSearched.getSmqCode());
-// 										 					
-//										 					if (thirdRelation != null) {
-//																for (SmqRelationTarget third : thirdRelation) {
-//																	if (third.getSmqLevel() == 4) {
-//																		level = "PT";
-//																	} else if (third.getSmqLevel() == 5) {
-//																		level = "LLT";
-//																	} else if (third.getSmqLevel() == 0) {
-//																		level = "Child SMQ";
-//													 					System.out.println("\n ************ I");
-//
-//																	} 
-//																	row = worksheet.createRow(rowCount);
-//																	buildChildCellsSMQ(level, second.getPtCode() + "", third.getPtName(), third.getPtTermCategory(), third.getPtTermWeight() + "", third.getPtTermScope() + "", cell, row, "...............", third.getRelationImpactType(), cellStyle);
-//																	setCellStyleColumn(workbook, cell); 
-//																	rowCount++;
-//																	 
-//																	if (level.equals("Child SMQ")) {										
-//																		smqSearched = findByCode(Long.parseLong(third.getPtCode() + ""));
-//																		if (smqSearched != null) {
-//																			List<SmqRelationTarget> fourthRelation =  findSmqRelationsForSmqCode(smqSearched.getSmqCode());
-// 														 					
-//														 					
-//														 					if (fourthRelation != null) {
-//																				for (SmqRelationTarget fourth : fourthRelation) {
-//																					if (fourth.getSmqLevel() == 4) {
-//																						level = "PT";
-//																					} else if (fourth.getSmqLevel() == 5) {
-//																						level = "LLT";
-//																					} else if (fourth.getSmqLevel() == 0) {
-//																						level = "Child SMQ";
-//																	 					System.out.println("\n ************ G");
-//
-//																					} 
-//																					row = worksheet.createRow(rowCount);
-//																					buildChildCellsSMQ(level, fourth.getPtCode() + "", fourth.getPtName(), fourth.getPtTermCategory(), fourth.getPtTermWeight() + "", fourth.getPtTermScope() + "",cell, row, "...............", fourth.getRelationImpactType(), cellStyle);
-//																					setCellStyleColumn(workbook, cell); 
-//																					rowCount++;
-//																				}
-//														 					}
-// 																		}
-//																	}
-//																}
-//										 					}
-//														}
-//									 					
-//													}
-//							 					}
-//  											}
-//										}
-//						 					 
-//										 
-//									}
-//								}
-//							}
-// 
-//						}
-//					}
 				}
+				
+				if (level.equals("SMQ2")) {						
+					SmqBaseTarget smqSearched = findByCode(Long.parseLong(relation.getPtCode() + ""));
+				if (smqSearched != null) {
+					List<SmqRelationTarget> list = findSmqRelationsForSmqCode(smqSearched.getSmqCode());
+					if (list != null)
+						for (SmqRelationTarget smq3 : list) {
+
+							
+							row = worksheet.createRow(rowCount);
+							buildChildCellsSMQ("PT", smq3.getPtCode() + "", smq3.getPtName(), smq3.getPtTermCategory(), smq3.getPtTermWeight() + "", smq3.getPtTermScope() + "", cell, row, "............", smq3.getRelationImpactType(), cellStyle);
+							setCellStyleColumn(workbook, cell); 
+							rowCount++;
+						}
+				}								 
+			}
+			
+			if (level.equals("SMQ3")) {
+				SmqBaseTarget smqSearched = findByCode(Long.parseLong(relation.getPtCode() + ""));
+				if (smqSearched != null) {
+					List<SmqRelationTarget> list = findSmqRelationsForSmqCode(smqSearched.getSmqCode());
+					if (list != null)
+						for (SmqRelationTarget smq3 : list) {
+							row = worksheet.createRow(rowCount);
+							buildChildCellsSMQ("PT", smq3.getPtCode() + "", smq3.getPtName(), smq3.getPtTermCategory(), smq3.getPtTermWeight() + "", smq3.getPtTermScope() + "",cell, row, "...............", smq3.getRelationImpactType(), cellStyle);
+							setCellStyleColumn(workbook, cell); 
+							rowCount++;
+						}
+				}
+			}
+			if (level.equals("SMQ4")) {
+				SmqBaseTarget smqSearched = findByCode(Long.parseLong(relation.getPtCode() + ""));
+				if (smqSearched != null) {
+					List<SmqRelationTarget> list = findSmqRelationsForSmqCode(smqSearched.getSmqCode());
+					if (list != null)
+						for (SmqRelationTarget smq3 : list) {
+							row = worksheet.createRow(rowCount);
+							buildChildCellsSMQ("PT", smq3.getPtCode() + "", smq3.getPtName(), smq3.getPtTermCategory(), smq3.getPtTermWeight() + "", smq3.getPtTermScope() + "",cell, row, "...............", smq3.getRelationImpactType(), cellStyle);
+							setCellStyleColumn(workbook, cell); 
+							rowCount++;
+						}
+				}
+			}
+		
+	
+
+				
+				 
+				
+ 
 				
 				/**
 				 * 
@@ -1286,6 +1179,10 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 		// Cell 5
 		cell = row.createCell(5);
 		cell.setCellValue(interpretCqtBaseScope(scope + ""));
+		
+		// Cell 
+		cell = row.createCell(6);
+		cell.setCellValue(impactStr);
 	}
 	
 	public String interpretCqtBaseScope(String scopeVal) {
