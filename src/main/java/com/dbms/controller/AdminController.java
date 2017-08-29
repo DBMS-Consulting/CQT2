@@ -682,7 +682,7 @@ public class AdminController implements Serializable {
 			if(wasSerialNumAdjusted) {
 				msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 						type + " '" + myFocusRef.getCodelistInternalValue()
-								+ "' is successfully saved. Serial Num updated to " + actualSerialNumUsed, "");
+								+ "' is successfully saved. Serial Num updated to " + (int)actualSerialNumUsed, "");
 			} else {
 				msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 						type + " '" + myFocusRef.getCodelistInternalValue()
