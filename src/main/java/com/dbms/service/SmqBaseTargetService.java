@@ -769,8 +769,7 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 		cell = row.createCell(6);
 		cell.setCellValue("Impact Type");
 		setCellStyleColumn(workbook, cell);
-		rowCount++;
-		
+ 		
 		XSSFCellStyle cellStyle = workbook.createCellStyle();
 		cellStyle.setFillForegroundColor(HSSFColor.BLUE.index);
 		cellStyle.setFillPattern(XSSFCellStyle.SOLID_FOREGROUND);
