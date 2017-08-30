@@ -1337,7 +1337,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 									level = "SMQ5";
 								}
 								relationsWorkerDTO.addToMapReport(cpt++, new ReportLineDataDto(level, smq.getSmqCode() + "", smq.getSmqName(), "", relation.getTermScope(),
-										(relation.getTermWeight() != null ? relation.getTermWeight() + "" : ""), relation.getTermCategory()));
+										(relation.getTermWeight() != null ? relation.getTermWeight() + "" : ""), relation.getTermCategory(), ""));
 								
 								/**
 								 * Other SMQs
@@ -1366,7 +1366,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 												List<SmqRelation190> list = smqBaseService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
 												if (list != null) {
 													for (SmqRelation190 smq3 : list) {
-														relationsWorkerDTO.addToMapReport(cpt++, new ReportLineDataDto("PT", smq3.getPtCode() + "", smq3.getPtName(), ".............", smq3.getPtTermScope() + "", smq3.getPtTermWeight() + "", smq3.getPtTermCategory())); 
+														relationsWorkerDTO.addToMapReport(cpt++, new ReportLineDataDto("PT", smq3.getPtCode() + "", smq3.getPtName(), ".............", smq3.getPtTermScope() + "", smq3.getPtTermWeight() + "", smq3.getPtTermCategory(), "")); 
 													}
 												}
 											}
@@ -1403,7 +1403,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 														List<SmqRelation190> list = smqBaseService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
 														if (list != null) {
 															for (SmqRelation190 smq3 : list) {
-																relationsWorkerDTO.addToMapReport(cpt++, new ReportLineDataDto("PT", smq3.getPtCode() + "", smq3.getPtName(), "....................", smq3.getPtTermScope() + "", smq3.getPtTermWeight() + "", smq3.getPtTermCategory())); 
+																relationsWorkerDTO.addToMapReport(cpt++, new ReportLineDataDto("PT", smq3.getPtCode() + "", smq3.getPtName(), "....................", smq3.getPtTermScope() + "", smq3.getPtTermWeight() + "", smq3.getPtTermCategory(), "")); 
 															}
 														}
 													}
@@ -1417,7 +1417,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 												List<SmqRelation190> list = smqBaseService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
 												if (list != null) {
 													for (SmqRelation190 smq3 : list) {
-														relationsWorkerDTO.addToMapReport(cpt++, new ReportLineDataDto("PT", smq3.getPtCode() + "", smq3.getPtName(), ".............", smq3.getPtTermScope() + "", smq3.getPtTermWeight() + "", smq3.getPtTermCategory())); 
+														relationsWorkerDTO.addToMapReport(cpt++, new ReportLineDataDto("PT", smq3.getPtCode() + "", smq3.getPtName(), ".............", smq3.getPtTermScope() + "", smq3.getPtTermWeight() + "", smq3.getPtTermCategory(), "")); 
 													}
 												}
 											}
@@ -1445,7 +1445,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 														List<SmqRelation190> list = smqBaseService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
 														if (list != null) {
 															for (SmqRelation190 smq3 : list) {
-																relationsWorkerDTO.addToMapReport(cpt++, new ReportLineDataDto("PT", smq3.getPtCode() + "", smq3.getPtName(), "....................", smq3.getPtTermScope() + "", smq3.getPtTermWeight() + "", smq3.getPtTermCategory())); 
+																relationsWorkerDTO.addToMapReport(cpt++, new ReportLineDataDto("PT", smq3.getPtCode() + "", smq3.getPtName(), "....................", smq3.getPtTermScope() + "", smq3.getPtTermWeight() + "", smq3.getPtTermCategory(), "")); 
 															}
 														}
 													}
@@ -1459,7 +1459,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 												List<SmqRelation190> list = smqBaseService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
 												if (list != null) {
 													for (SmqRelation190 smq3 : list) {
-														relationsWorkerDTO.addToMapReport(cpt++, new ReportLineDataDto("PT", smq3.getPtCode() + "", smq3.getPtName(), ".............", smq3.getPtTermScope() + "", smq3.getPtTermWeight() + "", smq3.getPtTermCategory())); 
+														relationsWorkerDTO.addToMapReport(cpt++, new ReportLineDataDto("PT", smq3.getPtCode() + "", smq3.getPtName(), ".............", smq3.getPtTermScope() + "", smq3.getPtTermWeight() + "", smq3.getPtTermCategory(), "")); 
 													}
 												}
 											}
@@ -1492,7 +1492,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 								level = "LLT";
 							} 
 
-							relationsWorkerDTO.addToMapReport(cpt++, new ReportLineDataDto(level, childSmq.getPtCode() + "", childSmq.getPtName(), ".......", childSmq.getPtTermScope() + "", childSmq.getPtTermWeight() + "", childSmq.getPtTermCategory())); 
+							relationsWorkerDTO.addToMapReport(cpt++, new ReportLineDataDto(level, childSmq.getPtCode() + "", childSmq.getPtName(), ".......", childSmq.getPtTermScope() + "", childSmq.getPtTermWeight() + "", childSmq.getPtTermCategory(), "")); 
 							
 							List<Long> codes = new ArrayList<>();
 							codes.add(childSmq.getSmqCode());
@@ -1511,7 +1511,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 										} else if (smq3.getSmqLevel() == 0) {
 											level = "Child SMQ";
 										} 
-										relationsWorkerDTO.addToMapReport(cpt++, new ReportLineDataDto(level, smq3.getPtCode() + "", smq3.getPtName(), ".............", smq3.getPtTermScope() + "", smq3.getPtTermWeight() + "", smq3.getPtTermCategory())); 
+										relationsWorkerDTO.addToMapReport(cpt++, new ReportLineDataDto(level, smq3.getPtCode() + "", smq3.getPtName(), ".............", smq3.getPtTermScope() + "", smq3.getPtTermWeight() + "", smq3.getPtTermCategory(), "")); 
 									
 										/**
 										 * 
@@ -1535,7 +1535,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 														} 
 									 					
 														relationsWorkerDTO.addToMapReport(cpt++, new ReportLineDataDto(level, tt.getPtCode() + "", tt.getPtName(), "...................", 
-																tt.getPtTermScope() + "", tt.getPtTermWeight() + "", tt.getPtTermCategory())); 
+																tt.getPtTermScope() + "", tt.getPtTermWeight() + "", tt.getPtTermCategory(), "")); 
 														
 														
 														smqSearched = smqBaseService.findByCode(Long.parseLong(tt.getPtCode() + ""));
@@ -1555,7 +1555,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 																	} 
 																	
 																	relationsWorkerDTO.addToMapReport(cpt++, new ReportLineDataDto(level, tt2.getPtCode() + "", tt2.getPtName(), ".......................", 
-																			tt2.getPtTermScope() + "", tt2.getPtTermWeight() + "", tt2.getPtTermCategory())); 
+																			tt2.getPtTermScope() + "", tt2.getPtTermWeight() + "", tt2.getPtTermCategory(), "")); 
 																	
 																	
 																	
@@ -1577,7 +1577,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 																					} 
 																 					
 																					relationsWorkerDTO.addToMapReport(cpt++, new ReportLineDataDto(level, tt3.getPtCode() + "", tt3.getPtName(), ".............................", 
-																							tt3.getPtTermScope() + "", tt3.getPtTermWeight() + "", tt3.getPtTermCategory())); 
+																							tt3.getPtTermScope() + "", tt3.getPtTermWeight() + "", tt3.getPtTermCategory(), "")); 
 																					
 																					 
 																 					
