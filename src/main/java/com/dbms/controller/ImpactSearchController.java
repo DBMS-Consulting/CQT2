@@ -233,13 +233,16 @@ public class ImpactSearchController implements Serializable {
 		StreamedContent content = null;
 		if (selectedImpactedCmqList != null)
 			content = cmqBaseTargetService.generateCMQExcel(selectedImpactedCmqList, dictTarget);
-		if (selectedNotImpactedCmqList != null)
+		else if (selectedNotImpactedCmqList != null)
 			content = cmqBaseTargetService.generateCMQExcel(selectedNotImpactedCmqList, dictTarget);
-		if (selectedImpactedSmqList != null)
+		else if (selectedImpactedSmqList != null)
 			content = smqBaseTargetService.generateSMQExcel(selectedImpactedSmqList, dictTarget);
-		if (selectedNotImpactedSmqList != null)
+		else if (selectedNotImpactedSmqList != null)
 			content = smqBaseTargetService.generateSMQExcel(selectedNotImpactedSmqList, dictTarget);
-		setExcelFile(content); 
+		setExcelFile(content);
+		
+		//Clean content
+		content = null;
 	}
 	
 	public void onRelationDrop() {

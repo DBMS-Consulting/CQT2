@@ -34,7 +34,7 @@ public class ReportLineDataDto {
 	 * @param term
 	 * @param dots
 	 */
-	public ReportLineDataDto(String level, String code, String term, String dots, String scope, String weight, String categ) {
+	public ReportLineDataDto(String level, String code, String term, String dots, String scope, String weight, String categ, String impact) {
 		super();
 		this.term = term;
 		this.code = code;
@@ -43,6 +43,7 @@ public class ReportLineDataDto {
 		this.weight = weight;
 		this.scope = scope;
 		this.category = categ;
+		this.impact = impact;
 	}
 	
 	public ReportLineDataDto(String level, String code, String term, String dots, String impact) {
