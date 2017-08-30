@@ -914,6 +914,8 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 														level = "PT";
 													if (smqChildBis.getSmqLevel() == 5)
 														level = "LLT";
+													if (smqChildBis.getSmqLevel() == 0)
+														level = "Child SMQ";
 													
 														
 													row = worksheet.createRow(rowCount);
@@ -929,6 +931,8 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 																	level = "PT";
 																if (smqChildTer.getSmqLevel() == 5)
 																	level = "LLT";
+																if (smqChildTer.getSmqLevel() == 0)
+																	level = "Child SMQ";
 																
 																	
 																row = worksheet.createRow(rowCount);
@@ -944,6 +948,8 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 																				level = "PT";
 																			if (smqChildQu.getSmqLevel() == 5)
 																				level = "LLT";
+																			if (smqChildQu.getSmqLevel() == 0)
+																				level = "Child SMQ";
 																			
 																				
 																			row = worksheet.createRow(rowCount);
@@ -959,6 +965,8 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 																							level = "PT";
 																						if (smqChildCq.getSmqLevel() == 5)
 																							level = "LLT";
+																						if (smqChildCq.getSmqLevel() == 0)
+																							level = "Child SMQ";
 																						
 																							
 																						row = worksheet.createRow(rowCount);
