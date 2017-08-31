@@ -1328,29 +1328,30 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 						 * 
 						 * PT
 						 */
-						if (relation.getPtCode() != null) {
-							List<Long> ptCodesList = new ArrayList<>();
-							ptCodesList.add(relation.getPtCode());
-							List<MeddraDictHierarchySearchDto> pts = this.meddraDictService.findByCodes("PT_", ptCodesList);
-							for (MeddraDictHierarchySearchDto pt : pts) {
-								mapReport.put(cpt++, new ReportLineDataDto("PT", pt.getCode() + "", pt.getTerm(), "......", pt, getImpact(pt)));
-
-								/**
-								 * LLT.
-								 */
-								List<MeddraDictHierarchySearchDto> listPT =  meddraDictService.findChildrenByParentCode("LLT_", "PT_", Long.valueOf(pt.getCode()));
-								List<Long> hlgtCodesList = new ArrayList<>();
-								for (MeddraDictHierarchySearchDto meddra : listPT) {
-									hlgtCodesList.add(Long.parseLong(meddra.getCode())); 
-								}
-
-								List<MeddraDictHierarchySearchDto> llts = this.meddraDictService.findByCodes("LLT_", hlgtCodesList);
-								if (llts != null)
-									for (MeddraDictHierarchySearchDto llt : llts) {
-										mapReport.put(cpt++, new ReportLineDataDto("LLT", llt.getCode() + "", llt.getTerm(), ".............", llt, getImpact(llt)));
-									}
-							}
-						}
+//						if (relation.getPtCode() != null) {
+//							List<Long> ptCodesList = new ArrayList<>();
+//							ptCodesList.add(relation.getPtCode());
+//							List<MeddraDictHierarchySearchDto> pts = this.meddraDictService.findByCodes("PT_", ptCodesList);
+//							for (MeddraDictHierarchySearchDto pt : pts) {
+//								System.out.println("--- getImpact(pt) for TME or PRO: " + getImpact(pt)); 
+//								mapReport.put(cpt++, new ReportLineDataDto("PT", pt.getCode() + "", pt.getTerm(), "......", pt, getImpact(pt)));
+//
+//								/**
+//								 * LLT.
+//								 */
+//								List<MeddraDictHierarchySearchDto> listPT =  meddraDictService.findChildrenByParentCode("LLT_", "PT_", Long.valueOf(pt.getCode()));
+//								List<Long> hlgtCodesList = new ArrayList<>();
+//								for (MeddraDictHierarchySearchDto meddra : listPT) {
+//									hlgtCodesList.add(Long.parseLong(meddra.getCode())); 
+//								}
+//
+//								List<MeddraDictHierarchySearchDto> llts = this.meddraDictService.findByCodes("LLT_", hlgtCodesList);
+//								if (llts != null)
+//									for (MeddraDictHierarchySearchDto llt : llts) {
+//										mapReport.put(cpt++, new ReportLineDataDto("LLT", llt.getCode() + "", llt.getTerm(), ".............", llt, getImpact(llt)));
+//									}
+//							}
+//						}
 
 						/**
 						 * 
@@ -1812,38 +1813,40 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 	}
 	
 	public String getImpact(MeddraDictHierarchySearchDto meddra) {
-		if (meddra.getCode() == null) {
+		if (meddra.getPtCode() != null)   {
 			if ( meddra.getNewPt() != null) return  meddra.getNewPt();
-			else if (meddra.getPromotedPt() != null) return meddra.getPromotedPt();
-			else if (meddra.getNewLlt() != null) return meddra.getNewLlt();
-			else if (meddra.getDemotedLlt() != null) return meddra.getDemotedLlt();
-			else if (meddra.getPromotedLlt() != null) return meddra.getPromotedLlt();
-
-			else if (meddra.getPrimarySocChange() != null) return meddra.getPrimarySocChange();
-			else if (meddra.getDemotedPt() != null) return meddra.getDemotedPt();
-			else if (meddra.getMovedLlt() != null) return meddra.getMovedLlt();
-			else if (meddra.getLltCurrencyChange() != null) return meddra.getLltCurrencyChange();
-			else if (meddra.getPtNameChanged() != null) return meddra.getPtNameChanged();
-
-			else if (meddra.getLltNameChanged() != null) return meddra.getLltNameChanged();
-			else if (meddra.getNewHlt() != null) return meddra.getNewHlt();
-			else if (meddra.getNewHlgt() != null) return meddra.getNewHlgt();
-			else if (meddra.getMovedPt() != null) return meddra.getMovedPt();
-			else if (meddra.getMovedHlt() != null) return meddra.getMovedHlt();
-
-			else if (meddra.getMovedHlgt() != null) return meddra.getMovedHlgt();
-			else if (meddra.getHlgtNameChanged()!= null) return meddra.getHlgtNameChanged();
-			else if (meddra.getHltNameChanged() != null) return meddra.getHltNameChanged();
-			else if (meddra.getSocNameChanged() != null) return meddra.getSocNameChanged();
-			else if (meddra.getMergedHlt() != null) return meddra.getMergedHlt();
-			else if (meddra.getMergedHlgt() != null) return meddra.getMergedHlgt();
-
-
-
-			else if (meddra.getNewSoc() != null) return meddra.getNewSoc();
-			else if (meddra.getNewSuccessorPt() != null) return meddra.getNewSuccessorPt();
+			if (meddra.getPromotedPt() != null) return meddra.getPromotedPt();
+			if (meddra.getDemotedPt() != null) return meddra.getDemotedPt();
+			if (meddra.getMovedPt() != null) return meddra.getMovedPt();
+			if (meddra.getNewSuccessorPt() != null) return meddra.getNewSuccessorPt();
+			if (meddra.getPtNameChanged() != null) return meddra.getPtNameChanged();
 		}
-			
+		if (meddra.getHlgtCode() != null) {
+			if (meddra.getNewHlgt() != null) return meddra.getNewHlgt();
+			if (meddra.getMergedHlgt() != null) return meddra.getMergedHlgt();
+			if (meddra.getMovedHlgt() != null) return meddra.getMovedHlgt();
+			if (meddra.getHlgtNameChanged()!= null) return meddra.getHlgtNameChanged();
+
+		}
+		if (meddra.getLltCode() != null)   {
+			if (meddra.getNewLlt() != null) return meddra.getNewLlt();
+			if (meddra.getDemotedLlt() != null) return meddra.getDemotedLlt();
+			if (meddra.getPromotedLlt() != null) return meddra.getPromotedLlt();
+			if (meddra.getMovedLlt() != null) return meddra.getMovedLlt();
+			if (meddra.getLltCurrencyChange() != null) return meddra.getLltCurrencyChange();
+			if (meddra.getLltNameChanged() != null) return meddra.getLltNameChanged();
+		}
+		if (meddra.getHltCode() != null) {
+			if (meddra.getNewHlt() != null) return meddra.getNewHlt();
+			if (meddra.getMovedHlt() != null) return meddra.getMovedHlt();
+			if (meddra.getHltNameChanged() != null) return meddra.getHltNameChanged();
+			if (meddra.getMergedHlt() != null) return meddra.getMergedHlt();
+		}
+		if (meddra.getSocCode() != null) {
+			if (meddra.getNewSoc() != null) return meddra.getNewSoc();
+			if (meddra.getSocNameChanged() != null) return meddra.getSocNameChanged();
+			if (meddra.getPrimarySocChange() != null) return meddra.getPrimarySocChange();
+		}
 		return "";
 	}
 
