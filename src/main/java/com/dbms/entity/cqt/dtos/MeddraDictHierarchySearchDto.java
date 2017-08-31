@@ -78,42 +78,8 @@ public class MeddraDictHierarchySearchDto implements IEntity {
 			
 		return code;
 	}
-	public String getImpact() {
-	if (code == null) {
-		if ( newPt!= null) return newPt;
-			if ( promotedPt!= null) return promotedPt;
-			if ( newLlt!= null) return newLlt;
-			if ( demotedLlt!= null) return demotedLlt;
-			if ( promotedLlt!= null) return promotedLlt;
-
-			if ( primarySocChange!= null) return primarySocChange;
-			if ( demotedPt!= null) return demotedPt;
-			if ( movedLlt!= null) return movedLlt;
-			if ( lltCurrencyChange!= null) return lltCurrencyChange;
-			if ( ptNameChanged!= null) return ptNameChanged;
-
-			if ( lltNameChanged!= null) return lltNameChanged;
-			if ( newHlt!= null) return newHlt;
-			if ( newHlgt!= null) return newHlgt;
-			if ( movedPt!= null) return movedPt;
-			if ( movedHlt!= null) return movedHlt;
-
-			if ( movedHlgt!= null) return movedHlgt;
-			if ( hlgtNameChanged!= null) return hlgtNameChanged;
-			if ( hltNameChanged!= null) return hltNameChanged;
-			if ( socNameChanged!= null) return socNameChanged;
-			if ( mergedHlt!= null) return mergedHlt;
-			if ( mergedHlgt!= null) return mergedHlgt;
-
-			
-
-			if ( newSoc!= null) return newSoc;
-			if ( newSuccessorPt!= null) return newSuccessorPt;
-	}
-		
-	return code;
-}
-
+	
+	
 
 	public void setCode(String code) {
 		this.code = code;
