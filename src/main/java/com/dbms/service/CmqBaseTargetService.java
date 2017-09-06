@@ -440,8 +440,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 		rowCount++;
 		row = worksheet.createRow(rowCount);
 		cell = row.createCell(0);
-		cell.setCellValue("State: " + returnStatus(selectedImpactedCmqList));
-		 
+		cell.setCellValue("State: " + returnState(selectedImpactedCmqList));
 		
 		rowCount++;
 		row = worksheet.createRow(rowCount);
@@ -481,6 +480,8 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 
 		if (relations != null) {
 			for (CmqRelationTarget relation : relations) {
+				System.out.println("\n *******   relation.getRelationImpactType() : " + relation.getRelationImpactType());
+
 				/**
 				 * 
 				 * SMQs
@@ -683,7 +684,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 					hltCodesList.add(relation.getHltCode());
 					List<MeddraDictHierarchySearchDto> hlts = this.meddraDictService.findByCodes("HLT_", hltCodesList);
 					for (MeddraDictHierarchySearchDto hlt : hlts) {
-						mapReport.put(cpt++, new ReportLineDataDto("HLT", hlt.getCode(), hlt.getTerm(), "", hlt, getImpact(hlt)));  
+						mapReport.put(cpt++, new ReportLineDataDto("HLT", hlt.getCode(), hlt.getTerm(), "", hlt, getCmqRelationImpactDesc(relation.getRelationImpactType())));  
 
 						/**
 						 * PT.
@@ -697,7 +698,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 						List<MeddraDictHierarchySearchDto> llts = this.meddraDictService.findByCodes("PT_", ptCodesList);
 						if (llts != null)
 							for (MeddraDictHierarchySearchDto pt : llts) {
-								mapReport.put(cpt++, new ReportLineDataDto("PT", pt.getCode() + "", pt.getTerm(), "......", pt, getImpact(pt))); 
+								mapReport.put(cpt++, new ReportLineDataDto("PT", pt.getCode() + "", pt.getTerm(), "......", pt, getImpact(pt, "PT"))); 
 							
 								/**
 								 * LLT.
@@ -711,7 +712,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 								List<MeddraDictHierarchySearchDto> list = this.meddraDictService.findByCodes("LLT_", lltCodesList);
 								if (list != null)
 									for (MeddraDictHierarchySearchDto llt : list) {
-										mapReport.put(cpt++, new ReportLineDataDto("LLT", llt.getCode() + "", llt.getTerm(), ".............", llt, getImpact(llt))); 
+										mapReport.put(cpt++, new ReportLineDataDto("LLT", llt.getCode() + "", llt.getTerm(), ".............", llt, getImpact(llt, "LLT"))); 
 									}
  							}
 					}
@@ -726,8 +727,8 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 					ptCodesList.add(relation.getPtCode());
 					List<MeddraDictHierarchySearchDto> pts = this.meddraDictService.findByCodes("PT_", ptCodesList);
 					for (MeddraDictHierarchySearchDto pt : pts) {
-						mapReport.put(cpt++, new ReportLineDataDto("PT", pt.getCode() + "", pt.getTerm(), "", pt, getImpact(pt)));  
- 						
+						mapReport.put(cpt++, new ReportLineDataDto("PT", pt.getCode() + "", pt.getTerm(), "", pt, getCmqRelationImpactDesc(relation.getRelationImpactType())));
+  						
 						/**
 						 * LLT.
 						 */
@@ -739,7 +740,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 
 						List<MeddraDictHierarchySearchDto> llts = this.meddraDictService.findByCodes("LLT_", hlgtCodesList);
  						for (MeddraDictHierarchySearchDto llt : llts) {
- 							mapReport.put(cpt++, new ReportLineDataDto("LLT", llt.getCode() + "", llt.getTerm(), "......", llt, getImpact(llt)));
+ 							mapReport.put(cpt++, new ReportLineDataDto("LLT", llt.getCode() + "", llt.getTerm(), "......", llt, getImpact(llt, "LLT")));
 						}
 					}
 				}
@@ -753,7 +754,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 					socCodesList.add(relation.getSocCode());
 					List<MeddraDictHierarchySearchDto> socss = this.meddraDictService.findByCodes("SOC_", socCodesList);
 					for (MeddraDictHierarchySearchDto soc : socss) {
-						mapReport.put(cpt++, new ReportLineDataDto("SOC", soc.getCode() + "", soc.getTerm(), "", soc, getImpact(soc))); 
+						mapReport.put(cpt++, new ReportLineDataDto("SOC", soc.getCode() + "", soc.getTerm(), "", soc, getCmqRelationImpactDesc(relation.getRelationImpactType()))); 
 
 						/**
 						 * HLGT.
@@ -767,7 +768,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 						List<MeddraDictHierarchySearchDto> hlgts = this.meddraDictService.findByCodes("HLGT_", hlgtCodesList);
 						if (hlgts != null)
 							for (MeddraDictHierarchySearchDto hlgt : hlgts) {
-								mapReport.put(cpt++, new ReportLineDataDto("HLGT", hlgt.getCode() + "", hlgt.getTerm(), "......", hlgt, getImpact(hlgt)));
+								mapReport.put(cpt++, new ReportLineDataDto("HLGT", hlgt.getCode() + "", hlgt.getTerm(), "......", hlgt, getImpact(hlgt, "HLGT")));
 								/**
 								 * HLT.
 								 */
@@ -780,7 +781,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 								List<MeddraDictHierarchySearchDto> hlts = this.meddraDictService.findByCodes("HLT_", hltCodesList);
 								if (hlts != null)
 									for (MeddraDictHierarchySearchDto hlt : hlts) {
-										mapReport.put(cpt++, new ReportLineDataDto("HLT", hlt.getCode() + "", hlt.getTerm(), "...............", hlt, getImpact(hlt))); 
+										mapReport.put(cpt++, new ReportLineDataDto("HLT", hlt.getCode() + "", hlt.getTerm(), "...............", hlt, getImpact(hlt, "HLT"))); 
 										/**
 										 * PT.
 										 */
@@ -793,7 +794,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 										List<MeddraDictHierarchySearchDto> pts = this.meddraDictService.findByCodes("PT_", ptCodesList);
 										if (pts != null)
 											for (MeddraDictHierarchySearchDto pt : pts) {
-												mapReport.put(cpt++, new ReportLineDataDto("PT", pt.getCode() + "", pt.getTerm(), "....................", pt, getImpact(pt))); 
+												mapReport.put(cpt++, new ReportLineDataDto("PT", pt.getCode() + "", pt.getTerm(), "....................", pt, getImpact(pt, "PT"))); 
 												
 												/**
 												 * LLT.
@@ -806,7 +807,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
  												List<MeddraDictHierarchySearchDto> llts = this.meddraDictService.findByCodes("LLT_", lltCodes);
 												if (llts != null)
 													for (MeddraDictHierarchySearchDto llt : llts) {
-														mapReport.put(cpt++, new ReportLineDataDto("LLT", llt.getCode() + "", llt.getTerm(), "..........................", llt, getImpact(llt))); 
+														mapReport.put(cpt++, new ReportLineDataDto("LLT", llt.getCode() + "", llt.getTerm(), "..........................", llt, getImpact(llt, "LLT"))); 
 													}
 													
 											}
@@ -824,7 +825,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 					hlgtCodesList.add(relation.getHlgtCode());
 					List<MeddraDictHierarchySearchDto> socDtos = this.meddraDictService.findByCodes("HLGT_", hlgtCodesList);
 					for (MeddraDictHierarchySearchDto hlgt : socDtos) {
-						mapReport.put(cpt++, new ReportLineDataDto("HLGT", hlgt.getCode() + "", hlgt.getTerm(), "", hlgt, getImpact(hlgt)));  
+						mapReport.put(cpt++, new ReportLineDataDto("HLGT", hlgt.getCode() + "", hlgt.getTerm(), "", hlgt, getCmqRelationImpactDesc(relation.getRelationImpactType())));  
 						/**
 						 * HLT.
 						 */
@@ -837,7 +838,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 						List<MeddraDictHierarchySearchDto> hlts = this.meddraDictService.findByCodes("HLT_", hltCodesList);
 						if (hlts != null)
 							for (MeddraDictHierarchySearchDto hlt : hlts) {
-								mapReport.put(cpt++, new ReportLineDataDto("HLT", hlt.getCode() + "", hlt.getTerm(), "......", hlt, getImpact(hlt))); 
+								mapReport.put(cpt++, new ReportLineDataDto("HLT", hlt.getCode() + "", hlt.getTerm(), "......", hlt, getImpact(hlt, "HLT"))); 
 								/**
 								 * PT.
 								 */
@@ -850,7 +851,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 								List<MeddraDictHierarchySearchDto> pts = this.meddraDictService.findByCodes("PT_", ptCodesList);
 								if (pts != null)
 									for (MeddraDictHierarchySearchDto pt : pts) {
-										mapReport.put(cpt++, new ReportLineDataDto("PT", pt.getCode() + "", pt.getTerm(), "...............", pt, getImpact(pt))); 
+										mapReport.put(cpt++, new ReportLineDataDto("PT", pt.getCode() + "", pt.getTerm(), "...............", pt, getImpact(pt, "PT"))); 
 										
 										/**
 										 * LLT.
@@ -863,7 +864,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 
 										List<MeddraDictHierarchySearchDto> llts = this.meddraDictService.findByCodes("LLT_", lltCodes);
 				 						for (MeddraDictHierarchySearchDto llt : llts) {
-				 							mapReport.put(cpt++, new ReportLineDataDto("LLT", llt.getCode() + "", llt.getTerm(), ".......................", llt, getImpact(llt)));
+				 							mapReport.put(cpt++, new ReportLineDataDto("LLT", llt.getCode() + "", llt.getTerm(), ".......................", llt, getImpact(llt, "LLT")));
 										}
 									}
 							}
@@ -880,7 +881,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 					lltCodesList.add(relation.getLltCode());
 					List<MeddraDictHierarchySearchDto> llts = meddraDictService.findByCodes("LLT_", lltCodesList);
 					for (MeddraDictHierarchySearchDto llt : llts) {
- 						mapReport.put(cpt++, new ReportLineDataDto("LLT", llt.getCode() + "", llt.getTerm(), "", llt, getImpact(llt))); 
+ 						mapReport.put(cpt++, new ReportLineDataDto("LLT", llt.getCode() + "", llt.getTerm(), "", llt, getCmqRelationImpactDesc(relation.getRelationImpactType()))); 
 					}
  				}
 			}
@@ -901,6 +902,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 				term = childCmq.getCmqName();
 				codeTerm = childCmq.getCmqCode() != null ? childCmq.getCmqCode() + "" : "";
 
+//				mapReport.put(cpt++, new ReportLineDataDto(level, codeTerm, term, "", childCmq.getImpactType()));
 				mapReport.put(cpt++, new ReportLineDataDto(level, codeTerm, term, "", childCmq.getImpactType()));
 				 
 
@@ -1287,7 +1289,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 							hltCodesList.add(relation.getHltCode());
 							List<MeddraDictHierarchySearchDto> hlts = this.meddraDictService.findByCodes("HLT_", hltCodesList);
 							for (MeddraDictHierarchySearchDto hlt : hlts) {
-								mapReport.put(cpt++, new ReportLineDataDto("HLT", hlt.getCode() + "", hlt.getTerm(), "......", hlt, getImpact(hlt)));
+								mapReport.put(cpt++, new ReportLineDataDto("HLT", hlt.getCode() + "", hlt.getTerm(), "......", hlt, getCmqRelationImpactDesc(relation.getRelationImpactType())));
 								
 
 								/**
@@ -1302,7 +1304,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 								List<MeddraDictHierarchySearchDto> llts = this.meddraDictService.findByCodes("PT_", ptCodesList);
 								if (llts != null)
 									for (MeddraDictHierarchySearchDto llt : llts) {
-										mapReport.put(cpt++, new ReportLineDataDto("PT", llt.getCode() + "", llt.getTerm(), "..............", llt, getImpact(llt)));
+										mapReport.put(cpt++, new ReportLineDataDto("PT", llt.getCode() + "", llt.getTerm(), "..............", llt, getImpact(llt, "PLL")));
 										
 
 										/**
@@ -1317,7 +1319,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 										List<MeddraDictHierarchySearchDto> llts_soc = this.meddraDictService.findByCodes("LLT_", llttCodesList);
 										if (llts_soc != null)
 											for (MeddraDictHierarchySearchDto llt_soc : llts_soc) {
-												mapReport.put(cpt++, new ReportLineDataDto("LLT", llt_soc.getCode() + "", llt_soc.getTerm(), "....................", llt_soc, getImpact(llt_soc)));
+												mapReport.put(cpt++, new ReportLineDataDto("LLT", llt_soc.getCode() + "", llt_soc.getTerm(), "....................", llt_soc, getImpact(llt_soc, "LLT")));
 												
 											}
 									}
@@ -1362,7 +1364,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 							socCodesList.add(relation.getSocCode());
 							List<MeddraDictHierarchySearchDto> socss = this.meddraDictService.findByCodes("SOC_", socCodesList);
 							for (MeddraDictHierarchySearchDto soc : socss) {
-								mapReport.put(cpt++, new ReportLineDataDto("SOC", soc.getCode() + "", soc.getTerm(), "........", soc, getImpact(soc)));
+								mapReport.put(cpt++, new ReportLineDataDto("SOC", soc.getCode() + "", soc.getTerm(), "........", soc, getCmqRelationImpactDesc(relation.getRelationImpactType())));
 								
 
 								/**
@@ -1377,7 +1379,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 								List<MeddraDictHierarchySearchDto> hlgts = this.meddraDictService.findByCodes("HLGT_", hlgtCodesList);
 								if (hlgts != null)
 									for (MeddraDictHierarchySearchDto hlgt : hlgts) {
-										mapReport.put(cpt++, new ReportLineDataDto("HLGT", hlgt.getCode() + "", hlgt.getTerm(), ".............", hlgt, getImpact(hlgt)));
+										mapReport.put(cpt++, new ReportLineDataDto("HLGT", hlgt.getCode() + "", hlgt.getTerm(), ".............", hlgt, getImpact(hlgt, "HLGT")));
 										
 										/**
 										 * HLT.
@@ -1391,7 +1393,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 										List<MeddraDictHierarchySearchDto> hlts = this.meddraDictService.findByCodes("HLT_", hltCodesList);
 										if (hlts != null)
 											for (MeddraDictHierarchySearchDto hlt : hlts) {
-												mapReport.put(cpt++, new ReportLineDataDto("HLT", hlt.getCode() + "", hlt.getTerm(), "..................", hlt, getImpact(hlt)));
+												mapReport.put(cpt++, new ReportLineDataDto("HLT", hlt.getCode() + "", hlt.getTerm(), "..................", hlt, getImpact(hlt, "HLT")));
 												 
 
 												/**
@@ -1406,7 +1408,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 												List<MeddraDictHierarchySearchDto> pts = this.meddraDictService.findByCodes("PT_", ptCodesList);
 												if (pts != null)
 													for (MeddraDictHierarchySearchDto pt : pts) {
-														mapReport.put(cpt++, new ReportLineDataDto("PT", pt.getCode() + "", pt.getTerm(), ".........................", pt, getImpact(pt)));
+														mapReport.put(cpt++, new ReportLineDataDto("PT", pt.getCode() + "", pt.getTerm(), ".........................", pt, getImpact(pt, "PT")));
 
 														/**
 														 * LLT.
@@ -1420,7 +1422,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 														List<MeddraDictHierarchySearchDto> llts_soc = this.meddraDictService.findByCodes("LLT_", llttCodesList);
 														if (llts_soc != null)
 															for (MeddraDictHierarchySearchDto llt_soc : llts_soc) {
-																mapReport.put(cpt++, new ReportLineDataDto("LLT", llt_soc.getCode() + "", llt_soc.getTerm(), "..................................", llt_soc, getImpact(llt_soc)));
+																mapReport.put(cpt++, new ReportLineDataDto("LLT", llt_soc.getCode() + "", llt_soc.getTerm(), "..................................", llt_soc, getImpact(llt_soc, "LLT")));
 															
 															}
 													}
@@ -1438,7 +1440,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 							hlgtCodesList.add(relation.getHlgtCode());
 							List<MeddraDictHierarchySearchDto> socDtos = this.meddraDictService.findByCodes("HLGT_", hlgtCodesList);
 							for (MeddraDictHierarchySearchDto hlgt : socDtos) {
-								mapReport.put(cpt++, new ReportLineDataDto("HLGT", hlgt.getCode() + "", hlgt.getTerm(), "......", hlgt, getImpact(hlgt)));
+								mapReport.put(cpt++, new ReportLineDataDto("HLGT", hlgt.getCode() + "", hlgt.getTerm(), "......", hlgt, getCmqRelationImpactDesc(relation.getRelationImpactType())));
 								 
 
 								/**
@@ -1453,7 +1455,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 								List<MeddraDictHierarchySearchDto> hlts = this.meddraDictService.findByCodes("HLT_", hltCodesList);
 								if (hlts != null)
 									for (MeddraDictHierarchySearchDto hlt : hlts) {
-										mapReport.put(cpt++, new ReportLineDataDto("HLT", hlt.getCode() + "", hlt.getTerm(), "...........", hlt, getImpact(hlt)));
+										mapReport.put(cpt++, new ReportLineDataDto("HLT", hlt.getCode() + "", hlt.getTerm(), "...........", hlt, getImpact(hlt, "HLT")));
 										
 
 										/**
@@ -1468,7 +1470,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 										List<MeddraDictHierarchySearchDto> pts = this.meddraDictService.findByCodes("PT_", ptCodesList);
 										if (pts != null)
 											for (MeddraDictHierarchySearchDto pt : pts) {
-												mapReport.put(cpt++, new ReportLineDataDto("PT", pt.getCode() + "", pt.getTerm(), "....................", pt, getImpact(pt)));
+												mapReport.put(cpt++, new ReportLineDataDto("PT", pt.getCode() + "", pt.getTerm(), "....................", pt, getImpact(pt, "PT")));
 												
 												 
 
@@ -1484,7 +1486,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 												List<MeddraDictHierarchySearchDto> llts = this.meddraDictService.findByCodes("LLT_", lltCodesList);
 												if (llts != null)
 													for (MeddraDictHierarchySearchDto llt : llts) {
-														mapReport.put(cpt++, new ReportLineDataDto("LLT", llt.getCode() + "", llt.getTerm(), ".........................", llt, getImpact(llt)));
+														mapReport.put(cpt++, new ReportLineDataDto("LLT", llt.getCode() + "", llt.getTerm(), ".........................", llt, getImpact(llt, "LLT")));
 													}
 											}
 									}
@@ -1501,7 +1503,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 							lltCodesList.add(relation.getLltCode());
 							List<MeddraDictHierarchySearchDto> llts = meddraDictService.findByCodes("LLT_", lltCodesList);
 							for (MeddraDictHierarchySearchDto llt : llts) {
-		 						mapReport.put(cpt++, new ReportLineDataDto("LLT", llt.getCode() + ".....", llt.getTerm(), "", llt, getImpact(llt))); 
+		 						mapReport.put(cpt++, new ReportLineDataDto("LLT", llt.getCode() + ".....", llt.getTerm(), "", llt, getCmqRelationImpactDesc(relation.getRelationImpactType()))); 
 							}
 		 				}
 						
@@ -1514,7 +1516,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
  							ptCodesList.add(relation.getPtCode());
  							List<MeddraDictHierarchySearchDto> pts = this.meddraDictService.findByCodes("PT_", ptCodesList);
  							for (MeddraDictHierarchySearchDto pt : pts) {
- 								mapReport.put(cpt++, new ReportLineDataDto("PT", pt.getCode() + "", pt.getTerm(), "", pt, getImpact(pt)));  
+ 								mapReport.put(cpt++, new ReportLineDataDto("PT", pt.getCode() + "", pt.getTerm(), "", pt, getImpact(pt, "PT")));  
  		 						
  								/**
  								 * LLT.
@@ -1527,7 +1529,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 
  								List<MeddraDictHierarchySearchDto> llts = this.meddraDictService.findByCodes("LLT_", hlgtCodesList);
  		 						for (MeddraDictHierarchySearchDto llt : llts) {
- 		 							mapReport.put(cpt++, new ReportLineDataDto("LLT", llt.getCode() + "", llt.getTerm(), "......", llt, getImpact(llt)));
+ 		 							mapReport.put(cpt++, new ReportLineDataDto("LLT", llt.getCode() + "", llt.getTerm(), "......", llt, getImpact(llt, "LLT")));
  								}
  							}
  						}
@@ -1552,7 +1554,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
  										cpt++,
  										new ReportLineDataDto("LLT", llt
  												.getCode() + "", llt.getTerm(),
- 												"", llt, getImpact(llt)));
+ 												"", llt, getCmqRelationImpactDesc(relation.getRelationImpactType())));
  							}
  						}
  						
@@ -1572,7 +1574,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 									socCodesList.add(relation.getSocCode());
 									List<MeddraDictHierarchySearchDto> socss = this.meddraDictService.findByCodes("SOC_", socCodesList);
 									for (MeddraDictHierarchySearchDto soc : socss) {
-										mapReport.put(cpt++, new ReportLineDataDto("SOC", soc.getCode() + "", soc.getTerm(), "........", soc, getImpact(soc)));
+										mapReport.put(cpt++, new ReportLineDataDto("SOC", soc.getCode() + "", soc.getTerm(), "........", soc, getCmqRelationImpactDesc(relation.getRelationImpactType())));
 										
 
 										/**
@@ -1587,7 +1589,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 										List<MeddraDictHierarchySearchDto> hlgts = this.meddraDictService.findByCodes("HLGT_", hlgtCodesList);
 										if (hlgts != null)
 											for (MeddraDictHierarchySearchDto hlgt : hlgts) {
-												mapReport.put(cpt++, new ReportLineDataDto("HLGT", hlgt.getCode() + "", hlgt.getTerm(), ".............", hlgt, getImpact(hlgt)));
+												mapReport.put(cpt++, new ReportLineDataDto("HLGT", hlgt.getCode() + "", hlgt.getTerm(), ".............", hlgt, getImpact(hlgt, "HLGT")));
 												
 												/**
 												 * HLT.
@@ -1601,7 +1603,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 												List<MeddraDictHierarchySearchDto> hlts = this.meddraDictService.findByCodes("HLT_", hltCodesList);
 												if (hlts != null)
 													for (MeddraDictHierarchySearchDto hlt : hlts) {
-														mapReport.put(cpt++, new ReportLineDataDto("HLT", hlt.getCode() + "", hlt.getTerm(), "..................", hlt, getImpact(hlt)));
+														mapReport.put(cpt++, new ReportLineDataDto("HLT", hlt.getCode() + "", hlt.getTerm(), "..................", hlt, getImpact(hlt, "HLT")));
 														 
 
 														/**
@@ -1616,7 +1618,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 														List<MeddraDictHierarchySearchDto> pts = this.meddraDictService.findByCodes("PT_", ptCodesList);
 														if (pts != null)
 															for (MeddraDictHierarchySearchDto pt : pts) {
-																mapReport.put(cpt++, new ReportLineDataDto("PT", pt.getCode() + "", pt.getTerm(), ".........................", pt, getImpact(pt)));
+																mapReport.put(cpt++, new ReportLineDataDto("PT", pt.getCode() + "", pt.getTerm(), ".........................", pt, getImpact(pt, "PT")));
 
 																/**
 																 * LLT.
@@ -1631,7 +1633,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 																	List<MeddraDictHierarchySearchDto> llts_soc = this.meddraDictService.findByCodes("LLT_", llttCodesList);
 																	if (llts_soc != null)
 																		for (MeddraDictHierarchySearchDto llt_soc : llts_soc) {
-																			mapReport.put(cpt++, new ReportLineDataDto("LLT", llt_soc.getCode() + "", llt_soc.getTerm(), "..................................", llt_soc, getImpact(llt_soc)));
+																			mapReport.put(cpt++, new ReportLineDataDto("LLT", llt_soc.getCode() + "", llt_soc.getTerm(), "..................................", llt_soc, getImpact(llt_soc, "LLT")));
 																		
 																		}
 																}
@@ -1651,7 +1653,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 									hlgtCodesList.add(relation.getHlgtCode());
 									List<MeddraDictHierarchySearchDto> socDtos = this.meddraDictService.findByCodes("HLGT_", hlgtCodesList);
 									for (MeddraDictHierarchySearchDto hlgt : socDtos) {
-										mapReport.put(cpt++, new ReportLineDataDto("HLGT", hlgt.getCode() + "", hlgt.getTerm(), "......", hlgt, getImpact(hlgt)));
+										mapReport.put(cpt++, new ReportLineDataDto("HLGT", hlgt.getCode() + "", hlgt.getTerm(), "......", hlgt, relation.getRelationImpactType()));
 										 
 
 										/**
@@ -1666,7 +1668,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 										List<MeddraDictHierarchySearchDto> hlts = this.meddraDictService.findByCodes("HLT_", hltCodesList);
 										if (hlts != null)
 											for (MeddraDictHierarchySearchDto hlt : hlts) {
-												mapReport.put(cpt++, new ReportLineDataDto("HLT", hlt.getCode() + "", hlt.getTerm(), "...........", hlt, getImpact(hlt)));
+												mapReport.put(cpt++, new ReportLineDataDto("HLT", hlt.getCode() + "", hlt.getTerm(), "...........", hlt, getImpact(hlt, "HLT")));
 												
 
 												/**
@@ -1681,7 +1683,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 												List<MeddraDictHierarchySearchDto> pts = this.meddraDictService.findByCodes("PT_", ptCodesList);
 												if (pts != null)
 													for (MeddraDictHierarchySearchDto pt : pts) {
-														mapReport.put(cpt++, new ReportLineDataDto("PT", pt.getCode() + "", pt.getTerm(), "....................", pt, getImpact(pt)));
+														mapReport.put(cpt++, new ReportLineDataDto("PT", pt.getCode() + "", pt.getTerm(), "....................", pt, getImpact(pt, "PT")));
 														
 														 
 
@@ -1697,7 +1699,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 														List<MeddraDictHierarchySearchDto> llts = this.meddraDictService.findByCodes("LLT_", lltCodesList);
 														if (llts != null)
 															for (MeddraDictHierarchySearchDto llt : llts) {
-																mapReport.put(cpt++, new ReportLineDataDto("LLT", llt.getCode() + "", llt.getTerm(), ".........................", llt, getImpact(llt)));
+																mapReport.put(cpt++, new ReportLineDataDto("LLT", llt.getCode() + "", llt.getTerm(), ".........................", llt, getImpact(llt, "LLT")));
 															}
 													}
 											}
@@ -1713,7 +1715,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 									hltCodesList.add(relation.getHltCode());
 									List<MeddraDictHierarchySearchDto> hlts = this.meddraDictService.findByCodes("HLT_", hltCodesList);
 									for (MeddraDictHierarchySearchDto hlt : hlts) {
-										mapReport.put(cpt++, new ReportLineDataDto("HLT", hlt.getCode() + "", hlt.getTerm(), "......", hlt, getImpact(hlt)));
+										mapReport.put(cpt++, new ReportLineDataDto("HLT", hlt.getCode() + "", hlt.getTerm(), "......", hlt, relation.getRelationImpactType()));
 										
 
 										/**
@@ -1728,7 +1730,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 										List<MeddraDictHierarchySearchDto> llts = this.meddraDictService.findByCodes("PT_", ptCodesList);
 										if (llts != null)
 											for (MeddraDictHierarchySearchDto llt : llts) {
-												mapReport.put(cpt++, new ReportLineDataDto("PT", llt.getCode() + "", llt.getTerm(), "..............", llt, getImpact(llt)));
+												mapReport.put(cpt++, new ReportLineDataDto("PT", llt.getCode() + "", llt.getTerm(), "..............", llt, getImpact(llt, "LLT")));
 												
 
 												/**
@@ -1743,7 +1745,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 												List<MeddraDictHierarchySearchDto> llts_soc = this.meddraDictService.findByCodes("LLT_", llttCodesList);
 												if (llts_soc != null)
 													for (MeddraDictHierarchySearchDto llt_soc : llts_soc) {
-														mapReport.put(cpt++, new ReportLineDataDto("LLT", llt_soc.getCode() + "", llt_soc.getTerm(), "....................", llt_soc, getImpact(llt_soc)));
+														mapReport.put(cpt++, new ReportLineDataDto("LLT", llt_soc.getCode() + "", llt_soc.getTerm(), "....................", llt_soc, getImpact(llt_soc, "LLT")));
 														
 													}
 											}
@@ -1759,7 +1761,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 									ptCodesList.add(relation.getPtCode());
 									List<MeddraDictHierarchySearchDto> pts = this.meddraDictService.findByCodes("PT_", ptCodesList);
 									for (MeddraDictHierarchySearchDto pt : pts) {
-										mapReport.put(cpt++, new ReportLineDataDto("PT", pt.getCode() + "", pt.getTerm(), "......", pt, getImpact(pt)));
+										mapReport.put(cpt++, new ReportLineDataDto("PT", pt.getCode() + "", pt.getTerm(), "......", pt, relation.getRelationImpactType()));
 
 										/**
 										 * LLT.
@@ -1773,7 +1775,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 										List<MeddraDictHierarchySearchDto> llts = this.meddraDictService.findByCodes("LLT_", hlgtCodesList);
 										if (llts != null)
 											for (MeddraDictHierarchySearchDto llt : llts) {
-												mapReport.put(cpt++, new ReportLineDataDto("LLT", llt.getCode() + "", llt.getTerm(), ".............", llt, getImpact(llt)));
+												mapReport.put(cpt++, new ReportLineDataDto("LLT", llt.getCode() + "", llt.getTerm(), ".............", llt, getImpact(llt, "LLT")));
 											}
 									}
 								}
@@ -1812,7 +1814,99 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 		return content;
 	}
 	
-	public String getImpact(MeddraDictHierarchySearchDto meddra) {
+	public String getCmqRelationImpactDesc(String impactType) {
+        return refCodeListService.interpretInternalCodeToValueOrDefault(CqtConstants.CODE_LIST_TYPE_CMQ_RELATION_IMPACT_TYPE, impactType, impactType);
+    }
+	
+	public String getImpact(MeddraDictHierarchySearchDto ent, String lvl) {
+
+        if("LLT".equals(lvl)) {
+            if(ent.getLltCurrencyChange() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("llt_currency_change", ent.getLltCurrencyChange());
+            else if(ent.getNewLlt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("new_llt", ent.getNewLlt());
+            else if(ent.getLltNameChanged() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("llt_name_changed", ent.getLltNameChanged());
+            else if(ent.getMovedLlt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("moved_llt", ent.getMovedLlt());
+            else if(ent.getPromotedLlt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("promoted_llt", ent.getPromotedLlt());
+            else if(ent.getPrimarySocChange() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("primary_soc_change", ent.getPrimarySocChange());
+            else if(ent.getMovedPt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("moved_pt", ent.getMovedPt());
+            else if(ent.getDemotedPt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("demoted_pt", ent.getDemotedPt());
+            else if(ent.getPromotedPt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("promoted_pt", ent.getPromotedPt());
+            else if(ent.getNewSuccessorPt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("new_successor_pt", ent.getNewSuccessorPt());
+            else if(ent.getMovedHlt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("moved_hlt", ent.getMovedHlt());
+            else if(ent.getMergedHlt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("merged_hlt", ent.getMergedHlt());
+            else if(ent.getMovedHlgt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("moved_hlgt", ent.getMovedHlgt());
+            else if(ent.getMergedHlt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("merged_hlgt", ent.getMovedHlt());
+        } else if("PT".equals(lvl)) {
+            if(ent.getNewPt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("new_pt", ent.getNewPt());
+            else if(ent.getPtNameChanged() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("pt_name_changed", ent.getPtNameChanged());
+            else if(ent.getMovedPt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("moved_pt", ent.getMovedPt());
+            else if(ent.getDemotedPt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("demoted_pt", ent.getDemotedPt());
+            else if(ent.getPromotedPt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("promoted_pt", ent.getPromotedPt());
+            else if(ent.getNewSuccessorPt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("new_successor_pt", ent.getNewSuccessorPt());
+            else if(ent.getPrimarySocChange() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("primary_soc_change", ent.getPrimarySocChange());
+            else if(ent.getMovedHlt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("moved_hlt", ent.getMovedHlt());
+            else if(ent.getMergedHlt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("merged_hlt", ent.getMergedHlt());
+            else if(ent.getMovedHlgt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("moved_hlgt", ent.getMovedHlgt());
+            else if(ent.getMergedHlt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("merged_hlgt", ent.getMovedHlt());
+        } else if("HLT".equals(lvl)) {
+            if(ent.getNewHlt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("new_hlt", ent.getNewHlt());
+            else if(ent.getHltNameChanged() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("hlt_name_changed", ent.getHltNameChanged());
+            else if(ent.getMovedHlt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("moved_hlt", ent.getMovedHlt());
+            else if(ent.getMergedHlt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("merged_hlt", ent.getMergedHlt());
+            else if(ent.getMovedHlgt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("moved_hlgt", ent.getMovedHlgt());
+            else if(ent.getMergedHlgt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("merged_hlgt", ent.getMergedHlgt());
+        } else if("HLGT".equals(lvl)) {
+            if(ent.getNewHlgt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("new_hlgt", ent.getNewHlgt());
+            else if(ent.getHlgtNameChanged() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("hlgt_name_changed", ent.getHlgtNameChanged());
+            else if(ent.getMovedHlgt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("moved_hlgt", ent.getMovedHlgt());
+            else if(ent.getMergedHlgt() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("merged_hlgt", ent.getMergedHlgt());
+        } else if("SOC".equals(lvl)) {
+            if(ent.getNewSoc() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("new_soc", ent.getNewSoc());
+            else if(ent.getSocNameChanged() != null)
+                return refCodeListService.interpretMeddraImpactTypeDesc("soc_name_changed", ent.getSocNameChanged());
+        }
+        return "";
+    
+		
+		 
+	}
+	
+	/*public String getImpact(MeddraDictHierarchySearchDto meddra) {
 		if (meddra.getPtCode() != null)   {
 			if ( meddra.getNewPt() != null) return  meddra.getNewPt();
 			if (meddra.getPromotedPt() != null) return meddra.getPromotedPt();
@@ -1848,7 +1942,9 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 			if (meddra.getPrimarySocChange() != null) return meddra.getPrimarySocChange();
 		}
 		return "";
-	}
+	}*/
+	
+	
 
 	
 	private String getLevelFromValue(Integer smqLevel) {
@@ -2074,19 +2170,22 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 		
 	}
 	
-	private String returnStatus(CmqBaseTarget cmq) {
-		String status = "";
-		if(CmqBase190.CMQ_STATUS_VALUE_PENDING.equalsIgnoreCase(cmq.getCmqStatus())) {
-			status = CmqBaseTarget.CMQ_STATE_PENDING_IA;
-		} else if (CmqBase190.CMQ_STATUS_VALUE_ACTIVE.equalsIgnoreCase(cmq.getCmqStatus())) {
-			status = CmqBaseTarget.CMQ_STATUS_VALUE_ACTIVE;
-		} else if (CmqBase190.CMQ_STATUS_VALUE_INACTIVE.equalsIgnoreCase(cmq.getCmqStatus())){
-			status = CmqBase190.CMQ_STATUS_DISP_LABEL_INACTIVE;
+	private String returnState(CmqBaseTarget cmq) {
+		String state = "";
+		if(CmqBaseTarget.CMQ_STATE_PENDING_IA.equalsIgnoreCase(cmq.getCmqState()) || "PENDING".equalsIgnoreCase(cmq.getCmqState())) {
+			state = CmqBaseTarget.CMQ_STATE_PENDING_IA;
+		} else if (CmqBaseTarget.CMQ_STATE_PUBLISHED.equalsIgnoreCase(cmq.getCmqStatus()) || CmqBaseTarget.CMQ_STATE_PUBLISHED_IA.equalsIgnoreCase(cmq.getCmqStatus())) {
+			state = CmqBaseTarget.CMQ_STATE_PUBLISHED_IA;
+		} else if (CmqBaseTarget.CMQ_STATE_APPROVED_IA.equalsIgnoreCase(cmq.getCmqStatus()) || "APPROVED".equalsIgnoreCase(cmq.getCmqStatus())){
+			state = CmqBaseTarget.CMQ_STATE_APPROVED_IA;
+		} else if (CmqBaseTarget.CMQ_STATE_REVIEWED_IA.equalsIgnoreCase(cmq.getCmqStatus()) || "REVIEWED".equalsIgnoreCase(cmq.getCmqStatus())){
+			state = CmqBaseTarget.CMQ_STATE_REVIEWED_IA;
 		} else {
-			status = "UNKNOWN";
+			state = "UNKNOWN";
 		}
-		return status;
+		return state;
 	}
+	
 	
 	private void setCellStyleTitre(XSSFWorkbook wb, XSSFCell cell) {
 		XSSFCellStyle cellStyle = wb.createCellStyle();
