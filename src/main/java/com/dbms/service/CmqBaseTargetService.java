@@ -2180,6 +2180,8 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 			state = CmqBaseTarget.CMQ_STATE_APPROVED_IA;
 		} else if (CmqBaseTarget.CMQ_STATE_REVIEWED_IA.equalsIgnoreCase(cmq.getCmqStatus()) || "REVIEWED".equalsIgnoreCase(cmq.getCmqStatus())){
 			state = CmqBaseTarget.CMQ_STATE_REVIEWED_IA;
+		} else if ("PUBLISHED".equalsIgnoreCase(cmq.getCmqStatus())){
+			state = "PUBLISHED";
 		} else {
 			state = "UNKNOWN";
 		}
