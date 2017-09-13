@@ -440,7 +440,8 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 		rowCount++;
 		row = worksheet.createRow(rowCount);
 		cell = row.createCell(0);
-		cell.setCellValue("State: " + returnState(selectedImpactedCmqList));
+//		cell.setCellValue("State: " + returnState(selectedImpactedCmqList));
+		cell.setCellValue("State: " + selectedImpactedCmqList.getCmqState());
 		
 		rowCount++;
 		row = worksheet.createRow(rowCount);
@@ -2174,13 +2175,13 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 		String state = "";
 		if(CmqBaseTarget.CMQ_STATE_PENDING_IA.equalsIgnoreCase(cmq.getCmqState()) || "PENDING".equalsIgnoreCase(cmq.getCmqState())) {
 			state = CmqBaseTarget.CMQ_STATE_PENDING_IA;
-		} else if (CmqBaseTarget.CMQ_STATE_PUBLISHED.equalsIgnoreCase(cmq.getCmqStatus()) || CmqBaseTarget.CMQ_STATE_PUBLISHED_IA.equalsIgnoreCase(cmq.getCmqStatus())) {
+		} else if (CmqBaseTarget.CMQ_STATE_PUBLISHED.equalsIgnoreCase(cmq.getCmqState()) || CmqBaseTarget.CMQ_STATE_PUBLISHED_IA.equalsIgnoreCase(cmq.getCmqState())) {
 			state = CmqBaseTarget.CMQ_STATE_PUBLISHED_IA;
-		} else if (CmqBaseTarget.CMQ_STATE_APPROVED_IA.equalsIgnoreCase(cmq.getCmqStatus()) || "APPROVED".equalsIgnoreCase(cmq.getCmqStatus())){
+		} else if (CmqBaseTarget.CMQ_STATE_APPROVED_IA.equalsIgnoreCase(cmq.getCmqState()) || "APPROVED".equalsIgnoreCase(cmq.getCmqState())){
 			state = CmqBaseTarget.CMQ_STATE_APPROVED_IA;
-		} else if (CmqBaseTarget.CMQ_STATE_REVIEWED_IA.equalsIgnoreCase(cmq.getCmqStatus()) || "REVIEWED".equalsIgnoreCase(cmq.getCmqStatus())){
+		} else if (CmqBaseTarget.CMQ_STATE_REVIEWED_IA.equalsIgnoreCase(cmq.getCmqState()) || "REVIEWED".equalsIgnoreCase(cmq.getCmqState())){
 			state = CmqBaseTarget.CMQ_STATE_REVIEWED_IA;
-		} else if ("PUBLISHED".equalsIgnoreCase(cmq.getCmqStatus())){
+		} else if ("PUBLISHED".equalsIgnoreCase(cmq.getCmqState())){
 			state = "PUBLISHED";
 		} else {
 			state = "UNKNOWN";
