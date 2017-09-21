@@ -1017,13 +1017,13 @@ public class CreateController implements Serializable {
 	 */
 	public boolean isReadOnlyState() {
         boolean d;
-        String userGroup = authService.getGroupMembershipHeader();
+        List<String> userGroupList = authService.getCmqMappedGroupMemberships();
 		/**
          * Restrictions on users from  REQUESTOR and ADMIN groups
          */
-    	if (userGroup != null &&
-                (userGroup.contains(AuthenticationService.REQUESTER_GROUP)
-                    || userGroup.contains(AuthenticationService.ADMIN_GROUP)))
+    	if (userGroupList != null &&
+                (userGroupList.contains(AuthenticationService.REQUESTER_GROUP)
+                    || userGroupList.contains(AuthenticationService.ADMIN_GROUP)))
 			d = restrictionsByUserAuthentified();
         else
             d = false;
@@ -1867,7 +1867,7 @@ public class CreateController implements Serializable {
      * Restrictions on users from  REQUESTOR and ADMIN groups
      */
     public boolean restrictionsByUserAuthentified() {
-        String userGroup = authService.getGroupMembershipHeader();
+    	List<String> userGroupList = authService.getCmqMappedGroupMemberships();
     	
         if (updateWizard != null || copyWizard != null) {
         	//conditions are:
@@ -1877,9 +1877,9 @@ public class CreateController implements Serializable {
 				2) the list's status is P
 				3) they are any designee or they have created the list
         	 */
-        	if (userGroup != null && userGroup.contains("MQM"))
+        	if (userGroupList != null && (userGroupList.contains("MQM") || userGroupList.contains("MANAGER")))
         		return false;
-        	else if (userGroup != null && (userGroup.contains(AuthenticationService.REQUESTER_GROUP)) 
+        	else if (userGroupList != null && (userGroupList.contains(AuthenticationService.REQUESTER_GROUP)) 
         			&& selectedData.getCmqStatus().equals("P") 
         			&& (selectedData.getCmqState().equals("DRAFT") || selectedData.getCmqState().equals("REVIEWED"))
         			&& (((listCreator != null) && (listCreator.startsWith(authService.getUserCn())))
@@ -1887,7 +1887,7 @@ public class CreateController implements Serializable {
         		        			|| (selectedData.getCmqDesignee2() != null && selectedData.getCmqDesignee2().equals(authService.getUserCn()))
         		        			|| (selectedData.getCmqDesignee3() != null && selectedData.getCmqDesignee3().equals(authService.getUserCn()))))) {
         		return  false;
-        	} else if (userGroup != null && (userGroup.contains(AuthenticationService.ADMIN_GROUP)) 
+        	} else if (userGroupList != null && (userGroupList.contains(AuthenticationService.ADMIN_GROUP)) 
         			&& selectedData.getCmqStatus().equals("P") 
         			&& (selectedData.getCmqState().equals("DRAFT") || (selectedData.getCmqState().equals("PENDING IA") || selectedData.getCmqState().equals("REVIEWED IA")))
         			&& (((listCreator != null) && (listCreator.startsWith(authService.getUserCn())))

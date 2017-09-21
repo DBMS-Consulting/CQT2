@@ -48,6 +48,7 @@ public class AuthenticationService {
 	public static final String ADMIN_GROUP = "ADMIN";
 	public static final String REQUESTER_GROUP = "REQUESTOR";
 	public static final String USER_GROUP = "USER";
+	public static final String MQM_GROUP = "MQM";
 	
 	public static final String ENTERPRISE_AD_PXED = "PXED";
 	public static final String ENTERPRISE_AD_PXED_DUMMY = "PXED-DUMMY";

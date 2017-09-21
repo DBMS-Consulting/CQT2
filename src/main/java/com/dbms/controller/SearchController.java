@@ -196,12 +196,17 @@ public class SearchController extends BaseController<CmqBase190> {
 		 /**
          * Restrictions on users from  REQUESTOR and ADMIN groups
          */
-        if (!authService.getGroupName().equals("REQUESTOR") && !authService.getGroupName().equals("ADMIN") && !authService.getGroupName().equals("MQM")) {        	
-        	this.myFltState = "PUBLISHED";
+		List<String> userGroupList = authService.getCmqMappedGroupMemberships();
+		if (userGroupList != null &&
+                (!userGroupList.contains(AuthenticationService.REQUESTER_GROUP)
+                    && !userGroupList.contains(AuthenticationService.ADMIN_GROUP)
+                    && !userGroupList.contains(AuthenticationService.MQM_GROUP)
+                    && !userGroupList.contains(AuthenticationService.MANAGER_GROUP))) {
+			this.myFltState = "PUBLISHED";
     		this.myFltStatus = "A";
         	
         	disabledField = true;
-        }
+		}
 	}
 
 	/**
