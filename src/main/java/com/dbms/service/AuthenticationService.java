@@ -257,9 +257,7 @@ public class AuthenticationService {
     		if (s.startsWith("OPENCQT_") || s.startsWith("OPENCQT_")) {
     			String finalGrp  = s.replace("OPENCQT_", "").replace(" OPENCQT_", "");
     			finalGroups.add(finalGrp);
-    			
-    			System.out.println("finalGrp :: " + finalGrp);
-    			
+    			    			
     			if (finalGrp.equals("ADMIN") || finalGrp.equals("MQM") || finalGrp.equals("REQUESTOR"))
     				return finalGrp;
     		}
