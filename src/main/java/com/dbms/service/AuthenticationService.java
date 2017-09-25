@@ -254,11 +254,11 @@ public class AuthenticationService {
     	String[] list = gg.replace("[", "").replace("]", "").split(",");
     	
     	for (String s: list) {    		
-    		if (s.startsWith("OPENCQT_") || s.startsWith("OPENCQT_")) {
-    			String finalGrp  = s.replace("OPENCQT_", "").replace(" OPENCQT_", "");
+    		if (s.startsWith("OPENCQT_") || s.startsWith(" OPENCQT_")) {
+    			String finalGrp  = s.replace("OPENCQT_", "").replace(" OPENCQT_", "").trim().replace(" ", "");
     			finalGroups.add(finalGrp);
     			    			
-    			if (finalGrp.equals("ADMIN") || finalGrp.equals("MQM") || finalGrp.equals("REQUESTOR"))
+    			if (finalGrp.contains("ADMIN") || finalGrp.contains("MQM") || finalGrp.contains("REQUESTOR"))
     				return finalGrp;
     		}
     	}
