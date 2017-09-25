@@ -247,11 +247,29 @@ public class AuthenticationService {
 	}
     
     public String getGroupName() {
-        String g = getGroupMembershipsAsString();
-        
-        String[] gp = g.replaceAll("[\\[\\]]", "").split(",");
-        if(gp.length>= 1 && gp[0].length() > 0)
-            return gp[0].replace("OPENCQT_", "");
+        String gg = getGroupMembershipsAsString();
+
+    	List<String> finalGroups = new ArrayList<>();
+    	
+    	String[] list = gg.replace("[", "").replace("]", "").split(",");
+    	
+    	for (String s: list) {    		
+    		if (s.startsWith("OPENCQT_") || s.startsWith("OPENCQT_")) {
+    			String finalGrp  = s.replace("OPENCQT_", "").replace(" OPENCQT_", "");
+    			finalGroups.add(finalGrp);
+    			
+    			System.out.println("finalGrp :: " + finalGrp);
+    			
+    			if (finalGrp.equals("ADMIN") || finalGrp.equals("MQM") || finalGrp.equals("REQUESTOR"))
+    				return finalGrp;
+    		}
+    	}
+    	
+//        String g = getGroupMembershipsAsString();
+//        
+//        String[] gp = g.replaceAll("[\\[\\]]", "").split(",");
+//        if(gp.length>= 1 && gp[0].length() > 0)
+//            return gp[0].replace("OPENCQT_", "");
         return "NO-GROUP";
     }
 
