@@ -249,17 +249,19 @@ public class AuthenticationService {
     public String getGroupName() {
         String gg = getGroupMembershipsAsString();
 
-    	List<String> finalGroups = new ArrayList<>();
-    	
+     	
     	String[] list = gg.replace("[", "").replace("]", "").split(",");
     	
     	for (String s: list) {    		
     		if (s.startsWith("OPENCQT_") || s.startsWith(" OPENCQT_")) {
     			String finalGrp  = s.replace("OPENCQT_", "").replace(" OPENCQT_", "").trim().replace(" ", "");
-    			finalGroups.add(finalGrp);
-    			    			
-    			if (finalGrp.contains("ADMIN") || finalGrp.contains("MQM") || finalGrp.contains("REQUESTOR"))
-    				return finalGrp;
+     			    			
+    			if (gg.contains("ADMIN"))
+    				return "ADMIN";
+    			if (finalGrp.contains("MQM"))
+    				return "MQM";
+    			if (gg.contains("REQUESTOR"))
+    				return "REQUESTOR";
     		}
     	}
     	
