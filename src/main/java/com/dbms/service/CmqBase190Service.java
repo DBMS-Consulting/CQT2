@@ -1103,28 +1103,41 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		rowCount++;
 		row = worksheet.createRow(rowCount);
 		cell = row.createCell(0);
-		cell.setCellValue("Initial Creation By: " + details.getCreatedBy());
+		cell.setCellValue("Initial Creation By: " + details.getCreatedBy() != null ? details.getCreatedBy() : "");
 		rowCount++;
 		row = worksheet.createRow(rowCount);
 		cell = row.createCell(0);
 		Calendar cal = Calendar.getInstance();
-		cal.setTime(details.getCreationDate());
-		String creationDate = cal.get(Calendar.YEAR) + "-" + getTwoDigits(cal.get(Calendar.MONTH) + 1) + "-" + getTwoDigits(cal.get(Calendar.DAY_OF_MONTH)) 
-				+ " " + getTwoDigits(cal.get(Calendar.HOUR)) + ":" + getTwoDigits(cal.get(Calendar.MINUTE)) + ":" + getTwoDigits(cal.get(Calendar.SECOND));
-		cell.setCellValue("Initial Creation Date: " + creationDate);
- 		rowCount++;
+		if (details.getCreationDate() != null) {
+			
+			cal.setTime(details.getCreationDate());
+			String creationDate = cal.get(Calendar.YEAR) + "-" + getTwoDigits(cal.get(Calendar.MONTH) + 1) + "-" + getTwoDigits(cal.get(Calendar.DAY_OF_MONTH)) 
+					+ " " + getTwoDigits(cal.get(Calendar.HOUR)) + ":" + getTwoDigits(cal.get(Calendar.MINUTE)) + ":" + getTwoDigits(cal.get(Calendar.SECOND));
+			cell.setCellValue("Initial Creation Date: " + creationDate);
+		}
+		else
+			cell.setCellValue("Initial Creation Date: ");
+		
+ 		
+		rowCount++;
 		row = worksheet.createRow(rowCount);
 		cell = row.createCell(0);
-		cell.setCellValue("Last Modified By: " + details.getLastModifiedBy());
+		cell.setCellValue("Last Modified By: " + details.getLastModifiedBy() != null ? details.getLastModifiedBy() : "");
+		
 		rowCount++;
 		row = worksheet.createRow(rowCount);
 		cell = row.createCell(0);
 		cal = Calendar.getInstance();
-		cal.setTime(details.getLastModifiedDate());
-		System.out.println("******* DATE : " + details.getLastModifiedDate());
-		String modificationDate = cal.get(Calendar.YEAR) + "-" + getTwoDigits(cal.get(Calendar.MONTH) + 1) + "-" + getTwoDigits(cal.get(Calendar.DAY_OF_MONTH)) 
-				+ " " + getTwoDigits(cal.get(Calendar.HOUR)) + ":" + getTwoDigits(cal.get(Calendar.MINUTE)) + ":" + getTwoDigits(cal.get(Calendar.SECOND));
- 		cell.setCellValue("Last Modification Date: " + modificationDate);
+		if (details.getLastModifiedDate() != null) {
+			cal.setTime(details.getLastModifiedDate());
+			System.out.println("******* DATE : " + details.getLastModifiedDate());
+			String modificationDate = cal.get(Calendar.YEAR) + "-" + getTwoDigits(cal.get(Calendar.MONTH) + 1) + "-" + getTwoDigits(cal.get(Calendar.DAY_OF_MONTH)) 
+					+ " " + getTwoDigits(cal.get(Calendar.HOUR)) + ":" + getTwoDigits(cal.get(Calendar.MINUTE)) + ":" + getTwoDigits(cal.get(Calendar.SECOND));
+	 		cell.setCellValue("Last Modification Date: " + modificationDate);
+		}
+		else
+			cell.setCellValue("Last Modification Date: ");
+		
 		rowCount++;
 		row = worksheet.createRow(rowCount);
 		cell = row.createCell(0);
