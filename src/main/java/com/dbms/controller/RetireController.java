@@ -129,6 +129,8 @@ public class RetireController implements Serializable {
 	 
 
 	public String retireTargetList() {
+		String lastModifiedByString = this.authService.getLastModifiedByUserAsString();
+
 		List<Long> targetCmqCodes = new ArrayList<>();
 		List<CmqBase190> targetCmqParents = new ArrayList<CmqBase190>();
 		List<CmqBase190> targetCmqsSelected = new ArrayList<CmqBase190>(this.retireDualListModel.getTarget());
@@ -163,7 +165,8 @@ public class RetireController implements Serializable {
  			for (CmqBase190 cmqBase190 : targetCmqsSelected) {
  				cmqBase190.setCmqStatus(CmqBase190.CMQ_STATUS_VALUE_INACTIVE); 
  				cmqBase190.setLastModifiedDate(new Date());
-				cmqBase190.setLastModifiedBy("NONE");
+				//cmqBase190.setLastModifiedBy("NONE");
+				cmqBase190.setLastModifiedBy(lastModifiedByString);
 			}
 			try {
 				this.cmqBaseService.update(targetCmqsSelected, this.authService.getUserCn()

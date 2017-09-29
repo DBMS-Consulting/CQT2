@@ -1184,6 +1184,10 @@ public class CreateController implements Serializable {
 			detailsFormModel.setWizardType(WizardType.UpdateWizard);
 		}
 		
+		String lastModifiedByString = this.authService.getLastModifiedByUserAsString();
+		selectedData.setLastModifiedBy(lastModifiedByString);
+		selectedData.setLastModifiedDate(new Date()); 
+		
 		detailsFormModel.saveToCmqBase190(selectedData);
 	}
 
@@ -1390,6 +1394,10 @@ public class CreateController implements Serializable {
 			detailsFormModel.setState(state);
 			selectedData.setCmqState(state);
 		}
+		
+		String lastModifiedByString = this.authService.getLastModifiedByUserAsString();
+		selectedData.setLastModifiedBy(lastModifiedByString);
+		selectedData.setLastModifiedDate(new Date());
 		
 		//Adding the due date to be updated
 		workflowFormModel.saveToCmqBase190(selectedData);
