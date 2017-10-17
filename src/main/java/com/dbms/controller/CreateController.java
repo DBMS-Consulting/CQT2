@@ -179,7 +179,9 @@ public class CreateController implements Serializable {
 
 	public void initCreateForm() {
 		setSelectedData(null);
-		selectedData.setCmqDescription("Please enter the description");
+		selectedData.setCmqDescription("Please enter the description");	
+		//RequestContext.getCurrentInstance().execute("PF('confirmSaveDetailsDlg').show();");
+
 	}
 	
 	public void expandRelations(AjaxBehaviorEvent event) {
@@ -1500,6 +1502,18 @@ public class CreateController implements Serializable {
 		 
 		return levels;
 	}
+	
+	
+	 public List<RefConfigCodeList> getLevelSMQ() {
+		cqtCacheManager.removeAllFromCache(CACHE_NAME);
+
+		List<RefConfigCodeList> levels = refCodeListService.findByConfigType(
+					CqtConstants.CODE_LIST_TYPE_SMQ_FILTER_LEVELS, OrderBy.ASC);
+			
+			return levels;
+		}
+	
+	
 
 	
 	//--------------------- Getters and Setters -----------------------

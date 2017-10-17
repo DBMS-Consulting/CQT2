@@ -50,8 +50,11 @@
 				</h:selectBooleanCheckbox>
 				<h:outputText style="font-weight: bold" value="Show Primary path" />
 			</h:panelGrid>
+			
+			
 		</h:panelGrid>
         <h:panelGrid columns="2">
+        	<h:panelGrid columns="2">
             <p:outputLabel value="Search Direction:" for="search-direction" />
             <p:selectOneRadio id="search-direction" value="#{paramDlgCtrl.searchDirection}" disabled="#{paramDlgCtrl.enableRadioButtons}">
                 <f:selectItem itemLabel="Up" itemValue="1" itemDisabled="#{paramDlgCtrl.searchUpDisabled}" />
@@ -59,6 +62,18 @@
                 
                 <p:ajax update="resultHier" listener="#{paramDlgCtrl.refreshHS}" /> 
             </p:selectOneRadio>
+        </h:panelGrid>
+        <h:panelGrid columns="2">
+        	<p:outputLabel value="SMQ level:" for="smq" />
+        
+			<p:selectOneMenu id="smq" label="SMQs"
+                    value="#{paramDlgCtrl.filterSMQ}" appendTo="@this">
+
+                    <f:selectItems itemLabel="#{level.value}" value="#{createController.levelSMQ}"  
+                        itemValue="#{level.codelistInternalValue}" var="level"></f:selectItems>
+                    <p:ajax listener="#{paramDlgCtrl.selectSMQEvent}" />
+                </p:selectOneMenu>
+			</h:panelGrid>
         </h:panelGrid>
             
         <br/>

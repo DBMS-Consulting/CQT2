@@ -8,6 +8,7 @@ import java.util.ListIterator;
 import java.util.Map;
 
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
 
@@ -24,15 +25,20 @@ import org.slf4j.LoggerFactory;
 import com.dbms.controller.beans.HierarchySearchResultBean;
 import com.dbms.csmq.HierarchyNode;
 import com.dbms.entity.cqt.CmqBase190;
+import com.dbms.entity.cqt.RefConfigCodeList;
 import com.dbms.entity.cqt.SmqBase190;
 import com.dbms.entity.cqt.dtos.MeddraDictHierarchySearchDto;
 import com.dbms.entity.cqt.dtos.MeddraDictReverseHierarchySearchDto;
 import com.dbms.entity.cqt.dtos.SMQReverseHierarchySearchDto;
 import com.dbms.service.ICmqBase190Service;
 import com.dbms.service.ICmqRelation190Service;
+import com.dbms.service.ICqtCacheManager;
 import com.dbms.service.IMeddraDictService;
+import com.dbms.service.IRefCodeListService;
 import com.dbms.service.ISmqBaseService;
+import com.dbms.util.CqtConstants;
 import com.dbms.util.MeddraDictLevelHelper;
+import com.dbms.util.OrderBy;
 
 import static com.dbms.util.MeddraDictLevelHelper.SEARCH_MEDDRA_BASE_REVERSE;
 
@@ -56,6 +62,8 @@ public class CmqBaseHierarchySearchVM {
 
 	private String myFilterTermName;
 	private String myFilterLevel;
+	private String filterSMQ;
+
 
 	private TreeNode myHierarchyRoot;
 	private TreeNode[] mySelectedNodes;
@@ -74,6 +82,8 @@ public class CmqBaseHierarchySearchVM {
     private boolean searchDownDisabled;
     
     private boolean enableRadioButtons;
+    
+    private List<RefConfigCodeList> levels;
     
  	
 	public CmqBaseHierarchySearchVM(ICmqBase190Service cmqBaseSvc,
@@ -600,6 +610,18 @@ public class CmqBaseHierarchySearchVM {
      	return false;
     }
     
+    /**
+     * Event when selecting SMQ
+     * @param event
+     */
+    public void selectSMQEvent(AjaxBehaviorEvent event) {
+    	
+		/**
+		 * Handle here code with SMQ value selected by user: ---> filterSMQ
+		 */
+	}
+	
+    
     public void setSearchUpDisabled(boolean searchUpDisabled) {
 		this.searchUpDisabled = searchUpDisabled;
 	}
@@ -616,5 +638,20 @@ public class CmqBaseHierarchySearchVM {
 		this.enableRadioButtons = enableRadioButtons;
 	}
 
+	public List<RefConfigCodeList> getLevels() {
+		return levels;
+	}
+
+	public void setLevels(List<RefConfigCodeList> levels) {
+		this.levels = levels;
+	}
+
+	public String getFilterSMQ() {
+		return filterSMQ;
+	}
+
+	public void setFilterSMQ(String myFilterSMQ) {
+		this.filterSMQ = myFilterSMQ;
+	}
  
 }
