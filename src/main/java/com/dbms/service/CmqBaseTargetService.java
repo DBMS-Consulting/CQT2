@@ -2228,7 +2228,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 	@Override
 	public List<CmqBaseTarget> findApprovedCmqs() {
 		List<CmqBaseTarget> retVal = null;
-		String queryString = "from CmqBaseTarget c where upper(c.cmqState) = upper('Approved IA') and upper(c.cmqStatus) = upper('P')";
+		String queryString = "from CmqBaseTarget c where upper(c.cmqState) = upper('Approved IA') and upper(c.cmqStatus) = upper('P') order by upper(c.cmqName) asc ";
 		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
 		try {
 			Query query = entityManager.createQuery(queryString);

@@ -509,7 +509,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 
 	public List<CmqBase190> findApprovedCmqs() {
 		List<CmqBase190> retVal = null;
-		String queryString = "from CmqBase190 c where upper(c.cmqState) = upper('Approved') and c.cmqStatus = 'P' ";
+		String queryString = "from CmqBase190 c where upper(c.cmqState) = upper('Approved') and c.cmqStatus = 'P' order by upper(c.cmqName) asc ";
 		EntityManager entityManager = this.cqtEntityManagerFactory
 				.getEntityManager();
 		try {
@@ -524,6 +524,8 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		} finally {
 			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
 		}
+		for (CmqBase190 c : retVal)
+			System.out.println("PUBLISH: " + c.getCmqName());
 		return retVal;
 	}
 
@@ -614,7 +616,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 
 	public List<CmqBase190> findCmqsToReactivate() {
 		List<CmqBase190> retVal = null;
-		String queryString = "from CmqBase190 c where upper(c.cmqState) = upper('Published') and c.cmqStatus = 'I' ";
+		String queryString = "from CmqBase190 c where upper(c.cmqState) = upper('Published') and c.cmqStatus = 'I' order by upper(c.cmqName) asc ";
 		EntityManager entityManager = this.cqtEntityManagerFactory
 				.getEntityManager();
 		try {
@@ -638,7 +640,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 	public List<CmqBase190> findCmqsToRetire() {
 		List<CmqBase190> retVal = null;
 		String queryString = "from CmqBase190 c where upper(c.cmqState) = upper('Published') and c.cmqStatus = 'A' "
-				+ "and c.cmqCode not in (select target.cmqCode from CmqBaseTarget target where upper(target.cmqState) = upper('Published IA'))";
+				+ "and c.cmqCode not in (select target.cmqCode from CmqBaseTarget target where upper(target.cmqState) = upper('Published IA')) order by upper(c.cmqName) asc ";
 		EntityManager entityManager = this.cqtEntityManagerFactory
 				.getEntityManager();
 		try {

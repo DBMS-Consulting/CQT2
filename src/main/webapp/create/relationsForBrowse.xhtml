@@ -75,13 +75,13 @@
 			<p:ajax event="expand" listener="#{createController.relationsModel.onNodeExpand}" />
 			<p:columnGroup type="header">
 				<p:row>
-					<p:column rowspan="2"
+					<p:column rowspan="2" sortBy="#{node.term}"
 						headerText="#{createController.selectedData.cmqName}"/>
 					<p:column colspan="#{impactSearchController.displayScopeCatWeight eq 'false' ? 2 : 5}" headerText="Hierarchy Details" style="width:50%"/>
 				</p:row>
 
 				<p:row>
-					<p:column headerText="Code" style="width:10%" />
+					<p:column headerText="Code" style="width:10%" sortBy="#{node.code}" />
 					<p:column headerText="Level" style="width:10%" />
 					<p:column rendered="#{createController.relationsModel.displayScopeCatWeight}" headerText="Scope" style="width:10%" />
 					<p:column rendered="#{createController.relationsModel.displayScopeCatWeight}" headerText="Category" style="width:10%" />

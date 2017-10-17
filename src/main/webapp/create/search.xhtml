@@ -110,10 +110,10 @@
 			paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 			rowsPerPageTemplate="5,10,25"
 			resizableColumns="true">
-			<p:column headerText="List Name" width="100">
+			<p:column headerText="List Name" width="100" sortBy="#{value.cmqName}">
 				<h:outputText value="#{value.cmqName}" />
 			</p:column>
-			<p:column headerText="Extension" width="140">
+			<p:column headerText="Extension" width="140" sortBy="#{RefCodeListService.interpretInternalCodeToValue('LIST_EXTENSION_TYPES', value.cmqTypeCd)}">
 				<h:outputText value="#{RefCodeListService.interpretInternalCodeToValue('LIST_EXTENSION_TYPES', value.cmqTypeCd)}" />
 			</p:column>
 			<p:column headerText="Level" width="20">
@@ -127,7 +127,7 @@
 			<p:column headerText="State" width="60">
 				<h:outputText style="text-transform: uppercase;" value="#{value.cmqState}" />
 			</p:column>
-			<p:column headerText="Code" width="60">
+			<p:column headerText="Code" width="60" sortBy="#{value.cmqCode}">
 				<h:commandLink action="#{createController.loadCmqBaseByCode(value.cmqCode)}"
                                value="#{value.cmqCode}"
                                onclick="PF('searchTooltip').hide()"

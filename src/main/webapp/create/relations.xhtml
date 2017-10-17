@@ -127,7 +127,7 @@
 
 			<p:columnGroup type="header">
 				<p:row>
-					<p:column rowspan="2"
+					<p:column rowspan="2" sortBy="#{node.term}"
 						headerText="#{createController.selectedData.cmqName}" />
 					<p:column colspan="#{createController.relationsModel.displayScopeCatWeight eq 'false' ? 3 : 6}" headerText="Hierarchy Details" style="width:50%"/>
 				</p:row>
