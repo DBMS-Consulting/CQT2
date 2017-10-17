@@ -1508,7 +1508,7 @@ public class CreateController implements Serializable {
 		cqtCacheManager.removeAllFromCache(CACHE_NAME);
 
 		List<RefConfigCodeList> levels = refCodeListService.findByConfigType(
-					CqtConstants.CODE_LIST_TYPE_SMQ_FILTER_LEVELS, OrderBy.ASC);
+					CqtConstants.CODE_LIST_TYPE_DICTIONARY_LEVELS, OrderBy.ASC);
 			
 			return levels;
 		}
