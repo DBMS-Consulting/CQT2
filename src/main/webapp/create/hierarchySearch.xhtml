@@ -69,9 +69,15 @@
 			<p:selectOneMenu id="smq" label="SMQs"
                     value="#{paramDlgCtrl.filterSMQ}" appendTo="@this">
 
-                    <f:selectItems itemLabel="#{level.value}" value="#{createController.levelSMQ}"  
+                    <!-- <f:selectItems itemLabel="#{level.value}" value="#{createController.levelSMQ}"  
                         itemValue="#{level.codelistInternalValue}" var="level"></f:selectItems>
-                    <p:ajax listener="#{paramDlgCtrl.selectSMQEvent}" />
+                    <p:ajax listener="#{paramDlgCtrl.selectSMQEvent}" /> -->
+                    <f:selectItem itemLabel="Filter by SMQ" itemValue=""></f:selectItem>
+                    <f:selectItem itemLabel="SMQ1" itemValue="SMQ1"></f:selectItem>
+                    <f:selectItem itemLabel="SMQ2" itemValue="SMQ2"></f:selectItem>
+                    <f:selectItem itemLabel="SMQ3" itemValue="SMQ3"></f:selectItem>
+                    <f:selectItem itemLabel="SMQ4" itemValue="SMQ4"></f:selectItem>
+                    <f:selectItem itemLabel="SMQ5" itemValue="SMQ5"></f:selectItem>
                 </p:selectOneMenu>
 			</h:panelGrid>
         </h:panelGrid>
