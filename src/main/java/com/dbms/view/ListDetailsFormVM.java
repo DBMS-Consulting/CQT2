@@ -224,6 +224,8 @@ public class ListDetailsFormVM {
 		this.drugProgram = cmq.getCmqProgramCd();
         this.products = cmq.getCmqProductCds();
 		this.designee = cmq.getCmqDesignee();
+		this.designeeTwo = cmq.getCmqDesignee2();
+		this.designeeThree = cmq.getCmqDesignee3();
 		this.level = cmq.getCmqLevel();
 		this.critical = cmq.getCmqCriticalEvent();
 		this.group = cmq.getCmqGroup();

@@ -1240,11 +1240,16 @@ public class ImpactSearchController implements Serializable {
 		try {
 			if(d != null && d instanceof CmqBase190) {
 				((CmqBase190)d).setCmqDesignee(detailsFormModel.getDesignee());
+				((CmqBase190)d).setCmqDesignee2(detailsFormModel.getDesigneeTwo());
+				((CmqBase190)d).setCmqDesignee3(detailsFormModel.getDesigneeThree());
+
 				cmqBaseCurrentService.update((CmqBase190)d, this.authService.getUserCn()
 						, this.authService.getUserGivenName(), this.authService.getUserSurName()
 						, this.authService.getCombinedMappedGroupMembershipAsString());
 			} else if(d != null && d instanceof CmqBaseTarget) {
 				((CmqBaseTarget)d).setCmqDesignee(detailsFormModel.getDesignee());
+				((CmqBaseTarget)d).setCmqDesignee2(detailsFormModel.getDesigneeTwo());
+				((CmqBaseTarget)d).setCmqDesignee3(detailsFormModel.getDesigneeThree());
 				cmqBaseTargetService.update((CmqBaseTarget)d, this.authService.getUserCn()
 						, this.authService.getUserGivenName(), this.authService.getUserSurName()
 						, this.authService.getCombinedMappedGroupMembershipAsString());

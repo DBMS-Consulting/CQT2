@@ -63,12 +63,30 @@
                                    itemLabel="#{d.fullName}" itemValue="#{d.userName}"/>
                 </p:selectOneMenu>
                 
+                
 				<p:spacer />
 				<p:spacer />
 			</h:panelGrid>
 
 
 			<h:panelGrid columns="2" columnClasses="label-cell, value-cell">
+				<p:outputLabel value="Designee 2" />
+				<p:selectOneMenu
+					value="#{impactSearchController.detailsFormModel.designeeTwo}"
+	                label="Designee 2">
+					<f:selectItem itemValue="" itemLabel="" noSelectionOption="true" />
+					<f:selectItems value="#{createController.detailsFormModel.designeeList}" var="d"
+	                               itemLabel="#{d.fullName}" itemValue="#{d.userName}"/>
+				</p:selectOneMenu>
+				
+				<p:outputLabel value="Designee 3" />
+				<p:selectOneMenu
+					value="#{impactSearchController.detailsFormModel.designeeThree}"
+	                label="Designee 3">
+					<f:selectItem itemValue="" itemLabel="" noSelectionOption="true" />
+					<f:selectItems value="#{createController.detailsFormModel.designeeList}" var="d"
+	                           itemLabel="#{d.fullName}" itemValue="#{d.userName}"/>
+				</p:selectOneMenu>
 				<p:outputLabel value="Creation Date: " />
 				<h:outputText value="#{impactSearchController.detailsFormModel.creationDate}">
 					<f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss"/>
