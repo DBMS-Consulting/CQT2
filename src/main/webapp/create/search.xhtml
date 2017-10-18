@@ -110,13 +110,13 @@
 			paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 			rowsPerPageTemplate="5,10,25"
 			resizableColumns="true">
-			<p:column headerText="List Name" width="100" sortBy="#{value.cmqName}">
+			<p:column headerText="List Name" width="180" sortBy="#{value.cmqName}">
 				<h:outputText value="#{value.cmqName}" />
 			</p:column>
-			<p:column headerText="Extension" width="140" sortBy="#{RefCodeListService.interpretInternalCodeToValue('LIST_EXTENSION_TYPES', value.cmqTypeCd)}">
+			<p:column headerText="Extension" width="50" sortBy="#{RefCodeListService.interpretInternalCodeToValue('LIST_EXTENSION_TYPES', value.cmqTypeCd)}">
 				<h:outputText value="#{RefCodeListService.interpretInternalCodeToValue('LIST_EXTENSION_TYPES', value.cmqTypeCd)}" />
 			</p:column>
-			<p:column headerText="Level" width="20">
+			<p:column headerText="Level" width="25">
 				<h:outputText value="#{value.cmqLevel}" />
 			</p:column>
 			<p:column headerText="Status" width="60">

@@ -1,3 +1,4 @@
+
 /**ADFFaces_Skin_File / DO NOT REMOVE**/
 @namespace af "http: //xmlns.oracle.com /adf/faces/rich";
 @namespace dvt "http: //xmlns.oracle.com /dss/adf/faces";
@@ -529,4 +530,8 @@ ul.nav>li {
 .ui-treetable .ui-treetable-scrollable-theadclone th .ui-sortable-column-icon{
     display: block;
     height: 0;
+}
+
+.ui-picklist .ui-picklist-list {
+    width: 300px !important;
 }
