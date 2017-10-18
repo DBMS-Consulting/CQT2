@@ -20,14 +20,14 @@
 			</p:selectOneMenu>
 
 			<p:outputLabel value="Drug Program" styleClass="label-right" />
-			<p:selectOneMenu value="#{searchController.drugProgram}" id="drug2">
+			<p:selectOneMenu value="#{searchController.drugProgram}" id="drug2" filter="true">
 				<f:selectItem itemValue="" itemLabel="" />
 				<f:selectItems value="#{configMB.programList}" var="program"
 					itemLabel="#{program.value}" itemValue="#{program.codelistInternalValue}" />
 			</p:selectOneMenu>
 
 			<p:outputLabel value="Protocol" styleClass="label-right" />
-			<p:selectOneMenu value="#{searchController.protocol}" id="protocol2">
+			<p:selectOneMenu value="#{searchController.protocol}" id="protocol2" filter="true">
 				<f:selectItem itemValue="" itemLabel="" />
 				<f:selectItems value="#{configMB.protocolList}" var="protocol"
 					itemLabel="#{protocol.value}" itemValue="#{protocol.codelistInternalValue}" />

@@ -43,7 +43,7 @@
 			<p:outputLabel id="lDrug" value="* Drug Program" />
 			<p:selectOneMenu
 				value="#{createController.detailsFormModel.drugProgram}" id="drug"
-				disabled="#{createController.detailsFormDisabled}"
+				disabled="#{createController.detailsFormDisabled}" filter="true"
 				required="#{not createController.readOnlyState}"
                 label="Drug Program">
 				<!-- <f:selectItem itemValue="" itemLabel="" noSelectionOption="true" /> -->
@@ -57,7 +57,7 @@
 			<p:outputLabel id="lProtocol" value="* Protocol" />
 			<p:selectOneMenu
 				value="#{createController.detailsFormModel.protocol}" id="protocol"
-				disabled="#{createController.detailsFormDisabled}"
+				disabled="#{createController.detailsFormDisabled}" filter="true"
 				required="#{not createController.readOnlyState}"
                 label="Protocol">
 				
@@ -71,7 +71,7 @@
 
 			<p:outputLabel id="lProduct" value="* Product" rendered="true" />
 			<p:selectCheckboxMenu id="product" value="#{createController.detailsFormModel.products}" widgetVar="product"
-                disabled="#{createController.detailsFormDisabled}"
+                disabled="#{createController.detailsFormDisabled}" 
                 label="#{createController.detailsFormDisabled ? createController.detailsFormModel.productsLabel : 'Choose products'}" updateLabel="true"
                 filter="true" filterMatchMode="contains"
 				style="min-width:270px; max-width: 600px">
@@ -86,7 +86,7 @@
 			<p:selectOneMenu
 				value="#{createController.detailsFormModel.designee}"
 				disabled="#{createController.detailsFormDisabled}" rendered="true"
-                label="Designee"
+                label="Designee" filter="true"
 				required="#{!createController.readOnlyState}">
 				<f:selectItem itemValue="" itemLabel="" noSelectionOption="true" />
                 <f:selectItems value="#{createController.detailsFormModel.designeeList}" var="d"
@@ -96,7 +96,7 @@
 
 		<h:panelGrid columns="2" columnClasses="label-cell, value-cell">
 			<p:outputLabel value="Designee 2" />
-			<p:selectOneMenu
+			<p:selectOneMenu filter="true"
 				value="#{createController.detailsFormModel.designeeTwo}"
 				disabled="#{createController.detailsFormDisabled}" rendered="true"
                 label="Designee 2">
@@ -106,7 +106,7 @@
 			</p:selectOneMenu>
 			
 			<p:outputLabel value="Designee 3" />
-			<p:selectOneMenu
+			<p:selectOneMenu filter="true"
 				value="#{createController.detailsFormModel.designeeThree}"
 				disabled="#{createController.detailsFormDisabled}" rendered="true"
                 label="Designee 3">

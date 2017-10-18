@@ -55,7 +55,7 @@
 				<h:outputText value="#{impactSearchController.detailsFormModel.group}" />
 
 				<p:outputLabel value="* Designee" />
-                <p:selectOneMenu
+                <p:selectOneMenu filter="true"
                     value="#{impactSearchController.detailsFormModel.designee}"
                     disabled="true" label="Designee" >
                     <f:selectItem itemValue="" itemLabel="" noSelectionOption="true" />
