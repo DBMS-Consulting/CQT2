@@ -178,6 +178,9 @@ public class ImpactSearchController implements Serializable {
     private boolean readOnlyIA;
     
     private String		scopeFilter;
+    
+	private String dictionaryVersion;
+
 
 	public ImpactSearchController() {
 		
@@ -203,6 +206,10 @@ public class ImpactSearchController implements Serializable {
 		//changeOccur = false;
 		displayScopeCatWeight = refCodeListService.getLevelScopeCategorySystemConfig();
 		//scopeFilter = NO_SCOPE_FILTER;
+		
+		//Dictionary version
+		RefConfigCodeList currentMeddraVersionCodeList = this.refCodeListService.getTargetMeddraVersion();
+		setDictionaryVersion(currentMeddraVersionCodeList.getValue());
 	}
 	
 	
@@ -2407,5 +2414,13 @@ public class ImpactSearchController implements Serializable {
 
 	public void setNonImpactedSmqSelected(boolean isNonImpactedSmqSelected) {
 		this.isNonImpactedSmqSelected = isNonImpactedSmqSelected;
+	}
+	
+	public String getDictionaryVersion() {
+		return dictionaryVersion;
+	}
+
+	public void setDictionaryVersion(String dictionaryVersion) {
+		this.dictionaryVersion = dictionaryVersion;
 	}
 }

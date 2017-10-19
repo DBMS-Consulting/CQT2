@@ -144,8 +144,8 @@
 								<h:outputText
 									value="#{createController.selectedData.activatedBy}" />
 
-								<p:spacer />
-								<p:spacer />
+								<p:outputLabel value="Dictionary version" />
+								<h:outputText value="#{searchController.dictionaryVersion}" /> 
 							</h:panelGrid>
 						</h:panelGrid>
                         <p:commandButton value="Audit" action="#" disabled="true"

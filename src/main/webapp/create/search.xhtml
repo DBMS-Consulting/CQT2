@@ -8,7 +8,7 @@
     
     <p:tooltip widgetVar="searchTooltip" />
     
-	<h:panelGrid columns="2" cellpadding="10" id="searchPanel">
+	<h:panelGrid columns="3" cellpadding="10" id="searchPanel">
 		<h:panelGrid columns="2" columnClasses="label, value">
 			<p:outputLabel value="Extension" styleClass="label-right" />
 			<p:selectOneMenu value="#{searchController.extension}">
@@ -78,6 +78,12 @@
 				<f:selectItem itemLabel="All" itemValue=""></f:selectItem>
 				<f:selectItem itemLabel="No Group" itemValue="No Group"></f:selectItem>
 			</p:selectOneMenu>
+		</h:panelGrid>
+		
+		<h:panelGrid columns="2" style="min-width: 200px">
+			<p:outputLabel style="font-weight: bold" value="Dictionary version: " styleClass="label-right" />
+			<h:outputText style="font-weight: bold" value="#{searchController.dictionaryVersion}" /> 
+			
 		</h:panelGrid>
 	</h:panelGrid>
 
