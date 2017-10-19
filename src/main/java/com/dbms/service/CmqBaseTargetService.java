@@ -121,6 +121,9 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
             if(filters.containsKey("cmqState") && filters.get("cmqState") != null)
 				pred.add(cb.equal(cmqRoot.get("cmqState"), filters.get("cmqState")));
             
+            if(filters.containsKey("cmqDesignee") && filters.get("cmqDesignee") != null)
+				pred.add(cb.equal(cmqRoot.get("cmqDesignee"), filters.get("cmqDesignee")));
+            
             if(filters.containsKey("cmqCode") && filters.get("cmqCode") != null) {
                 String f = ((String)filters.get("cmqCode"));
                 f = f.contains("%") ? f : ("%" + f + "%");
