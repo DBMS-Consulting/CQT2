@@ -63,25 +63,6 @@
                 <p:ajax update="resultHier" listener="#{paramDlgCtrl.refreshHS}" /> 
             </p:selectOneRadio>
         </h:panelGrid>
-        <h:panelGrid columns="2">
-        	<p:outputLabel value="SMQ level:" for="smq" />
-        
-			<p:selectOneMenu id="smq" label="SMQs"
-                    value="#{paramDlgCtrl.filterSMQ}" appendTo="@this">
-
-                    <!-- <f:selectItems itemLabel="#{level.value}" value="#{createController.levelSMQ}"  
-                        itemValue="#{level.codelistInternalValue}" var="level"></f:selectItems>
-                    <p:ajax listener="#{paramDlgCtrl.selectSMQEvent}" /> -->
-                    <f:selectItem itemLabel="Filter by SMQ" itemValue=""></f:selectItem>
-                    <f:selectItem itemLabel="SMQ1" itemValue="SMQ1"></f:selectItem>
-                    <f:selectItem itemLabel="SMQ2" itemValue="SMQ2"></f:selectItem>
-                    <f:selectItem itemLabel="SMQ3" itemValue="SMQ3"></f:selectItem>
-                    <f:selectItem itemLabel="SMQ4" itemValue="SMQ4"></f:selectItem>
-                    <f:selectItem itemLabel="SMQ5" itemValue="SMQ5"></f:selectItem>
-                    <f:selectItem itemLabel="SMQ ALL" itemValue="SMQ ALL"></f:selectItem>
-                </p:selectOneMenu>
-			</h:panelGrid>
-        </h:panelGrid>
             
         <br/>
 
