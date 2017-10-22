@@ -217,7 +217,7 @@
 											icon="fa fa-search" onclick="PF('target-hierarchy-search').show();">
 											
 											<p:ajax listener="#{impactSearchController.targetHierarchySearchDlgModel.resetHS}" event="click" 
-												update="@form:levelHT @form:termHT @form:search-direction-target @form:resultHierTarget" />
+												update="@form:levelHT @form:termHT @form:search-direction-target @form:resultHierTarget @form:checkTarget" />
 										</p:commandButton>
 											
 										<p:commandButton value="New PTs" actionListener="#" id="new_pt_btn" update="new-pt-btn"
@@ -460,7 +460,9 @@
 
 			<p:dialog widgetVar="target-hierarchy-search" modal="false" header="Hierarchy Search Target"
 				width="680px" minHeight="480">
-				<ui:include src="../impactCommon/targetHierarchySearch.xhtml"></ui:include>
+				<ui:include src="../impactCommon/targetHierarchySearch.xhtml">
+					<ui:param name="paramDlgCtrlTarget" value="#{impactSearchController.targetHierarchySearchDlgModel}" />
+				</ui:include>
 
 				<p:spacer height="10"></p:spacer>
 				<h:panelGrid style="float: right" columns="2">

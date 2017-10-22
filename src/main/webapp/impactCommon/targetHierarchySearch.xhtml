@@ -28,8 +28,9 @@
 				
 			<h:panelGrid columns="2">
 				
-				<h:selectBooleanCheckbox id="checkTarget" disabled="#{impactSearchController.targetHierarchySearchDlgModel.filterLevel != 'PT' and impactSearchController.targetHierarchySearchDlgModel.filterLevel != 'LLT'}" value="#{impactSearchController.targetHierarchySearchDlgModel.showPrimaryPath}">
-		           		<p:ajax update="resultHierTarget" listener="#{impactSearchController.targetHierarchySearchDlgModel.collapseForPrimaryPathShowing}"  />
+				<h:selectBooleanCheckbox id="checkTarget" disabled="#{paramDlgCtrlTarget.filterLevel != 'PT' and paramDlgCtrlTarget.filterLevel != 'LLT'}" 
+					value="#{paramDlgCtrlTarget.showPrimaryPath}">
+		           		<p:ajax update="resultHierTarget" listener="#{paramDlgCtrlTarget.collapseForPrimaryPathShowing}"  />
 		        	</h:selectBooleanCheckbox>
 		        <h:outputText style="font-weight: bold" value="Show Primary path" />
 		 	</h:panelGrid>
