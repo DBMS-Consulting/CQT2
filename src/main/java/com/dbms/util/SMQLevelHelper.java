@@ -14,7 +14,8 @@ public class SMQLevelHelper {
 			new SMQLevelHelper(2, "SMQ2"),
 			new SMQLevelHelper(3, "SMQ3"),
 			new SMQLevelHelper(4, "SMQ4"),
-			new SMQLevelHelper(5, "SMQ5")
+			new SMQLevelHelper(5, "SMQ5"),
+			new SMQLevelHelper(-1, "SMQ ALL")
 	};
 	
 	public static String getLabel(int level) {
