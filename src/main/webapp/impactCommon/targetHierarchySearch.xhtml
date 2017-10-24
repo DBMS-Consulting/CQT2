@@ -16,7 +16,7 @@
 				<f:selectItems itemLabel="#{level.value}" value="#{configMB.allLevelList}"
 					itemValue="#{level.codelistInternalValue}" var="level"></f:selectItems>
 					<!-- <f:selectItem itemLabel="Non Current LLT" itemValue="NC-LLT"></f:selectItem> -->
-				<p:ajax update="checkTarget search-direction" />
+				<p:ajax update="checkTarget search-direction" listener="#{impactSearchController.targetHierarchySearchDlgModel.selectLevelEvent}" />
 			</p:selectOneMenu>
 			<p:spacer width="5" />
 			<p:outputLabel value="Term" for="termHT" />

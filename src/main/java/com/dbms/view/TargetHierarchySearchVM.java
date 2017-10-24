@@ -278,6 +278,10 @@ public class TargetHierarchySearchVM {
 		}
 	}
 	
+	public void selectLevelEvent(AjaxBehaviorEvent event) {
+		handleSearchDirection();
+	}
+	
 	public void resetHS(AjaxBehaviorEvent event) {
 		this.myHierarchyRoot = new DefaultTreeNode("root", new HierarchyNode("LEVEL", "NAME", "CODE", null), null);	 
 		

@@ -824,7 +824,7 @@ public class IARelationsTreeHelper {
                     || ("MRG".equalsIgnoreCase(meddra.getMergedHlgt()) && (meddra.getHlgtCode() != null))
                     || ("MRG".equalsIgnoreCase(meddra.getMergedHlt()) && (meddra.getHltCode() != null))) {
                 node.setRowStyleClass("red-colored");
-            } else if(("NCH".equalsIgnoreCase(meddra.getHlgtNameChanged()) && meddra.getHlgtCode() != null)
+            }  if(("NCH".equalsIgnoreCase(meddra.getHlgtNameChanged()) && meddra.getHlgtCode() != null)
                     || ("NCH".equalsIgnoreCase(meddra.getHltNameChanged()) && meddra.getHltCode() != null)
                     || ("NCH".equalsIgnoreCase(meddra.getPtNameChanged()) && meddra.getPtCode() != null)
                     || ("NCH".equalsIgnoreCase(meddra.getSocNameChanged()) && meddra.getSocCode() != null)
