@@ -989,7 +989,7 @@ public class IARelationsTreeHelper {
                         || ("LPP".equalsIgnoreCase(meddra.getPromotedLlt()) && meddra.getLltCode() != null)
                         || ("SDP".equalsIgnoreCase(meddra.getNewSuccessorPt()) && meddra.getPtCode() != null)){
                     node.setRowStyleClass("orange-colored");
-                } else if(("NCH".equalsIgnoreCase(meddra.getHlgtNameChanged()) && meddra.getHlgtCode() != null)
+                }  if(("NCH".equalsIgnoreCase(meddra.getHlgtNameChanged()) && meddra.getHlgtCode() != null)
                         || ("NCH".equalsIgnoreCase(meddra.getHltNameChanged()) && meddra.getHltCode() != null)
                         || ("NCH".equalsIgnoreCase(meddra.getPtNameChanged()) && meddra.getPtCode() != null)
                         || ("NCH".equalsIgnoreCase(meddra.getSocNameChanged()) && meddra.getSocCode() != null)
