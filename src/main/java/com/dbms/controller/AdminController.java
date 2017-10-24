@@ -432,6 +432,18 @@ public class AdminController implements Serializable {
 	}
 
 	public void addRefCodelist() {
+		//validate the ref code. cannot be mroe than 3 characters long if codelist is extension
+		if (myFocusRef.getCodelistConfigType().equals(CqtConstants.CODE_LIST_TYPE_EXTENSION))
+			if((myFocusRef.getCodelistInternalValue() != null) && (myFocusRef.getCodelistInternalValue().length() > 3)) {
+				FacesMessage msg = new FacesMessage(
+						FacesMessage.SEVERITY_ERROR,
+						"Length of EXTENSION Code cannot exceed 3 characters.",
+						"");
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+				return;
+		}
+		
+		
 		// Getting old serial numbre before save
 		RefConfigCodeList oldCodelist = refCodeListService.findById(myFocusRef.getId());
 		
