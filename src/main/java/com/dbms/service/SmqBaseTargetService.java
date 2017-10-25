@@ -82,15 +82,20 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 	public List<SmqBaseTarget> findByLevelAndTerm(Integer level, String searchTerm) {
 		List<SmqBaseTarget> retVal = null;
 		StringBuilder sb = new StringBuilder();
-		sb.append("from SmqBaseTarget c where c.smqLevel = :smqLevel ");
-		if(!StringUtils.isBlank(searchTerm)) {
-			sb.append("and upper(c.smqName) like :smqName");
-		}
+		sb.append("from SmqBaseTarget c ");
+		if(!StringUtils.isBlank(searchTerm) && (level != -1)) {
+			sb.append(" where c.smqLevel = :smqLevel and upper(c.smqName) like :smqName");
+		} else if (StringUtils.isBlank(searchTerm) && (level != -1)) {
+			sb.append(" where c.smqLevel = :smqLevel");
+		} else if (!StringUtils.isBlank(searchTerm) && (level == -1)) {
+			sb.append(" where upper(c.smqName) like :smqName");
+		} 
 		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
 		try {
 			Query query = entityManager.createQuery(sb.toString());
-			query.setParameter("smqLevel", level);
-			
+			if(level != -1) {
+				query.setParameter("smqLevel", level);
+			}
 			if(!StringUtils.isBlank(searchTerm)) {
 				query.setParameter("smqName", searchTerm.toUpperCase());
 			}
@@ -1303,8 +1308,15 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 		StringBuilder sb = new StringBuilder();
 		sb.append("select SMQ_CODE as smqCode, SMQ_NAME as smqName, SMQ_LEVEL as smqLevel, SMQ_DESCRIPTION as smqDescription, "
 				+ " SMQ_SOURCE as smqSource, SMQ_NOTE as smqNote, SMQ_STATUS as smqStatus, SMQ_ALGORITHM as smqAlgorithm, "
-				+ " DICTIONARY_VERSION as dictionaryVersion, IMPACT_TYPE as impactType, SMQ_ID as smqId from SMQ_BASE_TARGET "
-				+ " where SMQ_LEVEL = :smqLevel ");
+				+ " DICTIONARY_VERSION as dictionaryVersion, IMPACT_TYPE as impactType, SMQ_ID as smqId from SMQ_BASE_TARGET ");
+		if(!StringUtils.isBlank(smqName) && (smqLevel != -1)) {
+			sb.append(" where SMQ_LEVEL = :smqLevel and upper(SMQ_NAME) like :smqName");
+		} else if (!StringUtils.isBlank(smqName) && (smqLevel == -1)){
+			sb.append(" where upper(SMQ_NAME) like :smqName");
+		} else if (StringUtils.isBlank(smqName) && (smqLevel != -1)){
+			sb.append(" where SMQ_LEVEL = :smqLevel");
+		}
+		
 		if(!StringUtils.isBlank(smqName)) {
 			sb.append("  and upper(SMQ_NAME) like :smqName");
 		}
@@ -1328,7 +1340,7 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 			if (!StringUtils.isBlank(smqName)) {
 				query.setParameter("smqName", smqName.toUpperCase());
 			}
-			if (smqLevel != null) {
+			if ((smqLevel != null) && (smqLevel != -1)) {
 				query.setParameter("smqLevel", smqLevel);
 			}
 			 
