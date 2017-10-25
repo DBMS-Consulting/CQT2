@@ -357,6 +357,8 @@ public class CmqBaseHierarchySearchVM {
 	
 	private String returnSmqLevel(String level) { 
 		if (level != null) {
+			if (level.equals("SMQ ALL"))
+				return "-1";
 			if (level.equals("SMQ1"))
 				return "1";
 			if (level.equals("SMQ2"))
