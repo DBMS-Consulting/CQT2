@@ -381,6 +381,7 @@ public class CmqBaseHierarchySearchVM {
 						|| myFilterLevel.equals("SMQ2")
 						|| myFilterLevel.equals("SMQ3")
 						|| myFilterLevel.equals("SMQ4")
+						|| myFilterLevel.equals("SMQ ALL")
  						|| myFilterLevel.equals("PRO")
 						|| myFilterLevel.equals("HLGT") || myFilterLevel
 							.equals("HLT"))) {

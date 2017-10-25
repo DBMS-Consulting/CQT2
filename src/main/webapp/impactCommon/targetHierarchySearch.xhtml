@@ -16,7 +16,7 @@
 				<f:selectItems itemLabel="#{level.value}" value="#{configMB.allLevelList}"
 					itemValue="#{level.codelistInternalValue}" var="level"></f:selectItems>
 					<!-- <f:selectItem itemLabel="Non Current LLT" itemValue="NC-LLT"></f:selectItem> -->
-				<p:ajax update="checkTarget search-direction" listener="#{impactSearchController.targetHierarchySearchDlgModel.selectLevelEvent}" />
+				<p:ajax update="checkTarget search-direction-target" listener="#{impactSearchController.targetHierarchySearchDlgModel.selectLevelEvent}" />
 			</p:selectOneMenu>
 			<p:spacer width="5" />
 			<p:outputLabel value="Term" for="termHT" />
@@ -46,7 +46,7 @@
         </h:panelGrid>
 
 		<br />
-		<h:panelGroup id="pct3" style="display:block;position: absolute;height:80%;height: calc(100% - 100px);width: 100%;margin-left: -16px;padding: 0 10px;box-sizing: border-box;overflow: auto;">
+		<h:panelGroup id="pct3" style="display:block;position: absolute;height: calc(100% - 155px);width: 100%;margin-left: -16px;padding: 0 10px;box-sizing: border-box;overflow: auto;">
 			<p:treeTable value="#{impactSearchController.targetHierarchySearchDlgModel.hierarchyRoot}"  var="node"
                 id="resultHierTarget" selectionMode="multiple" selection="#{impactSearchController.targetHierarchySearchDlgModel.selectedNodes}"
 				styleClass="ui-treetable-resultHierTarget hide-sel-chkbox"
