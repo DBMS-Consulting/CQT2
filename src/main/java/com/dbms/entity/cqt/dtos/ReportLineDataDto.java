@@ -15,6 +15,7 @@ public class ReportLineDataDto {
 	private String weight;
 	private String scope;
 	private String dots;
+	private String status;
 	
 	private String impact;
 	private MeddraDictHierarchySearchDto meddra;
@@ -34,7 +35,7 @@ public class ReportLineDataDto {
 	 * @param term
 	 * @param dots
 	 */
-	public ReportLineDataDto(String level, String code, String term, String dots, String scope, String weight, String categ, String impact) {
+	public ReportLineDataDto(String level, String code, String term, String dots, String scope, String weight, String categ, String impact, String status) {
 		super();
 		this.term = term;
 		this.code = code;
@@ -161,6 +162,14 @@ public class ReportLineDataDto {
 
 	public void setMeddra(MeddraDictHierarchySearchDto meddra) {
 		this.meddra = meddra;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
 	}
 
 }
