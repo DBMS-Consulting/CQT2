@@ -594,6 +594,8 @@ public class CmqBaseRelationsTreeHelper {
     	}
 
 		if (null != childRelations) {
+			List<Long> smqChildCodeList = new ArrayList<>();
+			Map<Long, TreeNode> smqChildTreeNodeMap = new HashMap<>();
 			for (SmqRelation190 childRelation : childRelations) {
 				boolean isChildSmqNode = false;
 				HierarchyNode childRelationNode = new HierarchyNode();
@@ -607,6 +609,8 @@ public class CmqBaseRelationsTreeHelper {
 					childRelationNode.setCategory(null != childRelation.getPtTermCategory() ? childRelation.getPtTermCategory() : "");
 					childRelationNode.setWeight(null != childRelation.getPtTermWeight()? childRelation.getPtTermWeight().toString() : "");
 					isChildSmqNode = true;
+					//for finding the child smqs of this one.
+					smqChildCodeList.add(childRelation.getPtCode().longValue());
 				} else if (childRelation.getSmqLevel() == 1) {
 					childRelationNode.setLevel("SMQ1");
 					childRelationNode.setEntity(childRelation);
@@ -649,8 +653,30 @@ public class CmqBaseRelationsTreeHelper {
                 TreeNode treeNode = new DefaultTreeNode(childRelationNode, expandedTreeNode);
  				if(isChildSmqNode) {
  					this.createNewDummyNode(treeNode);
+ 					//add the child smq to map to fit it in later.
+ 					smqChildTreeNodeMap.put(childRelation.getPtCode().longValue(), treeNode);
  				}
 			}
+			
+			if(smqChildCodeList.size() > 0) {
+				//find child smqs for this one and add a C in fornt of name if it has
+				List<Map<String, Object>> smqRelationsCountList = this.smqBaseSvc
+						.findSmqChildRelationsCountForSmqCodes(smqChildCodeList);
+				if ((null != smqRelationsCountList)
+						&& (smqRelationsCountList.size() > 0)) {
+					for (Map<String, Object> map : smqRelationsCountList) {
+						if (map.get("SMQ_CODE") != null) {
+							Long childSmqCode = (Long) map.get("SMQ_CODE");
+							if ((Long) map.get("COUNT") > 0) {
+								TreeNode treeNode = smqChildTreeNodeMap.get(childSmqCode);
+								HierarchyNode hierarchyNode = (HierarchyNode) treeNode.getData();
+								String level = hierarchyNode.getLevel();
+								hierarchyNode.setLevel("'C' " + level);
+							}
+						}
+					}
+				}
+			}//end of if(smqChildCodeList.size() > 0)
 		}
 	}
     

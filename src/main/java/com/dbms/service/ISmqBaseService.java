@@ -42,4 +42,6 @@ public interface ISmqBaseService {
 
 	SmqRelation190 findSmqRelationsByPtCode(Long ptCode);
 
+	List<Map<String, Object>> findSmqChildRelationsCountForSmqCodes(List<Long> smqCodes);
+
 }

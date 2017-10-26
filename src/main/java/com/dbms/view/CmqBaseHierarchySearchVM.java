@@ -146,7 +146,6 @@ public class CmqBaseHierarchySearchVM {
 
 				List<Map<String, Object>> smqBaseChildrenCount = this.smqBaseService
 						.findChildSmqCountByParentSmqCodes(smqChildCodeList);
-
 				if ((null != smqBaseChildrenCount)
 						&& (smqBaseChildrenCount.size() > 0)) {
 					for (Map<String, Object> map : smqBaseChildrenCount) {
@@ -179,9 +178,30 @@ public class CmqBaseHierarchySearchVM {
 						}
 					}
 				}
-			}
-
-			else if (appliedSearchDirection == SEARCH_DIRECTION_UP) {
+				
+				//find child smqs for this one and add a C in fornt of name if it has
+				smqRelationsCountList = this.smqBaseService
+						.findSmqChildRelationsCountForSmqCodes(smqChildCodeList);
+				if ((null != smqRelationsCountList)
+						&& (smqRelationsCountList.size() > 0)) {
+					for (Map<String, Object> map : smqRelationsCountList) {
+						if (map.get("SMQ_CODE") != null) {
+							Long childSmqCode = (Long) map.get("SMQ_CODE");
+							if ((Long) map.get("COUNT") > 0) {
+								TreeNode treeNode = smqTreeNodeMap.get(childSmqCode);
+								HierarchyNode hierarchyNode = (HierarchyNode) treeNode.getData();
+								String level = hierarchyNode.getLevel();
+								hierarchyNode.setLevel("'C' " + level);
+								//add a dummy node only if its not present yet
+								if(treeNode.getChildCount() == 0) {
+									relationsTreeHelper.createNewDummyNode(treeNode);
+								}
+							}
+						}
+					}
+				}
+				
+			} else if (appliedSearchDirection == SEARCH_DIRECTION_UP) {
 				Integer smqLevel = Integer.parseInt(returnSmqLevel(myFilterLevel));
 				List<SMQReverseHierarchySearchDto> smqBaseList = smqBaseService
 						.findReverseByLevelAndTerm(smqLevel, myFilterTermName);
