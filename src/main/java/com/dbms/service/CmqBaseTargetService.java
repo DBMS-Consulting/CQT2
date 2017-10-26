@@ -122,8 +122,16 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 				pred.add(cb.equal(cmqRoot.get("cmqState"), filters.get("cmqState")));
             
             if(filters.containsKey("cmqDesignee") && filters.get("cmqDesignee") != null) {
-				pred.add(cb.equal(cmqRoot.get("cmqDesignee"), filters.get("cmqDesignee")));
+	            	pred.add(cb.or(cb.equal(cmqRoot.get("cmqDesignee"), filters.get("cmqDesignee")), 
+	    					cb.equal(cmqRoot.get("cmqDesignee2"), filters.get("cmqDesignee")),
+	    					cb.equal(cmqRoot.get("cmqDesignee3"), filters.get("cmqDesignee"))
+	    			));
             }
+          /*  if(filters.containsKey("cmqDesignee2")) {
+            }
+            if(filters.containsKey("cmqDesignee3")) {
+
+            }*/
             
             
             if(filters.containsKey("cmqCode") && filters.get("cmqCode") != null) {

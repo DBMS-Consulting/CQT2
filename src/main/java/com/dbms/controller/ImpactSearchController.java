@@ -226,6 +226,8 @@ public class ImpactSearchController implements Serializable {
         return ((Comparable) value).compareTo(Integer.valueOf(filterText)) > 0;
     }
 	
+	
+	
 	/**
 	 * Generate Excel report on target datatable.
 	 */
