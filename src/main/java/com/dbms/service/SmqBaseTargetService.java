@@ -812,7 +812,7 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 		cell.setCellValue("Impact Type");
 		setCellStyleColumn(workbook, cell);
 		cell = row.createCell(7);
-		cell.setCellValue("Status");
+		cell.setCellValue("PT Status");
 		setCellStyleColumn(workbook, cell);
 		rowCount++;
 		

@@ -1896,6 +1896,19 @@ public class ImpactSearchController implements Serializable {
 		return levels;
 	}
 	
+	public String formatDesignee(String designee1, String designee2, String designee3) {
+		StringBuilder result = new StringBuilder();
+		//String result = "";
+		
+		if (designee1 != null && !designee1.equals(""))
+			result.append(designee1);
+		if (designee2 != null && !designee2.equals(""))
+			result.append(", ").append(designee2);
+		if (designee3 != null && !designee3.equals(""))
+			result.append(", ").append(designee3);
+		return result.toString();
+	}
+	
 
 	public IMeddraDictService getMeddraDictCurrentService() {
 		return meddraDictCurrentService;

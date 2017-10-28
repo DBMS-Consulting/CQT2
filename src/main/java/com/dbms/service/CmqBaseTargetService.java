@@ -127,13 +127,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 	    					cb.equal(cmqRoot.get("cmqDesignee3"), filters.get("cmqDesignee"))
 	    			));
             }
-          /*  if(filters.containsKey("cmqDesignee2")) {
-            }
-            if(filters.containsKey("cmqDesignee3")) {
-
-            }*/
-            
-            
+        
             if(filters.containsKey("cmqCode") && filters.get("cmqCode") != null) {
                 String f = ((String)filters.get("cmqCode"));
                 f = f.contains("%") ? f : ("%" + f + "%");
@@ -225,6 +219,13 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
                 f = f.contains("%") ? f : ("%" + f + "%");
 				pred.add(cb.like(cmqRoot.get("cmqCode").as(String.class), f));
             }
+            
+            if(filters.containsKey("cmqDesignee") && filters.get("cmqDesignee") != null) {
+            	pred.add(cb.or(cb.equal(cmqRoot.get("cmqDesignee"), filters.get("cmqDesignee")), 
+    					cb.equal(cmqRoot.get("cmqDesignee2"), filters.get("cmqDesignee")),
+    					cb.equal(cmqRoot.get("cmqDesignee3"), filters.get("cmqDesignee"))
+    			));
+        }
 			
 			cq.where(cb.and(pred.toArray(new Predicate[0])));
 			
@@ -486,7 +487,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 		cell.setCellValue("Impact Relation Type");
 		setCellStyleColumn(workbook, cell);
 		cell = row.createCell(7);
-		cell.setCellValue("Status");
+		cell.setCellValue("PT Status");
 		setCellStyleColumn(workbook, cell);
 		rowCount++;
 

@@ -1196,7 +1196,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		cell.setCellValue("Scope");
 		setCellStyleColumn(workbook, cell);
 		cell = row.createCell(6);
-		cell.setCellValue("Status");
+		cell.setCellValue("PT Status");
 		setCellStyleColumn(workbook, cell);
 		rowCount++;
 
