@@ -74,6 +74,10 @@ public class CmqBaseRelationsTreeHelper {
 		Map<Long, IEntity> ptCodesMap = new HashMap<>();
 		Map<Long, IEntity> lltCodesMap = new HashMap<>();
         
+		//for childsmqs where we need to add a C to level
+		List<Long> smqChildCodeList = new ArrayList<>();
+		Map<Long, TreeNode> smqChildTreeNodeMap = new HashMap<>();
+		
 		for (CmqRelation190 cmqRelation : cmqRelationList) {
             if((cmqRelation.getSocCode() != null) && (cmqRelation.getSocCode() > 0)) {
                 socCodesMap.put(cmqRelation.getSocCode(), cmqRelation);
@@ -86,9 +90,33 @@ public class CmqBaseRelationsTreeHelper {
             } else if((cmqRelation.getLltCode() != null) && (cmqRelation.getLltCode() > 0)) {
                 lltCodesMap.put(cmqRelation.getLltCode(), cmqRelation);
             } else if((cmqRelation.getSmqCode() != null) && (cmqRelation.getSmqCode() > 0)) {
-                this.populateSmqTreeNode(cmqRelation, rootNode, cmqCode, false);
+            	TreeNode treeNode = this.populateSmqTreeNode(cmqRelation, rootNode, cmqCode, false);
+            	smqChildCodeList.add(cmqRelation.getSmqCode());
+            	smqChildTreeNodeMap.put(cmqRelation.getSmqCode(), treeNode);
             }
         }
+		
+		if(smqChildCodeList.size() > 0) {
+			//find child smqs for this one and add a C in fornt of name if it has
+			List<Map<String, Object>> smqRelationsCountList = this.smqBaseSvc
+					.findSmqChildRelationsCountForSmqCodes(smqChildCodeList);
+			if ((null != smqRelationsCountList)
+					&& (smqRelationsCountList.size() > 0)) {
+				for (Map<String, Object> map : smqRelationsCountList) {
+					if (map.get("SMQ_CODE") != null) {
+						Long childSmqCode = (Long) map.get("SMQ_CODE");
+						if ((Long) map.get("COUNT") > 0) {
+							TreeNode treeNode = smqChildTreeNodeMap.get(childSmqCode);
+							if(null != treeNode) {
+								HierarchyNode hierarchyNode = (HierarchyNode) treeNode.getData();
+								String level = hierarchyNode.getLevel();
+								hierarchyNode.setLevel("'C' " + level);
+							}
+						}
+					}
+				}
+			}
+		}//end of if(smqChildCodeList.size() > 0)
 
         //find socs now
         if(socCodesMap.size() > 0) {
@@ -326,7 +354,12 @@ public class CmqBaseRelationsTreeHelper {
             treeNode = new DefaultTreeNode(node, expandedTreeNode);
         } else {
             SmqBase190 entity2 = this.smqBaseSvc.findByCode(cmqRelation.getSmqCode());
+            //Long childSmqCount = this.smqBaseSvc.findSmqChildRelationsCountForSmqCode(cmqRelation.getSmqCode());
             node = this.createSmqBaseNode(entity2, cmqRelation);
+            /*if(childSmqCount > 0) {
+            	String nodeLevel = node.getLevel();
+            	node.setLevel("'C' " + nodeLevel);
+            }*/
             if(hideDeleteButton) {
             	node.setHideDelete(true);
             }

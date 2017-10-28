@@ -1107,7 +1107,6 @@ public class IARelationsTreeHelper {
 
 		if (null != childRelations) {
             Map<Long, HierarchyNode> childSmqNodes = new HashMap<>();
-            
 			for (IEntity entity : childRelations) {
 				boolean isChildSmqNode = false;
 				HierarchyNode childRelationNode = new HierarchyNode();
@@ -1207,42 +1206,77 @@ public class IARelationsTreeHelper {
 				}
 			}
             if(!childSmqNodes.isEmpty()) {
-                if(currentList) {
-                    List<SmqBase190> childSmqs = smqBaseCurrentService.findByCodes(new ArrayList<>(childSmqNodes.keySet()));
-                    if(childSmqs != null) {
-                        for(SmqBase190 cs : childSmqs) {
-                            if(CSMQBean.IMPACT_TYPE_IMPACTED.equals(cs.getImpactType())) {
-                                HierarchyNode hn = childSmqNodes.get(cs.getSmqCode());
-                                if(hn != null) {
-                                    hn.setEntity(cs);
-                                    hn.setRowStyleClass("blue-colored");
+            	if(!childSmqNodes.keySet().isEmpty()) {
+            		if(currentList) {
+            			List<Long> smqChildCodeList = new ArrayList<>(childSmqNodes.keySet());
+                        List<SmqBase190> childSmqs = smqBaseCurrentService.findByCodes(new ArrayList<>(smqChildCodeList));
+                        //find child smqs for this one and add a C in fornt of name if it has
+        				List<Map<String, Object>> smqChildRelationsCountList = smqBaseCurrentService.findSmqChildRelationsCountForSmqCodes(smqChildCodeList);
+                        if(childSmqs != null) {
+                            for(SmqBase190 cs : childSmqs) {
+                                if(CSMQBean.IMPACT_TYPE_IMPACTED.equals(cs.getImpactType())) {
+                                    HierarchyNode hn = childSmqNodes.get(cs.getSmqCode());
+                                    if(hn != null) {
+                                        hn.setEntity(cs);
+                                        hn.setRowStyleClass("blue-colored");
+                                    }
                                 }
                             }
                         }
-                    }
-                } else {
-                    List<SmqBaseTarget> childSmqs = smqBaseTargetService.findByCodes(new ArrayList<>(childSmqNodes.keySet()));
-                    if(childSmqs != null) {
-                        for(SmqBaseTarget cs : childSmqs) {
-                            if(CSMQBean.IMPACT_TYPE_IMPACTED.equals(cs.getImpactType())) {
-                                HierarchyNode hn = childSmqNodes.get(cs.getSmqCode());
-                                if(hn != null) {
-                                    hn.setEntity(cs);
-                                    hn.setRowStyleClass("blue-colored");
+                        if ((null != smqChildRelationsCountList)
+        						&& (smqChildRelationsCountList.size() > 0)) {
+        					for (Map<String, Object> map : smqChildRelationsCountList) {
+        						if (map.get("SMQ_CODE") != null) {
+        							Long childSmqCode = (Long) map.get("SMQ_CODE");
+        							if ((Long) map.get("COUNT") > 0) {
+        								HierarchyNode hierarchyNode = childSmqNodes.get(childSmqCode);
+        								String level = hierarchyNode.getLevel();
+        								hierarchyNode.setLevel("'C' " + level);
+        							}
+        						}
+        					}
+        				}
+                    } else {
+                    	List<Long> smqChildCodeList = new ArrayList<>(childSmqNodes.keySet());
+                        List<SmqBaseTarget> childSmqs = smqBaseTargetService.findByCodes(new ArrayList<>(smqChildCodeList));
+                        //find child smqs for this one and add a C in fornt of name if it has
+        				List<Map<String, Object>> smqChildRelationsCountList = smqBaseTargetService.findSmqChildRelationsCountForSmqCodes(smqChildCodeList);
+                        if(childSmqs != null) {
+                            for(SmqBaseTarget cs : childSmqs) {
+                                if(CSMQBean.IMPACT_TYPE_IMPACTED.equals(cs.getImpactType())) {
+                                    HierarchyNode hn = childSmqNodes.get(cs.getSmqCode());
+                                    if(hn != null) {
+                                        hn.setEntity(cs);
+                                        hn.setRowStyleClass("blue-colored");
+                                    }
                                 }
                             }
                         }
+                        if ((null != smqChildRelationsCountList)
+        						&& (smqChildRelationsCountList.size() > 0)) {
+        					for (Map<String, Object> map : smqChildRelationsCountList) {
+        						if (map.get("SMQ_CODE") != null) {
+        							Long childSmqCode = (Long) map.get("SMQ_CODE");
+        							if ((Long) map.get("COUNT") > 0) {
+        								HierarchyNode hierarchyNode = childSmqNodes.get(childSmqCode);
+        								String level = hierarchyNode.getLevel();
+        								hierarchyNode.setLevel("'C' " + level);
+        							}
+        						}
+        					}
+        				}
                     }
-                }
-            }
+            	}
+            }//end of if(!childSmqNodes.isEmpty())
 		}
 	}
 	
 	
-	public void populateSmqTreeNode(IEntity entity, TreeNode expandedTreeNode, String cmqType, Long parentCode, String uiSourceOfEvent) {
+	public TreeNode populateSmqTreeNode(IEntity entity, TreeNode expandedTreeNode, String cmqType, Long parentCode, String uiSourceOfEvent) {
 		boolean isRootListNode = isRootListNode(expandedTreeNode);
 		IEntity entity2 = null;
 		HierarchyNode node = null;
+		TreeNode treeNode = null;
 		boolean isSmqRelation = false;
 		if("current".equalsIgnoreCase(cmqType)) {
 			CmqRelation190 cmqRelation = (CmqRelation190) entity;
@@ -1275,7 +1309,7 @@ public class IARelationsTreeHelper {
 		}
         
 		if(null != node) {	
-			TreeNode treeNode = new DefaultTreeNode(node, expandedTreeNode);
+			treeNode = new DefaultTreeNode(node, expandedTreeNode);
 			
 			//if thsi is not an SQM relation node then its an SMQ node so check for rleations.
 			if(!isSmqRelation) {
@@ -1303,6 +1337,8 @@ public class IARelationsTreeHelper {
 				}
 			}
 		}
+		
+		return treeNode;
 	}
 	
 	public void populateCmqRelationTreeNodes(List<MeddraDictHierarchySearchDto> dtos, TreeNode expandedTreeNode
@@ -1500,6 +1536,8 @@ public class IARelationsTreeHelper {
 		}
 		
 		if((null != existingRelations) && (existingRelations.size() > 0)) {
+			List<Long> smqChildCodeList = new ArrayList<>();
+			Map<Long, TreeNode> smqChildTreeNodeMap = new HashMap<>();
             if(bCurrentList) {
                 for (IEntity entity : existingRelations) {
 					CmqRelation190 cmqRelation = (CmqRelation190) entity;
@@ -1514,9 +1552,33 @@ public class IARelationsTreeHelper {
 					} else if((cmqRelation.getLltCode() != null) && (cmqRelation.getLltCode() > 0)) {
 						lltCodesMap.put(cmqRelation.getLltCode(), cmqRelation);
 					} else if((cmqRelation.getSmqCode() != null) && (cmqRelation.getSmqCode() > 0)) {
-						this.populateSmqTreeNode(cmqRelation, expandedTreeNode, cmqType, cmqCode, uiSourceOfEvent);
+						smqChildCodeList.add(cmqRelation.getSmqCode());
+						TreeNode treeNode = this.populateSmqTreeNode(cmqRelation, expandedTreeNode, cmqType, cmqCode, uiSourceOfEvent);
+						smqChildTreeNodeMap.put(cmqRelation.getSmqCode(), treeNode);
 					}
                 }
+                
+                if(smqChildCodeList.size() > 0) {
+    				//find child smqs for this one and add a C in fornt of name if it has
+    				List<Map<String, Object>> smqRelationsCountList = smqBaseCurrentService
+    						.findSmqChildRelationsCountForSmqCodes(smqChildCodeList);
+    				if ((null != smqRelationsCountList)
+    						&& (smqRelationsCountList.size() > 0)) {
+    					for (Map<String, Object> map : smqRelationsCountList) {
+    						if (map.get("SMQ_CODE") != null) {
+    							Long childSmqCode = (Long) map.get("SMQ_CODE");
+    							if ((Long) map.get("COUNT") > 0) {
+    								TreeNode treeNode = smqChildTreeNodeMap.get(childSmqCode);
+    								if(null != treeNode) {
+	    								HierarchyNode hierarchyNode = (HierarchyNode) treeNode.getData();
+	    								String level = hierarchyNode.getLevel();
+	    								hierarchyNode.setLevel("'C' " + level);
+    								}
+    							}
+    						}
+    					}
+    				}
+    			}//end of if(smqChildCodeList.size() > 0)
             } else {
                 for (IEntity entity : existingRelations) {
 					CmqRelationTarget cmqRelation = (CmqRelationTarget) entity;
@@ -1531,9 +1593,33 @@ public class IARelationsTreeHelper {
 					} else if((cmqRelation.getLltCode() != null) && (cmqRelation.getLltCode() > 0)) {
 						lltCodesMap.put(cmqRelation.getLltCode(), cmqRelation);
 					} else if((cmqRelation.getSmqCode() != null) && (cmqRelation.getSmqCode() > 0)) {
-						this.populateSmqTreeNode(cmqRelation, expandedTreeNode, cmqType, cmqCode, uiSourceOfEvent);
+						smqChildCodeList.add(cmqRelation.getSmqCode());
+						TreeNode treeNode = this.populateSmqTreeNode(cmqRelation, expandedTreeNode, cmqType, cmqCode, uiSourceOfEvent);
+						smqChildTreeNodeMap.put(cmqRelation.getSmqCode(), treeNode);
 					}
 				}
+                
+                if(smqChildCodeList.size() > 0) {
+    				//find child smqs for this one and add a C in fornt of name if it has
+    				List<Map<String, Object>> smqRelationsCountList = smqBaseTargetService
+    						.findSmqChildRelationsCountForSmqCodes(smqChildCodeList);
+    				if ((null != smqRelationsCountList)
+    						&& (smqRelationsCountList.size() > 0)) {
+    					for (Map<String, Object> map : smqRelationsCountList) {
+    						if (map.get("SMQ_CODE") != null) {
+    							Long childSmqCode = (Long) map.get("SMQ_CODE");
+    							if ((Long) map.get("COUNT") > 0) {
+    								TreeNode treeNode = smqChildTreeNodeMap.get(childSmqCode);
+    								if(null != treeNode) {
+	    								HierarchyNode hierarchyNode = (HierarchyNode) treeNode.getData();
+	    								String level = hierarchyNode.getLevel();
+	    								hierarchyNode.setLevel("'C' " + level);
+    								}
+    							}
+    						}
+    					}
+    				}
+    			}//end of if(smqChildCodeList.size() > 0)
 			}
 			
 			//find socs now

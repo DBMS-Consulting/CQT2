@@ -57,4 +57,6 @@ public interface ISmqBaseTargetService {
 
 	List<SMQReverseHierarchySearchDto> findReverseParentByChildCode(Long smqCode);
 
+	List<Map<String, Object>> findSmqChildRelationsCountForSmqCodes(List<Long> smqCodes);
+
 }

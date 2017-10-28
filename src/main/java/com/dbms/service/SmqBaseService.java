@@ -261,6 +261,31 @@ public class SmqBaseService extends CqtPersistenceService<SmqBase190> implements
 	}
 	
 	@Override
+	public Long findSmqChildRelationsCountForSmqCode(Long smqCode) {
+		Long retVal = 0L;
+		String queryString = "select count(*) as COUNT from SmqRelation190 where smqLevel=0 and smqCode=:smqCode";
+		
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		try {
+			Query query = entityManager.createQuery(queryString);
+			query.setParameter("smqCode", smqCode);
+			query.setHint("org.hibernate.cacheable", true);
+			retVal = (Long)query.getSingleResult();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg
+					.append("An error occurred while findSmqChildRelationsCountForSmqCode ")
+					.append(smqCode)
+					.append(" Query used was ->")
+					.append(queryString);
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
+	
+	@Override
 	@SuppressWarnings("unchecked")
 	public List<Map<String, Object>> findSmqChildRelationsCountForSmqCodes(List<Long> smqCodes) {
 		List<Map<String, Object>> retVal = null;

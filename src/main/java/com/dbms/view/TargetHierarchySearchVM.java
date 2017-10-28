@@ -105,6 +105,8 @@ public class TargetHierarchySearchVM {
 
 		if (smqLevelH != null) {
  			if (appliedSearchDirection == SEARCH_DIRECTION_DOWN) {
+ 				Map<Long, TreeNode> smqTreeNodeMap = new HashMap<>();
+ 				List<Long> smqChildCodeList = new ArrayList<>();
  				List<SmqBaseTarget> smqBaseList = this.smqBaseTargetService.findByLevelAndTerm(
  						smqLevelH.getLevel(), myFilterTermName);
  				LOG.info("smqBaseList values {}", smqBaseList == null ? 0 : smqBaseList.size());
@@ -112,8 +114,30 @@ public class TargetHierarchySearchVM {
  				this.myHierarchyRoot = new DefaultTreeNode("root", new HierarchyNode(
  						"LEVEL", "NAME", "CODE", null), null);
  				for (SmqBaseTarget smqBaseTarget : smqBaseList) {
- 					this.updateHierarchySearchForSmqTaget(smqBaseTarget);
+ 					TreeNode treeNode = this.updateHierarchySearchForSmqTaget(smqBaseTarget);
+ 					smqChildCodeList.add(smqBaseTarget.getSmqCode());
+					smqTreeNodeMap.put(smqBaseTarget.getSmqCode(), treeNode);
  				}
+ 				
+ 				//find child smqs for this one and add a C in fornt of name if it has
+ 				List<Map<String, Object>> smqRelationsCountList = this.smqBaseTargetService
+						.findSmqChildRelationsCountForSmqCodes(smqChildCodeList);
+				if ((null != smqRelationsCountList)
+						&& (smqRelationsCountList.size() > 0)) {
+					for (Map<String, Object> map : smqRelationsCountList) {
+						if (map.get("SMQ_CODE") != null) {
+							Long childSmqCode = (Long) map.get("SMQ_CODE");
+							if ((Long) map.get("COUNT") > 0) {
+								TreeNode treeNode = smqTreeNodeMap.get(childSmqCode);
+								if(null != treeNode) {
+									HierarchyNode hierarchyNode = (HierarchyNode) treeNode.getData();
+									String level = hierarchyNode.getLevel();
+									hierarchyNode.setLevel("'C' " + level);
+								}
+							}
+						}
+					}
+				}//end of if ((null != smqRelationsCountList)
 			}
  			else if (appliedSearchDirection == SEARCH_DIRECTION_UP) {
 				List<SMQReverseHierarchySearchDto> smqBaseList = smqBaseTargetService
@@ -425,7 +449,7 @@ public class TargetHierarchySearchVM {
 	}
     
 	
-    private void updateHierarchySearchForSmqTaget(SmqBaseTarget smqBaseTarget) {
+    private TreeNode updateHierarchySearchForSmqTaget(SmqBaseTarget smqBaseTarget) {
         IARelationsTreeHelper iaTreeHelper = new IARelationsTreeHelper(
                 null, null, null, null,
                 cmqBaseTargetService, smqBaseTargetService, meddraDictTargetService, cmqRelationTargetService);
@@ -451,7 +475,7 @@ public class TargetHierarchySearchVM {
 				new DefaultTreeNode(dummyNode, smqBaseTreeNode);
 			}
 		}
-
+		return smqBaseTreeNode;
 	}
     
     /*private void updateHierarchySearchForSmqTargetReverse(SMQReverseHierarchySearchDto smqBaseTargetReverse) {
