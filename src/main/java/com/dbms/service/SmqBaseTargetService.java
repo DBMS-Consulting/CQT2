@@ -308,7 +308,7 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 	public List<SmqRelationTarget> findSmqRelationsForSmqCode(Long smqCode) {
 		List<SmqRelationTarget> retVal = null;
 		StringBuilder sb = new StringBuilder();
-		sb.append("from SmqRelationTarget c where c.smqCode = :smqCode order by c.smqLevel asc, c.ptName asc");
+		sb.append("from SmqRelationTarget c where c.smqCode = :smqCode and ptTermStatus = 'A' order by c.smqLevel asc, c.ptName asc");
 		
 		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
 		try {
@@ -361,9 +361,11 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 		List<SmqRelationTarget> retVal = null;
 		StringBuilder sb = new StringBuilder();
 		if (StringUtils.isNotBlank(scope) && (scope.equals(CSMQBean.SCOPE_NARROW) || scope.equals(CSMQBean.SCOPE_BROAD))) {
-			sb.append("from SmqRelationTarget c where c.smqCode = :smqCode and (c.ptTermScope = 0 or c.ptTermScope = :ptTermScope) order by c.smqLevel asc, c.ptName asc");
+			sb.append("from SmqRelationTarget c where c.smqCode = :smqCode "
+					+ " and (c.ptTermScope = 0 or c.ptTermScope = :ptTermScope) "
+					+ "and ptTermStatus = 'A' order by c.smqLevel asc, c.ptName asc");
 		} else {
-			sb.append("from SmqRelationTarget c where c.smqCode = :smqCode order by c.smqLevel asc, c.ptName asc");
+			sb.append("from SmqRelationTarget c where c.smqCode = :smqCode and ptTermStatus = 'A' order by c.smqLevel asc, c.ptName asc");
 		}
 		
 		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
