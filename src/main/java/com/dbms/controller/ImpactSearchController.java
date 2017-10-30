@@ -242,11 +242,11 @@ public class ImpactSearchController implements Serializable {
 		StreamedContent content = null;
 		if (selectedImpactedCmqList != null)
 			content = cmqBaseTargetService.generateCMQExcel(selectedImpactedCmqList, dictTarget);
-		else if (selectedNotImpactedCmqList != null)
+		if (selectedNotImpactedCmqList != null)
 			content = cmqBaseTargetService.generateCMQExcel(selectedNotImpactedCmqList, dictTarget);
-		else if (selectedImpactedSmqList != null)
+		if (selectedImpactedSmqList != null)
 			content = smqBaseTargetService.generateSMQExcel(selectedImpactedSmqList, dictTarget);
-		else if (selectedNotImpactedSmqList != null)
+		if (selectedNotImpactedSmqList != null)
 			content = smqBaseTargetService.generateSMQExcel(selectedNotImpactedSmqList, dictTarget);
 		setExcelFile(content);
 		

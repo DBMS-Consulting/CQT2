@@ -1916,6 +1916,10 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 				cell = row.createCell(5);
 				cell.setCellValue(returnScopeValue(line.getScope()));
 				
+				// Cell 6
+				cell = row.createCell(5);
+				cell.setCellValue(line.getStatus());
+				
 				rowCount++;		
 			} else {
 				LOG.info("Got null line in map in fillReport");
