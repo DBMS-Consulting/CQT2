@@ -813,9 +813,11 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 		cell = row.createCell(6);
 		cell.setCellValue("Impact Type");
 		setCellStyleColumn(workbook, cell);
-		cell = row.createCell(7);
+		
+		/*cell = row.createCell(7);
 		cell.setCellValue("PT Status");
-		setCellStyleColumn(workbook, cell);
+		setCellStyleColumn(workbook, cell);*/
+		
 		rowCount++;
 		
  		
@@ -1269,8 +1271,8 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 		cell.setCellValue(level);
 		
 		// Cell 
-		cell = row.createCell(7);
-		cell.setCellValue(status);
+		//cell = row.createCell(7);
+		//cell.setCellValue(status);
 	}
 	
 	private void buildChildCells(String level, String codeTerm, String term, XSSFCell cell, XSSFRow row, String dots, String impact, XSSFCellStyle cellStyle) {
@@ -1325,8 +1327,8 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 		cell.setCellValue(impactStr);
 		
 		// Cell 
-		cell = row.createCell(7);
-		cell.setCellValue(status);
+		//cell = row.createCell(7);
+		//cell.setCellValue(status);
 	}
 	
 	public String interpretCqtBaseScope(String scopeVal) {

@@ -486,9 +486,11 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 		cell = row.createCell(6);
 		cell.setCellValue("Impact Relation Type");
 		setCellStyleColumn(workbook, cell);
-		cell = row.createCell(7);
+		
+		/*cell = row.createCell(7);
 		cell.setCellValue("PT Status");
-		setCellStyleColumn(workbook, cell);
+		setCellStyleColumn(workbook, cell); */
+		
 		rowCount++;
 
 		// Retrieval of relations - Loop
@@ -1959,11 +1961,10 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 			cell.setCellValue(impact);
 			
 			// Cell 7
-			cell = row.createCell(7);
-			cell.setCellValue(line.getStatus());
+		//	cell = row.createCell(7);
+			//cell.setCellValue(line.getStatus());
 		//	System.out.println("_____________________ PT STATUS: " + line.getStatus());
 			
-			//rowCount++;
 			rowCountIn++;
 			
 			cpt++;

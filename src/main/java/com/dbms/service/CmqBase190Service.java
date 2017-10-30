@@ -1196,8 +1196,8 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		cell.setCellValue("Scope");
 		setCellStyleColumn(workbook, cell);
 		cell = row.createCell(6);
-		cell.setCellValue("PT Status");
-		setCellStyleColumn(workbook, cell);
+		//cell.setCellValue("PT Status");
+		//setCellStyleColumn(workbook, cell);
 		rowCount++;
 
 		// Retrieval of relations - Loop
@@ -1917,8 +1917,8 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 				cell.setCellValue(returnScopeValue(line.getScope()));
 				
 				// Cell 6
-				cell = row.createCell(5);
-				cell.setCellValue(line.getStatus());
+				//cell = row.createCell(5);
+				//cell.setCellValue(line.getStatus());
 				
 				rowCount++;		
 			} else {
