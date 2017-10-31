@@ -12,9 +12,13 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
+import javax.faces.validator.ValidatorException;
 
+import org.apache.commons.lang3.StringUtils;
+import org.primefaces.context.RequestContext;
 import org.primefaces.model.StreamedContent;
 
 import com.dbms.entity.cqt.RefConfigCodeList;
@@ -432,8 +436,8 @@ public class AdminController implements Serializable {
 	}
 
 	public void addRefCodelist() {
-		//validate the ref code. cannot be mroe than 3 characters long if codelist is extension
-		if (myFocusRef.getCodelistConfigType().equals(CqtConstants.CODE_LIST_TYPE_EXTENSION))
+		if (myFocusRef.getCodelistConfigType().equals(CqtConstants.CODE_LIST_TYPE_EXTENSION)) {
+			//validate the ref code. cannot be mroe than 3 characters long if codelist is extension
 			if((myFocusRef.getCodelistInternalValue() != null) && (myFocusRef.getCodelistInternalValue().length() > 3)) {
 				FacesMessage msg = new FacesMessage(
 						FacesMessage.SEVERITY_ERROR,
@@ -441,6 +445,31 @@ public class AdminController implements Serializable {
 						"");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 				return;
+			}
+		} else if(myFocusRef.getCodelistConfigType().equals(CqtConstants.CODE_LIST_TYPE_MEDDRA_VERSIONS)) {
+			if(myFocusRef.getValue() != null) {
+				try { 
+			        Integer.parseInt(myFocusRef.getValue()); 
+			    } catch(NumberFormatException e) { 
+			    	RequestContext context = RequestContext.getCurrentInstance();
+			    	FacesMessage msg = new FacesMessage(
+							FacesMessage.SEVERITY_ERROR,
+							"Decimal is not allowed in the version number.",
+							"");
+					FacesContext.getCurrentInstance().addMessage(null, msg);
+					context.addCallbackParam("validationFailed", true);
+					return;
+			    } catch(NullPointerException e) {
+			    	RequestContext context = RequestContext.getCurrentInstance();
+			    	FacesMessage msg = new FacesMessage(
+							FacesMessage.SEVERITY_ERROR,
+							"MedDRA Value is requried.",
+							"");
+					FacesContext.getCurrentInstance().addMessage(null, msg);
+					context.addCallbackParam("validationFailed", true);
+					return;
+			    }
+			}
 		}
 		
 		
@@ -909,6 +938,28 @@ public class AdminController implements Serializable {
 		setExcelFile(content);
 	}
 
+	public void validateMeddraValue(FacesContext context, UIComponent component,
+            Object value) {
+		if(null != value) {
+			String valueString = value.toString();
+			if(StringUtils.isNotBlank(valueString)) {
+				if(valueString.matches("\\d*\\.?\\d+")) {
+					FacesMessage msg = new FacesMessage("Decimal is not allowed in the version number.");
+			        msg.setSeverity(FacesMessage.SEVERITY_ERROR);
+			        throw new ValidatorException(msg);
+				}
+			} else {
+				FacesMessage msg = new FacesMessage("Value cannot be empty.");
+		        msg.setSeverity(FacesMessage.SEVERITY_ERROR);
+		        throw new ValidatorException(msg);
+			}
+		} else {
+			FacesMessage msg = new FacesMessage("Value cannot be empty.");
+	        msg.setSeverity(FacesMessage.SEVERITY_ERROR);
+	        throw new ValidatorException(msg);
+		}
+	}
+	
 	public List<CodelistDTO> getList() {
 		return list;
 	}

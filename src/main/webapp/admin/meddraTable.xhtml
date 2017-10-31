@@ -6,6 +6,15 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:p="http://primefaces.org/ui">
 
+    <script type="text/javascript">
+	    function handleFormSubmit(xhr, status, args) {
+	        if((args == undefined) || !args.hasOwnProperty('validationFailed') || !args.validationFailed) {
+	        	PF('meddraD').hide();
+	        	PF('tblMeddra').filter();
+	        }
+	    }
+	</script>
+
 	<p:growl id="msgMed" life="#{appCSMQBean.defaultGrowlLife}" sticky="true" showDetail="#{appCSMQBean.degugMode}" />
 
 	<h3 style="text-align: center">MedDRA CodeList</h3>
@@ -96,8 +105,9 @@
 
 			<h:panelGrid columns="2" cellpadding="5">
 				<p:commandButton value="Save" icon="fa fa-plus"
-					onclick="PF('meddraD').hide()" update="tableMeddra msgMed"
-					action="#{adminController.addRefCodelist}" oncomplete="PF('tblMeddra').filter()" />
+					update="tableMeddra msgMed"
+					actionListener="#{adminController.addRefCodelist}" 
+					oncomplete="handleFormSubmit(xhr, status, args)" />
 
 				<p:commandButton value="Cancel" icon="fa fa-close"
 					onclick="PF('meddraD').hide()" 
