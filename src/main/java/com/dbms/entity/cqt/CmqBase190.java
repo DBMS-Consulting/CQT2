@@ -3,6 +3,7 @@ package com.dbms.entity.cqt;
 import com.dbms.csmq.CSMQBean;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -466,22 +467,47 @@ public class CmqBase190 extends BaseEntity {
 	}
 	
 	public void setCmqProductCds(String[] productCds, String lastModifiedByString, Date modifiedDate) {
-        List<CmqProductBaseCurrent> newlySetProducts = new ArrayList<CmqProductBaseCurrent>();
-        List<CmqProductBaseCurrent> deletedProducts;
-        if(productsList != null)
-            deletedProducts = new ArrayList<CmqProductBaseCurrent>(productsList);
-        else
-            deletedProducts = new ArrayList<CmqProductBaseCurrent>();
-        
-		for(String p: productCds) {
-			newlySetProducts.add(addCmqProduct(p, lastModifiedByString, modifiedDate));
+		if((null != productCds) && productCds.length > 0) {
+			List<CmqProductBaseCurrent> tempProductBaseCurrents = new ArrayList<>();
+			if(this.productsList == null) {
+				this.productsList = new ArrayList<>();
+    		}
+			List<String> freshProductCdsList = Arrays.asList(productCds);
+			//check if we have them. If not then add them
+			for (String freshProductCd: freshProductCdsList) {
+				CmqProductBaseCurrent foundProductBaseCurrent = null;
+				for(CmqProductBaseCurrent p: productsList) {
+					if(p.getCmqProductCd().equals(freshProductCd)) {
+	            		foundProductBaseCurrent = p;
+	            		break;
+					}
+				}
+				if(foundProductBaseCurrent == null) {
+					//add it
+					CmqProductBaseCurrent productBaseCurrent = new CmqProductBaseCurrent() ;
+            		productBaseCurrent.setCmqBaseCurrent(this);
+            		productBaseCurrent.setCmqProductCd(freshProductCd);
+            		productBaseCurrent.setCmqCode(cmqCode);
+            		productBaseCurrent.setCmqName(cmqName);
+            		productBaseCurrent.setCreatedBy(lastModifiedByString);
+            		productBaseCurrent.setCreationDate(modifiedDate);
+            		productBaseCurrent.setLastModifiedBy(lastModifiedByString);
+            		productBaseCurrent.setLastModifiedDate(modifiedDate);
+            		tempProductBaseCurrents.add(productBaseCurrent);
+				} else {
+					tempProductBaseCurrents.add(foundProductBaseCurrent);
+				}
+			}
+			//set tempProductBaseCurrents as the productsList
+			this.productsList = tempProductBaseCurrents;
+		} else {
+			//remove all
+			if(this.productsList != null) {
+				for(CmqProductBaseCurrent p: productsList) {
+					p.setCmqBaseCurrent(null);
+				}
+			}
 		}
-        deletedProducts.removeAll(newlySetProducts);
-        productsList = newlySetProducts;
-        
-        for(CmqProductBaseCurrent p: deletedProducts) {
-            p.setCmqBaseCurrent(null);
-        }
 	}
 	
 	public CmqProductBaseCurrent addCmqProduct(String productCd, String lastModifiedByString, Date modifiedDate) {
