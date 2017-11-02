@@ -1994,6 +1994,13 @@ public class IARelationsTreeHelper {
 				dummyNodeAdded = true;
 			}
 			
+			//check for child smq in relations table and add a C to level if found
+			count = this.smqBaseCurrentService.findSmqChildRelationsCountForSmqCode(smqBaseCurrent.getSmqCode());
+			if(count > 0) {
+				String level = node.getLevel();
+				node.setLevel("'C' " + level);
+			}
+			
 			//check for relations now
 			if(!dummyNodeAdded) {
 				count = this.smqBaseCurrentService.findSmqRelationsCountForSmqCode(smqBaseCurrent.getSmqCode());
@@ -2025,6 +2032,22 @@ public class IARelationsTreeHelper {
 		if((count != null) && (count > 0)) {
 			createNewDummyNode(cmqBaseTreeNode);
 			dummyNodeAdded = true;
+		}
+		
+		//check for child smq in relations table and add a C to level if found
+		List<Long> smqCodes = new ArrayList<>();
+		smqCodes.add(selectedSmqList.getSmqCode());
+		List<Map<String, Object>> smqChildRelationsCountList = smqBaseCurrentService.findSmqChildRelationsCountForSmqCodes(smqCodes);
+        if ((null != smqChildRelationsCountList)
+				&& (smqChildRelationsCountList.size() > 0)) {
+			for (Map<String, Object> map : smqChildRelationsCountList) {
+				if (map.get("SMQ_CODE") != null) {
+					if ((Long) map.get("COUNT") > 0) {
+						String level = node.getLevel();
+						node.setLevel("'C' " + level);
+					}
+				}
+			}
 		}
 		
 		//check for relations now
