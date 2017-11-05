@@ -1658,8 +1658,9 @@ public class CreateController implements Serializable {
 	 * @return
 	 */
 	public boolean isRelationsReadonly() {
-		return (!CmqBase190.CMQ_STATE_VALUE_DRAFT.equalsIgnoreCase(selectedData.getCmqState())
-				&& !CmqBase190.CMQ_STATE_VALUE_REVIEWED.equalsIgnoreCase(selectedData.getCmqState()));
+		//return (!CmqBase190.CMQ_STATE_VALUE_DRAFT.equalsIgnoreCase(selectedData.getCmqState())
+		//		&& !CmqBase190.CMQ_STATE_VALUE_REVIEWED.equalsIgnoreCase(selectedData.getCmqState()));
+		return this.isReadOnlyState();
 	}
 	
 	/**
@@ -1667,8 +1668,9 @@ public class CreateController implements Serializable {
 	 * @return
 	 */
 	public boolean isParentViewable() {
-        return (selectedData.getCmqLevel() > 1
-                && selectedData.getCmqParentCode()!=null);
+        return ((selectedData.getCmqLevel() > 1)
+                && (selectedData.getCmqParentCode()!=null)
+                && !this.isReadOnlyState());
 	}
 
 	public boolean isReactivateDisabled() {
@@ -1745,8 +1747,11 @@ public class CreateController implements Serializable {
 			//Disable Review Button when List is Approved
             if(selectedData != null) {
                 // Disable Review button when List is Reviewed or Approved state
-                if (CmqBase190.CMQ_STATE_VALUE_REVIEWED.equalsIgnoreCase(selectedData.getCmqState())
+               /* if (CmqBase190.CMQ_STATE_VALUE_REVIEWED.equalsIgnoreCase(selectedData.getCmqState())
                         || CmqBase190.CMQ_STATE_VALUE_APPROVED.equalsIgnoreCase(selectedData.getCmqState())) {
+                    return true;
+                }*/
+                if (this.isReadOnlyState()) {
                     return true;
                 }
                 // Disable Review button when List is INACTIVE
@@ -1768,6 +1773,9 @@ public class CreateController implements Serializable {
 			return true;
         
         if(selectedData != null) {
+        	if (this.isReadOnlyState()) {
+                return true;
+            }
             //Disable Review Button when List is Approved
             if (CmqBase190.CMQ_STATE_VALUE_APPROVED.equalsIgnoreCase(selectedData.getCmqState()))
                 return true;
