@@ -5,12 +5,14 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
@@ -1143,8 +1145,18 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		rowCount++;
 		row = worksheet.createRow(rowCount);
 		cell = row.createCell(0);
-		cell.setCellValue("Report Date/Time: " + new Date().toString());
-
+		
+		cal = Calendar.getInstance();
+		cal.setTime(new Date()); 
+		String date = getWeekDay(cal.get(Calendar.DAY_OF_WEEK)) + ", " + 
+				getTwoDigits(cal.get(Calendar.DAY_OF_MONTH) + 1) + "-" + 
+				getMonth(cal.get(Calendar.MONTH)) + "-" + 
+				cal.get(Calendar.YEAR) + " : " + 
+				getTwoDigits(cal.get(Calendar.HOUR)) + ":" + 
+				getTwoDigits(cal.get(Calendar.MINUTE)) + ":" + 
+				getTwoDigits(cal.get(Calendar.SECOND)) + " EST";
+		cell.setCellValue("Report Date/Time: " + date);
+		
 		rowCount += 2;
 		row = worksheet.createRow(rowCount);
 		cell = row.createCell(0);
@@ -1882,6 +1894,62 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 			return "0"+number;
 		else return number+"";
 		
+	}
+	
+	private String getWeekDay(int weekday) {
+		switch (weekday) {
+		case 0:
+			return "Monday";
+		case 1:
+			return "Tuesday";
+		case 2:
+			return "Wednesday";
+		case 3:
+			return "Thursday";
+		case 4:
+			return "Friday";
+		case 5:
+			return "Saturday";
+		case 6:
+			return "Sunday";
+
+		default:
+			break;
+		}
+		return "";
+	}
+	
+	private String getMonth(int month) {
+		switch (month) {
+		case 0:
+			return "Jan";
+		case 1:
+			return "Feb";
+		case 2:
+			return "Mar";
+		case 3:
+			return "Apr";
+		case 4:
+			return "May";
+		case 5:
+			return "Jun";
+		case 6:
+			return "Jul";
+		case 7:
+			return "Aug";
+		case 8:
+			return "Sep";
+		case 9:
+			return "Oct";
+		case 10:
+			return "Nov";
+		case 11:
+			return "Dec";
+
+		default:
+			break;
+		}
+		return "";
 	}
 	
 	private int fillReport(Map<Integer, ReportLineDataDto> mapReport, XSSFCell cell, XSSFRow row, int rowCount, XSSFSheet worksheet) {
