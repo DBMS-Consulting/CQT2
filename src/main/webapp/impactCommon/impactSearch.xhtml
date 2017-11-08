@@ -11,7 +11,7 @@
 		<p:tab title="Impacted SMQs" id="sdi5">
 			<p:dataTable id="impactedSmqList" styleClass="ui-datatable-impactedSmqList" widgetVar="impactedSmqList"
 					value="#{impactSearchController.impactedSmqBaseLazyDataModel}" var="smqList" paginator="true" rows="10"
-                	selection="#{impactSearchController.selectedImpactedSmqList}" selectionMode="single" lazy="true"
+                	selection="#{impactSearchController.selectedImpactedSmqList}" selectionMode="single" lazy="true" resizeMode="expand"
                 	paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                     rowsPerPageTemplate="5,10,15,20" resizableColumns="true"
                     filterDelay="500" style="height:100%">
@@ -52,7 +52,7 @@
 		</p:tab>
 		<p:tab title="Non-Impacted SMQs" id="sdi4">
 			<p:dataTable id="notImpactedSmqList" value="#{impactSearchController.notImpactedSmqBaseLazyDataModel}"
-				widgetVar="notImpactedSmqList" var="smqList" paginator="true" rows="10"
+				widgetVar="notImpactedSmqList" var="smqList" paginator="true" rows="10" resizeMode="expand"
                 selection="#{impactSearchController.selectedNotImpactedSmqList}" selectionMode="single" lazy="true"
                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                 rowsPerPageTemplate="5,10,15,20" resizableColumns="true"
@@ -99,7 +99,7 @@
 		</p:tab>
 		<p:tab title="Impacted Lists" id="sdi2">
 			<p:dataTable id="impactedCmqList" styleClass="ui-datatable-impactedCmqList" 
-					value="#{impactSearchController.impactedCmqBaseLazyDataModel}"
+					value="#{impactSearchController.impactedCmqBaseLazyDataModel}" resizeMode="expand"
 					widgetVar="impactedCmqList" var="cmqList" paginator="true" rows="10"
                 	selection="#{impactSearchController.selectedImpactedCmqList}" selectionMode="single" lazy="true"
                 	paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
@@ -164,7 +164,7 @@
 		</p:tab>
 		<p:tab title="Non-Impacted Lists" id="sdi6">
 			<p:dataTable id="notImpactedCmqList" value="#{impactSearchController.notImpactedCmqBaseLazyDataModel}"
-				widgetVar="notImpactedCmqList" var="cmqList" paginator="true" rows="10"
+				widgetVar="notImpactedCmqList" var="cmqList" paginator="true" rows="10" resizeMode="expand"
                 selection="#{impactSearchController.selectedNotImpactedCmqList}" selectionMode="single" lazy="true"
                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                 rowsPerPageTemplate="5,10,15,20" resizableColumns="true"
