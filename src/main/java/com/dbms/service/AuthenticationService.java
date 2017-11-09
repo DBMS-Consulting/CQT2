@@ -151,7 +151,7 @@ public class AuthenticationService {
 		this.userEmail = decode(request.getHeader(IAMPFIZERUSERINTERNETEMAILADDRESS_HEADER));
 		this.groupMembershipHeader = decode(request.getHeader(IAMPFIZERUSERGROUPMEMBERSHIP_HEADER));
 		
-		LOG.info("Group membership header for " + this.userCn + " is : " + this.groupMembershipHeader);
+		//LOG.info("Group membership header for " + this.userCn + " is : " + this.groupMembershipHeader);
 		this.parseAndSetGroupMemberships();
 	}
 
@@ -196,7 +196,7 @@ public class AuthenticationService {
 				}
 			}
 		}
-		LOG.info("User [" + this.userCn + "] belongs to PXED groups " + this.groupMemberships);
+		//LOG.info("User [" + this.userCn + "] belongs to PXED groups " + this.groupMemberships);
 
 		// map the pfixer groups to cmq groups and add them here
 		List<RefConfigCodeList> cmqUserGroups = this.refCodeListService.findUserGroups();
