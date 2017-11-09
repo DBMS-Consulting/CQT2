@@ -114,6 +114,10 @@ public class CmqBaseHierarchySearchVM {
 		this.showPrimaryPathOnly = false;
         appliedSearchDirection = searchDirection;
 		
+        if(!myFilterTermName.endsWith("%")) {
+        	myFilterTermName = myFilterTermName.trim();
+        }
+        
 		CmqBaseRelationsTreeHelper relationsTreeHelper = new CmqBaseRelationsTreeHelper(cmqBaseService, smqBaseService, meddraDictService, cmqRelationService);
         relationsTreeHelper.setRequireDrillDown(true);
 		
