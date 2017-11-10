@@ -17,7 +17,7 @@
 
 	<p:growl id="msgMed" life="#{appCSMQBean.defaultGrowlLife}" sticky="true" showDetail="#{appCSMQBean.degugMode}" />
 		<p:growl id="msgMeddra" life="#{appCSMQBean.defaultGrowlLife}" sticky="true" showDetail="false" />
-	
+
 
 	<h3 style="text-align: center">MedDRA CodeList</h3>
 	<p:dataTable id="tableMeddra" var="val" rows="10" widgetVar="tblMeddra"
@@ -89,9 +89,9 @@
 				<p:inputText required="true" label="MedDRA Value"
 					value="#{adminController.ref.value}" validatorMessage="Decimal and character values are not allowed in dictionary version number."
 					style="width: 300px !important; float: left">
-					
+
 					<f:validateRegex pattern="^[0-9]+$" />
-					<p:ajax update="msgMeddra" event="keyup"    />					
+					<p:ajax update="msgMeddra" event="blur"    />
  				</p:inputText>
 
 				<p:outputLabel value="Active flag" styleClass="label-right" />
@@ -112,11 +112,11 @@
 			<h:panelGrid columns="2" cellpadding="5">
 				<p:commandButton value="Save" icon="fa fa-plus"
 					update="tableMeddra msgMed"
-					actionListener="#{adminController.addRefCodelist}" 
+					actionListener="#{adminController.addRefCodelist}"
 					oncomplete="handleFormSubmit(xhr, status, args)" />
 
 				<p:commandButton value="Cancel" icon="fa fa-close"
-					onclick="PF('meddraD').hide()" 
+					onclick="PF('meddraD').hide()"
 					immediate="true" />
 			</h:panelGrid>
 
@@ -131,6 +131,3 @@
 </style>
 
 </ui:composition>
-
-
-
