@@ -85,8 +85,13 @@
 
 				<p:outputLabel value="MedDRA Value" styleClass="label-right" />
 				<p:inputText required="true" label="MedDRA Value"
-					value="#{adminController.ref.value}"
-					style="width: 300px !important; float: left" />
+					value="#{adminController.ref.value}" validatorMessage="Decimal or letter are not allowed in the version number."
+					style="width: 300px !important; float: left">
+					
+					<f:validateRegex pattern="^[0-9]+$" />
+					
+					<p:ajax update="msgMed" event="keyup"    />					
+ 				</p:inputText>
 
 				<p:outputLabel value="Active flag" styleClass="label-right" />
 				<p:selectOneMenu value="#{adminController.ref.activeFlag}"
