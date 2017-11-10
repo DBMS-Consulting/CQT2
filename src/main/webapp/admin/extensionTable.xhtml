@@ -5,7 +5,7 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:p="http://primefaces.org/ui">
-	
+
     <p:growl id="msgExt" life="#{appCSMQBean.defaultGrowlLife}" sticky="true" showDetail="#{appCSMQBean.degugMode}"/>
     <p:growl id="msgExtension" life="#{appCSMQBean.defaultGrowlLife}" sticky="true" showDetail="false"/>
 
@@ -53,9 +53,9 @@
 
 	<h:panelGrid columns="2" cellpadding="5">
 		<i class="fa fa-plus"></i>
-		
+
 		<p:commandLink type="button" value="Add extension"  update="dialog" process="@this"
-			oncomplete="PF('extensionD').show()" 
+			oncomplete="PF('extensionD').show()"
 			actionListener="#{adminController.initAddCodelist}" />
 	</h:panelGrid>
 
@@ -72,15 +72,20 @@
 				<p:outputLabel value="Code" styleClass="label-right" />
 				<p:inputText required="true" label="Code"
 					value="#{adminController.ref.codelistInternalValue}"
-					style="width: 50px !important;  float: left" />
+					validatorMessage="Length of the Extension Code can not be more than 3 characters"
+					style="width: 50px !important;  float: left">
+
+					<f:validateLength minimum="1" maximum="3" />
+				<p:ajax update="msgExtension" event="keyup"    />
+
+				</p:inputText>
 
 				<p:outputLabel value="Extension Name" styleClass="label-right" />
-				<p:inputText required="true" label="Extension Name" validatorMessage="Length of the Extension Code can not be more than 3 characters"
+				<p:inputText required="true" label="Extension Name"
 					value="#{adminController.ref.value}"
 					style="width: 300px !important; float: left">
-					
-						<f:validateLength minimum="1" maximum="3" />
-					<p:ajax update="msgExtension" event="keyup"    />		
+
+
 					</p:inputText>
 
 				<p:outputLabel value="Active flag" styleClass="label-right" />
@@ -103,7 +108,7 @@
 					onclick="PF('extensionD').hide()" update="tableExtension msgExt"
 					action="#{adminController.addRefCodelist}" oncomplete="PF('tblExtensions').filter()" />
 
-				<p:commandButton value="Cancel" icon="fa fa-close" 
+				<p:commandButton value="Cancel" icon="fa fa-close"
 					onclick="PF('extensionD').hide()" update="tableExtension msgExt"
 					immediate="true" />
 			</h:panelGrid>
@@ -120,6 +125,3 @@
 </style>
 
 </ui:composition>
-
-
-
