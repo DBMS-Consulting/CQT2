@@ -7,6 +7,7 @@
 	xmlns:p="http://primefaces.org/ui">
 	
     <p:growl id="msgExt" life="#{appCSMQBean.defaultGrowlLife}" sticky="true" showDetail="#{appCSMQBean.degugMode}"/>
+    <p:growl id="msgExtension" life="#{appCSMQBean.defaultGrowlLife}" sticky="true" showDetail="false"/>
 
 	<h3 style="text-align: center">Extension CodeList</h3>
 	<p:dataTable id="tableExtension" var="val" rows="10" widgetVar="tblExtensions"
@@ -74,9 +75,13 @@
 					style="width: 50px !important;  float: left" />
 
 				<p:outputLabel value="Extension Name" styleClass="label-right" />
-				<p:inputText required="true" label="Extension Name"
+				<p:inputText required="true" label="Extension Name" validatorMessage="Length of the Extension Code can not be more than 3 characters"
 					value="#{adminController.ref.value}"
-					style="width: 300px !important; float: left" />
+					style="width: 300px !important; float: left">
+					
+						<f:validateLength minimum="1" maximum="3" />
+					<p:ajax update="msgExtension" event="keyup"    />		
+					</p:inputText>
 
 				<p:outputLabel value="Active flag" styleClass="label-right" />
 				<p:selectOneMenu value="#{adminController.ref.activeFlag}" style="float: left"
