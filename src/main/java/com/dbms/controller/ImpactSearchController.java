@@ -1713,12 +1713,12 @@ public class ImpactSearchController implements Serializable {
 			if (this.manageImpactedList) {
 				LOG.info("Loading more impacted list cmqs starting from " + first + " with page size of " + pageSize);
 				fetchedCmqBaseList = cmqBaseTargetService.findImpactedWithPaginated(first, pageSize, null, null, filters);
-				this.setRowCount(cmqBaseTargetService.findImpactedCount().intValue());
+				this.setRowCount(fetchedCmqBaseList.size());
 			} else {
 				LOG.info("Loading more not impacted list cmqs starting from " + first + " with page size of "
 						+ pageSize);
 				fetchedCmqBaseList = cmqBaseTargetService.findNotImpactedWithPaginated(first, pageSize, null, null, filters);
-				this.setRowCount(cmqBaseTargetService.findNotImpactedCount().intValue());
+				this.setRowCount(fetchedCmqBaseList.size());
 			}
             
             if(fetchedCmqBaseList != null)
