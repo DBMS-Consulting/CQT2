@@ -205,9 +205,12 @@ public class ListDetailsFormVM {
 			if(wizardType == WizardType.CopyWizard) {
 				cmq.setImpactType(null);
 				//remove product ids since these are new products for the copied cmq
+				//set the cmq_code and cmq_name to the values we have for this cmq.
 				List<CmqProductBaseCurrent> products = cmq.getProductsList();
 				for (CmqProductBaseCurrent cmqProductBaseCurrent : products) {
 					cmqProductBaseCurrent.setCmqProductId(null);
+					cmqProductBaseCurrent.setCmqName(cmq.getCmqName());
+					cmqProductBaseCurrent.setCmqCode(cmq.getCmqCode());
 				}
 			}
 		}
