@@ -652,9 +652,10 @@ public class AdminController implements Serializable {
 						this.authService.getUserSurName(), this.authService
 								.getCombinedMappedGroupMembershipAsString());
 				//since its a fresh insert get it back so that we know its id
-				savedRefConfigCodeList = refCodeListService.findByConfigTypeAndInternalCode(myFocusRef
+				/*savedRefConfigCodeList = refCodeListService.findByConfigTypeAndInternalCode(myFocusRef
 								.getCodelistConfigType(), myFocusRef
-								.getCodelistInternalValue());
+								.getCodelistInternalValue());*/
+				savedRefConfigCodeList = refCodeListService.findById(myFocusRef.getId());
 				saved = true;
 			}
 			if(newAddedInMiddle) {
