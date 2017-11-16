@@ -1668,9 +1668,11 @@ public class CreateController implements Serializable {
 	 * @return
 	 */
 	public boolean isParentViewable() {
-        return ((selectedData.getCmqLevel() > 1)
+        /*return ((selectedData.getCmqLevel() > 1)
                 && (selectedData.getCmqParentCode()!=null)
-                && !this.isReadOnlyState());
+                && !this.isReadOnlyState());*/
+        return ((selectedData.getCmqLevel() > 1)
+                && (selectedData.getCmqParentCode()!=null));
 	}
 
 	public boolean isReactivateDisabled() {
