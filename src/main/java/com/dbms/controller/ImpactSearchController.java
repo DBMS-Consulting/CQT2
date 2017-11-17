@@ -327,9 +327,7 @@ public class ImpactSearchController implements Serializable {
 		if(currentOrTarget == SELECTED_CURRENT_LIST)
 			currentOrTarget = SELECTED_NO_LIST;
 		
-		RefConfigCodeList dict = this.refCodeListService.getTargetMeddraVersion();
 		
-		setDictionaryVersion(dict.getValue());
 	}
 	
 	/**
@@ -351,6 +349,10 @@ public class ImpactSearchController implements Serializable {
 				currentOrTarget = SELECTED_NO_LIST;
 			}
 		}		
+		
+		RefConfigCodeList dict = this.refCodeListService.getTargetMeddraVersion();
+		
+		setDictionaryVersion(dict.getValue());
 	}
 	/**
 	 * Event fired on the unselection of a row from target list.
