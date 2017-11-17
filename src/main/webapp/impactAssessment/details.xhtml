@@ -71,7 +71,7 @@
 
 			<h:panelGrid columns="2" columnClasses="label-cell, value-cell">
 				<p:outputLabel value="Designee 2" />
-				<p:selectOneMenu filter="true"
+				<p:selectOneMenu filter="true" disabled="#{impactSearchController.currentOrTarget == 1}"
 					value="#{impactSearchController.detailsFormModel.designeeTwo}"
 	                label="Designee 2">
 					<f:selectItem itemValue="" itemLabel="" noSelectionOption="true" />
@@ -80,7 +80,7 @@
 				</p:selectOneMenu>
 				
 				<p:outputLabel value="Designee 3" />
-				<p:selectOneMenu filter="true"
+				<p:selectOneMenu filter="true" disabled="#{impactSearchController.currentOrTarget == 1}"
 					value="#{impactSearchController.detailsFormModel.designeeThree}"
 	                label="Designee 3">
 					<f:selectItem itemValue="" itemLabel="" noSelectionOption="true" />

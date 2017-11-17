@@ -209,6 +209,7 @@ public class ImpactSearchController implements Serializable {
 		
 		//Dictionary version
 		RefConfigCodeList currentMeddraVersionCodeList = this.refCodeListService.getTargetMeddraVersion();
+		
 		setDictionaryVersion(currentMeddraVersionCodeList.getValue());
 	}
 	
@@ -313,6 +314,9 @@ public class ImpactSearchController implements Serializable {
 	public void onSelectCurrentRowTreeTable(NodeSelectEvent event) {
 		//Updating the worflow buttons
 		currentOrTarget = SELECTED_CURRENT_LIST;
+		RefConfigCodeList dict = this.refCodeListService.getCurrentMeddraVersion();
+		
+		setDictionaryVersion(dict.getValue());
 	}
 	/**
 	 * Event fired on the unselection of a row from current list.
@@ -322,6 +326,10 @@ public class ImpactSearchController implements Serializable {
 		//Updating the worflow buttons
 		if(currentOrTarget == SELECTED_CURRENT_LIST)
 			currentOrTarget = SELECTED_NO_LIST;
+		
+		RefConfigCodeList dict = this.refCodeListService.getTargetMeddraVersion();
+		
+		setDictionaryVersion(dict.getValue());
 	}
 	
 	/**
@@ -2442,5 +2450,13 @@ public class ImpactSearchController implements Serializable {
 
 	public void setDictionaryVersion(String dictionaryVersion) {
 		this.dictionaryVersion = dictionaryVersion;
+	}
+
+	public int getCurrentOrTarget() {
+		return currentOrTarget;
+	}
+
+	public void setCurrentOrTarget(int currentOrTarget) {
+		this.currentOrTarget = currentOrTarget;
 	}
 }
