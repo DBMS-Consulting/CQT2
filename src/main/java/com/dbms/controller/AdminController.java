@@ -245,8 +245,8 @@ public class AdminController implements Serializable {
 		myFocusRef.setCreationDate(new Date());
 		myFocusRef.setLastModificationDate(new Date());
 		myFocusRef.setSerialNum(lastSerial.add(new BigDecimal(1)));
-		myFocusRef.setValue("");
-		myFocusRef.setCodelistInternalValue(""); 
+		myFocusRef.setValue(null);
+		myFocusRef.setCodelistInternalValue(null); 
 
 		return "";
 	}
@@ -454,10 +454,7 @@ public class AdminController implements Serializable {
 			        Integer.parseInt(myFocusRef.getValue()); 
 			    } catch(NumberFormatException e) { 
 			    	RequestContext context = RequestContext.getCurrentInstance();
-			    	FacesMessage msg = new FacesMessage(
-							FacesMessage.SEVERITY_ERROR,
-							"Decimal is not allowed in the version number.",
-							"");
+			    	FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Decimal is not allowed in the version number.", "");
 					FacesContext.getCurrentInstance().addMessage(null, msg);
 					context.addCallbackParam("validationFailed", true);
 					return;
@@ -627,6 +624,7 @@ public class AdminController implements Serializable {
 						this.authService.getUserSurName(), this.authService
 								.getCombinedMappedGroupMembershipAsString());
 				saved = true;
+				RequestContext.getCurrentInstance().execute("PF('extensionD').hide();");
 			} else {
 				//TODO: reset the serial num to 1 + max here if it not so and say that in info msg.
 				
@@ -659,6 +657,7 @@ public class AdminController implements Serializable {
 								.getCodelistInternalValue());*/
 				savedRefConfigCodeList = refCodeListService.findById(myFocusRef.getId());
 				saved = true;
+				RequestContext.getCurrentInstance().execute("PF('extensionD').hide();");
 			}
 			if(newAddedInMiddle) {
 				updateSerialNumberOfNewAdd(savedRefConfigCodeList.getCodelistConfigType(), savedRefConfigCodeList);
@@ -750,7 +749,7 @@ public class AdminController implements Serializable {
 			FacesContext.getCurrentInstance().addMessage(
 					"An error occured when saving this codelist", msg);
 		}
-		RequestContext.getCurrentInstance().execute("PF('extensionD').hide();");
+		
 
 		myFocusRef = new RefConfigCodeList();
 

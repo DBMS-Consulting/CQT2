@@ -55,14 +55,17 @@
 	<h:panelGrid columns="2" cellpadding="5">
 		<i class="fa fa-plus"></i>
 
-		<p:commandLink type="button" value="Add extension"  update="dialog" process="@this"
+		<p:commandLink type="button" value="Add extension"  update="dialog"
 			oncomplete="PF('extensionD').show()"
-			actionListener="#{adminController.initAddCodelist}" />
+			actionListener="#{adminController.initAddCodelist}">
+			
+			<p:ajax update="codeDetail" resetValues="true" />
+		</p:commandLink>
 	</h:panelGrid>
 
 	<p:dialog header="Extension details" widgetVar="extensionD" modal="true" id="dialog"
 		showEffect="fade" hideEffect="fade" resizable="false">
-		<p:outputPanel id="codeDetail" style="text-align:center;">
+ 			<p:outputPanel id="codeDetail" style="text-align:center;">
 			<h:panelGrid columns="2" columnClasses="label, value">
 
 				<p:outputLabel value="Serial #" styleClass="label-right" />
@@ -71,7 +74,7 @@
 					value="#{adminController.ref.serialNum}" min="1" />
 
 				<p:outputLabel value="Code" styleClass="label-right" />
-				<p:inputText required="true" label="Code"
+				<p:inputText required="true" label="Code" id="codeTxt" 
 					value="#{adminController.ref.codelistInternalValue}"
 					validatorMessage="Length of the Extension Code can not be more than 3 characters"
 					style="width: 50px !important;  float: left">
@@ -82,8 +85,8 @@
 				</p:inputText>
 
 				<p:outputLabel value="Extension Name" styleClass="label-right" />
-				<p:inputText required="true" label="Extension Name"
-					value="#{adminController.ref.value}"
+				<p:inputText required="true" label="Extension Name" id="nameTxt"
+					value="#{adminController.ref.value}" 
 					style="width: 300px !important; float: left">
 
 				</p:inputText>
@@ -105,14 +108,13 @@
 
 			<h:panelGrid columns="2" cellpadding="5">
 				<p:commandButton value="Save" icon="fa fa-plus"
-					update="tableExtension msgExt" process="@this"
+					update="tableExtension msgExt"
 					action="#{adminController.addRefCodelist}" oncomplete="PF('tblExtensions').filter()" />
 
 				<p:commandButton value="Cancel" icon="fa fa-close"
 					onclick="PF('extensionD').hide()" update="tableExtension msgExt"
 					immediate="true" />
 			</h:panelGrid>
-
 		</p:outputPanel>
 	</p:dialog>
 <style>
@@ -120,6 +122,10 @@
 	float: right;
 	margin-right: 20px;
 	font-size: 14px !important;
+}
+
+.ui-state-error, .ui-widget-content .ui-state-error, .ui-widget-header .ui-state-error {
+	border : none !important;
 }
 
 </style>
