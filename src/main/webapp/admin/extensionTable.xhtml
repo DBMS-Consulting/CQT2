@@ -6,7 +6,8 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:p="http://primefaces.org/ui">
 
-    <p:growl id="msgExt" life="#{appCSMQBean.defaultGrowlLife}" sticky="true" showDetail="#{appCSMQBean.degugMode}"/>
+    <!-- <p:growl id="msgExt" life="#{appCSMQBean.defaultGrowlLife}" sticky="true" showDetail="#{appCSMQBean.degugMode}"/> -->
+    <p:growl id="msgExt" life="#{appCSMQBean.defaultGrowlLife}" sticky="true" showDetail="false"/>
     <p:growl id="msgExtension" life="#{appCSMQBean.defaultGrowlLife}" sticky="true" showDetail="false"/>
 
 	<h3 style="text-align: center">Extension CodeList</h3>
@@ -85,8 +86,7 @@
 					value="#{adminController.ref.value}"
 					style="width: 300px !important; float: left">
 
-
-					</p:inputText>
+				</p:inputText>
 
 				<p:outputLabel value="Active flag" styleClass="label-right" />
 				<p:selectOneMenu value="#{adminController.ref.activeFlag}" style="float: left"
@@ -105,7 +105,7 @@
 
 			<h:panelGrid columns="2" cellpadding="5">
 				<p:commandButton value="Save" icon="fa fa-plus"
-					onclick="PF('extensionD').hide()" update="tableExtension msgExt"
+					update="tableExtension msgExt" process="@this"
 					action="#{adminController.addRefCodelist}" oncomplete="PF('tblExtensions').filter()" />
 
 				<p:commandButton value="Cancel" icon="fa fa-close"

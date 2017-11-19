@@ -44,7 +44,6 @@ import com.dbms.csmq.HierarchyNode;
 import com.dbms.entity.IEntity;
 import com.dbms.entity.cqt.CmqBase190;
 import com.dbms.entity.cqt.CmqBaseTarget;
-import com.dbms.entity.cqt.CmqRelation190;
 import com.dbms.entity.cqt.CmqRelationTarget;
 import com.dbms.entity.cqt.RefConfigCodeList;
 import com.dbms.entity.cqt.SmqBase190;
@@ -351,7 +350,6 @@ public class ImpactSearchController implements Serializable {
 		}		
 		
 		RefConfigCodeList dict = this.refCodeListService.getTargetMeddraVersion();
-		
 		setDictionaryVersion(dict.getValue());
 	}
 	/**

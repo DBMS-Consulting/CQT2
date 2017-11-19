@@ -750,7 +750,10 @@ public class AdminController implements Serializable {
 			FacesContext.getCurrentInstance().addMessage(
 					"An error occured when saving this codelist", msg);
 		}
+		RequestContext.getCurrentInstance().execute("PF('extensionD').hide();");
+
 		myFocusRef = new RefConfigCodeList();
+
 	}
 
 	private void updateSerialNumberOfNewAdd(String codelistConfigType, RefConfigCodeList savedRef) {
