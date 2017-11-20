@@ -56,10 +56,10 @@
 		<i class="fa fa-plus"></i>
 
 		<p:commandLink type="button" value="Add extension"  update="dialog"
-			oncomplete="PF('extensionD').show()"
+			oncomplete="PF('extensionD').show()" process="@this"
 			actionListener="#{adminController.initAddCodelist}">
 			
-			<p:ajax update="codeDetail" resetValues="true" />
+			<p:ajax update="codeTxt nameTxt" resetValues="true" />
 		</p:commandLink>
 	</h:panelGrid>
 

@@ -245,8 +245,8 @@ public class AdminController implements Serializable {
 		myFocusRef.setCreationDate(new Date());
 		myFocusRef.setLastModificationDate(new Date());
 		myFocusRef.setSerialNum(lastSerial.add(new BigDecimal(1)));
-		myFocusRef.setValue(null);
-		myFocusRef.setCodelistInternalValue(null); 
+		myFocusRef.setValue("");
+		myFocusRef.setCodelistInternalValue(""); 
 
 		return "";
 	}
