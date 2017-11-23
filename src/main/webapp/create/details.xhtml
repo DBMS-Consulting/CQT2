@@ -83,7 +83,7 @@
             </p:selectCheckboxMenu>
 
 			<p:outputLabel value="* Designee" />
-			<p:selectOneMenu
+			<p:selectOneMenu filterMatchMode="contains"
 				value="#{createController.detailsFormModel.designee}"
 				disabled="#{createController.detailsFormDisabled}" rendered="true"
                 label="Designee" filter="true"
@@ -96,7 +96,7 @@
 
 		<h:panelGrid columns="2" columnClasses="label-cell, value-cell">
 			<p:outputLabel value="Designee 2" />
-			<p:selectOneMenu filter="true"
+			<p:selectOneMenu filter="true" filterMatchMode="contains"
 				value="#{createController.detailsFormModel.designeeTwo}"
 				disabled="#{createController.detailsFormDisabled}" rendered="true"
                 label="Designee 2">
@@ -106,7 +106,7 @@
 			</p:selectOneMenu>
 			
 			<p:outputLabel value="Designee 3" />
-			<p:selectOneMenu filter="true"
+			<p:selectOneMenu filter="true" filterMatchMode="contains"
 				value="#{createController.detailsFormModel.designeeThree}"
 				disabled="#{createController.detailsFormDisabled}" rendered="true"
                 label="Designee 3">
