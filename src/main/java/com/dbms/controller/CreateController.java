@@ -142,8 +142,6 @@ public class CreateController implements Serializable {
 	 */
 	private String scopeFilter;
 	private static final String NO_SCOPE_FILTER = "-1";
-
-	
 	
 	public CreateController() {
 		setSelectedData(null);
@@ -1020,16 +1018,17 @@ public class CreateController implements Serializable {
 	public boolean isReadOnlyState() {
         boolean d;
         List<String> userGroupList = authService.getCmqMappedGroupMemberships();
-		/**
+        
+        /**
          * Restrictions on users from  REQUESTOR and ADMIN groups
          */
     	if (userGroupList != null &&
                 (userGroupList.contains(AuthenticationService.REQUESTER_GROUP)
-                    || userGroupList.contains(AuthenticationService.ADMIN_GROUP)))
-			d = restrictionsByUserAuthentified();
-        else
+                    || userGroupList.contains(AuthenticationService.ADMIN_GROUP))) {
+    		d = restrictionsByUserAuthentified();
+    	} else {
             d = false;
-
+    	}
         // If CMQ_BASE_TARGET IN('PENDING IA', 'REVIEWED IA', 'APPROVED IA', 'PUBLISHED IA') then list should be read-only in Update Module.
         // User should NOT be able to update details, informative notes, relations and workflow from confirm.
         if(updateWizard != null && selectedData != null && isTargetMovedToHigherIAStatus(selectedData))
@@ -1881,12 +1880,11 @@ public class CreateController implements Serializable {
          */
     	if (userGroup != null &&
     			 (userGroup.contains(AuthenticationService.REQUESTER_GROUP)
-    	                    || userGroup.contains(AuthenticationService.ADMIN_GROUP)))
-            d = restrictionsByUserAuthentified();
-    	
-        else
+    	                    || userGroup.contains(AuthenticationService.ADMIN_GROUP))) {
+    		d = restrictionsByUserAuthentified();
+    	} else {
             d = false;
-        
+    	}
         if(updateWizard != null)
             return d || (!WIZARD_STEP_DETAILS.equals(getActiveWizard().getStep()) || this.isReadOnlyState() || this.isFormSaved());
         if(copyWizard != null)
@@ -1901,17 +1899,18 @@ public class CreateController implements Serializable {
     public boolean restrictionsByUserAuthentified() {
     	List<String> userGroupList = authService.getCmqMappedGroupMemberships();
     	
-        if (updateWizard != null || copyWizard != null) {
-        	//conditions are:
+    	if (updateWizard != null) {
+    		//conditions are:
         	/*	
         	 	when user is a REQUESTER
         	 	1) list's state is DRAFT or REVIEWED
 				2) the list's status is P
 				3) they are any designee or they have created the list
         	 */
-        	if (userGroupList != null && (userGroupList.contains("MQM") || userGroupList.contains("MANAGER")))
+        	if (userGroupList != null && (userGroupList.contains("MQM") || userGroupList.contains("MANAGER"))) {
         		return false;
-        	else if (userGroupList != null && (userGroupList.contains(AuthenticationService.REQUESTER_GROUP)) 
+        	} else if (userGroupList != null && (userGroupList.contains(AuthenticationService.REQUESTER_GROUP) 
+        										|| userGroupList.contains(AuthenticationService.ADMIN_GROUP)) 
         			&& selectedData.getCmqStatus().equals("P") 
         			&& (selectedData.getCmqState().equals("DRAFT") || selectedData.getCmqState().equals("REVIEWED"))
         			&& (((listCreator != null) && (listCreator.startsWith(authService.getUserCn())))
@@ -1927,13 +1926,24 @@ public class CreateController implements Serializable {
         		        			|| (selectedData.getCmqDesignee2() != null && selectedData.getCmqDesignee2().equals(authService.getUserCn()))
         		        			|| (selectedData.getCmqDesignee3() != null && selectedData.getCmqDesignee3().equals(authService.getUserCn()))))) {
         		return  false;
+        	} else {
+        		return true;
         	}
-        }
-        
- 
-        if (createWizard != null)
+    	} else if (copyWizard != null) {
+    		if(userGroupList != null) {
+    			if(userGroupList.contains(AuthenticationService.REQUESTER_GROUP)) {
+    				return false;
+    			} else {
+    				return true;
+    			}
+    		} else {
+    			return true;
+    		}
+    	} else  if (createWizard != null) {
         	return false;
-        return true;
+        } else {
+        	return true;
+        }
     }
 
 	public SWJSFRequest getAppSWJSFRequest() {
