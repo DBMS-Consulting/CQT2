@@ -1107,7 +1107,10 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		rowCount++;
 		row = worksheet.createRow(rowCount);
 		cell = row.createCell(0);
-		cell.setCellValue("Initial Creation By: " + details.getCreatedBy() != null ? details.getCreatedBy() : "");
+		String createdBy = "";
+		if (details.getCreatedBy() != null)
+			createdBy = details.getCreatedBy();
+		cell.setCellValue("Initial Creation By: " + createdBy);
 		rowCount++;
 		row = worksheet.createRow(rowCount);
 		cell = row.createCell(0);
@@ -1126,7 +1129,10 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		rowCount++;
 		row = worksheet.createRow(rowCount);
 		cell = row.createCell(0);
-		cell.setCellValue("Last Modified By: " + details.getLastModifiedBy() != null ? details.getLastModifiedBy() : "");
+		String modifiedBy = "";
+		if (details.getLastModifiedBy() != null)
+			modifiedBy = details.getLastModifiedBy();
+		cell.setCellValue("Last Modified By: " + modifiedBy);
 		
 		rowCount++;
 		row = worksheet.createRow(rowCount);
