@@ -113,9 +113,16 @@
     <p:outputPanel>
 		<p:dataTable var="value" value="#{searchController.datas}" id="result"
 			rows="10" paginator="true" paginatorPosition="bottom"
-			paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+			paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} {Exporters}"
 			rowsPerPageTemplate="5,10,25"
 			resizableColumns="true">
+			
+			<f:facet name="{Exporters}">
+	            <h:commandLink>
+	                <img title="Export list" src="#{request.contextPath}/image/excel_small.png" style="float: right" width="24" />
+	                <p:dataExporter type="xls" target="result" fileName="LISTS" />
+	            </h:commandLink>
+            </f:facet>
 			<p:column headerText="List Name" width="180" sortBy="#{value.cmqName}">
 				<h:outputText value="#{value.cmqName}" />
 			</p:column>
@@ -156,7 +163,7 @@
 			<p:column headerText="Created By" width="100">
                 <h:outputText value="#{value.createdByLabel}" />
 			</p:column>
-			<p:column headerText="History" style="text-align: center" width="40"
+			<p:column exportable="false" headerText="History" style="text-align: center" width="40"
                       rendered="#{createController.browseWizard != null ? true : false}">
                 <p:commandLink action="#" style="color: red" value="History" disabled="true"
 					onclick="PF('history-dialog').show()">
@@ -165,6 +172,7 @@
 			</p:column>
 			
 		</p:dataTable>
+		
 	</p:outputPanel>
 
 
