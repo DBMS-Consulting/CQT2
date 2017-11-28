@@ -86,7 +86,7 @@
 			<p:selectOneMenu
 				value="#{createController.detailsFormModel.designee}"
 				disabled="#{createController.detailsFormDisabled}" rendered="true"
-                label="Designee" filter="true"
+                label="Designee" filter="true" filterMatchMode="contains"
 				required="#{!createController.readOnlyState}">
 				<f:selectItem itemValue="" itemLabel="" noSelectionOption="true" />
                 <f:selectItems value="#{createController.detailsFormModel.designeeList}" var="d"
@@ -96,7 +96,7 @@
 
 		<h:panelGrid columns="2" columnClasses="label-cell, value-cell">
 			<p:outputLabel value="Designee 2" />
-			<p:selectOneMenu filter="true"
+			<p:selectOneMenu filter="true" filterMatchMode="contains"
 				value="#{createController.detailsFormModel.designeeTwo}"
 				disabled="#{createController.detailsFormDisabled}" rendered="true"
                 label="Designee 2">
@@ -106,7 +106,7 @@
 			</p:selectOneMenu>
 			
 			<p:outputLabel value="Designee 3" />
-			<p:selectOneMenu filter="true"
+			<p:selectOneMenu filter="true" filterMatchMode="contains"
 				value="#{createController.detailsFormModel.designeeThree}"
 				disabled="#{createController.detailsFormDisabled}" rendered="true"
                 label="Designee 3">
