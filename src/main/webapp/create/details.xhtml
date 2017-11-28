@@ -116,7 +116,9 @@
 			</p:selectOneMenu>
 			
 			<p:outputLabel value="* Level" />
-			<p:selectOneMenu id="level" value="#{createController.detailsFormModel.level}"
+			<p:inputText id="level" disabled="true" value="#{createController.detailsFormModel.level}"
+                 styleClass="uppercase"></p:inputText>
+			<!-- <p:selectOneMenu id="level" value="#{createController.detailsFormModel.level}"
 				required="#{!createController.readOnlyState}"
                 label="Level"
 				disabled="#{createController.detailsFormDisabled}">
@@ -125,7 +127,7 @@
 				<f:selectItem itemValue="3" itemLabel="3" />
 				<f:selectItem itemValue="4" itemLabel="4" />
 				<f:selectItem itemValue="5" itemLabel="5" />
-			</p:selectOneMenu>
+			</p:selectOneMenu> -->
 
 			<p:outputLabel value="* Algorithm" />
 			<p:inputText value="#{createController.detailsFormModel.algorithm}"
