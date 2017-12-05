@@ -245,7 +245,7 @@ public abstract class CqtPersistenceService<E extends IEntity> implements ICqtPe
 	public void remove(E e, String userCn, String userFirstName, String userLastName, String userGroups) throws CqtServiceException {
 		if (null == e) {
 			throw new CqtServiceException("Entity remove stopped. Null entity received for removal.");
-		} else if (e.getId() != null) {
+		} else if (e.getId() == null) {
 			throw new CqtServiceException("Entity remove stopped. Null primary key found for the entity.");
 		} else {
 			remove(e.getId(), userCn, userFirstName, userLastName, userGroups);

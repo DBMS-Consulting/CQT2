@@ -108,7 +108,8 @@ public class RetireController implements Serializable {
 						&& childCmq.getCmqState().equalsIgnoreCase(CmqBase190.CMQ_STATE_VALUE_PUBLISHED))
 					cptChild++;
 				for (CmqBase190 srcCmq : targetCmqsSelected) {
-					if (!srcCmq.getCmqCode().equals(childCmq.getCmqParentCode()))
+					//TODO change code here for parent child relationship
+					//if (!srcCmq.getCmqCode().equals(childCmq.getCmqParentCode()))
 						if (childCmq.getCmqCode().equals(srcCmq.getCmqCode())) 
 							cpt++;
 				}

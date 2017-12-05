@@ -77,9 +77,11 @@ public class ReactivateController implements Serializable {
 		List<CmqBase190> targetCmqsSelected = new ArrayList<>(reactivateDualListModel.getTarget());
 		for (CmqBase190 cmqBase : targetCmqsSelected) {
 			targetCmqCodes.add(cmqBase.getCmqCode());
-			if(null != cmqBase.getCmqParentCode()) {
+			
+			//TODO change code here for parent child relationship
+			/*if(null != cmqBase.getCmqParentCode()) {
 				targetCmqParentCodes.add(cmqBase.getCmqParentCode());
-			}
+			}*/
 		}
 		
 		boolean isListPublishable = true;
@@ -160,7 +162,10 @@ public class ReactivateController implements Serializable {
 				String cmqError = "";
 				//success
 				for (CmqBase190 cmqBase190 : targetCmqsSelected) {
-					if (cmqBase190.getCmqLevel() == 2 && cmqBase190.getCmqParentCode() == null && cmqBase190.getCmqParentName() == null)
+					//TODO change code here for parent child relationship. removed condition for now
+					/*if (cmqBase190.getCmqLevel() == 2 && cmqBase190.getCmqParentCode() == null && cmqBase190.getCmqParentName() == null)
+						hasParentError = true;*/
+					if (cmqBase190.getCmqLevel() == 2)
 						hasParentError = true;
 					else {
 						cmqBase190.setCmqState(CmqBase190.CMQ_STATE_VALUE_DRAFT);

@@ -104,9 +104,10 @@ public class DemoteToDraftController implements Serializable {
 		} else {
 			for (CmqBase190 cmqBase : targetCmqsSelected) {
 				targetCmqCodes.add(cmqBase.getCmqCode());
-				if(null != cmqBase.getCmqParentCode()) {
+				//TODO change code here for parent child relationship
+				/*if(null != cmqBase.getCmqParentCode()) {
 					targetCmqParentCodes.add(cmqBase.getCmqParentCode());
-				}
+				}*/
 			}
 			
 			List<CmqBase190> faultyCmqs = new ArrayList<>();
@@ -196,9 +197,10 @@ public class DemoteToDraftController implements Serializable {
 		List<CmqBaseTarget> targetCmqsSelected = new ArrayList<CmqBaseTarget>(this.demoteTargetDualListModel.getTarget());
 		for (CmqBaseTarget cmqBase : targetCmqsSelected) {
 			targetCmqCodes.add(cmqBase.getCmqCode());
-			if(null != cmqBase.getCmqParentCode()) {
+			//TODO change code here for parent child relationship
+			/*if(null != cmqBase.getCmqParentCode()) {
 				targetCmqParentCodes.add(cmqBase.getCmqParentCode());
-			}
+			}*/
 		}
 		boolean isListPublishable = true;
  		List<CmqBaseTarget> childCmqsOftargets = this.cmqBaseTargetService.findChildCmqsByCodes(targetCmqCodes);
@@ -250,7 +252,9 @@ public class DemoteToDraftController implements Serializable {
 				boolean hasParentError = false;
 				String cmqError = "";
 				for (CmqBaseTarget target : targetCmqsSelected) {
-					if (target.getCmqLevel() == 2 && target.getCmqParentCode() == null && target.getCmqParentName() == null)
+					//TODO change code here for parent child relationship. For now change the condition
+					//if (target.getCmqLevel() == 2 && target.getCmqParentCode() == null && target.getCmqParentName() == null)
+					if (target.getCmqLevel() == 2 )
 						hasParentError = true;
 				
 					else {
