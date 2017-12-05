@@ -210,23 +210,22 @@
 						style="font-weight:normal;" />
 				</p:submenu>
  -->
-				<p:menuitem
-					value="Historical #{appCSMQBean.customMQName}s/SMQs"
-					id="pt_cmi7" action="HISTORICAL_IMPACT_ASSESSMENT"
-					style="font-weight:#{userBean.currentMenu eq 'HISTORICAL_IMPACT_ASSESSMENT' ? 'bold' : 'normal'};"
-					rendered="false" />
-				<p:menuitem value="Historic NMQs/SMQs" id="pt_cmi9"
-					action="HISTORIC"
-					style="font-weight:#{userBean.currentMenu eq 'HISTORIC' ? 'bold' : 'normal'};"
-					rendered="false" />
-				<!-- <p:menuitem value="Administration" id="pt_cmi12" action="ADMIN"
-					style="font-weight:#{userBean.currentMenu eq 'ADMIN' ? 'bold' : 'normal'};"
-					rendered="false" /> -->
+			 
 
 				<p:menuitem value="Administration" id="admin_menu" action="ADMIN"
 					styleClass="#{view.viewId == '/admin/admin.xhtml' ? 'ui-state-active2' : ''}"
 					disabled="false" url="/admin/admin.xhtml" 
 					rendered="#{AuthenticationService.getPermissonByUri('/admin/admin.xhtml')}" />
+					
+				<p:menuitem value="Historic View" id="hv"   
+					styleClass="#{view.viewId == '/history/historicView.xhtml' ? 'ui-state-active2' : ''}"
+					style="font-weight:#{userBean.currentMenu eq 'REPORTS' ? 'bold' : 'normal'};"
+					url="/history/historicView.xhtml" />
+					
+				<p:menuitem value="Audit Trail" id="at"   
+					styleClass="#{view.viewId == '/audit/auditSearch.xhtml' ? 'ui-state-active2' : ''}"
+					style="font-weight:#{userBean.currentMenu eq 'REPORTS' ? 'bold' : 'normal'};"
+					url="/audit/auditSearch.xhtml" />
 
 			</p:menubar>
 		</h:form>

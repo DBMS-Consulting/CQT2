@@ -535,3 +535,7 @@ ul.nav>li {
 .ui-picklist .ui-picklist-list {
     width: 300px !important;
 }
+
+.ui-datatable tbody td.wrap {
+    white-space: normal;
+}

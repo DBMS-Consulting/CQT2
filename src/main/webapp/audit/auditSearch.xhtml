@@ -1,0 +1,99 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" template="../CSMQ.xhtml">
+
+	<ui:define name="page-content">
+		<h:form id="auditForm">
+
+
+			<p:growl id="m1" life="#{appCSMQBean.defaultGrowlLife}" sticky="true"
+				showDetail="#{appCSMQBean.degugMode}" />
+
+			<h:panelGrid columns="2" style="width: 100% !important">
+				<p:breadCrumb styleClass="breadcrumb">
+					<p:menuitem value="Home" url="/index.xhtml" />
+					<p:menuitem value="Audit Trail" />
+				</p:breadCrumb>
+			</h:panelGrid>
+
+			<p:panel header="Search" id="ph1" style=" padding:5px;">
+				<h:panelGrid columns="2">
+					<h:panelGrid columns="2" columnClasses="label, value" style="min-width: 300px">
+						<p:outputLabel value="List Name" styleClass="label-right" />
+						<p:inputText value="#{auditTrailController.listName}" />
+
+						<p:outputLabel value="List Code" styleClass="label-right" />
+						<p:inputText value="#{auditTrailController.listCode}" />
+					</h:panelGrid>
+
+					<h:panelGrid columns="2" columnClasses="label, value" style="min-width: 300px">
+						<p:outputLabel value="State" styleClass="label-right" />
+						<p:selectOneMenu value="#{auditTrailController.state}" id="state">
+							<f:selectItem itemValue="" itemLabel="All" />
+							<f:selectItems value="#{configMB.cmqBaseListStates}" var="wk"
+								itemLabel="#{wk[1]}" itemValue="#{wk[0]}" />
+						</p:selectOneMenu>
+
+						<p:outputLabel value="Dictionary Version" styleClass="label-right" />
+						<p:selectOneMenu value="#{auditTrailController.dictionary}"
+							id="dict">
+							<f:selectItem itemValue="" itemLabel="" />
+						</p:selectOneMenu>
+
+						<p:outputLabel value="Date" styleClass="label-right" />
+						<p:selectOneMenu value="#{auditTrailController.date}" id="date">
+							<f:selectItem itemValue="" itemLabel="" />
+
+						</p:selectOneMenu>
+					</h:panelGrid>
+				</h:panelGrid>
+
+				<p:spacer />
+
+				<p:outputPanel>
+					<p:dataTable var="value" value="#{searchController.datas}"
+						id="result" rows="10" paginator="true" paginatorPosition="bottom"
+						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} {Exporters}"
+						rowsPerPageTemplate="5,10,25" resizableColumns="true">
+
+						<f:facet name="{Exporters}">
+							<h:commandLink>
+								<img title="Export list"
+									src="#{request.contextPath}/image/excel_small.png"
+									style="float: right" width="24" />
+								<p:dataExporter type="xls" target="result" fileName="AUDIT TRAIL" />
+							</h:commandLink>
+						</f:facet>
+						<p:column headerText="Field Name" width="180"
+							sortBy="#{value.cmqName}">
+							<h:outputText />
+						</p:column>
+						<p:column headerText="Old Value" width="50"
+							sortBy="#{value.cmqName}">
+							<h:outputText />
+						</p:column>
+						<p:column headerText="New Value" width="50"
+							sortBy="#{value.cmqName}">
+							<h:outputText />
+						</p:column>
+						<p:column headerText="User Name" width="50">
+							<h:outputText />
+						</p:column>
+						<p:column headerText="User Group" width="25">
+							<h:outputText />
+						</p:column>
+ 
+					</p:dataTable>
+
+				</p:outputPanel>
+			</p:panel>
+
+
+
+		</h:form>
+	</ui:define>
+</ui:composition>
