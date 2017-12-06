@@ -205,6 +205,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		EntityManager entityManager = this.cqtEntityManagerFactory
 				.getEntityManager();
 		try {
+			sb.append(" order by c.cmqName");
 			Query query = entityManager.createQuery(sb.toString());
 
 			// now set the parameter values in the query
