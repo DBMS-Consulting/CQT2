@@ -29,7 +29,7 @@
 				<!-- Search -->
 				<p:tab id="searchBrowse" title="Search">
 					<p:panel header="Search" id="ph1" style=" padding:5px;">
-						<h:panelGrid columns="2">
+						<h:panelGrid columns="3">
 							<h:panelGrid columns="2" columnClasses="label, value"
 								style="min-width: 300px">
 								<p:outputLabel value="List Name" styleClass="label-right" />
@@ -54,7 +54,22 @@
 
 								</p:selectOneMenu>
 							</h:panelGrid>
+							<h:panelGrid columns="2" id="searchPanel">
+
+
+								<p:commandButton value="Search"
+									action="#{searchController.search}"
+									actionListener="#{createController.clearCmqSelection}"
+									update="@form:result" />
+								<p:commandButton action="#{searchController.reset}"
+									value="Reset" process="@this" update="@form:result" />
+							</h:panelGrid>
+
 						</h:panelGrid>
+
+						<p:separator />
+
+
 
 						<p:spacer />
 
@@ -70,7 +85,8 @@
 										<img title="Export list"
 											src="#{request.contextPath}/image/excel_small.png"
 											style="float: right" width="24" />
-										<p:dataExporter type="xls" target="result" fileName="HISTORIC VIEW" />
+										<p:dataExporter type="xls" target="result"
+											fileName="HISTORIC VIEW" />
 									</h:commandLink>
 								</f:facet>
 								<p:column headerText="List Name" width="180"
