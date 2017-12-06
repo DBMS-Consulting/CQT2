@@ -210,6 +210,10 @@ public class CreateController implements Serializable {
 	
 	public void filterRelationsByScope(HierarchyNode node) {
 		
+		//TODO Get scope value HERE
+		//String scopeCriteria = node.getScope();
+		
+		
 		//For relations.xhtml
 		if (updateWizard != null || copyWizard != null || createWizard != null) {
 			IEntity entity = node.getEntity();
