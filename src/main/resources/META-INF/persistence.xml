@@ -26,6 +26,7 @@
 		<class>com.dbms.entity.cqt.CmqProductBaseCurrent</class>
         <class>com.dbms.entity.cqt.CmqProductBaseTarget</class>
         <class>com.dbms.entity.cqt.SessionTrack</class>
+        <class>com.dbms.entity.cqt.CmqParentChild200</class>
 		<exclude-unlisted-classes>false</exclude-unlisted-classes>
 		<properties>
 			<property name="hibernate.archive.autodetection" value="class" />
