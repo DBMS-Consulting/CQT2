@@ -537,5 +537,5 @@ ul.nav>li {
 }
 
 .ui-datatable tbody td.wrap {
-    white-space: normal;
+    white-space: normal !important;
 }
