@@ -137,6 +137,8 @@ public class CreateController implements Serializable {
 	private HtmlInputText dictionaryName;
 	private boolean	formSaved;
 	private String listCreator;
+	private String scopeSelected;
+
 	
 	private List<RefConfigCodeList> products;
 	
@@ -211,7 +213,7 @@ public class CreateController implements Serializable {
 	public void filterRelationsByScope(HierarchyNode node) {
 		
 		//TODO Get scope value HERE
-		//String scopeCriteria = node.getScope();
+		//scopeSelected = node.getScope();
 		
 		
 		//For relations.xhtml
@@ -2178,6 +2180,14 @@ public class CreateController implements Serializable {
 
 	public void setCmqParentChildService(ICmqParentChild200Service cmqParentChildService) {
 		this.cmqParentChildService = cmqParentChildService;
+	}
+
+	public String getScopeSelected() {
+		return scopeSelected;
+	}
+
+	public void setScopeSelected(String scopeSelected) {
+		this.scopeSelected = scopeSelected;
 	}
      
 }
