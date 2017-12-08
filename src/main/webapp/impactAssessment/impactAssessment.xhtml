@@ -198,7 +198,7 @@
 										</p:row>
 									</p:columnGroup>
                                     
-                                    <p:column><h:outputText value="#{node.term}" /></p:column>
+                                    <p:column styleClass="wrap"><h:outputText value="#{node.term}" /></p:column>
 									<p:column>
                                         <h:outputLink value="#" title="#{impactSearchController.getImpactDesc(node, 'current')}" >
                                             <h:outputText value="#{node.code}" />
@@ -277,7 +277,7 @@
 										 
 									</p:columnGroup>
 
-									<p:column><h:outputText value="#{node.term}" /></p:column>
+									<p:column styleClass="wrap"><h:outputText value="#{node.term}" /></p:column>
                                     <p:column>
                                         <h:outputLink value="#" title="#{impactSearchController.getImpactDesc(node, 'target')}" >
                                             <h:outputText value="#{node.code}" />
@@ -622,6 +622,9 @@
 		endColorstr='#cccccc');
 	background: linear-gradient(#ececec, #cccccc);
 	text-decoration: none;
+}
+.ui-treetable thead th, .ui-treetable tbody td, .ui-treetable tfoot td {
+	    white-space: normal !important;
 }
 </style>
 	</ui:define>

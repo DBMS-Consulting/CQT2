@@ -18,9 +18,10 @@
 				
 				<p:ajax event="rowSelect" listener="#{impactSearchController.onRowSelect}" />
 				
-				<p:column filterFunction="PF('statusDialog').hide()" headerText="SMQ Name" id="c52" styleClass="ia-search-term-col"
+				<p:column filterFunction="PF('statusDialog').hide()" headerText="SMQ Name" id="c52" 
+				styleClass="ia-search-term-col wrap"
 					 filterBy="#{smqList.smqName}" filterMatchMode="contains" >
-					<h:outputText value="#{smqList.smqName}" id="ot54" />
+					<h:outputText value="#{smqList.smqName}" id="ot54" styleClass="wrap" />
 				</p:column>
 				<p:column sortable="false" headerText="Level" id="c51" width="40" styleClass="text-center"
 					filterable="true" filterBy="#{smqList.smqLevel}" filterMatchMode="exact">
@@ -60,9 +61,9 @@
                 
                 <p:ajax event="rowSelect" listener="#{impactSearchController.onRowSelect}" />
                 
-				<p:column headerText="SMQ Name" id="c52" styleClass="ia-search-term-col"
+				<p:column headerText="SMQ Name" id="c52" styleClass="ia-search-term-col wrap"
 					filterable="true" filterBy="#{smqList.smqName}" filterMatchMode="contains">
-					<h:outputText value="#{smqList.smqName}" id="ot54" />
+					<h:outputText value="#{smqList.smqName}" id="ot54" styleClass="wrap" />
 				</p:column>
 				<p:column sortable="false" headerText="Level" id="c51" width="40" styleClass="text-center"
 					filterable="true" filterBy="${smqList.smqLevel}" filterMatchMode="contains">
@@ -108,9 +109,9 @@
                 
                 <p:ajax event="rowSelect" listener="#{impactSearchController.onRowSelect}" />
                 	
-				<p:column sortable="false" headerText="List Name" id="c52" styleClass="ia-search-term-col"
+				<p:column sortable="false" headerText="List Name" id="c52" styleClass="ia-search-term-col wrap"
 					filterable="true" filterBy="#{cmqList.cmqName}" filterMatchMode="contains">
-					<h:outputText value="#{cmqList.cmqName}" id="ot54" />
+					<h:outputText value="#{cmqList.cmqName}" id="ot54" styleClass="wrap" />
 				</p:column>
 				<p:column sortable="false" headerText="Extension" id="c50" width="70"
 					filterable="true" filterBy="#{cmqList.cmqTypeCd}" filterMatchMode="exact">
@@ -172,9 +173,9 @@
                 
                 <p:ajax event="rowSelect" listener="#{impactSearchController.onRowSelect}" />
                 
-				<p:column sortable="false" headerText="List Name" id="c52" styleClass="ia-search-term-col"
+				<p:column sortable="false" headerText="List Name" id="c52" styleClass="ia-search-term-col wrap"
 					filterable="true" filterBy="#{cmqList.cmqName}" filterMatchMode="contains">
-					<h:outputText value="#{cmqList.cmqName}" id="ot54" />
+					<h:outputText value="#{cmqList.cmqName}" id="ot54" styleClass="wrap" />
 				</p:column>
 				<p:column sortable="false" headerText="Extension" id="c50" width="70"
 					filterable="true" filterBy="#{cmqList.cmqTypeCd}" filterMatchMode="exact">
@@ -234,6 +235,10 @@
 	<p:ajaxStatus onstart="PF('statusDialog').hide()"
 		onsuccess="PF('statusDialog').hide()" />
 
-	
+	<style>
+	.ui-treetable thead th, .ui-treetable tbody td, .ui-treetable tfoot td {
+	    white-space: normal !important;
+}
+	</style>
 
 </ui:composition>
