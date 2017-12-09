@@ -51,10 +51,13 @@ import org.hibernate.Session;
 import org.hibernate.type.StandardBasicTypes;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
+import org.primefaces.model.TreeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.dbms.csmq.CSMQBean;
+import com.dbms.csmq.HierarchyNode;
+import com.dbms.entity.IEntity;
 import com.dbms.entity.cqt.CmqBase190;
 import com.dbms.entity.cqt.CmqParentChild200;
 import com.dbms.entity.cqt.CmqRelation190;
@@ -1026,7 +1029,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 	 * MQ Report.
 	 */
 	@Override
-	public StreamedContent generateMQReport(ListDetailsFormVM details, ListNotesFormVM notes, String dictionaryVersion) {
+	public StreamedContent generateMQReport(ListDetailsFormVM details, ListNotesFormVM notes, String dictionaryVersion, TreeNode relationsRoot) {
 		XSSFWorkbook workbook = new XSSFWorkbook();
 		
 		XSSFSheet worksheet = null;
@@ -1246,9 +1249,19 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		List<Future<MQReportRelationsWorkerDTO>> futures = new ArrayList<>();
 		int workerId = 1;
 		ExecutorService executorService = Executors.newFixedThreadPool(3);
+		List<TreeNode> childTreeNodes = relationsRoot.getChildren();
+		Map<String,String> relationScopeMap = new HashMap<>();
+		for(TreeNode childTreeNode: childTreeNodes) {
+			HierarchyNode hierarchyNode = (HierarchyNode) childTreeNode.getData();
+			
+			if (null != hierarchyNode && null != hierarchyNode.getCode()) {
+				relationScopeMap.put(hierarchyNode.getCode(), hierarchyNode.getScope());
+			}
+		}
+		
 		if (relations != null) {
 			for (CmqRelation190 relation : relations) {
-				MQReportRelationsWorker task = new MQReportRelationsWorker(workerId++, relation);
+				MQReportRelationsWorker task = new MQReportRelationsWorker(workerId++, relation,relationScopeMap);
 				futures.add(executorService.submit(task));
 			}
 		}
@@ -1291,7 +1304,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 				futures.clear();
 				if (relations != null) {
 					for (CmqRelation190 relation : relationsPro) {
-						MQReportRelationsWorker task = new MQReportRelationsWorker(workerId++, relation);
+						MQReportRelationsWorker task = new MQReportRelationsWorker(workerId++, relation,relationScopeMap);
 						futures.add(executorService.submit(task));
 					}
 					
@@ -1361,10 +1374,12 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 	private class MQReportRelationsWorker implements Callable<MQReportRelationsWorkerDTO> {
 		private CmqRelation190 relation;
 		private String level = "", term = "", codeTerm = "", workerName = null;
+		Map<String,String> relationScopeMap;
 		
-		public MQReportRelationsWorker(int workerId, CmqRelation190 relation) {
+		public MQReportRelationsWorker(int workerId, CmqRelation190 relation, Map<String,String> relationScopeMap) {
 			this.workerName = "MQReportRelationsWorker_" + workerId;
 			this.relation = relation;
+			this.relationScopeMap = relationScopeMap;
 		}
 		
 		@Override
@@ -1394,7 +1409,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 								} else if (smq.getSmqLevel() == 5) {
 									level = "SMQ5";
 								}
-								relationsWorkerDTO.addToMapReport(cpt++, new ReportLineDataDto(level, smq.getSmqCode() + "", smq.getSmqName(), "", relation.getTermScope(),
+								relationsWorkerDTO.addToMapReport(cpt++, new ReportLineDataDto(level, smq.getSmqCode() + "", smq.getSmqName(), "", relationScopeMap.get(String.valueOf(relation.getSmqCode())),
 										(relation.getTermWeight() != null ? relation.getTermWeight() + "" : ""), relation.getTermCategory(), "", ""));
 								
 								/**
@@ -1422,7 +1437,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 											smqSearched = smqBaseService.findByCode(smqC.getSmqCode());
 											if (smqSearched != null) {
 												//List<SmqRelation190> list = smqBaseService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
-												List<SmqRelation190> list = smqBaseService.findSmqRelationsForSmqCodeAndScope(smqSearched.getSmqCode(), relation.getTermScope());
+												List<SmqRelation190> list = smqBaseService.findSmqRelationsForSmqCodeAndScope(smqSearched.getSmqCode(), relationScopeMap.get(String.valueOf(relation.getSmqCode())));
 												if (list != null) {
 													for (SmqRelation190 smq3 : list) {
 														relationsWorkerDTO.addToMapReport(cpt++, new ReportLineDataDto("PT", smq3.getPtCode() + "", smq3.getPtName(), ".............", smq3.getPtTermScope() + "", smq3.getPtTermWeight() + "", smq3.getPtTermCategory(), "", smq3.getPtTermStatus())); 
@@ -1460,7 +1475,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 													smqSearched = smqBaseService.findByCode(child.getSmqCode());
 													if (smqSearched != null) {
 														//List<SmqRelation190> list = smqBaseService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
-														List<SmqRelation190> list = smqBaseService.findSmqRelationsForSmqCodeAndScope(smqSearched.getSmqCode(), relation.getTermScope());
+														List<SmqRelation190> list = smqBaseService.findSmqRelationsForSmqCodeAndScope(smqSearched.getSmqCode(), relationScopeMap.get(String.valueOf(relation.getSmqCode())));
 														if (list != null) {
 															for (SmqRelation190 smq3 : list) {
 																relationsWorkerDTO.addToMapReport(cpt++, new ReportLineDataDto("PT", smq3.getPtCode() + "", smq3.getPtName(), "....................", smq3.getPtTermScope() + "", smq3.getPtTermWeight() + "", smq3.getPtTermCategory(), "", smq3.getPtTermStatus())); 
@@ -1475,7 +1490,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 											smqSearched = smqBaseService.findByCode(smqC.getSmqCode());
 											if (smqSearched != null) {
 												//List<SmqRelation190> list = smqBaseService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
-												List<SmqRelation190> list = smqBaseService.findSmqRelationsForSmqCodeAndScope(smqSearched.getSmqCode(), relation.getTermScope());
+												List<SmqRelation190> list = smqBaseService.findSmqRelationsForSmqCodeAndScope(smqSearched.getSmqCode(), relationScopeMap.get(String.valueOf(relation.getSmqCode())));
 												if (list != null) {
 													for (SmqRelation190 smq3 : list) {
 														relationsWorkerDTO.addToMapReport(cpt++, new ReportLineDataDto("PT", smq3.getPtCode() + "", smq3.getPtName(), ".............", smq3.getPtTermScope() + "", smq3.getPtTermWeight() + "", smq3.getPtTermCategory(), "", smq3.getPtTermStatus())); 
@@ -1504,7 +1519,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 													smqSearched = smqBaseService.findByCode(child.getSmqCode());
 													if (smqSearched != null) {
 														//List<SmqRelation190> list = smqBaseService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
-														List<SmqRelation190> list = smqBaseService.findSmqRelationsForSmqCodeAndScope(smqSearched.getSmqCode(), relation.getTermScope());
+														List<SmqRelation190> list = smqBaseService.findSmqRelationsForSmqCodeAndScope(smqSearched.getSmqCode(), relationScopeMap.get(String.valueOf(relation.getSmqCode())));
 														if (list != null) {
 															for (SmqRelation190 smq3 : list) {
 																relationsWorkerDTO.addToMapReport(cpt++, new ReportLineDataDto("PT", smq3.getPtCode() + "", smq3.getPtName(), "....................", smq3.getPtTermScope() + "", smq3.getPtTermWeight() + "", smq3.getPtTermCategory(), "", smq3.getPtTermStatus())); 
@@ -1519,7 +1534,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 											smqSearched = smqBaseService.findByCode(smqC.getSmqCode());
 											if (smqSearched != null) {
 												//List<SmqRelation190> list = smqBaseService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
-												List<SmqRelation190> list = smqBaseService.findSmqRelationsForSmqCodeAndScope(smqSearched.getSmqCode(), relation.getTermScope());
+												List<SmqRelation190> list = smqBaseService.findSmqRelationsForSmqCodeAndScope(smqSearched.getSmqCode(), relationScopeMap.get(String.valueOf(relation.getSmqCode())));
 												if (list != null) {
 													for (SmqRelation190 smq3 : list) {
 														relationsWorkerDTO.addToMapReport(cpt++, new ReportLineDataDto("PT", smq3.getPtCode() + "", smq3.getPtName(), ".............", smq3.getPtTermScope() + "", smq3.getPtTermWeight() + "", smq3.getPtTermCategory(), "", smq3.getPtTermStatus())); 
@@ -1538,7 +1553,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 					//smqBaseChildrenCount = smqBaseService.findSmqRelationsCountForSmqCode(relation.getSmqCode());
 
  					//List<SmqRelation190> childSmqs =  smqBaseService.findSmqRelationsForSmqCode(relation.getSmqCode());
-					List<SmqRelation190> childSmqs =  smqBaseService.findSmqRelationsForSmqCodeAndScope(relation.getSmqCode(), relation.getTermScope());
+					List<SmqRelation190> childSmqs =  smqBaseService.findSmqRelationsForSmqCodeAndScope(relation.getSmqCode(), relationScopeMap.get(String.valueOf(relation.getSmqCode())));
 
 					if((null != childSmqs) && (childSmqs.size() > 0)) {
 						for (SmqRelation190 childSmq : childSmqs) {
@@ -1566,7 +1581,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 							smqSearched = smqBaseService.findByCode(Long.parseLong(childSmq.getPtCode() + ""));
 							if (smqSearched != null) {
 								//List<SmqRelation190> list = smqBaseService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
-								List<SmqRelation190> list = smqBaseService.findSmqRelationsForSmqCodeAndScope(smqSearched.getSmqCode(), relation.getTermScope());
+								List<SmqRelation190> list = smqBaseService.findSmqRelationsForSmqCodeAndScope(smqSearched.getSmqCode(), relationScopeMap.get(String.valueOf(relation.getSmqCode())));
 								if (list != null) {
 									for (SmqRelation190 smq3 : list) {
 										if (smq3.getSmqLevel() == 4) {
@@ -1586,7 +1601,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 											smqSearched = smqBaseService.findByCode(Long.parseLong(smq3.getPtCode() + ""));
 											if (smqSearched != null) {
 												//List<SmqRelation190> test =  smqBaseService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
-												List<SmqRelation190> test =  smqBaseService.findSmqRelationsForSmqCodeAndScope(smqSearched.getSmqCode(), relation.getTermScope());
+												List<SmqRelation190> test =  smqBaseService.findSmqRelationsForSmqCodeAndScope(smqSearched.getSmqCode(), relationScopeMap.get(String.valueOf(relation.getSmqCode())));
 							 					System.out.println("\n ************ test size for " + smqSearched.getSmqName() + " = " + test.size());
 							 					
 							 					
@@ -1608,7 +1623,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 														
 														if (smqSearched != null) {
 															//List<SmqRelation190> test2 =  smqBaseService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
-															List<SmqRelation190> test2 =  smqBaseService.findSmqRelationsForSmqCodeAndScope(smqSearched.getSmqCode(), relation.getTermScope());
+															List<SmqRelation190> test2 =  smqBaseService.findSmqRelationsForSmqCodeAndScope(smqSearched.getSmqCode(), relationScopeMap.get(String.valueOf(relation.getSmqCode())));
 										 					System.out.println("\n ************ test2 size for " + smqSearched.getSmqName() + " = " + test2.size());
 										 					
 										 					if (test2 != null) {
@@ -1630,7 +1645,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 																		smqSearched = smqBaseService.findByCode(Long.parseLong(tt2.getPtCode() + ""));
 																		if (smqSearched != null) {
 																			//List<SmqRelation190> test3 =  smqBaseService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
-																			List<SmqRelation190> test3 =  smqBaseService.findSmqRelationsForSmqCodeAndScope(smqSearched.getSmqCode(), relation.getTermScope());
+																			List<SmqRelation190> test3 =  smqBaseService.findSmqRelationsForSmqCodeAndScope(smqSearched.getSmqCode(), relationScopeMap.get(String.valueOf(relation.getSmqCode())));
 														 					System.out.println("\n ************ test size for " + smqSearched.getSmqName() + " = " + test3.size());
 														 					
 														 					
