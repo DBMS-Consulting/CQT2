@@ -59,8 +59,52 @@
 							<h:outputText value="Impact Assessment"
 								style="font-weight: bold;" />
 						</f:facet>
-
+						<!-- <span class="ui-separator">
+			                <span class="ui-icon ui-icon-grip-dotted-vertical" />
+			            </span> -->
+ 
 						<f:facet name="right">
+						 
+ 							
+ 							
+								<!-- <h:outputText value="All" />
+								<h:selectBooleanCheckbox value="#{dummyValue.boolValue}">
+									<p:ajax update="@form" />
+								</h:selectBooleanCheckbox>
+ 							
+								<h:outputText value="Successor PT" />
+								<h:selectBooleanCheckbox value="#{dummyValue.boolValue}">
+									<p:ajax update="@form" />
+								</h:selectBooleanCheckbox>
+ 							
+								<h:outputText value="Non-Current LLT" />
+								<h:selectBooleanCheckbox value="#{dummyValue.boolValue}">
+									<p:ajax update="@form" />
+								</h:selectBooleanCheckbox>
+ 							
+								<h:outputText value="LLT Promoted to PT" />
+								<h:selectBooleanCheckbox value="#{dummyValue.boolValue}">
+									<p:ajax update="@form" />
+								</h:selectBooleanCheckbox>
+ 							
+								<h:outputText value="MedDRA Term Name Change" />
+								<h:selectBooleanCheckbox value="#{dummyValue.boolValue}">
+									<p:ajax update="@form" />
+								</h:selectBooleanCheckbox>
+ 							
+								<h:outputText value="PT Demoted to LLT" />
+								<h:selectBooleanCheckbox value="#{dummyValue.boolValue}">
+									<p:ajax update="@form" />
+								</h:selectBooleanCheckbox>
+								-->
+ 
+ 
+ 							<p:commandButton value="Filter" actionListener="#"
+								onclick="PF('filter').show()" icon="fa fa-filter"
+								 />
+							<p:spacer width="5" />
+ 
+
 							<p:commandButton value="Review" id="reviewBtn"
 								disabled="#{!impactSearchController.reviewEnabled}"
 								action="#{impactSearchController.workflowIAState('review')}"
@@ -263,6 +307,9 @@
 											<p:column id="targetTitle" style="width:35%"
 												headerText="Future Lists/SMQ" />
 											<p:column colspan="#{impactSearchController.displayScopeCatWeight eq 'false' ? 3 : 6}" headerText="Hierarchy Details" />
+											
+											<!-- Notes -->	
+											<p:column headerText="Notes" rowspan="2"></p:column>
 										</p:row>
 
 										<p:row>
@@ -274,7 +321,9 @@
 											<p:column rendered="#{impactSearchController.displayScopeCatWeight}" headerText="Weight" style="width:8%" />
 											<p:column headerText="" style="width:5%" />
 										</p:row>
-										 
+										
+ 											
+ 										 
 									</p:columnGroup>
 
 									<p:column styleClass="wrap"><h:outputText value="#{node.term}" /></p:column>
@@ -325,6 +374,7 @@
                                         </p:spinner>
                                         -->
 									</p:column>
+																		
 									<p:column>
 										<p:commandLink
 											action="#{impactSearchController.deleteRelation(impactSearchController.targetTableRootTreeNode, node)}"
@@ -337,6 +387,9 @@
 												icon="ui-icon-alert" />
 										</p:commandLink>
 									</p:column>
+									
+									<!-- Notes -->							
+									<p:column styleClass="wrap" ><h:outputText value="#{dummyValue.value}" /></p:column>
 								</p:treeTable>
 							</p:panel>
 						</h:panelGrid>
@@ -578,6 +631,49 @@
 
 					<h:panelGrid style="float: right" columns="1">
 						<p:commandButton value="OK" type="button" onclick="PF('legend').hide()" />
+					</h:panelGrid>
+				</h:panelGrid>
+			</p:dialog>
+			
+			
+			<p:dialog widgetVar="filter" modal="true" id="filterDlg"
+                      closable="true" header="Filter" resizable="false">
+
+				<h:panelGrid columns="1" styleClass="full-width">
+                    <h:panelGrid columns="2" cellpadding="8">
+                       <h:outputText value="All" />
+								<h:selectBooleanCheckbox value="#{dummyValue.boolValue}">
+									<p:ajax update="@form" />
+								</h:selectBooleanCheckbox>
+ 							
+								<h:outputText value="Successor PT" />
+								<h:selectBooleanCheckbox value="#{dummyValue.boolValue}">
+									<p:ajax update="@form" />
+								</h:selectBooleanCheckbox>
+ 							
+								<h:outputText value="Non-Current LLT" />
+								<h:selectBooleanCheckbox value="#{dummyValue.boolValue}">
+									<p:ajax update="@form" />
+								</h:selectBooleanCheckbox>
+ 							
+								<h:outputText value="LLT Promoted to PT" />
+								<h:selectBooleanCheckbox value="#{dummyValue.boolValue}">
+									<p:ajax update="@form" />
+								</h:selectBooleanCheckbox>
+ 							
+								<h:outputText value="MedDRA Term Name Change" />
+								<h:selectBooleanCheckbox value="#{dummyValue.boolValue}">
+									<p:ajax update="@form" />
+								</h:selectBooleanCheckbox>
+ 							
+								<h:outputText value="PT Demoted to LLT" />
+								<h:selectBooleanCheckbox value="#{dummyValue.boolValue}">
+									<p:ajax update="@form" />
+								</h:selectBooleanCheckbox>
+                    </h:panelGrid>
+
+					<h:panelGrid style="float: right" columns="1">
+						<p:commandButton value="OK" type="button" onclick="PF('filter').hide()" />
 					</h:panelGrid>
 				</h:panelGrid>
 			</p:dialog>

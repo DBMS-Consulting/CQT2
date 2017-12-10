@@ -130,6 +130,8 @@
 					<p:column rowspan="2" sortBy="#{node.term}"
 						headerText="#{createController.selectedData.cmqName}" />
 					<p:column colspan="#{createController.relationsModel.displayScopeCatWeight eq 'false' ? 3 : 6}" headerText="Hierarchy Details" style="width:50%"/>
+					<!-- Notes -->
+					<p:column headerText="Notes" rowspan="2" />
 				</p:row>
 
 				<p:row>
@@ -138,6 +140,8 @@
 					<p:column rendered="#{createController.relationsModel.displayScopeCatWeight}" headerText="Scope" style="width:10%" />
 					<p:column rendered="#{createController.relationsModel.displayScopeCatWeight}" headerText="Category" style="width:5%" />
 					<p:column rendered="#{createController.relationsModel.displayScopeCatWeight}" headerText="Weight" style="width:10%" />
+						
+					
 					<p:column headerText="Delete" style="width:10%" />
 				</p:row>
 			</p:columnGroup>
@@ -203,6 +207,8 @@
                     rendered="#{not node.hideWeight  and not node.readOnlyWeight and (node.isSmqNode() or not createController.detailsFormModel.algorithm eq 'N')}" size="2" />
                 -->
 			</p:column>
+			
+			
 
             <p:column style="width:10%">
 				<p:commandButton disabled="#{createController.readOnlyState}" rendered="#{not node.hideDelete}"
@@ -215,6 +221,8 @@
 						icon="ui-icon-alert" />
 				</p:commandButton>
 			</p:column>
+			<!-- Notes -->							
+			<p:column styleClass="wrap" ><h:outputText value="#{dummyValue.value}" /></p:column>
 		</p:treeTable>
 		
 	</h:panelGrid>

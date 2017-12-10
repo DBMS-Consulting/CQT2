@@ -78,6 +78,8 @@
 					<p:column rowspan="2" sortBy="#{node.term}"
 						headerText="#{createController.selectedData.cmqName}"/>
 					<p:column colspan="#{impactSearchController.displayScopeCatWeight eq 'false' ? 2 : 5}" headerText="Hierarchy Details" style="width:50%"/>
+					<!-- Notes -->	
+					<p:column headerText="Notes" rowspan="2"></p:column>
 				</p:row>
 
 				<p:row>
@@ -112,6 +114,9 @@
 			<p:column rendered="#{createController.relationsModel.displayScopeCatWeight}" style="width:10%">
 				<h:outputText value="#{node.weight}" />
 			</p:column>
+			
+			<!-- Notes -->							
+			<p:column styleClass="wrap" ><h:outputText value="#{dummyValue.value}" /></p:column>
 
 			 
 		</p:treeTable>
