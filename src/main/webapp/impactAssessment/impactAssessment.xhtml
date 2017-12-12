@@ -66,42 +66,10 @@
 						<f:facet name="right">
 						 
  							
- 							
-								<!-- <h:outputText value="All" />
-								<h:selectBooleanCheckbox value="#{dummyValue.boolValue}">
-									<p:ajax update="@form" />
-								</h:selectBooleanCheckbox>
- 							
-								<h:outputText value="Successor PT" />
-								<h:selectBooleanCheckbox value="#{dummyValue.boolValue}">
-									<p:ajax update="@form" />
-								</h:selectBooleanCheckbox>
- 							
-								<h:outputText value="Non-Current LLT" />
-								<h:selectBooleanCheckbox value="#{dummyValue.boolValue}">
-									<p:ajax update="@form" />
-								</h:selectBooleanCheckbox>
- 							
-								<h:outputText value="LLT Promoted to PT" />
-								<h:selectBooleanCheckbox value="#{dummyValue.boolValue}">
-									<p:ajax update="@form" />
-								</h:selectBooleanCheckbox>
- 							
-								<h:outputText value="MedDRA Term Name Change" />
-								<h:selectBooleanCheckbox value="#{dummyValue.boolValue}">
-									<p:ajax update="@form" />
-								</h:selectBooleanCheckbox>
- 							
-								<h:outputText value="PT Demoted to LLT" />
-								<h:selectBooleanCheckbox value="#{dummyValue.boolValue}">
-									<p:ajax update="@form" />
-								</h:selectBooleanCheckbox>
-								-->
  
- 
- 							<p:commandButton value="Filter" actionListener="#"
-								onclick="PF('filter').show()" icon="fa fa-filter"
-								 />
+ <!-- disabled="#{impactSearchController.filterEnabled}" -->
+ 							<p:commandButton value="Filter" actionListener="#" 
+								id="filterBtn" onclick="PF('filter').show()" icon="fa fa-filter" />
 							<p:spacer width="5" />
  
 
@@ -639,37 +607,75 @@
 			<p:dialog widgetVar="filter" modal="true" id="filterDlg"
                       closable="true" header="Filter" resizable="false">
 
-				<h:panelGrid columns="1" styleClass="full-width">
-                    <h:panelGrid columns="2" cellpadding="8">
-                       <h:outputText value="All" />
-								<h:selectBooleanCheckbox value="#{dummyValue.boolValue}">
-									<p:ajax update="@form" />
-								</h:selectBooleanCheckbox>
- 							
-								<h:outputText value="Successor PT" />
-								<h:selectBooleanCheckbox value="#{dummyValue.boolValue}">
-									<p:ajax update="@form" />
-								</h:selectBooleanCheckbox>
- 							
-								<h:outputText value="Non-Current LLT" />
-								<h:selectBooleanCheckbox value="#{dummyValue.boolValue}">
-									<p:ajax update="@form" />
-								</h:selectBooleanCheckbox>
- 							
-								<h:outputText value="LLT Promoted to PT" />
-								<h:selectBooleanCheckbox value="#{dummyValue.boolValue}">
-									<p:ajax update="@form" />
-								</h:selectBooleanCheckbox>
- 							
-								<h:outputText value="MedDRA Term Name Change" />
-								<h:selectBooleanCheckbox value="#{dummyValue.boolValue}">
-									<p:ajax update="@form" />
-								</h:selectBooleanCheckbox>
- 							
-								<h:outputText value="PT Demoted to LLT" />
-								<h:selectBooleanCheckbox value="#{dummyValue.boolValue}">
-									<p:ajax update="@form" />
-								</h:selectBooleanCheckbox>
+				<h:panelGrid columns="2" styleClass="full-width" id="panel-filter">
+                    <h:panelGrid columns="2" cellpadding="2">
+                       	
+						<h:selectBooleanCheckbox id="all" value="#{dummyValue.boolValue}" disabled="#{impactSearchController.filterAll}">
+							<p:ajax event="select" update="@form" listener="#{impactSearchController.selectFilterAll}" />
+						</h:selectBooleanCheckbox>
+						<label for="all">All</label>
+						
+						<h:selectBooleanCheckbox id="new" value="#{dummyValue.boolValue}" disabled="#{impactSearchController.filterReadOnly}">
+							<p:ajax event="select" update="@form" listener="#{impactSearchController.selectFilter}" />
+						</h:selectBooleanCheckbox>
+						<label for="new">New Successor PT</label>
+						
+						<h:selectBooleanCheckbox id="non-current" value="#{dummyValue.boolValue}" disabled="#{impactSearchController.filterReadOnly}">
+							<p:ajax update="panel-filter" listener="#{impactSearchController.filter}" />
+						</h:selectBooleanCheckbox>
+						<label for="non-current">Non-Current LLT</label>
+						
+						<h:selectBooleanCheckbox id="llt" value="#{dummyValue.boolValue}" disabled="#{impactSearchController.filterReadOnly}">
+							<p:ajax update="@form" listener="#{impactSearchController.filter}"/>
+						</h:selectBooleanCheckbox>
+						<label for="llt">LLT Promoted to PT</label>
+						
+						<h:selectBooleanCheckbox id="meddra" value="#{dummyValue.boolValue}" disabled="#{impactSearchController.filterReadOnly}">
+							<p:ajax update="@form" listener="#{impactSearchController.filter}"/>
+						</h:selectBooleanCheckbox>
+						<label for="meddra">MedDRA Term Name Change</label>
+						
+						<h:selectBooleanCheckbox id="pt" value="#{dummyValue.boolValue}" disabled="#{impactSearchController.filterReadOnly}">
+							<p:ajax update="@form" listener="#{impactSearchController.filter}"/>
+						</h:selectBooleanCheckbox>
+						<label for="pt">PT Demoted to LLT</label>
+						
+						<h:selectBooleanCheckbox id="merged" value="#{dummyValue.boolValue}" disabled="#{impactSearchController.filterReadOnly}">
+							<p:ajax update="@form" listener="#{impactSearchController.filter}"/>
+						</h:selectBooleanCheckbox>
+						<label for="merged">Merged HLGT/HLT</label>
+					</h:panelGrid>
+                    <h:panelGrid columns="2" cellpadding="2">
+                    	
+						<h:selectBooleanCheckbox id="soc" value="#{dummyValue.boolValue}" disabled="#{impactSearchController.filterReadOnly}">
+							<p:ajax update="@form" />
+						</h:selectBooleanCheckbox>
+						<label for="soc">Primary SOC Change</label>
+											
+						<h:selectBooleanCheckbox id="new-term" value="#{dummyValue.boolValue}" disabled="#{impactSearchController.filterReadOnly}">
+							<p:ajax update="@form" />
+						</h:selectBooleanCheckbox>
+						<label for="new-term">New Term added</label>
+						
+						<h:selectBooleanCheckbox id="term-moved" value="#{dummyValue.boolValue}" disabled="#{impactSearchController.filterReadOnly}">
+							<p:ajax update="@form" />
+						</h:selectBooleanCheckbox>
+						<label for="term-moved">Term moved</label>
+						
+						<h:selectBooleanCheckbox id="scope" value="#{dummyValue.boolValue}" disabled="#{impactSearchController.filterReadOnly}">
+							<p:ajax update="@form" />
+						</h:selectBooleanCheckbox>
+						<label for="scope">Scope Change</label>
+						
+						<h:selectBooleanCheckbox id="term-deleted" value="#{dummyValue.boolValue}" disabled="#{impactSearchController.filterReadOnly}">
+							<p:ajax update="@form" />
+						</h:selectBooleanCheckbox>
+						<label for="term-deleted">Term Deleted</label>
+						
+						<h:selectBooleanCheckbox id="status-changed" value="#{dummyValue.boolValue}" disabled="#{impactSearchController.filterReadOnly}">
+							<p:ajax update="@form" />
+						</h:selectBooleanCheckbox>
+						<label for="status-changed">Status Changed</label>
                     </h:panelGrid>
 
 					<h:panelGrid style="float: right" columns="1">

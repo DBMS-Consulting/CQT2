@@ -179,6 +179,8 @@ public class ImpactSearchController implements Serializable {
     private String		scopeFilter;
     
 	private String dictionaryVersion;
+	
+	private boolean filterAll, filterReadOnly;
 
 
 	public ImpactSearchController() {
@@ -2061,6 +2063,20 @@ public class ImpactSearchController implements Serializable {
 		CmqBaseTarget t = (this.isImpactedCmqSelected ? this.selectedImpactedCmqList : this.selectedNotImpactedCmqList);
         return (currentOrTarget == SELECTED_TARGET_LIST && t != null && "REVIEWED IA".equals(t.getCmqState()));
 	}
+	
+	public boolean isFilterEnabled() {
+        return (this.isImpactedSmqSelected || this.isNonImpactedSmqSelected || this.isImpactedCmqSelected || this.isNonImpactedCmqSelected);
+	}
+	
+	public void selectFilterAll(AjaxBehaviorEvent event) {
+		this.filterReadOnly = true;
+		this.filterAll = false;
+	}
+	
+	public void selectFilter(AjaxBehaviorEvent event) {
+		this.filterAll = true;
+		this.filterReadOnly = false;
+	}
 
 	public LazyDataModel<SmqBaseTarget> getImpactedSmqBaseLazyDataModel() {
 		return impactedSmqBaseLazyDataModel;
@@ -2462,5 +2478,21 @@ public class ImpactSearchController implements Serializable {
 
 	public void setCurrentOrTarget(int currentOrTarget) {
 		this.currentOrTarget = currentOrTarget;
+	}
+
+	public boolean isFilterAll() {
+		return filterAll;
+	}
+
+	public void setFilterAll(boolean filterAll) {
+		this.filterAll = filterAll;
+	}
+
+	public boolean isFilterReadOnly() {
+		return filterReadOnly;
+	}
+
+	public void setFilterReadOnly(boolean filterReadOnly) {
+		this.filterReadOnly = filterReadOnly;
 	}
 }
