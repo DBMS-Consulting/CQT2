@@ -1369,6 +1369,158 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		return content;
 	}
 	
+	/**
+	 * Excel Report.
+	 */
+	@Override
+	public StreamedContent generateExcel(List<CmqBase190> datas, String module, String user) {
+		XSSFWorkbook workbook = new XSSFWorkbook();
+		XSSFSheet worksheet = null;
+
+		worksheet = workbook.createSheet(module + "_ListSearch");
+		XSSFRow row = null;
+		int rowCount = 6;
+
+		try {
+			insertExporLogoImage(worksheet, workbook);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+
+		/**
+		 * Première ligne - entêtes
+		 */
+		row = worksheet.createRow(rowCount);
+		XSSFCell cell = row.createCell(0);
+
+		// User name
+		rowCount += 2;
+		row = worksheet.createRow(rowCount);
+		cell = row.createCell(0);
+		cell.setCellValue("User name: " + user);
+
+		rowCount++;
+		row = worksheet.createRow(rowCount);
+		cell = row.createCell(0);
+		cell.setCellValue("Report Date/Time: " + new Date().toString());
+		cell = row.createCell(1);
+
+		//Columns
+		rowCount += 2;
+		row = worksheet.createRow(rowCount);
+		
+		cell = row.createCell(0);
+		cell.setCellValue("List Name");
+		setCellStyleColumn(workbook, cell);
+		cell = row.createCell(1);
+		cell.setCellValue("Extension");
+		setCellStyleColumn(workbook, cell);
+		cell = row.createCell(2);
+		cell.setCellValue("Level");
+		setCellStyleColumn(workbook, cell);
+		cell = row.createCell(3);
+		cell.setCellValue("Status");
+		setCellStyleColumn(workbook, cell);
+		cell = row.createCell(4);
+		cell.setCellValue("State");
+		setCellStyleColumn(workbook, cell);
+		cell = row.createCell(5);
+		cell.setCellValue("Code");
+		setCellStyleColumn(workbook, cell);
+		cell = row.createCell(6);
+		cell.setCellValue("Drug Program");
+		setCellStyleColumn(workbook, cell);
+		cell = row.createCell(7);
+		cell.setCellValue("Protocol");
+		setCellStyleColumn(workbook, cell);
+		cell = row.createCell(8);
+		cell.setCellValue("Product");
+		setCellStyleColumn(workbook, cell);
+		cell = row.createCell(9);
+		cell.setCellValue("Group");
+		setCellStyleColumn(workbook, cell);
+		cell = row.createCell(10);
+		cell.setCellValue("Created By");
+		setCellStyleColumn(workbook, cell);
+		
+		
+		rowCount++;
+ 
+		if (datas != null)
+ 		for (CmqBase190 cmq : datas) {
+ 			row = worksheet.createRow(rowCount);
+ 			// Cell 0
+ 			cell = row.createCell(0);
+ 			cell.setCellValue(cmq.getCmqName());
+
+ 			// Cell 1
+ 			cell = row.createCell(1);
+ 			cell.setCellValue(refCodeListService.interpretInternalCodeToValue("LIST_EXTENSION_TYPES", cmq.getCmqTypeCd()));
+
+ 			// Cell 2
+ 			cell = row.createCell(2);
+ 			cell.setCellValue(cmq.getCmqLevel());
+ 			
+ 			// Cell 3
+ 			cell = row.createCell(3);
+ 			String status = "";
+ 			if (cmq.getCmqStatus().equals("P"))
+ 				status = "PENDING";
+ 			if (cmq.getCmqStatus().equals("A"))
+ 				status = "ACTIVE";
+ 			if (cmq.getCmqStatus().equals("I"))
+ 				status = "INACTIVE";
+ 			cell.setCellValue(status);
+
+ 			// Cell 4
+ 			cell = row.createCell(4);
+ 			cell.setCellValue(cmq.getCmqState());
+
+ 			// Cell 5
+ 			cell = row.createCell(5);
+ 			cell.setCellValue(cmq.getCmqCode());
+ 			
+ 			// Cell 6
+ 			cell = row.createCell(6);
+ 			cell.setCellValue(refCodeListService.interpretInternalCodeToValue("PROGRAM", cmq.getCmqProgramCd()));
+
+ 			// Cell 7
+ 			cell = row.createCell(7);
+ 			cell.setCellValue(refCodeListService.interpretInternalCodeToValue("PROTOCOL", cmq.getCmqProtocolCd()));
+
+ 			// Cell 8
+ 			cell = row.createCell(8);
+ 			cell.setCellValue(refCodeListService.convertProductCodesToValuesLabel(cmq.getProductsList()));
+ 			
+ 			// Cell 9
+ 			cell = row.createCell(9);
+ 			cell.setCellValue(cmq.getCmqGroup());
+
+ 			// Cell 10
+ 			cell = row.createCell(10);
+ 			cell.setCellValue(cmq.getCreatedByLabel());
+ 			
+ 			rowCount++;
+		}
+  
+
+		StreamedContent content = null;
+		try {
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			workbook.write(baos);
+			byte[] xls = baos.toByteArray();
+			ByteArrayInputStream bais = new ByteArrayInputStream(xls);
+			content = new DefaultStreamedContent(
+					bais,
+					"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+					module.toLowerCase() + "_ListSearch.xlsx");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return content;
+	}
+	
 	private void updateRelationScopeMap(Map<String, String> relationScopeMap, TreeNode relationsRoot) {
 		if(null!=relationsRoot) {
 			if(relationsRoot.getChildCount() > 0) {

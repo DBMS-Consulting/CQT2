@@ -111,18 +111,18 @@
 	<p:spacer />
 
     <p:outputPanel>
-		<p:dataTable var="value" value="#{searchController.datas}" id="result"
+		<p:dataTable var="value" value="#{searchController.datas}" id="result"  
 			rows="10" paginator="true" paginatorPosition="bottom"
-			paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} {Exporters}"
+			paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 			rowsPerPageTemplate="5,10,25"
 			resizableColumns="true">
 			
-			<f:facet name="{Exporters}">
+			<!-- <f:facet name="{Exporters}">
 	            <h:commandLink>
 	                <img title="Export list" src="#{request.contextPath}/image/excel_small.png" style="float: right" width="24" />
 	                <p:dataExporter type="xls" target="result" fileName="LISTS" />
 	            </h:commandLink>
-            </f:facet>
+            </f:facet> -->
 			<p:column headerText="List Name" width="180" sortBy="#{value.cmqName}">
 				<h:outputText value="#{value.cmqName}" />
 			</p:column>
@@ -172,8 +172,16 @@
 			</p:column>
 			
 		</p:dataTable>
-		
+
+		<h:commandLink actionListener="#{createController.generateExcel(searchController.datas)}"  >
+			<p:fileDownload value="#{createController.excelFile}" />
+			<img title="Export list" src="#{request.contextPath}/image/excel_small.png" style="margin-top: 20px !important; float: right" width="24" />
+	</h:commandLink>
 	</p:outputPanel>
+  	
+	 
+	
+	
 
 
     <p:dialog widgetVar="history-dialog" modal="true" id="historyD"

@@ -23,6 +23,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.primefaces.component.wizard.Wizard;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.FlowEvent;
+import org.primefaces.model.StreamedContent;
 import org.primefaces.model.TreeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -149,6 +150,8 @@ public class CreateController implements Serializable {
 	 */
 	private String scopeFilter;
 	private static final String NO_SCOPE_FILTER = "-1";
+	private StreamedContent excelFile;
+
 	
 	public CreateController() {
 		setSelectedData(null);
@@ -161,6 +164,20 @@ public class CreateController implements Serializable {
         this.workflowFormModel = new ListWorkflowFormVM(this.authService);
 		initAll();
 	}
+	
+	public void generateExcel(List<CmqBase190> list) {
+		String module = "";
+		if (updateWizard != null)
+			module = "UPDATE";
+		if (copyWizard != null)
+			module = "COPY";
+		if (browseWizard != null)
+			module = "BROWSE_SEARCH";
+		String user =  this.authService.getUserGivenName() + " " + this.authService.getUserSurName();
+		StreamedContent content = cmqBaseService.generateExcel(list, module, user);
+		setExcelFile(content); 
+	}
+
 
 	private void initAll() {
 		detailsFormModel.init();
@@ -2187,6 +2204,14 @@ public class CreateController implements Serializable {
 
 	public void setScopeSelected(String scopeSelected) {
 		this.scopeSelected = scopeSelected;
+	}
+
+	public StreamedContent getExcelFile() {
+		return excelFile;
+	}
+
+	public void setExcelFile(StreamedContent excelFile) {
+		this.excelFile = excelFile;
 	}
      
 }

@@ -13,6 +13,7 @@ import javax.faces.event.AjaxBehaviorEvent;
 
 import org.apache.commons.lang3.StringUtils;
 import org.primefaces.event.RowEditEvent;
+import org.primefaces.model.StreamedContent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,6 +28,7 @@ import com.dbms.service.IMeddraDictService;
 import com.dbms.service.IRefCodeListService;
 import com.dbms.service.ISmqBaseService;
 import com.dbms.view.CmqBaseHierarchySearchVM;
+import com.dbms.view.ListDetailsFormVM;
 import com.dbms.web.dto.CodelistDTO;
 
 /**
@@ -121,7 +123,8 @@ public class SearchController extends BaseController<CmqBase190> {
 		RefConfigCodeList currentMeddraVersionCodeList = this.refCodeListService.getCurrentMeddraVersion();
 		setDictionaryVersion(currentMeddraVersionCodeList.getValue());
 	}
-
+	
+	
 	/**
 	 * Used by wizard component.
 	 * 
