@@ -21,50 +21,48 @@
 			</h:panelGrid>
 
 			<p:panel header="Search" id="ph1" style=" padding:5px;">
-				<h:panelGrid columns="3">
-					<h:panelGrid columns="2" columnClasses="label, value" style="min-width: 300px">
+				<h:panelGrid columns="1" style="margin-left: 10%">
+					<h:panelGrid columns="12" columnClasses="label, value">
 						<p:outputLabel value="List Name" styleClass="label-right" />
 						<p:inputText value="#{auditTrailController.listName}" />
+						<p:spacer width="5" />
 
 						<p:outputLabel value="List Code" styleClass="label-right" />
 						<p:inputText value="#{auditTrailController.listCode}" />
-					</h:panelGrid>
+						<p:spacer width="5" />
 
-					<h:panelGrid columns="2" columnClasses="label, value" style="min-width: 300px">
-						<p:outputLabel value="State" styleClass="label-right" />
-						<p:selectOneMenu value="#{auditTrailController.state}" id="state">
-							<f:selectItem itemValue="" itemLabel="All" />
-							<f:selectItems value="#{configMB.cmqBaseListStates}" var="wk"
-								itemLabel="#{wk[1]}" itemValue="#{wk[0]}" />
-						</p:selectOneMenu>
-
+						<!-- <p:outputLabel value="State" styleClass="label-right" />
+					<p:selectOneMenu value="#{auditTrailController.state}" id="state">
+						<f:selectItem itemValue="" itemLabel="All" />
+						<f:selectItems value="#{configMB.cmqBaseListStates}" var="wk"
+							itemLabel="#{wk[1]}" itemValue="#{wk[0]}" />
+					</p:selectOneMenu>
+					<p:spacer width="5" /> -->
 						<p:outputLabel value="Dictionary Version" styleClass="label-right" />
-						<p:selectOneMenu value="#{auditTrailController.dictionary}"
-							id="dict">
-							<f:selectItem itemValue="" itemLabel="" />
-						</p:selectOneMenu>
+						<p:inputText id="dict" value="#{auditTrailController.dictionary}" />
+						<p:spacer width="5" />
 
-						<p:outputLabel value="Date" styleClass="label-right" />
-						<p:selectOneMenu value="#{auditTrailController.date}" id="date">
-							<f:selectItem itemValue="" itemLabel="" />
-
-						</p:selectOneMenu>
+						<p:outputLabel value="Audit Timestamp" styleClass="label-right" />
+						<p:inputText id="date" value="#{auditTrailController.date}" />
+						<p:spacer width="5" />
 					</h:panelGrid>
-					
-					<h:panelGrid columns="2" id="searchPanel">
+					<p:spacer height="10" />
+
+					<h:panelGrid columns="2" id="searchPanel" styleClass="row"
+						style="margin-left: 40%">
 
 
-								<p:commandButton value="Search"
-									action="#{searchController.search}"
-									actionListener="#{createController.clearCmqSelection}"
-									update="@form:result" />
-								<p:commandButton action="#{searchController.reset}"
-									value="Reset" process="@this" update="@form:result" />
-							</h:panelGrid>
+
+						<p:commandButton value="Search"
+							action="#{searchController.search}"
+							actionListener="#{createController.clearCmqSelection}"
+							update="@form:result" />
+						<p:commandButton action="#{searchController.reset}" value="Reset"
+							process="@this" update="@form:result" />
+					</h:panelGrid>
 				</h:panelGrid>
 
-				<p:spacer />
-
+				<p:spacer height="10" />
 				<p:outputPanel>
 					<p:dataTable var="value" value="#{searchController.datas}"
 						id="result" rows="10" paginator="true" paginatorPosition="bottom"
@@ -76,28 +74,29 @@
 								<img title="Export list"
 									src="#{request.contextPath}/image/excel_small.png"
 									style="float: right" width="24" />
-								<p:dataExporter type="xls" target="result" fileName="AUDIT TRAIL" />
+								<p:dataExporter type="xls" target="result"
+									fileName="AUDIT TRAIL" />
 							</h:commandLink>
 						</f:facet>
-						<p:column headerText="Field Name" width="180"
+						<p:column headerText="Field Name" width="50"
 							sortBy="#{value.cmqName}">
 							<h:outputText />
 						</p:column>
-						<p:column headerText="Old Value" width="50"
+						<p:column headerText="Old Value" width="150"
 							sortBy="#{value.cmqName}">
 							<h:outputText />
 						</p:column>
-						<p:column headerText="New Value" width="50"
+						<p:column headerText="New Value" width="150"
 							sortBy="#{value.cmqName}">
 							<h:outputText />
 						</p:column>
-						<p:column headerText="User Name" width="50">
+						<p:column headerText="User Name" width="150">
 							<h:outputText />
 						</p:column>
 						<p:column headerText="User Group" width="25">
 							<h:outputText />
 						</p:column>
- 
+
 					</p:dataTable>
 
 				</p:outputPanel>
