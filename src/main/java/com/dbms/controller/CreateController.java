@@ -382,9 +382,8 @@ public class CreateController implements Serializable {
 		relationsModified = false;
 	}
 	
-	private List<CmqParentChild200> getUpdatedParentChildRelationship(CmqBase190 cmqEntity,CmqBase190 cmqBase) {
+	private void updateParentChildRelationship(CmqBase190 cmqEntity,CmqBase190 cmqBase, List<CmqParentChild200> newParentChildList) {
 		List<CmqParentChild200> existingParentChildList = this.cmqParentChildService.findParentsByCmqCode(cmqEntity.getCmqCode());
-		List<CmqParentChild200> newParentChildList = new ArrayList<>();
 		boolean parentAlreadyExists = false;
 		if (null!=existingParentChildList) {
 			for(CmqParentChild200 parentChild : existingParentChildList) {
@@ -408,8 +407,6 @@ public class CreateController implements Serializable {
 				//this.cmqParentChildService.create(newParentChildList);
 			}
 		}
-		
-		return newParentChildList;
 		
 	}
 	
@@ -439,7 +436,7 @@ public class CreateController implements Serializable {
 					IEntity entity = hierarchyNode.getEntity();
 					if (entity instanceof CmqBase190) {
 						CmqBase190 cmqEntity = (CmqBase190) entity;
-						parentChildList = getUpdatedParentChildRelationship(cmqEntity,cmqBase);
+						 updateParentChildRelationship(cmqEntity,cmqBase,parentChildList);
 						//change code here for parent child relationship
 						/*Long existingParentCode = cmqEntity.getCmqParentCode();
 						if((null == existingParentCode) || (existingParentCode.longValue() != cmqBase.getCmqCode().longValue())) {
