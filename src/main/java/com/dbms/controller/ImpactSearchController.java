@@ -1827,7 +1827,28 @@ public class ImpactSearchController implements Serializable {
             
             if(fetchedSmqBaseList != null)
                 this.smqBaseList.addAll(fetchedSmqBaseList);
-			return fetchedSmqBaseList;
+            
+            int dataSize = fetchedSmqBaseList.size();
+            //this.setRowCount(dataSize);
+            
+            System.out.println("************************  rowCount :: " + this.getRowCount());
+            System.out.println("************************  dataSize :: " + dataSize);
+
+            
+            //paginate
+            if(dataSize > pageSize) {
+                try {
+                    return fetchedSmqBaseList.subList(first, first + pageSize);
+                }
+                catch(IndexOutOfBoundsException e) {
+                    return fetchedSmqBaseList.subList(first, first + (dataSize % pageSize));
+                }
+            }
+            else {
+                return fetchedSmqBaseList;
+            }
+            
+			//return fetchedSmqBaseList;
 		}
 
 		@Override

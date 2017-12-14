@@ -29,32 +29,37 @@
 				<!-- Search -->
 				<p:tab id="searchBrowse" title="Search">
 					<p:panel header="Search" id="ph1" style=" padding:5px;">
-						<h:panelGrid columns="3">
-							<h:panelGrid columns="2" columnClasses="label, value"
-								style="min-width: 300px">
+						<h:panelGrid columns="1" style="margin-left: 10%">
+							<h:panelGrid columns="12" columnClasses="label, value">
 								<p:outputLabel value="List Name" styleClass="label-right" />
-								<p:inputText value="#{historicController.listName}" />
+								<p:inputText value="#{auditTrailController.listName}" />
+								<p:spacer width="50" />
 
 								<p:outputLabel value="List Code" styleClass="label-right" />
-								<p:inputText value="#{historicController.listCode}" />
-							</h:panelGrid>
+								<p:inputText value="#{auditTrailController.listCode}" />
+								<p:spacer width="50" />
 
-							<h:panelGrid columns="2" columnClasses="label, value"
-								style="min-width: 300px">
+								<!-- <p:outputLabel value="State" styleClass="label-right" />
+					<p:selectOneMenu value="#{auditTrailController.state}" id="state">
+						<f:selectItem itemValue="" itemLabel="All" />
+						<f:selectItems value="#{configMB.cmqBaseListStates}" var="wk"
+							itemLabel="#{wk[1]}" itemValue="#{wk[0]}" />
+					</p:selectOneMenu>
+					<p:spacer width="5" /> -->
 								<p:outputLabel value="Dictionary Version"
 									styleClass="label-right" />
-								<p:selectOneMenu value="#{historicController.dictionary}"
-									id="dict">
-									<f:selectItem itemValue="" itemLabel="" />
-								</p:selectOneMenu>
+								<p:inputText id="dict"
+									value="#{auditTrailController.dictionary}" />
+								<p:spacer width="50" />
 
-								<p:outputLabel value="Date" styleClass="label-right" />
-								<p:selectOneMenu value="#{historicController.date}" id="date">
-									<f:selectItem itemValue="" itemLabel="" />
-
-								</p:selectOneMenu>
+								<p:outputLabel value="Audit Timestamp" styleClass="label-right" />
+								<p:inputText id="date" value="#{auditTrailController.date}" />
+								<p:spacer width="5" />
 							</h:panelGrid>
-							<h:panelGrid columns="2" id="searchPanel">
+
+							<h:panelGrid columns="2" id="searchPanel" styleClass="row"
+								style="margin-left: 40%">
+
 
 
 								<p:commandButton value="Search"
@@ -64,31 +69,17 @@
 								<p:commandButton action="#{searchController.reset}"
 									value="Reset" process="@this" update="@form:result" />
 							</h:panelGrid>
-
 						</h:panelGrid>
 
-						<p:separator />
-
-
-
-						<p:spacer />
+						<p:spacer height="10" />
 
 						<p:outputPanel>
 							<p:dataTable var="value" value="#{searchController.datas}"
 								id="result" rows="10" paginator="true"
 								paginatorPosition="bottom"
-								paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} {Exporters}"
+								paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 								rowsPerPageTemplate="5,10,25" resizableColumns="true">
 
-								<f:facet name="{Exporters}">
-									<h:commandLink>
-										<img title="Export list"
-											src="#{request.contextPath}/image/excel_small.png"
-											style="float: right" width="24" />
-										<p:dataExporter type="xls" target="result"
-											fileName="HISTORIC VIEW" />
-									</h:commandLink>
-								</f:facet>
 								<p:column headerText="List Name" width="180"
 									sortBy="#{value.cmqName}">
 									<h:outputText value="#{value.cmqName}" />
@@ -141,6 +132,13 @@
 									<h:outputText value="#{value.createdByLabel}" />
 								</p:column>
 							</p:dataTable>
+							<h:commandLink
+								actionListener="#{auditTrailController.generateExcel(auditTrailController.datas)}">
+								<p:fileDownload value="#{auditTrailController.excelFile}" />
+								<img title="Export list"
+									src="#{request.contextPath}/image/excel_small.png"
+									style="margin-top: 20px !important; float: right" width="24" />
+							</h:commandLink>
 						</p:outputPanel>
 					</p:panel>
 				</p:tab>

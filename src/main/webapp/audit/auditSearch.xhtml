@@ -25,11 +25,11 @@
 					<h:panelGrid columns="12" columnClasses="label, value">
 						<p:outputLabel value="List Name" styleClass="label-right" />
 						<p:inputText value="#{auditTrailController.listName}" />
-						<p:spacer width="5" />
+						<p:spacer width="50" />
 
 						<p:outputLabel value="List Code" styleClass="label-right" />
 						<p:inputText value="#{auditTrailController.listCode}" />
-						<p:spacer width="5" />
+						<p:spacer width="50" />
 
 						<!-- <p:outputLabel value="State" styleClass="label-right" />
 					<p:selectOneMenu value="#{auditTrailController.state}" id="state">
@@ -40,14 +40,13 @@
 					<p:spacer width="5" /> -->
 						<p:outputLabel value="Dictionary Version" styleClass="label-right" />
 						<p:inputText id="dict" value="#{auditTrailController.dictionary}" />
-						<p:spacer width="5" />
+						<p:spacer width="50" />
 
 						<p:outputLabel value="Audit Timestamp" styleClass="label-right" />
 						<p:inputText id="date" value="#{auditTrailController.date}" />
 						<p:spacer width="5" />
 					</h:panelGrid>
-					<p:spacer height="10" />
-
+ 
 					<h:panelGrid columns="2" id="searchPanel" styleClass="row"
 						style="margin-left: 40%">
 
@@ -64,41 +63,40 @@
 
 				<p:spacer height="10" />
 				<p:outputPanel>
-					<p:dataTable var="value" value="#{searchController.datas}"
+					<p:dataTable var="value" value="#{auditTrailController.datas}"
 						id="result" rows="10" paginator="true" paginatorPosition="bottom"
-						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} {Exporters}"
+						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 						rowsPerPageTemplate="5,10,25" resizableColumns="true">
 
-						<f:facet name="{Exporters}">
-							<h:commandLink>
-								<img title="Export list"
-									src="#{request.contextPath}/image/excel_small.png"
-									style="float: right" width="24" />
-								<p:dataExporter type="xls" target="result"
-									fileName="AUDIT TRAIL" />
-							</h:commandLink>
-						</f:facet>
-						<p:column headerText="Field Name" width="50"
-							sortBy="#{value.cmqName}">
+						<p:column headerText="Change Type">
 							<h:outputText />
 						</p:column>
-						<p:column headerText="Old Value" width="150"
-							sortBy="#{value.cmqName}">
+
+						<p:column headerText="Field Name" width="100">
 							<h:outputText />
 						</p:column>
-						<p:column headerText="New Value" width="150"
-							sortBy="#{value.cmqName}">
+						<p:column headerText="Old Value" width="150">
+							<h:outputText />
+						</p:column>
+						<p:column headerText="New Value" width="150">
 							<h:outputText />
 						</p:column>
 						<p:column headerText="User Name" width="150">
 							<h:outputText />
 						</p:column>
-						<p:column headerText="User Group" width="25">
+						<p:column headerText="User Group" width="150">
+							<h:outputText />
+						</p:column>
+						<p:column headerText="Audit Timestamp">
 							<h:outputText />
 						</p:column>
 
 					</p:dataTable>
-
+					<h:commandLink actionListener="#{auditTrailController.generateExcel(auditTrailController.datas)}">
+						<p:fileDownload value="#{auditTrailController.excelFile}" />
+						<img title="Export list" src="#{request.contextPath}/image/excel_small.png"
+							style="margin-top: 20px !important; float: right" width="24" />
+					</h:commandLink>
 				</p:outputPanel>
 			</p:panel>
 
