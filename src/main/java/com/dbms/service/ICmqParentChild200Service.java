@@ -10,7 +10,7 @@ import com.dbms.util.exceptions.CqtServiceException;
 
 public interface ICmqParentChild200Service extends ICqtPersistenceService<CmqParentChild200> {
 
-	void create(List<CmqParentChild200> cmqParentChildRelations) throws CqtServiceException;
+	//void create(List<CmqParentChild200> cmqParentChildRelations) throws CqtServiceException;
 	
 	List<CmqParentChild200> findParentsByCmqCode(Long childCmqCode);
 	

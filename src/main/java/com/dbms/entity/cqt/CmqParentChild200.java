@@ -46,6 +46,12 @@ public class CmqParentChild200 extends BaseEntity{
 	
 	@Column(name = "CMQ_CHILD_TYPE_CD", nullable = false, length = 6)
 	private String cmqChildTypeCd;
+	
+	@Column(name = "PARENT_CMQ_ID", nullable = false)
+	private Long parentCmqId;
+	
+	@Column(name = "CHILD_CMQ_ID", nullable = false)
+	private Long childCmqId;
 
 	@Override
 	public Long getId() {
@@ -106,6 +112,22 @@ public class CmqParentChild200 extends BaseEntity{
 
 	public void setCmqChildTypeCd(String cmqChildTypeCd) {
 		this.cmqChildTypeCd = cmqChildTypeCd;
+	}
+
+	public Long getParentCmqId() {
+		return parentCmqId;
+	}
+
+	public void setParentCmqId(Long parentCmqId) {
+		this.parentCmqId = parentCmqId;
+	}
+
+	public Long getChildCmqId() {
+		return childCmqId;
+	}
+
+	public void setChildCmqId(Long childCmqId) {
+		this.childCmqId = childCmqId;
 	}
 	
 	

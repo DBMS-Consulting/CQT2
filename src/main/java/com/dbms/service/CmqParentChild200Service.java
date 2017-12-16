@@ -30,7 +30,7 @@ public class CmqParentChild200Service extends CqtPersistenceService<CmqParentChi
 
 	private static final Logger LOG = LoggerFactory.getLogger(CmqParentChild200Service.class);
 
-	public void create(List<CmqParentChild200> cmqRelations) throws CqtServiceException {
+	/*public void create(List<CmqParentChild200> cmqRelations,String userCn, String userFirstName, String userLastName, String userGroups) throws CqtServiceException {
 		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
 		EntityTransaction tx = null;
 		try {
@@ -51,7 +51,7 @@ public class CmqParentChild200Service extends CqtPersistenceService<CmqParentChi
 		} finally {
 			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
 		}
-	}
+	}*/
 	
 	public Long findCountByCmqCode(Long cmqCode) {
 		Long retVal = null;

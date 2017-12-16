@@ -420,6 +420,8 @@ public class CreateController implements Serializable {
 				newParentChild.setCmqChildCode(cmqEntity.getCmqCode());
 				newParentChild.setCmqChildName(cmqEntity.getCmqName());
 				newParentChild.setCmqChildTypeCd(cmqEntity.getCmqTypeCd());
+				newParentChild.setChildCmqId(cmqEntity.getCmqId());
+				newParentChild.setParentCmqId(cmqBase.getCmqId());
 				newParentChildList.add(newParentChild);
 				//this.cmqParentChildService.create(newParentChildList);
 			}
@@ -612,7 +614,9 @@ public class CreateController implements Serializable {
 								, this.authService.getCombinedMappedGroupMembershipAsString());
 					}
 					if(!parentChildList.isEmpty()) {
-						this.cmqParentChildService.create(parentChildList);
+						this.cmqParentChildService.update(parentChildList,this.authService.getUserCn()
+								, this.authService.getUserGivenName(), this.authService.getUserSurName()
+								, this.authService.getCombinedMappedGroupMembershipAsString());
 					}
 					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 							"Relations are successfully updated for '" + cmqBase.getCmqName() + "'", "");

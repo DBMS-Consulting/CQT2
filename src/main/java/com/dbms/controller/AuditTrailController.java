@@ -1,16 +1,21 @@
 package com.dbms.controller;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 
 import org.primefaces.model.StreamedContent;
 
 import com.dbms.entity.AuditableEntity;
 import com.dbms.entity.cqt.CmqBase190;
+import com.dbms.entity.cqt.dtos.AuditTrailDto;
+import com.dbms.service.IAuditTrailService;
+import com.dbms.service.ISmqBaseService;
 
  
 
@@ -29,7 +34,10 @@ public class AuditTrailController implements Serializable {
 	private String date, dictionary, state;
 	private String listName, listCode;
 	private StreamedContent excelFile;
-	private List<AuditableEntity> datas;
+	private List<AuditTrailDto> datas;
+	
+	@ManagedProperty("#{AuditTrailService}")
+	private IAuditTrailService auditTrailService;
 	
 	@PostConstruct
 	public void init() {
@@ -37,6 +45,16 @@ public class AuditTrailController implements Serializable {
 	}
 	
 	public void generateExcel(List<AuditableEntity> list) {
+		
+	}
+	
+	public String reset() {
+		this.datas = new ArrayList<AuditTrailDto>();
+		return "";
+	}
+	
+	public void findAudit() {
+		datas = this.auditTrailService.findByCriterias(listName, Long.valueOf(listCode), Integer.valueOf(dictionary), date);
 		
 	}
 
@@ -80,11 +98,11 @@ public class AuditTrailController implements Serializable {
 		this.state = state;
 	}
 
-	public List<AuditableEntity> getDatas() {
+	public List<AuditTrailDto> getDatas() {
 		return datas;
 	}
 
-	public void setDatas(List<AuditableEntity> datas) {
+	public void setDatas(List<AuditTrailDto> datas) {
 		this.datas = datas;
 	}
 
@@ -94,6 +112,14 @@ public class AuditTrailController implements Serializable {
 
 	public void setExcelFile(StreamedContent excelFile) {
 		this.excelFile = excelFile;
+	}
+
+	public IAuditTrailService getAuditTrailService() {
+		return auditTrailService;
+	}
+
+	public void setAuditTrailService(IAuditTrailService auditTrailService) {
+		this.auditTrailService = auditTrailService;
 	}
 
 	
