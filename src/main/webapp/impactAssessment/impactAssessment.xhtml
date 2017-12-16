@@ -68,10 +68,11 @@
  							
  
  <!-- disabled="#{impactSearchController.filterEnabled}" -->
+ 						<!-- 
  							<p:commandButton value="Filter" actionListener="#" 
 								id="filterBtn" onclick="PF('filter').show()" icon="fa fa-filter" />
 							<p:spacer width="5" />
- 
+                        -->
 
 							<p:commandButton value="Review" id="reviewBtn"
 								disabled="#{!impactSearchController.reviewEnabled}"
@@ -603,7 +604,7 @@
 				</h:panelGrid>
 			</p:dialog>
 			
-			
+			<!-- 
 			<p:dialog widgetVar="filter" modal="true" id="filterDlg"
                       closable="true" header="Filter" resizable="false">
 
@@ -683,6 +684,8 @@
 					</h:panelGrid>
 				</h:panelGrid>
 			</p:dialog>
+			-->
+
 		</h:form>
 
 		<style>
