@@ -27,7 +27,7 @@ public class AuditTrailService implements IAuditTrailService{
 	private static final Logger LOG = LoggerFactory.getLogger(AuditTrailService.class);
 
 	@Override
-	public List<AuditTrailDto> findByCriterias(String listName, Long listCode, int dictionaryVersion,
+	public List<AuditTrailDto> findByCriterias(Long listCode, int dictionaryVersion,
 			String auditTimeStampString) {
 		List<AuditTrailDto> retVal = null;
 		//String auditTimeStampString = new SimpleDateFormat("DD-MON-YYYY:HH24:MI:SS").format(auditTimeStamp);

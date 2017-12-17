@@ -67,4 +67,6 @@ public interface ICmqBase190Service extends ICqtPersistenceService<CmqBase190> {
     boolean checkIfApprovedOnce(Long cmqCode);
 
 	StreamedContent generateExcel(List<CmqBase190> datas, String module, String user);
+	
+	CmqBase190 findByName(String cmqName);
 }

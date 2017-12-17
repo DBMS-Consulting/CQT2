@@ -2330,4 +2330,27 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 	public void setParentChildService(ICmqParentChild200Service parentChildService) {
 		this.parentChildService = parentChildService;
 	}
+
+	@Override
+	public CmqBase190 findByName(String cmqName) {
+		CmqBase190 retVal = null;
+		String queryString = "from CmqBase190 c where c.cmqName = :cmqName";
+		EntityManager entityManager = this.cqtEntityManagerFactory
+				.getEntityManager();
+		try {
+			Query query = entityManager.createQuery(queryString);
+			query.setParameter("cmqName", cmqName);
+			query.setHint("org.hibernate.cacheable", true);
+			retVal = (CmqBase190) query.getSingleResult();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg.append("findByName failed for CMQ_NAME value'").append(cmqName)
+					.append("' ").append("Query used was ->")
+					.append(queryString);
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
 }
