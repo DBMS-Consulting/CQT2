@@ -7,5 +7,6 @@ import com.dbms.entity.cqt.dtos.AuditTrailDto;
 public interface IAuditTrailService {
 	
 	List<AuditTrailDto> findByCriterias(Long listCode, int dictionaryVersion, String auditTimeStamp);
+	List<String> findAuditTimestamps(int dictionaryVersion);
 
 }

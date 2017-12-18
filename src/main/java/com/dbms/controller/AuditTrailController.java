@@ -91,6 +91,10 @@ public class AuditTrailController implements Serializable {
 		datas = this.auditTrailService.findByCriterias(Long.valueOf(listCodeSelected), Integer.valueOf(dictionary), date);
 		return "";
 	}
+	
+	public List<String> findAuditTimestamps(int dictionaryVersion) {
+		return this.auditTrailService.findAuditTimestamps(dictionaryVersion);
+	}
 
 	public String getDate() {
 		return date;

@@ -69,4 +69,6 @@ public interface ICmqBase190Service extends ICqtPersistenceService<CmqBase190> {
 	StreamedContent generateExcel(List<CmqBase190> datas, String module, String user);
 	
 	CmqBase190 findByName(String cmqName);
+	
+	Map<Long,String> findAllCmqsCodeAndName(); 
 }

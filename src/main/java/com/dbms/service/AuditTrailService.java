@@ -1337,7 +1337,7 @@ public class AuditTrailService implements IAuditTrailService{
 				query.setParameter("listCode", listCode);
 			}
 			 
-			query.setFetchSize(400);
+			//query.setFetchSize(400);
  			query.setResultTransformer(Transformers.aliasToBean(AuditTrailDto.class));
 			query.setCacheable(true);
 			retVal = query.list();
@@ -1359,6 +1359,32 @@ public class AuditTrailService implements IAuditTrailService{
 
 	public void setCqtEntityManagerFactory(ICqtEntityManagerFactory cqtEntityManagerFactory) {
 		this.cqtEntityManagerFactory = cqtEntityManagerFactory;
+	}
+
+	@Override
+	public List<String> findAuditTimestamps(int dictionaryVersion) {
+		List<String> retVal = null;
+		String queryString = "select distinct AUDIT_TIMESTAMP from CMQ_BASE_"+dictionaryVersion+"_AUDIT order by AUDIT_TIMESTAMP";
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		Session session = entityManager.unwrap(Session.class);
+		try {
+			SQLQuery query = session.createSQLQuery(queryString);
+			query.addScalar("AUDIT_TIMESTAMP", StandardBasicTypes.STRING);
+			 
+			//query.setFetchSize(400);
+ 			//query.setResultTransformer(Transformers.aliasToBean(String.class));
+			query.setCacheable(true);
+			retVal = query.list();
+		}catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg.append("An error occurred while fetching findAuditTimestamps on AuditTrail ")
+					.append(" Query used was ->")
+					.append(queryString);
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
 	}
 
 }

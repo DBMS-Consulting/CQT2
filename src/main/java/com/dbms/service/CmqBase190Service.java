@@ -2353,4 +2353,30 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		}
 		return retVal;
 	}
+
+	@Override
+	public Map<Long, String> findAllCmqsCodeAndName() {
+		List<CmqBase190> retVal = null;
+		Map<Long,String> cmqCodeNameMap = new HashMap<>();
+		String queryString = "from CmqBase190 c order by upper(c.cmqName) asc ";
+		EntityManager entityManager = this.cqtEntityManagerFactory
+				.getEntityManager();
+		try {
+			Query query = entityManager.createQuery(queryString);
+			query.setHint("org.hibernate.cacheable", true);
+			retVal = query.getResultList();
+			for(CmqBase190 cmq:retVal) {
+				cmqCodeNameMap.put(cmq.getCmqCode(), cmq.getCmqName());
+			}
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg.append("findAllCmqsCodeAndName failed ").append("Query used was ->")
+					.append(queryString);
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return cmqCodeNameMap;
+	
+	}
 }
