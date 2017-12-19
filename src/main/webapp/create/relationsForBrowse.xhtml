@@ -72,7 +72,9 @@
 			selectionMode="checkbox" styleClass="hide-sel-chkbox">
 			
 			<f:attribute name="uiEventSourceName" value="relations" />
-			<p:ajax event="expand" listener="#{createController.relationsModel.onNodeExpand}" />
+			<p:ajax event="expand" listener="#{createController.relationsModel.onNodeExpand}" update="relations-tree-table" />
+			<p:ajax event="collapse" listener="#{createController.relationsModel.onNodeCollapse}" update="relations-tree-table" />
+			
 			<p:columnGroup type="header">
 				<p:row>
 					<p:column rowspan="2" sortBy="#{node.term}"

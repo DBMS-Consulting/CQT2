@@ -10,6 +10,7 @@ import javax.faces.context.FacesContext;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.primefaces.event.NodeCollapseEvent;
 import org.primefaces.event.NodeExpandEvent;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
@@ -212,6 +213,11 @@ public class ListRelationsVM implements IRelationsChangeListener {
 		relationsSearchHelper.setRelationView(isRelationView);
         relationsSearchHelper.setParentListView(isParentListView);
 		relationsSearchHelper.getRelationsNodeHierarchy(null, expandedTreeNode);
+	}
+	
+	public void onNodeCollapse(NodeCollapseEvent event) {
+		TreeNode expandedTreeNode = event.getTreeNode();
+		expandedTreeNode.setExpanded(false);
 	}
 
 	/**
