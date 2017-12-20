@@ -3,6 +3,8 @@ package com.dbms.controller;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -1909,6 +1911,60 @@ public class ImpactSearchController implements Serializable {
 		@Override
 		public List<SmqBaseTarget> load(int first, int pageSize, String sortField, SortOrder sortOrder,
 				Map<String, Object> filters) {
+			/*List<SmqBaseTarget> fetchedSmqBaseList = new ArrayList<SmqBaseTarget>();
+			List<SmqBaseTarget> list = smqBaseTargetService.findImpactedWithPaginated(first, pageSize, null, null,
+					filters);
+			 
+	        //filter
+	        for(SmqBaseTarget smq : list) {
+	            boolean match = true;
+	 
+	            if (filters != null) {
+	                for (Iterator<String> it = filters.keySet().iterator(); it.hasNext();) {
+	                    try {
+	                        String filterProperty = it.next();
+	                        Object filterValue = filters.get(filterProperty);
+	                        String fieldValue = String.valueOf(smq.getClass().getField(filterProperty).get(smq));
+	 
+	                        if(filterValue == null || fieldValue.startsWith(filterValue.toString())) {
+	                            match = true;
+	                    }
+	                    else {
+	                            match = false;
+	                            break;
+	                        }
+	                    } catch(Exception e) {
+	                        match = false;
+	                    }
+	                }
+	            }
+	 
+	            if(match) {
+	            	fetchedSmqBaseList.add(smq);
+	            }
+	        }
+	 
+	        //sort
+	        if(sortField != null) {
+	            Collections.sort(fetchedSmqBaseList, new LazySorter(sortField, sortOrder));
+	        }
+	 
+	        //rowCount
+	        int dataSize = fetchedSmqBaseList.size();
+	        this.setRowCount(dataSize);
+	 
+	        //paginate
+	        if(dataSize > pageSize) {
+	            try {
+	                return fetchedSmqBaseList.subList(first, first + pageSize);
+	            }
+	            catch(IndexOutOfBoundsException e) {
+	                return fetchedSmqBaseList.subList(first, first + (dataSize % pageSize));
+	            }
+	        }
+	        else {
+	            return fetchedSmqBaseList;
+	        }*/
 			List<SmqBaseTarget> fetchedSmqBaseList = null;
 			if (this.manageImpactedList) {
 				LOG.info("Loading more impacted list cmqs starting from " + first + " with page size of " + pageSize);
@@ -1927,10 +1983,9 @@ public class ImpactSearchController implements Serializable {
 				this.smqBaseList.addAll(fetchedSmqBaseList);
 
 			int dataSize = fetchedSmqBaseList.size();
-			// this.setRowCount(dataSize);
-
-			System.out.println("************************  rowCount :: " + this.getRowCount());
-			System.out.println("************************  dataSize :: " + dataSize);
+			 this.setRowCount(dataSize);
+			
+ 			System.out.println("************************  dataSize :: " + dataSize);
 
 			// paginate
 			if (dataSize > pageSize) {
@@ -1962,6 +2017,32 @@ public class ImpactSearchController implements Serializable {
 			return object.getId();
 		}
 
+	}
+	
+	private class LazySorter implements Comparator<SmqBaseTarget> {
+		 
+	    private String sortField;
+	     
+	    private SortOrder sortOrder;
+	     
+	    public LazySorter(String sortField, SortOrder sortOrder) {
+	        this.sortField = sortField;
+	        this.sortOrder = sortOrder;
+	    }
+	 
+	    public int compare(SmqBaseTarget one, SmqBaseTarget two) {
+	        try {
+	            Object value1 = SmqBaseTarget.class.getField(this.sortField).get(one);
+	            Object value2 = SmqBaseTarget.class.getField(this.sortField).get(two);
+	 
+	            int value = ((Comparable)value1).compareTo(value2);
+	             
+	            return SortOrder.ASCENDING.equals(sortOrder) ? value : -1 * value;
+	        }
+	        catch(Exception e) {
+	            throw new RuntimeException();
+	        }
+	    }
 	}
 
 	private class NewPtSearchLazyDataModel extends LazyDataModel<MeddraDictHierarchySearchDto> {
