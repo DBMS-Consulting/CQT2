@@ -1894,13 +1894,13 @@ public class ImpactSearchController implements Serializable {
 				LOG.info("Loading more impacted list smqs starting from " + first + " with page size of " + pageSize);
 				fetchedSmqBaseList = smqBaseTargetService.findImpactedWithPaginated(first, pageSize, null, null,
 						filters);
-				this.setRowCount(smqBaseTargetService.findImpactedCount().intValue());
+				this.setRowCount(smqBaseTargetService.findImpactedCount(filters).intValue());
 			} else {
 				LOG.info("Loading more not impacted list smqs starting from " + first + " with page size of "
 						+ pageSize);
 				fetchedSmqBaseList = smqBaseTargetService.findNotImpactedWithPaginated(first, pageSize, null, null,
 						filters);
-				this.setRowCount(smqBaseTargetService.findNotImpactedCount().intValue());
+				this.setRowCount(smqBaseTargetService.findNotImpactedCount(filters).intValue());
 			}
 
 			if (fetchedSmqBaseList != null)
@@ -1911,81 +1911,24 @@ public class ImpactSearchController implements Serializable {
 		@Override
 		public List<SmqBaseTarget> load(int first, int pageSize, String sortField, SortOrder sortOrder,
 				Map<String, Object> filters) {
-			/*List<SmqBaseTarget> fetchedSmqBaseList = new ArrayList<SmqBaseTarget>();
-			List<SmqBaseTarget> list = smqBaseTargetService.findImpactedWithPaginated(first, pageSize, null, null,
-					filters);
-			 
-	        //filter
-	        for(SmqBaseTarget smq : list) {
-	            boolean match = true;
-	 
-	            if (filters != null) {
-	                for (Iterator<String> it = filters.keySet().iterator(); it.hasNext();) {
-	                    try {
-	                        String filterProperty = it.next();
-	                        Object filterValue = filters.get(filterProperty);
-	                        String fieldValue = String.valueOf(smq.getClass().getField(filterProperty).get(smq));
-	 
-	                        if(filterValue == null || fieldValue.startsWith(filterValue.toString())) {
-	                            match = true;
-	                    }
-	                    else {
-	                            match = false;
-	                            break;
-	                        }
-	                    } catch(Exception e) {
-	                        match = false;
-	                    }
-	                }
-	            }
-	 
-	            if(match) {
-	            	fetchedSmqBaseList.add(smq);
-	            }
-	        }
-	 
-	        //sort
-	        if(sortField != null) {
-	            Collections.sort(fetchedSmqBaseList, new LazySorter(sortField, sortOrder));
-	        }
-	 
-	        //rowCount
-	        int dataSize = fetchedSmqBaseList.size();
-	        this.setRowCount(dataSize);
-	 
-	        //paginate
-	        if(dataSize > pageSize) {
-	            try {
-	                return fetchedSmqBaseList.subList(first, first + pageSize);
-	            }
-	            catch(IndexOutOfBoundsException e) {
-	                return fetchedSmqBaseList.subList(first, first + (dataSize % pageSize));
-	            }
-	        }
-	        else {
-	            return fetchedSmqBaseList;
-	        }*/
+			
 			List<SmqBaseTarget> fetchedSmqBaseList = null;
 			if (this.manageImpactedList) {
 				LOG.info("Loading more impacted list cmqs starting from " + first + " with page size of " + pageSize);
 				fetchedSmqBaseList = smqBaseTargetService.findImpactedWithPaginated(first, pageSize, null, null,
 						filters);
-				this.setRowCount(smqBaseTargetService.findImpactedCount().intValue());
+				this.setRowCount(smqBaseTargetService.findImpactedCount(filters).intValue());
 			} else {
 				LOG.info("Loading more not impacted list cmqs starting from " + first + " with page size of "
 						+ pageSize);
 				fetchedSmqBaseList = smqBaseTargetService.findNotImpactedWithPaginated(first, pageSize, null, null,
 						filters);
-				this.setRowCount(smqBaseTargetService.findNotImpactedCount().intValue());
-			}
-
+				this.setRowCount(smqBaseTargetService.findNotImpactedCount(filters).intValue());
+ 			}
 			if (fetchedSmqBaseList != null)
 				this.smqBaseList.addAll(fetchedSmqBaseList);
 
 			int dataSize = fetchedSmqBaseList.size();
-			 this.setRowCount(dataSize);
-			
- 			System.out.println("************************  dataSize :: " + dataSize);
 
 			// paginate
 			if (dataSize > pageSize) {

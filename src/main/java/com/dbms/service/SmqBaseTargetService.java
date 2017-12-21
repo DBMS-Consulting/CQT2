@@ -648,7 +648,51 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 	 * @see com.dbms.service.ISmqBaseTargetService#findImpactedCount()
 	 */
 	@Override
-	public Long findImpactedCount() {
+	public Long findImpactedCount(Map<String, Object> filters) {
+		Long size = 0L;
+		List<SmqBaseTarget> retVal = null;
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		try {
+			CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+			CriteriaQuery<SmqBaseTarget> cq = cb.createQuery(SmqBaseTarget.class);
+			Root<SmqBaseTarget> smqRoot = cq.from(SmqBaseTarget.class);
+
+			List<Predicate> pred = new ArrayList<Predicate>();
+			
+			pred.add(cb.equal(smqRoot.get("impactType"), CSMQBean.IMPACT_TYPE_IMPACTED));
+			
+			if(filters.containsKey("smqName") && filters.get("smqName") != null) {
+                String f = ((String)filters.get("smqName")).toLowerCase();
+                f = f.contains("%") ? f : ("%" + f + "%");
+				pred.add(cb.like(cb.lower(smqRoot.<String>get("smqName")), f));
+            }
+			
+			if(filters.containsKey("smqLevel") && filters.get("smqLevel") != null)
+				pred.add(cb.equal(smqRoot.get("smqLevel"), filters.get("smqLevel")));
+            
+            if(filters.containsKey("smqCode") && filters.get("smqCode") != null) {
+                String f = ((String)filters.get("smqCode"));
+                f = f.contains("%") ? f : ("%" + f + "%");
+				pred.add(cb.like(smqRoot.get("smqCode").as(String.class), f));
+            }
+			
+			cq.where(cb.and(pred.toArray(new Predicate[0])));
+			cq.orderBy(cb.asc(smqRoot.get("smqName")));
+			
+			TypedQuery<SmqBaseTarget> tq = entityManager.createQuery(cq);
+			
+			retVal = tq.getResultList();
+			if (retVal != null)
+				size = (long) retVal.size();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg.append("An error occurred while fetching paginated impacted SmqBaseTarget.");
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return size;
+		/*
 		Long retVal = null;
 		StringBuilder sb = new StringBuilder();
 		sb.append("select count(*) from SmqBaseTarget c where c.impactType = 'IMPACTED'");
@@ -667,7 +711,7 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 		} finally {
 			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
 		}
-		return retVal;
+		return retVal;*/
 	}
 	
 	/* (non-Javadoc)
@@ -728,7 +772,51 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 	 * @see com.dbms.service.ISmqBaseTargetService#findNotImpactedCount()
 	 */
 	@Override
-	public Long findNotImpactedCount() {
+	public Long findNotImpactedCount(Map<String, Object> filters) {
+		Long size = 0L;
+		List<SmqBaseTarget> retVal = null;
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		try {
+			CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+			CriteriaQuery<SmqBaseTarget> cq = cb.createQuery(SmqBaseTarget.class);
+			Root<SmqBaseTarget> smqRoot = cq.from(SmqBaseTarget.class);
+			List<Predicate> pred = new ArrayList<Predicate>();
+			
+			pred.add(cb.equal(smqRoot.get("impactType"), CSMQBean.IMPACT_TYPE_NONIMPACTED));
+			
+            if(filters.containsKey("smqName") && filters.get("smqName") != null) {
+                String f = ((String)filters.get("smqName")).toLowerCase();
+                f = f.contains("%") ? f : ("%" + f + "%");
+				pred.add(cb.like(cb.lower(smqRoot.<String>get("smqName")), f));
+            }
+			
+			if(filters.containsKey("smqLevel") && filters.get("smqLevel") != null)
+				pred.add(cb.equal(smqRoot.get("smqLevel"), filters.get("smqLevel")));
+            
+            if(filters.containsKey("smqCode") && filters.get("smqCode") != null) {
+                String f = ((String)filters.get("smqCode"));
+                f = f.contains("%") ? f : ("%" + f + "%");
+				pred.add(cb.like(smqRoot.get("smqCode").as(String.class), f));
+            }
+			
+			cq.where(cb.and(pred.toArray(new Predicate[0])));
+			
+			cq.orderBy(cb.asc(smqRoot.get("smqName")));
+			TypedQuery<SmqBaseTarget> tq = entityManager.createQuery(cq);
+
+			retVal = tq.getResultList();
+			if (retVal != null)
+				size = (long) retVal.size();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg.append("An error occurred while fetching paginated impacted SmqBaseTarget.");
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return size;
+	
+		/*
 		Long retVal = null;
 		StringBuilder sb = new StringBuilder();
 		sb.append("select count(*) from SmqBaseTarget c where c.impactType = 'NON-IMPACTED'");
@@ -747,7 +835,7 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 		} finally {
 			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
 		}
-		return retVal;
+		return retVal;*/
 	}
 
 	@Override

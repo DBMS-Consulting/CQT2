@@ -132,8 +132,7 @@
 					<p:column rowspan="2" sortBy="#{node.term}"
 						headerText="#{createController.selectedData.cmqName}" />
 					<p:column colspan="#{createController.relationsModel.displayScopeCatWeight eq 'false' ? 3 : 6}" headerText="Hierarchy Details" style="width:50%"/>
-					<!-- Notes -->
-					<p:column headerText="Notes" rowspan="2" />
+					 
 				</p:row>
 
 				<p:row>
@@ -223,8 +222,6 @@
 						icon="ui-icon-alert" />
 				</p:commandButton>
 			</p:column>
-			<!-- Notes -->							
-			<p:column styleClass="wrap" ><h:outputText value="#{dummyValue.value}" /></p:column>
 		</p:treeTable>
 		
 	</h:panelGrid>
