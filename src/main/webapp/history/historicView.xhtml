@@ -1,273 +1,291 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:c="http://java.sun.com/jsp/jstl/core"
-	xmlns:p="http://primefaces.org/ui" template="../CSMQ.xhtml">
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:p="http://primefaces.org/ui" template="../CSMQ.xhtml">
 
-	<ui:define name="page-content">
-		<h:form id="Audit">
+    <ui:define name="page-content">
+        <h:form id="HistoricalView">
 
+            <p:growl id="m1" life="#{appCSMQBean.defaultGrowlLife}" sticky="true"
+                showDetail="#{appCSMQBean.degugMode}" />
 
-			<p:growl id="m1" life="#{appCSMQBean.defaultGrowlLife}" sticky="true"
-				showDetail="#{appCSMQBean.degugMode}" />
+            <h:panelGrid columns="2" style="width: 100% !important">
+                <p:breadCrumb styleClass="breadcrumb">
+                    <p:menuitem value="Home" url="/index.xhtml" />
+                    <p:menuitem value="Historic View" />
+                </p:breadCrumb>
+            </h:panelGrid>
 
-			<h:panelGrid columns="2" style="width: 100% !important">
-				<p:breadCrumb styleClass="breadcrumb">
-					<p:menuitem value="Home" url="/index.xhtml" />
-					<p:menuitem value="Historic View" />
-				</p:breadCrumb>
-			</h:panelGrid>
+            <p:wizard widgetVar="wizard" id="wizardId"
+                flowListener="#{historicalViewController.onWizardFlowProcess}"
+                binding="#{historicalViewController.historicalViewWizard}" showNavBar="false">
 
+                <!-- Search -->
+                <p:tab id="searchBrowse" title="Search">
+                    <p:panel header="Search" id="ph1" style=" padding:5px;">
+                        <h:panelGrid columns="1" style="margin-left: 10%">
+                            <h:panelGrid columns="12" columnClasses="label, value">
+                                <p:outputLabel value="List Name" styleClass="label-right" />
+                                <p:inputText value="#{historicalViewController.listName}" />
+                                <p:spacer width="50" />
 
+                                <p:outputLabel value="List Code" styleClass="label-right" />
+                                <p:inputText value="#{historicalViewController.listCode}" />
+                                <p:spacer width="50" />
 
-			<p:wizard widgetVar="wizard" id="wizardId"
-				flowListener="#{createController.onBrowseWizardFlowProcess}"
-				binding="#{createController.browseWizard}" showNavBar="false">
+                                <p:outputLabel value="Dictionary Version"
+                                    styleClass="label-right" />
+                                <p:inputText id="dict"
+                                    value="#{historicalViewController.dictionaryVersion}" />
+                                <p:spacer width="50" />
 
-				<!-- Search -->
-				<p:tab id="searchBrowse" title="Search">
-					<p:panel header="Search" id="ph1" style=" padding:5px;">
-						<h:panelGrid columns="1" style="margin-left: 10%">
-							<h:panelGrid columns="12" columnClasses="label, value">
-								<p:outputLabel value="List Name" styleClass="label-right" />
-								<p:inputText value="#{auditTrailController.listName}" />
-								<p:spacer width="50" />
+                                <p:outputLabel value="Audit Timestamp" styleClass="label-right" />
+                                <p:inputText id="date" value="#{historicalViewController.auditTimestamp}"
+                                    maxlength="20" />
+                                <p:spacer width="5" />
+                            </h:panelGrid>
 
-								<p:outputLabel value="List Code" styleClass="label-right" />
-								<p:inputText value="#{auditTrailController.listCode}" />
-								<p:spacer width="50" />
+                            <h:panelGrid columns="2" id="searchPanel" styleClass="row"
+                                style="margin-left: 40%">
+                                <p:commandButton value="Search"
+                                    action="#{historicalViewController.search}"
+                                    update="@form:result" />
+                                <p:commandButton action="#{historicalViewController.reset}"
+                                    value="Reset" process="@this" update="@form:result" />
+                            </h:panelGrid>
+                        </h:panelGrid>
 
-								<!-- <p:outputLabel value="State" styleClass="label-right" />
-					<p:selectOneMenu value="#{auditTrailController.state}" id="state">
-						<f:selectItem itemValue="" itemLabel="All" />
-						<f:selectItems value="#{configMB.cmqBaseListStates}" var="wk"
-							itemLabel="#{wk[1]}" itemValue="#{wk[0]}" />
-					</p:selectOneMenu>
-					<p:spacer width="5" /> -->
-								<p:outputLabel value="Dictionary Version"
-									styleClass="label-right" />
-								<p:inputText id="dict"
-									value="#{auditTrailController.dictionary}" />
-								<p:spacer width="50" />
+                        <p:spacer height="10" />
 
-								<p:outputLabel value="Audit Timestamp" styleClass="label-right" />
-								<p:inputText id="date" value="#{auditTrailController.date}" />
-								<p:spacer width="5" />
-							</h:panelGrid>
+                        <p:outputPanel>
+                            <p:dataTable var="value" value="#{historicalViewController.datas}"
+                                id="result" rows="10" paginator="true"
+                                paginatorPosition="bottom"
+                                paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                rowsPerPageTemplate="5,10,25" resizableColumns="true">
 
-							<h:panelGrid columns="2" id="searchPanel" styleClass="row"
-								style="margin-left: 40%">
+                                <p:column headerText="List Name" width="180"
+                                    sortBy="#{value.listName}">
+                                    <h:outputText value="#{value.listName}" />
+                                </p:column>
+                                <!-- <p:column headerText="Extension" width="50"
+                                    sortBy="#{RefCodeListService.interpretInternalCodeToValue('LIST_EXTENSION_TYPES', value.cmqTypeCd)}">
+                                    <h:outputText
+                                        value="#{RefCodeListService.interpretInternalCodeToValue('LIST_EXTENSION_TYPES', value.cmqTypeCd)}" />
+                                </p:column> -->
+                                <p:column headerText="Extension" width="50"
+                                    sortBy="value.listType">
+                                    <h:outputText
+                                        value="#{value.listType}" />
+                                </p:column>
+                                <p:column headerText="Level" width="25">
+                                    <h:outputText value="#{value.listLevel}" />
+                                </p:column>
+                                <p:column headerText="Status" width="60">
+                                    <h:outputText rendered="#{value.status eq 'P'}"
+                                        value="PENDING" />
+                                    <h:outputText rendered="#{value.status eq 'I'}"
+                                        value="INACTIVE" />
+                                    <h:outputText rendered="#{value.status eq 'A'}"
+                                        value="ACTIVE" />
+                                </p:column>
+                                <p:column headerText="State" width="60">
+                                    <h:outputText style="text-transform: uppercase;"
+                                        value="#{value.state}" />
+                                </p:column>
+                                <!-- <p:column headerText="Code" width="60" sortBy="#{value.cmqCode}">
+                                    <h:commandLink
+                                        action="#{createController.loadCmqBaseByCode(value.cmqCode)}"
+                                        value="#{value.cmqCode}" onclick="PF('searchTooltip').hide()"
+                                        title="#{createController.isImpactedByMeddraVersioning(value) ? 'This List is impacted by MedDRA versioning' : ''}">
+                                        <p:ajax
+                                            update="@form:wizardId @form:relations @form:wizardNavbar" />
+                                    </h:commandLink>
+                                </p:column> -->
+                                <p:column headerText="Code" width="60" sortBy="#{value.cmqCode}">
+                                    <h:commandLink
+                                        action="#{historicalViewController.pickSelected(value.cmqCode)}"
+                                        value="#{value.cmqCode}">
+                                        <!-- <p:ajax
+                                            update="@form:wizardId @form:relations @form:wizardNavbar" /> 
+                                            -->
+                                        <p:ajax
+                                            update="@form:wizardId @form:details @form:relations" /> 
+                                    </h:commandLink>
+                                </p:column>
+                                <!-- <p:column headerText="Drug Program" width="70">
+                                    <h:outputText
+                                        value="#{RefCodeListService.interpretInternalCodeToValue('PROGRAM', value.cmqProgramCd)}" />
+                                </p:column> -->
+                                <p:column headerText="Drug Program" width="70">
+                                    <h:outputText
+                                        value="#{value.drugProgram}" />
+                                </p:column>
+                                <!-- <p:column headerText="Protocol" width="60">
+                                    <h:outputText
+                                        value="#{RefCodeListService.interpretInternalCodeToValue('PROTOCOL', value.cmqProtocolCd)}" />
+                                </p:column> -->
+                                <p:column headerText="Protocol" width="60">
+                                    <h:outputText
+                                        value="#{value.protocolNumber}" />
+                                </p:column>
+                                <!-- <p:column headerText="Product" width="140">
+                                    <h:outputText
+                                        value="#{RefCodeListService.convertProductCodesToValuesLabel(value.productsList)}" />
+                                </p:column> -->
+                                 <p:column headerText="Product" width="140">
+                                    <h:outputText
+                                        value="#{value.product}" />
+                                </p:column>
+                                <p:column headerText="Group" width="60">
+                                    <h:outputText value="#{value.medicalConcept}" />
+                                </p:column>
+                                <p:column headerText="Created By" width="100">
+                                    <h:outputText value="#{value.createdBy}" />
+                                </p:column>
+                            </p:dataTable>
+                            <!-- <h:commandLink
+                                actionListener="#{auditTrailController.generateExcel(auditTrailController.datas)}">
+                                <p:fileDownload value="#{auditTrailController.excelFile}" />
+                                <img title="Export list"
+                                    src="#{request.contextPath}/image/excel_small.png"
+                                    style="margin-top: 20px !important; float: right" width="24" />
+                            </h:commandLink> -->
+                        </p:outputPanel>
+                    </p:panel>
+                </p:tab>
 
+                <p:tab id="details" title="Details">
+                    <p:panel header="Details">
+                        <h:panelGrid columns="4" cellpadding="20"
+                            columnClasses="text-top,vtext-top,text-top,text-top">
 
+                            <h:panelGrid columns="2" columnClasses="label-cell, value-cell">
+                                <p:outputLabel styleClass="label-right" value="Extension:" />
+                                <h:panelGrid>
+                                    <h:outputText
+                                        value="#{historicalViewController.selectedHistoricalViewDTO.listType}"
+                                        rendered="true" />
+                                </h:panelGrid>
 
-								<p:commandButton value="Search"
-									action="#{searchController.search}"
-									actionListener="#{createController.clearCmqSelection}"
-									update="@form:result" />
-								<p:commandButton action="#{searchController.reset}"
-									value="Reset" process="@this" update="@form:result" />
-							</h:panelGrid>
-						</h:panelGrid>
+                                <p:outputLabel styleClass="label-right" value="Name:" />
+                                <h:outputText value="#{historicalViewController.selectedHistoricalViewDTO.listName}"
+                                    rendered="true" />
 
-						<p:spacer height="10" />
+                                <p:outputLabel styleClass="label-right" value="Drug Program:" />
+                                <h:outputText
+                                    value="#{historicalViewController.selectedHistoricalViewDTO.drugProgram}"
+                                    rendered="true" />
 
-						<p:outputPanel>
-							<p:dataTable var="value" value="#{searchController.datas}"
-								id="result" rows="10" paginator="true"
-								paginatorPosition="bottom"
-								paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-								rowsPerPageTemplate="5,10,25" resizableColumns="true">
+                                <p:outputLabel styleClass="label-right" value="Protocol:" />
+                                <h:outputText
+                                    value="#{historicalViewController.selectedHistoricalViewDTO.protocolNumber}"
+                                    rendered="true" />
 
-								<p:column headerText="List Name" width="180"
-									sortBy="#{value.cmqName}">
-									<h:outputText value="#{value.cmqName}" />
-								</p:column>
-								<p:column headerText="Extension" width="50"
-									sortBy="#{RefCodeListService.interpretInternalCodeToValue('LIST_EXTENSION_TYPES', value.cmqTypeCd)}">
-									<h:outputText
-										value="#{RefCodeListService.interpretInternalCodeToValue('LIST_EXTENSION_TYPES', value.cmqTypeCd)}" />
-								</p:column>
-								<p:column headerText="Level" width="25">
-									<h:outputText value="#{value.cmqLevel}" />
-								</p:column>
-								<p:column headerText="Status" width="60">
-									<h:outputText rendered="#{value.cmqStatus eq 'P'}"
-										value="PENDING" />
-									<h:outputText rendered="#{value.cmqStatus eq 'I'}"
-										value="INACTIVE" />
-									<h:outputText rendered="#{value.cmqStatus eq 'A'}"
-										value="ACTIVE" />
-								</p:column>
-								<p:column headerText="State" width="60">
-									<h:outputText style="text-transform: uppercase;"
-										value="#{value.cmqState}" />
-								</p:column>
-								<p:column headerText="Code" width="60" sortBy="#{value.cmqCode}">
-									<h:commandLink
-										action="#{createController.loadCmqBaseByCode(value.cmqCode)}"
-										value="#{value.cmqCode}" onclick="PF('searchTooltip').hide()"
-										title="#{createController.isImpactedByMeddraVersioning(value) ? 'This List is impacted by MedDRA versioning' : ''}">
-										<p:ajax
-											update="@form:wizardId @form:relations @form:wizardNavbar" />
-									</h:commandLink>
-								</p:column>
-								<p:column headerText="Drug Program" width="70">
-									<h:outputText
-										value="#{RefCodeListService.interpretInternalCodeToValue('PROGRAM', value.cmqProgramCd)}" />
-								</p:column>
-								<p:column headerText="Protocol" width="60">
-									<h:outputText
-										value="#{RefCodeListService.interpretInternalCodeToValue('PROTOCOL', value.cmqProtocolCd)}" />
-								</p:column>
-								<p:column headerText="Product" width="140">
-									<h:outputText
-										value="#{RefCodeListService.convertProductCodesToValuesLabel(value.productsList)}" />
-								</p:column>
-								<p:column headerText="Group" width="60">
-									<h:outputText value="#{value.cmqGroup}" />
-								</p:column>
-								<p:column headerText="Created By" width="100">
-									<h:outputText value="#{value.createdByLabel}" />
-								</p:column>
-							</p:dataTable>
-							<h:commandLink
-								actionListener="#{auditTrailController.generateExcel(auditTrailController.datas)}">
-								<p:fileDownload value="#{auditTrailController.excelFile}" />
-								<img title="Export list"
-									src="#{request.contextPath}/image/excel_small.png"
-									style="margin-top: 20px !important; float: right" width="24" />
-							</h:commandLink>
-						</p:outputPanel>
-					</p:panel>
-				</p:tab>
+                                <p:outputLabel styleClass="label-right" value="Product:" />
+                                <h:outputText
+                                    value="#{historicalViewController.selectedHistoricalViewDTO.product}"
+                                    rendered="true" />
 
-				<p:tab id="details" title="Details">
-					<p:panel header="Details">
-						<h:panelGrid columns="4" cellpadding="20"
-							columnClasses="text-top,vtext-top,text-top,text-top">
+                            </h:panelGrid>
 
-							<h:panelGrid columns="2" columnClasses="label-cell, value-cell">
-								<p:outputLabel styleClass="label-right" value="Extension:" />
-								<h:panelGrid>
-									<h:outputText
-										value="#{createController.detailsFormModel.extensionLabel}"
-										rendered="true" />
-								</h:panelGrid>
+                            <h:panelGrid columns="2" columnClasses="label-cell, value-cell">
+                                <p:outputLabel styleClass="label-right" value="Level:" />
+                                <h:outputText value="#{historicalViewController.selectedHistoricalViewDTO.listLevel}" />
 
-								<p:outputLabel styleClass="label-right" value="Name:" />
-								<h:outputText value="#{createController.detailsFormModel.name}"
-									rendered="true" />
+                                <p:outputLabel styleClass="label-right" value="Code:" />
+                                <h:outputText value="#{historicalViewController.selectedHistoricalViewDTO.cmqCode}" />
 
-								<p:outputLabel styleClass="label-right" value="Drug Program:" />
-								<h:outputText
-									value="#{createController.detailsFormModel.drugProgramLabel}"
-									rendered="true" />
+                                <p:outputLabel styleClass="label-right" value="Algorithm:" />
+                                <h:outputText
+                                    value="#" />
 
-								<p:outputLabel styleClass="label-right" value="Protocol:" />
-								<h:outputText
-									value="#{createController.detailsFormModel.protocolLabel}"
-									rendered="true" />
+                                <p:outputLabel styleClass="label-right" value="Status:" />
+                                <h:outputText
+                                    value="#{historicalViewController.selectedHistoricalViewDTO.status}"
+                                    rendered="true" />
+                                <p:spacer />
 
-								<p:outputLabel styleClass="label-right" value="Product:" />
-								<h:outputText
-									value="#{createController.detailsFormModel.productsLabel}"
-									rendered="true" />
+                                <p:spacer />
+                                <p:spacer />
+                            </h:panelGrid>
 
-							</h:panelGrid>
+                            <h:panelGrid columns="2" columnClasses="label-cell, value-cell">
 
-							<h:panelGrid columns="2" columnClasses="label-cell, value-cell">
-								<p:outputLabel styleClass="label-right" value="Level:" />
-								<h:outputText value="#{createController.selectedData.cmqLevel}" />
+                                <p:outputLabel styleClass="label-right" value="State:" />
+                                <h:outputText value="#{historicalViewController.selectedHistoricalViewDTO.state}" />
 
-								<p:outputLabel styleClass="label-right" value="Code:" />
-								<h:outputText value="#{createController.selectedData.cmqCode}" />
+                                <p:outputLabel styleClass="label-right" value="Group:" />
+                                <h:outputText value="#{historicalViewController.selectedHistoricalViewDTO.medicalConcept}" />
 
-								<p:outputLabel styleClass="label-right" value="Algorithm:" />
-								<h:outputText
-									value="#{createController.selectedData.cmqAlgorithm}" />
+                                <p:outputLabel styleClass="label-right" value="Designee:" />
+                                <h:outputText
+                                    value="#{historicalViewController.selectedHistoricalViewDTO.designee}" />
 
-								<p:outputLabel styleClass="label-right" value="Status:" />
-								<h:outputText
-									value="#{createController.detailsFormModel.statusLabel}"
-									rendered="true" />
-								<p:spacer />
+                                <p:outputLabel styleClass="label-right" value="Designee 2:" />
+                                <h:outputText
+                                    value="#{historicalViewController.selectedHistoricalViewDTO.designee2}" />
 
-								<p:spacer />
-								<p:spacer />
-							</h:panelGrid>
-
-							<h:panelGrid columns="2" columnClasses="label-cell, value-cell">
-
-								<p:outputLabel styleClass="label-right" value="State:" />
-								<h:outputText value="#{createController.selectedData.cmqState}" />
-
-								<p:outputLabel styleClass="label-right" value="Group:" />
-								<h:outputText value="#{createController.selectedData.cmqGroup}" />
-
-								<p:outputLabel styleClass="label-right" value="Designee:" />
-								<h:outputText
-									value="#{createController.detailsFormModel.getFullnameFromUsername(createController.selectedData.cmqDesignee)}" />
-
-								<p:outputLabel styleClass="label-right" value="Designee 2:" />
-								<h:outputText
-									value="#{createController.detailsFormModel.getFullnameFromUsername(createController.selectedData.cmqDesignee2)}" />
-
-								<p:outputLabel styleClass="label-right" value="Designee 3:" />
-								<h:outputText
-									value="#{createController.detailsFormModel.getFullnameFromUsername(createController.selectedData.cmqDesignee3)}" />
-							</h:panelGrid>
-
-
-							<h:panelGrid columns="2" columnClasses="label-cell, value-cell">
-
-								<p:outputLabel styleClass="label-right" value="Creation Date:" />
-								<h:outputText
-									value="#{createController.selectedData.creationDate}">
-									<f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
-								</h:outputText>
-
-								<p:outputLabel styleClass="label-right" value="Created By: " />
-								<h:outputText
-									value="#{createController.detailsFormModel.createdBy}" />
-
-								<p:outputLabel styleClass="label-right"
-									value="Last Activation Date:" />
-								<h:outputText
-									value="#{createController.selectedData.activationDate}">
-
-									<f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
-								</h:outputText>
-
-								<p:outputLabel styleClass="label-right"
-									value="Last Activation By: " />
-								<h:outputText
-									value="#{createController.selectedData.activatedBy}" />
-
-								<p:outputLabel value="Dictionary version: "
-									styleClass="label-right" />
-								<h:outputText value="#{searchController.dictionaryVersion}" />
-							</h:panelGrid>
-						</h:panelGrid>
-						
-					</p:panel>
-				</p:tab>
-
-				<!-- RELATIONS -->
-				<p:tab id="relations" title="Relations">
-					<p:panel header="Relations">
-						<!-- <ui:include src="relationsForBrowse.xhtml" /> -->
-					</p:panel>
-				</p:tab>
-			</p:wizard>
+                                <p:outputLabel styleClass="label-right" value="Designee 3:" />
+                                <h:outputText
+                                    value="#{historicalViewController.selectedHistoricalViewDTO.designee3}" />
+                            </h:panelGrid>
 
 
+                            <h:panelGrid columns="2" columnClasses="label-cell, value-cell">
 
+                                <p:outputLabel styleClass="label-right" value="Creation Date:" />
+                                <h:outputText
+                                    value="#{historicalViewController.selectedHistoricalViewDTO.creationDate}">
+                                    <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
+                                </h:outputText>
 
+                                <p:outputLabel styleClass="label-right" value="Created By: " />
+                                <h:outputText
+                                    value="#{historicalViewController.selectedHistoricalViewDTO.createdBy}" />
 
+                                <p:outputLabel styleClass="label-right"
+                                    value="Last Activation Date:" />
+                                <h:outputText
+                                    value="#{historicalViewController.selectedHistoricalViewDTO.lastActivationDate}">
+                                    <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
+                                </h:outputText>
 
+                                <p:outputLabel styleClass="label-right"
+                                    value="Last Activation By: " />
+                                <h:outputText
+                                    value="#" />
 
-		</h:form>
-	</ui:define>
+                                <p:outputLabel value="Dictionary version: "
+                                    styleClass="label-right" />
+                                <h:outputText value="#{historicalViewController.selectedHistoricalViewDTO.dictionaryVersion}" />
+                            </h:panelGrid>
+                        </h:panelGrid>
+                        <p:commandButton value="Audit" action="#" disabled="true"
+                            onclick="PF('audit-dialog').show()" />
+                    </p:panel>
+                </p:tab>
+
+                <!-- RELATIONS -->
+                <p:tab id="relations" title="Relations">
+                    <p:panel header="Relations">
+                        <ui:include src="relationsForHistoricalView.xhtml" />
+                    </p:panel>
+                </p:tab>
+            </p:wizard>
+
+            <h:panelGroup id="wizardNavbar" layout="block" styleClass="ui-wizard-navbar ui-helper-clearfix">
+                <p:commandButton type="button" value="Back" onclick="PF('wizard').back();"
+                        icon="ui-icon-arrowthick-1-w" iconPos="left"
+                        styleClass="ui-wizard-nav-back update-list-wiz-back" rendered="#{historicalViewController.wizardNavbarBackShown}" />
+                <p:commandButton type="button" value="Next" onclick="PF('wizard').next();"
+                        icon="ui-icon-arrowthick-1-e" iconPos="right"
+                        styleClass="ui-wizard-nav-next" rendered="#{historicalViewController.wizardNavbarNextShown}" /> 
+            </h:panelGroup>
+
+        </h:form>
+    </ui:define>
 </ui:composition>

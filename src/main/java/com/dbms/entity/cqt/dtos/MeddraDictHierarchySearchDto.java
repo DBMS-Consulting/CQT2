@@ -13,38 +13,38 @@ public class MeddraDictHierarchySearchDto implements IEntity {
 	private String code;
 
 	private String primaryPathFlag;
-	
+
 	private String newPt;
 	private String promotedPt;
 	private String newLlt;
 	private String demotedLlt;
 	private String promotedLlt;
-	
+
 	private String primarySocChange;
 	private String demotedPt;
 	private String movedLlt;
 	private String lltCurrencyChange;
 	private String ptNameChanged;
-	
+
 	private String lltNameChanged;
 	private String newHlt;
 	private String newHlgt;
 	private String movedPt;
 	private String movedHlt;
-	
+
 	private String movedHlgt;
 	private String hlgtNameChanged;
 	private String hltNameChanged;
 	private String socNameChanged;
 	private String mergedHlt;
 	private String mergedHlgt;
-	
+
 	private String lltCode;
 	private String ptCode;
 	private String hltCode;
 	private String hlgtCode;
 	private String socCode;
-	
+
 	private String newSoc;
 	private String newSuccessorPt;
 
@@ -66,20 +66,26 @@ public class MeddraDictHierarchySearchDto implements IEntity {
 
 	public String getCode() {
 		if (code == null) {
-			if (lltCode != null) return lltCode;
-			if (ptCode != null) return ptCode;
-			if (hltCode != null) return hltCode;
-			if (hlgtCode != null) return hlgtCode;
-			if (socCode != null) return socCode;
-			if (ptCode != null) return ptCode;
-			if (ptCode != null) return ptCode;
-			if (ptCode != null) return ptCode;
+			if (lltCode != null)
+				return lltCode;
+			if (ptCode != null)
+				return ptCode;
+			if (hltCode != null)
+				return hltCode;
+			if (hlgtCode != null)
+				return hlgtCode;
+			if (socCode != null)
+				return socCode;
+			if (ptCode != null)
+				return ptCode;
+			if (ptCode != null)
+				return ptCode;
+			if (ptCode != null)
+				return ptCode;
 		}
-			
+
 		return code;
 	}
-	
-	
 
 	public void setCode(String code) {
 		this.code = code;
@@ -325,5 +331,4 @@ public class MeddraDictHierarchySearchDto implements IEntity {
 		this.newSuccessorPt = newSuccessorPt;
 	}
 
-	
 }
