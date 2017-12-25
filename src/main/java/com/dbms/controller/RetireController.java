@@ -20,7 +20,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.dbms.entity.cqt.CmqBase190;
-import com.dbms.entity.cqt.CmqBaseTarget;
 import com.dbms.service.AuthenticationService;
 import com.dbms.service.ICmqBase190Service;
 import com.dbms.service.ICmqBaseTargetService;
@@ -84,8 +83,8 @@ public class RetireController implements Serializable {
 	 */
 	public void pickList() {
 		childNotSelected = true;
-		int cpt = 0;
-		int cptChild = 0;
+		//int cpt = 0;
+		//int cptChild = 0;
 		List<CmqBase190> targetCmqsSelected = new ArrayList<CmqBase190>(this.retireDualListModel.getTarget());
 		if(targetCmqsSelected.isEmpty()) {
 			FacesContext.getCurrentInstance().addMessage(null, 
@@ -93,7 +92,7 @@ public class RetireController implements Serializable {
                             "Please select at least 1 list to retire.", ""));
 			return;
 		} 
-		List<Long> targetCmqCodes = new ArrayList<>();
+		/*List<Long> targetCmqCodes = new ArrayList<>();
 		LOG.info("\n\n **********************   targetCmqsSelected size " + targetCmqsSelected.size());
 		
 		for (CmqBase190 cmqBase : targetCmqsSelected)
@@ -120,7 +119,7 @@ public class RetireController implements Serializable {
 		if (childCmqsOftargets != null && !childCmqsOftargets.isEmpty() && childNotSelected) {
 			this.confirmMessage = "Not all associate child lists are selected for inactivation.";
 			RequestContext.getCurrentInstance().execute("PF('confirmRetireOK').show();");
-		}
+		}*/
 
 		else {
 			this.confirmMessage = "Are you sure you want to retire this list?";
@@ -133,7 +132,7 @@ public class RetireController implements Serializable {
 		String lastModifiedByString = this.authService.getLastModifiedByUserAsString();
 
 		List<Long> targetCmqCodes = new ArrayList<>();
-		List<CmqBase190> targetCmqParents = new ArrayList<CmqBase190>();
+		//List<CmqBase190> targetCmqParents = new ArrayList<CmqBase190>();
 		List<CmqBase190> targetCmqsSelected = new ArrayList<CmqBase190>(this.retireDualListModel.getTarget());
 		if((targetCmqsSelected == null) || (targetCmqsSelected.size() == 0)) {
 			FacesContext.getCurrentInstance().addMessage(null, 
@@ -149,7 +148,7 @@ public class RetireController implements Serializable {
 			//If a parent is retire, then child must be retire 
 			//(If the child is status in active then show a error 
 			//"The list being retire has an associated active child list hence cannot be retire.”
-			List<CmqBase190> childCmqsOftargets = this.cmqBaseService.findChildCmqsByCodes(targetCmqCodes);
+			/*List<CmqBase190> childCmqsOftargets = this.cmqBaseService.findChildCmqsByCodes(targetCmqCodes);
 			if (childNotSelected && childCmqsOftargets != null && childCmqsOftargets.size() > 0)
 				return "";
 			if((null != childCmqsOftargets) && (childCmqsOftargets.size() > 0)) {
@@ -160,7 +159,7 @@ public class RetireController implements Serializable {
 						targetCmqsSelected.add(childCmq);//we need to retire these if selected
 					}
 				}
- 			}
+ 			}*/
 			
 			//continue
  			for (CmqBase190 cmqBase190 : targetCmqsSelected) {
@@ -178,8 +177,8 @@ public class RetireController implements Serializable {
 				init();
 				String formatMsg = "The List(s) is retired successfully";
 				
-				if (targetCmqParents != null && !targetCmqParents.isEmpty())
- 					formatMsg = "The List and retired parent list are retired successfully";
+				/*if (targetCmqParents != null && !targetCmqParents.isEmpty())
+ 					formatMsg = "The List and retired parent list are retired successfully";*/
 					
 				//show messages on screen
 				FacesContext.getCurrentInstance().addMessage(null, 

@@ -2185,7 +2185,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 	@Override
 	public List<CmqBaseTarget> findApprovedCmqs() {
 		List<CmqBaseTarget> retVal = null;
-		String queryString = "from CmqBaseTarget c where upper(c.cmqState) = upper('Approved IA') and upper(c.cmqStatus) = upper('P') order by upper(c.cmqName) asc ";
+		String queryString = "from CmqBaseTarget c where upper(c.cmqState) = upper('Approved IA') order by upper(c.cmqName) asc ";
 		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
 		try {
 			Query query = entityManager.createQuery(queryString);
@@ -2321,5 +2321,30 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 
 	public void setRefCodeListService(IRefCodeListService refCodeListService) {
 		this.refCodeListService = refCodeListService;
+	}
+
+	@Override
+	public List<CmqBaseTarget> findByCodes(List<Long> cmqCodes) {
+		List<CmqBaseTarget> retVal = null;
+		
+		if(CollectionUtils.isEmpty(cmqCodes))
+            return null;
+        
+		String queryString = "from CmqBaseTarget c where c.cmqCode in (:cmqCodes) ";
+		EntityManager entityManager = this.cqtEntityManagerFactory
+				.getEntityManager();
+		try {
+			Query query = entityManager.createQuery(queryString);
+			query.setParameter("cmqCodes", cmqCodes);
+			retVal = query.getResultList();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg.append("findByCodes failed ")
+					.append("Query used was ->").append(queryString);
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
 	}
 }

@@ -516,7 +516,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 
 	public List<CmqBase190> findApprovedCmqs() {
 		List<CmqBase190> retVal = null;
-		String queryString = "from CmqBase190 c where upper(c.cmqState) = upper('Approved') and c.cmqStatus = 'P' order by upper(c.cmqName) asc ";
+		String queryString = "from CmqBase190 c where upper(c.cmqState) = upper('Approved') order by upper(c.cmqName) asc ";
 		EntityManager entityManager = this.cqtEntityManagerFactory
 				.getEntityManager();
 		try {
@@ -592,6 +592,14 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		}
 		return childCMQCodeList;
 	}
+	
+	private List<Long> getParentCMQCodeList(List<CmqParentChild200> parentList) {
+		List<Long> parentCMQCodeList = new ArrayList<>();
+		for(CmqParentChild200 parent : parentList) {
+			parentCMQCodeList.add(parent.getCmqParentCode());
+		}
+		return parentCMQCodeList;
+	}
 
 	public List<CmqBase190> findChildCmqsByCodes(List<Long> codes) {
 		List<CmqBase190> retVal = null;
@@ -622,22 +630,28 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 
 	public List<CmqBase190> findParentCmqsByCodes(List<Long> codes) {
 		List<CmqBase190> retVal = null;
-		String queryString = "from CmqBase190 c where c.cmqCode in (:codeList) ";
-		EntityManager entityManager = this.cqtEntityManagerFactory
-				.getEntityManager();
-		try {
-			Query query = entityManager.createQuery(queryString);
-			query.setParameter("codeList", codes);
-			query.setHint("org.hibernate.cacheable", true);
-			retVal = query.getResultList();
-		} catch (Exception e) {
-			StringBuilder msg = new StringBuilder();
-			msg.append("findParentCmqsByCodes failed ")
-					.append("Query used was ->").append(queryString);
-			LOG.error(msg.toString(), e);
-		} finally {
-			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		List<CmqParentChild200> parentList = this.parentChildService.findParentCmqsByChildCodes(codes);
+		if(null!=parentList && !parentList.isEmpty()) {
+			List<Long> parentCMQCodeList = getParentCMQCodeList(parentList);
+			
+			String queryString = "from CmqBase190 c where c.cmqCode in (:codeList) ";
+			EntityManager entityManager = this.cqtEntityManagerFactory
+					.getEntityManager();
+			try {
+				Query query = entityManager.createQuery(queryString);
+				query.setParameter("codeList", parentCMQCodeList);
+				query.setHint("org.hibernate.cacheable", true);
+				retVal = query.getResultList();
+			} catch (Exception e) {
+				StringBuilder msg = new StringBuilder();
+				msg.append("findParentCmqsByCodes failed ")
+						.append("Query used was ->").append(queryString);
+				LOG.error(msg.toString(), e);
+			} finally {
+				this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+			}
 		}
+		
 		return retVal;
 	}
 
@@ -667,7 +681,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 	public List<CmqBase190> findCmqsToRetire() {
 		List<CmqBase190> retVal = null;
 		String queryString = "from CmqBase190 c where upper(c.cmqState) = upper('Published') and c.cmqStatus = 'A' "
-				+ "and c.cmqCode not in (select target.cmqCode from CmqBaseTarget target where upper(target.cmqState) = upper('Published IA')) order by upper(c.cmqName) asc ";
+				+ "and c.cmqCode not in (select target.cmqCode from CmqBaseTarget target where upper(target.cmqState) = upper('Published IA') or upper(target.cmqState) = upper('Pending IA') or upper(target.cmqState) = upper('Approved IA')) order by upper(c.cmqName) asc ";
 		EntityManager entityManager = this.cqtEntityManagerFactory
 				.getEntityManager();
 		try {
@@ -676,7 +690,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 			retVal = query.getResultList();
 		} catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
-			msg.append("findApprovedCmqs failed ").append("Query used was ->")
+			msg.append("findCmqsToRetire failed ").append("Query used was ->")
 					.append(queryString);
 			LOG.error(msg.toString(), e);
 		} finally {
