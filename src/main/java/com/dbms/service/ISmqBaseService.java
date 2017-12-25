@@ -46,4 +46,18 @@ public interface ISmqBaseService {
 
 	Long findSmqChildRelationsCountForSmqCode(Long smqCode);
 
+	Long findChildSmqCountByParentSmqCode(Long smqCode, String dictionaryVersion);
+
+	Long findSmqRelationsCountForSmqCode(Long smqCode, String dictionaryVersion);
+
+	List<SmqBase190> findChildSmqByParentSmqCode(Long smqCode, String dictionaryVersion);
+
+	List<Map<String, Object>> findSmqRelationsCountForSmqCodes(List<Long> smqCodes, String dictionaryVersion);
+
+	List<SmqRelation190> findSmqRelationsForSmqCodeAndScope(Long smqCode, String scope, String dictionaryVersion);
+
+	List<SmqRelation190> findSmqRelationsForSmqCode(Long smqCode, String dictionaryVersion);
+
+	List<Map<String, Object>> findSmqChildRelationsCountForSmqCodes(List<Long> smqCodes, String dictionaryVersion);
+
 }

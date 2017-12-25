@@ -1,82 +1,76 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <persistence xmlns="http://java.sun.com/xml/ns/persistence"
-	version="1.0">
-	<persistence-unit name="cqtJPA">
-		<provider>org.hibernate.ejb.HibernatePersistence</provider>
-		<class>com.dbms.entity.cqt.CmqBase190</class>
-		<class>com.dbms.entity.cqt.CmqBaseTarget</class>
-		<class>com.dbms.entity.cqt.CmqRelation190</class>
-		<class>com.dbms.entity.cqt.CmqRelationTarget</class>
-		<class>com.dbms.entity.cqt.SmqBase190</class>
-		<class>com.dbms.entity.cqt.SmqBaseTarget</class>
-		<class>com.dbms.entity.cqt.SmqRelation190</class>
-		<class>com.dbms.entity.cqt.SmqRelationTarget</class>
-		<class>com.dbms.entity.cqt.MeddraDict190</class>
-		<class>com.dbms.entity.cqt.MeddraDictTarget</class>
-		<class>com.dbms.entity.cqt.RefConfigCodeList</class>
-		<class>com.dbms.entity.meddra.HlgtPrefTerm</class>
-		<class>com.dbms.entity.meddra.HltPrefTerm</class>
-		<class>com.dbms.entity.meddra.LowLevelTerm</class>
-		<class>com.dbms.entity.meddra.MdHierarchy</class>
-		<class>com.dbms.entity.meddra.PrefTerm</class>
-		<class>com.dbms.entity.meddra.SmqContent</class>
-		<class>com.dbms.entity.meddra.SmqList</class>
-		<class>com.dbms.entity.meddra.SocIntlOrder</class>
-		<class>com.dbms.entity.meddra.SocTerm</class>
-		<class>com.dbms.entity.cqt.CmqProductBaseCurrent</class>
+    version="1.0">
+    <persistence-unit name="cqtJPA">
+        <provider>org.hibernate.ejb.HibernatePersistence</provider>
+        <class>com.dbms.entity.cqt.CmqBase190</class>
+        <class>com.dbms.entity.cqt.CmqBaseTarget</class>
+        <class>com.dbms.entity.cqt.CmqRelation190</class>
+        <class>com.dbms.entity.cqt.CmqRelationTarget</class>
+        <class>com.dbms.entity.cqt.SmqBase190</class>
+        <class>com.dbms.entity.cqt.SmqBaseTarget</class>
+        <class>com.dbms.entity.cqt.SmqRelation190</class>
+        <class>com.dbms.entity.cqt.SmqRelationTarget</class>
+        <class>com.dbms.entity.cqt.MeddraDict190</class>
+        <class>com.dbms.entity.cqt.MeddraDictTarget</class>
+        <class>com.dbms.entity.cqt.RefConfigCodeList</class>
+        <class>com.dbms.entity.meddra.HlgtPrefTerm</class>
+        <class>com.dbms.entity.meddra.HltPrefTerm</class>
+        <class>com.dbms.entity.meddra.LowLevelTerm</class>
+        <class>com.dbms.entity.meddra.MdHierarchy</class>
+        <class>com.dbms.entity.meddra.PrefTerm</class>
+        <class>com.dbms.entity.meddra.SmqContent</class>
+        <class>com.dbms.entity.meddra.SmqList</class>
+        <class>com.dbms.entity.meddra.SocIntlOrder</class>
+        <class>com.dbms.entity.meddra.SocTerm</class>
+        <class>com.dbms.entity.cqt.CmqProductBaseCurrent</class>
         <class>com.dbms.entity.cqt.CmqProductBaseTarget</class>
         <class>com.dbms.entity.cqt.SessionTrack</class>
         <class>com.dbms.entity.cqt.CmqParentChild200</class>
-		<exclude-unlisted-classes>false</exclude-unlisted-classes>
-		<properties>
-			<property name="hibernate.archive.autodetection" value="class" />
-			<property name="hibernate.id.new_generator_mappings" value="true" />
-			<property name="hibernate.transaction.auto_close_session" value="true" />
-			<property name="hibernate.dialect" value="org.hibernate.dialect.Oracle10gDialect" />
-			<property name="hibernate.connection.driver_class" value="oracle.jdbc.driver.OracleDriver" />
-			
-            <property name="hibernate.connection.url" value="jdbc:oracle:thin:@localhost:1522/devcqt1" />
-			<property name="hibernate.connection.username" value="opencqt" />
-			<property name="hibernate.connection.password" value="release098" />
-			
-			<!-- <property name="hibernate.connection.url" value="jdbc:oracle:thin:@localhost:1521/ort501" />
+        <exclude-unlisted-classes>false</exclude-unlisted-classes>
+        <properties>
+            <property name="hibernate.archive.autodetection" value="class" />
+            <property name="hibernate.id.new_generator_mappings" value="true" />
+            <property name="hibernate.transaction.auto_close_session" value="true" />
+            <property name="hibernate.dialect" value="org.hibernate.dialect.Oracle10gDialect" />
+            <property name="hibernate.connection.driver_class" value="oracle.jdbc.driver.OracleDriver" />
+            <property name="hibernate.connection.url" value="jdbc:oracle:thin:@192.196.245.20:8079/ort501" />
             <property name="hibernate.connection.username" value="opencqt" />
-            <property name="hibernate.connection.password" value="notopencqt123" /> -->
-			
-<!-- 
-			<property name="hibernate.connection.password" value="ENC(eUob/NCg3ql+yuAf+IlLuM55Z2tEt11S)" />
- -->			
-			<property name="hibernate.default_schema" value="OPENCQT" />
-			<property name="hibernate.connection.autocommit" value="false" />
-			<property name="hibernate.max_fetch_depth" value="4" />
-			<property name="hibernate.jdbc.fetch_size" value="200" />
-			<property name="hibernate.order_inserts" value="true" />
-			<property name="hibernate.order_updates" value="true" />
-			<!-- <property name="hibernate.hbm2ddl.auto" value="create-drop" /> -->
-			<!-- <property name="hibernate.hbm2ddl.auto" value="update" /> -->
-			
-			<property name="net.sf.ehcache.configurationResourceName" value="/cqt-ehcache.xml" />
-			<property name="hibernate.cache.region.factory_class" value="org.hibernate.cache.ehcache.EhCacheRegionFactory" />
-			<property name="hibernate.cache.use_query_cache" value="true"/>
-			<property name="hibernate.cache.use_second_level_cache" value="true"/>
-			<property name="hibernate.generate_statistics" value="false"/>
-			
-			<property name="hibernate.show_sql" value="true" />
-			<property name="hibernate.format_sql" value="true" />
 
-			<!-- Connection pooling -->
-
-			<property name="hibernate.connection.provider_class" value="org.hibernate.connection.C3P0ConnectionProvider" />
+            <property name="hibernate.connection.password" value="notopencqt123" />
 <!-- 
-			<property name="hibernate.connection.provider_class" value="com.dbms.util.EncryptedPasswordC3P0ConnectionProvider" />
-			<property name="hibernate.connection.encryptor_registered_name" value="hibernateEncryptor"/>				
+            <property name="hibernate.connection.password" value="ENC(eUob/NCg3ql+yuAf+IlLuM55Z2tEt11S)" />
+ -->            
+            <property name="hibernate.default_schema" value="OPENCQT" />
+            <property name="hibernate.connection.autocommit" value="false" />
+            <property name="hibernate.max_fetch_depth" value="4" />
+            <property name="hibernate.jdbc.fetch_size" value="200" />
+            <property name="hibernate.order_inserts" value="true" />
+            <property name="hibernate.order_updates" value="true" />
+            <!-- <property name="hibernate.hbm2ddl.auto" value="create-drop" /> -->
+            <!-- <property name="hibernate.hbm2ddl.auto" value="update" /> -->
+            
+            <property name="net.sf.ehcache.configurationResourceName" value="/cqt-ehcache.xml" />
+            <property name="hibernate.cache.region.factory_class" value="org.hibernate.cache.ehcache.EhCacheRegionFactory" />
+            <property name="hibernate.cache.use_query_cache" value="true"/>
+            <property name="hibernate.cache.use_second_level_cache" value="true"/>
+            <property name="hibernate.generate_statistics" value="false"/>
+            
+            <property name="hibernate.show_sql" value="false" />
+            <property name="hibernate.format_sql" value="false" />
+
+            <!-- Connection pooling -->
+<!-- 
+            <property name="hibernate.connection.provider_class" value="org.hibernate.connection.C3P0ConnectionProvider" />
  -->
-			<property name="hibernate.c3p0.max_size" value="2" />
-			<property name="hibernate.c3p0.min_size" value="1" />
-			<property name="hibernate.c3p0.acquire_increment" value="1" />
-			<property name="hibernate.c3p0.idle_test_period" value="300" />
-			<property name="hibernate.c3p0.max_statements" value="3" />
-			<property name="hibernate.c3p0.timeout" value="240" />
-		</properties>
-	</persistence-unit>
+            <property name="hibernate.connection.provider_class" value="com.dbms.util.EncryptedPasswordC3P0ConnectionProvider" />
+            <property name="hibernate.connection.encryptor_registered_name" value="hibernateEncryptor"/>                
+            <property name="hibernate.c3p0.max_size" value="15" />
+            <property name="hibernate.c3p0.min_size" value="1" />
+            <property name="hibernate.c3p0.acquire_increment" value="1" />
+            <property name="hibernate.c3p0.idle_test_period" value="300" />
+            <property name="hibernate.c3p0.max_statements" value="3" />
+            <property name="hibernate.c3p0.timeout" value="240" />
+        </properties>
+    </persistence-unit>
 </persistence> 

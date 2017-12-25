@@ -858,6 +858,17 @@ public class CSMQBean {
         return "";
     }
 	
+    public static String getCqtBaseScopeByName(String scopeName) {
+        if("Narrow".equalsIgnoreCase(scopeName))
+            return SCOPE_NARROW;
+        else if("Broad".equalsIgnoreCase(scopeName))
+            return SCOPE_BROAD;
+        else if("Child Narrow".equalsIgnoreCase(scopeName))
+            return SCOPE_CHILD_NARROW;
+        else 
+            return SCOPE_FULL;
+    }
+    
 	public List<String[]> getCqtBaseCategories() {
 		return Arrays.asList(new String[][] {
 			new String[] { CATEGORY_A, "A" },

@@ -1,5 +1,6 @@
 package com.dbms.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -35,6 +36,9 @@ public class SmqBaseService extends CqtPersistenceService<SmqBase190> implements
 
 	private static final Logger LOG = LoggerFactory.getLogger(SmqBaseService.class);
 
+	private static final String SMQ_BASE_TABLE_NAME_PREFIX = "SMQ_BASE_";
+	private static final String SMQ_RELATIONS_TABLE_NAME_PREFIX = "SMQ_RELATIONS_";
+	
 	/* (non-Javadoc)
 	 * @see com.dbms.service.ISmqBaseService#findByLevelAndTerm(java.lang.Integer, java.lang.String)
 	 */
@@ -219,6 +223,33 @@ public class SmqBaseService extends CqtPersistenceService<SmqBase190> implements
 		return retVal;
 	}
 	
+	@Override
+	public Long findSmqRelationsCountForSmqCode(Long smqCode, String dictionaryVersion) {
+		Long retVal = null;
+		StringBuilder sb = new StringBuilder();
+		sb.append("select count(*) from " + SMQ_RELATIONS_TABLE_NAME_PREFIX + dictionaryVersion + " c where c.SMQ_CODE = :smqCode");
+		
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		Session session = entityManager.unwrap(Session.class);
+		try {
+			SQLQuery query = session.createSQLQuery(sb.toString());
+			query.setParameter("smqCode", smqCode);
+			//query.setCacheable(true);
+			retVal = ((BigDecimal)query.uniqueResult()).longValue();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg
+			.append("An error occurred while findSmqRelationsCountForSmqCode for smqCode")
+			.append(smqCode).append(" and dictVersion ").append(dictionaryVersion)
+					.append(" Query used was ->")
+					.append(sb.toString());
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
+	
 	/* (non-Javadoc)
 	 * @see com.dbms.service.ISmqBaseService#findSmqRelationsCountForSmqCodes(java.util.List)
 	 */
@@ -233,6 +264,44 @@ public class SmqBaseService extends CqtPersistenceService<SmqBase190> implements
 		String queryString = CmqUtils.convertArrayToTableWith(smqCodes, "tempSmqCodes", "code")
                 + " select count(*) as COUNT, SMQ_CODE"
                 + " from SMQ_RELATIONS_CURRENT smqTbl"
+                + " inner join tempSmqCodes on tempSmqCodes.code=smqTbl.SMQ_CODE"
+                + " group by SMQ_CODE";
+		
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		Session session = entityManager.unwrap(Session.class);
+		try {
+			SQLQuery query = session.createSQLQuery(queryString);
+			query.addScalar("SMQ_CODE", StandardBasicTypes.LONG);
+			query.addScalar("COUNT", StandardBasicTypes.LONG);
+
+            query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+			query.setCacheable(true);
+			retVal = query.list();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg
+					.append("An error occurred while findSmqRelationsCountForSmqCodes ")
+					.append(smqCodes)
+					.append(" Query used was ->")
+					.append(queryString);
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Map<String, Object>> findSmqRelationsCountForSmqCodes(List<Long> smqCodes, String dictionaryVersion) {
+		List<Map<String, Object>> retVal = null;
+        
+        if(CollectionUtils.isEmpty(smqCodes))
+            return null;
+		
+		String queryString = CmqUtils.convertArrayToTableWith(smqCodes, "tempSmqCodes", "code")
+                + " select count(*) as COUNT, SMQ_CODE"
+                + " from " + SMQ_RELATIONS_TABLE_NAME_PREFIX + dictionaryVersion + " smqTbl"
                 + " inner join tempSmqCodes on tempSmqCodes.code=smqTbl.SMQ_CODE"
                 + " group by SMQ_CODE";
 		
@@ -323,6 +392,44 @@ public class SmqBaseService extends CqtPersistenceService<SmqBase190> implements
 		return retVal;
 	}
 	
+	@Override
+	@SuppressWarnings("unchecked")
+	public List<Map<String, Object>> findSmqChildRelationsCountForSmqCodes(List<Long> smqCodes, String dictionaryVersion) {
+		List<Map<String, Object>> retVal = null;
+        
+        if(CollectionUtils.isEmpty(smqCodes))
+            return null;
+		
+		String queryString = CmqUtils.convertArrayToTableWith(smqCodes, "tempSmqCodes", "code")
+                + " select count(*) as COUNT, SMQ_CODE"
+                + " from " + SMQ_RELATIONS_TABLE_NAME_PREFIX + dictionaryVersion +" smqTbl"
+                + " inner join tempSmqCodes on tempSmqCodes.code=smqTbl.SMQ_CODE"
+                + " where smqTbl.SMQ_LEVEL=0 group by SMQ_CODE";
+		
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		Session session = entityManager.unwrap(Session.class);
+		try {
+			SQLQuery query = session.createSQLQuery(queryString);
+			query.addScalar("SMQ_CODE", StandardBasicTypes.LONG);
+			query.addScalar("COUNT", StandardBasicTypes.LONG);
+
+            query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+			query.setCacheable(true);
+			retVal = query.list();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg
+					.append("An error occurred while findSmqRelationsCountForSmqCodes ")
+					.append(smqCodes)
+					.append(" Query used was ->")
+					.append(queryString);
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
+	
 	/* (non-Javadoc)
 	 * @see com.dbms.service.ISmqBaseService#findSmqRelationsForSmqCode(java.lang.Long)
 	 */
@@ -339,6 +446,35 @@ public class SmqBaseService extends CqtPersistenceService<SmqBase190> implements
 			query.setParameter("smqCode", smqCode);
 			query.setHint("org.hibernate.cacheable", true);
 			retVal = query.getResultList();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg
+					.append("An error occurred while findSmqRelationsForSmqCode ")
+					.append(smqCode)
+					.append(" Query used was ->")
+					.append(sb.toString());
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
+	
+	@Override
+	@SuppressWarnings("unchecked")
+	public List<SmqRelation190> findSmqRelationsForSmqCode(Long smqCode, String dictionaryVersion) {
+		List<SmqRelation190> retVal = null;
+		StringBuilder sb = new StringBuilder();
+		sb.append("select * from " + SMQ_RELATIONS_TABLE_NAME_PREFIX + dictionaryVersion 
+					+ " where SMQ_CODE = :smqCode and PT_TERM_STATUS = 'A' order by SMQ_LEVEL asc, PT_NAME asc");
+		
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		Session session = entityManager.unwrap(Session.class);
+		try {
+			SQLQuery query = session.createSQLQuery(sb.toString());
+			query.setParameter("smqCode", smqCode);
+			query.addEntity(SmqRelation190.class);
+			retVal = query.list();
 		} catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
 			msg
@@ -406,6 +542,45 @@ public class SmqBaseService extends CqtPersistenceService<SmqBase190> implements
 			msg
 					.append("An error occurred while findSmqRelationsForSmqCode ")
 					.append(smqCode)
+					.append(" Query used was ->")
+					.append(sb.toString());
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
+	
+	@Override
+	@SuppressWarnings("unchecked")
+	public List<SmqRelation190> findSmqRelationsForSmqCodeAndScope(Long smqCode, String scope, String dictionaryVersion) {
+		List<SmqRelation190> retVal = null;
+		StringBuilder sb = new StringBuilder();
+		if (StringUtils.isNotBlank(scope) && (scope.equals(CSMQBean.SCOPE_NARROW) || scope.equals(CSMQBean.SCOPE_BROAD))) {
+			sb.append("select * from ").append(SMQ_RELATIONS_TABLE_NAME_PREFIX).append(dictionaryVersion)
+				.append(" where SMQ_CODE = :smqCode ").append(" and (PT_TERM_SCOPE = 0 or PT_TERM_SCOPE = :ptTermScope) ")
+				.append(" and PT_TERM_STATUS  = 'A' order by SMQ_LEVEL asc, PT_NAME asc ");
+		} else {
+			sb.append("select * from ").append(SMQ_RELATIONS_TABLE_NAME_PREFIX).append(dictionaryVersion)
+				.append(" where SMQ_CODE = :smqCode and PT_TERM_STATUS  = 'A' order by SMQ_LEVEL asc, PT_NAME asc ");
+		}
+		
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		Session session = entityManager.unwrap(Session.class);
+		try {
+			SQLQuery query = session.createSQLQuery(sb.toString());
+			query.setParameter("smqCode", smqCode);
+			if (StringUtils.isNotBlank(scope) && (scope.equals(CSMQBean.SCOPE_NARROW) || scope.equals(CSMQBean.SCOPE_BROAD))) {
+				query.setParameter("ptTermScope", Integer.parseInt(scope));
+			}
+			query.addEntity(SmqRelation190.class);
+			retVal = query.list();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg
+					.append("An error occurred while findSmqRelationsForSmqCode ")
+					.append(smqCode)
+					.append(", " + dictionaryVersion)
 					.append(" Query used was ->")
 					.append(sb.toString());
 			LOG.error(msg.toString(), e);
@@ -568,6 +743,34 @@ public class SmqBaseService extends CqtPersistenceService<SmqBase190> implements
 		return retVal;
 	}
 	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<SmqBase190> findChildSmqByParentSmqCode(Long smqCode, String dictionaryVersion) {
+		List<SmqBase190> retVal = null;
+		StringBuilder sb = new StringBuilder();
+		sb.append("select * from " + SMQ_BASE_TABLE_NAME_PREFIX + dictionaryVersion + " c where c.SMQ_PARENT_CODE = :smqParentCode");
+		
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		Session session = entityManager.unwrap(Session.class);
+		try {
+			SQLQuery query = session.createSQLQuery(sb.toString());
+			query.setParameter("smqParentCode", smqCode);
+			query.addEntity(SmqBase190.class);
+			retVal = query.list();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg
+					.append("An error occurred while findChildSmqByParentSmqCode ")
+					.append(smqCode)
+					.append(" Query used was ->")
+					.append(sb.toString());
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
+	
 	@Override
 	public Long findChildSmqCountByParentSmqCode(Long smqCode) {
 		Long retVal = null;
@@ -585,6 +788,33 @@ public class SmqBaseService extends CqtPersistenceService<SmqBase190> implements
 			msg
 					.append("An error occurred while findChildSmqCountByParentSmqCode ")
 					.append(smqCode)
+					.append(" Query used was ->")
+					.append(sb.toString());
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
+	
+	@Override
+	public Long findChildSmqCountByParentSmqCode(Long smqCode, String dictionaryVersion) {
+		Long retVal = null;
+		StringBuilder sb = new StringBuilder();
+		sb.append("select count(*) from " + SMQ_BASE_TABLE_NAME_PREFIX + dictionaryVersion + " c where c.SMQ_PARENT_CODE = :smqParentCode");
+		
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		Session session = entityManager.unwrap(Session.class);
+		try {
+			SQLQuery query = session.createSQLQuery(sb.toString());
+			query.setParameter("smqParentCode", smqCode);
+			//query.setCacheable(true);
+			retVal = ((BigDecimal)query.uniqueResult()).longValue();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg
+					.append("An error occurred while findChildSmqCountByParentSmqCode for smqCode")
+					.append(smqCode).append(" and dictVersion ").append(dictionaryVersion)
 					.append(" Query used was ->")
 					.append(sb.toString());
 			LOG.error(msg.toString(), e);

@@ -66,8 +66,8 @@
 		<p:treeTable value="#{historicalViewController.relationsRoot}" var="node" resizableColumns="true" id="relations-tree-table"
 			selectionMode="checkbox" styleClass="hide-sel-chkbox">
 			
-			<f:attribute name="uiEventSourceName" value="relations" />
-			<!-- <p:ajax event="expand" listener="#{historicalViewController.selectedHistoricalViewDTO.listName}" /> -->
+			<p:ajax event="expand" listener="#{historicalViewController.onNodeExpand}" update="relations-tree-table" />
+            <p:ajax event="collapse" listener="#{historicalViewController.onNodeCollapse}" update="relations-tree-table" />
 			<p:columnGroup type="header">
 				<p:row>
 					<p:column rowspan="2" sortBy="#{node.term}"
