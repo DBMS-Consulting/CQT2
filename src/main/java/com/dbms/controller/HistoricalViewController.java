@@ -180,9 +180,9 @@ public class HistoricalViewController implements Serializable {
 
 		boolean isDataFetchCompleted = hNode.isDataFetchCompleted();
 
-		if (isDataFetchCompleted) // if data has already been fetched, skip this
-									// step
+		if (isDataFetchCompleted) {
 			return;
+		}
 
 		IEntity entity = hNode.getEntity();
 
@@ -204,8 +204,6 @@ public class HistoricalViewController implements Serializable {
 		} else if (entity instanceof MeddraDictHierarchySearchDto) {
 			String parentLevel = hNode.getLevel();
 			MeddraDictHierarchySearchDto meddraDictHierarchySearchDto = (MeddraDictHierarchySearchDto) entity;
-			// Long dtoCode =
-			// Long.valueOf(meddraDictHierarchySearchDto.getCode());
 			Long dtoCode = null;
 			String childLevel = null;
 			String childSearchColumnTypePrefix = null;
@@ -274,21 +272,10 @@ public class HistoricalViewController implements Serializable {
 			List<Map<String, Object>> countsOfChildren;
 	        countsOfChildren = this.meddraDictService.findChildrenCountByParentCodes(childchildOfChildSearchColumnTypePrefix,
 	                childSearchColumnTypePrefix, nodesMapKeys, dictionaryVersion);
-	        if((null != countsOfChildren) && (countsOfChildren.size() > 0)) {
-	            //first find and fix child nodes stuff
-	            for (Map<String, Object> cc: countsOfChildren) {
-	                if(cc.get("PARENT_CODE") != null && cc.get("COUNT") != null) {
-	                    Long pCode = (Long)cc.get("PARENT_CODE");
-	                    Long c = (Long)cc.get("COUNT");
-	                    TreeNode t = c > 0 ? nodesMap.get(pCode) : null;
-	                    if(t!=null) {
-	                        // add a dummmy node to show expand arrow
-	                        createNewDummyNode(t);
-	                    }
-	                }
-	            }
-	        }
+	        this.addCountDummyNodeToMeddranodes(countsOfChildren, nodesMap);
 		}
+		
+		hNode.setDataFetchCompleted(true);
 	}
 
 	public void populateSmqBaseChildren(Long smqCode, TreeNode expandedTreeNode) {
@@ -642,11 +629,11 @@ public class HistoricalViewController implements Serializable {
 				break;
 			}
 		}
-		Map<Long, IEntity> socCodesMap = new HashMap<>();
-		Map<Long, IEntity> hlgtCodesMap = new HashMap<>();
-		Map<Long, IEntity> hltCodesMap = new HashMap<>();
-		Map<Long, IEntity> ptCodesMap = new HashMap<>();
-		Map<Long, IEntity> lltCodesMap = new HashMap<>();
+		Map<Long, TreeNode> socCodesMap = new HashMap<>();
+		Map<Long, TreeNode> hlgtCodesMap = new HashMap<>();
+		Map<Long, TreeNode> hltCodesMap = new HashMap<>();
+		Map<Long, TreeNode> ptCodesMap = new HashMap<>();
+		Map<Long, TreeNode> lltCodesMap = new HashMap<>();
 		this.selectedHistoricalViewDTO.setRelationsRootTreeNode(this.relationsRoot);
 		List<TreeNode> childNodes = this.relationsRoot.getChildren();
 		for (TreeNode childNode : childNodes) {
@@ -672,69 +659,72 @@ public class HistoricalViewController implements Serializable {
 				MeddraDictHierarchySearchDto meddraDictHierarchySearchDto = (MeddraDictHierarchySearchDto)entity;
 				if(level.equals("LLT") && !StringUtils.isBlank(meddraDictHierarchySearchDto.getLltCode())) {
 					Long code = Long.valueOf(meddraDictHierarchySearchDto.getLltCode());
-					lltCodesMap.put(code, meddraDictHierarchySearchDto);
+					lltCodesMap.put(code, childNode);
 				} else if(level.equals("PT") && !StringUtils.isBlank(meddraDictHierarchySearchDto.getPtCode())) {
 					Long code = Long.valueOf(meddraDictHierarchySearchDto.getPtCode());
-					ptCodesMap.put(code, meddraDictHierarchySearchDto);
+					ptCodesMap.put(code, childNode);
 				} else if(level.equals("HLGT") && !StringUtils.isBlank(meddraDictHierarchySearchDto.getHlgtCode())) {
 					Long code = Long.valueOf(meddraDictHierarchySearchDto.getHlgtCode());
-					hlgtCodesMap.put(code, meddraDictHierarchySearchDto);
+					hlgtCodesMap.put(code, childNode);
 				} else if(level.equals("HLT") && !StringUtils.isBlank(meddraDictHierarchySearchDto.getHltCode())) {
 					Long code = Long.valueOf(meddraDictHierarchySearchDto.getHltCode());
-					hltCodesMap.put(code, meddraDictHierarchySearchDto);
+					hltCodesMap.put(code, childNode);
 				} else if(level.equals("SOC") && !StringUtils.isBlank(meddraDictHierarchySearchDto.getSocCode())) {
 					Long code = Long.valueOf(meddraDictHierarchySearchDto.getSocCode());
-					socCodesMap.put(code, meddraDictHierarchySearchDto);
+					socCodesMap.put(code, childNode);
 				}
 			}
 		}
 		
 		if(socCodesMap.size() > 0) {
-            List<MeddraDictHierarchySearchDto> socDtos;
             List<Long> socCodesList = new ArrayList<>(socCodesMap.keySet());
-            socDtos = this.meddraDictService.findByCodes("SOC_", socCodesList);
-            this.populateCmqRelationTreeNodes(socDtos, rootNode, "SOC", "HLGT", cmqCode, socCodesMap);
+            List<Map<String, Object>> countsOfChildren = this.meddraDictService.findChildrenCountByParentCodes("HLGT_"
+                    , "SOC_", socCodesList, dictionaryVersion);
+            this.addCountDummyNodeToMeddranodes(countsOfChildren, socCodesMap);
+        }
+		
+		if(hlgtCodesMap.size() > 0) {
+            List<Long> hlgtCodesList = new ArrayList<>(hlgtCodesMap.keySet());
+            List<Map<String, Object>> countsOfChildren = this.meddraDictService.findChildrenCountByParentCodes("HLT_"
+                    , "HLGT_", hlgtCodesList, dictionaryVersion);
+            this.addCountDummyNodeToMeddranodes(countsOfChildren, hlgtCodesMap);
+        }
+
+        if(hltCodesMap.size() > 0) {
+            List<Long> hltCodesList = new ArrayList<>(hltCodesMap.keySet());
+            List<Map<String, Object>> countsOfChildren = this.meddraDictService.findChildrenCountByParentCodes("PT_"
+                    , "HLT_", hltCodesList, dictionaryVersion);
+            this.addCountDummyNodeToMeddranodes(countsOfChildren, hltCodesMap);
+        }
+
+        if(ptCodesMap.size() > 0) {
+            List<Long> ptCodesList = new ArrayList<>(ptCodesMap.keySet());
+            List<Map<String, Object>> countsOfChildren = this.meddraDictService.findChildrenCountByParentCodes("LLT_"
+                    , "PT_", ptCodesList, dictionaryVersion);
+            this.addCountDummyNodeToMeddranodes(countsOfChildren, ptCodesMap);
         }
 		
 		RequestContext.getCurrentInstance().execute("PF('wizard').next()");
 	}
-	
-	public void populateMeddraDictTreeNodes(List<MeddraDictHierarchySearchDto> dtos, TreeNode expandedTreeNode
-			, String nodeType, String childNodeType, Long parentCode, Map<Long, IEntity> cmqRelationsMap
-            ) {
-        Map<Long, TreeNode> addedNodes = new HashMap<>();
-        List<Long> dtoCodes = new ArrayList<>(dtos.size());
 
-        for (MeddraDictHierarchySearchDto m : dtos) {
-            final Long c = Long.valueOf(m.getCode());
-            HierarchyNode node = this.createMeddraNode(m, nodeType, cmqRelationsMap.get(c));
-            node.markNotEditableInRelationstable();
-
-            TreeNode treeNode = new DefaultTreeNode(node, expandedTreeNode);
-
-            addedNodes.put(c, treeNode);
-            dtoCodes.add(c);
-        }
-        
-        List<Map<String, Object>> countsOfChildren = this.meddraDictSvc.findChildrenCountByParentCodes(childNodeType + "_"
-                                            , nodeType + "_", dtoCodes);
-
-        if((null != countsOfChildren) && (countsOfChildren.size() > 0)) {
-        	//first find and fix child nodes stuff
-        	for (Map<String, Object> cc: countsOfChildren) {
-        		if(cc.get("PARENT_CODE") != null && cc.get("COUNT") != null) {
-        			Long pCode = (Long)cc.get("PARENT_CODE");
-        			Long c = (Long)cc.get("COUNT");
-        			TreeNode t = c > 0 ? addedNodes.get(pCode) : null;
-        			if(t!=null) {
-        				// add a dummmy node to show expand arrow
-        				createNewDummyNode(t);
-        			}
-        		}
-        	}
+	private void addCountDummyNodeToMeddranodes( List<Map<String, Object>> countsOfChildren
+													, Map<Long, TreeNode> addedNodes) {
+		if((null != countsOfChildren) && (countsOfChildren.size() > 0)) {
+            //first find and fix child nodes stuff
+            for (Map<String, Object> cc: countsOfChildren) {
+                if(cc.get("PARENT_CODE") != null && cc.get("COUNT") != null) {
+                    Long pCode = (Long)cc.get("PARENT_CODE");
+                    Long c = (Long)cc.get("COUNT");
+                    TreeNode t = c > 0 ? addedNodes.get(pCode) : null;
+                    if(t!=null) {
+                        // add a dummmy node to show expand arrow
+                        createNewDummyNode(t);
+                    }
+                }
+            }
         }
 	}
-
+	
 	public TreeNode createNewDummyNode(TreeNode parentNode) {
 		HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
 		dummyNode.setDummyNode(true);
