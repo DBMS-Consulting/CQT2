@@ -21,36 +21,50 @@
 			</h:panelGrid>
 
 			<p:panel header="Search" id="ph1" style=" padding:5px;">
-				<h:panelGrid columns="1" style="margin-left: 10%">
-					<h:panelGrid columns="12" columnClasses="label, value">
-						<p:outputLabel value="List Name" styleClass="label-right" />
-						<p:inputText value="#{auditTrailController.listName}" />
+				<h:panelGrid columns="1" style="margin-left: 5%">
+					<h:panelGrid columns="12" columnClasses="label, value" id="searchPanel">
+						<p:outputLabel for="lname" value="List Name" styleClass="label-right" />
+						<p:selectOneMenu value="#{auditTrailController.listName}" id="lname" style="width: 200px !important">
+							<f:selectItem itemValue="" itemLabel="Select" />
+							<f:selectItems value="#{auditTrailController.selectList()}" var="cmq"
+								itemLabel="#{cmq.listName}" itemValue="#{cmq.listName}" />
+								
+								<p:ajax update="lcode" listener="#{auditTrailController.resetCode}" />
+						</p:selectOneMenu>
 						<p:spacer width="50" />
 
-						<p:outputLabel value="List Code" styleClass="label-right" />
-						<p:inputText value="#{auditTrailController.listCode}" />
+						<p:outputLabel for="lcode" value="List Code" styleClass="label-right" />
+						<p:selectOneMenu value="#{auditTrailController.listCode}" id="lcode" style="width: 200px !important">
+							<f:selectItem itemValue="" itemLabel="Select" />
+							<f:selectItems value="#{auditTrailController.selectList()}" var="cmq"
+								itemLabel="#{cmq.listCode}" itemValue="#{cmq.listCode}" />
+								
+								<p:ajax update="lname" listener="#{auditTrailController.resetName}" />
+						</p:selectOneMenu>
 						<p:spacer width="50" />
 
-						<!-- <p:outputLabel value="State" styleClass="label-right" />
-					<p:selectOneMenu value="#{auditTrailController.state}" id="state">
-						<f:selectItem itemValue="" itemLabel="All" />
-						<f:selectItems value="#{configMB.cmqBaseListStates}" var="wk"
-							itemLabel="#{wk[1]}" itemValue="#{wk[0]}" />
-					</p:selectOneMenu>
-					<p:spacer width="5" /> -->
-						<p:outputLabel value="Dictionary Version" styleClass="label-right" />
-						<p:inputText id="dict" value="#{auditTrailController.dictionary}" />
+					 
+						<p:outputLabel for="dict" value="Dictionary Version" styleClass="label-right" />
+ 						<p:selectOneMenu value="#{auditTrailController.dictionary}" id="dict">
+							<f:selectItem itemValue="" itemLabel="Select" />
+							<f:selectItems value="#{configMB.allMeddraVersion}" var="d"
+								itemLabel="#{d.value}" itemValue="#{d.value}" />
+								
+								<p:ajax update="time" />
+						</p:selectOneMenu>
 						<p:spacer width="50" />
 
-						<p:outputLabel value="Audit Timestamp" styleClass="label-right" />
-						<p:inputText id="date" value="#{auditTrailController.date}" />
+						<p:outputLabel for="time" value="Audit Timestamp" styleClass="label-right" />
+						<p:selectOneMenu value="#{auditTrailController.auditTimestamp}" id="time" style="width: 170px !important">
+							<f:selectItem itemValue="" itemLabel="Select" />
+							<f:selectItems value="#{auditTrailController.findAuditTimestamps(auditTrailController.dictionary)}" var="at"
+								itemLabel="#{at}" itemValue="#{at}" />
+						</p:selectOneMenu>
 						<p:spacer width="5" />
 					</h:panelGrid>
  
-					<h:panelGrid columns="2" id="searchPanel" styleClass="row"
+					<h:panelGrid columns="2" id="btnPanel" styleClass="row"
 						style="margin-left: 40%">
-
-
 
 						<!-- <p:commandButton value="Search"
 							action="#{auditTrailController.findAudit}"
@@ -60,7 +74,7 @@
 							action="#{auditTrailController.findAudit}"
 							update="@form:result"/>
 						<p:commandButton action="#{auditTrailController.reset}" value="Reset"
-							process="@this" update="@form:result" />
+							process="@this" update="@form:result @form:searchPanel" />
 					</h:panelGrid>
 				</h:panelGrid>
 

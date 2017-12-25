@@ -10,15 +10,19 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.faces.event.AjaxBehaviorEvent;
 
 import org.apache.commons.lang3.StringUtils;
 import org.primefaces.model.StreamedContent;
 
 import com.dbms.entity.AuditableEntity;
 import com.dbms.entity.cqt.CmqBase190;
+import com.dbms.entity.cqt.RefConfigCodeList;
 import com.dbms.entity.cqt.dtos.AuditTrailDto;
+import com.dbms.entity.cqt.dtos.CmqBaseDTO;
 import com.dbms.service.IAuditTrailService;
 import com.dbms.service.ICmqBase190Service;
+import com.dbms.service.IRefCodeListService;
 
  
 
@@ -34,7 +38,7 @@ public class AuditTrailController implements Serializable {
 	 */
 	private static final long serialVersionUID = 2630718574599045932L;
 	
-	private String date, dictionary, state;
+	private String auditTimestamp, dictionary, state;
 	private String listName, listCode;
 	private StreamedContent excelFile;
 	private List<AuditTrailDto> datas;
@@ -45,6 +49,9 @@ public class AuditTrailController implements Serializable {
 	@ManagedProperty("#{AuditTrailService}")
 	private IAuditTrailService auditTrailService;
 	
+	@ManagedProperty("#{RefCodeListService}")
+	private IRefCodeListService refCodeListService;
+	
 	@PostConstruct
 	public void init() {
 		 
@@ -54,10 +61,13 @@ public class AuditTrailController implements Serializable {
 		
 	}
 	
-	public String reset() {
+	public void reset() {
 		this.datas = new ArrayList<AuditTrailDto>();
-		return "";
-	}
+		this.listName = null;
+		this.listCode = null;
+		this.dictionary = null;
+		this.auditTimestamp = null;
+ 	}
 	
 	public String findAudit() {
 		
@@ -75,7 +85,7 @@ public class AuditTrailController implements Serializable {
 	        return null;
 		}
 		
-		if(StringUtils.isBlank(date)) {
+		if(StringUtils.isBlank(auditTimestamp)) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 	                "Please select Audit timestamp", "");
 	        FacesContext.getCurrentInstance().addMessage(null, msg);
@@ -88,20 +98,37 @@ public class AuditTrailController implements Serializable {
 				listCodeSelected = String.valueOf(cmq.getCmqCode());
 			}
 		}
-		datas = this.auditTrailService.findByCriterias(Long.valueOf(listCodeSelected), Integer.valueOf(dictionary), date);
+		datas = this.auditTrailService.findByCriterias(Long.valueOf(listCodeSelected), Integer.valueOf(dictionary), auditTimestamp);
 		return "";
 	}
 	
 	public List<String> findAuditTimestamps(int dictionaryVersion) {
 		return this.auditTrailService.findAuditTimestamps(dictionaryVersion);
 	}
+	
+	public List<CmqBaseDTO> selectList() {
+		List<RefConfigCodeList> dict = new ArrayList<RefConfigCodeList>();
+		dict.add(refCodeListService.getCurrentMeddraVersion());
+		dict.add(refCodeListService.getTargetMeddraVersion());
+		
+ 		return this.auditTrailService.findLists(dict);
+	}
+	
 
-	public String getDate() {
-		return date;
+	public void resetCode(AjaxBehaviorEvent event) {
+		this.listCode = null;
 	}
 
-	public void setDate(String date) {
-		this.date = date;
+	public void resetName(AjaxBehaviorEvent event) {
+		this.listName = null;
+	}
+
+	public String getAuditTimestamp() {
+		return auditTimestamp;
+	}
+
+	public void setAuditTimestamp(String auditTimestamp) {
+		this.auditTimestamp = auditTimestamp;
 	}
 
 	public String getListName() {
@@ -169,5 +196,11 @@ public class AuditTrailController implements Serializable {
 	}
 
 	
+	public IRefCodeListService getRefCodeListService() {
+		return refCodeListService;
+	}
 
+	public void setRefCodeListService(IRefCodeListService refCodeListService) {
+		this.refCodeListService = refCodeListService;
+	}
 }

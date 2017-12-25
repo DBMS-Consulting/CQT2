@@ -15,7 +15,9 @@ import org.hibernate.type.StandardBasicTypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.dbms.entity.cqt.RefConfigCodeList;
 import com.dbms.entity.cqt.dtos.AuditTrailDto;
+import com.dbms.entity.cqt.dtos.CmqBaseDTO;
 import com.dbms.util.ICqtEntityManagerFactory;
 
 @ManagedBean(name = "AuditTrailService")
@@ -1385,6 +1387,44 @@ public class AuditTrailService implements IAuditTrailService{
 			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
 		}
 		return retVal;
+	
+	
+	}
+	
+	@Override
+	public List<CmqBaseDTO> findLists(List<RefConfigCodeList> dictionaryVersions) {
+		List<CmqBaseDTO> retVal = null;
+		String queryL = "";
+		int count = 0;
+		for (RefConfigCodeList dict : dictionaryVersions) {
+			queryL += "select distinct cmq.cmq_code as listCode, cmq.cmq_name as listName, aud.cmq_id from cmq_base_" + dict.getValue() 
+					+ "_audit aud, cmq_base_" + dict.getValue() + " cmq where cmq.cmq_id = aud.cmq_id";
+			
+			count++;
+			if (count < dictionaryVersions.size())
+				queryL += " union ";
+		}
+		
+  		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		Session session = entityManager.unwrap(Session.class);
+		try {
+			SQLQuery query = session.createSQLQuery(queryL);
+ 			query.addScalar("listName", StandardBasicTypes.STRING);
+ 			query.addScalar("listCode", StandardBasicTypes.STRING);
+
+ 			query.setResultTransformer(Transformers.aliasToBean(CmqBaseDTO.class));
+			query.setCacheable(true);
+			retVal = query.list();
+		}catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg.append("An error occurred while fetching findLists on AuditTrail ")
+					.append(" Query used was ->")
+					.append(queryL);
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;	
 	}
 
 }

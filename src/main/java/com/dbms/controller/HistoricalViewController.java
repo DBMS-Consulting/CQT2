@@ -11,6 +11,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import javax.faces.event.AjaxBehaviorEvent;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -28,12 +29,15 @@ import com.dbms.csmq.CSMQBean;
 import com.dbms.csmq.HierarchyNode;
 import com.dbms.entity.IEntity;
 import com.dbms.entity.cqt.CmqRelation190;
+import com.dbms.entity.cqt.RefConfigCodeList;
 import com.dbms.entity.cqt.SmqBase190;
 import com.dbms.entity.cqt.SmqRelation190;
+import com.dbms.entity.cqt.dtos.CmqBaseDTO;
 import com.dbms.entity.cqt.dtos.HistoricalViewDTO;
 import com.dbms.entity.cqt.dtos.HistoricalViewDbDataDTO;
 import com.dbms.entity.cqt.dtos.MeddraDictHierarchySearchDto;
 import com.dbms.service.AuthenticationService;
+import com.dbms.service.IAuditTrailService;
 import com.dbms.service.ICmqBase190Service;
 import com.dbms.service.ICmqParentChild200Service;
 import com.dbms.service.ICmqRelation190Service;
@@ -96,6 +100,9 @@ public class HistoricalViewController implements Serializable {
 
 	@ManagedProperty("#{CmqParentChild200Service}")
 	private ICmqParentChild200Service cmqParentChildService;
+	
+	@ManagedProperty("#{AuditTrailService}")
+	private IAuditTrailService auditTrailService;
 
 	@PostConstruct
 	public void init() {
@@ -764,6 +771,26 @@ public class HistoricalViewController implements Serializable {
 	public boolean isWizardNavbarBackShown() {
 		return !"searchBrowse".equals(historicalViewWizard.getStep());
 	}
+	
+	public List<String> findAuditTimestamps(int dictionaryVersion) {
+		return this.auditTrailService.findAuditTimestamps(dictionaryVersion);
+	}
+	
+	public List<CmqBaseDTO> selectList() {
+		List<RefConfigCodeList> dict = new ArrayList<RefConfigCodeList>();
+		dict.add(refCodeListService.getCurrentMeddraVersion());
+		dict.add(refCodeListService.getTargetMeddraVersion());
+		
+ 		return this.auditTrailService.findLists(dict);
+	}
+
+	public void resetCode(AjaxBehaviorEvent event) {
+		this.listCode = null;
+	}
+
+	public void resetName(AjaxBehaviorEvent event) {
+		this.listName = null;
+	}
 
 	public String getListName() {
 		return listName;
@@ -947,6 +974,14 @@ public class HistoricalViewController implements Serializable {
 
 	public void setDisplayScopeCatWeight(boolean displayScopeCatWeight) {
 		this.displayScopeCatWeight = displayScopeCatWeight;
+	}
+
+	public IAuditTrailService getAuditTrailService() {
+		return auditTrailService;
+	}
+
+	public void setAuditTrailService(IAuditTrailService auditTrailService) {
+		this.auditTrailService = auditTrailService;
 	}
 
 }
