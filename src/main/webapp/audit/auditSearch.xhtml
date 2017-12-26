@@ -24,7 +24,8 @@
 				<h:panelGrid columns="1" style="margin-left: 5%">
 					<h:panelGrid columns="12" columnClasses="label, value" id="searchPanel">
 						<p:outputLabel for="lname" value="List Name" styleClass="label-right" />
-						<p:selectOneMenu value="#{auditTrailController.listName}" id="lname" style="width: 200px !important">
+						<p:selectOneMenu value="#{auditTrailController.listName}" disabled="#{auditTrailController.listCode ne null}"
+							id="lname" style="width: 200px !important">
 							<f:selectItem itemValue="" itemLabel="Select" />
 							<f:selectItems value="#{auditTrailController.selectList()}" var="cmq"
 								itemLabel="#{cmq.listName}" itemValue="#{cmq.listName}" />
@@ -34,7 +35,8 @@
 						<p:spacer width="50" />
 
 						<p:outputLabel for="lcode" value="List Code" styleClass="label-right" />
-						<p:selectOneMenu value="#{auditTrailController.listCode}" id="lcode" style="width: 200px !important">
+						<p:selectOneMenu value="#{auditTrailController.listCode}" disabled="#{auditTrailController.listName ne null}"
+							id="lcode" style="width: 200px !important">
 							<f:selectItem itemValue="" itemLabel="Select" />
 							<f:selectItems value="#{auditTrailController.selectList()}" var="cmq"
 								itemLabel="#{cmq.listCode}" itemValue="#{cmq.listCode}" />
@@ -63,7 +65,7 @@
 						<p:spacer width="5" />
 					</h:panelGrid>
  
-					<h:panelGrid columns="2" id="btnPanel" styleClass="row"
+					<h:panelGrid columns="3" id="btnPanel" styleClass="row"
 						style="margin-left: 40%">
 
 						<!-- <p:commandButton value="Search"
@@ -75,6 +77,11 @@
 							update="@form:result"/>
 						<p:commandButton action="#{auditTrailController.reset}" value="Reset"
 							process="@this" update="@form:result @form:searchPanel" />
+							
+						<p:commandButton actionListener="#{auditTrailController.generateExcel(auditTrailController.datas)}" ajax="false" value="Export"
+							process="@this" update="@form:result">
+							<p:fileDownload value="#{auditTrailController.excelFile}" />
+						</p:commandButton>
 					</h:panelGrid>
 				</h:panelGrid>
 
@@ -109,11 +116,11 @@
 						</p:column>
 
 					</p:dataTable>
-					<h:commandLink actionListener="#{auditTrailController.generateExcel(auditTrailController.datas)}">
+					<!-- <h:commandLink actionListener="#{auditTrailController.generateExcel(auditTrailController.datas)}">
 						<p:fileDownload value="#{auditTrailController.excelFile}" />
 						<img title="Export list" src="#{request.contextPath}/image/excel_small.png"
 							style="margin-top: 20px !important; float: right" width="24" />
-					</h:commandLink>
+					</h:commandLink> -->
 				</p:outputPanel>
 			</p:panel>
 

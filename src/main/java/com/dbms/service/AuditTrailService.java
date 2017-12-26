@@ -1,20 +1,43 @@
 package com.dbms.service;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 import javax.persistence.EntityManager;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.ss.usermodel.ClientAnchor;
+import org.apache.poi.ss.usermodel.CreationHelper;
+import org.apache.poi.ss.usermodel.Drawing;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Picture;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFFont;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.transform.Transformers;
 import org.hibernate.type.StandardBasicTypes;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.dbms.entity.cqt.CmqBase190;
 import com.dbms.entity.cqt.RefConfigCodeList;
 import com.dbms.entity.cqt.dtos.AuditTrailDto;
 import com.dbms.entity.cqt.dtos.CmqBaseDTO;
@@ -1425,6 +1448,234 @@ public class AuditTrailService implements IAuditTrailService{
 			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
 		}
 		return retVal;	
+	}
+	
+	/**
+	 * Excel Report.
+	 */
+	@Override
+	public StreamedContent generateExcel(List<AuditTrailDto> datas, String user) {
+		XSSFWorkbook workbook = new XSSFWorkbook();
+		XSSFSheet worksheet = null;
+
+		worksheet = workbook.createSheet("AuditTrail_ListSearch");
+		XSSFRow row = null;
+		int rowCount = 6;
+
+		try {
+			insertExporLogoImage(worksheet, workbook);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+
+		/**
+		 * Première ligne - entêtes
+		 */
+		row = worksheet.createRow(rowCount);
+		XSSFCell cell = row.createCell(0);
+
+		// User name
+		rowCount += 2;
+		row = worksheet.createRow(rowCount);
+		cell = row.createCell(0);
+		cell.setCellValue("User name: " + user);
+
+		rowCount++;
+		Calendar cal = Calendar.getInstance();
+		//.setTime(new Date());
+		String date = getWeekDay(cal.get(Calendar.DAY_OF_WEEK)) + ", " + 
+				getTwoDigits(cal.get(Calendar.DAY_OF_MONTH) + 1) + "-" + 
+				getMonth(cal.get(Calendar.MONTH)) + "-" + 
+				cal.get(Calendar.YEAR) + " : " + 
+				getTwoDigits(cal.get(Calendar.HOUR)) + ":" + 
+				getTwoDigits(cal.get(Calendar.MINUTE)) + ":" + 
+				getTwoDigits(cal.get(Calendar.SECOND)) + " EST";
+		row = worksheet.createRow(rowCount);
+		cell = row.createCell(0);
+		cell.setCellValue("Report Date/Time: " + date);
+		
+		
+		cell = row.createCell(1);
+
+		//Columns
+		rowCount += 2;
+		row = worksheet.createRow(rowCount);
+		
+		cell = row.createCell(0);
+		cell.setCellValue("Change Type");
+		setCellStyleColumn(workbook, cell);
+		cell = row.createCell(1);
+		cell.setCellValue("Field Name");
+		setCellStyleColumn(workbook, cell);
+		cell = row.createCell(2);
+		cell.setCellValue("Old Value");
+		setCellStyleColumn(workbook, cell);
+		cell = row.createCell(3);
+		cell.setCellValue("New Value");
+		setCellStyleColumn(workbook, cell);
+		cell = row.createCell(4);
+		cell.setCellValue("User Name");
+		setCellStyleColumn(workbook, cell);
+		cell = row.createCell(5);
+		cell.setCellValue("User Group");
+		setCellStyleColumn(workbook, cell);
+		cell = row.createCell(6);
+		cell.setCellValue("Audit Timestamp");
+		setCellStyleColumn(workbook, cell);
+		
+		rowCount++;
+ 
+		if (datas != null)
+ 		for (AuditTrailDto dto : datas) {
+ 			row = worksheet.createRow(rowCount);
+ 			// Cell 0
+ 			cell = row.createCell(0);
+ 			cell.setCellValue(dto.getTransactionType());
+
+ 			// Cell 1
+ 			cell = row.createCell(1);
+ 			cell.setCellValue(dto.getColumnName());
+
+ 			// Cell 2
+ 			cell = row.createCell(2);
+ 			cell.setCellValue(dto.getOldValue());
+ 			
+ 			// Cell 3
+ 			cell = row.createCell(3);
+ 			cell.setCellValue(dto.getNewValue());
+
+ 			// Cell 4
+ 			cell = row.createCell(4);
+ 			cell.setCellValue(dto.getLastName() + ", " + dto.getFirstName());
+
+ 			// Cell 5
+ 			cell = row.createCell(5);
+ 			cell.setCellValue(dto.getGroupName());
+ 			
+ 			// Cell 6
+ 			cell = row.createCell(6);
+ 			cell.setCellValue(dto.getAuditTimestamp());
+ 			
+ 			rowCount++;
+		}
+  
+
+		StreamedContent content = null;
+		try {
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			workbook.write(baos);
+			byte[] xls = baos.toByteArray();
+			ByteArrayInputStream bais = new ByteArrayInputStream(xls);
+			content = new DefaultStreamedContent(
+					bais,
+					"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+					 "AuditTrail_ListSearch.xlsx");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return content;
+	}
+	
+	private void setCellStyleColumn(XSSFWorkbook wb, XSSFCell cell) {
+		XSSFCellStyle cellStyle = wb.createCellStyle();
+		cellStyle.setFillBackgroundColor(IndexedColors.AQUA.getIndex());
+		cellStyle.setFillPattern(XSSFCellStyle.SOLID_FOREGROUND);
+		cellStyle.setFillForegroundColor(HSSFColor.GREY_40_PERCENT.index);
+
+		XSSFFont defaultFont = wb.createFont();
+		defaultFont.setFontHeightInPoints((short) 12);
+		defaultFont.setFontName("Arial");
+		defaultFont.setColor(IndexedColors.BLACK.getIndex());
+		defaultFont.setBold(true);
+		defaultFont.setItalic(false);
+
+		cellStyle.setFont(defaultFont);
+		cell.setCellStyle(cellStyle);
+	}
+	
+	private String getTwoDigits(int number) {
+		if (number < 10)
+			return "0"+number;
+		else return number+"";
+		
+	}
+	
+	private String getWeekDay(int weekday) {
+		switch (weekday) {
+		case 0:
+			return "Monday";
+		case 1:
+			return "Tuesday";
+		case 2:
+			return "Wednesday";
+		case 3:
+			return "Thursday";
+		case 4:
+			return "Friday";
+		case 5:
+			return "Saturday";
+		case 6:
+			return "Sunday";
+
+		default:
+			break;
+		}
+		return "";
+	}
+	
+	private String getMonth(int month) {
+		switch (month) {
+		case 0:
+			return "Jan";
+		case 1:
+			return "Feb";
+		case 2:
+			return "Mar";
+		case 3:
+			return "Apr";
+		case 4:
+			return "May";
+		case 5:
+			return "Jun";
+		case 6:
+			return "Jul";
+		case 7:
+			return "Aug";
+		case 8:
+			return "Sep";
+		case 9:
+			return "Oct";
+		case 10:
+			return "Nov";
+		case 11:
+			return "Dec";
+
+		default:
+			break;
+		}
+		return "";
+	}
+	
+	private void insertExporLogoImage(XSSFSheet sheet, XSSFWorkbook wb)
+			throws IOException {
+		FacesContext fc = FacesContext.getCurrentInstance();
+		ExternalContext ec = fc.getExternalContext();
+		final FileInputStream stream = new FileInputStream(
+				ec.getRealPath("/image/logo.jpg"));
+		final CreationHelper helper = wb.getCreationHelper();
+		final Drawing drawing = sheet.createDrawingPatriarch();
+
+		final ClientAnchor anchor = helper.createClientAnchor();
+		anchor.setAnchorType(ClientAnchor.DONT_MOVE_AND_RESIZE);
+
+		final int pictureIndex = wb.addPicture(stream,
+				Workbook.PICTURE_TYPE_PNG);
+
+//		anchor.setCol1(0);
+//		anchor.setRow1(0); // same row is okay
+		final Picture pict = drawing.createPicture(anchor, pictureIndex);
+		pict.resize();
 	}
 
 }

@@ -773,6 +773,8 @@ public class HistoricalViewController implements Serializable {
 	}
 	
 	public List<String> findAuditTimestamps(int dictionaryVersion) {
+		if (this.listCode == null && this.listName == null)
+			return null;
 		return this.auditTrailService.findAuditTimestamps(dictionaryVersion);
 	}
 	

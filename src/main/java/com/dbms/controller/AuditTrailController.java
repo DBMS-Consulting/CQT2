@@ -20,6 +20,7 @@ import com.dbms.entity.cqt.CmqBase190;
 import com.dbms.entity.cqt.RefConfigCodeList;
 import com.dbms.entity.cqt.dtos.AuditTrailDto;
 import com.dbms.entity.cqt.dtos.CmqBaseDTO;
+import com.dbms.service.AuthenticationService;
 import com.dbms.service.IAuditTrailService;
 import com.dbms.service.ICmqBase190Service;
 import com.dbms.service.IRefCodeListService;
@@ -52,14 +53,14 @@ public class AuditTrailController implements Serializable {
 	@ManagedProperty("#{RefCodeListService}")
 	private IRefCodeListService refCodeListService;
 	
+	@ManagedProperty("#{AuthenticationService}")
+	private AuthenticationService authService;
+	
 	@PostConstruct
 	public void init() {
 		 
 	}
-	
-	public void generateExcel(List<AuditableEntity> list) {
-		
-	}
+
 	
 	public void reset() {
 		this.datas = new ArrayList<AuditTrailDto>();
@@ -103,6 +104,8 @@ public class AuditTrailController implements Serializable {
 	}
 	
 	public List<String> findAuditTimestamps(int dictionaryVersion) {
+		if (this.listCode == null && this.listName == null)
+			return null;
 		return this.auditTrailService.findAuditTimestamps(dictionaryVersion);
 	}
 	
@@ -122,6 +125,13 @@ public class AuditTrailController implements Serializable {
 	public void resetName(AjaxBehaviorEvent event) {
 		this.listName = null;
 	}
+	
+	public void generateExcel(List<AuditTrailDto> list) {
+		String user =  this.authService.getUserGivenName() + " " + this.authService.getUserSurName();
+		StreamedContent content = auditTrailService.generateExcel(list, user);
+		setExcelFile(content); 
+	}
+
 
 	public String getAuditTimestamp() {
 		return auditTimestamp;
@@ -202,5 +212,15 @@ public class AuditTrailController implements Serializable {
 
 	public void setRefCodeListService(IRefCodeListService refCodeListService) {
 		this.refCodeListService = refCodeListService;
+	}
+
+
+	public AuthenticationService getAuthService() {
+		return authService;
+	}
+
+
+	public void setAuthService(AuthenticationService authService) {
+		this.authService = authService;
 	}
 }
