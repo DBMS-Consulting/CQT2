@@ -657,7 +657,8 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 
 	public List<CmqBase190> findCmqsToReactivate() {
 		List<CmqBase190> retVal = null;
-		String queryString = "from CmqBase190 c where upper(c.cmqState) = upper('Published') and c.cmqStatus = 'I' order by upper(c.cmqName) asc ";
+		String queryString = "from CmqBase190 c where upper(c.cmqState) = upper('Published') and c.cmqStatus = 'I' "
+				+"and c.cmqCode not in (select target.cmqCode from CmqBaseTarget target where upper(target.cmqState) = upper('Pending IA') or upper(target.cmqState) = upper('Approved IA') or upper(target.cmqState) = upper('Published IA')) order by upper(c.cmqName) asc ";
 		EntityManager entityManager = this.cqtEntityManagerFactory
 				.getEntityManager();
 		try {
@@ -666,7 +667,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 			retVal = query.getResultList();
 		} catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
-			msg.append("findApprovedCmqs failed ").append("Query used was ->")
+			msg.append("findCmqsToReactivate failed ").append("Query used was ->")
 					.append(queryString);
 			LOG.error(msg.toString(), e);
 		} finally {
