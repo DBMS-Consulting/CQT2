@@ -4,6 +4,9 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.List;
 
@@ -37,7 +40,6 @@ import org.primefaces.model.StreamedContent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.dbms.entity.cqt.CmqBase190;
 import com.dbms.entity.cqt.RefConfigCodeList;
 import com.dbms.entity.cqt.dtos.AuditTrailDto;
 import com.dbms.entity.cqt.dtos.CmqBaseDTO;
@@ -1356,7 +1358,11 @@ public class AuditTrailService implements IAuditTrailService{
 			query.addScalar("auditTimestamp", StandardBasicTypes.TIMESTAMP);
 			
 			if (!StringUtils.isBlank(auditTimeStampString)) {
-				query.setParameter("auditTimeStampString", auditTimeStampString);
+				 //DateTimeFormatter formatter = DateTimeFormatter.ofPattern("DD-MMM-YYYY:HH:mm:ss");
+				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+				 LocalDateTime date = LocalDateTime.parse(auditTimeStampString, formatter);
+				 Timestamp timestamp = Timestamp.valueOf(date);
+				 query.setParameter("auditTimeStampString", timestamp);
 			}
 			if (null!=listCode) {
 				query.setParameter("listCode", listCode);
