@@ -251,7 +251,7 @@
 								<p:treeTable
 									value="#{impactSearchController.targetTableRootTreeNode}"
 									var="node" widgetVar="targetLists" id="futureListsAndSmqs"
-									styleClass="ui-treetable-futureListsAndSmqs"
+									styleClass="ui-treetable-futureListsAndSmqs" rowStyleClass="#{node.rowStyleClass}"
 									selectionMode="single" selection="${impactSearchController.targetTableSelection}"
 									style="width: 100%;" scrollable="true" scrollHeight="400"
 									resizableColumns="true" >
