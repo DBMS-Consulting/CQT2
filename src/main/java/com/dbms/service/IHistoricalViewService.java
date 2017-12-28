@@ -6,7 +6,7 @@ import com.dbms.entity.cqt.dtos.HistoricalViewDbDataDTO;
 
 public interface IHistoricalViewService {
 
-	List<HistoricalViewDbDataDTO> findByCriterias(String listName, String listCode, String dictionaryVersion,
+	List<HistoricalViewDbDataDTO> findByCriterias(String listCode, String dictionaryVersion,
 			String auditTimeStamp);
 
 }

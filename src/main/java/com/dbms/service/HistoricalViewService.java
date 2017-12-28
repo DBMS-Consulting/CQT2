@@ -31,7 +31,7 @@ public class HistoricalViewService implements IHistoricalViewService {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<HistoricalViewDbDataDTO> findByCriterias(String listName, String listCode, String dictionaryVersion,
+	public List<HistoricalViewDbDataDTO> findByCriterias(String listCode, String dictionaryVersion,
 			String auditTimeStampString) {
 		List<HistoricalViewDbDataDTO> retVal = null;
 		InputStream sqlInputStream = this.getClass().getClassLoader().getResourceAsStream("historical-view.sql");

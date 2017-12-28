@@ -2,6 +2,8 @@ package com.dbms.controller;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -105,6 +107,8 @@ public class HistoricalViewController implements Serializable {
 	private IAuditTrailService auditTrailService;
 
 	private List<CmqBaseDTO> cmqBaseDTOSelectList;
+	private List<CmqBaseDTO> cmqBaseDTOSelectListForName;
+	private List<CmqBaseDTO> cmqBaseDTOSelectListForCode;
 	
 	@PostConstruct
 	public void init() {
@@ -112,7 +116,15 @@ public class HistoricalViewController implements Serializable {
 	}
 
 	public void search() {
-		this.searchResults = historicalViewService.findByCriterias(listName, listCode, dictionaryVersion,
+		this.datas = new ArrayList<HistoricalViewDTO>();//clear the results
+		if(StringUtils.isBlank(listCode)) {
+			for (CmqBaseDTO cmqBaseDTO : this.cmqBaseDTOSelectList) {
+				if(cmqBaseDTO.getListName().equals(listName)) {
+					this.listCode = cmqBaseDTO.getListCode();
+				}
+			}
+		}
+		this.searchResults = historicalViewService.findByCriterias(listCode, dictionaryVersion,
 				auditTimestamp);
 		Map<Long, HistoricalViewDTO> historicalViewDTOMap = new HashMap<Long, HistoricalViewDTO>();
 		List<HierarchyNode> addedHierarchyNodes = new ArrayList<>();
@@ -786,14 +798,43 @@ public class HistoricalViewController implements Serializable {
 		return this.auditTrailService.findAuditTimestampsForHistoricalView(dictionaryVersion);
 	}
 	
-	public List<CmqBaseDTO> selectList() {
+	public List<CmqBaseDTO> selectList(String listFor) {
 		if(null == this.cmqBaseDTOSelectList) {
 			List<RefConfigCodeList> dict = new ArrayList<RefConfigCodeList>();
 			dict.add(refCodeListService.getCurrentMeddraVersion());
 			dict.add(refCodeListService.getTargetMeddraVersion());
-			this.cmqBaseDTOSelectList = this.auditTrailService.findLists(dict);
+			List<CmqBaseDTO> results = this.auditTrailService.findLists(dict);
+			this.cmqBaseDTOSelectList = new ArrayList<>(results);
+			
+			//sort on name
+			Collections.sort(this.cmqBaseDTOSelectList, new Comparator<CmqBaseDTO>() {
+
+				@Override
+				public int compare(CmqBaseDTO o1, CmqBaseDTO o2) {
+					return o1.getListName().compareTo(o2.getListName());
+				}
+				
+			});
+			this.cmqBaseDTOSelectListForName = new ArrayList<>(this.cmqBaseDTOSelectList);
+			
+			//sort on code
+			Collections.sort(this.cmqBaseDTOSelectList, new Comparator<CmqBaseDTO>() {
+
+				@Override
+				public int compare(CmqBaseDTO o1, CmqBaseDTO o2) {
+					Long code1 = Long.valueOf(o1.getListCode());
+					Long code2 = Long.valueOf(o2.getListCode());
+					return code1.compareTo(code2);
+				}
+				
+			});
+			this.cmqBaseDTOSelectListForCode = new ArrayList<>(this.cmqBaseDTOSelectList);
 		}
- 		return this.cmqBaseDTOSelectList;
+		if(listFor.equals("CMQ-NAME")) {
+			return this.cmqBaseDTOSelectListForName;
+		} else {
+			return this.cmqBaseDTOSelectListForCode;
+		}
 	}
 
 	public void resetCode(AjaxBehaviorEvent event) {
@@ -994,6 +1035,30 @@ public class HistoricalViewController implements Serializable {
 
 	public void setAuditTrailService(IAuditTrailService auditTrailService) {
 		this.auditTrailService = auditTrailService;
+	}
+
+	public List<CmqBaseDTO> getCmqBaseDTOSelectList() {
+		return cmqBaseDTOSelectList;
+	}
+
+	public void setCmqBaseDTOSelectList(List<CmqBaseDTO> cmqBaseDTOSelectList) {
+		this.cmqBaseDTOSelectList = cmqBaseDTOSelectList;
+	}
+
+	public List<CmqBaseDTO> getCmqBaseDTOSelectListForName() {
+		return cmqBaseDTOSelectListForName;
+	}
+
+	public void setCmqBaseDTOSelectListForName(List<CmqBaseDTO> cmqBaseDTOSelectListForName) {
+		this.cmqBaseDTOSelectListForName = cmqBaseDTOSelectListForName;
+	}
+
+	public List<CmqBaseDTO> getCmqBaseDTOSelectListForCode() {
+		return cmqBaseDTOSelectListForCode;
+	}
+
+	public void setCmqBaseDTOSelectListForCode(List<CmqBaseDTO> cmqBaseDTOSelectListForCode) {
+		this.cmqBaseDTOSelectListForCode = cmqBaseDTOSelectListForCode;
 	}
 
 }

@@ -34,7 +34,7 @@
 								<p:selectOneMenu value="#{historicalViewController.listName}"
 									id="lname" style="width: 200px !important">
 									<f:selectItem itemValue="" itemLabel="Select" />
-									<f:selectItems value="#{historicalViewController.selectList()}"
+									<f:selectItems value="#{historicalViewController.selectList('CMQ-NAME')}"
 										var="cmq" itemLabel="#{cmq.listName}"
 										itemValue="#{cmq.listName}" />
 
@@ -48,7 +48,7 @@
 								<p:selectOneMenu value="#{historicalViewController.listCode}"
 									id="lcode" style="width: 200px !important">
 									<f:selectItem itemValue="" itemLabel="Select" />
-									<f:selectItems value="#{historicalViewController.selectList()}"
+									<f:selectItems value="#{historicalViewController.selectList('CMQ-CODE')}"
 										var="cmq" itemLabel="#{cmq.listCode}"
 										itemValue="#{cmq.listCode}" />
 
