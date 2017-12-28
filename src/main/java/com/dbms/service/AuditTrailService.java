@@ -1416,6 +1416,34 @@ public class AuditTrailService implements IAuditTrailService{
 			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
 		}
 		return retVal;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<String> findAuditTimestampsForHistoricalView(int dictionaryVersion) {
+		List<String> retVal = null;
+		String queryString = "select distinct AUDIT_TIMESTAMP as audit_ts, to_char(AUDIT_TIMESTAMP, 'DD-MON-YYYY:HH24:MI:SS') as AUDIT_TIMESTAMP "
+				+ " from CMQ_BASE_"+dictionaryVersion+"_AUDIT order by audit_ts desc";
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		Session session = entityManager.unwrap(Session.class);
+		try {
+			SQLQuery query = session.createSQLQuery(queryString);
+			query.addScalar("AUDIT_TIMESTAMP", StandardBasicTypes.STRING);
+			 
+			//query.setFetchSize(400);
+ 			//query.setResultTransformer(Transformers.aliasToBean(String.class));
+			query.setCacheable(true);
+			retVal = query.list();
+		}catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg.append("An error occurred while fetching findAuditTimestamps on AuditTrail ")
+					.append(" Query used was ->")
+					.append(queryString);
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
 	
 	
 	}

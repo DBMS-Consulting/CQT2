@@ -104,6 +104,8 @@ public class HistoricalViewController implements Serializable {
 	@ManagedProperty("#{AuditTrailService}")
 	private IAuditTrailService auditTrailService;
 
+	private List<CmqBaseDTO> cmqBaseDTOSelectList;
+	
 	@PostConstruct
 	public void init() {
 		this.displayScopeCatWeight = refCodeListService.getLevelScopeCategorySystemConfig();
@@ -116,67 +118,68 @@ public class HistoricalViewController implements Serializable {
 		List<HierarchyNode> addedHierarchyNodes = new ArrayList<>();
 		TreeNode rootNode = new DefaultTreeNode("root",
 				new HierarchyNode("LEVEL", "NAME", "CODE", "SCOPE", "CATEGORY", "WEIGHT", null), null);
-		;
-		for (HistoricalViewDbDataDTO historicalViewDbDataDTO : searchResults) {
-			Long cmqCode = historicalViewDbDataDTO.getCmqCode();
-			if (!historicalViewDTOMap.containsKey(cmqCode)) {
-				HistoricalViewDTO historicalViewDTO = new HistoricalViewDTO();
-				historicalViewDTO.setCmqCode(cmqCode);
-				historicalViewDTO.setListName(historicalViewDbDataDTO.getListName());
-				historicalViewDTO.setListType(historicalViewDbDataDTO.getListType());
-				historicalViewDTO.setProduct(historicalViewDbDataDTO.getProduct());
-				historicalViewDTO.setDrugProgram(historicalViewDbDataDTO.getDrugProgram());
-				historicalViewDTO.setProtocolNumber(historicalViewDbDataDTO.getProtocolNumber());
-				historicalViewDTO.setListLevel(historicalViewDbDataDTO.getListLevel());
-				historicalViewDTO.setParentListName(historicalViewDbDataDTO.getParentListName());
-				historicalViewDTO.setStatus(historicalViewDbDataDTO.getStatus());
-				historicalViewDTO.setState(historicalViewDbDataDTO.getState());
-				historicalViewDTO.setCreationDate(historicalViewDbDataDTO.getCreationDate());
-				historicalViewDTO.setCreatedBy(historicalViewDbDataDTO.getCreatedBy());
-				historicalViewDTO.setLastActivationDate(historicalViewDbDataDTO.getLastActivationDate());
-				historicalViewDTO.setDescription(historicalViewDbDataDTO.getDescription());
-				historicalViewDTO.setDictionaryVersion(historicalViewDbDataDTO.getDictionaryVersion());
-				historicalViewDTO.setDesignee(historicalViewDbDataDTO.getDesignee());
-				historicalViewDTO.setDesignee2(historicalViewDbDataDTO.getDesignee2());
-				historicalViewDTO.setDesignee3(historicalViewDbDataDTO.getDesignee3());
-				historicalViewDTO.setMedicalConcept(historicalViewDbDataDTO.getMedicalConcept());
-				historicalViewDTOMap.put(cmqCode, historicalViewDTO);
-			}
+		if(null != searchResults) {
+			for (HistoricalViewDbDataDTO historicalViewDbDataDTO : searchResults) {
+				Long cmqCode = historicalViewDbDataDTO.getCmqCode();
+				if (!historicalViewDTOMap.containsKey(cmqCode)) {
+					HistoricalViewDTO historicalViewDTO = new HistoricalViewDTO();
+					historicalViewDTO.setCmqCode(cmqCode);
+					historicalViewDTO.setListName(historicalViewDbDataDTO.getListName());
+					historicalViewDTO.setListType(historicalViewDbDataDTO.getListType());
+					historicalViewDTO.setProduct(historicalViewDbDataDTO.getProduct());
+					historicalViewDTO.setDrugProgram(historicalViewDbDataDTO.getDrugProgram());
+					historicalViewDTO.setProtocolNumber(historicalViewDbDataDTO.getProtocolNumber());
+					historicalViewDTO.setListLevel(historicalViewDbDataDTO.getListLevel());
+					historicalViewDTO.setParentListName(historicalViewDbDataDTO.getParentListName());
+					historicalViewDTO.setStatus(historicalViewDbDataDTO.getStatus());
+					historicalViewDTO.setState(historicalViewDbDataDTO.getState());
+					historicalViewDTO.setCreationDate(historicalViewDbDataDTO.getCreationDate());
+					historicalViewDTO.setCreatedBy(historicalViewDbDataDTO.getCreatedBy());
+					historicalViewDTO.setLastActivationDate(historicalViewDbDataDTO.getLastActivationDate());
+					historicalViewDTO.setDescription(historicalViewDbDataDTO.getDescription());
+					historicalViewDTO.setDictionaryVersion(historicalViewDbDataDTO.getDictionaryVersion());
+					historicalViewDTO.setDesignee(historicalViewDbDataDTO.getDesignee());
+					historicalViewDTO.setDesignee2(historicalViewDbDataDTO.getDesignee2());
+					historicalViewDTO.setDesignee3(historicalViewDbDataDTO.getDesignee3());
+					historicalViewDTO.setMedicalConcept(historicalViewDbDataDTO.getMedicalConcept());
+					historicalViewDTOMap.put(cmqCode, historicalViewDTO);
+				}
 
-			HistoricalViewDTO historicalViewDTO = historicalViewDTOMap.get(cmqCode);
+				HistoricalViewDTO historicalViewDTO = historicalViewDTOMap.get(cmqCode);
 
-			if (null != historicalViewDTO) {
-				// catch relations now.
-				String termDictLevel = historicalViewDbDataDTO.getTermDictLevel();
-				String term = historicalViewDbDataDTO.getTerm();
-				String termScope = historicalViewDbDataDTO.getTermScope();
-				Long termCode = historicalViewDbDataDTO.getTermCode();
-				if ((null != termCode) && StringUtils.isNotBlank(term)) {
-					HierarchyNode hierarchyNode = this.createRelationNode(termDictLevel, term, termCode, termScope);
-					if (!addedHierarchyNodes.contains(hierarchyNode)) {
-						new DefaultTreeNode(hierarchyNode, rootNode);
-						addedHierarchyNodes.add(hierarchyNode);
+				if (null != historicalViewDTO) {
+					// catch relations now.
+					String termDictLevel = historicalViewDbDataDTO.getTermDictLevel();
+					String term = historicalViewDbDataDTO.getTerm();
+					String termScope = historicalViewDbDataDTO.getTermScope();
+					Long termCode = historicalViewDbDataDTO.getTermCode();
+					if ((null != termCode) && StringUtils.isNotBlank(term)) {
+						HierarchyNode hierarchyNode = this.createRelationNode(termDictLevel, term, termCode, termScope);
+						if (!addedHierarchyNodes.contains(hierarchyNode)) {
+							new DefaultTreeNode(hierarchyNode, rootNode);
+							addedHierarchyNodes.add(hierarchyNode);
+						}
+					} else {
+						if (null == termCode) {
+							LOG.warn("Got empty term code for term name {} for list code {} in historical view result.",
+									term, cmqCode);
+						} else {
+							LOG.warn("Got empty term name for term code {} for list code {} in historical view result.",
+									termCode, cmqCode);
+						}
 					}
 				} else {
-					if (null == termCode) {
-						LOG.warn("Got empty term code for term name {} for list code {} in historical view result.",
-								term, cmqCode);
-					} else {
-						LOG.warn("Got empty term name for term code {} for list code {} in historical view result.",
-								termCode, cmqCode);
-					}
+					LOG.warn("No HistoricalViewDTO found in map for cmqCode {} but shoudl have been there.", cmqCode);
 				}
-			} else {
-				LOG.warn("No HistoricalViewDTO found in map for cmqCode {} but shoudl have been there.", cmqCode);
 			}
-		}
 
-		this.relationsRoot = rootNode;
+			this.relationsRoot = rootNode;
 
-		if (historicalViewDTOMap.size() > 0) {
-			this.datas = new ArrayList<HistoricalViewDTO>(historicalViewDTOMap.values());
-		} else {
-			this.datas = new ArrayList<HistoricalViewDTO>();
+			if (historicalViewDTOMap.size() > 0) {
+				this.datas = new ArrayList<HistoricalViewDTO>(historicalViewDTOMap.values());
+			} else {
+				this.datas = new ArrayList<HistoricalViewDTO>();
+			}
 		}
 	}
 
@@ -644,7 +647,12 @@ public class HistoricalViewController implements Serializable {
 		this.selectedHistoricalViewDTO.setRelationsRootTreeNode(this.relationsRoot);
 		List<TreeNode> childNodes = this.relationsRoot.getChildren();
 		for (TreeNode childNode : childNodes) {
+			//first clear off its children and reset the state of the node
+			childNode.getChildren().clear();
+			childNode.setExpanded(false);
 			HierarchyNode hierarchyNode = (HierarchyNode) childNode.getData();
+			hierarchyNode.setDataFetchCompleted(false);
+			
 			IEntity entity = hierarchyNode.getEntity();
 			String level = hierarchyNode.getLevel();
 			if (entity instanceof SmqBase190) {
@@ -775,15 +783,17 @@ public class HistoricalViewController implements Serializable {
 	public List<String> findAuditTimestamps(int dictionaryVersion) {
 		if (this.listCode == null && this.listName == null)
 			return null;
-		return this.auditTrailService.findAuditTimestamps(dictionaryVersion);
+		return this.auditTrailService.findAuditTimestampsForHistoricalView(dictionaryVersion);
 	}
 	
 	public List<CmqBaseDTO> selectList() {
-		List<RefConfigCodeList> dict = new ArrayList<RefConfigCodeList>();
-		dict.add(refCodeListService.getCurrentMeddraVersion());
-		dict.add(refCodeListService.getTargetMeddraVersion());
-		
- 		return this.auditTrailService.findLists(dict);
+		if(null == this.cmqBaseDTOSelectList) {
+			List<RefConfigCodeList> dict = new ArrayList<RefConfigCodeList>();
+			dict.add(refCodeListService.getCurrentMeddraVersion());
+			dict.add(refCodeListService.getTargetMeddraVersion());
+			this.cmqBaseDTOSelectList = this.auditTrailService.findLists(dict);
+		}
+ 		return this.cmqBaseDTOSelectList;
 	}
 
 	public void resetCode(AjaxBehaviorEvent event) {

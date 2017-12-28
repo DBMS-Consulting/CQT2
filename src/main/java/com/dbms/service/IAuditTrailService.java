@@ -13,7 +13,8 @@ public interface IAuditTrailService {
 	List<AuditTrailDto> findByCriterias(Long listCode, int dictionaryVersion, String auditTimeStamp);
 	List<String> findAuditTimestamps(int dictionaryVersion);
 	List<CmqBaseDTO> findLists(List<RefConfigCodeList> dictionaryVersions);
-	StreamedContent generateExcel(List<AuditTrailDto> list, String user); 
+	StreamedContent generateExcel(List<AuditTrailDto> list, String user);
+	List<String> findAuditTimestampsForHistoricalView(int dictionaryVersion); 
 
 
 }
