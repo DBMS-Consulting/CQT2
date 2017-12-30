@@ -1393,9 +1393,9 @@ public class AuditTrailService implements IAuditTrailService{
 	}
 
 	@Override
-	public List<String> findAuditTimestamps(int dictionaryVersion) {
+	public List<String> findAuditTimestamps(int dictionaryVersion, Long cmqId) {
 		List<String> retVal = null;
-		String queryString = "select distinct AUDIT_TIMESTAMP from CMQ_BASE_"+dictionaryVersion+"_AUDIT order by AUDIT_TIMESTAMP";
+		String queryString = "select distinct AUDIT_TIMESTAMP from CMQ_BASE_"+dictionaryVersion+"_AUDIT where CMQ_ID = " + cmqId + "order by AUDIT_TIMESTAMP desc";
 		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
 		Session session = entityManager.unwrap(Session.class);
 		try {
@@ -1420,10 +1420,23 @@ public class AuditTrailService implements IAuditTrailService{
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<String> findAuditTimestampsForHistoricalView(int dictionaryVersion) {
+	public List<String> findAuditTimestampsForHistoricalView(int dictionaryVersion, String code, String name) {
 		List<String> retVal = null;
-		String queryString = "select distinct AUDIT_TIMESTAMP as audit_ts, to_char(AUDIT_TIMESTAMP, 'DD-MON-YYYY:HH24:MI:SS') as AUDIT_TIMESTAMP "
-				+ " from CMQ_BASE_"+dictionaryVersion+"_AUDIT order by audit_ts desc";
+		String queryString = "";
+		if (code != null && !code.equals("")) {
+			Long cmqCode = Long.parseLong(code);
+			queryString = "select distinct AUDIT_TIMESTAMP as audit_ts, to_char(AUDIT_TIMESTAMP, 'DD-MON-YYYY:HH24:MI:SS') as AUDIT_TIMESTAMP "
+					+ " from CMQ_BASE_"+ dictionaryVersion 
+					+ "_AUDIT where CMQ_CODE_OLD = " + cmqCode + " or CMQ_CODE_NEW = " + cmqCode
+ 					+ " order by audit_ts desc";
+		}
+		if (name != null && !name.equals("")) {
+			queryString = "select distinct AUDIT_TIMESTAMP as audit_ts, to_char(AUDIT_TIMESTAMP, 'DD-MON-YYYY:HH24:MI:SS') as AUDIT_TIMESTAMP "
+					+ " from CMQ_BASE_"+ dictionaryVersion 
+					+ "_AUDIT where CMQ_NAME_OLD = '" + name + "' or CMQ_NAME_NEW = '" + name
+					+ "' order by audit_ts desc";
+		}
+		
 		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
 		Session session = entityManager.unwrap(Session.class);
 		try {
@@ -1461,7 +1474,8 @@ public class AuditTrailService implements IAuditTrailService{
 			if (count < dictionaryVersions.size())
 				queryL += " union ";
 		}
-		
+		queryL += " order by listName";
+				
   		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
 		Session session = entityManager.unwrap(Session.class);
 		try {
@@ -1517,10 +1531,10 @@ public class AuditTrailService implements IAuditTrailService{
 		rowCount++;
 		Calendar cal = Calendar.getInstance();
 		//.setTime(new Date());
-		String date = getWeekDay(cal.get(Calendar.DAY_OF_WEEK)) + ", " + 
+		String date = getWeekDay(cal.get(Calendar.DAY_OF_WEEK)) + " " + 
 				getTwoDigits(cal.get(Calendar.DAY_OF_MONTH) + 1) + "-" + 
 				getMonth(cal.get(Calendar.MONTH)) + "-" + 
-				cal.get(Calendar.YEAR) + " : " + 
+				cal.get(Calendar.YEAR) + "  " + 
 				getTwoDigits(cal.get(Calendar.HOUR)) + ":" + 
 				getTwoDigits(cal.get(Calendar.MINUTE)) + ":" + 
 				getTwoDigits(cal.get(Calendar.SECOND)) + " EST";

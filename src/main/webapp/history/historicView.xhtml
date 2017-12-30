@@ -31,28 +31,28 @@
 							<h:panelGrid columns="12" columnClasses="label, value" id="searchPanel">
 								<p:outputLabel for="lname" value="List Name"
 									styleClass="label-right" />
-								<p:selectOneMenu value="#{historicalViewController.listName}"
-									id="lname" style="width: 200px !important">
+								<p:selectOneMenu value="#{historicalViewController.listName}"  disabled="#{historicalViewController.listCode ne null}"
+									id="lname" style="width: 200px !important" filter="true" filterMatchMode="contains">
 									<f:selectItem itemValue="" itemLabel="Select" />
 									<f:selectItems value="#{historicalViewController.selectList('CMQ-NAME')}"
 										var="cmq" itemLabel="#{cmq.listName}"
 										itemValue="#{cmq.listName}" />
 
-									<p:ajax update="lcode"
+									<p:ajax update="lcode time"
 										listener="#{historicalViewController.resetCode}" />
 								</p:selectOneMenu>
 								<p:spacer width="50" />
 
 								<p:outputLabel for="lcode" value="List Code"
 									styleClass="label-right" />
-								<p:selectOneMenu value="#{historicalViewController.listCode}"
-									id="lcode" style="width: 200px !important">
+								<p:selectOneMenu value="#{historicalViewController.listCode}"  disabled="#{historicalViewController.listName ne null}"
+									id="lcode" style="width: 200px !important" filter="true" filterMatchMode="contains">
 									<f:selectItem itemValue="" itemLabel="Select" />
 									<f:selectItems value="#{historicalViewController.selectList('CMQ-CODE')}"
 										var="cmq" itemLabel="#{cmq.listCode}"
 										itemValue="#{cmq.listCode}" />
 
-									<p:ajax update="lname"
+									<p:ajax update="lname time"
 										listener="#{historicalViewController.resetName}" />
 								</p:selectOneMenu>
 								<p:spacer width="50" />
@@ -61,7 +61,7 @@
 								<p:outputLabel for="dict" value="Dictionary Version"
 									styleClass="label-right" />
 								<p:selectOneMenu value="#{historicalViewController.dictionaryVersion}"
-									id="dict">
+									id="dict" filter="true" filterMatchMode="contains">
 									<f:selectItem itemValue="" itemLabel="Select" />
 									<f:selectItems value="#{configMB.allMeddraVersion}" var="d"
 										itemLabel="#{d.value}" itemValue="#{d.value}" />
@@ -73,7 +73,7 @@
 								<p:outputLabel for="time" value="Audit Timestamp"
 									styleClass="label-right" />
 								<p:selectOneMenu value="#{historicalViewController.auditTimestamp}"
-									id="time" style="width: 170px !important">
+									id="time" style="width: 170px !important" filter="true" filterMatchMode="contains">
 									<f:selectItem itemValue="" itemLabel="Select" />
 									<f:selectItems
 										value="#{historicalViewController.findAuditTimestamps(historicalViewController.dictionaryVersion)}"
@@ -297,8 +297,7 @@
 									value="#{historicalViewController.selectedHistoricalViewDTO.dictionaryVersion}" />
 							</h:panelGrid>
 						</h:panelGrid>
-						<p:commandButton value="Audit" action="#" disabled="true"
-							onclick="PF('audit-dialog').show()" />
+					 
 					</p:panel>
 				</p:tab>
 

@@ -24,30 +24,30 @@
 				<h:panelGrid columns="1" style="margin-left: 5%">
 					<h:panelGrid columns="12" columnClasses="label, value" id="searchPanel">
 						<p:outputLabel for="lname" value="List Name" styleClass="label-right" />
-						<p:selectOneMenu value="#{auditTrailController.listName}" disabled="#{auditTrailController.listCode ne null}"
-							id="lname" style="width: 200px !important">
+						<p:selectOneMenu value="#{auditTrailController.listName}" filter="true" disabled="#{auditTrailController.listCode ne null}"
+							id="lname" style="width: 200px !important" filterMatchMode="contains">
 							<f:selectItem itemValue="" itemLabel="Select" />
 							<f:selectItems value="#{auditTrailController.selectList()}" var="cmq"
 								itemLabel="#{cmq.listName}" itemValue="#{cmq.listName}" />
 								
-								<p:ajax update="lcode" listener="#{auditTrailController.resetCode}" />
+								<p:ajax update="lcode time" listener="#{auditTrailController.resetCode}" />
 						</p:selectOneMenu>
 						<p:spacer width="50" />
 
 						<p:outputLabel for="lcode" value="List Code" styleClass="label-right" />
-						<p:selectOneMenu value="#{auditTrailController.listCode}" disabled="#{auditTrailController.listName ne null}"
-							id="lcode" style="width: 200px !important">
+						<p:selectOneMenu value="#{auditTrailController.listCode}" filter="true" disabled="#{auditTrailController.listName ne null}"
+							id="lcode" style="width: 200px !important" filterMatchMode="contains">
 							<f:selectItem itemValue="" itemLabel="Select" />
 							<f:selectItems value="#{auditTrailController.selectList()}" var="cmq"
 								itemLabel="#{cmq.listCode}" itemValue="#{cmq.listCode}" />
 								
-								<p:ajax update="lname" listener="#{auditTrailController.resetName}" />
+								<p:ajax update="lname time" listener="#{auditTrailController.resetName}" />
 						</p:selectOneMenu>
 						<p:spacer width="50" />
 
 					 
 						<p:outputLabel for="dict" value="Dictionary Version" styleClass="label-right" />
- 						<p:selectOneMenu value="#{auditTrailController.dictionary}" id="dict">
+ 						<p:selectOneMenu value="#{auditTrailController.dictionary}" filter="true" id="dict" filterMatchMode="contains">
 							<f:selectItem itemValue="" itemLabel="Select" />
 							<f:selectItems value="#{configMB.allMeddraVersion}" var="d"
 								itemLabel="#{d.value}" itemValue="#{d.value}" />
@@ -57,7 +57,8 @@
 						<p:spacer width="50" />
 
 						<p:outputLabel for="time" value="Audit Timestamp" styleClass="label-right" />
-						<p:selectOneMenu value="#{auditTrailController.auditTimestamp}" id="time" style="width: 170px !important">
+						<p:selectOneMenu value="#{auditTrailController.auditTimestamp}" 
+							filter="true" filterMatchMode="contains" id="time" style="width: 170px !important">
 							<f:selectItem itemValue="" itemLabel="Select" />
 							<f:selectItems value="#{auditTrailController.findAuditTimestamps(auditTrailController.dictionary)}" var="at"
 								itemLabel="#{at}" itemValue="#{at}" />
@@ -67,11 +68,7 @@
  
 					<h:panelGrid columns="3" id="btnPanel" styleClass="row"
 						style="margin-left: 40%">
-
-						<!-- <p:commandButton value="Search"
-							action="#{auditTrailController.findAudit}"
-							actionListener="#{auditTrailController.clearCmqSelection}"
-							update="@form:result" /> -->
+ 
 						<p:commandButton value="Search"
 							action="#{auditTrailController.findAudit}"
 							update="@form:result"/>

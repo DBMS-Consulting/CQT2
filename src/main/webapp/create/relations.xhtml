@@ -81,9 +81,9 @@
                                styleClass="generate" onclick="PF('confirmMQReport').show();return false;" />
                 
                 <h:commandLink rendered="#{createController.relationsModel.relationsRoot.childCount le 0}" value="MQ Detailed Report"
-					styleClass="generate"
-					actionListener="#{reportController.generateMQReport(createController.detailsFormModel, createController.notesFormModel,createController.relationsModel.relationsRoot)}">
+					styleClass="generate" actionListener="#{reportController.generateMQReport(createController.detailsFormModel, createController.notesFormModel,createController.relationsModel.relationsRoot)}">
 					<p:fileDownload value="#{reportController.excelFile}" />
+					<p:ajax process="@this"  />
 				</h:commandLink>
 				
 				<p:spacer width="10" />

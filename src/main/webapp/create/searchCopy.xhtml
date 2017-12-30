@@ -116,17 +116,10 @@
 	<p:outputPanel deferred="true" deferredMode="visible">
 		<p:dataTable var="value" value="#{searchController.datas}" id="result"
 			rows="10" paginator="true" paginatorPosition="bottom"
-			paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} {Exporters}"
+			paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 			rowsPerPageTemplate="5,10,25"
 			resizableColumns="true">
-			
-			<f:facet name="{Exporters}">
-	            <h:commandLink>
-	                <img title="Export list" src="#{request.contextPath}/image/excel_small.png" style="float: right" width="24" />
-	                <p:dataExporter type="xls" target="result" fileName="LISTS" />
-	            </h:commandLink>
-            </f:facet>
-            
+		
 			<p:column headerText="List Name" width="180" sortBy="#{value.cmqName}">
 				<h:outputText value="#{value.cmqName}" />
 			</p:column>
@@ -167,37 +160,11 @@
 			<p:column headerText="Created By" width="100">
 				<h:outputText value="#{value.createdByLabel}" />
 			</p:column>
-			<p:column exportable="false" headerText="History" style="text-align: center" width="40"
-				rendered="#{view.viewId == '/create/browseAndSearch.xhtml' ? true : false}">
-				<p:commandLink action="#" style="color: red" value="History"
-					onclick="PF('history-dialog').show()">
-					<i class="fa fa-power-off"></i>
-				</p:commandLink>
-
-			</p:column>
-			 
+			
 		</p:dataTable>
 	</p:outputPanel>
 
 
-	 
-
-	<p:dialog widgetVar="history-dialog" modal="true" id="historyD"
-		closable="true" header="History As of Date (Required for history)">
-
-		<h:panelGrid columns="1">
-			<h:panelGrid>
-				<p:calendar showOn="button" style="margin-left: 50px !important;"
-					pattern="dd/MM/yyyy" />
-			</h:panelGrid>
-
-			<h:panelGrid style="float: right" columns="2">
-				<p:commandButton value="OK" action="OK" />
-				<p:commandButton value="Cancel" onclick="PF('new_pt').hide()"
-					immediate="true" />
-			</h:panelGrid>
-		</h:panelGrid>
-	</p:dialog>
 
 
 	<!-- Popups - dialogs   -->

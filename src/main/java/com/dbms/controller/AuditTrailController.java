@@ -132,7 +132,6 @@ public class AuditTrailController implements Serializable {
 		setExcelFile(content); 
 	}
 
-
 	public String getAuditTimestamp() {
 		return auditTimestamp;
 	}

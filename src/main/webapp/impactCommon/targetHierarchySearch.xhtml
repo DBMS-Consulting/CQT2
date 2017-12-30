@@ -50,7 +50,7 @@
 			<p:treeTable value="#{impactSearchController.targetHierarchySearchDlgModel.hierarchyRoot}"  var="node"
                 id="resultHierTarget" selectionMode="multiple" selection="#{impactSearchController.targetHierarchySearchDlgModel.selectedNodes}"
 				styleClass="ui-treetable-resultHierTarget hide-sel-chkbox"
-                rowStyleClass="#{node.rowStyleClass}" resizableColumns="true">
+                resizableColumns="true">
 
 				<p:ajax event="expand"
 					listener="#{impactSearchController.targetHierarchySearchDlgModel.onNodeExpand}"

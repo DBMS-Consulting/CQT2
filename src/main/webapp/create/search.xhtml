@@ -167,17 +167,14 @@
 			<p:column headerText="Created By" width="100">
                 <h:outputText value="#{value.createdByLabel}" />
 			</p:column>
-			<p:column exportable="false" headerText="History" style="text-align: center" width="40"
+			<!-- <p:column exportable="false" headerText="History" style="text-align: center" width="40"
                       rendered="#{createController.browseWizard != null ? true : false}">
                 <p:commandLink action="#" style="color: red" value="History" disabled="true"
 					onclick="PF('history-dialog').show()">
 					<i class="fa fa-power-off"></i>
 				</p:commandLink>
-			</p:column>
-			
-		</p:dataTable>
-
-		
+			</p:column> -->
+		</p:dataTable>		
 	</p:outputPanel>
   	
 	 
@@ -185,7 +182,7 @@
 	
 
 
-    <p:dialog widgetVar="history-dialog" modal="true" id="historyD"
+    <!-- <p:dialog widgetVar="history-dialog" modal="true" id="historyD"
 		closable="true" header="History As of Date (Required for history)">
 
 		<h:panelGrid columns="1">
@@ -200,7 +197,7 @@
 					immediate="true" />
 			</h:panelGrid>
 		</h:panelGrid>
-	</p:dialog>
+	</p:dialog>  -->
 
 
 	<!-- Popups - dialogs   -->

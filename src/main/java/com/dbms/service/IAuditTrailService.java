@@ -11,10 +11,10 @@ import com.dbms.entity.cqt.dtos.CmqBaseDTO;
 public interface IAuditTrailService {
 	
 	List<AuditTrailDto> findByCriterias(Long listCode, int dictionaryVersion, String auditTimeStamp);
-	List<String> findAuditTimestamps(int dictionaryVersion);
+	List<String> findAuditTimestamps(int dictionaryVersion, Long cmqId);
 	List<CmqBaseDTO> findLists(List<RefConfigCodeList> dictionaryVersions);
 	StreamedContent generateExcel(List<AuditTrailDto> list, String user);
-	List<String> findAuditTimestampsForHistoricalView(int dictionaryVersion); 
+	List<String> findAuditTimestampsForHistoricalView(int dictionaryVersion, String code, String name); 
 
 
 }
