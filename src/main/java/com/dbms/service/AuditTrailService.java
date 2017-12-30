@@ -1404,8 +1404,8 @@ public class AuditTrailService implements IAuditTrailService{
 		}
 		if (name != null && !name.equals("")) {
 			queryString = "select distinct AUDIT_TIMESTAMP from CMQ_BASE_"+dictionaryVersion+"_AUDIT "
- 					+ " where CMQ_NAME_OLD = " + name + " or CMQ_NAME_NEW = " + name
- 					+ " order by AUDIT_TIMESTAMP desc";
+ 					+ " where CMQ_NAME_OLD = '" + name + "' or CMQ_NAME_NEW = '" + name
+ 					+ "' order by AUDIT_TIMESTAMP desc";
 		}
 		 
 		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
