@@ -1393,9 +1393,21 @@ public class AuditTrailService implements IAuditTrailService{
 	}
 
 	@Override
-	public List<String> findAuditTimestamps(int dictionaryVersion, Long cmqId) {
+	public List<String> findAuditTimestamps(int dictionaryVersion, String code, String name) {
 		List<String> retVal = null;
-		String queryString = "select distinct AUDIT_TIMESTAMP from CMQ_BASE_"+dictionaryVersion+"_AUDIT where CMQ_ID = " + cmqId + "order by AUDIT_TIMESTAMP desc";
+		String queryString = "";
+		if (code != null && !code.equals("")) {
+			Long cmqCode = Long.parseLong(code);
+			queryString = "select distinct AUDIT_TIMESTAMP from CMQ_BASE_"+dictionaryVersion+"_AUDIT "
+ 					+ " where CMQ_CODE_OLD = " + cmqCode + " or CMQ_CODE_NEW = " + cmqCode
+ 					+ " order by AUDIT_TIMESTAMP desc";
+		}
+		if (name != null && !name.equals("")) {
+			queryString = "select distinct AUDIT_TIMESTAMP from CMQ_BASE_"+dictionaryVersion+"_AUDIT "
+ 					+ " where CMQ_NAME_OLD = " + name + " or CMQ_NAME_NEW = " + name
+ 					+ " order by AUDIT_TIMESTAMP desc";
+		}
+		 
 		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
 		Session session = entityManager.unwrap(Session.class);
 		try {
