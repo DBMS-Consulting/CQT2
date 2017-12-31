@@ -71,7 +71,7 @@
  
 						<p:commandButton value="Search"
 							action="#{auditTrailController.findAudit}"
-							update="@form:result"/>
+							update="@form:result @form:m1"/>
 						<p:commandButton action="#{auditTrailController.reset}" value="Reset"
 							process="@this" update="@form:result @form:searchPanel" />
 							
