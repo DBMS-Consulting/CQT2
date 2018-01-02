@@ -35,13 +35,13 @@
             <property name="hibernate.transaction.auto_close_session" value="true" />
             <property name="hibernate.dialect" value="org.hibernate.dialect.Oracle10gDialect" />
             <property name="hibernate.connection.driver_class" value="oracle.jdbc.driver.OracleDriver" />
-            <property name="hibernate.connection.url" value="jdbc:oracle:thin:@192.196.245.20:8078/devcqt1" />
+            <property name="hibernate.connection.url" value="jdbc:oracle:thin:@192.168.1.55:1521/devcqt1" />
             <property name="hibernate.connection.username" value="opencqt" />
 
             <property name="hibernate.connection.password" value="release098" />
-<!-- 
+<!--
             <property name="hibernate.connection.password" value="ENC(eUob/NCg3ql+yuAf+IlLuM55Z2tEt11S)" />
- -->            
+ -->
             <property name="hibernate.default_schema" value="OPENCQT" />
             <property name="hibernate.connection.autocommit" value="false" />
             <property name="hibernate.max_fetch_depth" value="4" />
@@ -50,22 +50,22 @@
             <property name="hibernate.order_updates" value="true" />
             <!-- <property name="hibernate.hbm2ddl.auto" value="create-drop" /> -->
             <!-- <property name="hibernate.hbm2ddl.auto" value="update" /> -->
-            
+
             <property name="net.sf.ehcache.configurationResourceName" value="/cqt-ehcache.xml" />
             <property name="hibernate.cache.region.factory_class" value="org.hibernate.cache.ehcache.EhCacheRegionFactory" />
             <property name="hibernate.cache.use_query_cache" value="true"/>
             <property name="hibernate.cache.use_second_level_cache" value="true"/>
             <property name="hibernate.generate_statistics" value="false"/>
-            
+
             <property name="hibernate.show_sql" value="false" />
             <property name="hibernate.format_sql" value="false" />
 
             <!-- Connection pooling -->
-<!-- 
+<!--
             <property name="hibernate.connection.provider_class" value="org.hibernate.connection.C3P0ConnectionProvider" />
  -->
             <property name="hibernate.connection.provider_class" value="com.dbms.util.EncryptedPasswordC3P0ConnectionProvider" />
-            <property name="hibernate.connection.encryptor_registered_name" value="hibernateEncryptor"/>                
+            <property name="hibernate.connection.encryptor_registered_name" value="hibernateEncryptor"/>
             <property name="hibernate.c3p0.max_size" value="15" />
             <property name="hibernate.c3p0.min_size" value="1" />
             <property name="hibernate.c3p0.acquire_increment" value="1" />
@@ -74,4 +74,4 @@
             <property name="hibernate.c3p0.timeout" value="240" />
         </properties>
     </persistence-unit>
-</persistence> 
+</persistence>
