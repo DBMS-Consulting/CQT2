@@ -57,7 +57,6 @@ import org.slf4j.LoggerFactory;
 
 import com.dbms.csmq.CSMQBean;
 import com.dbms.csmq.HierarchyNode;
-import com.dbms.entity.IEntity;
 import com.dbms.entity.cqt.CmqBase190;
 import com.dbms.entity.cqt.CmqParentChild200;
 import com.dbms.entity.cqt.CmqRelation190;

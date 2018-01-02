@@ -1,7 +1,5 @@
 package com.dbms.service;
 
-import com.dbms.csmq.CSMQBean;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -24,6 +22,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.BorderStyle;
@@ -34,31 +33,23 @@ import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.hibernate.SQLQuery;
-import org.hibernate.Session;
-import org.hibernate.transform.Transformers;
-import org.hibernate.type.StandardBasicTypes;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.SortOrder;
 import org.primefaces.model.StreamedContent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.dbms.entity.cqt.CmqBase190;
+import com.dbms.csmq.CSMQBean;
 import com.dbms.entity.cqt.CmqBaseTarget;
+import com.dbms.entity.cqt.CmqParentChildTarget;
 import com.dbms.entity.cqt.CmqRelation190;
 import com.dbms.entity.cqt.CmqRelationTarget;
-import com.dbms.entity.cqt.SmqBase190;
 import com.dbms.entity.cqt.SmqBaseTarget;
-import com.dbms.entity.cqt.SmqRelation190;
 import com.dbms.entity.cqt.SmqRelationTarget;
 import com.dbms.entity.cqt.dtos.MeddraDictHierarchySearchDto;
 import com.dbms.entity.cqt.dtos.ReportLineDataDto;
 import com.dbms.service.base.CqtPersistenceService;
-import com.dbms.util.CmqUtils;
 import com.dbms.util.CqtConstants;
-
-import org.apache.commons.collections4.CollectionUtils;
 
 /**
  * @author Jay G.(jayshanchn@hotmail.com)
@@ -86,6 +77,9 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 	@ManagedProperty("#{RefCodeListService}")
 	private IRefCodeListService refCodeListService;
     
+	@ManagedProperty("#{CmqParentChildTargetService}")
+	private ICmqParentChildTargetService parentChildService;
+	
 	/* (non-Javadoc)
 	 * @see com.dbms.service.ICmqBaseTargetService#findImpactedWithPaginated(int, int, java.lang.String, org.primefaces.model.SortOrder, java.util.Map)
 	 */
@@ -302,85 +296,43 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 		return retVal;
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<Map<String, Object>> findCmqChildCountForParentCmqCodes(List<Long> cmqCodes) {
-		List<Map<String, Object>> retVal = null;
-        
-        if(CollectionUtils.isEmpty(cmqCodes))
+        if(CollectionUtils.isEmpty(cmqCodes)) {
             return null;
-        
-		String queryString = CmqUtils.convertArrayToTableWith(cmqCodes, "tempCmqCodes", "code")
-                + " select CMQ_CODE, count(*) as COUNT"
-                + " from CMQ_BASE_TARGET cmqTbl"
-                + " inner join tempCmqCodes on tempCmqCodes.code=cmqTbl.CMQ_PARENT_CODE"
-                + " group by CMQ_CODE";
-
-		EntityManager entityManager = this.cqtEntityManagerFactory
-				.getEntityManager();
-		Session session = entityManager.unwrap(Session.class);
-		try {
-			SQLQuery query = session.createSQLQuery(queryString);
-			query.addScalar("CMQ_CODE", StandardBasicTypes.LONG);
-			query.addScalar("COUNT", StandardBasicTypes.LONG);
-            
-			query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
-			retVal = query.list();
-		} catch (Exception e) {
-			StringBuilder msg = new StringBuilder();
-			msg.append(
-					"An error occurred while findCmqChildCountForParentCmqCode ")
-					.append(cmqCodes).append(" Query used was ->")
-					.append(queryString);
-			LOG.error(msg.toString(), e);
-		} finally {
-			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
-		}
-		return retVal;
+        } else {
+        	return this.parentChildService.findCmqChildCountForParentCmqCodes(cmqCodes);
+        }
 	}
 
 	@Override
 	public Long findCmqChildCountForParentCmqCode(Long cmqCode) {
-		Long retVal = null;
-		StringBuilder sb = new StringBuilder();
-		sb.append("select count(*) from CmqBaseTarget c where c.cmqParentCode = :cmqCode");
-
-		EntityManager entityManager = this.cqtEntityManagerFactory
-				.getEntityManager();
-		try {
-			Query query = entityManager.createQuery(sb.toString());
-			query.setParameter("cmqCode", cmqCode);
-			retVal = (Long) query.getSingleResult();
-		} catch (Exception e) {
-			StringBuilder msg = new StringBuilder();
-			msg.append("An error occurred while findCmqChildCountForCmqCode ")
-					.append(cmqCode).append(" Query used was ->")
-					.append(sb.toString());
-			LOG.error(msg.toString(), e);
-		} finally {
-			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
-		}
-		return retVal;
+		return this.parentChildService.findCmqChildCountForParentCmqCode(cmqCode);
 	}
 	
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<CmqBaseTarget> findChildCmqsByParentCode(Long code) {
 		List<CmqBaseTarget> retVal = null;
-		String queryString = "from CmqBaseTarget c where c.cmqParentCode = :codeList ";
-		EntityManager entityManager = this.cqtEntityManagerFactory
-				.getEntityManager();
-		try {
-			Query query = entityManager.createQuery(queryString);
-			query.setParameter("codeList", code);
-			retVal = query.getResultList();
-		} catch (Exception e) {
-			StringBuilder msg = new StringBuilder();
-			msg.append("findChildCmqsByCode failed ")
-					.append("Query used was ->").append(queryString);
-			LOG.error(msg.toString(), e);
-		} finally {
-			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		List<CmqParentChildTarget> childList = this.parentChildService.findChildsByCmqCode(code);
+		if(null!=childList && !childList.isEmpty()) {
+			List<Long> childCMQCodeList = getChildCMQCodeList(childList);
+			String queryString = "from CmqBaseTarget c where c.cmqCode in (:codeList) ";
+			EntityManager entityManager = this.cqtEntityManagerFactory
+					.getEntityManager();
+			try {
+				Query query = entityManager.createQuery(queryString);
+				query.setParameter("codeList", childCMQCodeList);
+				query.setHint("org.hibernate.cacheable", true);
+				retVal = query.getResultList();
+			} catch (Exception e) {
+				StringBuilder msg = new StringBuilder();
+				msg.append("findChildCmqsByCode failed ")
+						.append("Query used was ->").append(queryString);
+				LOG.error(msg.toString(), e);
+			} finally {
+				this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+			}
 		}
 		return retVal;
 	}
@@ -391,7 +343,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 		List<CmqBaseTarget> retVal = null;
 		StringBuilder sb = new StringBuilder();
 		//sb.append("from CmqBaseTarget c where c.cmqLevel = :cmqLevel and c.cmqParentCode is null and c.cmqStatus = 'I' ");
-		sb.append("from CmqBaseTarget c where c.cmqLevel = :cmqLevel and c.cmqParentCode is null ");
+		sb.append("from CmqBaseTarget c where c.cmqLevel = :cmqLevel ");
 		if (!StringUtils.isBlank(searchTerm)) {
 			sb.append("and upper(c.cmqName) like :cmqName");
 		}
@@ -2205,20 +2157,25 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 	@Override
 	public List<CmqBaseTarget> findChildCmqsByCodes(List<Long> codes) {
 		List<CmqBaseTarget> retVal = null;
-		String queryString = "from CmqBaseTarget c where c.cmqParentCode in (:codeList) ";
-		EntityManager entityManager = this.cqtEntityManagerFactory
-				.getEntityManager();
-		try {
-			Query query = entityManager.createQuery(queryString);
-			query.setParameter("codeList", codes);
-			retVal = query.getResultList();
-		} catch (Exception e) {
-			StringBuilder msg = new StringBuilder();
-			msg.append("findChildCmqsByCodes failed ")
-					.append("Query used was ->").append(queryString);
-			LOG.error(msg.toString(), e);
-		} finally {
-			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		List<CmqParentChildTarget> childList = this.parentChildService.findChildCmqsByParentCodes(codes);
+		if(null!=childList && !childList.isEmpty()) {
+			List<Long> childCMQCodeList  = getChildCMQCodeList(childList);
+			String queryString = "from CmqBaseTarget c where c.cmqCode in (:codeList) ";
+			EntityManager entityManager = this.cqtEntityManagerFactory
+					.getEntityManager();
+			try {
+				Query query = entityManager.createQuery(queryString);
+				query.setParameter("codeList", childCMQCodeList);
+				query.setHint("org.hibernate.cacheable", true);
+				retVal = query.getResultList();
+			} catch (Exception e) {
+				StringBuilder msg = new StringBuilder();
+				msg.append("findChildCmqsByCodes failed ")
+						.append("Query used was ->").append(queryString);
+				LOG.error(msg.toString(), e);
+			} finally {
+				this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+			}
 		}
 		return retVal;
 	}
@@ -2226,20 +2183,25 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 	@Override
 	public List<CmqBaseTarget> findParentCmqsByCodes(List<Long> codes) {
 		List<CmqBaseTarget> retVal = null;
-		String queryString = "from CmqBaseTarget c where c.cmqCode in (:codeList) ";
-		EntityManager entityManager = this.cqtEntityManagerFactory
-				.getEntityManager();
-		try {
-			Query query = entityManager.createQuery(queryString);
-			query.setParameter("codeList", codes);
-			retVal = query.getResultList();
-		} catch (Exception e) {
-			StringBuilder msg = new StringBuilder();
-			msg.append("findParentCmqsByCodes failed ")
-					.append("Query used was ->").append(queryString);
-			LOG.error(msg.toString(), e);
-		} finally {
-			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		List<CmqParentChildTarget> parentList = this.parentChildService.findParentCmqsByChildCodes(codes);
+		if(null!=parentList && !parentList.isEmpty()) {
+			List<Long> parentCMQCodeList = getParentCMQCodeList(parentList);
+			String queryString = "from CmqBaseTarget c where c.cmqCode in (:codeList) ";
+			EntityManager entityManager = this.cqtEntityManagerFactory
+					.getEntityManager();
+			try {
+				Query query = entityManager.createQuery(queryString);
+				query.setParameter("codeList", parentCMQCodeList);
+				query.setHint("org.hibernate.cacheable", true);
+				retVal = query.getResultList();
+			} catch (Exception e) {
+				StringBuilder msg = new StringBuilder();
+				msg.append("findParentCmqsByCodes failed ")
+						.append("Query used was ->").append(queryString);
+				LOG.error(msg.toString(), e);
+			} finally {
+				this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+			}
 		}
 		return retVal;
 	}
@@ -2346,5 +2308,29 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
 		}
 		return retVal;
+	}
+	
+	private List<Long> getChildCMQCodeList(List<CmqParentChildTarget> childList) {
+		List<Long> childCMQCodeList = new ArrayList<>();
+		for(CmqParentChildTarget child : childList) {
+			childCMQCodeList.add(child.getCmqChildCode());
+		}
+		return childCMQCodeList;
+	}
+	
+	private List<Long> getParentCMQCodeList(List<CmqParentChildTarget> parentList) {
+		List<Long> parentCMQCodeList = new ArrayList<>();
+		for(CmqParentChildTarget parent : parentList) {
+			parentCMQCodeList.add(parent.getCmqParentCode());
+		}
+		return parentCMQCodeList;
+	}
+
+	public ICmqParentChildTargetService getParentChildService() {
+		return parentChildService;
+	}
+
+	public void setParentChildService(ICmqParentChildTargetService parentChildService) {
+		this.parentChildService = parentChildService;
 	}
 }
