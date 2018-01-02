@@ -20,7 +20,9 @@ public class HistoricalViewDbDataDTO implements Serializable {
 	private String state;
 	private Date creationDate;
 	private String createdBy;
+	private String algorithm;
 	private Date lastActivationDate;
+	private String lastActivationBy;
 	private String description;
 	private String term;
 	private String termDictLevel;
@@ -214,6 +216,22 @@ public class HistoricalViewDbDataDTO implements Serializable {
 
 	public void setMedicalConcept(String medicalConcept) {
 		this.medicalConcept = medicalConcept;
+	}
+
+	public String getAlgorithm() {
+		return algorithm;
+	}
+
+	public void setAlgorithm(String algorithm) {
+		this.algorithm = algorithm;
+	}
+
+	public String getLastActivationBy() {
+		return lastActivationBy;
+	}
+
+	public void setLastActivationBy(String lastActivationBy) {
+		this.lastActivationBy = lastActivationBy;
 	}
 
 }

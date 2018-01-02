@@ -147,7 +147,9 @@ public class HistoricalViewController implements Serializable {
 					historicalViewDTO.setState(historicalViewDbDataDTO.getState());
 					historicalViewDTO.setCreationDate(historicalViewDbDataDTO.getCreationDate());
 					historicalViewDTO.setCreatedBy(historicalViewDbDataDTO.getCreatedBy());
+					historicalViewDTO.setAlgorithm(historicalViewDbDataDTO.getAlgorithm());
 					historicalViewDTO.setLastActivationDate(historicalViewDbDataDTO.getLastActivationDate());
+					historicalViewDTO.setLastActivationBy(historicalViewDbDataDTO.getLastActivationBy());
 					historicalViewDTO.setDescription(historicalViewDbDataDTO.getDescription());
 					historicalViewDTO.setDictionaryVersion(historicalViewDbDataDTO.getDictionaryVersion());
 					historicalViewDTO.setDesignee(historicalViewDbDataDTO.getDesignee());

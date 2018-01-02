@@ -26,7 +26,9 @@ public class HistoricalViewDTO implements Serializable {
 	private String state;
 	private Date creationDate;
 	private String createdBy;
+	private String algorithm;
 	private Date lastActivationDate;
+	private String lastActivationBy;
 	private String description;
 	private String dictionaryVersion;
 	private String designee;
@@ -193,6 +195,22 @@ public class HistoricalViewDTO implements Serializable {
 
 	public void setRelationsRootTreeNode(TreeNode relationsRootTreeNode) {
 		this.relationsRootTreeNode = relationsRootTreeNode;
+	}
+
+	public String getAlgorithm() {
+		return algorithm;
+	}
+
+	public void setAlgorithm(String algorithm) {
+		this.algorithm = algorithm;
+	}
+
+	public String getLastActivationBy() {
+		return lastActivationBy;
+	}
+
+	public void setLastActivationBy(String lastActivationBy) {
+		this.lastActivationBy = lastActivationBy;
 	}
 
 }

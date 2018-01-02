@@ -13,6 +13,7 @@
   cmq_base.created_by as createdBy,
   cmq_base.algorithm,
   cmq_base.last_activation_date as lastActivationDate,
+  cmq_base.last_activation_by as lastActivationBy,
   cmq_base.description,
   cmq_relations.term,
   cmq_relations.term_dict_level as termDictLevel,
@@ -27,7 +28,7 @@
   (select 
     nvl(cba.cmq_code_old,cba.cmq_code_new) "CMQ_CODE",
    -- nvl(cba.cmq_name_old,cba.cmq_name_old) "LIST_NAME",
-	nvl(cba.cmq_name_old,cba.cmq_name_new) "LIST_NAME",
+    nvl(cba.cmq_name_old,cba.cmq_name_new) "LIST_NAME",
      (select DISTINCT codelist_internal_value from opencqt.ref_config_codelist 
      where 
          codelist_configuration_type ='LIST_EXTENSION_TYPES'
@@ -112,9 +113,9 @@
     nvl(cba.cmq_level_old,cba.cmq_level_new) "LIST_LEVEL",
     -----------------------------------------------------------------------------------
     --nvl(cba.cmq_parent_name_old,cba.cmq_parent_name_new) "PARENT_LIST_NAME",
-	nvl(cba.cmq_algorithm_old,cba.cmq_algorithm_new) "ALGORITHM",
+    nvl(cba.cmq_algorithm_old,cba.cmq_algorithm_new) "ALGORITHM",
     nvl(cba.activation_date_old,cba.activation_date_new) "LAST_ACTIVATION_DATE",
-	--nvl(cba.activation_date_old,cba.activation_date_new) "LAST_ACTIVATION_BY",
+    nvl(cba.activated_by_old,cba.activated_by_new) "LAST_ACTIVATION_BY",
     (select max(created_by) 
        from opencqt.cmq_base_&&MedDRAAuditVersion.
        where cmq_id = cba.cmq_id) "CREATED_BY",
