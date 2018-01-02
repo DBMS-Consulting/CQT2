@@ -663,7 +663,6 @@ public class ImpactSearchController implements Serializable {
 								IEntity childEntity = hierarchyNode.getEntity();
 								if (childEntity instanceof CmqBaseTarget) {
 									CmqBaseTarget cmqEntity = (CmqBaseTarget) childEntity;
-									updateParentChildRelationship(cmqEntity, cmqBaseTarget, parentChildList);
 									if ("NON-IMPACTED".equals(cmqEntity.getImpactType())) {
 										cmqEntity.setImpactType("IPC");
 										cmqEntity.setCmqState("PENDING IA");

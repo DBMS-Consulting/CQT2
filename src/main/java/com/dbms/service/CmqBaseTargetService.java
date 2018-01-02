@@ -343,7 +343,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 		List<CmqBaseTarget> retVal = null;
 		StringBuilder sb = new StringBuilder();
 		//sb.append("from CmqBaseTarget c where c.cmqLevel = :cmqLevel and c.cmqParentCode is null and c.cmqStatus = 'I' ");
-		sb.append("from CmqBaseTarget c where c.cmqLevel = :cmqLevel ");
+		sb.append("from CmqBaseTarget c where c.cmqLevel = :cmqLevel and c.cmqStatus != 'A' and c.cmqState != 'PUBLISHED' ");
 		if (!StringUtils.isBlank(searchTerm)) {
 			sb.append("and upper(c.cmqName) like :cmqName");
 		}
