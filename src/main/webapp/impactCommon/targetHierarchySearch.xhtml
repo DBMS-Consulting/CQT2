@@ -56,12 +56,12 @@
 					listener="#{impactSearchController.targetHierarchySearchDlgModel.onNodeExpand}"
 					update="resultHierTarget" />
 
-				<p:column headerText="Level" style="width: 100px !important">
+				<p:column headerText="Level" style="width: 120px !important">
 					<h:outputText value="#{node.level}" />
 				</p:column>
 
-				<p:column headerText="Term" width="auto !important">
-					<h:outputText value="#{node.term}" />
+				<p:column headerText="Term" width="auto !important" styleClass="wrap">
+					<h:outputText value="#{node.term}" styleClass="wrap" />
 				</p:column>
 
 				<p:column headerText="Code" sortBy="#{node.code}" style="width: 80px !important; text-align: center"
