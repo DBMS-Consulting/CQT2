@@ -77,12 +77,21 @@
                 
                 <i class="fa fa-file-excel-o"
 					style="position: absolute; margin-top: 8px; margin-left: 5px"></i>
-                <h:commandLink rendered="#{createController.relationsModel.relationsRoot.childCount gt 0}" value="MQ Detailed Report" type="button"
-                               styleClass="generate" onclick="PF('confirmMQReport').show();return false;" />
+               <!--  <h:commandLink rendered="#{createController.relationsModel.relationsRoot.childCount gt 0}" value="MQ Detailed Report" type="button"
+                               styleClass="generate" onclick="PF('confirmMQReport').show();return false;" />  -->
                 
+                
+                <h:commandLink rendered="#{createController.relationsModel.relationsRoot.childCount gt 0}" value="MQ Detailed Report"
+					styleClass="generate" onclick="PF('confirmMQReport').show();return false;">
+					<!-- <p:fileDownload value="#{reportController.excelFile}" /> -->
+					<p:ajax process="@this"  />
+ 				</h:commandLink>
+                
+                <i class="fa fa-file-excel-o"
+					style="position: absolute; margin-top: 8px; margin-left: 5px"></i>
                 <h:commandLink rendered="#{createController.relationsModel.relationsRoot.childCount le 0}" value="MQ Detailed Report"
-					styleClass="generate" actionListener="#{reportController.generateMQReport(createController.detailsFormModel, createController.notesFormModel,createController.relationsModel.relationsRoot)}">
-					<p:fileDownload value="#{reportController.excelFile}" />
+					styleClass="generate" onclick="PF('confirmMQReport').show();return false;">
+					<!-- <p:fileDownload value="#{reportController.excelFile}" /> -->
 					<p:ajax process="@this"  />
 				</h:commandLink>
 				
