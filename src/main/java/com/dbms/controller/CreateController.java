@@ -16,6 +16,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.component.html.HtmlInputText;
+import javax.faces.component.html.HtmlSelectBooleanCheckbox;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
 
@@ -151,11 +152,14 @@ public class CreateController implements Serializable {
 	private String scopeFilter;
 	private static final String NO_SCOPE_FILTER = "-1";
 	private StreamedContent excelFile;
+	
+	private HtmlSelectBooleanCheckbox flag;
+
 
 	
 	public CreateController() {
 		setSelectedData(null);
-	}
+ 	}
 	
 	@PostConstruct
 	public void init() {
@@ -264,6 +268,13 @@ public class CreateController implements Serializable {
 			nextStep = event.getNewStep();
 		}
 		RequestContext.getCurrentInstance().update("fBrowse:wizardNavbar");
+		
+		/** JUST FOR TESTS **/
+		if (getFlag() != null) {
+			boolean f = (boolean) getFlag().getValue();
+			System.out.println("***** getFlag from Controller: " + f);
+		}
+		/** JUST FOR TESTS **/
 		return nextStep;
 	}
 
@@ -2215,6 +2226,14 @@ public class CreateController implements Serializable {
 
 	public void setExcelFile(StreamedContent excelFile) {
 		this.excelFile = excelFile;
+	}
+
+	public HtmlSelectBooleanCheckbox getFlag() {
+		return flag;
+	}
+
+	public void setFlag(HtmlSelectBooleanCheckbox flag) {
+		this.flag = flag;
 	}
      
 }

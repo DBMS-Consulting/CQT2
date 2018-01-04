@@ -62,6 +62,14 @@
 					disabled="#{createController.parentViewable ? false : true}"
                     oncomplete="PF('parentDlg').show()" icon="fa fa-level-up">
 				</p:commandButton>
+				
+				<p:spacer width="10" />
+				
+				<h:selectBooleanCheckbox id="flag" binding="#{createController.flag}"
+ 						value="#{globalController.myFlag}">
+					<p:ajax update="@form:relations-tree-table" listener="#{globalController.checkFlag}" />
+				</h:selectBooleanCheckbox>
+				<h:outputText style="font-weight: bold" value="My Flag" />
 			</f:facet>
 
 			 
