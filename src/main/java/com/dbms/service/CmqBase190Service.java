@@ -235,7 +235,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		List<CmqBase190> retVal = null;
 		StringBuilder sb = new StringBuilder();
 		if(level==2) {
-			sb.append("from CmqBase190 c where c.cmqLevel = :cmqLevel and c.cmqStatus != 'I' and c.cmqState != 'PUBLISHED' ");
+			sb.append("from CmqBase190 c where c.cmqLevel = :cmqLevel and c.cmqStatus != 'I' ");
 		} else {
 			sb.append("from CmqBase190 c where c.cmqLevel = :cmqLevel ");
 		}
