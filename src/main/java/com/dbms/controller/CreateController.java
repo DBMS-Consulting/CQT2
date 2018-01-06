@@ -207,6 +207,10 @@ public class CreateController implements Serializable {
 		setSelectedData(null);
 		selectedData.setCmqDescription("Please enter the description");	
 		//RequestContext.getCurrentInstance().execute("PF('confirmSaveDetailsDlg').show();");
+		if (detailsFormModel != null && detailsFormModel.isModelChanged() && codeSelected != null) {			
+			RequestContext.getCurrentInstance().execute("PF('confirmSaveDetailsDlg').show();");
+		}
+		
 
 	}
 	

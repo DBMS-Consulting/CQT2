@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.faces.bean.ApplicationScoped;
@@ -1441,14 +1442,41 @@ public class AuditTrailService implements IAuditTrailService{
 			Long cmqCode = Long.parseLong(code);
 			queryString = "select distinct AUDIT_TIMESTAMP as audit_ts, to_char(AUDIT_TIMESTAMP, 'DD-MON-YYYY:HH24:MI:SS') as AUDIT_TIMESTAMP "
 					+ " from CMQ_BASE_"+ dictionaryVersion 
+					+ "_AUDIT where CMQ_CODE_OLD = " + cmqCode + " or CMQ_CODE_NEW = " + cmqCode;
+			
+			queryString += " union select distinct AUDIT_TIMESTAMP as audit_ts, to_char(AUDIT_TIMESTAMP, 'DD-MON-YYYY:HH24:MI:SS') as AUDIT_TIMESTAMP "
+					+ " from CMQ_RELATIONS_"+ dictionaryVersion 
 					+ "_AUDIT where CMQ_CODE_OLD = " + cmqCode + " or CMQ_CODE_NEW = " + cmqCode
+					+ " or SMQ_CODE_OLD = " + cmqCode + " or SMQ_CODE_NEW = " + cmqCode
+					+ " or HLGT_CODE_OLD = " + cmqCode + " or HLGT_CODE_NEW = " + cmqCode
+					+ " or HLT_CODE_OLD = " + cmqCode + " or HLT_CODE_NEW = " + cmqCode
+					+ " or SOC_CODE_OLD = " + cmqCode + " or SOC_CODE_NEW = " + cmqCode
+					+ " or LLT_CODE_OLD = " + cmqCode + " or LLT_CODE_NEW = " + cmqCode
+					+ " or CMQ_CODE_OLD = " + cmqCode + " or CMQ_CODE_NEW = " + cmqCode
+					+ " or PT_CODE_OLD = " + cmqCode + " or PT_CODE_NEW = " + cmqCode;
+					
+			queryString += " union select distinct AUDIT_TIMESTAMP as audit_ts, to_char(AUDIT_TIMESTAMP, 'DD-MON-YYYY:HH24:MI:SS') as AUDIT_TIMESTAMP "
+					+ " from CMQ_PARENT_CHILD"+ dictionaryVersion 
+					+ "_AUDIT where CMQ_PARENT_CODE_OLD = " + cmqCode + " or CMQ_PARENT_CODE_NEW = " + cmqCode
+			
+	
  					+ " order by audit_ts desc";
 		}
 		if (name != null && !name.equals("")) {
 			queryString = "select distinct AUDIT_TIMESTAMP as audit_ts, to_char(AUDIT_TIMESTAMP, 'DD-MON-YYYY:HH24:MI:SS') as AUDIT_TIMESTAMP "
 					+ " from CMQ_BASE_"+ dictionaryVersion 
-					+ "_AUDIT where CMQ_NAME_OLD = '" + name + "' or CMQ_NAME_NEW = '" + name
-					+ "' order by audit_ts desc";
+					+ "_AUDIT where CMQ_NAME_OLD = '" + name + "' or CMQ_NAME_NEW = '" + name;
+			
+			queryString += "' union select distinct AUDIT_TIMESTAMP as audit_ts, to_char(AUDIT_TIMESTAMP, 'DD-MON-YYYY:HH24:MI:SS') as AUDIT_TIMESTAMP "
+					+ " from CMQ_RELATIONS_"+ dictionaryVersion + "_AUDIT where " 
+					+ " cmq_id = (select c.cmq_id from  CMQ_BASE_"+ dictionaryVersion + " c where c.cmq_name = '" + name + "')";
+			
+			queryString += " union select distinct AUDIT_TIMESTAMP as audit_ts, to_char(AUDIT_TIMESTAMP, 'DD-MON-YYYY:HH24:MI:SS') as AUDIT_TIMESTAMP "
+					+ " from CMQ_PARENT_CHILD_"+ dictionaryVersion 
+					+ "_AUDIT where CMQ_PARENT_NAME_OLD = '" + name + "' or CMQ_PARENT_NAME_NEW = '" + name
+			
+			
+ 					+ "' order by audit_ts desc";
 		}
 		
 		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
@@ -1616,8 +1644,21 @@ public class AuditTrailService implements IAuditTrailService{
  			
  			// Cell 6
  			cell = row.createCell(6);
- 			cell.setCellValue(dto.getAuditTimestamp());
- 			
+ 			//LOG.info("\n  ************* timestamp :: " + dto.getAuditTimestamp());
+  			
+  			Date d = new Date();
+ 			d.setTime(dto.getAuditTimestamp().getTime());
+ 			Calendar calAudit = Calendar.getInstance();
+ 			calAudit.setTime(d);
+ 			String dString = getWeekDay(calAudit.get(Calendar.DAY_OF_WEEK)) + " " + 
+ 					getTwoDigits(calAudit.get(Calendar.DAY_OF_MONTH) + 1) + "-" + 
+ 					getMonth(calAudit.get(Calendar.MONTH)) + "-" + 
+ 					calAudit.get(Calendar.YEAR) + "  " + 
+ 					getTwoDigits(calAudit.get(Calendar.HOUR)) + ":" + 
+ 					getTwoDigits(calAudit.get(Calendar.MINUTE)) + ":" + 
+ 					getTwoDigits(calAudit.get(Calendar.SECOND));
+  			cell.setCellValue(dString);
+  			
  			rowCount++;
 		}
   
