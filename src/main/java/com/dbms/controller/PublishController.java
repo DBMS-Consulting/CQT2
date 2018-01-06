@@ -105,7 +105,7 @@ public class PublishController implements Serializable {
 					CmqBase190 baseCmq = baseCmqIterator.next();
 					for(CmqBaseTarget targetCmq : targetList) {
 						if(baseCmq.getCmqCode()==targetCmq.getCmqCode()) {
-							if(targetCmq.getCmqState().equalsIgnoreCase(CmqBaseTarget.CMQ_STATE_PENDING_IA)
+							if(targetCmq.getCmqState().equalsIgnoreCase(CmqBaseTarget.CMQ_STATE_REVIEWED_IA)
 									||targetCmq.getCmqState().equalsIgnoreCase(CmqBaseTarget.CMQ_STATE_APPROVED_IA)
 									|| targetCmq.getCmqState().equalsIgnoreCase(CmqBaseTarget.CMQ_STATE_PUBLISHED_IA)){
 								

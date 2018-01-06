@@ -657,7 +657,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 	public List<CmqBase190> findCmqsToReactivate() {
 		List<CmqBase190> retVal = null;
 		String queryString = "from CmqBase190 c where upper(c.cmqState) = upper('Published') and c.cmqStatus = 'I' "
-				+"and c.cmqCode not in (select target.cmqCode from CmqBaseTarget target where upper(target.cmqState) = upper('Pending IA') or upper(target.cmqState) = upper('Approved IA') or upper(target.cmqState) = upper('Published IA')) order by upper(c.cmqName) asc ";
+				+"and c.cmqCode not in (select target.cmqCode from CmqBaseTarget target where upper(target.cmqState) = upper('REVIEWED IA') or upper(target.cmqState) = upper('Approved IA') or upper(target.cmqState) = upper('Published IA')) order by upper(c.cmqName) asc ";
 		EntityManager entityManager = this.cqtEntityManagerFactory
 				.getEntityManager();
 		try {
@@ -681,7 +681,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 	public List<CmqBase190> findCmqsToRetire() {
 		List<CmqBase190> retVal = null;
 		String queryString = "from CmqBase190 c where upper(c.cmqState) = upper('Published') and c.cmqStatus = 'A' "
-				+ "and c.cmqCode not in (select target.cmqCode from CmqBaseTarget target where upper(target.cmqState) = upper('Published IA') or upper(target.cmqState) = upper('Pending IA') or upper(target.cmqState) = upper('Approved IA')) order by upper(c.cmqName) asc ";
+				+ "and c.cmqCode not in (select target.cmqCode from CmqBaseTarget target where upper(target.cmqState) = upper('Published IA') or upper(target.cmqState) = upper('REVIEWED IA') or upper(target.cmqState) = upper('Approved IA')) order by upper(c.cmqName) asc ";
 		EntityManager entityManager = this.cqtEntityManagerFactory
 				.getEntityManager();
 		try {

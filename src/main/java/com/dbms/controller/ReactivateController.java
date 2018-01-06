@@ -117,13 +117,14 @@ public class ReactivateController implements Serializable {
 				if(null != parentCmqsList) {
 					for (CmqBase190 cmqBase190 : parentCmqsList) {
 						//if parent is not in the target list then check if its reactivated or not
-						if(!targetCmqCodes.contains(cmqBase190.getCmqCode()) && (!cmqBase190.getCmqStatus().equalsIgnoreCase(CmqBase190.CMQ_STATUS_VALUE_ACTIVE))) {
-							cptChildren++;
-							//if() {
+						if(!targetCmqCodes.contains(cmqBase190.getCmqCode())) {
+							if(!cmqBase190.getCmqState().equalsIgnoreCase(CmqBase190.CMQ_STATE_VALUE_PUBLISHED)
+									&& cmqBase190.getCmqStatus().equalsIgnoreCase(CmqBase190.CMQ_STATUS_VALUE_INACTIVE)) {
+								cptChildren++;
 								isListPublishable = false;
 								faultyCmqs.add(cmqBase190);
 								
-							//}
+							}
 						}
 					}
 				}
