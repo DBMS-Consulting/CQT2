@@ -234,7 +234,12 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 	public List<CmqBase190> findByLevelAndTerm(Integer level, String searchTerm) {
 		List<CmqBase190> retVal = null;
 		StringBuilder sb = new StringBuilder();
-		sb.append("from CmqBase190 c where c.cmqLevel = :cmqLevel ");
+		if(level==2) {
+			sb.append("from CmqBase190 c where c.cmqLevel = :cmqLevel and c.cmqStatus != 'I' and c.cmqState != 'PUBLISHED' ");
+		} else {
+			sb.append("from CmqBase190 c where c.cmqLevel = :cmqLevel ");
+		}
+		
 		if (!StringUtils.isBlank(searchTerm)) {
 			sb.append("and upper(c.cmqName) like :cmqName");
 		}
