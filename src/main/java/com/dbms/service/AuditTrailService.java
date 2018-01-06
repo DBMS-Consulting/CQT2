@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.util.Calendar;
 import java.util.List;
 
@@ -1359,7 +1360,8 @@ public class AuditTrailService implements IAuditTrailService{
 			
 			if (!StringUtils.isBlank(auditTimeStampString)) {
 				 //DateTimeFormatter formatter = DateTimeFormatter.ofPattern("DD-MMM-YYYY:HH:mm:ss");
-				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+				//DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MMM-yyyy:HH:mm:ss");
+				DateTimeFormatter formatter = new DateTimeFormatterBuilder().parseCaseInsensitive().appendPattern("dd-MMM-yyyy:HH:mm:ss").toFormatter();
 				 LocalDateTime date = LocalDateTime.parse(auditTimeStampString, formatter);
 				 Timestamp timestamp = Timestamp.valueOf(date);
 				 query.setParameter("auditTimeStampString", timestamp);
