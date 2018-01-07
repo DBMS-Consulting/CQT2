@@ -1337,8 +1337,8 @@ public class AuditTrailService implements IAuditTrailService{
  				+"        cb.cmq_code=:listCode "
  				+"    and cmq_all_audit.cmq_id = cb.cmq_id "
  				+"  order by  "
- 				+"    cmq_all_audit.TRANSACTION_ID, "
- 				+"    cmq_all_audit.AUDIT_TIMESTAMP,  "
+ 				+"    cmq_all_audit.AUDIT_TIMESTAMP desc, "
+ 				+"    cmq_all_audit.TRANSACTION_ID,  "
  				+"    cmq_all_audit.TABLE_NAME, "
  				+"    cmq_all_audit.COLUMN_NAME";
 
@@ -1357,7 +1357,7 @@ public class AuditTrailService implements IAuditTrailService{
 			query.addScalar("lastName", StandardBasicTypes.STRING);
 			query.addScalar("userId", StandardBasicTypes.STRING);
 			query.addScalar("groupName", StandardBasicTypes.STRING);
-			query.addScalar("auditTimestamp", StandardBasicTypes.TIMESTAMP);
+			query.addScalar("auditTimestamp", StandardBasicTypes.DATE);
 			
 			if (!StringUtils.isBlank(auditTimeStampString)) {
 				 //DateTimeFormatter formatter = DateTimeFormatter.ofPattern("DD-MMM-YYYY:HH:mm:ss");

@@ -109,7 +109,9 @@
 							<h:outputText value="#{value.groupName}"/>
 						</p:column>
 						<p:column headerText="Audit Timestamp">
-							<h:outputText value="#{value.auditTimestamp}"/>
+							<h:outputText value="#{value.auditTimestamp}">
+								<f:convertDateTime pattern="dd-MMM-yyyy:hh:mm:ss a" />
+							</h:outputText>
 						</p:column>
 
 					</p:dataTable>

@@ -1,6 +1,6 @@
 package com.dbms.entity.cqt.dtos;
 
-import java.sql.Timestamp;
+import java.util.Date;
 
 public class AuditTrailDto {
 
@@ -26,7 +26,7 @@ public class AuditTrailDto {
 
 	private String groupName;
 
-	private Timestamp auditTimestamp;
+	private Date auditTimestamp;
 
 	public String getTableName() {
 		return tableName;
@@ -116,11 +116,11 @@ public class AuditTrailDto {
 		this.groupName = groupName;
 	}
 
-	public Timestamp getAuditTimestamp() {
+	public Date getAuditTimestamp() {
 		return auditTimestamp;
 	}
 
-	public void setAuditTimestamp(Timestamp auditTimestamp) {
+	public void setAuditTimestamp(Date auditTimestamp) {
 		this.auditTimestamp = auditTimestamp;
 	}
 }
