@@ -1790,9 +1790,10 @@ public class CreateController implements Serializable {
                 && (selectedData.getCmqParentCode()!=null)
                 && !this.isReadOnlyState());*/
 		//change code here for parent child relationship. For now returning false
-		//Long parentCount = this.cmqParentChildService.findCmqParentCountForChildCmqCode(selectedData.getCmqCode());
+		Long parentCount = this.cmqParentChildService.findCmqParentCountForChildCmqCode(selectedData.getCmqCode());
 		//return ((selectedData.getCmqLevel() > 1) && (parentCount!=null && parentCount >0) && !this.isReadOnlyState());
-        return selectedData.getCmqLevel() <= 2;
+		return ((selectedData.getCmqLevel() > 1) && (parentCount!=null && parentCount >0));
+        //return selectedData.getCmqLevel() <= 2;
 	}
 
 	public boolean isReactivateDisabled() {
