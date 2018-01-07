@@ -31,8 +31,7 @@
 
 				<p:spacer width="10" />
 				
-				<i class="fa fa-file-excel-o"
-					style="position: absolute; margin-top: 8px; margin-left: 5px"></i>
+				 
                 
                 <!--Show Confirm Dialog if list has more than 1 children when clicking on "MQ Detailed Report" generation button-->
                 <p:confirmDialog header="MQ Detail Report"  widgetVar="confirmMQReport"
@@ -45,9 +44,16 @@
                     <p:spacer width="10" />
                     <p:commandButton value="No" onclick="PF('confirmMQReport').hide()" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>   
                 </p:confirmDialog>
+                
+                <ui:fragment rendered="#{createController.relationsModel.relationsRoot.childCount gt 0}">
+               		<i class="fa fa-file-excel-o" style="position: absolute; margin-top: 8px; margin-left: 5px"></i>
+               	</ui:fragment>
                 <h:commandLink rendered="#{createController.relationsModel.relationsRoot.childCount gt 0}" value="MQ Detailed Report" type="button"
                                styleClass="generate" onclick="PF('confirmMQReport').show();return false;" />
                 
+                <ui:fragment rendered="#{createController.relationsModel.relationsRoot.childCount le 0}">
+               		<i class="fa fa-file-excel-o" style="position: absolute; margin-top: 8px; margin-left: 5px"></i>
+               	</ui:fragment>
                 <h:commandLink rendered="#{createController.relationsModel.relationsRoot.childCount le 0}" value="MQ Detailed Report" type="button"
 					styleClass="generate"
 					actionListener="#{reportController.generateMQReport(createController.detailsFormModel, createController.notesFormModel,createController.relationsModel.relationsRoot)}">
