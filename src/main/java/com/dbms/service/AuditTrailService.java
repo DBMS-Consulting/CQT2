@@ -1337,8 +1337,8 @@ public class AuditTrailService implements IAuditTrailService{
  				+"        cb.cmq_code=:listCode "
  				+"    and cmq_all_audit.cmq_id = cb.cmq_id "
  				+"  order by  "
- 				+"    cmq_all_audit.TRANSACTION_ID, "
- 				+"    cmq_all_audit.AUDIT_TIMESTAMP,  "
+ 				+"    cmq_all_audit.AUDIT_TIMESTAMP desc, "
+ 				+"    cmq_all_audit.TRANSACTION_ID,  "
  				+"    cmq_all_audit.TABLE_NAME, "
  				+"    cmq_all_audit.COLUMN_NAME";
 
@@ -1357,7 +1357,7 @@ public class AuditTrailService implements IAuditTrailService{
 			query.addScalar("lastName", StandardBasicTypes.STRING);
 			query.addScalar("userId", StandardBasicTypes.STRING);
 			query.addScalar("groupName", StandardBasicTypes.STRING);
-			query.addScalar("auditTimestamp", StandardBasicTypes.TIMESTAMP);
+			query.addScalar("auditTimestamp", StandardBasicTypes.DATE);
 			
 			if (!StringUtils.isBlank(auditTimeStampString)) {
 				 //DateTimeFormatter formatter = DateTimeFormatter.ofPattern("DD-MMM-YYYY:HH:mm:ss");
@@ -1458,7 +1458,7 @@ public class AuditTrailService implements IAuditTrailService{
 			queryString += " union select distinct AUDIT_TIMESTAMP as audit_ts, to_char(AUDIT_TIMESTAMP, 'DD-MON-YYYY:HH24:MI:SS') as AUDIT_TIMESTAMP "
 					+ " from CMQ_PARENT_CHILD"+ dictionaryVersion 
 					+ "_AUDIT where CMQ_PARENT_CODE_OLD = " + cmqCode + " or CMQ_PARENT_CODE_NEW = " + cmqCode
-			
+					+ " or CMQ_CHILD_CODE_OLD = " + cmqCode + " or CMQ_CHILD_CODE_NEW = " + cmqCode
 	
  					+ " order by audit_ts desc";
 		}
@@ -1474,7 +1474,7 @@ public class AuditTrailService implements IAuditTrailService{
 			queryString += " union select distinct AUDIT_TIMESTAMP as audit_ts, to_char(AUDIT_TIMESTAMP, 'DD-MON-YYYY:HH24:MI:SS') as AUDIT_TIMESTAMP "
 					+ " from CMQ_PARENT_CHILD_"+ dictionaryVersion 
 					+ "_AUDIT where CMQ_PARENT_NAME_OLD = '" + name + "' or CMQ_PARENT_NAME_NEW = '" + name
-			
+					+ "' or CMQ_CHILD_NAME_OLD = '" + name + "' or CMQ_CHILD_NAME_NEW = '" + name
 			
  					+ "' order by audit_ts desc";
 		}
