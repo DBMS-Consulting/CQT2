@@ -13,6 +13,7 @@ import org.primefaces.model.TreeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.dbms.controller.GlobalController;
 import com.dbms.csmq.CSMQBean;
 import com.dbms.csmq.HierarchyNode;
 import com.dbms.entity.IEntity;
@@ -39,7 +40,8 @@ public class CmqBaseRelationsTreeHelper {
 	final private ISmqBaseService smqBaseSvc;
 	final private IMeddraDictService meddraDictSvc;
 	final private ICmqRelation190Service cmqRelationSvc;
-    
+	final private GlobalController globalController;
+	
     boolean requireDrillDown = true; //indicates whether it should add dummy nodes for node-expansion for hierarchy drill-down
     boolean relationView = true;
     boolean parentListView = false;
@@ -49,11 +51,13 @@ public class CmqBaseRelationsTreeHelper {
 	public CmqBaseRelationsTreeHelper(ICmqBase190Service cmqBaseSvc,
 			ISmqBaseService smqBaseSvc,
 			IMeddraDictService meddraDictSvc,
-			ICmqRelation190Service cmqRelationSvc) {
+			ICmqRelation190Service cmqRelationSvc
+			,GlobalController globalController) {
 		this.cmqBaseSvc = cmqBaseSvc;
 		this.smqBaseSvc = smqBaseSvc;
 		this.meddraDictSvc = meddraDictSvc;
-		this.cmqRelationSvc = cmqRelationSvc;		
+		this.cmqRelationSvc = cmqRelationSvc;
+		this.globalController = globalController;
 	}
 	
 	/**
@@ -441,7 +445,9 @@ public class CmqBaseRelationsTreeHelper {
             dtoCodes.add(c);
         }
         
-        if(requireDrillDown && childNodeType!=null) {
+        boolean filterLltsFlag = this.globalController.isFilterLltsFlag();
+        
+        if(requireDrillDown && childNodeType!=null && !nodeType.equalsIgnoreCase("PT") && filterLltsFlag) {
             List<Map<String, Object>> countsOfChildren = this.meddraDictSvc.findChildrenCountByParentCodes(childNodeType + "_"
                                             , nodeType + "_", dtoCodes);
 
@@ -775,25 +781,29 @@ public class CmqBaseRelationsTreeHelper {
                 nodesMapKeys.add(Long.valueOf(childDto.getCode()));
             }
 		}
+		
+		boolean filterLltFlag = this.globalController.isFilterLltsFlag();
     
-        List<Map<String, Object>> countsOfChildren;
-        countsOfChildren = this.meddraDictSvc.findChildrenCountByParentCodes(childchildOfChildSearchColumnTypePrefix,
-                childSearchColumnTypePrefix, nodesMapKeys);
-
-        if((null != countsOfChildren) && (countsOfChildren.size() > 0)) {
-            //first find and fix child nodes stuff
-            for (Map<String, Object> cc: countsOfChildren) {
-                if(cc.get("PARENT_CODE") != null && cc.get("COUNT") != null) {
-                    Long pCode = (Long)cc.get("PARENT_CODE");
-                    Long c = (Long)cc.get("COUNT");
-                    TreeNode t = c > 0 ? nodesMap.get(pCode) : null;
-                    if(t!=null) {
-                        // add a dummmy node to show expand arrow
-                        createNewDummyNode(t);
-                    }
-                }
-            }
-        }
+		if(!childLevel.equalsIgnoreCase("PT") && filterLltFlag) {
+	        List<Map<String, Object>> countsOfChildren;
+	        countsOfChildren = this.meddraDictSvc.findChildrenCountByParentCodes(childchildOfChildSearchColumnTypePrefix,
+	                childSearchColumnTypePrefix, nodesMapKeys);
+	
+	        if((null != countsOfChildren) && (countsOfChildren.size() > 0)) {
+	            //first find and fix child nodes stuff
+	            for (Map<String, Object> cc: countsOfChildren) {
+	                if(cc.get("PARENT_CODE") != null && cc.get("COUNT") != null) {
+	                    Long pCode = (Long)cc.get("PARENT_CODE");
+	                    Long c = (Long)cc.get("COUNT");
+	                    TreeNode t = c > 0 ? nodesMap.get(pCode) : null;
+	                    if(t!=null) {
+	                        // add a dummmy node to show expand arrow
+	                        createNewDummyNode(t);
+	                    }
+	                }
+	            }
+	        }
+		}
 	}
     
     public void populateMeddraDictReverseHierarchySearchDtoChildren(String searchColumnTypePrefix, String partitionColumn

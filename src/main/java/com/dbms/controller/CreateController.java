@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -16,7 +17,6 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.component.html.HtmlInputText;
-import javax.faces.component.html.HtmlSelectBooleanCheckbox;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
 
@@ -113,8 +113,10 @@ public class CreateController implements Serializable {
     @ManagedProperty("#{CmqParentChild200Service}")
 	private ICmqParentChild200Service cmqParentChildService;
 	
+    @ManagedProperty("#{globalController}")
+    private GlobalController globalController;
     
-	private ListDetailsFormVM detailsFormModel;
+    private ListDetailsFormVM detailsFormModel;
 	private ListNotesFormVM notesFormModel = new ListNotesFormVM();
     private ListRelationsVM relationsModel;
 	private ListWorkflowFormVM workflowFormModel;
@@ -153,9 +155,7 @@ public class CreateController implements Serializable {
 	private static final String NO_SCOPE_FILTER = "-1";
 	private StreamedContent excelFile;
 	
-	private HtmlSelectBooleanCheckbox flag;
-
-
+	//private HtmlSelectBooleanCheckbox filterLltsFlag;
 	
 	public CreateController() {
 		setSelectedData(null);
@@ -164,7 +164,10 @@ public class CreateController implements Serializable {
 	@PostConstruct
 	public void init() {
   		this.detailsFormModel  = new ListDetailsFormVM(this.authService, this.refCodeListService, this.appSWJSFRequest);
-        this.relationsModel = new ListRelationsVM(authService, appSWJSFRequest, refCodeListService, cmqBaseService, smqBaseService, meddraDictService, cmqRelationService, cmqParentChildService);
+        this.relationsModel = new ListRelationsVM(authService, appSWJSFRequest, refCodeListService
+        											, cmqBaseService, smqBaseService, meddraDictService
+        											, cmqRelationService, cmqParentChildService
+        											, this.globalController);
         this.workflowFormModel = new ListWorkflowFormVM(this.authService);
 		initAll();
 	}
@@ -274,9 +277,8 @@ public class CreateController implements Serializable {
 		RequestContext.getCurrentInstance().update("fBrowse:wizardNavbar");
 		
 		/** JUST FOR TESTS **/
-		if (getFlag() != null) {
-			boolean f = (boolean) getFlag().getValue();
-			System.out.println("***** getFlag from Controller: " + f);
+		if (this.globalController.isFilterLltsFlag()) {
+			boolean filterLltsFlagValue = this.globalController.isFilterLltsFlag();
 		}
 		/** JUST FOR TESTS **/
 		return nextStep;
@@ -1617,7 +1619,18 @@ public class CreateController implements Serializable {
 		RefConfigCodeList levelToRemove = refCodeListService.findByConfigTypeAndInternalCode(CqtConstants.CODE_LIST_TYPE_DICTIONARY_LEVELS, "NC-LLT");
 		if (levelToRemove != null)
 			levels.remove(levelToRemove);
-		 
+		
+		//filter out llts if the flag is set
+		boolean filterLltFlag = this.globalController.isFilterLltsFlag();
+		if(filterLltFlag) {
+			for(ListIterator<RefConfigCodeList> li = levels.listIterator(); li.hasNext();) {
+				RefConfigCodeList refConfigCodeList = li.next();
+				if(StringUtils.isNotBlank(refConfigCodeList.getCodelistInternalValue()) 
+						&& StringUtils.containsIgnoreCase(refConfigCodeList.getCodelistInternalValue(), "LLT")) {
+					li.remove();
+				}
+			}
+		}
 		return levels;
 	}
 	
@@ -2233,12 +2246,12 @@ public class CreateController implements Serializable {
 		this.excelFile = excelFile;
 	}
 
-	public HtmlSelectBooleanCheckbox getFlag() {
-		return flag;
+	public GlobalController getGlobalController() {
+		return globalController;
 	}
 
-	public void setFlag(HtmlSelectBooleanCheckbox flag) {
-		this.flag = flag;
+	public void setGlobalController(GlobalController globalController) {
+		this.globalController = globalController;
 	}
-     
+
 }

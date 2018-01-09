@@ -132,6 +132,9 @@ public class ImpactSearchController implements Serializable {
 	@ManagedProperty("#{CmqParentChildTargetService}")
 	private ICmqParentChildTargetService cmqParentChildService;
 	
+	@ManagedProperty("#{globalController}")
+    private GlobalController globalController;
+	
 	Wizard iaWizard, iaVersionWizard;
 	private String iaWizardNextStep;
 
@@ -209,7 +212,7 @@ public class ImpactSearchController implements Serializable {
 		targetTableRootTreeNode = new DefaultTreeNode("root",
 				new HierarchyNode("CODE", "LEVEL", "SCOPE", "CATEGORY", "WEIGHT", null, null), null);
 		currentHierarchySearchDlgModel = new CmqBaseHierarchySearchVM(cmqBaseCurrentService, smqBaseCurrentService,
-				meddraDictCurrentService, cmqRelationCurrentService);
+				meddraDictCurrentService, cmqRelationCurrentService, globalController);
 		targetHierarchySearchDlgModel = new TargetHierarchySearchVM(cmqBaseTargetService, smqBaseTargetService,
 				meddraDictTargetService, cmqRelationTargetService);
 
@@ -2685,5 +2688,13 @@ public class ImpactSearchController implements Serializable {
 
 	public void setCmqParentChildService(ICmqParentChildTargetService cmqParentChildService) {
 		this.cmqParentChildService = cmqParentChildService;
+	}
+
+	public GlobalController getGlobalController() {
+		return globalController;
+	}
+
+	public void setGlobalController(GlobalController globalController) {
+		this.globalController = globalController;
 	}
 }
