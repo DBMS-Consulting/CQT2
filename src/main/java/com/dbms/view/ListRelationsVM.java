@@ -17,7 +17,6 @@ import org.primefaces.model.TreeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.dbms.controller.GlobalController;
 import com.dbms.controller.beans.HierarchySearchResultBean;
 import com.dbms.csmq.HierarchyNode;
 import com.dbms.entity.IEntity;
@@ -58,7 +57,6 @@ public class ListRelationsVM implements IRelationsChangeListener {
 	private IRefCodeListService refCodeListService;
 	private AuthenticationService authService;
 	private ICmqParentChild200Service cmqParentChildService;
-	private GlobalController globalController;
 	
 	private String[] selectedSOCs;
 	private CmqBase190 selctedData;
@@ -80,10 +78,10 @@ public class ListRelationsVM implements IRelationsChangeListener {
     
     private String scopeFromParent;
 
+    
     public ListRelationsVM(AuthenticationService authService, SWJSFRequest appSWJSFRequest,
             IRefCodeListService refCodeListService, ICmqBase190Service cmqBaseService, ISmqBaseService smqBaseService,
-            IMeddraDictService meddraDictService, ICmqRelation190Service cmqRelationService, ICmqParentChild200Service cmqParentChildService
-            , GlobalController globalController) {
+            IMeddraDictService meddraDictService, ICmqRelation190Service cmqRelationService, ICmqParentChild200Service cmqParentChildService) {
         this.authService = authService;
         this.refCodeListService = refCodeListService;
         this.cmqBaseService = cmqBaseService;
@@ -91,9 +89,8 @@ public class ListRelationsVM implements IRelationsChangeListener {
         this.meddraDictService = meddraDictService;
         this.cmqRelationService = cmqRelationService;
         this.cmqParentChildService = cmqParentChildService;
-        this.globalController = globalController;
         
-        myHierarchyDlgModel = new CmqBaseHierarchySearchVM(cmqBaseService, smqBaseService, meddraDictService, cmqRelationService, globalController);
+        myHierarchyDlgModel = new CmqBaseHierarchySearchVM(cmqBaseService, smqBaseService, meddraDictService, cmqRelationService);
 		
 		parentListRoot = new DefaultTreeNode("root"
 				, new HierarchyNode("LEVEL", "NAME", "CODE", "SCOPE", "CATEGORY", "WEIGHT", null)
@@ -124,8 +121,7 @@ public class ListRelationsVM implements IRelationsChangeListener {
 		TreeNode expandedTreeNode = event.getTreeNode();
 		boolean isRelationView = "RELATIONS".equalsIgnoreCase(uiSourceOfEvent);
 		boolean isParentListView = "PARENT-LIST".equalsIgnoreCase(uiSourceOfEvent);
-		CmqBaseRelationsTreeHelper relationsSearchHelper = new CmqBaseRelationsTreeHelper(cmqBaseService, smqBaseService
-																	, meddraDictService, cmqRelationService, globalController);	
+		CmqBaseRelationsTreeHelper relationsSearchHelper = new CmqBaseRelationsTreeHelper(cmqBaseService, smqBaseService, meddraDictService, cmqRelationService);	
 		
 		HierarchyNode hNode = (HierarchyNode) expandedTreeNode.getData();
 		IEntity entity = hNode.getEntity();
@@ -289,13 +285,9 @@ public class ListRelationsVM implements IRelationsChangeListener {
 										MeddraDictHierarchySearchDto ptDictHierarchySearchDto = this.meddraDictService.findByCode("PT_", ptCode);
 										relationsHierarchyNode.setEntity(ptDictHierarchySearchDto);
 										relationsHierarchyNode.setDataFetchCompleted(false);
-										
-										boolean filterLltFlag = this.globalController.isFilterLltsFlag();
-										if(!filterLltFlag) {
-											HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
-											dummyNode.setDummyNode(true);
-											new DefaultTreeNode(dummyNode, relationsTreeNode);
-										}
+										HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
+										dummyNode.setDummyNode(true);
+										new DefaultTreeNode(dummyNode, relationsTreeNode);
 									}
 								} else if(entity instanceof SMQReverseHierarchySearchDto) {
 									Long ptCode = ((SMQReverseHierarchySearchDto) entity).getSmqCode();
@@ -664,8 +656,7 @@ public class ListRelationsVM implements IRelationsChangeListener {
 
 	public void setClickedCmqCode(Long clickedCmqCode) {
 		myHierarchyDlgModel.resetForm();
-		CmqBaseRelationsTreeHelper treeHelper = new CmqBaseRelationsTreeHelper(cmqBaseService, smqBaseService
-															, meddraDictService, cmqRelationService, globalController);
+		CmqBaseRelationsTreeHelper treeHelper = new CmqBaseRelationsTreeHelper(cmqBaseService, smqBaseService, meddraDictService, cmqRelationService);
         treeHelper.setRelationView(true);
         treeHelper.setRequireDrillDown(true);
 		this.clickedCmqCode = clickedCmqCode;

@@ -119,9 +119,9 @@
 				<p:spacer width="10" />
 				
 				 
-				<h:selectBooleanCheckbox id="flag"
- 						value="#{globalController.filterLltsFlag}">
-					<p:ajax update="@form:resultRelations" listener="#{globalController.checkFilterLltsFlag}" />
+				<h:selectBooleanCheckbox id="flag" binding="#{createController.flag}"
+ 						value="#{globalController.myFlag}">
+					<p:ajax update="@form:resultRelations" listener="#{globalController.checkFlag}" />
 				</h:selectBooleanCheckbox>
 				<h:outputText style="font-weight: bold" value="Filter LLT" />
 				
