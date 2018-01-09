@@ -92,21 +92,27 @@ public class AuditTrailController implements Serializable {
 	        FacesContext.getCurrentInstance().addMessage(null, msg);
 	        return null;
 		}
+		
+		Long listCodeSelected = null;
+		if(StringUtils.isNotBlank(listCode)) {
+			listCodeSelected = Long.valueOf(listCode);
+		}
+
+		datas = this.auditTrailService.findByCriterias(listCodeSelected, listName, Integer.valueOf(dictionary), auditTimestamp);
+		return "";
+	}
+	
+	public List<String> findAuditTimestamps(int dictionaryVersion) {
 		String listCodeSelected = listCode;
+		if (this.listCode == null && this.listName == null)
+			return null;
 		if(!StringUtils.isBlank(listName) ) {
 			CmqBase190 cmq  = this.cmqBaseService.findByName(listName);
 			if(null!=cmq) {
 				listCodeSelected = String.valueOf(cmq.getCmqCode());
 			}
 		}
-		datas = this.auditTrailService.findByCriterias(Long.valueOf(listCodeSelected), Integer.valueOf(dictionary), auditTimestamp);
-		return "";
-	}
-	
-	public List<String> findAuditTimestamps(int dictionaryVersion) {
-		if (this.listCode == null && this.listName == null)
-			return null;
-		return this.auditTrailService.findAuditTimestampsForHistoricalView(dictionaryVersion, this.listCode, this.listName);
+		return this.auditTrailService.findAuditTimestamps(dictionaryVersion, listCodeSelected, null);
 	}
 	
 	public List<CmqBaseDTO> selectList() {
