@@ -48,6 +48,9 @@ public class ParentListController extends BaseController<CmqBase190> {
 	@ManagedProperty("#{RefCodeListService}")
 	private IRefCodeListService refCodeListService;
 	
+	@ManagedProperty("#{globalController}")
+    private GlobalController globalController;
+	
 	// Search & Filters
 	private String searchTermName;
 	private String searchExtension;
@@ -90,7 +93,7 @@ public class ParentListController extends BaseController<CmqBase190> {
 	 * @param event
 	 */
 	public void onNodeExpand(NodeExpandEvent event) {
-		CmqBaseRelationsTreeHelper relationsSearchHelper = new CmqBaseRelationsTreeHelper(cmqBaseService, smqBaseService, meddraDictService, cmqRelationService);	
+		CmqBaseRelationsTreeHelper relationsSearchHelper = new CmqBaseRelationsTreeHelper(cmqBaseService, smqBaseService, meddraDictService, cmqRelationService, globalController);	
 		this.parentRelationsRoot = relationsSearchHelper.getRelationsNodeHierarchy(this.parentRelationsRoot, event.getTreeNode()); 
 	}
 	
@@ -151,7 +154,7 @@ public class ParentListController extends BaseController<CmqBase190> {
 		//this.parentCmqCode = this.childCmqEntity.getCmqParentCode();
 		this.parentCmqEntity = this.cmqBaseService.findByCode(this.parentCmqCode);
 
-		CmqBaseRelationsTreeHelper relationsTreeHelper = new CmqBaseRelationsTreeHelper(cmqBaseService, smqBaseService, meddraDictService, cmqRelationService);
+		CmqBaseRelationsTreeHelper relationsTreeHelper = new CmqBaseRelationsTreeHelper(cmqBaseService, smqBaseService, meddraDictService, cmqRelationService, globalController);
         relationsTreeHelper.setRequireDrillDown(false);
 		parentRelationsRoot = relationsTreeHelper.getCmqBaseRelationsRootHierarchy(parentCmqCode);
 	}
@@ -162,5 +165,13 @@ public class ParentListController extends BaseController<CmqBase190> {
 	
 	public CmqBase190 getParentCmqEntity() {
 		return this.parentCmqEntity;
+	}
+
+	public GlobalController getGlobalController() {
+		return globalController;
+	}
+
+	public void setGlobalController(GlobalController globalController) {
+		this.globalController = globalController;
 	}
 }

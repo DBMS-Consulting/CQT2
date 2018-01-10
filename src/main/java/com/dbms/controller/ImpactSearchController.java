@@ -3,13 +3,11 @@ package com.dbms.controller;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Locale;
 import java.util.Map;
 
@@ -46,7 +44,6 @@ import com.dbms.csmq.HierarchyNode;
 import com.dbms.entity.IEntity;
 import com.dbms.entity.cqt.CmqBase190;
 import com.dbms.entity.cqt.CmqBaseTarget;
-import com.dbms.entity.cqt.CmqParentChild200;
 import com.dbms.entity.cqt.CmqParentChildTarget;
 import com.dbms.entity.cqt.CmqRelationTarget;
 import com.dbms.entity.cqt.RefConfigCodeList;
@@ -59,7 +56,6 @@ import com.dbms.entity.cqt.dtos.SMQReverseHierarchySearchDto;
 import com.dbms.service.AuthenticationService;
 import com.dbms.service.ICmqBase190Service;
 import com.dbms.service.ICmqBaseTargetService;
-import com.dbms.service.ICmqParentChild200Service;
 import com.dbms.service.ICmqParentChildTargetService;
 import com.dbms.service.ICmqRelation190Service;
 import com.dbms.service.ICmqRelationTargetService;
@@ -131,6 +127,9 @@ public class ImpactSearchController implements Serializable {
 
 	@ManagedProperty("#{CmqParentChildTargetService}")
 	private ICmqParentChildTargetService cmqParentChildService;
+	
+	@ManagedProperty("#{globalController}")
+    private GlobalController globalController;
 	
 	Wizard iaWizard, iaVersionWizard;
 	private String iaWizardNextStep;
@@ -209,7 +208,7 @@ public class ImpactSearchController implements Serializable {
 		targetTableRootTreeNode = new DefaultTreeNode("root",
 				new HierarchyNode("CODE", "LEVEL", "SCOPE", "CATEGORY", "WEIGHT", null, null), null);
 		currentHierarchySearchDlgModel = new CmqBaseHierarchySearchVM(cmqBaseCurrentService, smqBaseCurrentService,
-				meddraDictCurrentService, cmqRelationCurrentService);
+				meddraDictCurrentService, cmqRelationCurrentService, globalController);
 		targetHierarchySearchDlgModel = new TargetHierarchySearchVM(cmqBaseTargetService, smqBaseTargetService,
 				meddraDictTargetService, cmqRelationTargetService);
 
@@ -2685,5 +2684,13 @@ public class ImpactSearchController implements Serializable {
 
 	public void setCmqParentChildService(ICmqParentChildTargetService cmqParentChildService) {
 		this.cmqParentChildService = cmqParentChildService;
+	}
+
+	public GlobalController getGlobalController() {
+		return globalController;
+	}
+
+	public void setGlobalController(GlobalController globalController) {
+		this.globalController = globalController;
 	}
 }

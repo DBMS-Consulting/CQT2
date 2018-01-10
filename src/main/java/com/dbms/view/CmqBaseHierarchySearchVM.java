@@ -2,18 +2,13 @@ package com.dbms.view;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 
 import javax.faces.application.FacesMessage;
-import javax.faces.bean.ManagedProperty;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
 
-import org.apache.commons.collections4.CollectionUtils;
-import org.primefaces.context.RequestContext;
 import org.primefaces.event.CloseEvent;
 import org.primefaces.event.NodeExpandEvent;
 import org.primefaces.event.RowEditEvent;
@@ -22,6 +17,7 @@ import org.primefaces.model.TreeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.dbms.controller.GlobalController;
 import com.dbms.controller.beans.HierarchySearchResultBean;
 import com.dbms.csmq.HierarchyNode;
 import com.dbms.entity.cqt.CmqBase190;
@@ -32,18 +28,10 @@ import com.dbms.entity.cqt.dtos.MeddraDictReverseHierarchySearchDto;
 import com.dbms.entity.cqt.dtos.SMQReverseHierarchySearchDto;
 import com.dbms.service.ICmqBase190Service;
 import com.dbms.service.ICmqRelation190Service;
-import com.dbms.service.ICqtCacheManager;
 import com.dbms.service.IMeddraDictService;
-import com.dbms.service.IRefCodeListService;
 import com.dbms.service.ISmqBaseService;
-import com.dbms.util.CqtConstants;
 import com.dbms.util.MeddraDictLevelHelper;
-import com.dbms.util.OrderBy;
-
-import static com.dbms.util.MeddraDictLevelHelper.SEARCH_MEDDRA_BASE_REVERSE;
-
 import com.dbms.util.SMQLevelHelper;
-import com.ibm.icu.impl.locale.Extension;
 
 /**
  * @date Feb 7, 2017 7:39:34 AM
@@ -59,7 +47,8 @@ public class CmqBaseHierarchySearchVM {
 	private ISmqBaseService smqBaseService;
 	private IMeddraDictService meddraDictService;
 	private ICmqRelation190Service cmqRelationService;
-
+	final private GlobalController globalController;
+	
 	private String myFilterTermName;
 	private String myFilterLevel;
 	private String filterSMQ;
@@ -86,15 +75,16 @@ public class CmqBaseHierarchySearchVM {
     private List<RefConfigCodeList> levels;
     
  	
-	public CmqBaseHierarchySearchVM(ICmqBase190Service cmqBaseSvc,
+    public CmqBaseHierarchySearchVM(ICmqBase190Service cmqBaseSvc,
 			ISmqBaseService smqBaseSvc,
 			IMeddraDictService meddraDictSvc,
-			ICmqRelation190Service cmqRelationSvc) {
+			ICmqRelation190Service cmqRelationSvc,
+			GlobalController globalController) {
 		this.cmqBaseService = cmqBaseSvc;
 		this.smqBaseService = smqBaseSvc;
 		this.meddraDictService = meddraDictSvc;
 		this.cmqRelationService = cmqRelationSvc;
-		
+		this.globalController = globalController;
 		myHierarchyRoot = new DefaultTreeNode("root", new HierarchyNode("LEVEL",
 				"NAME", "CODE", null), null);
 		        
@@ -117,8 +107,7 @@ public class CmqBaseHierarchySearchVM {
         //trim any spaces
         myFilterTermName = myFilterTermName.trim();
         
-        
-		CmqBaseRelationsTreeHelper relationsTreeHelper = new CmqBaseRelationsTreeHelper(cmqBaseService, smqBaseService, meddraDictService, cmqRelationService);
+		CmqBaseRelationsTreeHelper relationsTreeHelper = new CmqBaseRelationsTreeHelper(cmqBaseService, smqBaseService, meddraDictService, cmqRelationService, globalController);
         relationsTreeHelper.setRequireDrillDown(true);
 		
 		SMQLevelHelper smqLevelH = SMQLevelHelper.getByLabel(myFilterLevel);
@@ -313,13 +302,16 @@ public class CmqBaseHierarchySearchVM {
 				List<MeddraDictReverseHierarchySearchDto> meddraDictDtoList = meddraDictService
 						.findFullReverseHierarchyByLevelAndTerm(myFilterLevel, myFilterLevel, myFilterTermName);
 				this.myHierarchyRoot = new DefaultTreeNode("root", new HierarchyNode("LEVEL", "NAME", "CODE", null), null);
-				
+				boolean filterLltFlag = this.globalController.isFilterLltsFlag();
 				for (MeddraDictReverseHierarchySearchDto meddraDictReverseDto : meddraDictDtoList) {
 					HierarchyNode node = relationsTreeHelper.createMeddraReverseNode(meddraDictReverseDto, myFilterLevel, false, null);
 					TreeNode parentTreeNode = new DefaultTreeNode(node, this.myHierarchyRoot);
 					
-					// add a dummmy node to show expand arrow
-					relationsTreeHelper.createNewDummyNode(parentTreeNode);
+					//if filter llt flag is on and we are seaching for PTs
+					if(!node.getLevel().equals("PT") && filterLltFlag) {
+						// add a dummmy node to show expand arrow
+						relationsTreeHelper.createNewDummyNode(parentTreeNode);
+					}
 				}
 			}
 		} else if ("PRO".equalsIgnoreCase(myFilterLevel)) {
@@ -396,8 +388,6 @@ public class CmqBaseHierarchySearchVM {
 		}
 		return "1";
 	}
-
- 
  	
 	private void handleSearchDirection() {
 		if (myFilterLevel != null
@@ -454,7 +444,7 @@ public class CmqBaseHierarchySearchVM {
 		boolean isRelationView = "RELATIONS".equalsIgnoreCase(uiSourceOfEvent);
 		boolean isParentListView = "PARENT-LIST".equalsIgnoreCase(uiSourceOfEvent);
 		if(!showPrimaryPathOnly) {
-			CmqBaseRelationsTreeHelper relationsSearchHelper = new CmqBaseRelationsTreeHelper(cmqBaseService, smqBaseService, meddraDictService, cmqRelationService);	
+			CmqBaseRelationsTreeHelper relationsSearchHelper = new CmqBaseRelationsTreeHelper(cmqBaseService, smqBaseService, meddraDictService, cmqRelationService, globalController);	
 	        relationsSearchHelper.setRelationView(isRelationView);
 	        relationsSearchHelper.setRelationView(isParentListView);
 			this.myHierarchyRoot = relationsSearchHelper.getRelationsNodeHierarchy(this.myHierarchyRoot, expandedTreeNode);	
