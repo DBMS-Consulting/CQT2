@@ -72,7 +72,7 @@
 						<p:commandButton value="Search"
 							action="#{auditTrailController.findAudit}"
 							update="@form:result @form:m1"/>
-						<p:commandButton action="#{auditTrailController.reset}" value="Reset"
+						<p:commandButton action="#{auditTrailController.reset}" value="Clear"
 							process="@this" update="@form:result @form:searchPanel" />
 							
 						<p:commandButton actionListener="#{auditTrailController.generateExcel(auditTrailController.datas)}" ajax="false" value="Export"

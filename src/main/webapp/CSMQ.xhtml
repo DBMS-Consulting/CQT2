@@ -228,6 +228,19 @@
 					style="font-weight:#{userBean.currentMenu eq 'REPORTS' ? 'bold' : 'normal'};"
 					url="/audit/auditSearch.xhtml"
 					rendered="#{AuthenticationService.getPermissonByUri('/audit/auditSearch.xhtml')}" />
+					
+					
+					
+					
+				
+				
+				 <f:facet name="options">
+ 		          		<h:selectBooleanCheckbox id="flagG"
+		 						value="#{globalController.filterLltsFlag}">
+							<p:ajax update="@form" listener="#{globalController.checkFilterLltsFlag}" />
+						</h:selectBooleanCheckbox>
+						<h:outputText style="font-weight: bold" value="Filter LLT" />
+         		</f:facet>
 
 			</p:menubar>
 		</h:form>
