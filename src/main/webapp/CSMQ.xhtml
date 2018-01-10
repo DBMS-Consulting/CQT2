@@ -220,12 +220,14 @@
 				<p:menuitem value="Historic View" id="hv"   
 					styleClass="#{view.viewId == '/history/historicView.xhtml' ? 'ui-state-active2' : ''}"
 					style="font-weight:#{userBean.currentMenu eq 'REPORTS' ? 'bold' : 'normal'};"
-					url="/history/historicView.xhtml" />
+					url="/history/historicView.xhtml" 
+					rendered="#{AuthenticationService.getPermissonByUri('/history/historicView.xhtml')}" />
 					
 				<p:menuitem value="Audit Trail" id="at"   
 					styleClass="#{view.viewId == '/audit/auditSearch.xhtml' ? 'ui-state-active2' : ''}"
 					style="font-weight:#{userBean.currentMenu eq 'REPORTS' ? 'bold' : 'normal'};"
-					url="/audit/auditSearch.xhtml" />
+					url="/audit/auditSearch.xhtml"
+					rendered="#{AuthenticationService.getPermissonByUri('/audit/auditSearch.xhtml')}" />
 
 			</p:menubar>
 		</h:form>
