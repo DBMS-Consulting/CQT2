@@ -1619,7 +1619,18 @@ public class CreateController implements Serializable {
 		RefConfigCodeList levelToRemove = refCodeListService.findByConfigTypeAndInternalCode(CqtConstants.CODE_LIST_TYPE_DICTIONARY_LEVELS, "NC-LLT");
 		if (levelToRemove != null)
 			levels.remove(levelToRemove);
-		 
+		
+		//filter out llts if the flag is set
+		boolean filterLltFlag = this.globalController.isFilterLltsFlag();
+		if(filterLltFlag) {
+			for(ListIterator<RefConfigCodeList> li = levels.listIterator(); li.hasNext();) {
+				RefConfigCodeList refConfigCodeList = li.next();
+				if(StringUtils.isNotBlank(refConfigCodeList.getCodelistInternalValue()) 
+						&& StringUtils.containsIgnoreCase(refConfigCodeList.getCodelistInternalValue(), "LLT")) {
+					li.remove();
+				}
+			}
+		}
 		return levels;
 	}
 	
