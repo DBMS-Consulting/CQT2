@@ -308,7 +308,7 @@ public class CmqBaseHierarchySearchVM {
 					TreeNode parentTreeNode = new DefaultTreeNode(node, this.myHierarchyRoot);
 					
 					//if filter llt flag is on and we are seaching for PTs
-					if(!node.getLevel().equals("PT") && filterLltFlag) {
+					if(!node.getLevel().equals("PT") || (node.getLevel().equals("PT") && !filterLltFlag)) {
 						// add a dummmy node to show expand arrow
 						relationsTreeHelper.createNewDummyNode(parentTreeNode);
 					}

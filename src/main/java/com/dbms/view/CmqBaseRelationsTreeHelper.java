@@ -447,7 +447,8 @@ public class CmqBaseRelationsTreeHelper {
         
         boolean filterLltsFlag = this.globalController.isFilterLltsFlag();
         
-        if(requireDrillDown && childNodeType!=null && !nodeType.equalsIgnoreCase("PT") && filterLltsFlag) {
+        if(requireDrillDown && childNodeType!=null && 
+        		(!nodeType.equalsIgnoreCase("PT") || (nodeType.equalsIgnoreCase("PT") && !filterLltsFlag))) {
             List<Map<String, Object>> countsOfChildren = this.meddraDictSvc.findChildrenCountByParentCodes(childNodeType + "_"
                                             , nodeType + "_", dtoCodes);
 
@@ -784,7 +785,7 @@ public class CmqBaseRelationsTreeHelper {
 		
 		boolean filterLltFlag = this.globalController.isFilterLltsFlag();
     
-		if(!childLevel.equalsIgnoreCase("PT") && filterLltFlag) {
+		if(!childLevel.equalsIgnoreCase("PT") || (childLevel.equalsIgnoreCase("PT") && !filterLltFlag)) {
 	        List<Map<String, Object>> countsOfChildren;
 	        countsOfChildren = this.meddraDictSvc.findChildrenCountByParentCodes(childchildOfChildSearchColumnTypePrefix,
 	                childSearchColumnTypePrefix, nodesMapKeys);
