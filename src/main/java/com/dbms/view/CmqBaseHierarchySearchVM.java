@@ -253,17 +253,21 @@ public class CmqBaseHierarchySearchVM {
                 meddraTreeNodes.put(Long.valueOf(m.getCode()), parentTreeNode);
             }
             
-            List<Map<String, Object>> countOfChildrenList = this.meddraDictService.findChildrenCountByParentCodes(childSearchColumnTypePrefix, parentCodeColumnPrefix, meddraCodeList);
-            if((null != countOfChildrenList) && (countOfChildrenList.size() > 0)) {
-                for(Map<String, Object> map : countOfChildrenList) {
-                    if(map.get("PARENT_CODE") != null) {
-                        Long parentMeddraCode = (Long)map.get("PARENT_CODE");
-                        if((Long)map.get("COUNT") > 0) {
-                            relationsTreeHelper.createNewDummyNode(meddraTreeNodes.get(parentMeddraCode));
-                        }
-                    }
-                }
-            }
+			boolean filterLltFlag = this.globalController.isFilterLltsFlag();
+			//if filter llt flag is on and we are seaching for PTs
+			if(!myFilterLevel.equals("PT") || (myFilterLevel.equals("PT") && !filterLltFlag)) {
+				List<Map<String, Object>> countOfChildrenList = this.meddraDictService.findChildrenCountByParentCodes(childSearchColumnTypePrefix, parentCodeColumnPrefix, meddraCodeList);
+	            if((null != countOfChildrenList) && (countOfChildrenList.size() > 0)) {
+	                for(Map<String, Object> map : countOfChildrenList) {
+	                    if(map.get("PARENT_CODE") != null) {
+	                        Long parentMeddraCode = (Long)map.get("PARENT_CODE");
+	                        if((Long)map.get("COUNT") > 0) {
+	                            relationsTreeHelper.createNewDummyNode(meddraTreeNodes.get(parentMeddraCode));
+	                        }
+	                    }
+	                }
+	            }
+			}
 		} else if (meddraLevelH != null && appliedSearchDirection == SEARCH_DIRECTION_UP) {
 			if(this.showPrimaryPath && (myFilterLevel.equals("PT") || myFilterLevel.equals("LLT"))) {
 				this.showPrimaryPathOnly = true;
@@ -302,16 +306,12 @@ public class CmqBaseHierarchySearchVM {
 				List<MeddraDictReverseHierarchySearchDto> meddraDictDtoList = meddraDictService
 						.findFullReverseHierarchyByLevelAndTerm(myFilterLevel, myFilterLevel, myFilterTermName);
 				this.myHierarchyRoot = new DefaultTreeNode("root", new HierarchyNode("LEVEL", "NAME", "CODE", null), null);
-				boolean filterLltFlag = this.globalController.isFilterLltsFlag();
 				for (MeddraDictReverseHierarchySearchDto meddraDictReverseDto : meddraDictDtoList) {
 					HierarchyNode node = relationsTreeHelper.createMeddraReverseNode(meddraDictReverseDto, myFilterLevel, false, null);
 					TreeNode parentTreeNode = new DefaultTreeNode(node, this.myHierarchyRoot);
 					
-					//if filter llt flag is on and we are seaching for PTs
-					if(!node.getLevel().equals("PT") || (node.getLevel().equals("PT") && !filterLltFlag)) {
-						// add a dummmy node to show expand arrow
-						relationsTreeHelper.createNewDummyNode(parentTreeNode);
-					}
+					// add a dummmy node to show expand arrow
+					relationsTreeHelper.createNewDummyNode(parentTreeNode);
 				}
 			}
 		} else if ("PRO".equalsIgnoreCase(myFilterLevel)) {

@@ -238,6 +238,7 @@
  		          		<h:selectBooleanCheckbox id="flagG"
 		 						value="#{globalController.filterLltsFlag}">
 							<p:ajax update="@form" listener="#{globalController.checkFilterLltsFlag}" />
+							<p:ajax update="@form" listener="#{createController.reloadRelationsOnFilterLltFlagToggle}" />
 						</h:selectBooleanCheckbox>
 						<h:outputText style="font-weight: bold" value="Filter LLT" />
          		</f:facet>

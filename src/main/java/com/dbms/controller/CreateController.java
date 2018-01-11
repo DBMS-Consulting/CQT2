@@ -1590,6 +1590,13 @@ public class CreateController implements Serializable {
 		return products;
 	}
 	
+	public void reloadRelationsOnFilterLltFlagToggle(AjaxBehaviorEvent event) {
+		if(null != this.getRelationsModel()) {
+			boolean filterLltFlag = this.globalController.isFilterLltsFlag();
+			this.getRelationsModel().hanldeFilterLltFlagToggle(filterLltFlag);
+		}
+	}
+	
 	public List<RefConfigCodeList> getLevelListWithoutProtocol() {
 		cqtCacheManager.removeAllFromCache(CACHE_NAME);
 

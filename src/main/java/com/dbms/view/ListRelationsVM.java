@@ -6,10 +6,13 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.faces.application.FacesMessage;
+import javax.faces.component.UIComponent;
+import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.NodeCollapseEvent;
 import org.primefaces.event.NodeExpandEvent;
 import org.primefaces.model.DefaultTreeNode;
@@ -36,6 +39,7 @@ import com.dbms.service.ICmqRelation190Service;
 import com.dbms.service.IMeddraDictService;
 import com.dbms.service.IRefCodeListService;
 import com.dbms.service.ISmqBaseService;
+import com.dbms.util.CmqUtils;
 import com.dbms.util.SWJSFRequest;
 import com.dbms.util.exceptions.CqtServiceException;
 import com.dbms.view.CmqBaseHierarchySearchVM.IRelationsChangeListener;
@@ -117,6 +121,40 @@ public class ListRelationsVM implements IRelationsChangeListener {
 		this.cmqRelationService = cmqRelationService;
 	}
 
+	public void hanldeFilterLltFlagToggle(boolean filterLltFlag) {
+		if(null != this.relationsRoot) {
+			List<TreeNode> childrenNodes = this.relationsRoot.getChildren();
+			for (TreeNode childTreeNode : childrenNodes) {
+				childTreeNode.setExpanded(false);
+				childTreeNode.getChildren().clear();//remove all children
+				HierarchyNode hNode = (HierarchyNode) childTreeNode.getData();
+				hNode.setDataFetchCompleted(false);
+				if((!hNode.getLevel().equalsIgnoreCase("PT") && !hNode.getLevel().equalsIgnoreCase("LLT"))
+						|| (!filterLltFlag && (hNode.getLevel().equalsIgnoreCase("PT") || hNode.getLevel().equalsIgnoreCase("SMQ4")))) {
+					//add a dummy node if ther eis no child here
+					if(childTreeNode.getChildCount() == 0) {
+						HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
+						dummyNode.setDummyNode(true);
+						new DefaultTreeNode(dummyNode, childTreeNode);
+					}
+				}
+			}
+			UIViewRoot viewRoot = FacesContext.getCurrentInstance().getViewRoot();
+			if(null != viewRoot) {
+				UIComponent relationTreeTableComponent = CmqUtils.findComponent(viewRoot, "resultRelations");
+				if(null != relationTreeTableComponent) {
+					//update has to be on relationTreeTableComponent.getClientId() and not on the xhtml id
+					RequestContext.getCurrentInstance().update(relationTreeTableComponent.getClientId());
+				}
+				UIComponent relationTreeTableForBrowsecomponent = CmqUtils.findComponent(viewRoot, "relations-tree-table");
+				if(null != relationTreeTableForBrowsecomponent) {
+					//update has to be on relationTreeTableForBrowsecomponent.getClientId() and not on the xhtml id
+					RequestContext.getCurrentInstance().update(relationTreeTableForBrowsecomponent.getClientId());
+				}
+			}
+		}
+	}
+	
 	//uiEventSourceName is either relations or hierarchy
 	public void onNodeExpand(NodeExpandEvent event) {
 		////event source attriute from the ui
