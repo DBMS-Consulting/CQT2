@@ -141,15 +141,23 @@ public class ListRelationsVM implements IRelationsChangeListener {
 			}
 			UIViewRoot viewRoot = FacesContext.getCurrentInstance().getViewRoot();
 			if(null != viewRoot) {
+				//in crate, update copy
 				UIComponent relationTreeTableComponent = CmqUtils.findComponent(viewRoot, "resultRelations");
 				if(null != relationTreeTableComponent) {
 					//update has to be on relationTreeTableComponent.getClientId() and not on the xhtml id
 					RequestContext.getCurrentInstance().update(relationTreeTableComponent.getClientId());
 				}
-				UIComponent relationTreeTableForBrowsecomponent = CmqUtils.findComponent(viewRoot, "relations-tree-table");
-				if(null != relationTreeTableForBrowsecomponent) {
-					//update has to be on relationTreeTableForBrowsecomponent.getClientId() and not on the xhtml id
-					RequestContext.getCurrentInstance().update(relationTreeTableForBrowsecomponent.getClientId());
+				//in b&s
+				UIComponent relationTreeTableForBrowseComponent = CmqUtils.findComponent(viewRoot, "relations-tree-table");
+				if(null != relationTreeTableForBrowseComponent) {
+					//update has to be on relationTreeTableForBrowseComponent.getClientId() and not on the xhtml id
+					RequestContext.getCurrentInstance().update(relationTreeTableForBrowseComponent.getClientId());
+				}
+				//in ia left side
+				UIComponent currentListsAndSmqsComponent = CmqUtils.findComponent(viewRoot, "currentListsAndSmqs");
+				if(null != currentListsAndSmqsComponent) {
+					//update has to be on currentListsAndSmqsComponent.getClientId() and not on the xhtml id
+					RequestContext.getCurrentInstance().update(currentListsAndSmqsComponent.getClientId());
 				}
 			}
 		}
