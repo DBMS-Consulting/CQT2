@@ -156,7 +156,7 @@
       where 
             cmq_code_new = &&CMQCodeForAudit
         and transaction_type in ('I','U')
-        and audit_timestamp <= to_date('&&CMQAuditTimestamp','DD-MON-RRRR:HH24:MI:SS')
+        and audit_timestamp <= :CMQAuditTimestamp
       group by 
             cmq_code_new, cmq_product_cd_new
       ) cpb_upsert,
@@ -166,7 +166,7 @@
       where 
             cmq_code_old = &&CMQCodeForAudit 
     and transaction_type in ('D')
-        and audit_timestamp <= to_date('&&CMQAuditTimestamp','DD-MON-RRRR:HH24:MI:SS')
+        and audit_timestamp <= :CMQAuditTimestamp
       group by 
             cmq_code_old, cmq_product_cd_old
       ) cpb_delete,
@@ -184,7 +184,7 @@
               cmq_code_new = cba.cmq_code_new
               and cmq_code_new is NOT NULL
               and transaction_type in ('U','I')
-              and audit_timestamp <= to_date('&&CMQAuditTimestamp','DD-MON-RRRR:HH24:MI:SS')
+              and audit_timestamp <= :CMQAuditTimestamp
           )
       and not exists
          (select 1 from 
@@ -192,7 +192,7 @@
            where
               cmq_code_old = cba.cmq_code_new
            and audit_timestamp <=
-               to_date('&&CMQAuditTimestamp','DD-MON-RRRR:HH24:MI:SS')
+               :CMQAuditTimestamp
            and audit_timestamp >=
                (select max(audit_timestamp) 
                 from opencqt.cmq_base_&&MedDRAAuditVersion._audit 
@@ -200,7 +200,7 @@
                     --cmq_code_new = cba.cmq_parent_code_new
                     cmq_code_new is NOT NULL
                     and transaction_type in ('U','I')
-                    and audit_timestamp <= to_date('&&CMQAuditTimestamp','DD-MON-RRRR:HH24:MI:SS')
+                    and audit_timestamp <= :CMQAuditTimestamp
                )
            and transaction_type = 'D'
          )
@@ -220,7 +220,7 @@
       where 
             cmq_code_new = &&CMQCodeForAudit
         and transaction_type in ('I','U')
-        and audit_timestamp <= to_date('&&CMQAuditTimestamp','DD-MON-RRRR:HH24:MI:SS')
+        and audit_timestamp <= :CMQAuditTimestamp
       group by 
             cmq_code_new, soc_code_new, term_scope_new
       ) cra_upsert,
@@ -230,7 +230,7 @@
       where 
             cmq_code_old = &&CMQCodeForAudit 
     and transaction_type in ('D')
-        and audit_timestamp <= to_date('&&CMQAuditTimestamp','DD-MON-RRRR:HH24:MI:SS')
+        and audit_timestamp <= :CMQAuditTimestamp
       group by 
             cmq_code_old, soc_code_old, term_scope_old
       ) cra_delete,
@@ -256,7 +256,7 @@
       where 
             cmq_code_new = &&CMQCodeForAudit
         and transaction_type in ('I','U')
-        and audit_timestamp <= to_date('&&CMQAuditTimestamp','DD-MON-RRRR:HH24:MI:SS')
+        and audit_timestamp <= :CMQAuditTimestamp
       group by 
             cmq_code_new, hlgt_code_new, term_scope_new
       ) cra_upsert,
@@ -266,7 +266,7 @@
       where 
             cmq_code_old = &&CMQCodeForAudit 
     and transaction_type in ('D')
-        and audit_timestamp <= to_date('&&CMQAuditTimestamp','DD-MON-RRRR:HH24:MI:SS')
+        and audit_timestamp <= :CMQAuditTimestamp
       group by 
             cmq_code_old, hlgt_code_old, term_scope_old
       ) cra_delete,
@@ -292,7 +292,7 @@
       where 
             cmq_code_new = &&CMQCodeForAudit
         and transaction_type in ('I','U')
-        and audit_timestamp <= to_date('&&CMQAuditTimestamp','DD-MON-RRRR:HH24:MI:SS')
+        and audit_timestamp <= :CMQAuditTimestamp
       group by 
             cmq_code_new, hlt_code_new, term_scope_new
       ) cra_upsert,
@@ -302,7 +302,7 @@
       where 
             cmq_code_old = &&CMQCodeForAudit 
     and transaction_type in ('D')
-        and audit_timestamp <= to_date('&&CMQAuditTimestamp','DD-MON-RRRR:HH24:MI:SS')
+        and audit_timestamp <= :CMQAuditTimestamp
       group by 
             cmq_code_old, hlt_code_old, term_scope_old
       ) cra_delete,
@@ -328,7 +328,7 @@
       where 
             cmq_code_new = &&CMQCodeForAudit
         and transaction_type in ('I','U')
-        and audit_timestamp <= to_date('&&CMQAuditTimestamp','DD-MON-RRRR:HH24:MI:SS')
+        and audit_timestamp <= :CMQAuditTimestamp
       group by 
             cmq_code_new, pt_code_new, term_scope_new
       ) cra_upsert,
@@ -338,7 +338,7 @@
       where 
             cmq_code_old = &&CMQCodeForAudit 
     and transaction_type in ('D')
-        and audit_timestamp <= to_date('&&CMQAuditTimestamp','DD-MON-RRRR:HH24:MI:SS')
+        and audit_timestamp <= :CMQAuditTimestamp
       group by 
             cmq_code_old, pt_code_old, term_scope_old
       ) cra_delete,
@@ -364,7 +364,7 @@
       where 
             cmq_code_new = &&CMQCodeForAudit
         and transaction_type in ('I','U')
-        and audit_timestamp <= to_date('&&CMQAuditTimestamp','DD-MON-RRRR:HH24:MI:SS')
+        and audit_timestamp <= :CMQAuditTimestamp
       group by 
             cmq_code_new, llt_code_new, term_scope_new
       ) cra_upsert,
@@ -374,7 +374,7 @@
       where 
             cmq_code_old = &&CMQCodeForAudit 
     and transaction_type in ('D')
-        and audit_timestamp <= to_date('&&CMQAuditTimestamp','DD-MON-RRRR:HH24:MI:SS')
+        and audit_timestamp <= :CMQAuditTimestamp
       group by 
             cmq_code_old, llt_code_old, term_scope_old
       ) cra_delete,
@@ -419,7 +419,7 @@
       where 
             cmq_code_new = &&CMQCodeForAudit
         and transaction_type in ('I','U')
-        and audit_timestamp <= to_date('&&CMQAuditTimestamp','DD-MON-RRRR:HH24:MI:SS')
+        and audit_timestamp <= :CMQAuditTimestamp
       group by 
             cmq_code_new, smq_code_new, term_scope_new
       ) cra_upsert,
@@ -429,7 +429,7 @@
       where 
             cmq_code_old = &&CMQCodeForAudit 
     and transaction_type in ('D')
-        and audit_timestamp <= to_date('&&CMQAuditTimestamp','DD-MON-RRRR:HH24:MI:SS')
+        and audit_timestamp <= :CMQAuditTimestamp
       group by 
             cmq_code_old, smq_code_old, term_scope_old
       ) cra_delete,
@@ -449,14 +449,14 @@
         from cmq_parent_child_&&MedDRAAuditVersion._audit 
         where child_cmq_id=(select cmq_id from cmq_base_&&MedDRAAuditVersion. where cmq_code=&&CMQCodeForAudit)
         and transaction_type in ('I','U')
-        and audit_timestamp <= to_date('&&CMQAuditTimestamp','DD-MON-RRRR:HH24:MI:SS')
+        and audit_timestamp <= :CMQAuditTimestamp
         group by cmq_parent_name_new, cmq_child_code_new)cpc_upsert,
         
         (select cmq_parent_name_old,cmq_child_code_old cmq_code,max(audit_timestamp) max_audit_timestamp 
         from cmq_parent_child_&&MedDRAAuditVersion._audit 
         where child_cmq_id=(select cmq_id from cmq_base_&&MedDRAAuditVersion. where cmq_code=&&CMQCodeForAudit)
         and transaction_type in ('D')
-        and audit_timestamp <= to_date('&&CMQAuditTimestamp','DD-MON-RRRR:HH24:MI:SS')
+        and audit_timestamp <= :CMQAuditTimestamp
         group by cmq_parent_name_old, cmq_child_code_old)cpc_delete
         
         where
