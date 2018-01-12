@@ -1401,8 +1401,16 @@ public class IARelationsTreeHelper {
                 setTargetCmqRelationNodeStyle(hn, (CmqRelationTarget)hn.getRelationEntity());
             }
             if(childNodeType != null) {
-                countsOfChildren = this.meddraDictTargetService.findChildrenCountByParentCodes(childNodeType + "_"
-                                                , nodeType + "_", dtoCodes);
+            	if(childNodeType.equalsIgnoreCase("LLT")) {
+            		boolean filterLltFlag = this.globalController.isFilterLltsFlag();
+            		if(!filterLltFlag) {
+            			countsOfChildren = this.meddraDictTargetService.findChildrenCountByParentCodes(childNodeType + "_"
+                                , nodeType + "_", dtoCodes);
+            		}
+            	} else {
+            		countsOfChildren = this.meddraDictTargetService.findChildrenCountByParentCodes(childNodeType + "_"
+                            , nodeType + "_", dtoCodes);
+            	}
             }
         }
 

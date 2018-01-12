@@ -1445,31 +1445,54 @@ public class ImpactSearchController implements Serializable {
 	}
 
 	public void reloadRelationsOnFilterLltFlagToggle(AjaxBehaviorEvent event) {
+		boolean filterLltFlag = this.globalController.isFilterLltsFlag();
 		if(null != this.currentTableRootTreeNode) {
-			boolean filterLltFlag = this.globalController.isFilterLltsFlag();
-			if(null != this.currentTableRootTreeNode) {
-				List<TreeNode> childrenNodes = this.currentTableRootTreeNode.getChildren();
-				for (TreeNode childTreeNode : childrenNodes) {
-					childTreeNode.setExpanded(false);
-					childTreeNode.getChildren().clear();//remove all children
-					HierarchyNode hNode = (HierarchyNode) childTreeNode.getData();
-					hNode.setDataFetchCompleted(false);
-					
-					//since the child will always be a cmq or an smq so just add the dummy node
-					if(childTreeNode.getChildCount() == 0) {
-						HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
-						dummyNode.setDummyNode(true);
-						new DefaultTreeNode(dummyNode, childTreeNode);
-					}
+			List<TreeNode> childrenNodes = this.currentTableRootTreeNode.getChildren();
+			for (TreeNode childTreeNode : childrenNodes) {
+				childTreeNode.setExpanded(false);
+				childTreeNode.getChildren().clear();//remove all children
+				HierarchyNode hNode = (HierarchyNode) childTreeNode.getData();
+				hNode.setDataFetchCompleted(false);
+				
+				//since the child will always be a cmq or an smq so just add the dummy node
+				if(childTreeNode.getChildCount() == 0) {
+					HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
+					dummyNode.setDummyNode(true);
+					new DefaultTreeNode(dummyNode, childTreeNode);
 				}
-				UIViewRoot viewRoot = FacesContext.getCurrentInstance().getViewRoot();
-				if(null != viewRoot) {
-					//in ia left side
-					UIComponent currentListsAndSmqsComponent = CmqUtils.findComponent(viewRoot, "currentListsAndSmqs");
-					if(null != currentListsAndSmqsComponent) {
-						//update has to be on currentListsAndSmqsComponent.getClientId() and not on the xhtml id
-						RequestContext.getCurrentInstance().update(currentListsAndSmqsComponent.getClientId());
-					}
+			}
+			UIViewRoot viewRoot = FacesContext.getCurrentInstance().getViewRoot();
+			if(null != viewRoot) {
+				//in ia left side
+				UIComponent currentListsAndSmqsComponent = CmqUtils.findComponent(viewRoot, "currentListsAndSmqs");
+				if(null != currentListsAndSmqsComponent) {
+					//update has to be on currentListsAndSmqsComponent.getClientId() and not on the xhtml id
+					RequestContext.getCurrentInstance().update(currentListsAndSmqsComponent.getClientId());
+				}
+			}
+		}
+		if(null != this.targetTableRootTreeNode) {
+			List<TreeNode> childrenNodes = this.targetTableRootTreeNode.getChildren();
+			for (TreeNode childTreeNode : childrenNodes) {
+				childTreeNode.setExpanded(false);
+				childTreeNode.getChildren().clear();//remove all children
+				HierarchyNode hNode = (HierarchyNode) childTreeNode.getData();
+				hNode.setDataFetchCompleted(false);
+				
+				//since the child will always be a cmq or an smq so just add the dummy node
+				if(childTreeNode.getChildCount() == 0) {
+					HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
+					dummyNode.setDummyNode(true);
+					new DefaultTreeNode(dummyNode, childTreeNode);
+				}
+			}
+			UIViewRoot viewRoot = FacesContext.getCurrentInstance().getViewRoot();
+			if(null != viewRoot) {
+				//in ia left side
+				UIComponent targetListsAndSmqsComponent = CmqUtils.findComponent(viewRoot, "futureListsAndSmqs");
+				if(null != targetListsAndSmqsComponent) {
+					//update has to be on targetListsAndSmqsComponent.getClientId() and not on the xhtml id
+					RequestContext.getCurrentInstance().update(targetListsAndSmqsComponent.getClientId());
 				}
 			}
 		}

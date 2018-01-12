@@ -6,6 +6,7 @@ import com.dbms.entity.cqt.CmqBaseTarget;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -21,6 +22,8 @@ import com.dbms.util.OrderBy;
 import java.util.Arrays;
 
 import javax.swing.event.ListSelectionEvent;
+
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Controller that will contains codelist methods.
@@ -51,6 +54,10 @@ public class ConfigurationController implements Serializable {
     
     @ManagedProperty("#{CqtCacheManager}")
    	private ICqtCacheManager cqtCacheManager;
+    
+    @ManagedProperty("#{globalController}")
+    private GlobalController globalController;
+    
 	private final String CACHE_NAME = "code-list-cache";
 
 	
@@ -174,6 +181,18 @@ public class ConfigurationController implements Serializable {
 		if (levels == null) {
 			levels = new ArrayList<>();
 		}
+		
+		//filter out llts if the flag is set
+		boolean filterLltFlag = this.globalController.isFilterLltsFlag();
+		if(filterLltFlag) {
+			for(ListIterator<RefConfigCodeList> li = levels.listIterator(); li.hasNext();) {
+				RefConfigCodeList refConfigCodeList = li.next();
+				if(StringUtils.isNotBlank(refConfigCodeList.getCodelistInternalValue()) 
+						&& StringUtils.containsIgnoreCase(refConfigCodeList.getCodelistInternalValue(), "LLT")) {
+					li.remove();
+				}
+			}
+		}
 		return levels;
 	}
 	
@@ -292,5 +311,13 @@ public class ConfigurationController implements Serializable {
 
 	public void setCqtCacheManager(ICqtCacheManager cqtCacheManager) {
 		this.cqtCacheManager = cqtCacheManager;
+	}
+
+	public GlobalController getGlobalController() {
+		return globalController;
+	}
+
+	public void setGlobalController(GlobalController globalController) {
+		this.globalController = globalController;
 	}
 }

@@ -584,17 +584,19 @@ public class TargetHierarchySearchVM {
 		HierarchyNode node = relationsTreeHelper.createMeddraNode(meddraDictDto, myFilterLevel);
 		TreeNode parentTreeNode = new DefaultTreeNode(node, this.myHierarchyRoot);
 		
-		Long countOfChildren = this.meddraDictTargetService.findChildrenCountByParentCode(childSearchColumnTypePrefix,
-				parentCodeColumnPrefix, Long.valueOf(meddraDictDto.getCode()));
-		
-		if((null != countOfChildren) && (countOfChildren > 0)) {
-			// add a dummmy node to show expand arrow
-			HierarchyNode dummyNode = new HierarchyNode(null, null,
-					null, null);
-			dummyNode.setDummyNode(true);
-			new DefaultTreeNode(dummyNode, parentTreeNode);
+		boolean filterLltFlag = this.globalController.isFilterLltsFlag();
+		if(!parentCodeColumnPrefix.equalsIgnoreCase("PT_") || (parentCodeColumnPrefix.equalsIgnoreCase("PT_") && !filterLltFlag)) {
+			Long countOfChildren = this.meddraDictTargetService.findChildrenCountByParentCode(childSearchColumnTypePrefix,
+					parentCodeColumnPrefix, Long.valueOf(meddraDictDto.getCode()));
+			
+			if((null != countOfChildren) && (countOfChildren > 0)) {
+				// add a dummmy node to show expand arrow
+				HierarchyNode dummyNode = new HierarchyNode(null, null,
+						null, null);
+				dummyNode.setDummyNode(true);
+				new DefaultTreeNode(dummyNode, parentTreeNode);
+			}
 		}
-
 	}
 
 	public boolean isNonCurrentLlt() {
