@@ -212,7 +212,7 @@ public class ImpactSearchController implements Serializable {
 		currentHierarchySearchDlgModel = new CmqBaseHierarchySearchVM(cmqBaseCurrentService, smqBaseCurrentService,
 				meddraDictCurrentService, cmqRelationCurrentService, globalController);
 		targetHierarchySearchDlgModel = new TargetHierarchySearchVM(cmqBaseTargetService, smqBaseTargetService,
-				meddraDictTargetService, cmqRelationTargetService);
+				meddraDictTargetService, cmqRelationTargetService, globalController);
 
 		currentOrTarget = SELECTED_NO_LIST;
 

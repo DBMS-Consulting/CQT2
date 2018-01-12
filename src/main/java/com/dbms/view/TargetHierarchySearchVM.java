@@ -20,6 +20,7 @@ import org.primefaces.model.TreeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.dbms.controller.GlobalController;
 import com.dbms.controller.beans.HierarchySearchResultBean;
 import com.dbms.csmq.HierarchyNode;
 import com.dbms.entity.cqt.CmqBaseTarget;
@@ -49,7 +50,8 @@ public class TargetHierarchySearchVM {
 	private ISmqBaseTargetService smqBaseTargetService;
 	private IMeddraDictTargetService meddraDictTargetService;
 	private ICmqRelationTargetService cmqRelationTargetService;
-
+	private GlobalController globalController;
+	
 	private String myFilterTermName;
 	private String myFilterLevel;
 
@@ -73,12 +75,13 @@ public class TargetHierarchySearchVM {
 	public TargetHierarchySearchVM(ICmqBaseTargetService cmqBaseSvc,
 			ISmqBaseTargetService smqBaseSvc,
 			IMeddraDictTargetService meddraDictSvc,
-			ICmqRelationTargetService cmqRelationSvc) {
+			ICmqRelationTargetService cmqRelationSvc,
+			GlobalController globalController) {
 		this.cmqBaseTargetService = cmqBaseSvc;
 		this.smqBaseTargetService = smqBaseSvc;
 		this.meddraDictTargetService = meddraDictSvc;
 		this.cmqRelationTargetService = cmqRelationSvc;
-		
+		this.globalController = globalController;
 		myHierarchyRoot = new DefaultTreeNode("root", new HierarchyNode("LEVEL",
 				"NAME", "CODE", null), null);
 		searchDirection = SEARCH_DIRECTION_UP; //UP
@@ -98,7 +101,7 @@ public class TargetHierarchySearchVM {
 		
 		IARelationsTreeHelper relationsTreeHelper = new IARelationsTreeHelper(
                 null, null, null, null,
-                cmqBaseTargetService, smqBaseTargetService, meddraDictTargetService, cmqRelationTargetService);
+                cmqBaseTargetService, smqBaseTargetService, meddraDictTargetService, cmqRelationTargetService, globalController);
 		
 		SMQLevelHelper smqLevelH = SMQLevelHelper.getByLabel(myFilterLevel);
 		MeddraDictLevelHelper meddraLevelH = MeddraDictLevelHelper.getByLabel(myFilterLevel);
@@ -151,7 +154,7 @@ public class TargetHierarchySearchVM {
  				for (SMQReverseHierarchySearchDto smqBaseTarget : smqBaseList) {
  					IARelationsTreeHelper iaTreeHelper = new IARelationsTreeHelper(
  			                null, null, null, null,
- 			                cmqBaseTargetService, smqBaseTargetService, meddraDictTargetService, cmqRelationTargetService);
+ 			                cmqBaseTargetService, smqBaseTargetService, meddraDictTargetService, cmqRelationTargetService, globalController);
  					HierarchyNode node = iaTreeHelper.createSmqBaseTargetReverseNode(smqBaseTarget);
  					TreeNode smqBaseTreeNode = new DefaultTreeNode(node, this.myHierarchyRoot);
  					smqChildCodeList.add(smqBaseTarget.getSmqCode());
@@ -353,7 +356,7 @@ public class TargetHierarchySearchVM {
 		if(!this.showPrimaryPathOnly) {
 			IARelationsTreeHelper relationsSearchHelper = new IARelationsTreeHelper(
 	                null, null, null, null,
-	                cmqBaseTargetService, smqBaseTargetService, meddraDictTargetService, cmqRelationTargetService);	
+	                cmqBaseTargetService, smqBaseTargetService, meddraDictTargetService, cmqRelationTargetService, globalController);	
 			relationsSearchHelper.onNodeExpandTargetTable(this.myHierarchyRoot, event, false);
 		}
 	}
@@ -452,7 +455,7 @@ public class TargetHierarchySearchVM {
     private TreeNode updateHierarchySearchForSmqTaget(SmqBaseTarget smqBaseTarget) {
         IARelationsTreeHelper iaTreeHelper = new IARelationsTreeHelper(
                 null, null, null, null,
-                cmqBaseTargetService, smqBaseTargetService, meddraDictTargetService, cmqRelationTargetService);
+                cmqBaseTargetService, smqBaseTargetService, meddraDictTargetService, cmqRelationTargetService, globalController);
 		HierarchyNode node = iaTreeHelper.createSmqBaseTargetNode(smqBaseTarget, null);
 		TreeNode smqBaseTreeNode = new DefaultTreeNode(node, this.myHierarchyRoot);
 		
@@ -577,7 +580,7 @@ public class TargetHierarchySearchVM {
 	private void updateHierarchySearchForMeddraDict(MeddraDictHierarchySearchDto meddraDictDto
 														, String childSearchColumnTypePrefix
 														, String parentCodeColumnPrefix) {
-        IARelationsTreeHelper relationsTreeHelper = new IARelationsTreeHelper(cmqBaseTargetService, smqBaseTargetService, meddraDictTargetService, cmqRelationTargetService);
+        IARelationsTreeHelper relationsTreeHelper = new IARelationsTreeHelper(cmqBaseTargetService, smqBaseTargetService, meddraDictTargetService, cmqRelationTargetService, globalController);
 		HierarchyNode node = relationsTreeHelper.createMeddraNode(meddraDictDto, myFilterLevel);
 		TreeNode parentTreeNode = new DefaultTreeNode(node, this.myHierarchyRoot);
 		
