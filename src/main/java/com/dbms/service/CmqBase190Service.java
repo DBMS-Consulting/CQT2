@@ -5,14 +5,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
@@ -55,10 +53,12 @@ import org.hibernate.transform.Transformers;
 import org.hibernate.type.StandardBasicTypes;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
+import org.primefaces.model.TreeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.dbms.csmq.CSMQBean;
+import com.dbms.csmq.HierarchyNode;
 import com.dbms.entity.cqt.CmqBase190;
 import com.dbms.entity.cqt.CmqRelation190;
 import com.dbms.entity.cqt.SmqBase190;
@@ -206,6 +206,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		EntityManager entityManager = this.cqtEntityManagerFactory
 				.getEntityManager();
 		try {
+			sb.append(" order by c.cmqName");
 			Query query = entityManager.createQuery(sb.toString());
 
 			// now set the parameter values in the query
@@ -511,7 +512,8 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 
 	public List<CmqBase190> findApprovedCmqs() {
 		List<CmqBase190> retVal = null;
-		String queryString = "from CmqBase190 c where upper(c.cmqState) = upper('Approved') and c.cmqStatus = 'P' order by upper(c.cmqName) asc ";
+		String queryString = "from CmqBase190 c where upper(c.cmqState) = upper('Approved') "
+				+"and c.cmqCode not in (select target.cmqCode from CmqBaseTarget target where upper(target.cmqState) = upper('REVIEWED IA') or upper(target.cmqState) = upper('Approved IA') or upper(target.cmqState) = upper('Published IA')) order by upper(c.cmqName) asc ";;
 		EntityManager entityManager = this.cqtEntityManagerFactory
 				.getEntityManager();
 		try {
@@ -618,7 +620,8 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 
 	public List<CmqBase190> findCmqsToReactivate() {
 		List<CmqBase190> retVal = null;
-		String queryString = "from CmqBase190 c where upper(c.cmqState) = upper('Published') and c.cmqStatus = 'I' order by upper(c.cmqName) asc ";
+		String queryString = "from CmqBase190 c where upper(c.cmqState) = upper('Published') and c.cmqStatus = 'I' "
+				+"and c.cmqCode not in (select target.cmqCode from CmqBaseTarget target where upper(target.cmqState) = upper('REVIEWED IA') or upper(target.cmqState) = upper('Approved IA') or upper(target.cmqState) = upper('Published IA')) order by upper(c.cmqName) asc ";
 		EntityManager entityManager = this.cqtEntityManagerFactory
 				.getEntityManager();
 		try {
@@ -627,7 +630,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 			retVal = query.getResultList();
 		} catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
-			msg.append("findApprovedCmqs failed ").append("Query used was ->")
+			msg.append("findCmqsToReactivate failed ").append("Query used was ->")
 					.append(queryString);
 			LOG.error(msg.toString(), e);
 		} finally {
@@ -642,7 +645,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 	public List<CmqBase190> findCmqsToRetire() {
 		List<CmqBase190> retVal = null;
 		String queryString = "from CmqBase190 c where upper(c.cmqState) = upper('Published') and c.cmqStatus = 'A' "
-				+ "and c.cmqCode not in (select target.cmqCode from CmqBaseTarget target where upper(target.cmqState) = upper('Published IA')) order by upper(c.cmqName) asc ";
+				+ "and c.cmqCode not in (select target.cmqCode from CmqBaseTarget target where upper(target.cmqState) = upper('Published IA') or upper(target.cmqState) = upper('REVIEWED IA') or upper(target.cmqState) = upper('Approved IA')) order by upper(c.cmqName) asc ";
 		EntityManager entityManager = this.cqtEntityManagerFactory
 				.getEntityManager();
 		try {
@@ -651,7 +654,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 			retVal = query.getResultList();
 		} catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
-			msg.append("findApprovedCmqs failed ").append("Query used was ->")
+			msg.append("findCmqsToRetire failed ").append("Query used was ->")
 					.append(queryString);
 			LOG.error(msg.toString(), e);
 		} finally {
@@ -1004,7 +1007,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 	 * MQ Report.
 	 */
 	@Override
-	public StreamedContent generateMQReport(ListDetailsFormVM details, ListNotesFormVM notes, String dictionaryVersion) {
+	public StreamedContent generateMQReport(ListDetailsFormVM details, ListNotesFormVM notes, String dictionaryVersion, TreeNode relationsRoot) {
 		XSSFWorkbook workbook = new XSSFWorkbook();
 		
 		XSSFSheet worksheet = null;
@@ -1224,9 +1227,17 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		List<Future<MQReportRelationsWorkerDTO>> futures = new ArrayList<>();
 		int workerId = 1;
 		ExecutorService executorService = Executors.newFixedThreadPool(3);
+		List<TreeNode> childTreeNodes = relationsRoot.getChildren();
+		Map<String,String> relationScopeMap = new HashMap<>();
+		
+		
+		for(TreeNode childTreeNode: childTreeNodes) {
+			updateRelationScopeMap(relationScopeMap,childTreeNode);
+		}
+		
 		if (relations != null) {
 			for (CmqRelation190 relation : relations) {
-				MQReportRelationsWorker task = new MQReportRelationsWorker(workerId++, relation);
+				MQReportRelationsWorker task = new MQReportRelationsWorker(workerId++, relation,relationScopeMap);
 				futures.add(executorService.submit(task));
 			}
 		}
@@ -1269,7 +1280,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 				futures.clear();
 				if (relations != null) {
 					for (CmqRelation190 relation : relationsPro) {
-						MQReportRelationsWorker task = new MQReportRelationsWorker(workerId++, relation);
+						MQReportRelationsWorker task = new MQReportRelationsWorker(workerId++, relation,relationScopeMap);
 						futures.add(executorService.submit(task));
 					}
 					
@@ -1336,13 +1347,197 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		return content;
 	}
 	
+	/**
+	 * Excel Report.
+	 */
+	@Override
+	public StreamedContent generateExcel(List<CmqBase190> datas, String module, String user) {
+		XSSFWorkbook workbook = new XSSFWorkbook();
+		XSSFSheet worksheet = null;
+
+		worksheet = workbook.createSheet(module + "_ListSearch");
+		XSSFRow row = null;
+		int rowCount = 6;
+
+		try {
+			insertExporLogoImage(worksheet, workbook);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+
+		/**
+		 * Première ligne - entêtes
+		 */
+		row = worksheet.createRow(rowCount);
+		XSSFCell cell = row.createCell(0);
+
+		// User name
+		rowCount += 2;
+		row = worksheet.createRow(rowCount);
+		cell = row.createCell(0);
+		cell.setCellValue("User name: " + user);
+
+		rowCount++;
+		Calendar cal = Calendar.getInstance();
+		//.setTime(new Date());
+		String date = getWeekDay(cal.get(Calendar.DAY_OF_WEEK)) + ", " + 
+				getTwoDigits(cal.get(Calendar.DAY_OF_MONTH) + 1) + "-" + 
+				getMonth(cal.get(Calendar.MONTH)) + "-" + 
+				cal.get(Calendar.YEAR) + " : " + 
+				getTwoDigits(cal.get(Calendar.HOUR)) + ":" + 
+				getTwoDigits(cal.get(Calendar.MINUTE)) + ":" + 
+				getTwoDigits(cal.get(Calendar.SECOND)) + " EST";
+		row = worksheet.createRow(rowCount);
+		cell = row.createCell(0);
+		cell.setCellValue("Report Date/Time: " + date);
+		
+		
+		cell = row.createCell(1);
+
+		//Columns
+		rowCount += 2;
+		row = worksheet.createRow(rowCount);
+		
+		cell = row.createCell(0);
+		cell.setCellValue("List Name");
+		setCellStyleColumn(workbook, cell);
+		cell = row.createCell(1);
+		cell.setCellValue("Extension");
+		setCellStyleColumn(workbook, cell);
+		cell = row.createCell(2);
+		cell.setCellValue("Level");
+		setCellStyleColumn(workbook, cell);
+		cell = row.createCell(3);
+		cell.setCellValue("Status");
+		setCellStyleColumn(workbook, cell);
+		cell = row.createCell(4);
+		cell.setCellValue("State");
+		setCellStyleColumn(workbook, cell);
+		cell = row.createCell(5);
+		cell.setCellValue("Code");
+		setCellStyleColumn(workbook, cell);
+		cell = row.createCell(6);
+		cell.setCellValue("Drug Program");
+		setCellStyleColumn(workbook, cell);
+		cell = row.createCell(7);
+		cell.setCellValue("Protocol");
+		setCellStyleColumn(workbook, cell);
+		cell = row.createCell(8);
+		cell.setCellValue("Product");
+		setCellStyleColumn(workbook, cell);
+		cell = row.createCell(9);
+		cell.setCellValue("Group");
+		setCellStyleColumn(workbook, cell);
+		cell = row.createCell(10);
+		cell.setCellValue("Created By");
+		setCellStyleColumn(workbook, cell);
+		
+		
+		rowCount++;
+ 
+		if (datas != null)
+ 		for (CmqBase190 cmq : datas) {
+ 			row = worksheet.createRow(rowCount);
+ 			// Cell 0
+ 			cell = row.createCell(0);
+ 			cell.setCellValue(cmq.getCmqName());
+
+ 			// Cell 1
+ 			cell = row.createCell(1);
+ 			cell.setCellValue(refCodeListService.interpretInternalCodeToValue("LIST_EXTENSION_TYPES", cmq.getCmqTypeCd()));
+
+ 			// Cell 2
+ 			cell = row.createCell(2);
+ 			cell.setCellValue(cmq.getCmqLevel());
+ 			
+ 			// Cell 3
+ 			cell = row.createCell(3);
+ 			String status = "";
+ 			if (cmq.getCmqStatus().equals("P"))
+ 				status = "PENDING";
+ 			if (cmq.getCmqStatus().equals("A"))
+ 				status = "ACTIVE";
+ 			if (cmq.getCmqStatus().equals("I"))
+ 				status = "INACTIVE";
+ 			cell.setCellValue(status);
+
+ 			// Cell 4
+ 			cell = row.createCell(4);
+ 			cell.setCellValue(cmq.getCmqState());
+
+ 			// Cell 5
+ 			cell = row.createCell(5);
+ 			cell.setCellValue(cmq.getCmqCode());
+ 			
+ 			// Cell 6
+ 			cell = row.createCell(6);
+ 			cell.setCellValue(refCodeListService.interpretInternalCodeToValue("PROGRAM", cmq.getCmqProgramCd()));
+
+ 			// Cell 7
+ 			cell = row.createCell(7);
+ 			cell.setCellValue(refCodeListService.interpretInternalCodeToValue("PROTOCOL", cmq.getCmqProtocolCd()));
+
+ 			// Cell 8
+ 			cell = row.createCell(8);
+ 			cell.setCellValue(refCodeListService.convertProductCodesToValuesLabel(cmq.getProductsList()));
+ 			
+ 			// Cell 9
+ 			cell = row.createCell(9);
+ 			cell.setCellValue(cmq.getCmqGroup());
+
+ 			// Cell 10
+ 			cell = row.createCell(10);
+ 			cell.setCellValue(cmq.getCreatedByLabel());
+ 			
+ 			rowCount++;
+		}
+  
+
+		StreamedContent content = null;
+		try {
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			workbook.write(baos);
+			byte[] xls = baos.toByteArray();
+			ByteArrayInputStream bais = new ByteArrayInputStream(xls);
+			content = new DefaultStreamedContent(
+					bais,
+					"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+					module.toLowerCase() + "_ListSearch.xlsx");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return content;
+	}
+	
+	private void updateRelationScopeMap(Map<String, String> relationScopeMap, TreeNode relationsRoot) {
+		if(null!=relationsRoot) {
+			if(relationsRoot.getChildCount() > 0) {
+				List<TreeNode> childTreeNodes  = relationsRoot.getChildren();
+				for(TreeNode childTreeNode: childTreeNodes) {
+					updateRelationScopeMap(relationScopeMap,childTreeNode);
+				}
+			}
+			
+			HierarchyNode hierarchyNode = (HierarchyNode) relationsRoot.getData();
+			
+			if (null != hierarchyNode && null != hierarchyNode.getCode()) {
+				relationScopeMap.put(hierarchyNode.getCode(), hierarchyNode.getScope());
+			}
+			
+		}
+		
+	}
+
 	private class MQReportRelationsWorker implements Callable<MQReportRelationsWorkerDTO> {
 		private CmqRelation190 relation;
 		private String level = "", term = "", codeTerm = "", workerName = null;
+		Map<String,String> relationScopeMap;
 		
-		public MQReportRelationsWorker(int workerId, CmqRelation190 relation) {
+		public MQReportRelationsWorker(int workerId, CmqRelation190 relation, Map<String,String> relationScopeMap) {
 			this.workerName = "MQReportRelationsWorker_" + workerId;
 			this.relation = relation;
+			this.relationScopeMap = relationScopeMap;
 		}
 		
 		@Override
@@ -1353,6 +1548,10 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 			LOG.info("In {} Starting Callable.", this.workerName);
 			try {
 				if (relation.getSmqCode() != null) {
+					String selectedScope = relationScopeMap.get(String.valueOf(relation.getSmqCode()));
+					if(StringUtils.isEmpty(selectedScope)) {
+						selectedScope = relation.getTermScope();
+					}
  					List<Long> smqChildCodeList = new ArrayList<>();
 					smqChildCodeList.add(relation.getSmqCode());
 
@@ -1372,7 +1571,9 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 								} else if (smq.getSmqLevel() == 5) {
 									level = "SMQ5";
 								}
-								relationsWorkerDTO.addToMapReport(cpt++, new ReportLineDataDto(level, smq.getSmqCode() + "", smq.getSmqName(), "", relation.getTermScope(),
+								
+								
+								relationsWorkerDTO.addToMapReport(cpt++, new ReportLineDataDto(level, smq.getSmqCode() + "", smq.getSmqName(), "", selectedScope,
 										(relation.getTermWeight() != null ? relation.getTermWeight() + "" : ""), relation.getTermCategory(), "", ""));
 								
 								/**
@@ -1399,7 +1600,8 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 										if (level.equals("SMQ1")) {						
 											smqSearched = smqBaseService.findByCode(smqC.getSmqCode());
 											if (smqSearched != null) {
-												List<SmqRelation190> list = smqBaseService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
+												//List<SmqRelation190> list = smqBaseService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
+												List<SmqRelation190> list = smqBaseService.findSmqRelationsForSmqCodeAndScope(smqSearched.getSmqCode(), selectedScope);
 												if (list != null) {
 													for (SmqRelation190 smq3 : list) {
 														relationsWorkerDTO.addToMapReport(cpt++, new ReportLineDataDto("PT", smq3.getPtCode() + "", smq3.getPtName(), ".............", smq3.getPtTermScope() + "", smq3.getPtTermWeight() + "", smq3.getPtTermCategory(), "", smq3.getPtTermStatus())); 
@@ -1436,7 +1638,8 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 													
 													smqSearched = smqBaseService.findByCode(child.getSmqCode());
 													if (smqSearched != null) {
-														List<SmqRelation190> list = smqBaseService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
+														//List<SmqRelation190> list = smqBaseService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
+														List<SmqRelation190> list = smqBaseService.findSmqRelationsForSmqCodeAndScope(smqSearched.getSmqCode(), selectedScope);
 														if (list != null) {
 															for (SmqRelation190 smq3 : list) {
 																relationsWorkerDTO.addToMapReport(cpt++, new ReportLineDataDto("PT", smq3.getPtCode() + "", smq3.getPtName(), "....................", smq3.getPtTermScope() + "", smq3.getPtTermWeight() + "", smq3.getPtTermCategory(), "", smq3.getPtTermStatus())); 
@@ -1450,7 +1653,8 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 										if (level.equals("SMQ2")) {						
 											smqSearched = smqBaseService.findByCode(smqC.getSmqCode());
 											if (smqSearched != null) {
-												List<SmqRelation190> list = smqBaseService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
+												//List<SmqRelation190> list = smqBaseService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
+												List<SmqRelation190> list = smqBaseService.findSmqRelationsForSmqCodeAndScope(smqSearched.getSmqCode(), selectedScope);
 												if (list != null) {
 													for (SmqRelation190 smq3 : list) {
 														relationsWorkerDTO.addToMapReport(cpt++, new ReportLineDataDto("PT", smq3.getPtCode() + "", smq3.getPtName(), ".............", smq3.getPtTermScope() + "", smq3.getPtTermWeight() + "", smq3.getPtTermCategory(), "", smq3.getPtTermStatus())); 
@@ -1478,7 +1682,8 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 													
 													smqSearched = smqBaseService.findByCode(child.getSmqCode());
 													if (smqSearched != null) {
-														List<SmqRelation190> list = smqBaseService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
+														//List<SmqRelation190> list = smqBaseService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
+														List<SmqRelation190> list = smqBaseService.findSmqRelationsForSmqCodeAndScope(smqSearched.getSmqCode(), selectedScope);
 														if (list != null) {
 															for (SmqRelation190 smq3 : list) {
 																relationsWorkerDTO.addToMapReport(cpt++, new ReportLineDataDto("PT", smq3.getPtCode() + "", smq3.getPtName(), "....................", smq3.getPtTermScope() + "", smq3.getPtTermWeight() + "", smq3.getPtTermCategory(), "", smq3.getPtTermStatus())); 
@@ -1492,7 +1697,8 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 										if (level.equals("SMQ3")) {
 											smqSearched = smqBaseService.findByCode(smqC.getSmqCode());
 											if (smqSearched != null) {
-												List<SmqRelation190> list = smqBaseService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
+												//List<SmqRelation190> list = smqBaseService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
+												List<SmqRelation190> list = smqBaseService.findSmqRelationsForSmqCodeAndScope(smqSearched.getSmqCode(), selectedScope);
 												if (list != null) {
 													for (SmqRelation190 smq3 : list) {
 														relationsWorkerDTO.addToMapReport(cpt++, new ReportLineDataDto("PT", smq3.getPtCode() + "", smq3.getPtName(), ".............", smq3.getPtTermScope() + "", smq3.getPtTermWeight() + "", smq3.getPtTermCategory(), "", smq3.getPtTermStatus())); 
@@ -1507,10 +1713,11 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 					}
 					
 					//Relations for SMQs
-					Long smqBaseChildrenCount = smqBaseService.findChildSmqCountByParentSmqCode(relation.getSmqCode());
-					smqBaseChildrenCount = smqBaseService.findSmqRelationsCountForSmqCode(relation.getSmqCode());
+					//Long smqBaseChildrenCount = smqBaseService.findChildSmqCountByParentSmqCode(relation.getSmqCode());
+					//smqBaseChildrenCount = smqBaseService.findSmqRelationsCountForSmqCode(relation.getSmqCode());
 
- 					List<SmqRelation190> childSmqs =  smqBaseService.findSmqRelationsForSmqCode(relation.getSmqCode());
+ 					//List<SmqRelation190> childSmqs =  smqBaseService.findSmqRelationsForSmqCode(relation.getSmqCode());
+					List<SmqRelation190> childSmqs =  smqBaseService.findSmqRelationsForSmqCodeAndScope(relation.getSmqCode(), selectedScope);
 
 					if((null != childSmqs) && (childSmqs.size() > 0)) {
 						for (SmqRelation190 childSmq : childSmqs) {
@@ -1533,11 +1740,12 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 							List<Long> codes = new ArrayList<>();
 							codes.add(childSmq.getSmqCode());
 							
-							List<SmqBase190> smqs = smqBaseService.findChildSmqByParentSmqCodes(codes);
+							//List<SmqBase190> smqs = smqBaseService.findChildSmqByParentSmqCodes(codes);
 							
 							smqSearched = smqBaseService.findByCode(Long.parseLong(childSmq.getPtCode() + ""));
 							if (smqSearched != null) {
-								List<SmqRelation190> list = smqBaseService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
+								//List<SmqRelation190> list = smqBaseService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
+								List<SmqRelation190> list = smqBaseService.findSmqRelationsForSmqCodeAndScope(smqSearched.getSmqCode(), selectedScope);
 								if (list != null) {
 									for (SmqRelation190 smq3 : list) {
 										if (smq3.getSmqLevel() == 4) {
@@ -1556,7 +1764,8 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 										if (level.equals("Child SMQ")) {										
 											smqSearched = smqBaseService.findByCode(Long.parseLong(smq3.getPtCode() + ""));
 											if (smqSearched != null) {
-												List<SmqRelation190> test =  smqBaseService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
+												//List<SmqRelation190> test =  smqBaseService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
+												List<SmqRelation190> test =  smqBaseService.findSmqRelationsForSmqCodeAndScope(smqSearched.getSmqCode(), selectedScope);
 							 					System.out.println("\n ************ test size for " + smqSearched.getSmqName() + " = " + test.size());
 							 					
 							 					
@@ -1577,7 +1786,8 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 														smqSearched = smqBaseService.findByCode(Long.parseLong(tt.getPtCode() + ""));
 														
 														if (smqSearched != null) {
-															List<SmqRelation190> test2 =  smqBaseService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
+															//List<SmqRelation190> test2 =  smqBaseService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
+															List<SmqRelation190> test2 =  smqBaseService.findSmqRelationsForSmqCodeAndScope(smqSearched.getSmqCode(), selectedScope);
 										 					System.out.println("\n ************ test2 size for " + smqSearched.getSmqName() + " = " + test2.size());
 										 					
 										 					if (test2 != null) {
@@ -1598,7 +1808,8 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 																	if (level.equals("Child SMQ")) {										
 																		smqSearched = smqBaseService.findByCode(Long.parseLong(tt2.getPtCode() + ""));
 																		if (smqSearched != null) {
-																			List<SmqRelation190> test3 =  smqBaseService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
+																			//List<SmqRelation190> test3 =  smqBaseService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
+																			List<SmqRelation190> test3 =  smqBaseService.findSmqRelationsForSmqCodeAndScope(smqSearched.getSmqCode(), selectedScope);
 														 					System.out.println("\n ************ test size for " + smqSearched.getSmqName() + " = " + test3.size());
 														 					
 														 					
@@ -2088,5 +2299,54 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 
 	public void setRefCodeListService(IRefCodeListService refCodeListService) {
 		this.refCodeListService = refCodeListService;
+	}
+
+@Override
+	public CmqBase190 findByName(String cmqName) {
+		CmqBase190 retVal = null;
+		String queryString = "from CmqBase190 c where c.cmqName = :cmqName";
+		EntityManager entityManager = this.cqtEntityManagerFactory
+				.getEntityManager();
+		try {
+			Query query = entityManager.createQuery(queryString);
+			query.setParameter("cmqName", cmqName);
+			query.setHint("org.hibernate.cacheable", true);
+			retVal = (CmqBase190) query.getSingleResult();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg.append("findByName failed for CMQ_NAME value'").append(cmqName)
+					.append("' ").append("Query used was ->")
+					.append(queryString);
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
+
+	@Override
+	public Map<Long, String> findAllCmqsCodeAndName() {
+		List<CmqBase190> retVal = null;
+		Map<Long,String> cmqCodeNameMap = new HashMap<>();
+		String queryString = "from CmqBase190 c order by upper(c.cmqName) asc ";
+		EntityManager entityManager = this.cqtEntityManagerFactory
+				.getEntityManager();
+		try {
+			Query query = entityManager.createQuery(queryString);
+			query.setHint("org.hibernate.cacheable", true);
+			retVal = query.getResultList();
+			for(CmqBase190 cmq:retVal) {
+				cmqCodeNameMap.put(cmq.getCmqCode(), cmq.getCmqName());
+			}
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg.append("findAllCmqsCodeAndName failed ").append("Query used was ->")
+					.append(queryString);
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return cmqCodeNameMap;
+	
 	}
 }

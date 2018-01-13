@@ -28,6 +28,7 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.primefaces.model.StreamedContent;
+import org.primefaces.model.TreeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -293,9 +294,9 @@ public class ReportController extends BaseController<CmqBase190> {
      * @param details
      * @param notes
 	 */
-	public void generateMQReport(ListDetailsFormVM details, ListNotesFormVM notes) {
+	public void generateMQReport(ListDetailsFormVM details, ListNotesFormVM notes, TreeNode relationsRoot) {
 		RefConfigCodeList currentMeddraVersionCodeList = this.refCodeListService.getCurrentMeddraVersion();
-		StreamedContent content = cmqBaseService.generateMQReport(details, notes, (currentMeddraVersionCodeList != null ? currentMeddraVersionCodeList.getValue() : ""));
+		StreamedContent content = cmqBaseService.generateMQReport(details, notes, (currentMeddraVersionCodeList != null ? currentMeddraVersionCodeList.getValue() : ""),relationsRoot);
 		setExcelFile(content); 
 	}
     
