@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.primefaces.model.SortOrder;
 import org.primefaces.model.StreamedContent;
+import org.primefaces.model.TreeNode;
 
 import com.dbms.entity.cqt.CmqBase190;
 import com.dbms.service.base.ICqtPersistenceService;
@@ -54,7 +55,7 @@ public interface ICmqBase190Service extends ICqtPersistenceService<CmqBase190> {
 
 	StreamedContent generateExcelReport(ListDetailsFormVM details, String dictionaryVersion);
 
-	StreamedContent generateMQReport(ListDetailsFormVM details, ListNotesFormVM notes, String dictionaryVersion);
+	StreamedContent generateMQReport(ListDetailsFormVM details, ListNotesFormVM notes, String dictionaryVersion, TreeNode relationsRoot);
 
 	Boolean checkIfCmqNamqExists(String cmqName);
 
@@ -64,4 +65,10 @@ public interface ICmqBase190Service extends ICqtPersistenceService<CmqBase190> {
      * @return 
      */
     boolean checkIfApprovedOnce(Long cmqCode);
+
+	StreamedContent generateExcel(List<CmqBase190> datas, String module, String user);
+	
+	CmqBase190 findByName(String cmqName);
+	
+	Map<Long,String> findAllCmqsCodeAndName(); 
 }

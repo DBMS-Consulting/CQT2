@@ -1731,7 +1731,10 @@ public class CreateController implements Serializable {
          */
 		if(userGroup == null) { 
 			return true;
-		} else if(!userGroup.contains(AuthenticationService.REQUESTER_GROUP) 
+		} /*else if(!userGroup.contains(AuthenticationService.REQUESTER_GROUP) 
+				&& ((selectedData != null) && (CmqBase190.CMQ_STATE_VALUE_REVIEWED.equalsIgnoreCase(selectedData.getCmqState())
+						|| CmqBase190.CMQ_STATE_VALUE_APPROVED.equalsIgnoreCase(selectedData.getCmqState())))) {*/
+			else if(userGroup.contains(AuthenticationService.MQM_GROUP) 
 				&& ((selectedData != null) && (CmqBase190.CMQ_STATE_VALUE_REVIEWED.equalsIgnoreCase(selectedData.getCmqState())
 						|| CmqBase190.CMQ_STATE_VALUE_APPROVED.equalsIgnoreCase(selectedData.getCmqState())))) {
 			return false;
@@ -1758,7 +1761,7 @@ public class CreateController implements Serializable {
 		if (selectedData != null
                 && !CmqBase190.CMQ_STATUS_VALUE_INACTIVE.equalsIgnoreCase(selectedData.getCmqStatus())
                 && CmqBase190.CMQ_STATE_VALUE_REVIEWED.equalsIgnoreCase(selectedData.getCmqState())) {
-			if (userGroup != null && (userGroup.contains("MQM")))
+			if (userGroup != null && (userGroup.contains(AuthenticationService.MQM_GROUP)))
 				return false;
 			// if AD Group is Requester, disable it
 			if (userGroup != null && (userGroup.contains(AuthenticationService.REQUESTER_GROUP)))
@@ -1773,8 +1776,7 @@ public class CreateController implements Serializable {
         String userGroup = authService.getGroupMembershipHeader();
 		// if AD Group is MANAGER, enable it
 		if (userGroup != null &&
-                (userGroup.contains("MQM")
-                		&& userGroup.contains(AuthenticationService.REQUESTER_GROUP))) {
+                userGroup.contains(AuthenticationService.MQM_GROUP)) {
 			//Disable Review Button when List is Approved
             if(selectedData != null) {
                 // Disable Review button when List is Reviewed or Approved state
@@ -1800,7 +1802,7 @@ public class CreateController implements Serializable {
 		// if AD Group is Requester, disable it
 		if (userGroup != null &&
                 (userGroup.contains(AuthenticationService.REQUESTER_GROUP)
-                		&& !(userGroup.contains("MQM"))))
+                		&& !(userGroup.contains(AuthenticationService.MQM_GROUP))))
 			return true;
         
         if(selectedData != null) {

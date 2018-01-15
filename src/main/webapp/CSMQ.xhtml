@@ -202,11 +202,44 @@
 						rendered="#{AuthenticationService.getPermissonByUri('/viewPreviousVersionImpact/previousVersionImpact.xhtml')}" />
 				</p:submenu>
   
-
-				<p:menuitem value="Administration" id="admin_menu" action="#{createController.initForm('/admin/admin')}" ajax="false"
+			<!-- 	<p:submenu label="Import csv" icon="ui-icon-document" id="pt_m4"
+					style="font-weight:normal;">
+					<p:menuitem value="Import TME" outcome="/import/importTme.xhtml"
+						styleClass="#{view.viewId == '/import/importTme.xhtml' ? 'ui-state-active2' : ''}"
+						style="font-weight:normal;" />
+				</p:submenu>
+ -->
+				<p:menuitem value="Administration" id="admin_menu" action="#{createController.initForm('/admin/admin')}" ajax="false"			 
 					styleClass="#{view.viewId == '/admin/admin.xhtml' ? 'ui-state-active2' : ''}"
 					disabled="false"  
 					rendered="#{AuthenticationService.getPermissonByUri('/admin/admin.xhtml')}" />
+
+				<p:menuitem value="Historic View" id="hv"   
+					styleClass="#{view.viewId == '/history/historicView.xhtml' ? 'ui-state-active2' : ''}"
+					style="font-weight:#{userBean.currentMenu eq 'REPORTS' ? 'bold' : 'normal'};"
+					url="/history/historicView.xhtml" 
+					rendered="#{AuthenticationService.getPermissonByUri('/history/historicView.xhtml')}" />
+					
+				<p:menuitem value="Audit Trail" id="at"   
+					styleClass="#{view.viewId == '/audit/auditSearch.xhtml' ? 'ui-state-active2' : ''}"
+					style="font-weight:#{userBean.currentMenu eq 'REPORTS' ? 'bold' : 'normal'};"
+					url="/audit/auditSearch.xhtml"
+					rendered="#{AuthenticationService.getPermissonByUri('/audit/auditSearch.xhtml')}" />
+					
+					
+					
+					
+				
+				
+				 <f:facet name="options">
+ 		          		<h:selectBooleanCheckbox id="flagG"
+		 						value="#{globalController.filterLltsFlag}">
+							<p:ajax update="@form" listener="#{globalController.checkFilterLltsFlag}" />
+							<p:ajax update="@form" listener="#{createController.reloadRelationsOnFilterLltFlagToggle}" />
+							<p:ajax update="@form" listener="#{impactSearchController.reloadRelationsOnFilterLltFlagToggle}" />
+						</h:selectBooleanCheckbox>
+						<h:outputText style="font-weight: bold" value="Filter LLT" />
+         		</f:facet>
 
 			</p:menubar>
 

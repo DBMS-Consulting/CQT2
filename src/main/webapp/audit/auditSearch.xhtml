@@ -1,0 +1,131 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" template="../CSMQ.xhtml">
+
+	<ui:define name="page-content">
+		<h:form id="auditForm">
+
+
+			<p:growl id="m1" life="#{appCSMQBean.defaultGrowlLife}" sticky="true"
+				showDetail="#{appCSMQBean.degugMode}" />
+
+			<h:panelGrid columns="2" style="width: 100% !important">
+				<p:breadCrumb styleClass="breadcrumb">
+					<p:menuitem value="Home" url="/index.xhtml" />
+					<p:menuitem value="Audit Trail" />
+				</p:breadCrumb>
+			</h:panelGrid>
+
+			<p:panel header="Search" id="ph1" style=" padding:5px;">
+				<h:panelGrid columns="1" style="margin-left: 5%">
+					<h:panelGrid columns="12" columnClasses="label, value" id="searchPanel">
+						<p:outputLabel for="lname" value="List Name" styleClass="label-right" />
+						<p:selectOneMenu value="#{auditTrailController.listName}" filter="true" disabled="#{auditTrailController.listCode ne null}"
+							id="lname" style="width: 200px !important" filterMatchMode="contains">
+							<f:selectItem itemValue="" itemLabel="Select" />
+							<f:selectItems value="#{auditTrailController.selectList()}" var="cmq"
+								itemLabel="#{cmq.listName}" itemValue="#{cmq.listName}" />
+								
+								<p:ajax update="lcode time" listener="#{auditTrailController.resetCode}" />
+						</p:selectOneMenu>
+						<p:spacer width="50" />
+
+						<p:outputLabel for="lcode" value="List Code" styleClass="label-right" />
+						<p:selectOneMenu value="#{auditTrailController.listCode}" filter="true" disabled="#{auditTrailController.listName ne null}"
+							id="lcode" style="width: 200px !important" filterMatchMode="contains">
+							<f:selectItem itemValue="" itemLabel="Select" />
+							<f:selectItems value="#{auditTrailController.selectList()}" var="cmq"
+								itemLabel="#{cmq.listCode}" itemValue="#{cmq.listCode}" />
+								
+								<p:ajax update="lname time" listener="#{auditTrailController.resetName}" />
+						</p:selectOneMenu>
+						<p:spacer width="50" />
+
+					 
+						<p:outputLabel for="dict" value="Dictionary Version" styleClass="label-right" />
+ 						<p:selectOneMenu value="#{auditTrailController.dictionary}" filter="true" id="dict" filterMatchMode="contains">
+							<f:selectItem itemValue="" itemLabel="Select" />
+							<f:selectItems value="#{configMB.allMeddraVersion}" var="d"
+								itemLabel="#{d.value}" itemValue="#{d.value}" />
+								
+								<p:ajax update="time" />
+						</p:selectOneMenu>
+						<p:spacer width="50" />
+
+						<p:outputLabel for="time" value="Audit Timestamp" styleClass="label-right" />
+						<p:selectOneMenu value="#{auditTrailController.auditTimestamp}" 
+							filter="true" filterMatchMode="contains" id="time" style="width: 170px !important">
+							<f:selectItem itemValue="" itemLabel="Select" />
+							<f:selectItems value="#{auditTrailController.findAuditTimestamps(auditTrailController.dictionary)}" var="at"
+								itemLabel="#{at}" itemValue="#{at}" />
+						</p:selectOneMenu>
+						<p:spacer width="5" />
+					</h:panelGrid>
+ 
+					<h:panelGrid columns="3" id="btnPanel" styleClass="row"
+						style="margin-left: 40%">
+ 
+						<p:commandButton value="Search"
+							action="#{auditTrailController.findAudit}"
+							update="@form:result @form:m1"/>
+						<p:commandButton action="#{auditTrailController.reset}" value="Clear"
+							process="@this" update="@form:result @form:searchPanel" />
+							
+						<p:commandButton actionListener="#{auditTrailController.generateExcel(auditTrailController.datas)}" ajax="false" value="Export"
+							process="@this" update="@form:result">
+							<p:fileDownload value="#{auditTrailController.excelFile}" />
+						</p:commandButton>
+					</h:panelGrid>
+				</h:panelGrid>
+
+				<p:spacer height="10" />
+				<p:outputPanel>
+					<p:dataTable var="value" value="#{auditTrailController.datas}"
+						id="result" rows="10" paginator="true" paginatorPosition="bottom"
+						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						rowsPerPageTemplate="5,10,25" resizableColumns="true">
+
+						<p:column headerText="Change Type">
+							<h:outputText value="#{value.transactionType}"/>
+						</p:column>
+
+						<p:column headerText="Field Name" width="100">
+							<h:outputText value="#{value.columnName}"/>
+						</p:column>
+						<p:column headerText="Old Value" width="150">
+							<h:outputText value="#{value.oldValue}"/>
+						</p:column>
+						<p:column headerText="New Value" width="150">
+							<h:outputText value="#{value.newValue}"/>
+						</p:column>
+						<p:column headerText="User Name" width="150">
+							<h:outputText value="#{value.userId}"/>
+						</p:column>
+						<p:column headerText="User Group" width="150">
+							<h:outputText value="#{value.groupName}"/>
+						</p:column>
+						<p:column headerText="Audit Timestamp">
+							<h:outputText value="#{value.auditTimestamp}">
+								<f:convertDateTime pattern="dd-MMM-yyyy:hh:mm:ss a" />
+							</h:outputText>
+							<h:outputText value=" EST"/>
+						</p:column>
+
+					</p:dataTable>
+					<!-- <h:commandLink actionListener="#{auditTrailController.generateExcel(auditTrailController.datas)}">
+						<p:fileDownload value="#{auditTrailController.excelFile}" />
+						<img title="Export list" src="#{request.contextPath}/image/excel_small.png"
+							style="margin-top: 20px !important; float: right" width="24" />
+					</h:commandLink> -->
+				</p:outputPanel>
+			</p:panel>
+
+
+
+		</h:form>
+	</ui:define>
+</ui:composition>
