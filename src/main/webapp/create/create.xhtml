@@ -8,6 +8,7 @@
 
 	<ui:define name="page-content">
 		<h:form id="fCreate">
+			
             <p:growl id="m1" life="#{appCSMQBean.defaultGrowlLife}" sticky="true" showDetail="#{appCSMQBean.degugMode}" autoUpdate="true"/>
 
 			<h:panelGrid columns="2" style="width: 100% !important">
@@ -16,7 +17,7 @@
                     <p:menuitem value="Create" />
                 </p:breadCrumb>
             </h:panelGrid>
-
+ 
 			<p:wizard flowListener="#{createController.onCreateWizardFlowProcess}" widgetVar="wizard"
 				id="wizardId" binding="#{createController.createWizard}"
 				 showNavBar="false">

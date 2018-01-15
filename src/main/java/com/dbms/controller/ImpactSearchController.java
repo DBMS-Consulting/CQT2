@@ -12,6 +12,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
@@ -183,6 +184,11 @@ public class ImpactSearchController implements Serializable {
 
 	public ImpactSearchController() {
 		
+	}
+	
+	@PreDestroy
+	public void onDestroy() {
+		System.out.println("\n ***********************  onDetroy ImpactSearchController");
 	}
 
 	@PostConstruct

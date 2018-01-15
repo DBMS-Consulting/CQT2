@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
@@ -57,6 +58,7 @@ import com.dbms.view.ListDetailsFormVM.WizardType;
 import com.dbms.view.ListNotesFormVM;
 import com.dbms.view.ListRelationsVM;
 import com.dbms.view.ListWorkflowFormVM;
+import com.dbms.web.dto.DetailDTO;
 
 /**
  * @author Jay G.(jayshanchn@hotmail.com)
@@ -143,6 +145,9 @@ public class CreateController implements Serializable {
 	private String scopeFilter;
 	private static final String NO_SCOPE_FILTER = "-1";
 	
+	private String formToOpen;
+	private DetailDTO detailDTO;
+	
 	public CreateController() {
 		setSelectedData(null);
 	}
@@ -153,8 +158,35 @@ public class CreateController implements Serializable {
         this.relationsModel = new ListRelationsVM(authService, appSWJSFRequest, refCodeListService, cmqBaseService, smqBaseService, meddraDictService, cmqRelationService);
         this.workflowFormModel = new ListWorkflowFormVM(this.authService);
 		initAll();
+		detailDTO = new DetailDTO();
 	}
-
+	
+	@PreDestroy
+	public void onDestroy() {
+	
+	}
+	
+	public boolean showConfirmDialog() {
+		boolean detailChanged = detailDTO.detailChange(detailsFormModel);
+		boolean notesChanged = detailDTO.notesChange(notesFormModel);
+		if (createWizard != null 
+				|| (copyWizard != null && copyingCmqCode != null && (detailChanged || notesChanged || relationsModified))
+				|| (updateWizard != null && codeSelected != null && (detailChanged || notesChanged || relationsModified)))
+			return true;
+		return false;
+	}
+	
+	public String initForm(String url) {
+		String form = url + "?faces-redirect=true";
+		setFormToOpen(form);
+		
+		if (showConfirmDialog())
+			RequestContext.getCurrentInstance().execute("PF('confirmSaveDetailsAll').show();");
+		else
+			return form;
+		return "";
+	}
+	
 	private void initAll() {
 		detailsFormModel.init();
 		notesFormModel.init();
@@ -175,12 +207,7 @@ public class CreateController implements Serializable {
 //		RequestContext.getCurrentInstance().update("impactAssessment:levelH_label");
 	}
 
-	public void initCreateForm() {
-		setSelectedData(null);
-		selectedData.setCmqDescription("Please enter the description");	
-		//RequestContext.getCurrentInstance().execute("PF('confirmSaveDetailsDlg').show();");
-
-	}
+	
 	
 	public void expandRelations(AjaxBehaviorEvent event) {
 		collapsingORexpanding(relationsModel.getRelationsRoot(), true);
@@ -1099,6 +1126,9 @@ public class CreateController implements Serializable {
         } else if(updateWizard!=null && isImpactedByMeddraVersioning(selectedData)) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "The List is impacted by MedDRA Versioning", ""));
         }
+        
+        detailDTO.copyDatas(detailsFormModel);
+        detailDTO.copyNotes(notesFormModel); 
 
       	return null;
 	}
@@ -2083,6 +2113,22 @@ public class CreateController implements Serializable {
 
 	public void setScopeFilter(String scopeFilter) {
 		this.scopeFilter = scopeFilter;
+	}
+
+	public String getFormToOpen() {
+		return formToOpen;
+	}
+
+	public void setFormToOpen(String formToOpen) {
+		this.formToOpen = formToOpen;
+	}
+
+	public DetailDTO getDetailDTO() {
+		return detailDTO;
+	}
+
+	public void setDetailDTO(DetailDTO detailDTO) {
+		this.detailDTO = detailDTO;
 	}
      
 }
