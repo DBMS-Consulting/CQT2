@@ -26,9 +26,9 @@
 		<h:form>
 			<h:panelGrid id="l1" columns="2" style="width: 100%">
 				<h:panelGroup>
-					<a href="#{request.contextPath}"> <p:graphicImage id="logo"
+					<h:commandLink action="#{createController.initForm('/index')}"> <p:graphicImage id="logo"
 							title="desc" alt="logo" value="/image/logo.jpg" />
-					</a>
+					</h:commandLink>
 				</h:panelGroup>
 
 				<h:panelGroup style="float:right;">
