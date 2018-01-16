@@ -73,6 +73,7 @@ import com.dbms.view.IARelationsTreeHelper;
 import com.dbms.view.ListDetailsFormVM;
 import com.dbms.view.ListNotesFormVM;
 import com.dbms.view.TargetHierarchySearchVM;
+import com.dbms.web.dto.FilterDTO;
 
 /**
  * @date Feb 7, 2017 7:39:34 AM
@@ -183,6 +184,7 @@ public class ImpactSearchController implements Serializable {
 	private boolean filterAll, filterReadOnly;
 	
 	private boolean dummySelected;
+	private FilterDTO filterDTO;
 
 
 	public ImpactSearchController() {
@@ -219,6 +221,8 @@ public class ImpactSearchController implements Serializable {
 		RefConfigCodeList currentMeddraVersionCodeList = this.refCodeListService.getTargetMeddraVersion();
 		
 		setDictionaryVersion(currentMeddraVersionCodeList.getValue());
+	
+		filterDTO = new FilterDTO();
 	}
 	
 	
@@ -2209,6 +2213,9 @@ public class ImpactSearchController implements Serializable {
 	public void selectFilter(AjaxBehaviorEvent event) {
 		this.filterAll = true;
 		this.filterReadOnly = false;
+		
+		
+		System.out.println("  ---- filterDTO all value : " + filterDTO.isAll());
 	}
 
 /*	public boolean isChangeOccur() {
@@ -2506,5 +2513,13 @@ public class ImpactSearchController implements Serializable {
 
 	public void setDummySelected(boolean dummySelected) {
 		this.dummySelected = dummySelected;
+	}
+
+	public FilterDTO getFilterDTO() {
+		return filterDTO;
+	}
+
+	public void setFilterDTO(FilterDTO filterDTO) {
+		this.filterDTO = filterDTO;
 	}
 }
