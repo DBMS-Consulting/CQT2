@@ -180,8 +180,15 @@ public class CreateController implements Serializable {
 		String form = url + "?faces-redirect=true";
 		setFormToOpen(form);
 		
-		if (showConfirmDialog())
-			RequestContext.getCurrentInstance().execute("PF('confirmSaveDetailsAll').show();");
+		if (showConfirmDialog()) {
+			if (detailDTO.detailChange(detailsFormModel))
+				RequestContext.getCurrentInstance().execute("PF('confirmSaveDetailsAll').show();");
+			else if (detailDTO.notesChange(notesFormModel))
+				RequestContext.getCurrentInstance().execute("PF('confirmSaveNotes').show();");
+			else if (relationsModified)
+				RequestContext.getCurrentInstance().execute("PF('relationsDlg').show();");
+		}
+			
 		else
 			return form;
 		return "";
@@ -330,6 +337,9 @@ public class CreateController implements Serializable {
                 update();
 
             goToWizardNextStep();
+            if (showConfirmDialog())
+        		RequestContext.getCurrentInstance().update("fCreate:wizardId");
+
         }
 	}
 
