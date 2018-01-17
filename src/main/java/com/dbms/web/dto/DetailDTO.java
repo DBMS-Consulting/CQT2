@@ -46,6 +46,18 @@ public class DetailDTO {
  			return true;
 		
 		return false;
+		
+		
+		/*if ((extension != null && extension != detail.getExtension() )
+				|| (name != null && name != detail.getName())
+				|| (drugProgram != null && drugProgram != detail.getDrugProgram())
+				|| (protocol != null && protocol != detail.getProtocol())
+				|| (designee != null && designee != detail.getDesignee())
+				|| (designeeTwo != null && designeeTwo != detail.getDesigneeTwo())
+				|| (designeeThree != null && designeeThree != detail.getDesigneeThree())
+				|| (level != null && level != detail.getLevel())
+				|| (this.products != null && (!Arrays.equals(this.products, detail.getProducts()))))
+ 			return true;*/
 	}
 	
 	public boolean notesChange(ListNotesFormVM note) {

@@ -181,11 +181,18 @@ public class CreateController implements Serializable {
 		setFormToOpen(form);
 		
 		if (showConfirmDialog()) {
-			if (detailDTO.detailChange(detailsFormModel))
+			//if (detailDTO.detailChange(detailsFormModel))
+			if (detailDTO.detailChange(detailsFormModel) && ((createWizard != null && createWizard.getStep().equals(WIZARD_STEP_DETAILS))
+					|| (updateWizard != null && updateWizard.getStep().equals(WIZARD_STEP_DETAILS))
+					|| (copyWizard != null && copyWizard.getStep().equals(WIZARD_STEP_DETAILS))))
 				RequestContext.getCurrentInstance().execute("PF('confirmSaveDetailsAll').show();");
-			else if (detailDTO.notesChange(notesFormModel))
+			else if (detailDTO.notesChange(notesFormModel) && ((createWizard != null && createWizard.getStep().equals(WIZARD_STEP_INFONOTES))
+					|| (updateWizard != null && updateWizard.getStep().equals(WIZARD_STEP_INFONOTES))
+					|| (copyWizard != null && copyWizard.getStep().equals(WIZARD_STEP_INFONOTES))))
 				RequestContext.getCurrentInstance().execute("PF('confirmSaveNotes').show();");
-			else if (relationsModified)
+			else if (relationsModified && ((createWizard != null && createWizard.getStep().equals(WIZARD_STEP_RELATIONS))
+					|| (updateWizard != null && updateWizard.getStep().equals(WIZARD_STEP_RELATIONS))
+					|| (copyWizard != null && copyWizard.getStep().equals(WIZARD_STEP_RELATIONS))))
 				RequestContext.getCurrentInstance().execute("PF('relationsDlg').show();");
 		}
 			
@@ -337,9 +344,14 @@ public class CreateController implements Serializable {
                 update();
 
             goToWizardNextStep();
-            if (showConfirmDialog())
-        		RequestContext.getCurrentInstance().update("fCreate:wizardId");
-
+            if (showConfirmDialog()) {
+            	if (createWizard != null)
+            		RequestContext.getCurrentInstance().update("fCreate:wizardId");
+	            if (updateWizard != null)
+	        		RequestContext.getCurrentInstance().update("fUpdate:wizardId");
+	            if (browseWizard != null)
+	        		RequestContext.getCurrentInstance().update("fBrowse:wizardId");
+            }
         }
 	}
 

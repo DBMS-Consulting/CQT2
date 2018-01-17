@@ -727,14 +727,6 @@ public class ListDetailsFormVM {
     }
     
     public boolean validateForm() {
-    	if(StringUtils.isBlank(this.name)) {
-    		 if(FacesContext.getCurrentInstance() != null) {
-    		 FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                     "The name is required", "");
-             FacesContext.getCurrentInstance().addMessage(null, msg);
-    		 }
-             return false;
-    	}
         if(!StringUtils.isBlank(this.designee) && StringUtils.equals(this.designee, this.designeeTwo)) {
             if(FacesContext.getCurrentInstance() != null) {
                 FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
