@@ -136,6 +136,7 @@
 					
 			<f:attribute name="uiEventSourceName" value="relations" />
 			<p:ajax event="expand" listener="#{createController.relationsModel.onNodeExpand}" update="resultRelations" />
+			<p:ajax event="collapse" listener="#{createController.relationsModel.onNodeCollapse}" update="resultRelations" />
 
 			<p:columnGroup type="header">
 				<p:row>
