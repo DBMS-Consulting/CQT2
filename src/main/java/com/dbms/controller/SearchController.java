@@ -573,4 +573,12 @@ public class SearchController extends BaseController<CmqBase190> {
 	public void setDictionaryVersion(String dictionaryVersion) {
 		this.dictionaryVersion = dictionaryVersion;
 	}
+
+	public GlobalController getGlobalController() {
+		return globalController;
+	}
+
+	public void setGlobalController(GlobalController globalController) {
+		this.globalController = globalController;
+	}
 }
