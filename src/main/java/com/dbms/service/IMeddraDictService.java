@@ -32,4 +32,13 @@ public interface IMeddraDictService {
 			, String partitionColumnPrefix, String searchTerm);
 
 	List<MeddraDictReverseHierarchySearchDto> findPtOrLltPrimaryPathsByTerm(String termName, boolean isPtSearch);
+	
+	List<MeddraDictHierarchySearchDto> findChildrenByParentCode(String searchColumnTypePrefix,
+			String parentCodeColumnPrefix, Long parentCode, String dictionaryVersion);
+
+	List<Map<String, Object>> findChildrenCountByParentCodes(String searchColumnTypePrefix,
+			String parentCodeColumnPrefix, List<Long> parentCodes, String dictionaryVersion);
+
+	List<MeddraDictHierarchySearchDto> findByCodes(String searchColumnTypePrefix, List<Long> codes,
+			String dictionaryVersion);
 }

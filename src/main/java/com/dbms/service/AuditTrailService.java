@@ -2656,7 +2656,7 @@ public class AuditTrailService implements IAuditTrailService{
 					+ " from CMQ_RELATIONS_"+ dictionaryVersion + "_AUDIT where " 
 					+ " cmq_id = (select c.cmq_id from  CMQ_BASE_"+ dictionaryVersion + " c where c.cmq_name = '" + name + "')"
 			
- 					+ "' order by audit_ts desc";
+ 					+ " order by audit_ts desc";
 		}
 		
 		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();

@@ -2,6 +2,9 @@ package com.dbms.util;
 
 import java.util.LinkedList;
 import java.util.List;
+
+import javax.faces.component.UIComponent;
+
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -33,4 +36,22 @@ public class CmqUtils {
         
         return "with " + tableName + " as (" + StringUtils.join(subtables, " union all ") + ")";
     }
+
+	public static UIComponent findComponent(UIComponent root, String id) {
+		UIComponent result = null;
+		if (root.getId().equals(id)) {
+			return root;
+		}
+
+		for (UIComponent child : root.getChildren()) {
+			if (child.getId().equals(id)) {
+				result = child;
+				break;
+			}
+			result = findComponent(child, id);
+			if (result != null)
+				break;
+		}
+		return result;
+	}
 }

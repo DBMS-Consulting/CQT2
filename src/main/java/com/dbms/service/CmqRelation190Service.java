@@ -34,6 +34,8 @@ public class CmqRelation190Service extends CqtPersistenceService<CmqRelation190>
 
 	private static final Logger LOG = LoggerFactory.getLogger(CmqRelation190Service.class);
 
+	private static final String CMQ_RELATIONS_TABLE_PREFIX = "CMQ_RELATIONS_";
+	
 	public void create(List<CmqRelation190> cmqRelations) throws CqtServiceException {
 		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
 		EntityTransaction tx = null;
@@ -68,6 +70,33 @@ public class CmqRelation190Service extends CqtPersistenceService<CmqRelation190>
 			query.setParameter("cmqCode", cmqCode);
 			query.setHint("org.hibernate.cacheable", true);
 			retVal = query.getResultList();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg
+					.append("An error occurred while fetching types from CmqRelation190 on cmqCode ")
+					.append(cmqCode)
+					.append(" Query used was ->")
+					.append(sb.toString());
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<CmqRelation190> findByCmqCode(Long cmqCode, String dictionaryVersion) {
+		List<CmqRelation190> retVal = null;
+		StringBuilder sb = new StringBuilder();
+		sb.append("select * from " + CMQ_RELATIONS_TABLE_PREFIX + dictionaryVersion+ "  where CMQ_CODE = :cmqCode ");
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		Session session = entityManager.unwrap(Session.class);
+		try {
+			SQLQuery query = session.createSQLQuery(sb.toString());
+			query.setParameter("cmqCode", cmqCode);
+			query.addEntity(CmqRelation190.class);
+			retVal = query.list();
 		} catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
 			msg
@@ -120,6 +149,44 @@ public class CmqRelation190Service extends CqtPersistenceService<CmqRelation190>
 		String queryString = CmqUtils.convertArrayToTableWith(cmqCodes, "tempCmqCodes", "code")
                 + " select CMQ_CODE, count(*) as COUNT"
                 + " from CMQ_RELATIONS_CURRENT cmqTbl"
+                + " inner join tempCmqCodes on tempCmqCodes.code=cmqTbl.CMQ_CODE"
+                + " group by CMQ_CODE";
+		
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		Session session = entityManager.unwrap(Session.class);
+		try {
+			SQLQuery query = session.createSQLQuery(queryString);
+			query.addScalar("CMQ_CODE", StandardBasicTypes.LONG);
+			query.addScalar("COUNT", StandardBasicTypes.LONG);
+            
+			query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+			query.setCacheable(true);
+            
+			retVal = query.list();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg
+					.append("An error occurred while findCountByCmqCodes ")
+					.append(cmqCodes)
+					.append(" Query used was ->")
+					.append(queryString);
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Map<String, Object>> findCountByCmqCodes(List<Long> cmqCodes, String dictionaryVersion) {
+		List<Map<String, Object>>  retVal = null;
+        
+        if(CollectionUtils.isEmpty(cmqCodes))
+            return null;
+        
+		String queryString = CmqUtils.convertArrayToTableWith(cmqCodes, "tempCmqCodes", "code")
+                + " select CMQ_CODE, count(*) as COUNT"
+                + " from " + CMQ_RELATIONS_TABLE_PREFIX + dictionaryVersion + " cmqTbl"
                 + " inner join tempCmqCodes on tempCmqCodes.code=cmqTbl.CMQ_CODE"
                 + " group by CMQ_CODE";
 		

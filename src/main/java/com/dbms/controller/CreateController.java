@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -108,6 +109,8 @@ public class CreateController implements Serializable {
     @ManagedProperty("#{CqtCacheManager}")
 	private ICqtCacheManager cqtCacheManager;
 	
+    @ManagedProperty("#{globalController}")
+    private GlobalController globalController;
     
 	private ListDetailsFormVM detailsFormModel;
 	private ListNotesFormVM notesFormModel = new ListNotesFormVM();
@@ -155,7 +158,7 @@ public class CreateController implements Serializable {
 	@PostConstruct
 	public void init() {
   		this.detailsFormModel  = new ListDetailsFormVM(this.authService, this.refCodeListService, this.appSWJSFRequest);
-        this.relationsModel = new ListRelationsVM(authService, appSWJSFRequest, refCodeListService, cmqBaseService, smqBaseService, meddraDictService, cmqRelationService);
+        this.relationsModel = new ListRelationsVM(authService, appSWJSFRequest, refCodeListService, cmqBaseService, smqBaseService, meddraDictService, cmqRelationService, globalController);
         this.workflowFormModel = new ListWorkflowFormVM(this.authService);
 		initAll();
 		detailDTO = new DetailDTO();
@@ -277,6 +280,12 @@ public class CreateController implements Serializable {
 			nextStep = event.getNewStep();
 		}
 		RequestContext.getCurrentInstance().update("fBrowse:wizardNavbar");
+		
+		/** JUST FOR TESTS **/
+		if (this.globalController.isFilterLltsFlag()) {
+			boolean filterLltsFlagValue = this.globalController.isFilterLltsFlag();
+		}
+		/** JUST FOR TESTS **/
 		return nextStep;
 	}
 
@@ -1521,6 +1530,13 @@ public class CreateController implements Serializable {
 		return products;
 	}
 	
+	public void reloadRelationsOnFilterLltFlagToggle(AjaxBehaviorEvent event) {
+		if(null != this.getRelationsModel()) {
+			boolean filterLltFlag = this.globalController.isFilterLltsFlag();
+			this.getRelationsModel().hanldeFilterLltFlagToggle(filterLltFlag);
+		}
+	}
+	
 	public List<RefConfigCodeList> getLevelListWithoutProtocol() {
 		cqtCacheManager.removeAllFromCache(CACHE_NAME);
 
@@ -1550,7 +1566,18 @@ public class CreateController implements Serializable {
 		RefConfigCodeList levelToRemove = refCodeListService.findByConfigTypeAndInternalCode(CqtConstants.CODE_LIST_TYPE_DICTIONARY_LEVELS, "NC-LLT");
 		if (levelToRemove != null)
 			levels.remove(levelToRemove);
-		 
+		
+		//filter out llts if the flag is set
+		boolean filterLltFlag = this.globalController.isFilterLltsFlag();
+		if(filterLltFlag) {
+			for(ListIterator<RefConfigCodeList> li = levels.listIterator(); li.hasNext();) {
+				RefConfigCodeList refConfigCodeList = li.next();
+				if(StringUtils.isNotBlank(refConfigCodeList.getCodelistInternalValue()) 
+						&& StringUtils.containsIgnoreCase(refConfigCodeList.getCodelistInternalValue(), "LLT")) {
+					li.remove();
+				}
+			}
+		}
 		return levels;
 	}
 	
@@ -2154,5 +2181,12 @@ public class CreateController implements Serializable {
 	public void setDetailDTO(DetailDTO detailDTO) {
 		this.detailDTO = detailDTO;
 	}
-     
+    	public GlobalController getGlobalController() {
+		return globalController;
+	}
+
+	public void setGlobalController(GlobalController globalController) {
+		this.globalController = globalController;
+	}
+ 
 }

@@ -17,6 +17,7 @@ import org.primefaces.event.NodeExpandEvent;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
 
+import com.dbms.controller.GlobalController;
 import com.dbms.csmq.CSMQBean;
 import com.dbms.csmq.HierarchyNode;
 import com.dbms.entity.IEntity;
@@ -58,28 +59,33 @@ public class IARelationsTreeHelper {
 	private ISmqBaseTargetService smqBaseTargetService;
 	private IMeddraDictTargetService meddraDictTargetService;
 	private ICmqRelationTargetService cmqRelationTargetService;
-    
+    private GlobalController globalController;
+
     public IARelationsTreeHelper(
             ICmqBase190Service cmqBaseService,
             ISmqBaseService smqBaseService,
             IMeddraDictService meddraDictService,
-            ICmqRelation190Service cmqRelationService) {
+            ICmqRelation190Service cmqRelationService,
+            GlobalController globalController) {
         
         this.cmqBaseCurrentService = cmqBaseService;
 		this.smqBaseCurrentService = smqBaseService;
 		this.meddraDictCurrentService = meddraDictService;
 		this.cmqRelationCurrentService = cmqRelationService;
+		this.globalController = globalController;
 	}
     
     public IARelationsTreeHelper(
             ICmqBaseTargetService cmqBaseSvc,
 			ISmqBaseTargetService smqBaseSvc,
 			IMeddraDictTargetService meddraDictSvc,
-			ICmqRelationTargetService cmqRelationSvc) {      
+			ICmqRelationTargetService cmqRelationSvc,
+			GlobalController globalController) {      
 		this.cmqBaseTargetService = cmqBaseSvc;
 		this.smqBaseTargetService = smqBaseSvc;
 		this.meddraDictTargetService = meddraDictSvc;
 		this.cmqRelationTargetService = cmqRelationSvc;
+		this.globalController = globalController;
 	}
     
     public IARelationsTreeHelper(
@@ -90,7 +96,8 @@ public class IARelationsTreeHelper {
             ICmqBaseTargetService cmqBaseSvc,
 			ISmqBaseTargetService smqBaseSvc,
 			IMeddraDictTargetService meddraDictSvc,
-			ICmqRelationTargetService cmqRelationSvc) {
+			ICmqRelationTargetService cmqRelationSvc,
+			GlobalController globalController) {
         
         this.cmqBaseCurrentService = cmqBaseService;
 		this.smqBaseCurrentService = smqBaseService;
@@ -101,6 +108,7 @@ public class IARelationsTreeHelper {
 		this.smqBaseTargetService = smqBaseSvc;
 		this.meddraDictTargetService = meddraDictSvc;
 		this.cmqRelationTargetService = cmqRelationSvc;
+		this.globalController = globalController;
 	}
 	
 	public void onNodeExpandCurrentTable(TreeNode rootNode, NodeExpandEvent event) {
@@ -1373,8 +1381,16 @@ public class IARelationsTreeHelper {
             }
                             
             if(childNodeType != null) {
-                countsOfChildren = this.meddraDictCurrentService.findChildrenCountByParentCodes(childNodeType + "_"
-                                                , nodeType + "_", dtoCodes);
+            	if(childNodeType.equalsIgnoreCase("LLT")) {
+            		boolean filterLltFlag = this.globalController.isFilterLltsFlag();
+            		if(!filterLltFlag) {
+            			countsOfChildren = this.meddraDictCurrentService.findChildrenCountByParentCodes(childNodeType + "_"
+                                , nodeType + "_", dtoCodes);
+            		}
+            	} else {
+            		countsOfChildren = this.meddraDictCurrentService.findChildrenCountByParentCodes(childNodeType + "_"
+                            , nodeType + "_", dtoCodes);
+            	}
             }
         } else {
             // styling and coloring
@@ -1384,8 +1400,16 @@ public class IARelationsTreeHelper {
                 setTargetCmqRelationNodeStyle(hn, (CmqRelationTarget)hn.getRelationEntity());
             }
             if(childNodeType != null) {
-                countsOfChildren = this.meddraDictTargetService.findChildrenCountByParentCodes(childNodeType + "_"
-                                                , nodeType + "_", dtoCodes);
+            	if(childNodeType.equalsIgnoreCase("LLT")) {
+            		boolean filterLltFlag = this.globalController.isFilterLltsFlag();
+            		if(!filterLltFlag) {
+            			countsOfChildren = this.meddraDictTargetService.findChildrenCountByParentCodes(childNodeType + "_"
+                                , nodeType + "_", dtoCodes);
+            		}
+            	} else {
+            		countsOfChildren = this.meddraDictTargetService.findChildrenCountByParentCodes(childNodeType + "_"
+                            , nodeType + "_", dtoCodes);
+            	}
             }
         }
 
@@ -1879,29 +1903,32 @@ public class IARelationsTreeHelper {
             }
 		}
     
-        List<Map<String, Object>> countsOfChildren;
-        if (bCurrentList) {
-            countsOfChildren = this.meddraDictCurrentService.findChildrenCountByParentCodes(childchildOfChildSearchColumnTypePrefix,
-                    childSearchColumnTypePrefix, nodesMapKeys);
-        } else {
-            countsOfChildren = this.meddraDictTargetService.findChildrenCountByParentCodes(childchildOfChildSearchColumnTypePrefix,
-                    childSearchColumnTypePrefix, nodesMapKeys);
-        }
+		boolean filterLltFlag = this.globalController.isFilterLltsFlag();
+		if(!"PT".equalsIgnoreCase(childLevel) || ("PT".equalsIgnoreCase(childLevel) && !filterLltFlag)) {
+			List<Map<String, Object>> countsOfChildren;
+	        if (bCurrentList) {
+	            countsOfChildren = this.meddraDictCurrentService.findChildrenCountByParentCodes(childchildOfChildSearchColumnTypePrefix,
+	                    childSearchColumnTypePrefix, nodesMapKeys);
+	        } else {
+	            countsOfChildren = this.meddraDictTargetService.findChildrenCountByParentCodes(childchildOfChildSearchColumnTypePrefix,
+	                    childSearchColumnTypePrefix, nodesMapKeys);
+	        }
 
-        if((null != countsOfChildren) && (countsOfChildren.size() > 0)) {
-            //first find and fix child nodes stuff
-            for (Map<String, Object> cc: countsOfChildren) {
-                if(cc.get("PARENT_CODE") != null && cc.get("COUNT") != null) {
-                    Long pCode = (Long)cc.get("PARENT_CODE");
-                    Long c = (Long)cc.get("COUNT");
-                    TreeNode t = c > 0 ? nodesMap.get(pCode) : null;
-                    if(t!=null) {
-                        // add a dummmy node to show expand arrow
-                        createNewDummyNode(t);
-                    }
-                }
-            }
-        }
+	        if((null != countsOfChildren) && (countsOfChildren.size() > 0)) {
+	            //first find and fix child nodes stuff
+	            for (Map<String, Object> cc: countsOfChildren) {
+	                if(cc.get("PARENT_CODE") != null && cc.get("COUNT") != null) {
+	                    Long pCode = (Long)cc.get("PARENT_CODE");
+	                    Long c = (Long)cc.get("COUNT");
+	                    TreeNode t = c > 0 ? nodesMap.get(pCode) : null;
+	                    if(t!=null) {
+	                        // add a dummmy node to show expand arrow
+	                        createNewDummyNode(t);
+	                    }
+	                }
+	            }
+	        }
+		}
 	}
 			
 	public boolean isRootListNode(TreeNode treeNode) {
@@ -1930,7 +1957,7 @@ public class IARelationsTreeHelper {
 	}
 	
 	public void updateCurrentTableForCmqList(TreeNode currentTableRootTreeNode,CmqBaseTarget selectedCmqList) {
-        IARelationsTreeHelper treeHelper = new IARelationsTreeHelper(cmqBaseTargetService, smqBaseTargetService, meddraDictTargetService, cmqRelationTargetService);
+        IARelationsTreeHelper treeHelper = new IARelationsTreeHelper(cmqBaseTargetService, smqBaseTargetService, meddraDictTargetService, cmqRelationTargetService, globalController);
         
 		CmqBase190 cmqBaseCurrent = this.cmqBaseCurrentService.findByCode(selectedCmqList.getCmqCode());
 		HierarchyNode node = treeHelper.createCmqBaseCurrentHierarchyNode(cmqBaseCurrent);
@@ -2018,7 +2045,7 @@ public class IARelationsTreeHelper {
 	public void updateTargetTableForSmqList(TreeNode targetTableRootTreeNode, SmqBaseTarget selectedSmqList) {
         IARelationsTreeHelper treeHelper = new IARelationsTreeHelper(
                 cmqBaseCurrentService, smqBaseCurrentService, meddraDictCurrentService, cmqRelationCurrentService,
-                cmqBaseTargetService, smqBaseTargetService, meddraDictTargetService, cmqRelationTargetService);
+                cmqBaseTargetService, smqBaseTargetService, meddraDictTargetService, cmqRelationTargetService, globalController);
 		HierarchyNode node = treeHelper.createSmqBaseTargetNode(selectedSmqList, null);
 		node.markReadOnlyInRelationstable();
 		TreeNode cmqBaseTreeNode = new DefaultTreeNode(node, targetTableRootTreeNode);
