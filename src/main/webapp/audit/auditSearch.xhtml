@@ -26,7 +26,7 @@
 						<p:outputLabel for="lname" value="List Name" styleClass="label-right" />
 						<p:selectOneMenu value="#{auditTrailController.listName}" filter="true" disabled="#{auditTrailController.listCode ne null}"
 							id="lname" style="width: 200px !important" filterMatchMode="contains">
-							<f:selectItem itemValue="" itemLabel="Select" />
+							<f:selectItem itemValue="" itemLabel="" />
 							<f:selectItems value="#{auditTrailController.selectList()}" var="cmq"
 								itemLabel="#{cmq.listName}" itemValue="#{cmq.listName}" />
 								
@@ -37,7 +37,7 @@
 						<p:outputLabel for="lcode" value="List Code" styleClass="label-right" />
 						<p:selectOneMenu value="#{auditTrailController.listCode}" filter="true" disabled="#{auditTrailController.listName ne null}"
 							id="lcode" style="width: 200px !important" filterMatchMode="contains">
-							<f:selectItem itemValue="" itemLabel="Select" />
+							<f:selectItem itemValue="" itemLabel="" />
 							<f:selectItems value="#{auditTrailController.selectList()}" var="cmq"
 								itemLabel="#{cmq.listCode}" itemValue="#{cmq.listCode}" />
 								
@@ -48,7 +48,7 @@
 					 
 						<p:outputLabel for="dict" value="Dictionary Version" styleClass="label-right" />
  						<p:selectOneMenu value="#{auditTrailController.dictionary}" filter="true" id="dict" filterMatchMode="contains">
-							<f:selectItem itemValue="" itemLabel="Select" />
+							<f:selectItem itemValue="" itemLabel="" />
 							<f:selectItems value="#{configMB.allMeddraVersion}" var="d"
 								itemLabel="#{d.value}" itemValue="#{d.value}" />
 								
@@ -59,7 +59,7 @@
 						<p:outputLabel for="time" value="Audit Timestamp" styleClass="label-right" />
 						<p:selectOneMenu value="#{auditTrailController.auditTimestamp}" 
 							filter="true" filterMatchMode="contains" id="time" style="width: 170px !important">
-							<f:selectItem itemValue="" itemLabel="Select" />
+							<f:selectItem itemValue="" itemLabel="" />
 							<f:selectItems value="#{auditTrailController.findAuditTimestamps(auditTrailController.dictionary)}" var="at"
 								itemLabel="#{at}" itemValue="#{at}" />
 						</p:selectOneMenu>
