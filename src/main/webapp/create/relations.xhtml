@@ -65,25 +65,37 @@
 				
                     
                 <!--Show Confirm Dialog if list has more than 1 children when clicking on "MQ Detailed Report" generation button-->
-                <p:confirmDialog header="MQ Detail Report"  widgetVar="confirmMQReport"
+                 <p:confirmDialog header="MQ Detail Report"  widgetVar="confirmMQReport"
                                  message="You are submitting a request to generate the report. Do you want to continue?">  
                     <i class="fa fa-check" style="position: absolute; margin-top: 14px; margin-left: 5px"></i>
                     <h:commandLink value="Yes" onclick="PF('confirmMQReport').hide()" styleClass="generate" type="button"
-                                     actionListener="#{reportController.generateMQReport(createController.detailsFormModel, createController.notesFormModel)}" >
+                         actionListener="#{reportController.generateMQReport(createController.detailsFormModel, createController.notesFormModel,createController.relationsModel.relationsRoot)}" >
                         <p:fileDownload value="#{reportController.excelFile}" />
                     </h:commandLink>
                     <p:commandButton value="No" onclick="PF('confirmMQReport').hide()" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>   
                 </p:confirmDialog>
                 
-                <i class="fa fa-file-excel-o"
-					style="position: absolute; margin-top: 8px; margin-left: 5px"></i>
-                <h:commandLink rendered="#{createController.relationsModel.relationsRoot.childCount gt 0}" value="MQ Detailed Report" type="button"
-                               styleClass="generate" onclick="PF('confirmMQReport').show();return false;" />
+                 <ui:fragment rendered="#{createController.relationsModel.relationsRoot.childCount gt 0}">
+               	 <i class="fa fa-file-excel-o" style="position: absolute; margin-top: 8px; margin-left: 5px"></i>
+               </ui:fragment>
+					
+               <!--  <h:commandLink rendered="#{createController.relationsModel.relationsRoot.childCount gt 0}" value="MQ Detailed Report" type="button"
+                               styleClass="generate" onclick="PF('confirmMQReport').show();return false;" />  -->
                 
+                
+                <h:commandLink rendered="#{createController.relationsModel.relationsRoot.childCount gt 0}" value="MQ Detailed Report"
+					styleClass="generate" onclick="PF('confirmMQReport').show();return false;">
+					<!-- <p:fileDownload value="#{reportController.excelFile}" /> -->
+					<p:ajax process="@this"  />
+ 				</h:commandLink>
+                
+                <ui:fragment rendered="#{createController.relationsModel.relationsRoot.childCount le 0}">
+               	 	<i class="fa fa-file-excel-o" style="position: absolute; margin-top: 8px; margin-left: 5px"></i>
+               	</ui:fragment>
                 <h:commandLink rendered="#{createController.relationsModel.relationsRoot.childCount le 0}" value="MQ Detailed Report"
-					styleClass="generate"
-					actionListener="#{reportController.generateMQReport(createController.detailsFormModel, createController.notesFormModel)}">
-					<p:fileDownload value="#{reportController.excelFile}" />
+					styleClass="generate" onclick="PF('confirmMQReport').show();return false;">
+					<!-- <p:fileDownload value="#{reportController.excelFile}" /> -->
+					<p:ajax process="@this"  />
 				</h:commandLink>
 				
 				<p:spacer width="10" />
