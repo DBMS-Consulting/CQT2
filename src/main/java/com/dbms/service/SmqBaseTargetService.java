@@ -648,10 +648,28 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 	 * @see com.dbms.service.ISmqBaseTargetService#findImpactedCount()
 	 */
 	@Override
-	public Long findImpactedCount() {
+	public Long findImpactedCount(Map<String, Object> filters) {
 		Long retVal = null;
 		StringBuilder sb = new StringBuilder();
 		sb.append("select count(*) from SmqBaseTarget c where c.impactType = 'IMPACTED'");
+		
+		if (filters.containsKey("smqName") && filters.get("smqName") != null) {
+			//sb.append(" and c.smqName ilike '%" + filters.get("smqName") + "%'");
+			String f = ((String)filters.get("smqName")).toLowerCase();
+			f = f.contains("%") ? f : ("'%" + f + "%'");
+			sb.append(" and c.smqName like lower(" + f + ")");
+			 
+        }
+
+		if (filters.containsKey("smqLevel") && filters.get("smqLevel") != null) {
+			sb.append(" and c.smqLevel = " + filters.get("smqLevel"));
+		}
+        
+        if (filters.containsKey("smqCode") && filters.get("smqCode") != null) {
+        	String f = ((String)filters.get("smqCode")).toLowerCase();
+			f = f.contains("%") ? f : ("%" + f + "%");
+			sb.append(" and c.smqCode  = " + filters.get("smqCode"));
+        }
 		
 		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
 		try {
@@ -728,8 +746,45 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 	 * @see com.dbms.service.ISmqBaseTargetService#findNotImpactedCount()
 	 */
 	@Override
-	public Long findNotImpactedCount() {
+	public Long findNotImpactedCount(Map<String, Object> filters) {
 		Long retVal = null;
+		StringBuilder sb = new StringBuilder();
+		sb.append("select count(*) from SmqBaseTarget c where c.impactType = 'NON-IMPACTED'");
+		
+		if (filters.containsKey("smqName") && filters.get("smqName") != null) {
+			//sb.append(" and c.smqName ilike '%" + filters.get("smqName") + "%'");
+			String f = ((String)filters.get("smqName")).toLowerCase();
+			f = f.contains("%") ? f : ("'%" + f + "%'");
+			sb.append(" and c.smqName like lower(" + f + ")");
+			 
+        }
+
+		if (filters.containsKey("smqLevel") && filters.get("smqLevel") != null) {
+			sb.append(" and c.smqLevel = " + filters.get("smqLevel"));
+		}
+        
+        if (filters.containsKey("smqCode") && filters.get("smqCode") != null) {
+        	String f = ((String)filters.get("smqCode")).toLowerCase();
+			f = f.contains("%") ? f : ("%" + f + "%");
+			sb.append(" and c.smqCode  = " + filters.get("smqCode"));
+        }
+		
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		try {
+			Query query = entityManager.createQuery(sb.toString());
+			retVal = (Long)query.getSingleResult();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg
+					.append("An error occurred in findImpactedCount ")
+					.append(" Query used was ->")
+					.append(sb.toString());
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+		/*Long retVal = null;
 		StringBuilder sb = new StringBuilder();
 		sb.append("select count(*) from SmqBaseTarget c where c.impactType = 'NON-IMPACTED'");
 	
@@ -747,7 +802,7 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 		} finally {
 			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
 		}
-		return retVal;
+		return retVal;*/
 	}
 
 	@Override

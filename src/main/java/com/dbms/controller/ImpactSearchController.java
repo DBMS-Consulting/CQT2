@@ -3,6 +3,7 @@ package com.dbms.controller;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -1793,17 +1794,19 @@ public class ImpactSearchController implements Serializable {
 			List<CmqBaseTarget> fetchedCmqBaseList = null;
 			if (this.manageImpactedList) {
 				LOG.info("Loading more impacted list cmqs starting from " + first + " with page size of " + pageSize);
-				fetchedCmqBaseList = cmqBaseTargetService.findImpactedWithPaginated(first, pageSize, null, null, filters);
+				fetchedCmqBaseList = cmqBaseTargetService.findImpactedWithPaginated(first, pageSize, null, null,
+						filters);
 				this.setRowCount(fetchedCmqBaseList.size());
 			} else {
 				LOG.info("Loading more not impacted list cmqs starting from " + first + " with page size of "
 						+ pageSize);
-				fetchedCmqBaseList = cmqBaseTargetService.findNotImpactedWithPaginated(first, pageSize, null, null, filters);
+				fetchedCmqBaseList = cmqBaseTargetService.findNotImpactedWithPaginated(first, pageSize, null, null,
+						filters);
 				this.setRowCount(fetchedCmqBaseList.size());
 			}
-            
-            if(fetchedCmqBaseList != null)
-                this.cmqBaseList.addAll(fetchedCmqBaseList);
+
+			if (fetchedCmqBaseList != null)
+				this.cmqBaseList.addAll(fetchedCmqBaseList);
 			return fetchedCmqBaseList;
 		}
 
@@ -1813,17 +1816,19 @@ public class ImpactSearchController implements Serializable {
 			List<CmqBaseTarget> fetchedCmqBaseList = null;
 			if (this.manageImpactedList) {
 				LOG.info("Loading more impacted list cmqs starting from " + first + " with page size of " + pageSize);
-				fetchedCmqBaseList = cmqBaseTargetService.findImpactedWithPaginated(first, pageSize, null, null, filters);
+				fetchedCmqBaseList = cmqBaseTargetService.findImpactedWithPaginated(first, pageSize, null, null,
+						filters);
 				this.setRowCount(cmqBaseTargetService.findImpactedCount().intValue());
 			} else {
 				LOG.info("Loading more not impacted list cmqs starting from " + first + " with page size of "
 						+ pageSize);
-				fetchedCmqBaseList = cmqBaseTargetService.findNotImpactedWithPaginated(first, pageSize, null, null, filters);
+				fetchedCmqBaseList = cmqBaseTargetService.findNotImpactedWithPaginated(first, pageSize, null, null,
+						filters);
 				this.setRowCount(cmqBaseTargetService.findNotImpactedCount().intValue());
 			}
-            
-            if(fetchedCmqBaseList != null)
-                this.cmqBaseList.addAll(fetchedCmqBaseList);
+
+			if (fetchedCmqBaseList != null)
+				this.cmqBaseList.addAll(fetchedCmqBaseList);
 			return fetchedCmqBaseList;
 		}
 
@@ -1863,38 +1868,56 @@ public class ImpactSearchController implements Serializable {
 			List<SmqBaseTarget> fetchedSmqBaseList = null;
 			if (this.manageImpactedList) {
 				LOG.info("Loading more impacted list smqs starting from " + first + " with page size of " + pageSize);
-				fetchedSmqBaseList = smqBaseTargetService.findImpactedWithPaginated(first, pageSize, null, null, filters);
-				this.setRowCount(smqBaseTargetService.findImpactedCount().intValue());
+				fetchedSmqBaseList = smqBaseTargetService.findImpactedWithPaginated(first, pageSize, null, null,
+						filters);
+				this.setRowCount(smqBaseTargetService.findImpactedCount(filters).intValue());
 			} else {
 				LOG.info("Loading more not impacted list smqs starting from " + first + " with page size of "
 						+ pageSize);
-				fetchedSmqBaseList = smqBaseTargetService.findNotImpactedWithPaginated(first, pageSize, null, null, filters);
-				this.setRowCount(smqBaseTargetService.findNotImpactedCount().intValue());
+				fetchedSmqBaseList = smqBaseTargetService.findNotImpactedWithPaginated(first, pageSize, null, null,
+						filters);
+				this.setRowCount(smqBaseTargetService.findNotImpactedCount(filters).intValue());
 			}
-            
-            if(fetchedSmqBaseList != null)
-                this.smqBaseList.addAll(fetchedSmqBaseList);
+
+			if (fetchedSmqBaseList != null)
+				this.smqBaseList.addAll(fetchedSmqBaseList);
 			return fetchedSmqBaseList;
 		}
 
 		@Override
 		public List<SmqBaseTarget> load(int first, int pageSize, String sortField, SortOrder sortOrder,
 				Map<String, Object> filters) {
+			
 			List<SmqBaseTarget> fetchedSmqBaseList = null;
 			if (this.manageImpactedList) {
 				LOG.info("Loading more impacted list cmqs starting from " + first + " with page size of " + pageSize);
-				fetchedSmqBaseList = smqBaseTargetService.findImpactedWithPaginated(first, pageSize, null, null, filters);
-				this.setRowCount(smqBaseTargetService.findImpactedCount().intValue());
+				fetchedSmqBaseList = smqBaseTargetService.findImpactedWithPaginated(first, pageSize, null, null,
+						filters);
+				this.setRowCount(smqBaseTargetService.findImpactedCount(filters).intValue());
 			} else {
 				LOG.info("Loading more not impacted list cmqs starting from " + first + " with page size of "
 						+ pageSize);
-				fetchedSmqBaseList = smqBaseTargetService.findNotImpactedWithPaginated(first, pageSize, null, null, filters);
-				this.setRowCount(smqBaseTargetService.findNotImpactedCount().intValue());
+				fetchedSmqBaseList = smqBaseTargetService.findNotImpactedWithPaginated(first, pageSize, null, null,
+						filters);
+				this.setRowCount(smqBaseTargetService.findNotImpactedCount(filters).intValue());
+ 			}
+			if (fetchedSmqBaseList != null)
+				this.smqBaseList.addAll(fetchedSmqBaseList);
+
+			int dataSize = fetchedSmqBaseList.size();
+
+			// paginate
+			if (dataSize > pageSize) {
+				try {
+					return fetchedSmqBaseList.subList(first, first + pageSize);
+				} catch (IndexOutOfBoundsException e) {
+					return fetchedSmqBaseList.subList(first, first + (dataSize % pageSize));
+				}
+			} else {
+				return fetchedSmqBaseList;
 			}
-            
-            if(fetchedSmqBaseList != null)
-                this.smqBaseList.addAll(fetchedSmqBaseList);
-			return fetchedSmqBaseList;
+
+			// return fetchedSmqBaseList;
 		}
 
 		@Override
@@ -1914,6 +1937,34 @@ public class ImpactSearchController implements Serializable {
 		}
 
 	}
+	
+	/*private class LazySorter implements Comparator<SmqBaseTarget> {
+		 
+	    private String sortField;
+	     
+	    private SortOrder sortOrder;
+	     
+	    public LazySorter(String sortField, SortOrder sortOrder) {
+	        this.sortField = sortField;
+	        this.sortOrder = sortOrder;
+	    }
+	 
+	    public int compare(SmqBaseTarget one, SmqBaseTarget two) {
+	        try {
+	            Object value1 = SmqBaseTarget.class.getField(this.sortField).get(one);
+	            Object value2 = SmqBaseTarget.class.getField(this.sortField).get(two);
+	 
+	            int value = ((Comparable)value1).compareTo(value2);
+	             
+	            return SortOrder.ASCENDING.equals(sortOrder) ? value : -1 * value;
+	        }
+	        catch(Exception e) {
+	            throw new RuntimeException();
+	        }
+	    }
+	}*/
+	
+	
 	
 	private class NewPtSearchLazyDataModel extends LazyDataModel<MeddraDictHierarchySearchDto> {
 

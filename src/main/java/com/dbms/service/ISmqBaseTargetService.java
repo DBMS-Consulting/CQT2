@@ -38,12 +38,12 @@ public interface ISmqBaseTargetService {
 	List<SmqBaseTarget> findImpactedWithPaginated(int first, int pageSize, String sortField, SortOrder sortOrder,
 			Map<String, Object> filters);
 
-	Long findImpactedCount();
+	Long findImpactedCount(Map<String, Object> filters);
 
 	List<SmqBaseTarget> findNotImpactedWithPaginated(int first, int pageSize, String sortField, SortOrder sortOrder,
 			Map<String, Object> filters);
 
-	Long findNotImpactedCount();
+	Long findNotImpactedCount(Map<String, Object> filters);
 
 	StreamedContent generateSMQExcel(SmqBaseTarget selectedImpactedSmqList, String dictionaryVersion);
 
