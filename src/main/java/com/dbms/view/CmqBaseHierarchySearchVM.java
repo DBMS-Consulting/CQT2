@@ -22,6 +22,7 @@ import org.primefaces.model.TreeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.dbms.controller.GlobalController;
 import com.dbms.controller.beans.HierarchySearchResultBean;
 import com.dbms.csmq.HierarchyNode;
 import com.dbms.entity.cqt.CmqBase190;
@@ -59,7 +60,8 @@ public class CmqBaseHierarchySearchVM {
 	private ISmqBaseService smqBaseService;
 	private IMeddraDictService meddraDictService;
 	private ICmqRelation190Service cmqRelationService;
-
+	final private GlobalController globalController;
+	
 	private String myFilterTermName;
 	private String myFilterLevel;
 	private String filterSMQ;
@@ -86,15 +88,16 @@ public class CmqBaseHierarchySearchVM {
     private List<RefConfigCodeList> levels;
     
  	
-	public CmqBaseHierarchySearchVM(ICmqBase190Service cmqBaseSvc,
+    public CmqBaseHierarchySearchVM(ICmqBase190Service cmqBaseSvc,
 			ISmqBaseService smqBaseSvc,
 			IMeddraDictService meddraDictSvc,
-			ICmqRelation190Service cmqRelationSvc) {
+			ICmqRelation190Service cmqRelationSvc,
+			GlobalController globalController) {
 		this.cmqBaseService = cmqBaseSvc;
 		this.smqBaseService = smqBaseSvc;
 		this.meddraDictService = meddraDictSvc;
 		this.cmqRelationService = cmqRelationSvc;
-		
+		this.globalController = globalController;
 		myHierarchyRoot = new DefaultTreeNode("root", new HierarchyNode("LEVEL",
 				"NAME", "CODE", null), null);
 		        
@@ -117,8 +120,7 @@ public class CmqBaseHierarchySearchVM {
         //trim any spaces
         myFilterTermName = myFilterTermName.trim();
         
-        
-		CmqBaseRelationsTreeHelper relationsTreeHelper = new CmqBaseRelationsTreeHelper(cmqBaseService, smqBaseService, meddraDictService, cmqRelationService);
+		CmqBaseRelationsTreeHelper relationsTreeHelper = new CmqBaseRelationsTreeHelper(cmqBaseService, smqBaseService, meddraDictService, cmqRelationService, globalController);
         relationsTreeHelper.setRequireDrillDown(true);
 		
 		SMQLevelHelper smqLevelH = SMQLevelHelper.getByLabel(myFilterLevel);
@@ -264,17 +266,21 @@ public class CmqBaseHierarchySearchVM {
                 meddraTreeNodes.put(Long.valueOf(m.getCode()), parentTreeNode);
             }
             
-            List<Map<String, Object>> countOfChildrenList = this.meddraDictService.findChildrenCountByParentCodes(childSearchColumnTypePrefix, parentCodeColumnPrefix, meddraCodeList);
-            if((null != countOfChildrenList) && (countOfChildrenList.size() > 0)) {
-                for(Map<String, Object> map : countOfChildrenList) {
-                    if(map.get("PARENT_CODE") != null) {
-                        Long parentMeddraCode = (Long)map.get("PARENT_CODE");
-                        if((Long)map.get("COUNT") > 0) {
-                            relationsTreeHelper.createNewDummyNode(meddraTreeNodes.get(parentMeddraCode));
-                        }
-                    }
-                }
-            }
+			boolean filterLltFlag = this.globalController.isFilterLltsFlag();
+			//if filter llt flag is on and we are seaching for PTs
+			if(!myFilterLevel.equals("PT") || (myFilterLevel.equals("PT") && !filterLltFlag)) {
+				List<Map<String, Object>> countOfChildrenList = this.meddraDictService.findChildrenCountByParentCodes(childSearchColumnTypePrefix, parentCodeColumnPrefix, meddraCodeList);
+	            if((null != countOfChildrenList) && (countOfChildrenList.size() > 0)) {
+	                for(Map<String, Object> map : countOfChildrenList) {
+	                    if(map.get("PARENT_CODE") != null) {
+	                        Long parentMeddraCode = (Long)map.get("PARENT_CODE");
+	                        if((Long)map.get("COUNT") > 0) {
+	                            relationsTreeHelper.createNewDummyNode(meddraTreeNodes.get(parentMeddraCode));
+	                        }
+	                    }
+	                }
+	            }
+			}
 		} else if (meddraLevelH != null && appliedSearchDirection == SEARCH_DIRECTION_UP) {
 			if(this.showPrimaryPath && (myFilterLevel.equals("PT") || myFilterLevel.equals("LLT"))) {
 				this.showPrimaryPathOnly = true;
@@ -454,7 +460,7 @@ public class CmqBaseHierarchySearchVM {
 		boolean isRelationView = "RELATIONS".equalsIgnoreCase(uiSourceOfEvent);
 		boolean isParentListView = "PARENT-LIST".equalsIgnoreCase(uiSourceOfEvent);
 		if(!showPrimaryPathOnly) {
-			CmqBaseRelationsTreeHelper relationsSearchHelper = new CmqBaseRelationsTreeHelper(cmqBaseService, smqBaseService, meddraDictService, cmqRelationService);	
+			CmqBaseRelationsTreeHelper relationsSearchHelper = new CmqBaseRelationsTreeHelper(cmqBaseService, smqBaseService, meddraDictService, cmqRelationService, globalController);	
 	        relationsSearchHelper.setRelationView(isRelationView);
 	        relationsSearchHelper.setRelationView(isParentListView);
 			this.myHierarchyRoot = relationsSearchHelper.getRelationsNodeHierarchy(this.myHierarchyRoot, expandedTreeNode);	

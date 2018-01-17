@@ -59,6 +59,9 @@ public class SearchController extends BaseController<CmqBase190> {
 	@ManagedProperty("#{AuthenticationService}")
 	private AuthenticationService authService;
 	
+	@ManagedProperty("#{globalController}")
+    private GlobalController globalController;
+	
 	private String releaseStatus;
 	private String criticalEvent;
 	private String termName;
@@ -113,7 +116,7 @@ public class SearchController extends BaseController<CmqBase190> {
 
 	@PostConstruct
 	public void init() {
-		myHierarchyDlgModel = new CmqBaseHierarchySearchVM(cmqBaseService, smqBaseService, meddraDictService, cmqRelationService);
+		myHierarchyDlgModel = new CmqBaseHierarchySearchVM(cmqBaseService, smqBaseService, meddraDictService, cmqRelationService, globalController);
 		this.maintainDesigBtn = false;
 		resetSearch();
 		

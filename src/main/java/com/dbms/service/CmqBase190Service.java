@@ -86,6 +86,8 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 	private static final Logger LOG = LoggerFactory
 			.getLogger(CmqBase190Service.class);
 
+	private static final String CMQ_BASE_TABLE_PREFIX = "CMQ_BASE_";
+	
 	@ManagedProperty("#{CmqRelation190Service}")
 	private ICmqRelation190Service cmqRelationService;
 
@@ -426,6 +428,44 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		return retVal;
 	}
     
+	@SuppressWarnings("unchecked")
+    @Override
+	public List<Map<String, Object>> findCmqChildCountForParentCmqCodes(List<Long> cmqCodes, String dictionaryVersion) {
+		List<Map<String, Object>> retVal = null;
+        
+        if(CollectionUtils.isEmpty(cmqCodes))
+            return null;
+        
+		String queryString = CmqUtils.convertArrayToTableWith(cmqCodes, "tempCmqCodes", "code")
+                + " select CMQ_CODE, count(*) as COUNT"
+                + " from " + CMQ_BASE_TABLE_PREFIX + dictionaryVersion +" cmqTbl"
+                + " inner join tempCmqCodes on tempCmqCodes.code=cmqTbl.CMQ_PARENT_CODE"
+                + " group by CMQ_CODE";
+
+		EntityManager entityManager = this.cqtEntityManagerFactory
+				.getEntityManager();
+		Session session = entityManager.unwrap(Session.class);
+		try {
+			SQLQuery query = session.createSQLQuery(queryString);
+			query.addScalar("CMQ_CODE", StandardBasicTypes.LONG);
+			query.addScalar("COUNT", StandardBasicTypes.LONG);
+            
+			query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+			query.setCacheable(true);
+			retVal = query.list();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg.append(
+					"An error occurred while findCmqChildCountForParentCmqCode ")
+					.append(cmqCodes).append(" Query used was ->")
+					.append(queryString);
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
+	
     @Override
     public boolean checkIfApprovedOnce(Long cmqCode) {
         boolean retVal = false;
@@ -565,6 +605,28 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 			query.setParameter("codeList", code);
 			query.setHint("org.hibernate.cacheable", true);
 			retVal = query.getResultList();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg.append("findChildCmqsByCode failed ")
+					.append("Query used was ->").append(queryString);
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<CmqBase190> findChildCmqsByParentCode(Long code, String dictionaryVersion) {
+		List<CmqBase190> retVal = null;
+		String queryString = "Select * from " + CMQ_BASE_TABLE_PREFIX + dictionaryVersion + " where CMQ_PARENT_CODE = :codeList ";
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		Session session = entityManager.unwrap(Session.class);
+		try {
+			SQLQuery query = session.createSQLQuery(queryString);
+			query.setParameter("codeList", code);
+			query.addEntity(CmqBase190.class);
+			retVal = query.list();
 		} catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
 			msg.append("findChildCmqsByCode failed ")

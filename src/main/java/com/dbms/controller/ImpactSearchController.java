@@ -17,6 +17,8 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import javax.faces.component.UIComponent;
+import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
 
@@ -125,6 +127,9 @@ public class ImpactSearchController implements Serializable {
 	@ManagedProperty("#{appSWJSFRequest}")
     private SWJSFRequest appSWJSFRequest;
 	
+	@ManagedProperty("#{globalController}")
+    private GlobalController globalController;
+	
 	Wizard iaWizard, iaVersionWizard;
 	private String iaWizardNextStep;
 
@@ -203,13 +208,14 @@ public class ImpactSearchController implements Serializable {
 		this.notImpactedCmqBaseLazyDataModel = new CmqLazyDataModel(false);
 		this.impactedSmqBaseLazyDataModel = new SmqLazyDataModel(true);
 		this.notImpactedSmqBaseLazyDataModel = new SmqLazyDataModel(false);
-		currentTableRootTreeNode = new DefaultTreeNode("root", new HierarchyNode("CODE",
-				"LEVEL", "SCOPE", null), null);
-		targetTableRootTreeNode = new DefaultTreeNode("root", new HierarchyNode("CODE",
-				"LEVEL", "SCOPE", "CATEGORY", "WEIGHT", null, null), null);
-        currentHierarchySearchDlgModel = new CmqBaseHierarchySearchVM(cmqBaseCurrentService, smqBaseCurrentService, meddraDictCurrentService, cmqRelationCurrentService);
-        targetHierarchySearchDlgModel = new TargetHierarchySearchVM(cmqBaseTargetService, smqBaseTargetService, meddraDictTargetService, cmqRelationTargetService);
-        
+		currentTableRootTreeNode = new DefaultTreeNode("root", new HierarchyNode("CODE", "LEVEL", "SCOPE", null), null);
+		targetTableRootTreeNode = new DefaultTreeNode("root",
+				new HierarchyNode("CODE", "LEVEL", "SCOPE", "CATEGORY", "WEIGHT", null, null), null);
+		currentHierarchySearchDlgModel = new CmqBaseHierarchySearchVM(cmqBaseCurrentService, smqBaseCurrentService,
+				meddraDictCurrentService, cmqRelationCurrentService, globalController);
+		targetHierarchySearchDlgModel = new TargetHierarchySearchVM(cmqBaseTargetService, smqBaseTargetService,
+				meddraDictTargetService, cmqRelationTargetService, globalController);
+
 		currentOrTarget = SELECTED_NO_LIST;
 		
 		newPtDistinctSocTermsList = this.meddraDictTargetService.findSocsWithNewPt();
@@ -380,7 +386,7 @@ public class ImpactSearchController implements Serializable {
         event.getTreeNode().setExpanded(true);
         IARelationsTreeHelper treeHelper = new IARelationsTreeHelper(
                 cmqBaseCurrentService, smqBaseCurrentService, meddraDictCurrentService, cmqRelationCurrentService,
-                cmqBaseTargetService, smqBaseTargetService, meddraDictTargetService, cmqRelationTargetService);
+                cmqBaseTargetService, smqBaseTargetService, meddraDictTargetService, cmqRelationTargetService, globalController);
         treeHelper.onNodeExpandCurrentTable(currentTableRootTreeNode, event);
 	}
     
@@ -391,7 +397,7 @@ public class ImpactSearchController implements Serializable {
 	public void onNodeExpandTargetTable(NodeExpandEvent event) {
         IARelationsTreeHelper treeHelper = new IARelationsTreeHelper(
                 cmqBaseCurrentService, smqBaseCurrentService, meddraDictCurrentService, cmqRelationCurrentService,
-                cmqBaseTargetService, smqBaseTargetService, meddraDictTargetService, cmqRelationTargetService);
+                cmqBaseTargetService, smqBaseTargetService, meddraDictTargetService, cmqRelationTargetService, globalController);
         treeHelper.onNodeExpandTargetTable(targetTableRootTreeNode, event, true);
 	}
 	
@@ -416,7 +422,7 @@ public class ImpactSearchController implements Serializable {
 				cmqBaseCurrentService, smqBaseCurrentService,
 				meddraDictCurrentService, cmqRelationCurrentService,
 				cmqBaseTargetService, smqBaseTargetService,
-				meddraDictTargetService, cmqRelationTargetService);
+				meddraDictTargetService, cmqRelationTargetService, globalController);
 		treeHelper.onNodeExpandTargetTableScope(targetTableRootTreeNode, null,
 				scopeFilter);
  
@@ -431,7 +437,7 @@ public class ImpactSearchController implements Serializable {
 	public void updateCurrentTable() {
         IARelationsTreeHelper treeHelper = new IARelationsTreeHelper(
                 cmqBaseCurrentService, smqBaseCurrentService, meddraDictCurrentService, cmqRelationCurrentService,
-                cmqBaseTargetService, smqBaseTargetService, meddraDictTargetService, cmqRelationTargetService);
+                cmqBaseTargetService, smqBaseTargetService, meddraDictTargetService, cmqRelationTargetService, globalController);
 		//Init of the treenode to print only one selected list
 		currentTableRootTreeNode = new DefaultTreeNode("root", new HierarchyNode("CODE",
 				"LEVEL", "SCOPE", null), null);
@@ -466,7 +472,7 @@ public class ImpactSearchController implements Serializable {
 	public void updateTargetTable() {
         IARelationsTreeHelper treeHelper = new IARelationsTreeHelper(
                 cmqBaseCurrentService, smqBaseCurrentService, meddraDictCurrentService, cmqRelationCurrentService,
-                cmqBaseTargetService, smqBaseTargetService, meddraDictTargetService, cmqRelationTargetService);
+                cmqBaseTargetService, smqBaseTargetService, meddraDictTargetService, cmqRelationTargetService, globalController);
 		//Init of the treenode to print only one selected list
 		targetTableRootTreeNode = new DefaultTreeNode("root", new HierarchyNode("CODE",
 				"LEVEL", "SCOPE", "CATEGORY", "WEIGHT", null, null), null);
@@ -1337,8 +1343,62 @@ public class ImpactSearchController implements Serializable {
 		dataTable.loadLazyData();
 	}
 
+	public void reloadRelationsOnFilterLltFlagToggle(AjaxBehaviorEvent event) {
+		boolean filterLltFlag = this.globalController.isFilterLltsFlag();
+		if(null != this.currentTableRootTreeNode) {
+			List<TreeNode> childrenNodes = this.currentTableRootTreeNode.getChildren();
+			for (TreeNode childTreeNode : childrenNodes) {
+				childTreeNode.setExpanded(false);
+				childTreeNode.getChildren().clear();//remove all children
+				HierarchyNode hNode = (HierarchyNode) childTreeNode.getData();
+				hNode.setDataFetchCompleted(false);
+				
+				//since the child will always be a cmq or an smq so just add the dummy node
+				if(childTreeNode.getChildCount() == 0) {
+					HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
+					dummyNode.setDummyNode(true);
+					new DefaultTreeNode(dummyNode, childTreeNode);
+				}
+			}
+			UIViewRoot viewRoot = FacesContext.getCurrentInstance().getViewRoot();
+			if(null != viewRoot) {
+				//in ia left side
+				UIComponent currentListsAndSmqsComponent = CmqUtils.findComponent(viewRoot, "currentListsAndSmqs");
+				if(null != currentListsAndSmqsComponent) {
+					//update has to be on currentListsAndSmqsComponent.getClientId() and not on the xhtml id
+					RequestContext.getCurrentInstance().update(currentListsAndSmqsComponent.getClientId());
+				}
+			}
+		}
+		if(null != this.targetTableRootTreeNode) {
+			List<TreeNode> childrenNodes = this.targetTableRootTreeNode.getChildren();
+			for (TreeNode childTreeNode : childrenNodes) {
+				childTreeNode.setExpanded(false);
+				childTreeNode.getChildren().clear();//remove all children
+				HierarchyNode hNode = (HierarchyNode) childTreeNode.getData();
+				hNode.setDataFetchCompleted(false);
+				
+				//since the child will always be a cmq or an smq so just add the dummy node
+				if(childTreeNode.getChildCount() == 0) {
+					HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
+					dummyNode.setDummyNode(true);
+					new DefaultTreeNode(dummyNode, childTreeNode);
+				}
+			}
+			UIViewRoot viewRoot = FacesContext.getCurrentInstance().getViewRoot();
+			if(null != viewRoot) {
+				//in ia left side
+				UIComponent targetListsAndSmqsComponent = CmqUtils.findComponent(viewRoot, "futureListsAndSmqs");
+				if(null != targetListsAndSmqsComponent) {
+					//update has to be on targetListsAndSmqsComponent.getClientId() and not on the xhtml id
+					RequestContext.getCurrentInstance().update(targetListsAndSmqsComponent.getClientId());
+				}
+			}
+		}
+	}
+	
 	public void addSelectedNewPtsToTargetRelation() {
-        IARelationsTreeHelper treeHelper = new IARelationsTreeHelper(cmqBaseTargetService, smqBaseTargetService, meddraDictTargetService, cmqRelationTargetService);
+        IARelationsTreeHelper treeHelper = new IARelationsTreeHelper(cmqBaseTargetService, smqBaseTargetService, meddraDictTargetService, cmqRelationTargetService, globalController);
 		if((this.selectedNewPtLists != null) && (this.currentTableRootTreeNode.getChildCount() == 1)) {
 			List<String> existingNodeTerms = new ArrayList<>();
 			//count will always be either 0 or 1.
@@ -2521,5 +2581,13 @@ public class ImpactSearchController implements Serializable {
 
 	public void setFilterDTO(FilterDTO filterDTO) {
 		this.filterDTO = filterDTO;
+	}
+	
+	public GlobalController getGlobalController() {
+		return globalController;
+	}
+
+	public void setGlobalController(GlobalController globalController) {
+		this.globalController = globalController;
 	}
 }

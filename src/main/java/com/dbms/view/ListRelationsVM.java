@@ -6,16 +6,21 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.faces.application.FacesMessage;
+import javax.faces.component.UIComponent;
+import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.primefaces.context.RequestContext;
+import org.primefaces.event.NodeCollapseEvent;
 import org.primefaces.event.NodeExpandEvent;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.dbms.controller.GlobalController;
 import com.dbms.controller.beans.HierarchySearchResultBean;
 import com.dbms.csmq.HierarchyNode;
 import com.dbms.entity.IEntity;
@@ -32,6 +37,7 @@ import com.dbms.service.ICmqRelation190Service;
 import com.dbms.service.IMeddraDictService;
 import com.dbms.service.IRefCodeListService;
 import com.dbms.service.ISmqBaseService;
+import com.dbms.util.CmqUtils;
 import com.dbms.util.SWJSFRequest;
 import com.dbms.util.exceptions.CqtServiceException;
 import com.dbms.view.CmqBaseHierarchySearchVM.IRelationsChangeListener;
@@ -53,6 +59,7 @@ public class ListRelationsVM implements IRelationsChangeListener {
 	private ICmqRelation190Service cmqRelationService;
 	private IRefCodeListService refCodeListService;
 	private AuthenticationService authService;
+	private GlobalController globalController;
 	
 	private String[] selectedSOCs;
 	private CmqBase190 selctedData;
@@ -77,15 +84,17 @@ public class ListRelationsVM implements IRelationsChangeListener {
     
     public ListRelationsVM(AuthenticationService authService, SWJSFRequest appSWJSFRequest,
             IRefCodeListService refCodeListService, ICmqBase190Service cmqBaseService, ISmqBaseService smqBaseService,
-            IMeddraDictService meddraDictService, ICmqRelation190Service cmqRelationService) {
+            IMeddraDictService meddraDictService, ICmqRelation190Service cmqRelationService
+            , GlobalController globalController) {
         this.authService = authService;
         this.refCodeListService = refCodeListService;
         this.cmqBaseService = cmqBaseService;
         this.smqBaseService = smqBaseService;
         this.meddraDictService = meddraDictService;
         this.cmqRelationService = cmqRelationService;
+        this.globalController = globalController;
         
-        myHierarchyDlgModel = new CmqBaseHierarchySearchVM(cmqBaseService, smqBaseService, meddraDictService, cmqRelationService);
+        myHierarchyDlgModel = new CmqBaseHierarchySearchVM(cmqBaseService, smqBaseService, meddraDictService, cmqRelationService, globalController);
 		
 		parentListRoot = new DefaultTreeNode("root"
 				, new HierarchyNode("LEVEL", "NAME", "CODE", "SCOPE", "CATEGORY", "WEIGHT", null)
@@ -109,6 +118,48 @@ public class ListRelationsVM implements IRelationsChangeListener {
 		this.cmqRelationService = cmqRelationService;
 	}
 
+	public void hanldeFilterLltFlagToggle(boolean filterLltFlag) {
+		if(null != this.relationsRoot) {
+			List<TreeNode> childrenNodes = this.relationsRoot.getChildren();
+			for (TreeNode childTreeNode : childrenNodes) {
+				childTreeNode.setExpanded(false);
+				childTreeNode.getChildren().clear();//remove all children
+				HierarchyNode hNode = (HierarchyNode) childTreeNode.getData();
+				hNode.setDataFetchCompleted(false);
+				if((!hNode.getLevel().equalsIgnoreCase("PT") && !hNode.getLevel().equalsIgnoreCase("LLT"))
+						|| (!filterLltFlag && (hNode.getLevel().equalsIgnoreCase("PT") || hNode.getLevel().equalsIgnoreCase("SMQ4")))) {
+					//add a dummy node if ther eis no child here
+					if(childTreeNode.getChildCount() == 0) {
+						HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
+						dummyNode.setDummyNode(true);
+						new DefaultTreeNode(dummyNode, childTreeNode);
+					}
+				}
+			}
+			UIViewRoot viewRoot = FacesContext.getCurrentInstance().getViewRoot();
+			if(null != viewRoot) {
+				//in crate, update copy
+				UIComponent relationTreeTableComponent = CmqUtils.findComponent(viewRoot, "resultRelations");
+				if(null != relationTreeTableComponent) {
+					//update has to be on relationTreeTableComponent.getClientId() and not on the xhtml id
+					RequestContext.getCurrentInstance().update(relationTreeTableComponent.getClientId());
+				}
+				//in b&s
+				UIComponent relationTreeTableForBrowseComponent = CmqUtils.findComponent(viewRoot, "relations-tree-table");
+				if(null != relationTreeTableForBrowseComponent) {
+					//update has to be on relationTreeTableForBrowseComponent.getClientId() and not on the xhtml id
+					RequestContext.getCurrentInstance().update(relationTreeTableForBrowseComponent.getClientId());
+				}
+				//in ia left side
+				UIComponent currentListsAndSmqsComponent = CmqUtils.findComponent(viewRoot, "currentListsAndSmqs");
+				if(null != currentListsAndSmqsComponent) {
+					//update has to be on currentListsAndSmqsComponent.getClientId() and not on the xhtml id
+					RequestContext.getCurrentInstance().update(currentListsAndSmqsComponent.getClientId());
+				}
+			}
+		}
+	}
+	
 	//uiEventSourceName is either relations or hierarchy
 	public void onNodeExpand(NodeExpandEvent event) {
 		////event source attriute from the ui
@@ -116,7 +167,8 @@ public class ListRelationsVM implements IRelationsChangeListener {
 		TreeNode expandedTreeNode = event.getTreeNode();
 		boolean isRelationView = "RELATIONS".equalsIgnoreCase(uiSourceOfEvent);
 		boolean isParentListView = "PARENT-LIST".equalsIgnoreCase(uiSourceOfEvent);
-		CmqBaseRelationsTreeHelper relationsSearchHelper = new CmqBaseRelationsTreeHelper(cmqBaseService, smqBaseService, meddraDictService, cmqRelationService);	
+		CmqBaseRelationsTreeHelper relationsSearchHelper = new CmqBaseRelationsTreeHelper(cmqBaseService, smqBaseService
+																	, meddraDictService, cmqRelationService, globalController);	
 		
 		HierarchyNode hNode = (HierarchyNode) expandedTreeNode.getData();
 		IEntity entity = hNode.getEntity();
@@ -209,6 +261,11 @@ public class ListRelationsVM implements IRelationsChangeListener {
         relationsSearchHelper.setParentListView(isParentListView);
 		relationsSearchHelper.getRelationsNodeHierarchy(null, expandedTreeNode);
 	}
+	
+	public void onNodeCollapse(NodeCollapseEvent event) {
+		TreeNode expandedTreeNode = event.getTreeNode();
+		expandedTreeNode.setExpanded(false);
+	}
 
 	/**
 	 * Add the selected hierarchy details to the relation list.
@@ -275,9 +332,13 @@ public class ListRelationsVM implements IRelationsChangeListener {
 										MeddraDictHierarchySearchDto ptDictHierarchySearchDto = this.meddraDictService.findByCode("PT_", ptCode);
 										relationsHierarchyNode.setEntity(ptDictHierarchySearchDto);
 										relationsHierarchyNode.setDataFetchCompleted(false);
-										HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
-										dummyNode.setDummyNode(true);
-										new DefaultTreeNode(dummyNode, relationsTreeNode);
+										
+										boolean filterLltFlag = this.globalController.isFilterLltsFlag();
+										if(!filterLltFlag) {
+											HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
+											dummyNode.setDummyNode(true);
+											new DefaultTreeNode(dummyNode, relationsTreeNode);
+										}
 									}
 								} else if(entity instanceof SMQReverseHierarchySearchDto) {
 									Long ptCode = ((SMQReverseHierarchySearchDto) entity).getSmqCode();
@@ -641,7 +702,7 @@ public class ListRelationsVM implements IRelationsChangeListener {
 
 	public void setClickedCmqCode(Long clickedCmqCode) {
 		myHierarchyDlgModel.resetForm();
-		CmqBaseRelationsTreeHelper treeHelper = new CmqBaseRelationsTreeHelper(cmqBaseService, smqBaseService, meddraDictService, cmqRelationService);
+		CmqBaseRelationsTreeHelper treeHelper = new CmqBaseRelationsTreeHelper(cmqBaseService, smqBaseService, meddraDictService, cmqRelationService, globalController);
         treeHelper.setRelationView(true);
         treeHelper.setRequireDrillDown(true);
 		this.clickedCmqCode = clickedCmqCode;

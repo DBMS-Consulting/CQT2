@@ -8,6 +8,7 @@ import org.primefaces.model.SortOrder;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.TreeNode;
 
+import com.dbms.entity.IEntity;
 import com.dbms.entity.cqt.CmqBase190;
 import com.dbms.service.base.ICqtPersistenceService;
 import com.dbms.util.exceptions.CqtServiceException;
@@ -70,5 +71,9 @@ public interface ICmqBase190Service extends ICqtPersistenceService<CmqBase190> {
 	
 	CmqBase190 findByName(String cmqName);
 	
-	Map<Long,String> findAllCmqsCodeAndName(); 
+	Map<Long,String> findAllCmqsCodeAndName();
+
+	List<? extends IEntity> findChildCmqsByParentCode(Long cmqCode, String dictionaryVersion);
+
+	List<Map<String, Object>> findCmqChildCountForParentCmqCodes(List<Long> cmqCodes, String dictionaryVersion); 
 }
