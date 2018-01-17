@@ -106,6 +106,10 @@
 			update="@form:result" />
 		<p:commandButton action="#{searchController.reset}" value="Reset"
 			process="@this" update="@form:result @form:searchPanel @form:searchPanel2" />
+			
+		<p:commandButton actionListener="#{createController.generateExcel(searchController.datas)}"  value="Export" ajax="false">
+			<p:fileDownload value="#{createController.excelFile}" />
+ 		</p:commandButton>
 	</h:panelGrid>
 
 	<p:spacer />
