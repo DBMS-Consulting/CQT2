@@ -2331,7 +2331,8 @@ public class ImpactSearchController implements Serializable {
 	public void selectFilter(AjaxBehaviorEvent event) {
 		this.filterAll = true;
 		this.filterReadOnly = false;
-		
+		this.updateCurrentTable();
+		this.updateTargetTable();
 		
 		System.out.println("  ---- filterDTO all value : " + filterDTO.isAll());
 	}
