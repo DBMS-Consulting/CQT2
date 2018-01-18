@@ -1105,16 +1105,20 @@ public class IARelationsTreeHelper {
  		if(currentList) {
  			if (StringUtils.isNotBlank(scopeFilter) && (scopeFilter.equals(CSMQBean.SCOPE_NARROW) || scopeFilter.equals(CSMQBean.SCOPE_BROAD)
 		   			 || scopeFilter.equals(CSMQBean.SCOPE_FULL))) {
-	    		childRelations = this.smqBaseCurrentService.findSmqRelationsForSmqCodeAndScope(smqCode, scopeFilter);
+	    		//childRelations = this.smqBaseCurrentService.findSmqRelationsForSmqCodeAndScope(smqCode, scopeFilter);
+ 				childRelations = this.smqBaseCurrentService.findSmqRelationsForSmqCodeAndScopeAndImpactType(smqCode, scopeFilter, impactTypes);
 	    	} else {
-	    		childRelations = this.smqBaseCurrentService.findSmqRelationsForSmqCode(smqCode);
+	    		//childRelations = this.smqBaseCurrentService.findSmqRelationsForSmqCode(smqCode);
+	    		childRelations = this.smqBaseCurrentService.findSmqRelationsForSmqCodeAndImapctType(smqCode, impactTypes);
 	    	}
 		} else {
 			if (StringUtils.isNotBlank(scopeFilter) && (scopeFilter.equals(CSMQBean.SCOPE_NARROW) || scopeFilter.equals(CSMQBean.SCOPE_BROAD)
 		   			 || scopeFilter.equals(CSMQBean.SCOPE_FULL))) {
-	    		childRelations = this.smqBaseTargetService.findSmqRelationsForSmqCodeAndScope(smqCode, scopeFilter);
+	    		//childRelations = this.smqBaseTargetService.findSmqRelationsForSmqCodeAndScope(smqCode, scopeFilter);
+				childRelations = this.smqBaseTargetService.findSmqRelationsForSmqCodeAndScopeAndImpactType(smqCode, scopeFilter, impactTypes);
 	    	} else {
-	    		childRelations = this.smqBaseTargetService.findSmqRelationsForSmqCode(smqCode);
+	    		//childRelations = this.smqBaseTargetService.findSmqRelationsForSmqCode(smqCode);
+	    		childRelations = this.smqBaseTargetService.findSmqRelationsForSmqCodeAndImapctType(smqCode, impactTypes);
 	    	}
   		}
 

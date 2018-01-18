@@ -1532,4 +1532,88 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 	public void setMeddraDictService(IMeddraDictTargetService meddraDictService) {
 		this.meddraDictService = meddraDictService;
 	}
+
+	@Override
+	public List<SmqRelationTarget> findSmqRelationsForSmqCodeAndImapctType(Long smqCode, List<String> impactTypes) {
+		List<SmqRelationTarget> retVal = null;
+		StringBuilder sb = new StringBuilder();
+		if(null==impactTypes || impactTypes.isEmpty()) {
+			sb.append("from SmqRelationTarget c where c.smqCode = :smqCode and ptTermStatus = 'A' order by c.smqLevel asc, c.ptName asc");
+		}else {
+			sb.append("from SmqRelationTarget c where c.smqCode = :smqCode and ptTermStatus = 'A' and c.relationImpactType in (:impactTypes) order by c.smqLevel asc, c.ptName asc");
+		}
+		
+		
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		try {
+			Query query = entityManager.createQuery(sb.toString());
+			query.setParameter("smqCode", smqCode);
+			if(null!=impactTypes && !impactTypes.isEmpty()) {
+				query.setParameter("impactTypes", impactTypes);
+			}
+			retVal = query.getResultList();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg
+					.append("An error occurred while findSmqRelationsForSmqCodeAndImapctType ")
+					.append(smqCode)
+					.append(" Query used was ->")
+					.append(sb.toString());
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
+
+	@Override
+	public List<SmqRelationTarget> findSmqRelationsForSmqCodeAndScopeAndImpactType(Long smqCode, String scope,
+			List<String> impactTypes) {
+		List<SmqRelationTarget> retVal = null;
+		StringBuilder sb = new StringBuilder();
+		if (StringUtils.isNotBlank(scope) && (scope.equals(CSMQBean.SCOPE_NARROW) || scope.equals(CSMQBean.SCOPE_BROAD))) {
+			if(null==impactTypes || impactTypes.isEmpty()) {
+				sb.append("from SmqRelationTarget c where c.smqCode = :smqCode "
+						+ " and (c.ptTermScope = 0 or c.ptTermScope = :ptTermScope) "
+						+ "and ptTermStatus = 'A' order by c.smqLevel asc, c.ptName asc");
+			}else {
+				sb.append("from SmqRelationTarget c where c.smqCode = :smqCode "
+						+ " and (c.ptTermScope = 0 or c.ptTermScope = :ptTermScope) "
+						+ "and ptTermStatus = 'A' and c.relationImpactType in (:impactTypes) order by c.smqLevel asc, c.ptName asc");
+			}
+			
+		} else {
+			if(null==impactTypes || impactTypes.isEmpty()) {
+				sb.append("from SmqRelationTarget c where c.smqCode = :smqCode and ptTermStatus = 'A' order by c.smqLevel asc, c.ptName asc");
+			}else {
+				sb.append("from SmqRelationTarget c where c.smqCode = :smqCode and ptTermStatus = 'A' and c.relationImpactType in (:impactTypes) order by c.smqLevel asc, c.ptName asc");
+			}
+			
+		}
+		
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		try {
+			Query query = entityManager.createQuery(sb.toString());
+			query.setParameter("smqCode", smqCode);
+			if (StringUtils.isNotBlank(scope) && (scope.equals(CSMQBean.SCOPE_NARROW) || scope.equals(CSMQBean.SCOPE_BROAD))) {
+				query.setParameter("ptTermScope", Integer.parseInt(scope));
+			}
+			if(null!=impactTypes && !impactTypes.isEmpty()) {
+				query.setParameter("impactTypes", impactTypes);
+			}
+			query.setHint("org.hibernate.cacheable", true);
+			retVal = query.getResultList();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg
+					.append("An error occurred while findSmqRelationsForSmqCodeAndScopeAndImpactType ")
+					.append(smqCode)
+					.append(" Query used was ->")
+					.append(sb.toString());
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
 }

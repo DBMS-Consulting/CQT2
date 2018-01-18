@@ -7,6 +7,7 @@ import org.primefaces.model.SortOrder;
 import org.primefaces.model.StreamedContent;
 
 import com.dbms.entity.cqt.SmqBaseTarget;
+import com.dbms.entity.cqt.SmqRelation190;
 import com.dbms.entity.cqt.SmqRelationTarget;
 import com.dbms.entity.cqt.dtos.SMQReverseHierarchySearchDto;
 
@@ -58,5 +59,8 @@ public interface ISmqBaseTargetService {
 	List<SMQReverseHierarchySearchDto> findReverseParentByChildCode(Long smqCode);
 
 	List<Map<String, Object>> findSmqChildRelationsCountForSmqCodes(List<Long> smqCodes);
+	
+	List<SmqRelationTarget> findSmqRelationsForSmqCodeAndImapctType(Long smqCode,List<String> impactTypes);
+	List<SmqRelationTarget> findSmqRelationsForSmqCodeAndScopeAndImpactType(Long smqCode, String scope,List<String> impactTypes);
 
 }

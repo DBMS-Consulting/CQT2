@@ -63,5 +63,8 @@ public interface ISmqBaseService {
 	SmqRelation190 findSmqRelationBySmqAndPtCode(Long smqCode, Integer ptCode, String dictionaryVersion);
 
 	SmqBase190 findByCode(Long smqCode, String dictionaryVersion);
+	
+	List<SmqRelation190> findSmqRelationsForSmqCodeAndImapctType(Long smqCode,List<String> impactTypes);
+	List<SmqRelation190> findSmqRelationsForSmqCodeAndScopeAndImpactType(Long smqCode, String scope,List<String> impactTypes);
 
 }
