@@ -1569,6 +1569,19 @@ public class CreateController implements Serializable {
 		if (levelToRemove != null)
 			levels.remove(levelToRemove);
 		
+		//filter out llts if the flag is set
+		boolean filterLltFlag = this.globalController.isFilterLltsFlag();
+		if(filterLltFlag) {
+			for(ListIterator<RefConfigCodeList> li = levels.listIterator(); li.hasNext();) {
+				RefConfigCodeList refConfigCodeList = li.next();
+				if(StringUtils.isNotBlank(refConfigCodeList.getCodelistInternalValue()) 
+						&& (StringUtils.containsIgnoreCase(refConfigCodeList.getCodelistInternalValue(), "LLT")
+								|| StringUtils.containsIgnoreCase(refConfigCodeList.getCodelistInternalValue(), "SMQ5"))) {
+					li.remove();
+				}
+			}
+		}
+		
 		return levels;
 	}
 	
@@ -1590,7 +1603,8 @@ public class CreateController implements Serializable {
 			for(ListIterator<RefConfigCodeList> li = levels.listIterator(); li.hasNext();) {
 				RefConfigCodeList refConfigCodeList = li.next();
 				if(StringUtils.isNotBlank(refConfigCodeList.getCodelistInternalValue()) 
-						&& StringUtils.containsIgnoreCase(refConfigCodeList.getCodelistInternalValue(), "LLT")) {
+						&& (StringUtils.containsIgnoreCase(refConfigCodeList.getCodelistInternalValue(), "LLT")
+								|| StringUtils.containsIgnoreCase(refConfigCodeList.getCodelistInternalValue(), "SMQ 5"))) {
 					li.remove();
 				}
 			}

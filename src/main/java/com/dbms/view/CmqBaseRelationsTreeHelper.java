@@ -632,7 +632,7 @@ public class CmqBaseRelationsTreeHelper {
     	} else {
     		childRelations = this.smqBaseSvc.findSmqRelationsForSmqCode(smqCode);
     	}
-
+    	boolean filterLlt = this.globalController.isFilterLltsFlag();
 		if (null != childRelations) {
 			List<Long> smqChildCodeList = new ArrayList<>();
 			Map<Long, TreeNode> smqChildTreeNodeMap = new HashMap<>();
@@ -674,28 +674,35 @@ public class CmqBaseRelationsTreeHelper {
                     childRelationNode.setScope(null != childRelation.getPtTermScope() ? childRelation.getPtTermScope().toString() : "");
                     childRelationNode.setCategory(null != childRelation.getPtTermCategory() ? childRelation.getPtTermCategory() : "");
                     childRelationNode.setWeight(null != childRelation.getPtTermWeight()? childRelation.getPtTermWeight().toString() : "");
-                    childRelationNode.setEntity(childRelation);
-                } else if (childRelation.getSmqLevel() == 5) {
+                    //if we need to filter out smq5 then dont add this smq4 node to child dig list.
+                    if(!filterLlt) {
+                    	childRelationNode.setEntity(childRelation);
+                    }
+                } else if (!filterLlt && childRelation.getSmqLevel() == 5) {
                     childRelationNode.setLevel("LLT");
                     childRelationNode.setScope(null != childRelation.getPtTermScope() ? childRelation.getPtTermScope().toString() : "");
                     childRelationNode.setCategory(null != childRelation.getPtTermCategory() ? childRelation.getPtTermCategory() : "");
                     childRelationNode.setWeight(null != childRelation.getPtTermWeight()? childRelation.getPtTermWeight().toString() : "");
                     childRelationNode.setEntity(childRelation);
                 } 
-                childRelationNode.setTerm(childRelation.getPtName());
-                childRelationNode.setCode(childRelation.getPtCode().toString());
 				
-                if(relationView) {
-                    //childRelationNode.markNotEditableInRelationstable();
-                    childRelationNode.markReadOnlyInRelationstable();
-                }                
-                
-                TreeNode treeNode = new DefaultTreeNode(childRelationNode, expandedTreeNode);
- 				if(isChildSmqNode) {
- 					this.createNewDummyNode(treeNode);
- 					//add the child smq to map to fit it in later.
- 					smqChildTreeNodeMap.put(childRelation.getPtCode().longValue(), treeNode);
- 				}
+				//need ot add this check sicne we are not adding llts onfilter
+				if(null != childRelationNode.getLevel()) {
+					childRelationNode.setTerm(childRelation.getPtName());
+					childRelationNode.setCode(childRelation.getPtCode().toString());
+					
+	                if(relationView) {
+	                    //childRelationNode.markNotEditableInRelationstable();
+	                    childRelationNode.markReadOnlyInRelationstable();
+	                }                
+	                
+	                TreeNode treeNode = new DefaultTreeNode(childRelationNode, expandedTreeNode);
+	                if(isChildSmqNode) {
+	 					this.createNewDummyNode(treeNode);
+	 					//add the child smq to map to fit it in later.
+	 					smqChildTreeNodeMap.put(childRelation.getPtCode().longValue(), treeNode);
+	 				}
+				}
 			}
 			
 			if(smqChildCodeList.size() > 0) {
