@@ -32,6 +32,21 @@ public class FilterDTO {
 		this.termDeleted = false;
 		this.statusChanged = false;
 	}
+	
+	public void resetAll() {
+		this.newSuccessorPT = false;
+		this.nonCurrentLLT = false;
+		this.lltPromotedToPT = false;
+		this.medDraTermNameChanged = false;
+		this.ptDemotedToLLT = false;
+		this.mergedHLGT = false;
+		this.primarySOCChange = false;
+		this.newTermAdded = false;
+		this.termMoved = false;
+		this.scopechanged = false;
+		this.termDeleted = false;
+		this.statusChanged = false;
+	}
 
 	public boolean isAll() {
 		return all;

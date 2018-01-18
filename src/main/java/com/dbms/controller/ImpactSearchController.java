@@ -227,7 +227,7 @@ public class ImpactSearchController implements Serializable {
 		RefConfigCodeList currentMeddraVersionCodeList = this.refCodeListService.getTargetMeddraVersion();
 		
 		setDictionaryVersion(currentMeddraVersionCodeList.getValue());
-	
+		this.filterReadOnly = false;
 		filterDTO = new FilterDTO();
 	}
 	
@@ -2323,14 +2323,14 @@ public class ImpactSearchController implements Serializable {
 				|| this.isNonImpactedCmqSelected);
 	}
 
-	public void selectFilterAll(AjaxBehaviorEvent event) {
-		this.filterReadOnly = true;
-		this.filterAll = false;
-	}
-
 	public void selectFilter(AjaxBehaviorEvent event) {
-		this.filterAll = true;
-		this.filterReadOnly = false;
+		if (filterDTO.isAll()) {
+			this.filterReadOnly = true;
+			this.filterDTO.resetAll();
+		}
+		else {
+			this.filterReadOnly = false;
+		}
 		this.updateCurrentTable();
 		this.updateTargetTable();
 		
