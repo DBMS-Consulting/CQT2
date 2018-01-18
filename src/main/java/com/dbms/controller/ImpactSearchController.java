@@ -388,7 +388,10 @@ public class ImpactSearchController implements Serializable {
         IARelationsTreeHelper treeHelper = new IARelationsTreeHelper(
                 cmqBaseCurrentService, smqBaseCurrentService, meddraDictCurrentService, cmqRelationCurrentService,
                 cmqBaseTargetService, smqBaseTargetService, meddraDictTargetService, cmqRelationTargetService, globalController);
+        
+        treeHelper.setImpactTypes(getSelectedImpactFilters());
         treeHelper.onNodeExpandCurrentTable(currentTableRootTreeNode, event);
+        
 	}
     
     public void onNodeCollapseCurrentTable(NodeCollapseEvent event) {
@@ -399,6 +402,7 @@ public class ImpactSearchController implements Serializable {
         IARelationsTreeHelper treeHelper = new IARelationsTreeHelper(
                 cmqBaseCurrentService, smqBaseCurrentService, meddraDictCurrentService, cmqRelationCurrentService,
                 cmqBaseTargetService, smqBaseTargetService, meddraDictTargetService, cmqRelationTargetService, globalController);
+        treeHelper.setImpactTypes(getSelectedImpactFilters());
         treeHelper.onNodeExpandTargetTable(targetTableRootTreeNode, event, true);
 	}
 	
@@ -424,6 +428,7 @@ public class ImpactSearchController implements Serializable {
 				meddraDictCurrentService, cmqRelationCurrentService,
 				cmqBaseTargetService, smqBaseTargetService,
 				meddraDictTargetService, cmqRelationTargetService, globalController);
+		treeHelper.setImpactTypes(getSelectedImpactFilters());
 		treeHelper.onNodeExpandTargetTableScope(targetTableRootTreeNode, null,
 				scopeFilter);
  
@@ -439,6 +444,7 @@ public class ImpactSearchController implements Serializable {
         IARelationsTreeHelper treeHelper = new IARelationsTreeHelper(
                 cmqBaseCurrentService, smqBaseCurrentService, meddraDictCurrentService, cmqRelationCurrentService,
                 cmqBaseTargetService, smqBaseTargetService, meddraDictTargetService, cmqRelationTargetService, globalController);
+        treeHelper.setImpactTypes(getSelectedImpactFilters());
 		//Init of the treenode to print only one selected list
 		currentTableRootTreeNode = new DefaultTreeNode("root", new HierarchyNode("CODE",
 				"LEVEL", "SCOPE", null), null);
@@ -474,6 +480,7 @@ public class ImpactSearchController implements Serializable {
         IARelationsTreeHelper treeHelper = new IARelationsTreeHelper(
                 cmqBaseCurrentService, smqBaseCurrentService, meddraDictCurrentService, cmqRelationCurrentService,
                 cmqBaseTargetService, smqBaseTargetService, meddraDictTargetService, cmqRelationTargetService, globalController);
+        treeHelper.setImpactTypes(getSelectedImpactFilters());
 		//Init of the treenode to print only one selected list
 		targetTableRootTreeNode = new DefaultTreeNode("root", new HierarchyNode("CODE",
 				"LEVEL", "SCOPE", "CATEGORY", "WEIGHT", null, null), null);
@@ -1400,7 +1407,8 @@ public class ImpactSearchController implements Serializable {
 	
 	public void addSelectedNewPtsToTargetRelation() {
         IARelationsTreeHelper treeHelper = new IARelationsTreeHelper(cmqBaseTargetService, smqBaseTargetService, meddraDictTargetService, cmqRelationTargetService, globalController);
-		if((this.selectedNewPtLists != null) && (this.currentTableRootTreeNode.getChildCount() == 1)) {
+        treeHelper.setImpactTypes(getSelectedImpactFilters());
+        if((this.selectedNewPtLists != null) && (this.currentTableRootTreeNode.getChildCount() == 1)) {
 			List<String> existingNodeTerms = new ArrayList<>();
 			//count will always be either 0 or 1.
 			TreeNode parentTreeNode = this.targetTableRootTreeNode.getChildren().get(0);
@@ -2640,5 +2648,54 @@ public class ImpactSearchController implements Serializable {
 
 	public void setGlobalController(GlobalController globalController) {
 		this.globalController = globalController;
+	}
+	
+	private List<String> getSelectedImpactFilters() {
+		List<String> impactFilterList = new ArrayList<>();
+		if(filterDTO.isAll()) {
+			return impactFilterList;
+		}
+		if(filterDTO.isLltPromotedToPT()) {
+			impactFilterList.add("LPP");
+		}
+		if(filterDTO.isMedDraTermNameChanged()) {
+			impactFilterList.add("NCH");
+		}
+		if(filterDTO.isMergedHLGT()) {
+			impactFilterList.add("MRG");
+		}
+		if(filterDTO.isNewSuccessorPT()) {
+			impactFilterList.add("SDP");
+		}
+		if(filterDTO.isNewTermAdded()) {
+			impactFilterList.add("NTR");
+		}
+		if(filterDTO.isNonCurrentLLT()) {
+			impactFilterList.add("LCN");
+		}
+		if(filterDTO.isPrimarySOCChange()) {
+			impactFilterList.add("HPP");
+			impactFilterList.add("HNP");
+		}
+		if(filterDTO.isPtDemotedToLLT()) {
+			impactFilterList.add("PDL");
+		}
+		if(filterDTO.isScopechanged()) {
+			impactFilterList.add("SWC");
+		}
+		if(filterDTO.isStatusChanged()) {
+			impactFilterList.add("PSI");
+			impactFilterList.add("PSA");
+		}
+		if(filterDTO.isTermDeleted()) {
+			impactFilterList.add("DTR");
+		}
+		if(filterDTO.isTermMoved()) {
+			impactFilterList.add("LDP");
+			impactFilterList.add("PDH");
+			impactFilterList.add("HDH");
+			impactFilterList.add("HDS");
+		}
+		return impactFilterList;
 	}
 }

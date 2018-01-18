@@ -183,4 +183,34 @@ public class CmqRelationTargetService extends CqtPersistenceService<CmqRelationT
 		}
 		return retVal;
 	}
+
+	@Override
+	public List<CmqRelationTarget> findByCmqCodeAndImpactTypes(Long cmqCode, List<String> impactTypes) {
+		List<CmqRelationTarget> retVal = null;
+		StringBuilder sb = new StringBuilder();
+		if(null==impactTypes || impactTypes.isEmpty()) {
+			sb.append("from CmqRelationTarget c where c.cmqCode = :cmqCode ");
+		}else {
+			
+			sb.append("from CmqRelationTarget c where c.cmqCode = :cmqCode and c.relationImpactType in (:impactTypes) ");
+		}
+		
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		try {
+			Query query = entityManager.createQuery(sb.toString());
+			query.setParameter("cmqCode", cmqCode);
+			if(null!=impactTypes && !impactTypes.isEmpty()) {
+				query.setParameter("impactTypes", impactTypes);
+			}
+			retVal = query.getResultList();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg.append("An error occurred while fetching types from CmqRelationTarget on cmqCode ").append(cmqCode)
+					.append(" Query used was ->").append(sb.toString());
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
 }

@@ -43,6 +43,7 @@ import com.dbms.service.ISmqBaseService;
 import com.dbms.service.ISmqBaseTargetService;
 import com.dbms.util.CqtConstants;
 import com.dbms.util.SMQLevelHelper;
+import com.dbms.web.dto.FilterDTO;
 
 public class IARelationsTreeHelper {
 	public enum SearchTarget { SMQ_BASE, MEDDRA_DICT, CMQ_BASE }
@@ -60,6 +61,10 @@ public class IARelationsTreeHelper {
 	private IMeddraDictTargetService meddraDictTargetService;
 	private ICmqRelationTargetService cmqRelationTargetService;
     private GlobalController globalController;
+    
+    private FilterDTO filterDTO;
+    
+    private List<String> impactTypes;
 
     public IARelationsTreeHelper(
             ICmqBase190Service cmqBaseService,
@@ -1554,9 +1559,11 @@ public class IARelationsTreeHelper {
 		
 		List<? extends IEntity> existingRelations = null;
 		if(bCurrentList) {
-			existingRelations = this.cmqRelationCurrentService.findByCmqCode(cmqCode);
+			//existingRelations = this.cmqRelationCurrentService.findByCmqCode(cmqCode);
+			existingRelations = this.cmqRelationCurrentService.findByCmqCodeAndImpactTypes(cmqCode, impactTypes);
 		} else {
-			existingRelations = this.cmqRelationTargetService.findByCmqCode(cmqCode);
+			//existingRelations = this.cmqRelationTargetService.findByCmqCode(cmqCode);
+			existingRelations = this.cmqRelationTargetService.findByCmqCodeAndImpactTypes(cmqCode, impactTypes);
 		}
 		
 		if((null != existingRelations) && (existingRelations.size() > 0)) {
@@ -2337,4 +2344,20 @@ public class IARelationsTreeHelper {
         dummyNode.setDummyNode(true);
         return new DefaultTreeNode(dummyNode, parentNode);
     }
+
+	public FilterDTO getFilterDTO() {
+		return filterDTO;
+	}
+
+	public void setFilterDTO(FilterDTO filterDTO) {
+		this.filterDTO = filterDTO;
+	}
+
+	public List<String> getImpactTypes() {
+		return impactTypes;
+	}
+
+	public void setImpactTypes(List<String> impactTypes) {
+		this.impactTypes = impactTypes;
+	}
 }
