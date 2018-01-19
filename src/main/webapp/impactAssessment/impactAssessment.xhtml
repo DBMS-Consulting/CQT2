@@ -663,7 +663,9 @@
                     </h:panelGrid>
 
 					<h:panelGrid style="float: right" columns="1">
-						<p:commandButton value="OK" type="button" onclick="PF('filter').hide()" update="@form:futureListsAndSmqs @form:currentListsAndSmqs" />
+						<p:commandButton value="OK" type="button" onclick="PF('filter').hide()">
+							<p:ajax update="@form:futureListsAndSmqs @form:currentListsAndSmqs" listener="#{impactSearchController.refreshTables}" />
+						</p:commandButton>
 					</h:panelGrid>
 				</h:panelGrid>
 			</p:dialog>

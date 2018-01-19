@@ -2323,6 +2323,11 @@ public class ImpactSearchController implements Serializable {
 				|| this.isNonImpactedCmqSelected);
 	}
 
+	public void refreshTables(AjaxBehaviorEvent event) {
+		LOG.info("calling refres tables");
+		this.updateCurrentTable();
+		this.updateTargetTable();
+	}
 	public void selectFilter(AjaxBehaviorEvent event) {
 		if (filterDTO.isAll()) {
 			this.filterReadOnly = true;
@@ -2331,10 +2336,8 @@ public class ImpactSearchController implements Serializable {
 		else {
 			this.filterReadOnly = false;
 		}
-		this.updateCurrentTable();
-		this.updateTargetTable();
 		
-		System.out.println("  ---- filterDTO all value : " + filterDTO.isAll());
+		LOG.info("  ---- filterDTO all value : " + filterDTO.isAll());
 	}
 
 /*	public boolean isChangeOccur() {
