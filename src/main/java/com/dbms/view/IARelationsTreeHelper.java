@@ -1124,6 +1124,7 @@ public class IARelationsTreeHelper {
 
 		if (null != childRelations) {
             Map<Long, HierarchyNode> childSmqNodes = new HashMap<>();
+            boolean filterLltFlag = this.globalController.isFilterLltsFlag();
 			for (IEntity entity : childRelations) {
 				boolean isChildSmqNode = false;
 				HierarchyNode childRelationNode = new HierarchyNode();
@@ -1152,18 +1153,21 @@ public class IARelationsTreeHelper {
                         childRelationNode.setCategory(null != childRelation.getPtTermCategory() ? childRelation.getPtTermCategory() : "");
                         childRelationNode.setWeight(null != childRelation.getPtTermWeight()? childRelation.getPtTermWeight().toString() : "");
                         childRelationNode.setEntity(childRelation);
-					} else if (childRelation.getSmqLevel() == 5) {
+					} else if (!filterLltFlag && childRelation.getSmqLevel() == 5) {
 						childRelationNode.setLevel("LLT");
                         childRelationNode.setScope(null != childRelation.getPtTermScope() ? childRelation.getPtTermScope().toString() : "");
                         childRelationNode.setCategory(null != childRelation.getPtTermCategory() ? childRelation.getPtTermCategory() : "");
                         childRelationNode.setWeight(null != childRelation.getPtTermWeight()? childRelation.getPtTermWeight().toString() : "");
                         childRelationNode.setEntity(childRelation);
 					}
-					childRelationNode.setTerm(childRelation.getPtName());
-					childRelationNode.setCode(childRelation.getPtCode().toString());
 					
-					//Set Color
-					setSMQCurrentNodeStyle(childRelationNode, childRelation);
+					if ((childRelation.getSmqLevel() != 5) || (!filterLltFlag && childRelation.getSmqLevel() == 5)) {
+						childRelationNode.setTerm(childRelation.getPtName());
+						childRelationNode.setCode(childRelation.getPtCode().toString());
+						
+						//Set Color
+						setSMQCurrentNodeStyle(childRelationNode, childRelation);
+					}					
 				} else {
 					//for target here
 					SmqRelationTarget childRelation = (SmqRelationTarget) entity;
@@ -1193,34 +1197,39 @@ public class IARelationsTreeHelper {
                         childRelationNode.setCategory(null != childRelation.getPtTermCategory() ? childRelation.getPtTermCategory() : "");
                         childRelationNode.setWeight(null != childRelation.getPtTermWeight()? childRelation.getPtTermWeight().toString() : "");
                         childRelationNode.setEntity(childRelation);
-					}else if (childRelation.getSmqLevel() == 5) {
+					}else if (!filterLltFlag && childRelation.getSmqLevel() == 5) {
 						childRelationNode.setLevel("LLT");
                         childRelationNode.setScope(null != childRelation.getPtTermScope() ? childRelation.getPtTermScope().toString() : "");
                         childRelationNode.setCategory(null != childRelation.getPtTermCategory() ? childRelation.getPtTermCategory() : "");
                         childRelationNode.setWeight(null != childRelation.getPtTermWeight()? childRelation.getPtTermWeight().toString() : "");
                         childRelationNode.setEntity(childRelation);
 					}
-					childRelationNode.setTerm(childRelation.getPtName());
-					childRelationNode.setCode(childRelation.getPtCode().toString());
 					
-					if(!isRootListNode && "target-table".equalsIgnoreCase(uiSourceOfEvent)) {
-						//childRelationNode.markNotEditableInRelationstable();
-						childRelationNode.markReadOnlyInRelationstable();
+					if ((childRelation.getSmqLevel() != 5) || (!filterLltFlag && childRelation.getSmqLevel() == 5)) {
+						childRelationNode.setTerm(childRelation.getPtName());
+						childRelationNode.setCode(childRelation.getPtCode().toString());
+						
+						if(!isRootListNode && "target-table".equalsIgnoreCase(uiSourceOfEvent)) {
+							//childRelationNode.markNotEditableInRelationstable();
+							childRelationNode.markReadOnlyInRelationstable();
+						}
+						if(isRootNodeOfSmqType) {
+							childRelationNode.setHideDelete(true);
+							childRelationNode.markReadOnlyInRelationstable();
+						}
+						//Set Color
+						setSMQTargetNodeStyle(childRelationNode, childRelation);
 					}
-					if(isRootNodeOfSmqType) {
-						childRelationNode.setHideDelete(true);
-						childRelationNode.markReadOnlyInRelationstable();
-					}
-					//Set Color
-					setSMQTargetNodeStyle(childRelationNode, childRelation);
-					
 				}
 				
-				TreeNode treeNode = new DefaultTreeNode(childRelationNode, expandedTreeNode);
-				if(isChildSmqNode) {
-					
-					this.createNewDummyNode(treeNode);
+				//add it only if itslevel is not null
+				if(null != childRelationNode.getLevel()){
+					TreeNode treeNode = new DefaultTreeNode(childRelationNode, expandedTreeNode);
+					if(isChildSmqNode) {
+						this.createNewDummyNode(treeNode);
+					}
 				}
+				
 			}
             if(!childSmqNodes.isEmpty()) {
             	if(!childSmqNodes.keySet().isEmpty()) {
@@ -1295,6 +1304,7 @@ public class IARelationsTreeHelper {
 		HierarchyNode node = null;
 		TreeNode treeNode = null;
 		boolean isSmqRelation = false;
+		boolean filterLltFlag = this.globalController.isFilterLltsFlag();
 		if("current".equalsIgnoreCase(cmqType)) {
 			CmqRelation190 cmqRelation = (CmqRelation190) entity;
 			//check if it is a PT relation of smq or not
@@ -1304,7 +1314,9 @@ public class IARelationsTreeHelper {
 				isSmqRelation = true;
 			} else {
 				entity2 = this.smqBaseCurrentService.findByCode(cmqRelation.getSmqCode());
-				node = this.createSmqBaseCurrrentNode(cmqRelation, (SmqBase190) entity2);
+				if((((SmqBase190) entity2).getSmqLevel() != 5) || (!filterLltFlag && ((SmqBase190) entity2).getSmqLevel() == 5)) {
+					node = this.createSmqBaseCurrrentNode(cmqRelation, (SmqBase190) entity2);
+				}
 			}
 			//Color for node
 			setCurrentCmqRelationNodeStyle(node, cmqRelation);
@@ -1316,7 +1328,9 @@ public class IARelationsTreeHelper {
 				isSmqRelation = true;
 			} else {
 				entity2 = this.smqBaseTargetService.findByCode(cmqRelation.getSmqCode());
-				node = this.createSmqBaseTargetNode((SmqBaseTarget) entity2, cmqRelation);
+				if((((SmqBaseTarget) entity2).getSmqLevel() != 5) || (!filterLltFlag && ((SmqBaseTarget) entity2).getSmqLevel() == 5)) {
+					node = this.createSmqBaseTargetNode((SmqBaseTarget) entity2, cmqRelation);
+				}
 			}
 			if(!isRootListNode && "target-table".equalsIgnoreCase(uiSourceOfEvent)) {
 				node.markNotEditableInRelationstable();
