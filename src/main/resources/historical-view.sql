@@ -28,7 +28,7 @@ select distinct
 from
   (select 
     nvl(cba.cmq_code_old,cba.cmq_code_new) "CMQ_CODE",
-    nvl(cba.cmq_name_old,cba.cmq_name_old) "LIST_NAME",
+    nvl(cba.cmq_name_old,cba.cmq_name_new) "LIST_NAME",
      (select DISTINCT codelist_internal_value from opencqt.ref_config_codelist 
      where 
          codelist_configuration_type ='LIST_EXTENSION_TYPES'
