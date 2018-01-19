@@ -188,7 +188,8 @@ public class ConfigurationController implements Serializable {
 			for(ListIterator<RefConfigCodeList> li = levels.listIterator(); li.hasNext();) {
 				RefConfigCodeList refConfigCodeList = li.next();
 				if(StringUtils.isNotBlank(refConfigCodeList.getCodelistInternalValue()) 
-						&& StringUtils.containsIgnoreCase(refConfigCodeList.getCodelistInternalValue(), "LLT")) {
+						&& (StringUtils.containsIgnoreCase(refConfigCodeList.getCodelistInternalValue(), "LLT")
+								|| StringUtils.containsIgnoreCase(refConfigCodeList.getCodelistInternalValue(), "SMQ5"))) {
 					li.remove();
 				}
 			}
