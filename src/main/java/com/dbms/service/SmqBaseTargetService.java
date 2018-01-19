@@ -1540,7 +1540,7 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 		if(null==impactTypes || impactTypes.isEmpty()) {
 			sb.append("from SmqRelationTarget c where c.smqCode = :smqCode and ptTermStatus = 'A' order by c.smqLevel asc, c.ptName asc");
 		}else {
-			sb.append("from SmqRelationTarget c where c.smqCode = :smqCode and ptTermStatus = 'A' and c.relationImpactType in (:impactTypes) order by c.smqLevel asc, c.ptName asc");
+			sb.append("from SmqRelationTarget c where c.smqCode = :smqCode and ptTermStatus = 'A' and (c.relationImpactType in (:impactTypes) or (c.relationImpactType is null and c.smqLevel=0)) order by c.smqLevel asc, c.ptName asc");
 		}
 		
 		
@@ -1579,14 +1579,14 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 			}else {
 				sb.append("from SmqRelationTarget c where c.smqCode = :smqCode "
 						+ " and (c.ptTermScope = 0 or c.ptTermScope = :ptTermScope) "
-						+ "and ptTermStatus = 'A' and c.relationImpactType in (:impactTypes) order by c.smqLevel asc, c.ptName asc");
+						+ "and ptTermStatus = 'A' and (c.relationImpactType in (:impactTypes) or (c.relationImpactType is null and c.smqLevel=0)) order by c.smqLevel asc, c.ptName asc");
 			}
 			
 		} else {
 			if(null==impactTypes || impactTypes.isEmpty()) {
 				sb.append("from SmqRelationTarget c where c.smqCode = :smqCode and ptTermStatus = 'A' order by c.smqLevel asc, c.ptName asc");
 			}else {
-				sb.append("from SmqRelationTarget c where c.smqCode = :smqCode and ptTermStatus = 'A' and c.relationImpactType in (:impactTypes) order by c.smqLevel asc, c.ptName asc");
+				sb.append("from SmqRelationTarget c where c.smqCode = :smqCode and ptTermStatus = 'A' and (c.relationImpactType in (:impactTypes) or (c.relationImpactType is null and c.smqLevel=0)) order by c.smqLevel asc, c.ptName asc");
 			}
 			
 		}
