@@ -535,3 +535,34 @@ ul.nav>li {
 .ui-picklist .ui-picklist-list {
     width: 300px !important;
 }
+
+
+.ui-datatable tbody td.wrap {
+    white-space: normal !important;
+}
+
+.wrap {
+    white-space: normal !important;
+}
+
+.filter-llt {
+	margin-top: 5px;
+}
+
+@media (min-width: 1600px) {
+	.filter-llt {
+		margin-right: 400px !important;
+		margin-top: 5px;
+	}
+}
+
+@media (min-width: 1200px) {
+.filter-llt {
+	margin-right: 150px !important;
+}
+
+
+@media (max-width: 900px) {
+.filter-llt {
+	margin-right: 150px !important;
+}
