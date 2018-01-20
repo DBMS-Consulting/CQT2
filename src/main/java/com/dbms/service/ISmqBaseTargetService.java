@@ -1,5 +1,6 @@
 package com.dbms.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -36,15 +37,15 @@ public interface ISmqBaseTargetService {
 	SmqBaseTarget findByCode(Long smqCode);
     List<SmqBaseTarget> findByCodes(List<Long> smqCodes);
 
-	List<SmqBaseTarget> findImpactedWithPaginated(int first, int pageSize, String sortField, SortOrder sortOrder,
+	List<Map<String, Object>> findImpactedWithPaginated(int first, int pageSize, String sortField, SortOrder sortOrder,
 			Map<String, Object> filters);
 
-	Long findImpactedCount(Map<String, Object> filters);
+	BigDecimal findImpactedCount(Map<String, Object> filters);
 
-	List<SmqBaseTarget> findNotImpactedWithPaginated(int first, int pageSize, String sortField, SortOrder sortOrder,
+	List<Map<String, Object>> findNotImpactedWithPaginated(int first, int pageSize, String sortField, SortOrder sortOrder,
 			Map<String, Object> filters);
 
-	Long findNotImpactedCount(Map<String, Object> filters);
+	BigDecimal findNotImpactedCount(Map<String, Object> filters);
 
 	StreamedContent generateSMQExcel(SmqBaseTarget selectedImpactedSmqList, String dictionaryVersion);
 

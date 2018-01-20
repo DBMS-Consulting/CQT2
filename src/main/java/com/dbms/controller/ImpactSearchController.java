@@ -1872,7 +1872,8 @@ public class ImpactSearchController implements Serializable {
 		@Override
 		public List<SmqBaseTarget> load(int first, int pageSize, List<SortMeta> multiSortMeta,
 				Map<String, Object> filters) {
-			List<SmqBaseTarget> fetchedSmqBaseList = null;
+			List<SmqBaseTarget> paginatedList = new ArrayList<>();
+			List<Map<String, Object>> fetchedSmqBaseList = null;
 			if (this.manageImpactedList) {
 				LOG.info("Loading more impacted list smqs starting from " + first + " with page size of " + pageSize);
 				fetchedSmqBaseList = smqBaseTargetService.findImpactedWithPaginated(first, pageSize, null, null,
@@ -1886,16 +1887,63 @@ public class ImpactSearchController implements Serializable {
 				this.setRowCount(smqBaseTargetService.findNotImpactedCount(filters).intValue());
 			}
 
-			if (fetchedSmqBaseList != null)
-				this.smqBaseList.addAll(fetchedSmqBaseList);
-			return fetchedSmqBaseList;
+			if (fetchedSmqBaseList != null) {
+				for (Map<String, Object> map : fetchedSmqBaseList) {
+					SmqBaseTarget target = new SmqBaseTarget();
+					if(null != map.get("dictionaryVersion")) {
+						target.setDictionaryVersion(map.get("dictionaryVersion").toString());
+					}
+					if(null != map.get("smqId")) {
+						target.setId(Long.valueOf(map.get("smqId").toString()));
+					}
+					if(null != map.get("impactType")) {
+						target.setImpactType(map.get("impactType").toString());
+					}
+					if(null != map.get("smqAlgorithm")) {
+						target.setSmqAlgorithm(map.get("smqAlgorithm").toString());
+					}
+					if(null != map.get("smqCode")) {
+						target.setSmqCode(Long.valueOf(map.get("smqCode").toString()));
+					}
+					if(null != map.get("smqDescription")) {
+						target.setSmqDescription(map.get("smqDescription").toString());
+					}
+					if(null != map.get("smqId")) {
+						target.setSmqId(Long.valueOf(map.get("smqId").toString()));
+					}
+					if(null != map.get("smqLevel")) {
+						target.setSmqLevel(Integer.valueOf(map.get("smqLevel").toString()));
+					}
+					if(null != map.get("smqName")) {
+						target.setSmqName(map.get("smqName").toString());
+					}
+					if(null != map.get("smqNote")) {
+						target.setSmqNote(map.get("smqNote").toString());
+					}
+					if(null != map.get("smqParentCode")) {
+						target.setSmqParentCode(Long.valueOf(map.get("smqParentCode").toString()));
+					}
+					if(null != map.get("smqParentName")) {
+						target.setSmqParentName(map.get("smqParentName").toString());
+					}
+					if(null != map.get("smqSource")) {
+						target.setSmqSource(map.get("smqSource").toString());
+					}
+					if(null != map.get("smqStatus")) {
+						target.setSmqStatus(map.get("smqStatus").toString());
+					}
+					paginatedList.add(target);
+				}
+				this.smqBaseList.addAll(paginatedList);
+			}
+			return paginatedList;
 		}
 
 		@Override
 		public List<SmqBaseTarget> load(int first, int pageSize, String sortField, SortOrder sortOrder,
 				Map<String, Object> filters) {
-			
-			List<SmqBaseTarget> fetchedSmqBaseList = null;
+			List<SmqBaseTarget> paginatedList = new ArrayList<>();
+			List<Map<String, Object>> fetchedSmqBaseList = null;
 			if (this.manageImpactedList) {
 				LOG.info("Loading more impacted list cmqs starting from " + first + " with page size of " + pageSize);
 				fetchedSmqBaseList = smqBaseTargetService.findImpactedWithPaginated(first, pageSize, null, null,
@@ -1908,30 +1956,48 @@ public class ImpactSearchController implements Serializable {
 						filters);
 				this.setRowCount(smqBaseTargetService.findNotImpactedCount(filters).intValue());
  			}
-			if (fetchedSmqBaseList != null)
-				this.smqBaseList.addAll(fetchedSmqBaseList);
+			if (fetchedSmqBaseList != null) {
+				for (Map<String, Object> map : fetchedSmqBaseList) {
+					SmqBaseTarget target = new SmqBaseTarget();
+					if(null != map.get("impactType")) {
+						target.setImpactType(map.get("impactType").toString());
+					}
+					if(null != map.get("smqCode")) {
+						target.setSmqCode(Long.valueOf(map.get("smqCode").toString()));
+					}
+					if(null != map.get("smqLevel")) {
+						target.setSmqLevel(Integer.valueOf(map.get("smqLevel").toString()));
+					}
+					if(null != map.get("smqName")) {
+						target.setSmqName(map.get("smqName").toString());
+					}
+					if(null != map.get("smqStatus")) {
+						target.setSmqStatus(map.get("smqStatus").toString());
+					}
+					paginatedList.add(target);
+				}
+				this.smqBaseList.addAll(paginatedList);
+			}
 
 			int dataSize = fetchedSmqBaseList.size();
 
 			// paginate
 			if (dataSize > pageSize) {
 				try {
-					return fetchedSmqBaseList.subList(first, first + pageSize);
+					return paginatedList.subList(first, first + pageSize);
 				} catch (IndexOutOfBoundsException e) {
-					return fetchedSmqBaseList.subList(first, first + (dataSize % pageSize));
+					return paginatedList.subList(first, first + (dataSize % pageSize));
 				}
 			} else {
-				return fetchedSmqBaseList;
+				return paginatedList;
 			}
-
-			// return fetchedSmqBaseList;
 		}
 
 		@Override
 		public SmqBaseTarget getRowData(String rowKey) {
 			long rowKeyLong = Long.parseLong(rowKey);
 			for (SmqBaseTarget smqBaseTarget : smqBaseList) {
-				if (smqBaseTarget.getId().longValue() == rowKeyLong) {
+				if (smqBaseTarget.getSmqCode().longValue() == rowKeyLong) {
 					return smqBaseTarget;
 				}
 			}
@@ -1940,7 +2006,7 @@ public class ImpactSearchController implements Serializable {
 
 		@Override
 		public Object getRowKey(SmqBaseTarget object) {
-			return object.getId();
+			return object.getSmqCode();
 		}
 
 	}
