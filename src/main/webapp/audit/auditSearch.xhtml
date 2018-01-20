@@ -67,7 +67,7 @@
 					</h:panelGrid>
  
 					<h:panelGrid columns="3" id="btnPanel" styleClass="row"
-						style="margin-left: 40%">
+						style="margin-left: 43%">
  
 						<p:commandButton value="Search"
 							action="#{auditTrailController.findAudit}"
@@ -89,26 +89,26 @@
 						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 						rowsPerPageTemplate="5,10,25" resizableColumns="true">
 
-						<p:column headerText="Change Type">
+						<p:column headerText="Change Type" filterBy="#{value.transactionType}" filterMatchMode="contains">
 							<h:outputText value="#{value.transactionType}"/>
 						</p:column>
 
-						<p:column headerText="Field Name" width="100">
+						<p:column headerText="Field Name" width="100" filterBy="#{value.columnName}" filterMatchMode="contains">
 							<h:outputText value="#{value.columnName}"/>
 						</p:column>
-						<p:column headerText="Old Value" width="150">
+						<p:column headerText="Old Value" width="150" filterBy="#{value.oldValue}" filterMatchMode="contains">
 							<h:outputText value="#{value.oldValue}"/>
 						</p:column>
-						<p:column headerText="New Value" width="150">
+						<p:column headerText="New Value" width="150" filterBy="#{value.newValue}" filterMatchMode="contains">
 							<h:outputText value="#{value.newValue}"/>
 						</p:column>
-						<p:column headerText="User Name" width="150">
+						<p:column headerText="User Name" width="150" filterBy="#{value.userId}" filterMatchMode="contains">
 							<h:outputText value="#{value.userId}"/>
 						</p:column>
-						<p:column headerText="User Group" width="150">
+						<p:column headerText="User Group" width="150" filterBy="#{value.groupName}" filterMatchMode="contains">
 							<h:outputText value="#{value.groupName}"/>
 						</p:column>
-						<p:column headerText="Audit Timestamp">
+						<p:column headerText="Audit Timestamp" sortBy="#{value.auditTimestamp}">
 							<h:outputText value="#{value.auditTimestamp}">
 								<f:convertDateTime pattern="dd-MMM-yyyy:hh:mm:ss a" />
 							</h:outputText>
