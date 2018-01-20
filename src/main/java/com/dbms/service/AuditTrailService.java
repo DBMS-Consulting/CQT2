@@ -5,6 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
@@ -2826,7 +2827,7 @@ public class AuditTrailService implements IAuditTrailService{
  			cell = row.createCell(6);
  			//LOG.info("\n  ************* timestamp :: " + dto.getAuditTimestamp());
   			
-  			Date d = new Date();
+  			/*Date d = new Date();
  			d.setTime(dto.getAuditTimestamp().getTime());
  			Calendar calAudit = Calendar.getInstance();
  			calAudit.setTime(d);
@@ -2837,7 +2838,11 @@ public class AuditTrailService implements IAuditTrailService{
  					getTwoDigits(calAudit.get(Calendar.HOUR)) + ":" + 
  					getTwoDigits(calAudit.get(Calendar.MINUTE)) + ":" + 
  					getTwoDigits(calAudit.get(Calendar.SECOND));
-  			cell.setCellValue(dString);
+ 					*/
+ 			
+ 			//
+ 			String datetimeStr = new SimpleDateFormat("dd-MMM-yyyy:hh:mm:ss a").format(dto.getAuditTimestamp());
+  			cell.setCellValue(datetimeStr + " EST");
   			
  			rowCount++;
 		}
