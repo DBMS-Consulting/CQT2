@@ -14,6 +14,7 @@ import javax.faces.bean.ManagedProperty;
 import javax.persistence.EntityManager;
 
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.CacheMode;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.transform.Transformers;
@@ -94,6 +95,7 @@ public class HistoricalViewService implements IHistoricalViewService {
 				// query.setFetchSize(1000);
 				query.setResultTransformer(Transformers.aliasToBean(HistoricalViewDbDataDTO.class));
 				query.setCacheable(false);
+				query.setCacheMode(CacheMode.IGNORE);
 				retVal = query.list();
 			} catch (Exception e) {
 				StringBuilder msg = new StringBuilder();
