@@ -688,7 +688,7 @@ public class IARelationsTreeHelper {
 			} else if (StringUtils.equalsAny(cmqRelation.getRelationImpactType(), "SCH","ICC"))
 				node.setRowStyleClass("blue-colored");
 		}
-		if (node != null && node.getEntity() != null) {
+		if (node != null && node.getEntity() != null && node.getEntity() instanceof SmqBase190) {
 			SmqBase190 relation = (SmqBase190) node.getEntity();
 			if (relation != null && relation.getImpactType() != null && relation.getImpactType().equals(CSMQBean.IMPACT_TYPE_IMPACTED))
 				node.setRowStyleClass("blue-colored");
