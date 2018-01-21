@@ -508,6 +508,11 @@
 							<p:ajax update="panel-filter" listener="#{impactSearchController.selectFilter}"/>
 						</h:selectBooleanCheckbox>
 						<label for="status-changed">Status Changed</label>
+						
+						<h:selectBooleanCheckbox id="impacted-smq" value="#{impactSearchController.filterDTO.impactedSMQ}" disabled="#{impactSearchController.filterReadOnly}">
+							<p:ajax update="panel-filter" listener="#{impactSearchController.selectFilter}"/>
+						</h:selectBooleanCheckbox>
+						<label for="impacted-smq">Impacted SMQ</label>
                     </h:panelGrid>
 
 					<h:panelGrid style="float: right" columns="1">

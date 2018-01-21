@@ -15,6 +15,7 @@ public class FilterDTO {
 	private boolean scopechanged;
 	private boolean termDeleted;
 	private boolean statusChanged;
+	private boolean impactedSMQ;
 	
 	
 	public FilterDTO() {
@@ -31,6 +32,7 @@ public class FilterDTO {
 		this.scopechanged = false;
 		this.termDeleted = false;
 		this.statusChanged = false;
+		this.impactedSMQ = false;
 	}
 	
 	public void resetAll() {
@@ -46,6 +48,7 @@ public class FilterDTO {
 		this.scopechanged = false;
 		this.termDeleted = false;
 		this.statusChanged = false;
+		this.impactedSMQ = false;
 	}
 
 	public boolean isAll() {
@@ -143,6 +146,14 @@ public class FilterDTO {
 
 	public void setStatusChanged(boolean statusChanged) {
 		this.statusChanged = statusChanged;
+	}
+
+	public boolean isImpactedSMQ() {
+		return impactedSMQ;
+	}
+
+	public void setImpactedSMQ(boolean impactedSMQ) {
+		this.impactedSMQ = impactedSMQ;
 	}
 	
 	

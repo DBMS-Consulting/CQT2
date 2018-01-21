@@ -2765,6 +2765,9 @@ public class ImpactSearchController implements Serializable {
 			impactFilterList.add("HDH");
 			impactFilterList.add("HDS");
 		}
+		if(filterDTO.isImpactedSMQ()) {
+			impactFilterList.add("SCH");
+		}
 		return impactFilterList;
 	}
 }
