@@ -688,6 +688,11 @@ public class IARelationsTreeHelper {
 			} else if (StringUtils.equalsAny(cmqRelation.getRelationImpactType(), "SCH","ICC"))
 				node.setRowStyleClass("blue-colored");
 		}
+		if (node != null && node.getEntity() != null) {
+			SmqBase190 relation = (SmqBase190) node.getEntity();
+			if (relation != null && relation.getImpactType() != null && relation.getImpactType().equals(CSMQBean.IMPACT_TYPE_IMPACTED))
+				node.setRowStyleClass("blue-colored");
+		}
 	}
     
     public void setCurrentMeddraColors(List<MeddraDictHierarchySearchDto> meddras, Map<Long, TreeNode> nodes, Map<Long, IEntity> cmqRelationsMap) {
@@ -984,12 +989,12 @@ public class IARelationsTreeHelper {
             } else {
                 // RelationImpactType is NOT NULL, meaning it has direct impact.
                 
-                if (("HPP".equalsIgnoreCase(meddra.getPrimarySocChange()) && meddra.getSocCode() != null)
-                        || ("HNP".equalsIgnoreCase(meddra.getPrimarySocChange()) && meddra.getSocCode() != null)) {
+                if ("HNP".equalsIgnoreCase(meddra.getPrimarySocChange()) && meddra.getSocCode() != null) {
                     node.setRowStyleClass("none");
                 } else if ("LCN".equalsIgnoreCase(meddra.getLltCurrencyChange()) && meddra.getLltCode() != null) {
                     node.setRowStyleClass("mauve-colored");	
                 } else if(("NTR".equalsIgnoreCase(meddra.getNewLlt()) && meddra.getLltCode() != null)
+                		|| ("HPP".equalsIgnoreCase(meddra.getPrimarySocChange()) && (meddra.getPtCode() != null || meddra.getLltCode() != null))
                         || ("NTR".equalsIgnoreCase(meddra.getNewPt()) && meddra.getPtCode() != null)
                         || ("NTR".equalsIgnoreCase(meddra.getNewHlt()) && meddra.getHltCode() != null)
                         || ("NTR".equalsIgnoreCase(meddra.getNewHlgt()) && meddra.getHlgtCode() != null)
@@ -1009,6 +1014,12 @@ public class IARelationsTreeHelper {
                         || ("NCH".equalsIgnoreCase(meddra.getLltNameChanged()) && meddra.getLltCode() != null)) {
                     node.setRowStyleClass("italic");
                 }
+                if (node != null && node.getRelationEntity() != null) {
+                	CmqRelationTarget rel = (CmqRelationTarget) node.getRelationEntity();
+                	if (rel != null && rel.getRelationImpactType() != null && rel.getRelationImpactType().equals("HNP") && rel.getPtCode() != null)
+                		node.setRowStyleClass("orange-colored");
+        			
+        		}
             }
 		}
     

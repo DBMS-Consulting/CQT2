@@ -39,7 +39,7 @@
                                  message="You are submitting a request to generate the report. Do you want to continue?"> 
                     <i class="fa fa-check" style="position: absolute; margin-top: 14px; margin-left: 5px"></i>
                     <h:commandLink value="Yes" onclick="PF('confirmMQReport').hide()" styleClass="generate" type="button"
-                                     actionListener="#{reportController.generateMQReport(createController.detailsFormModel, createController.notesFormModel)}" >
+                                     actionListener="#{reportController.generateMQReport(createController.detailsFormModel, createController.notesFormModel,createController.relationsModel.relationsRoot)}" >
                         <p:fileDownload value="#{reportController.excelFile}" />
                     </h:commandLink>
                     <p:spacer width="10" />

@@ -71,9 +71,7 @@ public class MeddraDictHierarchySearchDto implements IEntity {
 			if (hltCode != null) return hltCode;
 			if (hlgtCode != null) return hlgtCode;
 			if (socCode != null) return socCode;
-			if (ptCode != null) return ptCode;
-			if (ptCode != null) return ptCode;
-			if (ptCode != null) return ptCode;
+			
 		}
 			
 		return code;
