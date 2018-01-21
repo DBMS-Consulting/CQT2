@@ -556,17 +556,11 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 		Session session = entityManager.unwrap(Session.class);
 		try {
 			String query = "select * from ("
-					+ " SELECT SMQ_ID as smqId, SMQ_CODE as smqCode, SMQ_NAME as smqName, SMQ_PARENT_CODE as smqParentCode"
-					+ " , SMQ_PARENT_NAME as smqParentName, SMQ_LEVEL as smqLevel, SMQ_DESCRIPTION as smqDescription"
-					+ " , SMQ_SOURCE as smqSource, SMQ_NOTE as smqNote, SMQ_STATUS as smqStatus, SMQ_ALGORITHM as smqAlgorithm"
-					+ " , DICTIONARY_VERSION as dictionaryVersion, IMPACT_TYPE as impactType "
+					+ " SELECT SMQ_CODE as smqCode, SMQ_NAME as smqName, SMQ_LEVEL as smqLevel, SMQ_STATUS as smqStatus, IMPACT_TYPE as impactType "
 					+ " FROM SMQ_BASE_TARGET WHERE IMPACT_TYPE='IMPACTED' "
 					+ " #1# " 
 					+ " UNION "
-					+ " SELECT SMQ_ID as smqId, SMQ_CODE as smqCode, SMQ_NAME as smqName, SMQ_PARENT_CODE as smqParentCode"
-					+ " , SMQ_PARENT_NAME as smqParentName, SMQ_LEVEL as smqLevel, SMQ_DESCRIPTION as smqDescription"
-					+ " , SMQ_SOURCE as smqSource, SMQ_NOTE as smqNote, SMQ_STATUS as smqStatus, SMQ_ALGORITHM as smqAlgorithm"
-					+ " , DICTIONARY_VERSION as dictionaryVersion, IMPACT_TYPE as impactType "
+					+ " SELECT  SMQ_CODE as smqCode, SMQ_NAME as smqName, SMQ_LEVEL as smqLevel, SMQ_STATUS as smqStatus, IMPACT_TYPE as impactType "
 					+ " FROM SMQ_BASE_CURRENT WHERE IMPACT_TYPE='IMPACTED' "
 					+ " #2# ) order by smqName";
 
@@ -591,18 +585,10 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 			query = query.replaceAll("#1#", whereClause);
 			query = query.replaceAll("#2#", whereClause);
 			SQLQuery sqlQuery = session.createSQLQuery(query);
-			sqlQuery.addScalar("smqId", StandardBasicTypes.LONG);
 			sqlQuery.addScalar("smqCode", StandardBasicTypes.LONG);
 			sqlQuery.addScalar("smqName", StandardBasicTypes.STRING);
-			sqlQuery.addScalar("smqParentCode", StandardBasicTypes.LONG);
-			sqlQuery.addScalar("smqParentName", StandardBasicTypes.STRING);
 			sqlQuery.addScalar("smqLevel", StandardBasicTypes.INTEGER);
-			sqlQuery.addScalar("smqDescription", StandardBasicTypes.STRING);
-			sqlQuery.addScalar("smqSource", StandardBasicTypes.STRING);
-			sqlQuery.addScalar("smqNote", StandardBasicTypes.STRING);
 			sqlQuery.addScalar("smqStatus", StandardBasicTypes.STRING);
-			sqlQuery.addScalar("smqAlgorithm", StandardBasicTypes.STRING);
-			sqlQuery.addScalar("dictionaryVersion", StandardBasicTypes.STRING);
 			sqlQuery.addScalar("impactType", StandardBasicTypes.STRING);
 			
 			sqlQuery.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
