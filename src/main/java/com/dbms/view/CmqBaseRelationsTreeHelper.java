@@ -409,7 +409,10 @@ public class CmqBaseRelationsTreeHelper {
             dtoCodes.add(c);
         }
         
-        if(requireDrillDown) {
+        boolean filterLltsFlag = this.globalController.isFilterLltsFlag();
+        
+        if(requireDrillDown && childNodeType!=null &&
+        		(!nodeType.equalsIgnoreCase("PT") || (nodeType.equalsIgnoreCase("PT") && !filterLltsFlag))) {
             List<Map<String, Object>> countsOfChildren = this.meddraDictSvc.findChildrenCountByParentCodes(childNodeType + "_"
                                             , nodeType + "_", dtoCodes);
 
