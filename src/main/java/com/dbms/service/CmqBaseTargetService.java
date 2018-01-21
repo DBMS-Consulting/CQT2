@@ -1952,6 +1952,11 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 			cell = row.createCell(2);
 			cell.setCellValue(line.getLevel());	
 			
+			cell = row.createCell(3);
+			cell.setCellValue(line.getCategory());
+			cell = row.createCell(4);
+			cell.setCellValue(line.getWeight());
+			
 			// Cell 5
 			cell = row.createCell(5);
 			cell.setCellValue(line.getScope() != null ? interpretCqtBaseScope(line.getScope()) : "");	
