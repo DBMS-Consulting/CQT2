@@ -187,8 +187,8 @@ public class CreateController implements Serializable {
 	}
 	
 	public boolean showConfirmDialog() {
-		boolean detailChanged = detailDTO.detailChange(detailsFormModel);
-		boolean notesChanged = detailDTO.notesChange(notesFormModel);
+		boolean detailChanged = detailsFormModel.isModelChanged();
+		boolean notesChanged = notesFormModel.isModelChanged();
 		if (createWizard != null 
 				|| (copyWizard != null && copyingCmqCode != null && (detailChanged || notesChanged || relationsModified))
 				|| (updateWizard != null && codeSelected != null && (detailChanged || notesChanged || relationsModified)))
@@ -197,16 +197,16 @@ public class CreateController implements Serializable {
 	}
 	
 	public String initForm(String url) {
-		String form = url + "?faces-redirect=true";
+		String form = url + ".xhtml?faces-redirect=true";
 		setFormToOpen(form);
 		
 		if (showConfirmDialog()) {
 			//if (detailDTO.detailChange(detailsFormModel))
-			if (detailDTO.detailChange(detailsFormModel) && ((createWizard != null && createWizard.getStep().equals(WIZARD_STEP_DETAILS))
+			if (detailsFormModel.isModelChanged() && ((createWizard != null && createWizard.getStep().equals(WIZARD_STEP_DETAILS))
 					|| (updateWizard != null && updateWizard.getStep().equals(WIZARD_STEP_DETAILS))
 					|| (copyWizard != null && copyWizard.getStep().equals(WIZARD_STEP_DETAILS))))
 				RequestContext.getCurrentInstance().execute("PF('confirmSaveDetailsAll').show();");
-			else if (detailDTO.notesChange(notesFormModel) && ((createWizard != null && createWizard.getStep().equals(WIZARD_STEP_INFONOTES))
+			else if (notesFormModel.isModelChanged() && ((createWizard != null && createWizard.getStep().equals(WIZARD_STEP_INFONOTES))
 					|| (updateWizard != null && updateWizard.getStep().equals(WIZARD_STEP_INFONOTES))
 					|| (copyWizard != null && copyWizard.getStep().equals(WIZARD_STEP_INFONOTES))))
 				RequestContext.getCurrentInstance().execute("PF('confirmSaveNotes').show();");
@@ -220,6 +220,21 @@ public class CreateController implements Serializable {
 			return form;
 		return "";
 	}
+	
+	public String saveAndClose() {
+		if(detailsFormModel.validateForm()) {
+            if(createWizard != null)
+                save();
+            else if(copyWizard != null)
+                copy();
+            else if(updateWizard != null)
+                update();
+            
+		}
+		return formToOpen;
+	}
+	
+	
 	
 	private void initAll() {
 		detailsFormModel.init();
@@ -370,14 +385,15 @@ public class CreateController implements Serializable {
                 update();
 
             goToWizardNextStep();
-            if (showConfirmDialog()) {
+           // if (showConfirmDialog()) {
+           /* if (detailsFormModel.isModelChanged() || detailsFormModel.isModelChanged() || relationsModified) {
             	if (createWizard != null)
             		RequestContext.getCurrentInstance().update("fCreate:wizardId");
 	            if (updateWizard != null)
 	        		RequestContext.getCurrentInstance().update("fUpdate:wizardId");
 	            if (browseWizard != null)
 	        		RequestContext.getCurrentInstance().update("fBrowse:wizardId");
-            }
+            }*/
         }
 	}
 

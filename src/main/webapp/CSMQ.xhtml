@@ -256,9 +256,13 @@
 					action="#{applicationController.openForm}" />
 			</p:confirmDialog>
 
-			<p:remoteCommand name="saveDetails"
+			<!-- <p:remoteCommand name="saveDetails"
 				actionListener="#{createController.saveDetailsAndNextStep}"
 				action="#{searchController.setDataModified(true)}"
+				onstart="PF('confirmSaveDetailsAll').hide()" /> -->
+				
+			<p:remoteCommand name="saveDetails" update="@form"
+				action="#{createController.saveAndClose}"
 				onstart="PF('confirmSaveDetailsAll').hide()" />
 				
 				
@@ -280,8 +284,9 @@
 			</p:confirmDialog>
 
 			<p:remoteCommand name="saveNotes" update="@form"
-				actionListener="#{createController.saveNotesAndNextStep}"
+				action="#{createController.saveAndClose}"
 				onstart="PF('confirmSaveNotes').hide()" />
+				
 			<!--  NOTES dlg -->
 			
 			
@@ -299,7 +304,7 @@
 			</p:confirmDialog>
 
 			<p:remoteCommand name="confirmSaveRelations" update="@form"
-				actionListener="#{createController.updateRelationsAndNextStep(createController.relationsModel.relationsRoot)}"
+				action="#{createController.saveAndClose}"
 				onstart="PF('relationsDlg').hide()" />
 			<!-- Relations Dlg -->
 

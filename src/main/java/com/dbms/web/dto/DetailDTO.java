@@ -3,6 +3,7 @@ package com.dbms.web.dto;
 import java.util.Arrays;
 import java.util.Date;
 
+import com.dbms.entity.cqt.CmqBase190;
 import com.dbms.view.ListDetailsFormVM;
 import com.dbms.view.ListNotesFormVM;
 
@@ -34,31 +35,28 @@ public class DetailDTO {
 	private String source;
 	
 	public boolean detailChange(ListDetailsFormVM detail) {
-		if (extension != detail.getExtension() 
-				|| name != detail.getName()
-				|| drugProgram != detail.getDrugProgram()
-				|| protocol != detail.getProtocol()
-				|| designee != detail.getDesignee()
-				|| designeeTwo != detail.getDesigneeTwo()
-				|| designeeThree != detail.getDesigneeThree()
-				|| level != detail.getLevel()
-				|| (!Arrays.equals(this.products, detail.getProducts())))
+		if (extension != null && !extension.equals(detail.getExtension()))
+			return true;
+		if (name != null && !name.equals(detail.getName()))
+			return true;
+		if (drugProgram != null && !drugProgram.equals(detail.getDrugProgram()))
+			return true;
+		if (protocol != null && !protocol.equals(detail.getProtocol()))
+			return true;
+		if (designee != null && !designee.equals(detail.getDesignee()))
+			return true;
+		if (designeeTwo != null && !designeeTwo.equals(detail.getDesigneeTwo()))
+			return true;
+		if (designeeThree != null && !designeeThree.equals(detail.getDesigneeThree()))
+			return true;
+		if (level != null && level != detail.getLevel())
+			return true;
+		if (this.products != null && (!Arrays.equals(this.products, detail.getProducts())))
  			return true;
-		
 		return false;
-		
-		
-		/*if ((extension != null && extension != detail.getExtension() )
-				|| (name != null && name != detail.getName())
-				|| (drugProgram != null && drugProgram != detail.getDrugProgram())
-				|| (protocol != null && protocol != detail.getProtocol())
-				|| (designee != null && designee != detail.getDesignee())
-				|| (designeeTwo != null && designeeTwo != detail.getDesigneeTwo())
-				|| (designeeThree != null && designeeThree != detail.getDesigneeThree())
-				|| (level != null && level != detail.getLevel())
-				|| (this.products != null && (!Arrays.equals(this.products, detail.getProducts()))))
- 			return true;*/
 	}
+	
+	
 	
 	public boolean notesChange(ListNotesFormVM note) {
 		if (description != note.getDescription()
@@ -242,6 +240,7 @@ public class DetailDTO {
 	public void setSource(String source) {
 		this.source = source;
 	}
+
 	
 	
 }
