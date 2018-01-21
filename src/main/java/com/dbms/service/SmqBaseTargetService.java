@@ -568,7 +568,7 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 
 			if (filters.containsKey("smqName") && filters.get("smqName") != null) {
 				String f = ((String) filters.get("smqName")).toLowerCase();
-				String smqNameFilter = " and LOWER(SMQ_NAME) like %" + f + "% ";
+				String smqNameFilter = " and LOWER(SMQ_NAME) like '%" + f + "%' ";
 				whereClause = whereClause + smqNameFilter;
 			}
 
@@ -630,7 +630,7 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 
 		if (filters.containsKey("smqName") && filters.get("smqName") != null) {
 			String f = ((String) filters.get("smqName")).toLowerCase();
-			String smqNameFilter = " and LOWER(SMQ_NAME) like %" + f + "% ";
+			String smqNameFilter = " and LOWER(SMQ_NAME) like '%" + f + "%' ";
 			whereClause = whereClause + smqNameFilter;
 		}
 
@@ -691,7 +691,7 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 
 			if (filters.containsKey("smqName") && filters.get("smqName") != null) {
 				String f = ((String) filters.get("smqName")).toLowerCase();
-				String smqNameFilter = " and LOWER(SMQ_NAME) like %" + f + "% ";
+				String smqNameFilter = " and LOWER(SMQ_NAME) like '%" + f + "%' ";
 				whereClause = whereClause + smqNameFilter;
 			}
 
@@ -753,7 +753,7 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 
 		if (filters.containsKey("smqName") && filters.get("smqName") != null) {
 			String f = ((String) filters.get("smqName")).toLowerCase();
-			String smqNameFilter = " and LOWER(SMQ_NAME) like %" + f + "% ";
+			String smqNameFilter = " and LOWER(SMQ_NAME) like '%" + f + "%' ";
 			whereClause = whereClause + smqNameFilter;
 		}
 
