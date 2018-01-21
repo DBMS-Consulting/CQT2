@@ -35,6 +35,7 @@ import com.dbms.entity.cqt.CmqRelation190;
 import com.dbms.entity.cqt.RefConfigCodeList;
 import com.dbms.entity.cqt.SmqBase190;
 import com.dbms.entity.cqt.SmqRelation190;
+import com.dbms.entity.cqt.dtos.AuditTrailDto;
 import com.dbms.entity.cqt.dtos.CmqBaseDTO;
 import com.dbms.entity.cqt.dtos.HistoricalViewDTO;
 import com.dbms.entity.cqt.dtos.HistoricalViewDbDataDTO;
@@ -1017,6 +1018,7 @@ public class HistoricalViewController implements Serializable {
 	}
 
 	public void reset() {
+		this.datas = new ArrayList<HistoricalViewDTO>();
 		this.listName = null;
 		this.listCode = null;
 		this.dictionaryVersion = null;
