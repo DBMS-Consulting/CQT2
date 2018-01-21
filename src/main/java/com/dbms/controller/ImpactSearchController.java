@@ -260,10 +260,10 @@ public class ImpactSearchController implements Serializable {
 			dictTarget = targetMeddraVersionCodeList.getValue();
 		StreamedContent content = null;
 		if (isImpactedCmqSelected)
-			content = cmqBaseTargetService.generateCMQExcel(selectedImpactedCmqList, dictTarget);
+			content = cmqBaseTargetService.generateCMQExcel(selectedImpactedCmqList, dictTarget, targetTableSelection);
 		
 		if (isNonImpactedCmqSelected) 
-			content = cmqBaseTargetService.generateCMQExcel(selectedNotImpactedCmqList, dictTarget);
+			content = cmqBaseTargetService.generateCMQExcel(selectedNotImpactedCmqList, dictTarget, targetTableSelection);
 			
 		if (isImpactedSmqSelected)
 			content = smqBaseTargetService.generateSMQExcel(selectedImpactedSmqList, dictTarget);

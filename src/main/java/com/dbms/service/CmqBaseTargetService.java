@@ -1,6 +1,7 @@
 package com.dbms.service;
 
 import com.dbms.csmq.CSMQBean;
+import com.dbms.csmq.HierarchyNode;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -41,6 +42,7 @@ import org.hibernate.type.StandardBasicTypes;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.SortOrder;
 import org.primefaces.model.StreamedContent;
+import org.primefaces.model.TreeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -420,7 +422,16 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 	}
 
 	@Override
-	public StreamedContent generateCMQExcel(CmqBaseTarget selectedImpactedCmqList, String dictionaryVersion) {
+	public StreamedContent generateCMQExcel(CmqBaseTarget selectedImpactedCmqList, String dictionaryVersion, TreeNode selectedNode) {
+		
+		List<TreeNode> childTreeNodes = selectedNode.getChildren();
+		Map<String,String> relationScopeMap = new HashMap<>();
+		
+		for(TreeNode childTreeNode: childTreeNodes) {
+			updateRelationScopeMap(relationScopeMap,childTreeNode);
+		}
+		
+		
 		XSSFWorkbook workbook = new XSSFWorkbook();
 		XSSFSheet worksheet = null;
 
@@ -507,6 +518,10 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 				 * SMQs
 				 */
 				if (relation.getSmqCode() != null) {
+					String selectedScope = relationScopeMap.get(String.valueOf(relation.getSmqCode()));
+					if(StringUtils.isEmpty(selectedScope)) {
+						selectedScope = relation.getTermScope();
+					}
  					List<Long> smqChildCodeList = new ArrayList<>();
 					smqChildCodeList.add(relation.getSmqCode());
 
@@ -579,7 +594,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 											}
 										}
 										
-										if (level.equals("SMQ3")) {
+										if (level.equals("SMQ3")) {	
 											smqSearched = smqBaseTargetService.findByCode(smqC.getSmqCode());
 											buildLinesFromLevel(smqSearched, mapReport, "PT", cpt, "...........");
 										}					
@@ -590,7 +605,8 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 					}
 					
 					//Relations for SMQs
- 					List<SmqRelationTarget> childSmqs =  smqBaseTargetService.findSmqRelationsForSmqCode(relation.getSmqCode());
+ 					//List<SmqRelationTarget> childSmqs =  smqBaseTargetService.findSmqRelationsForSmqCode(relation.getSmqCode());
+					List<SmqRelationTarget> childSmqs =  smqBaseTargetService.findSmqRelationsForSmqCodeAndScope(relation.getSmqCode(), selectedScope);
 
 					if((null != childSmqs) && (childSmqs.size() > 0)) {
 						for (SmqRelationTarget childSmq : childSmqs) {
@@ -604,7 +620,8 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
  							
 							smqSearched = smqBaseTargetService.findByCode(Long.parseLong(childSmq.getPtCode() + ""));
 							if (smqSearched != null) {
-								List<SmqRelationTarget> list = smqBaseTargetService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
+								//List<SmqRelationTarget> list = smqBaseTargetService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
+								List<SmqRelationTarget> list = smqBaseTargetService.findSmqRelationsForSmqCodeAndScope(smqSearched.getSmqCode(),selectedScope);
 								if (list != null) {
 									for (SmqRelationTarget smq3 : list) {
 										level = getLevelFromValue(smq3.getSmqLevel());
@@ -614,7 +631,8 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 										if (level.equals("Child SMQ")) {										
 											smqSearched = smqBaseTargetService.findByCode(Long.parseLong(smq3.getPtCode() + ""));
 											if (smqSearched != null) {
-												List<SmqRelationTarget> test =  smqBaseTargetService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
+												//List<SmqRelationTarget> test =  smqBaseTargetService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
+												List<SmqRelationTarget> test =  smqBaseTargetService.findSmqRelationsForSmqCodeAndScope(smqSearched.getSmqCode(),selectedScope);
  							 					
 							 					if (test != null) {
 													for (SmqRelationTarget tt : test) {
@@ -626,7 +644,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 														smqSearched = smqBaseTargetService.findByCode(Long.parseLong(tt.getPtCode() + ""));
 														
 														if (smqSearched != null) {
-															List<SmqRelationTarget> test2 =  smqBaseTargetService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
+															List<SmqRelationTarget> test2 =  smqBaseTargetService.findSmqRelationsForSmqCodeAndScope(smqSearched.getSmqCode(),selectedScope);
  										 					
 										 					if (test2 != null) {
 																for (SmqRelationTarget tt2 : test2) {
@@ -638,7 +656,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 																	if (level.equals("Child SMQ")) {										
 																		smqSearched = smqBaseTargetService.findByCode(Long.parseLong(tt2.getPtCode() + ""));
 																		if (smqSearched != null) {
-																			List<SmqRelationTarget> test3 =  smqBaseTargetService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
+																			List<SmqRelationTarget> test3 =  smqBaseTargetService.findSmqRelationsForSmqCodeAndScope(smqSearched.getSmqCode(),selectedScope);
  														 					 
 														 					if (test3 != null) {
 																				for (SmqRelationTarget tt3 : test3) {
@@ -2285,6 +2303,25 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
         }
 		return false;
     }
+    
+    private void updateRelationScopeMap(Map<String, String> relationScopeMap, TreeNode relationsRoot) {
+		if(null!=relationsRoot) {
+			if(relationsRoot.getChildCount() > 0) {
+				List<TreeNode> childTreeNodes  = relationsRoot.getChildren();
+				for(TreeNode childTreeNode: childTreeNodes) {
+					updateRelationScopeMap(relationScopeMap,childTreeNode);
+				}
+			}
+			
+			HierarchyNode hierarchyNode = (HierarchyNode) relationsRoot.getData();
+			
+			if (null != hierarchyNode && null != hierarchyNode.getCode()) {
+				relationScopeMap.put(hierarchyNode.getCode(), hierarchyNode.getScope());
+			}
+			
+		}
+		
+	}
 
 	public ICmqRelationTargetService getCmqRelationTargetService() {
 		return cmqRelationTargetService;

@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.primefaces.model.SortOrder;
 import org.primefaces.model.StreamedContent;
+import org.primefaces.model.TreeNode;
 
 import com.dbms.entity.cqt.CmqBaseTarget;
 import com.dbms.service.base.ICqtPersistenceService;
@@ -31,7 +32,7 @@ public interface ICmqBaseTargetService  extends ICqtPersistenceService<CmqBaseTa
 
 	List<CmqBaseTarget> findByLevelAndTerm(Integer level, String searchTerm);
 
-	StreamedContent generateCMQExcel(CmqBaseTarget selectedImpactedCmqList, String dictionaryVersion);
+	StreamedContent generateCMQExcel(CmqBaseTarget selectedImpactedCmqList, String dictionaryVersion,TreeNode selectedNode);
 
 	List<CmqBaseTarget> findApprovedCmqs();
 
