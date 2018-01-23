@@ -42,7 +42,7 @@ public class AuditTrailController implements Serializable {
 	private String auditTimestamp, dictionary, state;
 	private String listName, listCode;
 	private StreamedContent excelFile;
-	private List<AuditTrailDto> datas;
+	private List<AuditTrailDto> datas, filteredValues;
 	
 	@ManagedProperty("#{CmqBase190Service}")
 	private ICmqBase190Service cmqBaseService;
@@ -58,12 +58,12 @@ public class AuditTrailController implements Serializable {
 	
 	@PostConstruct
 	public void init() {
-		 
+		this.datas = new ArrayList<AuditTrailDto>();
 	}
 
 	
 	public void reset() {
-		this.datas = new ArrayList<AuditTrailDto>();
+		this.filteredValues = new ArrayList<AuditTrailDto>();
 		this.listName = null;
 		this.listCode = null;
 		this.dictionary = null;
@@ -227,5 +227,15 @@ public class AuditTrailController implements Serializable {
 
 	public void setAuthService(AuthenticationService authService) {
 		this.authService = authService;
+	}
+
+
+	public List<AuditTrailDto> getFilteredValues() {
+		return filteredValues;
+	}
+
+
+	public void setFilteredValues(List<AuditTrailDto> filteredValues) {
+		this.filteredValues = filteredValues;
 	}
 }

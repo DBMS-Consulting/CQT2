@@ -1,8 +1,9 @@
 package com.dbms.entity.cqt.dtos;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class AuditTrailDto {
+public class AuditTrailDto implements Serializable {
 
 	private String tableName;
 

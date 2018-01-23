@@ -87,29 +87,29 @@
 					<p:dataTable var="value" value="#{auditTrailController.datas}"
 						id="result" rows="10" paginator="true" paginatorPosition="bottom"
 						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-						rowsPerPageTemplate="5,10,25" resizableColumns="true">
+						rowsPerPageTemplate="5,10,25" resizableColumns="true" filteredValue="#{auditTrailController.filteredValues}">
 
-						<p:column headerText="Change Type" filterBy="#{value.transactionType}" filterMatchMode="contains" styleClass="wrap">
-							<h:outputText value="#{value.transactionType}"/>
+						<p:column headerText="Change Type" filterBy="#{value.transactionType}" filterMatchMode="contains" filterable="true">
+							<h:outputText value="#{value.transactionType}" styleClass="wrap" />
 						</p:column>
 
-						<p:column headerText="Field Name" width="100" filterBy="#{value.columnName}" filterMatchMode="contains" styleClass="wrap">
-							<h:outputText value="#{value.columnName}"/>
+						<p:column headerText="Field Name" width="100" filterBy="#{value.columnName}" filterMatchMode="contains" styleClass="wrap" >
+							<h:outputText value="#{value.columnName}" />
 						</p:column>
 						<p:column headerText="Old Value" width="150" filterBy="#{value.oldValue}" filterMatchMode="contains">
-							<h:outputText value="#{value.oldValue}"/>
+							<h:outputText value="#{value.oldValue}" styleClass="wrap" />
 						</p:column>
-						<p:column headerText="New Value" width="150" filterBy="#{value.newValue}" filterMatchMode="contains" styleClass="wrap">
-							<h:outputText value="#{value.newValue}"/>
+						<p:column headerText="New Value" width="150" filterBy="#{value.newValue}" filterMatchMode="contains">
+							<h:outputText value="#{value.newValue}" styleClass="wrap" />
 						</p:column>
-						<p:column headerText="User Name" width="150" filterBy="#{value.userId}" filterMatchMode="contains" styleClass="wrap">
-							<h:outputText value="#{value.userId}"/>
+						<p:column headerText="User Name" width="150" filterBy="#{value.userId}" filterMatchMode="contains">
+							<h:outputText value="#{value.userId}" styleClass="wrap" />
 						</p:column>
 						<p:column headerText="User Group" width="150" filterBy="#{value.groupName}" filterMatchMode="contains">
 							<h:outputText value="#{value.groupName}"/>
 						</p:column>
-						<p:column headerText="Audit Timestamp" sortBy="#{value.auditTimestamp}" styleClass="wrap">
-							<h:outputText value="#{value.auditTimestamp}">
+						<p:column headerText="Audit Timestamp" sortBy="#{value.auditTimestamp}">
+							<h:outputText value="#{value.auditTimestamp}" styleClass="wrap">
 								<f:convertDateTime pattern="dd-MMM-yyyy:hh:mm:ss a" />
 							</h:outputText>
 							<h:outputText value=" EST"/>
