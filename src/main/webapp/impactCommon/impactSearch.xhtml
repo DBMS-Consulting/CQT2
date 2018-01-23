@@ -18,7 +18,7 @@
 				
 				<p:ajax event="rowSelect" listener="#{impactSearchController.onRowSelect}" />
 				
-				<p:column filterFunction="PF('statusDialog').hide()" headerText="SMQ Name" id="c52" styleClass="ia-search-term-col"
+				<p:column filterFunction="PF('statusDialog').hide()" headerText="SMQ Name" id="c52" styleClass="ia-search-term-col wrap"
 					 filterBy="#{smqList.smqName}" filterMatchMode="contains" >
 					<h:outputText value="#{smqList.smqName}" id="ot54" />
 				</p:column>
@@ -60,7 +60,7 @@
                 
                 <p:ajax event="rowSelect" listener="#{impactSearchController.onRowSelect}" />
                 
-				<p:column headerText="SMQ Name" id="c52" styleClass="ia-search-term-col"
+				<p:column headerText="SMQ Name" id="c52" styleClass="ia-search-term-col wrap"
 					filterable="true" filterBy="#{smqList.smqName}" filterMatchMode="contains">
 					<h:outputText value="#{smqList.smqName}" id="ot54" />
 				</p:column>
@@ -108,7 +108,7 @@
                 
                 <p:ajax event="rowSelect" listener="#{impactSearchController.onRowSelect}" />
                 	
-				<p:column sortable="false" headerText="List Name" id="c52" styleClass="ia-search-term-col"
+				<p:column sortable="false" headerText="List Name" id="c52" styleClass="ia-search-term-col wrap"
 					filterable="true" filterBy="#{cmqList.cmqName}" filterMatchMode="contains">
 					<h:outputText value="#{cmqList.cmqName}" id="ot54" />
 				</p:column>
@@ -172,7 +172,7 @@
                 
                 <p:ajax event="rowSelect" listener="#{impactSearchController.onRowSelect}" />
                 
-				<p:column sortable="false" headerText="List Name" id="c52" styleClass="ia-search-term-col"
+				<p:column sortable="false" headerText="List Name" id="c52" styleClass="ia-search-term-col wrap"
 					filterable="true" filterBy="#{cmqList.cmqName}" filterMatchMode="contains">
 					<h:outputText value="#{cmqList.cmqName}" id="ot54" />
 				</p:column>
