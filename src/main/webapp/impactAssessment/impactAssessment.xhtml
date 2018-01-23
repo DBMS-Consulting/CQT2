@@ -595,7 +595,7 @@
                     <h:panelGrid columns="2" cellpadding="2">
                        	
 						<h:selectBooleanCheckbox id="all" value="#{impactSearchController.filterDTO.all}" >
-							<p:ajax update="panel-filter" listener="#{impactSearchController.selectFilter}" />
+							<p:ajax update="panel-filter" listener="#{impactSearchController.selectAllFilter}" />
 						</h:selectBooleanCheckbox>
 						<label for="all">All</label>
 						

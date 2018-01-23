@@ -19,7 +19,7 @@ public class FilterDTO {
 	
 	
 	public FilterDTO() {
-		this.all = false;
+		this.all = true;
 		this.newSuccessorPT = false;
 		this.nonCurrentLLT = false;
 		this.lltPromotedToPT = false;

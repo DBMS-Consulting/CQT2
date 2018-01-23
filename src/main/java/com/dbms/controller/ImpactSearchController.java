@@ -2395,6 +2395,13 @@ public class ImpactSearchController implements Serializable {
 		this.updateTargetTable();
 	}
 	public void selectFilter(AjaxBehaviorEvent event) {
+		
+		filterDTO.setAll(false);
+		this.filterReadOnly = false;
+		LOG.info("  ---- filterDTO all value : " + filterDTO.isAll());
+	}
+	
+	public void selectAllFilter(AjaxBehaviorEvent event) {
 		if (filterDTO.isAll()) {
 			this.filterReadOnly = true;
 			this.filterDTO.resetAll();
@@ -2722,6 +2729,24 @@ public class ImpactSearchController implements Serializable {
 	private List<String> getSelectedImpactFilters() {
 		List<String> impactFilterList = new ArrayList<>();
 		if(filterDTO.isAll()) {
+			impactFilterList.add("LPP");
+			impactFilterList.add("NCH");
+			impactFilterList.add("MRG");
+			impactFilterList.add("SDP");
+			impactFilterList.add("NTR");
+			impactFilterList.add("LCN");
+			impactFilterList.add("HPP");
+			impactFilterList.add("HNP");
+			impactFilterList.add("PDL");
+			impactFilterList.add("SWC");
+			impactFilterList.add("PSI");
+			impactFilterList.add("PSA");
+			impactFilterList.add("DTR");
+			impactFilterList.add("LDP");
+			impactFilterList.add("PDH");
+			impactFilterList.add("HDH");
+			impactFilterList.add("HDS");
+			impactFilterList.add("SCH");
 			return impactFilterList;
 		}
 		if(filterDTO.isLltPromotedToPT()) {
