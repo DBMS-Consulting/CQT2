@@ -10,9 +10,11 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -117,6 +119,26 @@ public class HistoricalViewController implements Serializable {
 	}
 
 	public void search() {
+		if(listName == null && listCode == null) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN,
+	                "Please select List Name or List Code", "");
+	        FacesContext.getCurrentInstance().addMessage(null, msg);
+	        return;
+		}
+		
+		if(StringUtils.isBlank(dictionaryVersion)) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN,
+	                "Please select Dictionary version", "");
+	        FacesContext.getCurrentInstance().addMessage(null, msg);
+	        return;
+		}
+		
+		if(StringUtils.isBlank(auditTimestamp)) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN,
+	                "Please select Audit timestamp", "");
+	        FacesContext.getCurrentInstance().addMessage(null, msg);
+	        return;
+		}
 		this.datas = new ArrayList<HistoricalViewDTO>();//clear the results
 		if(StringUtils.isBlank(listCode)) {
 			for (CmqBaseDTO cmqBaseDTO : this.cmqBaseDTOSelectList) {

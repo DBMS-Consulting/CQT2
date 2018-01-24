@@ -2021,6 +2021,22 @@ public class CreateController implements Serializable {
             return d || (this.isReadOnlyState() || this.isFormSaved());
     }
     
+    public boolean enableLevel(ListDetailsFormVM list) {
+    	if (!list.getExtension().equals("TME") && !list.getExtension().equals("CPT") 
+    			&& !list.getExtension().equals("DME") && !list.getExtension().equals("TMR1")
+    			&& !list.getExtension().equals("PRO"))
+    		return true;
+    	return false;
+    }
+    
+    public boolean disableLevel(ListDetailsFormVM list) {
+    	if (list.getExtension().equals("TME") || list.getExtension().equals("CPT") 
+    			|| list.getExtension().equals("DME") || list.getExtension().equals("TMR1")
+    			|| list.getExtension().equals("PRO"))
+    		return true;
+    	return false;
+    }
+    
     /**
      * Restrictions on users from  REQUESTOR and ADMIN groups
      */
