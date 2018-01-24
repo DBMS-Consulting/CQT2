@@ -64,6 +64,7 @@ public class AuditTrailController implements Serializable {
 	
 	public void reset() {
 		this.filteredValues = new ArrayList<AuditTrailDto>();
+		this.datas = new ArrayList<AuditTrailDto>();
 		this.listName = null;
 		this.listCode = null;
 		this.dictionary = null;
