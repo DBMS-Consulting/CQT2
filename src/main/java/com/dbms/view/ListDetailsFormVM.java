@@ -264,6 +264,14 @@ public class ListDetailsFormVM {
 	 *            AjaxBehaviour
 	 */
 	public void afterChangeExtension(AjaxBehaviorEvent event) {
+		if (wizardType == WizardType.CreateWizard || wizardType == WizardType.UpdateWizard || wizardType == WizardType.CopyWizard) {
+			if("TME".equals(extension) || "TR1".equals(extension) || "CPT".equals(extension) || "DME".equals(extension))
+				setLevel(1);
+			else if ("PRO".equals(extension))
+				setLevel(2);
+			else
+				setLevel(null);
+		}
 		if(wizardType != WizardType.CopyWizard) {
 			//we are not doing copy so change others.
 			/**
@@ -272,23 +280,23 @@ public class ListDetailsFormVM {
 			
 			if("TME".equals(extension) ||
 					"TR1".equals(extension)) {
-				setLevel(1);
+				//setLevel(1);
 				setDrugProgram("");
 				setProtocol(""); //setProtocol(CqtConstants.CODE_LIST_NO_PROTOCOL_INTERNALCODE);
                 setProducts(new String[0]);
 			} else if("PRO".equals(extension)) {
-                setLevel(2);
+                //setLevel(2);
 				setDrugProgram("");
 				setProtocol("");
                 setProducts(new String[0]);
 			} else if("CPT".equals(extension) ||
 					"DME".equals(extension)) {
-                setLevel(1);
+               // setLevel(1);
 				setDrugProgram(""); //setDrugProgram(CqtConstants.CODE_LIST_NO_PROGRAM_INTERNALCODE);
 				setProtocol(""); //setProtocol(CqtConstants.CODE_LIST_NO_PROTOCOL_INTERNALCODE);
 				setProducts(new String[0]); //setProducts(new String[] { CqtConstants.CODE_LIST_NO_PRODUCT_INTERNALCODE });
 			} else {
-                setLevel(1);
+                //setLevel(1);
 				if(refCodeListService != null) {
 					RefConfigCodeList d;
                     List<RefConfigCodeList> ds;
@@ -311,13 +319,7 @@ public class ListDetailsFormVM {
 					setProtocol("");
 				}
 			}
-		} else {
-            if ("PRO".equals(extension)) {
-                setLevel(2);
-            } else {
-                setLevel(1);
-            }
-        }
+		}
         setDefaults();
 	}
 	//--------------------------- Getters & Setters ---------------------------

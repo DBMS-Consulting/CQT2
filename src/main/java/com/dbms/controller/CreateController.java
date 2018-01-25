@@ -2023,16 +2023,16 @@ public class CreateController implements Serializable {
     
     public boolean enableLevel(ListDetailsFormVM list) {
     	if (!list.getExtension().equals("TME") && !list.getExtension().equals("CPT") 
-    			&& !list.getExtension().equals("DME") && !list.getExtension().equals("TMR1")
+    			&& !list.getExtension().equals("DME") && !list.getExtension().equals("TR1")
     			&& !list.getExtension().equals("PRO"))
     		return true;
     	return false;
     }
     
-    public boolean disableLevel(ListDetailsFormVM list) {
-    	if (list.getExtension().equals("TME") || list.getExtension().equals("CPT") 
-    			|| list.getExtension().equals("DME") || list.getExtension().equals("TMR1")
-    			|| list.getExtension().equals("PRO"))
+    public boolean disableLevel() {
+    	if (detailsFormModel.getExtension().equals("TME") || detailsFormModel.getExtension().equals("CPT") 
+    			|| detailsFormModel.getExtension().equals("DME") || detailsFormModel.getExtension().equals("TR1")
+    			|| detailsFormModel.getExtension().equals("PRO"))
     		return true;
     	return false;
     }
