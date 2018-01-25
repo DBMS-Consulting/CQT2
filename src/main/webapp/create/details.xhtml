@@ -27,7 +27,7 @@
                 required="#{!createController.readOnlyState}"
                 label="Extension">
                 <f:selectItems value="#{createController.detailsFormModel.extensionList}" var="extension"
-					itemLabel="#{extension.codelistInternalValue}"
+					itemLabel="#{extension.value}"
 					itemValue="#{extension.codelistInternalValue}" />
 
                 <p:ajax listener="#{createController.changeLevel}"
