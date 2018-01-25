@@ -78,6 +78,8 @@
                                     <f:selectItems
                                         value="#{historicalViewController.findAuditTimestamps(historicalViewController.dictionaryVersion)}"
                                         var="at" itemLabel="#{at}" itemValue="#{at}" />
+                                        
+                                        <p:ajax />
                                 </p:selectOneMenu>
                                 <p:spacer width="5" />
                             </h:panelGrid>
