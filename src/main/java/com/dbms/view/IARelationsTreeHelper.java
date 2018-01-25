@@ -2258,8 +2258,8 @@ public class IARelationsTreeHelper {
                 return refCodeListService.interpretMeddraImpactTypeDesc("demoted_pt", ent.getDemotedPt());
             else if(ent.getPromotedPt() != null)
                 return refCodeListService.interpretMeddraImpactTypeDesc("promoted_pt", ent.getPromotedPt());
-            else if(ent.getNewSuccessorPt() != null)
-                return refCodeListService.interpretMeddraImpactTypeDesc("new_successor_pt", ent.getNewSuccessorPt());
+           // else if(ent.getNewSuccessorPt() != null)
+           //     return refCodeListService.interpretMeddraImpactTypeDesc("new_successor_pt", ent.getNewSuccessorPt());
             else if(ent.getMovedHlt() != null)
                 return refCodeListService.interpretMeddraImpactTypeDesc("moved_hlt", ent.getMovedHlt());
             else if(ent.getMergedHlt() != null)
