@@ -73,25 +73,26 @@ public class AuditTrailController implements Serializable {
 	
 	public String findAudit() {
 		
-		if(listName == null && listCode == null) {
+		if((listName == null || (listName != null && StringUtils.isBlank(listName))) 
+				&& (listCode == null || (listCode != null && StringUtils.isBlank(listCode)))) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN,
 	                "Please select List Name or List Code", "");
 	        FacesContext.getCurrentInstance().addMessage(null, msg);
-	        return null;
+	        return "";
 		}
 		
-		if(StringUtils.isBlank(dictionary)) {
+		if(dictionary == null || (dictionary != null && StringUtils.isBlank(dictionary))) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN,
 	                "Please select Dictionary version", "");
 	        FacesContext.getCurrentInstance().addMessage(null, msg);
-	        return null;
+	        return "";
 		}
 		
-		if(StringUtils.isBlank(auditTimestamp)) {
+		if(auditTimestamp == null || (auditTimestamp != null && StringUtils.isBlank(auditTimestamp))) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN,
 	                "Please select Audit timestamp", "");
 	        FacesContext.getCurrentInstance().addMessage(null, msg);
-	        return null;
+	        return "";
 		}
 		
 		Long listCodeSelected = null;
