@@ -38,7 +38,9 @@
 			<p:inputText required="#{!createController.readOnlyState}" label="Name"
                          disabled="#{createController.detailsFormDisabled}" maxlength="200"
 				value="#{createController.detailsFormModel.name}"
-				style="width: 300px !important" />
+				style="width: 300px !important">
+				 <p:ajax update="@this" />
+			</p:inputText>
 
 			<p:outputLabel id="lDrug" value="* Drug Program" />
 			<p:selectOneMenu
@@ -91,6 +93,8 @@
 				<f:selectItem itemValue="" itemLabel="" noSelectionOption="true" />
                 <f:selectItems value="#{createController.detailsFormModel.designeeList}" var="d"
                                itemLabel="#{d.fullName}" itemValue="#{d.userName}"/>
+                               
+                <p:ajax update="@this" />
 			</p:selectOneMenu>
 		</h:panelGrid>
 
