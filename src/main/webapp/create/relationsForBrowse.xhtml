@@ -50,7 +50,7 @@
                 
                 <h:commandLink rendered="#{createController.relationsModel.relationsRoot.childCount le 0}" value="MQ Detailed Report" type="button"
 					styleClass="generate"
-					actionListener="#{reportController.generateMQReport(createController.detailsFormModel, createController.notesFormModel)}">
+					actionListener="#{reportController.generateMQReport(createController.detailsFormModel, createController.notesFormModel,createController.relationsModel.relationsRoot)}">
 					<p:fileDownload value="#{reportController.excelFile}" />
 				</h:commandLink>
 				
