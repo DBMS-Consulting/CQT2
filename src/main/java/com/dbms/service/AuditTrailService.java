@@ -2584,7 +2584,11 @@ public class AuditTrailService implements IAuditTrailService{
 					+ " or SOC_CODE_OLD = " + cmqCode + " or SOC_CODE_NEW = " + cmqCode
 					+ " or LLT_CODE_OLD = " + cmqCode + " or LLT_CODE_NEW = " + cmqCode
 					+ " or CMQ_CODE_OLD = " + cmqCode + " or CMQ_CODE_NEW = " + cmqCode
-					+ " or PT_CODE_OLD = " + cmqCode + " or PT_CODE_NEW = " + cmqCode
+					+ " or PT_CODE_OLD = " + cmqCode + " or PT_CODE_NEW = " + cmqCode;
+			
+			queryString += " union select distinct AUDIT_TIMESTAMP as audit_ts, to_char(AUDIT_TIMESTAMP, 'DD-MON-YYYY:hh:MI:SS AM')||' EST' as AUDIT_TIMESTAMP "
+							+ " from CMQ_PRODUCT_BASE_"+ dictionaryVersion 
+							+ "_AUDIT where CMQ_CODE_OLD = " + cmqCode + " or CMQ_CODE_NEW = " + cmqCode
 					
  					+ " order by audit_ts desc";
 		}
@@ -2595,7 +2599,11 @@ public class AuditTrailService implements IAuditTrailService{
 			
 			queryString += "' union select distinct AUDIT_TIMESTAMP as audit_ts, to_char(AUDIT_TIMESTAMP, 'DD-MON-YYYY:hh:MI:SS AM')||' EST' as AUDIT_TIMESTAMP "
 					+ " from CMQ_RELATIONS_"+ dictionaryVersion + "_AUDIT where " 
-					+ " cmq_id = (select c.cmq_id from  CMQ_BASE_"+ dictionaryVersion + " c where c.cmq_name = '" + name + "')"
+					+ " cmq_id = (select c.cmq_id from  CMQ_BASE_"+ dictionaryVersion + " c where c.cmq_name = '" + name + "')";
+			
+			queryString += "' union select distinct AUDIT_TIMESTAMP as audit_ts, to_char(AUDIT_TIMESTAMP, 'DD-MON-YYYY:hh:MI:SS AM')||' EST' as AUDIT_TIMESTAMP "
+					+ " from CMQ_PRODUCT_BASE_"+ dictionaryVersion 
+					+ "_AUDIT where CMQ_NAME_OLD = '" + name + "' or CMQ_NAME_NEW = '" + name + "')"
 			
  					+ "' order by audit_ts desc";
 		}
