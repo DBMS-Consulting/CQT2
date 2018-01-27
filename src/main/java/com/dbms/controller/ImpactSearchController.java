@@ -2594,6 +2594,7 @@ public class ImpactSearchController implements Serializable {
 				collapseRelationsInTargetTable(treeNode);
 			}
 		}
+		this.setTargetRelationsUpdated();
 	}
 
 	public TreeNode clearChildrenInTargetTableTreNode(TreeNode rootNodeToSearchFrom, HierarchyNode selectedNode) {
