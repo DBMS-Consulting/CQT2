@@ -51,6 +51,7 @@ import com.dbms.service.IHistoricalViewService;
 import com.dbms.service.IMeddraDictService;
 import com.dbms.service.IRefCodeListService;
 import com.dbms.service.ISmqBaseService;
+import com.dbms.util.HistoricalViewrelationsComparator;
 import com.dbms.util.SMQLevelHelper;
 import com.dbms.util.SWJSFRequest;
 import com.dbms.view.ListRelationsVM;
@@ -959,6 +960,7 @@ public class HistoricalViewController implements Serializable {
 		Map<Long, TreeNode> lltCodesMap = new HashMap<>();
 		this.selectedHistoricalViewDTO.setRelationsRootTreeNode(this.relationsRoot);
 		List<TreeNode> childNodes = this.relationsRoot.getChildren();
+		Collections.sort(childNodes, new HistoricalViewrelationsComparator());
 		for (TreeNode childNode : childNodes) {
 			//first clear off its children and reset the state of the node
 			childNode.getChildren().clear();
