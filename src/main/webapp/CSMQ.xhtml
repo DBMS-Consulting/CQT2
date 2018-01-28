@@ -135,7 +135,7 @@
 					style="font-weight:#{userBean.currentMenu eq 'COPY_NMQ' ? 'bold' : 'normal'};"
 					rendered="#{AuthenticationService.getPermissonByUri('/create/copy.xhtml')}" />
 					
-				<p:menuitem value="Browse &amp; Search" id="pt_cmi17" 
+				<p:menuitem value="Browse &amp; Search" id="pt_cmi17" update="@form"
 					action="#{createController.initForm('/create/browseAndSearch')}"
 					styleClass="#{view.viewId == '/create/browseAndSearch.xhtml' ? 'ui-state-active2' : ''}"
 					style="font-weight:#{userBean.currentMenu eq 'BROWSE_SEARCH' ? 'bold' : 'normal'};"
@@ -174,7 +174,7 @@
 						rendered="#{AuthenticationService.getPermissonByUri('/create/reactivate.xhtml')}" />
 				</p:submenu>
 
-				<p:menuitem value="Reports" id="pt_cmi4" action="#{createController.initForm('/report/reports')}" update="@all"
+				<p:menuitem value="Reports" id="pt_cmi4" action="#{createController.initForm('/report/reports')}" update="@form"
 					styleClass="#{view.viewId == '/report/reports.xhtml' ? 'ui-state-active2' : ''}"
 					style="font-weight:#{userBean.currentMenu eq 'REPORTS' ? 'bold' : 'normal'};"
 					disabled="false" />
@@ -218,16 +218,17 @@
 					rendered="#{AuthenticationService.getPermissonByUri('/admin/admin.xhtml')}" />
 
 				<p:menuitem value="Historic View" id="hv"   
+					action="#{createController.initForm('/history/historicView.xhtml')}" update="@form"
 					styleClass="#{view.viewId == '/history/historicView.xhtml' ? 'ui-state-active2' : ''}"
 					style="font-weight:#{userBean.currentMenu eq 'REPORTS' ? 'bold' : 'normal'};"
 					url="/history/historicView.xhtml" 
 					rendered="#{AuthenticationService.getPermissonByUri('/history/historicView.xhtml')}" />
 					
 				<p:menuitem value="Audit Trail" id="at"   
+					action="#{createController.initForm('/audit/auditSearch.xhtml')}" update="@form"
 					styleClass="#{view.viewId == '/audit/auditSearch.xhtml' ? 'ui-state-active2' : ''}"
 					style="font-weight:#{userBean.currentMenu eq 'REPORTS' ? 'bold' : 'normal'};"
-					url="/audit/auditSearch.xhtml"
-					rendered="#{AuthenticationService.getPermissonByUri('/audit/auditSearch.xhtml')}" />
+ 					rendered="#{AuthenticationService.getPermissonByUri('/audit/auditSearch.xhtml')}" />
 					
 					
 					
