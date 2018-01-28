@@ -5,96 +5,107 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:p="http://primefaces.org/ui">
-	
-	
+
+
 	<p:remoteCommand name="saveDetailsAndGoToNextStep"
 		update="@form:m1 @form:wizardId @form:codeValue"
 		actionListener="#{createController.saveDetailsAndNextStep}"
-        action="#{searchController.setDataModified(true)}"
+		action="#{searchController.setDataModified(true)}"
 		onstart="PF('confirmSaveDetailsDlg').hide()" />
 	<p:remoteCommand name="resetDetailsAndGoToNextStep"
 		update="@form:wizardId @form:detailsPanel"
 		actionListener="#{createController.cancelDetailsAndNextStep}"
 		onstart="PF('confirmSaveDetailsDlg').hide()" />
-  
-	<h:panelGrid columns="3" cellpadding="5" id="detailsPanel" columnClasses="pad-lr30,pad-lr30,pad-lr30">
+
+
+	<p:remoteCommand name="saveDetails"
+		update="@form:m1 @form:codeValue @form:wizardId"
+		actionListener="#{createController.saveDetailsAndClose}"
+		onstart="PF('confirmSaveDetailsAll').hide()" />
+
+	<h:panelGrid columns="3" cellpadding="5" id="detailsPanel"
+		columnClasses="pad-lr30,pad-lr30,pad-lr30">
 
 		<h:panelGrid columns="2" columnClasses="label-cell, value-cell">
 			<p:outputLabel value="* Extension" />
 			<p:selectOneMenu
 				value="#{createController.detailsFormModel.extension}"
 				disabled="#{createController.detailsFormDisabled}"
-                required="#{!createController.readOnlyState}"
-                label="Extension">
-                <f:selectItems value="#{createController.detailsFormModel.extensionList}" var="extension"
-					itemLabel="#{extension.value}"
+				required="#{!createController.readOnlyState}" label="Extension">
+				<f:selectItems
+					value="#{createController.detailsFormModel.extensionList}"
+					var="extension" itemLabel="#{extension.value}"
 					itemValue="#{extension.codelistInternalValue}" />
 
-                <p:ajax listener="#{createController.changeLevel}"
+				<p:ajax listener="#{createController.changeLevel}"
 					update="level lProtocol protocol drug lDrug product lProduct @this" />
 			</p:selectOneMenu>
 
-			<p:outputLabel value="* Name" />
-			<p:inputText required="#{!createController.readOnlyState}" label="Name"
-                         disabled="#{createController.detailsFormDisabled}" maxlength="200"
-				value="#{createController.detailsFormModel.name}"
-				style="width: 300px !important">
-				 <p:ajax update="@this" />
-			</p:inputText>
+			<p:outputLabel for="lname" value="* Name" />
+			<h:inputText id="lname" required="#{!createController.readOnlyState}"
+				label="Name" disabled="#{createController.detailsFormDisabled}"
+				maxlength="200" value="#{createController.detailsFormModel.name}"
+				style="width: 300px !important" />
 
 			<p:outputLabel id="lDrug" value="* Drug Program" />
 			<p:selectOneMenu
 				value="#{createController.detailsFormModel.drugProgram}" id="drug"
 				disabled="#{createController.detailsFormDisabled}" filter="true"
 				required="#{not createController.readOnlyState}"
-                label="Drug Program">
+				label="Drug Program">
 				<!-- <f:selectItem itemValue="" itemLabel="" noSelectionOption="true" /> -->
-				<f:selectItems value="#{createController.detailsFormModel.programList}" var="program"
-					itemLabel="#{program.value}"
+				<f:selectItems
+					value="#{createController.detailsFormModel.programList}"
+					var="program" itemLabel="#{program.value}"
 					itemValue="#{program.codelistInternalValue}" />
-                
-                <p:ajax update="@this" />
+
+				<p:ajax update="@this" />
 			</p:selectOneMenu>
 
 			<p:outputLabel id="lProtocol" value="* Protocol" />
 			<p:selectOneMenu
 				value="#{createController.detailsFormModel.protocol}" id="protocol"
 				disabled="#{createController.detailsFormDisabled}" filter="true"
-				required="#{not createController.readOnlyState}"
-                label="Protocol">
-				
-               <!--  <f:selectItem itemValue="" itemLabel="" noSelectionOption="true" /> -->
-				<f:selectItems value="#{createController.detailsFormModel.protocolList}" var="protocol"
-					itemLabel="#{protocol.value}"
+				required="#{not createController.readOnlyState}" label="Protocol">
+
+				<!--  <f:selectItem itemValue="" itemLabel="" noSelectionOption="true" /> -->
+				<f:selectItems
+					value="#{createController.detailsFormModel.protocolList}"
+					var="protocol" itemLabel="#{protocol.value}"
 					itemValue="#{protocol.codelistInternalValue}" />
-                
-                <p:ajax update="@this" />
+
+				<p:ajax update="@this" />
 			</p:selectOneMenu>
 
 			<p:outputLabel id="lProduct" value="* Product" rendered="true" />
-			<p:selectCheckboxMenu id="product" value="#{createController.detailsFormModel.products}" widgetVar="product"
-                disabled="#{createController.detailsFormDisabled}" 
-                label="#{createController.detailsFormDisabled ? createController.detailsFormModel.productsLabel : 'Choose products'}" updateLabel="true"
-                filter="true" filterMatchMode="contains"
+			<p:selectCheckboxMenu id="product"
+				value="#{createController.detailsFormModel.products}"
+				widgetVar="product"
+				disabled="#{createController.detailsFormDisabled}"
+				label="#{createController.detailsFormDisabled ? createController.detailsFormModel.productsLabel : 'Choose products'}"
+				updateLabel="true" filter="true" filterMatchMode="contains"
 				style="min-width:270px; max-width: 600px">
-				<f:selectItems value="#{createController.detailsFormModel.productList}"
-                               var="prd" itemLabel="#{prd.value}" itemValue="#{prd.codelistInternalValue}" />
-                <f:validator validatorId="mySelectCheckboxMenuLimitValidator" />                       
-                <f:attribute name="minLimit" value="#{createController.readOnlyState ? 0 : 1}" />
-                <f:attribute name="validatorLabel" value="Product" />
-            </p:selectCheckboxMenu>
+				<f:selectItems
+					value="#{createController.detailsFormModel.productList}" var="prd"
+					itemLabel="#{prd.value}" itemValue="#{prd.codelistInternalValue}" />
+				<f:validator validatorId="mySelectCheckboxMenuLimitValidator" />
+				<f:attribute name="minLimit"
+					value="#{createController.readOnlyState ? 0 : 1}" />
+				<f:attribute name="validatorLabel" value="Product" />
+				<p:ajax />
+			</p:selectCheckboxMenu>
 
 			<p:outputLabel value="* Designee" />
 			<p:selectOneMenu filterMatchMode="contains"
 				value="#{createController.detailsFormModel.designee}"
 				disabled="#{createController.detailsFormDisabled}" rendered="true"
-                label="Designee" filter="true"
+				label="Designee" filter="true"
 				required="#{!createController.readOnlyState}">
 				<f:selectItem itemValue="" itemLabel="" noSelectionOption="true" />
-                <f:selectItems value="#{createController.detailsFormModel.designeeList}" var="d"
-                               itemLabel="#{d.fullName}" itemValue="#{d.userName}"/>
-                               
-                <p:ajax update="@this" />
+				<f:selectItems
+					value="#{createController.detailsFormModel.designeeList}" var="d"
+					itemLabel="#{d.fullName}" itemValue="#{d.userName}" />
+				<p:ajax update="@this" />
 			</p:selectOneMenu>
 		</h:panelGrid>
 
@@ -103,33 +114,38 @@
 			<p:selectOneMenu filter="true" filterMatchMode="contains"
 				value="#{createController.detailsFormModel.designeeTwo}"
 				disabled="#{createController.detailsFormDisabled}" rendered="true"
-                label="Designee 2">
+				label="Designee 2">
 				<f:selectItem itemValue="" itemLabel="" noSelectionOption="true" />
-				<f:selectItems value="#{createController.detailsFormModel.designeeList}" var="d"
-                               itemLabel="#{d.fullName}" itemValue="#{d.userName}"/>
+				<f:selectItems
+					value="#{createController.detailsFormModel.designeeList}" var="d"
+					itemLabel="#{d.fullName}" itemValue="#{d.userName}" />
+				<p:ajax update="@this" />
 			</p:selectOneMenu>
-			
+
 			<p:outputLabel value="Designee 3" />
 			<p:selectOneMenu filter="true" filterMatchMode="contains"
 				value="#{createController.detailsFormModel.designeeThree}"
 				disabled="#{createController.detailsFormDisabled}" rendered="true"
-                label="Designee 3">
+				label="Designee 3">
 				<f:selectItem itemValue="" itemLabel="" noSelectionOption="true" />
-				<f:selectItems value="#{createController.detailsFormModel.designeeList}" var="d"
-                           itemLabel="#{d.fullName}" itemValue="#{d.userName}"/>
+				<f:selectItems
+					value="#{createController.detailsFormModel.designeeList}" var="d"
+					itemLabel="#{d.fullName}" itemValue="#{d.userName}" />
+				<p:ajax update="@this" />
 			</p:selectOneMenu>
-			
+
 			<p:outputLabel value="* Level" />
-			<p:selectOneMenu id="level" value="#{createController.detailsFormModel.level}"
-				required="#{!createController.readOnlyState}" 
-                label="Level"
+			<p:selectOneMenu id="level"
+				value="#{createController.detailsFormModel.level}"
+				required="#{!createController.readOnlyState}" label="Level"
 				disabled="#{createController.detailsFormDisabled || createController.disableLevel()}">
 				<f:selectItem itemValue="null" itemLabel="" />
-				<f:selectItem itemValue="1" itemLabel="1" />    
+				<f:selectItem itemValue="1" itemLabel="1" />
 				<f:selectItem itemValue="2" itemLabel="2" />
 				<f:selectItem itemValue="3" itemLabel="3" />
 				<f:selectItem itemValue="4" itemLabel="4" />
 				<f:selectItem itemValue="5" itemLabel="5" />
+				<p:ajax update="@this" />
 			</p:selectOneMenu>
 			<!-- <p:inputText rendered="#{createController.disableLevel(createController.detailsFormModel)}" id="levelI" disabled="true" value="#{createController.detailsFormModel.level}"
                  styleClass="uppercase"></p:inputText> -->
@@ -138,41 +154,40 @@
 			<p:inputText value="#{createController.detailsFormModel.algorithm}"
 				disabled="#{true or createController.readOnlyState}" />
 
-            <p:outputLabel value="* Status" />
-            <h:outputText value="#{createController.detailsFormModel.status}"
-                style="height: 30px !important" styleClass="uppercase"></h:outputText>
+			<p:outputLabel value="* Status" />
+			<h:outputText value="#{createController.detailsFormModel.status}"
+				style="height: 30px !important" styleClass="uppercase"></h:outputText>
 
-            <p:outputLabel value="* State" />
-            <h:outputText value="#{createController.detailsFormModel.state}"
-					styleClass="uppercase"></h:outputText>
+			<p:outputLabel value="* State" />
+			<h:outputText value="#{createController.detailsFormModel.state}"
+				styleClass="uppercase"></h:outputText>
 		</h:panelGrid>
 
 		<h:panelGrid columns="2" columnClasses="label-cell, value-cell">
 			<p:outputLabel value="Group" />
-            <h:outputText value="#{createController.detailsFormModel.group}" />
+			<h:outputText value="#{createController.detailsFormModel.group}" />
 
-            <p:outputLabel value="Code" />
-            <h:outputText id="codeValue"
-					value="#{createController.selectedData.cmqCode}" />
-		
-            <p:outputLabel value="Creation Date  " />
-            <h:outputText value="#{createController.selectedData.creationDate}">
-                <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
-            </h:outputText>
+			<p:outputLabel value="Code" />
+			<h:outputText id="codeValue"
+				value="#{createController.selectedData.cmqCode}" />
 
-            <p:outputLabel value="Created By  " />
-            <h:outputText value="#{createController.detailsFormModel.createdBy}" />
+			<p:outputLabel value="Creation Date  " />
+			<h:outputText value="#{createController.selectedData.creationDate}">
+				<f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
+			</h:outputText>
 
-            <p:outputLabel value="Last Activation Date  " />
-            <h:outputText
-					value="#{createController.selectedData.activationDate}">
-                <f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss"/>
-            </h:outputText>
+			<p:outputLabel value="Created By  " />
+			<h:outputText value="#{createController.detailsFormModel.createdBy}" />
 
-            <p:outputLabel value="Last Activation By  "/>
-            <h:outputText value="#{createController.selectedData.activatedBy}" />
+			<p:outputLabel value="Last Activation Date  " />
+			<h:outputText value="#{createController.selectedData.activationDate}">
+				<f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
+			</h:outputText>
 
-            <!-- <p:spacer />
+			<p:outputLabel value="Last Activation By  " />
+			<h:outputText value="#{createController.selectedData.activatedBy}" />
+
+			<!-- <p:spacer />
 
 			<p:spacer />
 
@@ -189,6 +204,20 @@
 		<p:commandButton value="No" type="button"
 			styleClass="ui-confirmdialog-no" icon="ui-icon-close"
 			onclick="resetDetailsAndGoToNextStep()" />
+	</p:confirmDialog>
+
+
+	<p:confirmDialog widgetVar="confirmSaveDetailsAll" showEffect="fade"
+		hideEffect="fade" header="Confirm about Unsaved Changes"
+		message="There are some unsaved changes. Do you want to save them before you continue?">
+
+		<p:commandButton value="Yes" type="button"
+			styleClass="ui-confirmdialog-yes" icon="ui-icon-check"
+			onclick="saveDetails()">
+		</p:commandButton>
+
+		<p:commandButton value="No" styleClass="ui-confirmdialog-no"
+			icon="ui-icon-close" action="#{applicationController.openForm}" />
 	</p:confirmDialog>
 
 </ui:composition>

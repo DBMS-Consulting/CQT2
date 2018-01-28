@@ -200,7 +200,7 @@ public class CreateController implements Serializable {
 		String form = url + ".xhtml?faces-redirect=true";
 		setFormToOpen(form);
 		
-		if (showConfirmDialog()) {
+		/*if (showConfirmDialog()) {
 			//if (detailDTO.detailChange(detailsFormModel))
 			if (detailsFormModel.isModelChanged() && ((createWizard != null && createWizard.getStep().equals(WIZARD_STEP_DETAILS))
 					|| (updateWizard != null && updateWizard.getStep().equals(WIZARD_STEP_DETAILS))
@@ -214,27 +214,51 @@ public class CreateController implements Serializable {
 					|| (updateWizard != null && updateWizard.getStep().equals(WIZARD_STEP_RELATIONS))
 					|| (copyWizard != null && copyWizard.getStep().equals(WIZARD_STEP_RELATIONS))))
 				RequestContext.getCurrentInstance().execute("PF('relationsDlg').show();");
+		}*/
+		if (showConfirmDialog()) {
+			if (detailsFormModel.isModelChanged()) {
+				RequestContext.getCurrentInstance().execute("PF('confirmSaveDetailsAll').show();");
+			} else if (notesChanged()) {
+				RequestContext.getCurrentInstance().execute("PF('confirmSaveNotes').show();");
+			} else if (relationsModified) {
+				RequestContext.getCurrentInstance().execute("PF('confirmSaveRelations').show();");
+			}
 		}
-			
 		else
 			return form;
 		return "";
 	}
 	
-	public String saveAndClose() {
-		if(detailsFormModel.validateForm()) {
+	
+	public boolean notesChanged() {
+		if (notesFormModel != null && detailDTO != null) {
+			if (!detailDTO.getDescription().equals(notesFormModel.getDescription())  
+					|| !detailDTO.getSource().equals(notesFormModel.getSource()) 
+					|| !detailDTO.getNotes().equals(notesFormModel.getNotes()))
+				return true;
+		}
+		
+		return false;
+	}
+	
+	public String saveDetailsAndClose() {
+        if(detailsFormModel.validateForm()) {
             if(createWizard != null)
                 save();
             else if(copyWizard != null)
                 copy();
             else if(updateWizard != null)
                 update();
-            
-		}
-		return formToOpen;
+        }
+        return "formToOpen";
 	}
 	
-	
+	public String saveNotesAndClose() {
+		saveInformativeNotes();
+
+		return formToOpen;  
+	}
+
 	
 	private void initAll() {
 		detailsFormModel.init();
@@ -385,18 +409,11 @@ public class CreateController implements Serializable {
                 update();
 
             goToWizardNextStep();
-           // if (showConfirmDialog()) {
-           /* if (detailsFormModel.isModelChanged() || detailsFormModel.isModelChanged() || relationsModified) {
-            	if (createWizard != null)
-            		RequestContext.getCurrentInstance().update("fCreate:wizardId");
-	            if (updateWizard != null)
-	        		RequestContext.getCurrentInstance().update("fUpdate:wizardId");
-	            if (browseWizard != null)
-	        		RequestContext.getCurrentInstance().update("fBrowse:wizardId");
-            }*/
+          
         }
 	}
-
+	
+	
 
 	/**
 	 * Reset the "Informative Notes" form
