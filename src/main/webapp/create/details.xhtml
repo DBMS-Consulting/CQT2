@@ -41,8 +41,8 @@
 					update="level lProtocol protocol drug lDrug product lProduct @this" />
 			</p:selectOneMenu>
 
-			<p:outputLabel for="lname" value="* Name" />
-			<h:inputText id="lname" required="#{!createController.readOnlyState}"
+			<p:outputLabel value="* Name" />
+			<h:inputText required="#{!createController.readOnlyState}"
 				label="Name" disabled="#{createController.detailsFormDisabled}"
 				maxlength="200" value="#{createController.detailsFormModel.name}"
 				style="width: 300px !important" />
@@ -216,7 +216,7 @@
 			onclick="saveDetails()">
 		</p:commandButton>
 
-		<p:commandButton value="No" styleClass="ui-confirmdialog-no"
+		<p:commandButton value="No" styleClass="ui-confirmdialog-no" immediate="true"
 			icon="ui-icon-close" action="#{applicationController.openForm}" />
 	</p:confirmDialog>
 
