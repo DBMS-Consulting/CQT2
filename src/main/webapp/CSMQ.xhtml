@@ -218,14 +218,14 @@
 					rendered="#{AuthenticationService.getPermissonByUri('/admin/admin.xhtml')}" />
 
 				<p:menuitem value="Historic View" id="hv"   
-					action="#{createController.initForm('/history/historicView.xhtml')}" update="@form"
+					action="#{createController.initForm('/history/historicView')}" update="@form"
 					styleClass="#{view.viewId == '/history/historicView.xhtml' ? 'ui-state-active2' : ''}"
 					style="font-weight:#{userBean.currentMenu eq 'REPORTS' ? 'bold' : 'normal'};"
-					url="/history/historicView.xhtml" 
-					rendered="#{AuthenticationService.getPermissonByUri('/history/historicView.xhtml')}" />
+ 					rendered="#{AuthenticationService.getPermissonByUri('/history/historicView.xhtml')}" />
+ 					
 					
 				<p:menuitem value="Audit Trail" id="at"   
-					action="#{createController.initForm('/audit/auditSearch.xhtml')}" update="@form"
+					action="#{createController.initForm('/audit/auditSearch')}" update="@form"
 					styleClass="#{view.viewId == '/audit/auditSearch.xhtml' ? 'ui-state-active2' : ''}"
 					style="font-weight:#{userBean.currentMenu eq 'REPORTS' ? 'bold' : 'normal'};"
  					rendered="#{AuthenticationService.getPermissonByUri('/audit/auditSearch.xhtml')}" />
