@@ -113,7 +113,7 @@
 			</p:dialog>
 		</h:form>
 		<h:form>
-			<p:menubar id="menubar" toggleEvent="">
+			<p:menubar id="menubar">
 				<p:menuitem value="Create" id="pt_cmi1" update="@form"
 					action="#{createController.initForm('/create/create')}"
  					styleClass="#{view.viewId == '/create/create.xhtml' ? 'ui-state-active2' : ''}"
@@ -229,9 +229,6 @@
 					styleClass="#{view.viewId == '/audit/auditSearch.xhtml' ? 'ui-state-active2' : ''}"
 					style="font-weight:#{userBean.currentMenu eq 'REPORTS' ? 'bold' : 'normal'};"
  					rendered="#{AuthenticationService.getPermissonByUri('/audit/auditSearch.xhtml')}" />
-					
-					
-					
 					
 				
 				
