@@ -17,6 +17,12 @@
 				update="@form:m1 @form:wizardId"
 				actionListener="#{createController.cancelNotesAndNextStep}"
 				onstart="PF('confirmSaveNotesDlg').hide()" />
+				
+				
+		<p:remoteCommand name="saveNotes"
+				update="@form:m1 @form:wizardId"
+				actionListener="#{createController.saveNotesAndClose}"
+				onstart="PF('confirmSaveNotes').hide()" />
 						
 		<p:tabView>
 			<p:tab title="Description">

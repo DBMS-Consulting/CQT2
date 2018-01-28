@@ -113,13 +113,15 @@
 			</p:dialog>
 		</h:form>
 		<h:form>
-			<p:menubar id="menubar">
-				<p:menuitem value="Create" id="pt_cmi1"
-					onclick="PF('statusDialog').hide()" update="@form"
+			<p:menubar id="menubar" toggleEvent="">
+				<p:menuitem value="Create" id="pt_cmi1" update="@form"
 					action="#{createController.initForm('/create/create')}"
-					styleClass="#{view.viewId == '/create/create.xhtml' ? 'ui-state-active2' : ''}"
+ 					styleClass="#{view.viewId == '/create/create.xhtml' ? 'ui-state-active2' : ''}"
 					style="font-weight:#{userBean.currentMenu eq 'CREATE_NEW_NMQ' ? 'bold' : 'normal'}"
-					rendered="#{AuthenticationService.getPermissonByUri('/create/create.xhtml')}" />
+					rendered="#{AuthenticationService.getPermissonByUri('/create/create.xhtml')}">
+					
+					</p:menuitem>
+					
 				
 				<p:menuitem value="Update" id="pt_cmi3" update="@form"
 					action="#{createController.initForm('/create/update')}"
@@ -132,12 +134,14 @@
 					styleClass="#{view.viewId == '/create/copy.xhtml' ? 'ui-state-active2' : ''}"
 					style="font-weight:#{userBean.currentMenu eq 'COPY_NMQ' ? 'bold' : 'normal'};"
 					rendered="#{AuthenticationService.getPermissonByUri('/create/copy.xhtml')}" />
-
-				<p:menuitem value="Browse &amp; Search" id="pt_cmi17" update="@form"
+					
+				<p:menuitem value="Browse &amp; Search" id="pt_cmi17" 
 					action="#{createController.initForm('/create/browseAndSearch')}"
 					styleClass="#{view.viewId == '/create/browseAndSearch.xhtml' ? 'ui-state-active2' : ''}"
 					style="font-weight:#{userBean.currentMenu eq 'BROWSE_SEARCH' ? 'bold' : 'normal'};"
-					rendered="#{AuthenticationService.getPermissonByUri('/create/browseAndSearch.xhtml')}" />
+					rendered="#{AuthenticationService.getPermissonByUri('/create/browseAndSearch.xhtml')}">	
+				</p:menuitem>
+					
 			
 				<p:submenu id="pt_m1" label="Publish" icon="ui-icon-document"
 					style="font-weight:#{userBean.currentMenu eq 'NON_IMPACT_PUBLISH' or userBean.currentMenu eq 'IMPACT_PUBLISH' ? 'bold' : 'normal'};"
@@ -147,7 +151,6 @@
 						action="#{createController.initForm('/publish/publishCurrentVersion')}"
 						styleClass="#{view.viewId == '/publish/publishCurrentVersion.xhtml' ? 'ui-state-active2' : ''}"
 						style="font-weight:#{userBean.currentMenu eq 'NON_IMPACT_PUBLISH' ? 'bold' : 'normal'};"
-						disabled="false"
 						rendered="#{AuthenticationService.getPermissonByUri('/publish/publishCurrentVersion.xhtml')}" />
 						
 					<p:menuitem value="Publish Future Version" id="pt_cmi8" update="@form"
@@ -171,7 +174,7 @@
 						rendered="#{AuthenticationService.getPermissonByUri('/create/reactivate.xhtml')}" />
 				</p:submenu>
 
-				<p:menuitem value="Reports" id="pt_cmi4" action="#{createController.initForm('/report/reports')}" update="@form"
+				<p:menuitem value="Reports" id="pt_cmi4" action="#{createController.initForm('/report/reports')}" update="@all"
 					styleClass="#{view.viewId == '/report/reports.xhtml' ? 'ui-state-active2' : ''}"
 					style="font-weight:#{userBean.currentMenu eq 'REPORTS' ? 'bold' : 'normal'};"
 					disabled="false" />
@@ -242,35 +245,11 @@
          		</f:facet>
 
 			</p:menubar>
-
-			<!-- AUTO SAVE -->
-			<p:confirmDialog widgetVar="confirmSaveDetailsAll" showEffect="fade"
-				hideEffect="fade" header="Confirm about Unsaved Changes"
-				message="There are some unsaved changes. Do you want to save them before you continue?">
-				
-				<p:commandButton value="Yes" type="button"
-					styleClass="ui-confirmdialog-yes" icon="ui-icon-check"
-					onclick="saveDetails()">
-					<p:ajax />
-				</p:commandButton>
-				
-				<p:commandButton value="No"
-					styleClass="ui-confirmdialog-no" icon="ui-icon-close"
-					action="#{applicationController.openForm}" />
-			</p:confirmDialog>
-
-			<!-- <p:remoteCommand name="saveDetails"
-				actionListener="#{createController.saveDetailsAndNextStep}"
-				action="#{searchController.setDataModified(true)}"
-				onstart="PF('confirmSaveDetailsAll').hide()" /> -->
-				
-			<p:remoteCommand name="saveDetails" process="@all"
-				action="#{createController.saveAndClose}"
-				onstart="PF('confirmSaveDetailsAll').hide()" />
-				
-				
+			
 			<!-- INPUT HIDDEN TO GET FORM TO OPEN -->
 			<h:inputHidden value="#{createController.formToOpen}" binding="#{applicationController.form}" />
+
+			<!-- AUTO SAVE -->
 			
 			
 			<!-- NOTES dlg -->
@@ -280,24 +259,18 @@
 				
 				<p:commandButton value="Yes" type="button"
 					styleClass="ui-confirmdialog-yes" icon="ui-icon-check"
-					onclick="saveNotes()">
-					
-					<p:ajax />
+					onclick="saveNotes()">					
 				</p:commandButton>
 				<p:commandButton value="No"
 					styleClass="ui-confirmdialog-no" icon="ui-icon-close"
 					action="#{applicationController.openForm}" />
 			</p:confirmDialog>
 
-			<p:remoteCommand name="saveNotes" update="@form"
-				action="#{createController.saveAndClose}"
-				onstart="PF('confirmSaveNotes').hide()" />
-				
 			<!--  NOTES dlg -->
 			
 			
 			<!-- Relations Dlg -->
-			<p:confirmDialog widgetVar="relationsDlg" showEffect="fade"
+			<p:confirmDialog widgetVar="confirmSaveRelations" showEffect="fade"
 				hideEffect="fade" header="Confirm about Unsaved Changes"
 				message="There are some unsaved changes. Do you want to save them before you continue  ?">
 				
