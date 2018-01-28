@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -50,6 +51,7 @@ import com.dbms.service.IHistoricalViewService;
 import com.dbms.service.IMeddraDictService;
 import com.dbms.service.IRefCodeListService;
 import com.dbms.service.ISmqBaseService;
+import com.dbms.util.HistoricalViewrelationsComparator;
 import com.dbms.util.SMQLevelHelper;
 import com.dbms.util.SWJSFRequest;
 import com.dbms.view.ListRelationsVM;
@@ -154,6 +156,7 @@ public class HistoricalViewController implements Serializable {
 		TreeNode rootNode = new DefaultTreeNode("root",
 				new HierarchyNode("LEVEL", "NAME", "CODE", "SCOPE", "CATEGORY", "WEIGHT", null), null);
 		if(null != searchResults) {
+			Map<Long, List<String>> productNamesMap = new HashMap<>();
 			for (HistoricalViewDbDataDTO historicalViewDbDataDTO : searchResults) {
 				Long cmqCode = historicalViewDbDataDTO.getCmqCode();
 				if (!historicalViewDTOMap.containsKey(cmqCode)) {
@@ -161,7 +164,6 @@ public class HistoricalViewController implements Serializable {
 					historicalViewDTO.setCmqCode(cmqCode);
 					historicalViewDTO.setListName(historicalViewDbDataDTO.getListName());
 					historicalViewDTO.setListType(historicalViewDbDataDTO.getListType());
-					historicalViewDTO.setProduct(historicalViewDbDataDTO.getProduct());
 					historicalViewDTO.setDrugProgram(historicalViewDbDataDTO.getDrugProgram());
 					historicalViewDTO.setProtocolNumber(historicalViewDbDataDTO.getProtocolNumber());
 					historicalViewDTO.setListLevel(historicalViewDbDataDTO.getListLevel());
@@ -180,6 +182,17 @@ public class HistoricalViewController implements Serializable {
 					historicalViewDTO.setDesignee3(historicalViewDbDataDTO.getDesignee3());
 					historicalViewDTO.setMedicalConcept(historicalViewDbDataDTO.getMedicalConcept());
 					historicalViewDTOMap.put(cmqCode, historicalViewDTO);
+				}
+				
+				if(productNamesMap.containsKey(cmqCode)) {
+					List<String> productNamesList = productNamesMap.get(cmqCode);
+					if(!productNamesList.contains(historicalViewDbDataDTO.getProduct())) {
+						productNamesList.add(historicalViewDbDataDTO.getProduct());
+					}
+				} else {
+					List<String> productNamesList = new ArrayList<>();
+					productNamesList.add(historicalViewDbDataDTO.getProduct());
+					productNamesMap.put(cmqCode, productNamesList);
 				}
 
 				HistoricalViewDTO historicalViewDTO = historicalViewDTOMap.get(cmqCode);
@@ -210,6 +223,16 @@ public class HistoricalViewController implements Serializable {
 				}
 			}
 
+			if(productNamesMap.size() > 0) {
+				for (Long cmqCode : productNamesMap.keySet()) {
+					HistoricalViewDTO historicalViewDTO = historicalViewDTOMap.get(cmqCode);
+					List<String> productNamesList = productNamesMap.get(cmqCode);
+					String productNames = productNamesList.stream()
+	                        .collect(Collectors.joining(", "));
+					historicalViewDTO.setProduct(productNames);
+				}
+			}
+			
 			this.relationsRoot = rootNode;
 
 			if (historicalViewDTOMap.size() > 0) {
@@ -937,6 +960,7 @@ public class HistoricalViewController implements Serializable {
 		Map<Long, TreeNode> lltCodesMap = new HashMap<>();
 		this.selectedHistoricalViewDTO.setRelationsRootTreeNode(this.relationsRoot);
 		List<TreeNode> childNodes = this.relationsRoot.getChildren();
+		Collections.sort(childNodes, new HistoricalViewrelationsComparator());
 		for (TreeNode childNode : childNodes) {
 			//first clear off its children and reset the state of the node
 			childNode.getChildren().clear();
