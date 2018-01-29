@@ -8,39 +8,48 @@
 
 	<p:panel id="panelNotes"
 		header="Informative Notes for #{createController.selectedData.cmqName}">
-		
+
 		<p:remoteCommand name="saveNotesAndGoToNextStep"
-				update="@form:m1 @form:wizardId"
-				actionListener="#{createController.saveNotesAndNextStep}"
-				onstart="PF('confirmSaveNotesDlg').hide()" />
+			update="@form:m1 @form:wizardId"
+			actionListener="#{createController.saveNotesAndNextStep}"
+			onstart="PF('confirmSaveNotesDlg').hide()" />
 		<p:remoteCommand name="resetNotesAndGoToNextStep"
-				update="@form:m1 @form:wizardId"
-				actionListener="#{createController.cancelNotesAndNextStep}"
-				onstart="PF('confirmSaveNotesDlg').hide()" />
-				
-				
-		<p:remoteCommand name="saveNotes"
-				update="@form:m1 @form:wizardId"
-				actionListener="#{createController.saveNotesAndClose}"
-				onstart="PF('confirmSaveNotes').hide()" />
-						
-		<p:tabView>
+			update="@form:m1 @form:wizardId"
+			actionListener="#{createController.cancelNotesAndNextStep}"
+			onstart="PF('confirmSaveNotesDlg').hide()" />
+
+
+		<p:remoteCommand name="saveNotes" update="@form:m1 @form:wizardId"
+			action="#{createController.saveNotesAndClose}"
+			onstart="PF('confirmSaveNotes').hide()" />
+
+		<p:tabView dynamic="true">
 			<p:tab title="Description">
 				<p:inputTextarea readonly="#{createController.readOnlyState}"
-					placeholder="Please Enter Description"
+					placeholder="Please Enter Description" id="desc"
 					value="#{createController.notesFormModel.description}"
-                    required="#{createController.activeWizard.step eq 'infonotes'}" label="Description"
-					style="width: 100%; min-height: 250px" autoResize="true" />
+					required="#{createController.activeWizard.step eq 'infonotes'}"
+					label="Description" style="width: 100%; min-height: 250px"
+					autoResize="true">
+					
+					<p:ajax global="false" />
+				</p:inputTextarea>
 			</p:tab>
 			<p:tab title="Notes">
 				<p:inputTextarea value="#{createController.notesFormModel.notes}"
 					readonly="#{createController.readOnlyState}"
-					style="width: 100%; min-height: 250px" autoResize="true" />
+					style="width: 100%; min-height: 250px" autoResize="true">
+					
+					<p:ajax global="false" />
+				</p:inputTextarea>
 			</p:tab>
 			<p:tab title="Source">
 				<p:inputTextarea value="#{createController.notesFormModel.source}"
 					readonly="#{createController.readOnlyState}"
-					style="width: 100%; min-height: 250px" autoResize="true" />
+					style="width: 100%; min-height: 250px" autoResize="true">
+					
+					<p:ajax global="false" />
+				</p:inputTextarea>
 			</p:tab>
 		</p:tabView>
 
@@ -50,21 +59,41 @@
 				action="#{createController.saveInformativeNotes}"></p:commandButton>
 
 			<p:commandButton value="Cancel" icon="ui-icon-close"
-				disabled="#{createController.readOnlyState}"
-				process="@this" update="@form:m1 @form:panelNotes" style="float: right"
+				disabled="#{createController.readOnlyState}" process="@this"
+				update="@form:m1 @form:panelNotes" style="float: right"
 				actionListener="#{createController.cancelNotes}">
-				<p:confirm header="Confirm" message="Are you sure you want to erase these fields?" icon="ui-icon-alert" />
+				<p:confirm header="Confirm"
+					message="Are you sure you want to erase these fields?"
+					icon="ui-icon-alert" />
 			</p:commandButton>
 
 		</h:panelGrid>
-		
-		<p:confirmDialog widgetVar="confirmSaveNotesDlg" showEffect="fade" hideEffect="fade"
-			header="Confirm about Unsaved Changes"
+
+		<p:confirmDialog widgetVar="confirmSaveNotesDlg" showEffect="fade"
+			hideEffect="fade" header="Confirm about Unsaved Changes"
 			message="There are some unsaved changes. Do you want to save them before you continue?">
-	        <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" onclick="saveNotesAndGoToNextStep()" />
-	        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"  onclick="resetNotesAndGoToNextStep()" />
-	    </p:confirmDialog>
-					    
+			<p:commandButton value="Yes" type="button"
+				styleClass="ui-confirmdialog-yes" icon="ui-icon-check"
+				onclick="saveNotesAndGoToNextStep()" />
+			<p:commandButton value="No" type="button"
+				styleClass="ui-confirmdialog-no" icon="ui-icon-close"
+				onclick="resetNotesAndGoToNextStep()" />
+		</p:confirmDialog>
+
+		<p:confirmDialog widgetVar="confirmSaveNotes" showEffect="fade"
+			hideEffect="fade" header="Confirm about Unsaved Changes"
+			message="There are some unsaved changes. Do you want to save them before you continue ?">
+
+			<p:commandButton value="Yes" type="button"
+				styleClass="ui-confirmdialog-yes" icon="ui-icon-check"
+				onclick="saveNotes()">
+			</p:commandButton>
+			<p:commandButton value="No" styleClass="ui-confirmdialog-no"
+				immediate="true" icon="ui-icon-close"
+				action="#{applicationController.openForm}" />
+		</p:confirmDialog>
+
+
 	</p:panel>
 
 	<style>

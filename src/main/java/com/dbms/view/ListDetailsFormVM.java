@@ -1,5 +1,6 @@
 package com.dbms.view;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -27,7 +28,7 @@ import com.dbms.util.SWJSFRequest;
  * @author Andrius Mielkus(andrius.mielkus@yandex.com)
  *
  */
-public class ListDetailsFormVM {
+public class ListDetailsFormVM implements Serializable {
 	public enum WizardType { BrowseWizard, CreateWizard, UpdateWizard, CopyWizard };
     
 	private WizardType wizardType = WizardType.CreateWizard;

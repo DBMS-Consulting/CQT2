@@ -166,6 +166,7 @@ public class CreateController implements Serializable {
         this.workflowFormModel = new ListWorkflowFormVM(this.authService);
 		initAll();
 		detailDTO = new DetailDTO();
+		//this.formToOpen = "";
 	}
 	
 	public void generateExcel(List<CmqBase190> list) {
@@ -183,16 +184,21 @@ public class CreateController implements Serializable {
 	
 	@PreDestroy
 	public void onDestroy() {
-	
+		System.out.println("\n    ---- onDestroy"  );
 	}
 	
 	public boolean showConfirmDialog() {
 		boolean detailChanged = detailsFormModel.isModelChanged();
 		boolean notesChanged = notesFormModel.isModelChanged();
+		
+		//RequestContext.getCurrentInstance().execute("PF('wizard').next();");
+		
 		if (createWizard != null 
 				|| (copyWizard != null && copyingCmqCode != null && (detailChanged || notesChanged || relationsModified))
-				|| (updateWizard != null && codeSelected != null && (detailChanged || notesChanged || relationsModified)))
+				|| (updateWizard != null && codeSelected != null && (detailChanged || notesChanged || relationsModified))) {
+		
 			return true;
+		}
 		return false;
 	}
 	
@@ -200,62 +206,271 @@ public class CreateController implements Serializable {
 		String form = url + ".xhtml?faces-redirect=true";
 		setFormToOpen(form);
 		
-		/*if (showConfirmDialog()) {
-			//if (detailDTO.detailChange(detailsFormModel))
-			if (detailsFormModel.isModelChanged() && ((createWizard != null && createWizard.getStep().equals(WIZARD_STEP_DETAILS))
-					|| (updateWizard != null && updateWizard.getStep().equals(WIZARD_STEP_DETAILS))
-					|| (copyWizard != null && copyWizard.getStep().equals(WIZARD_STEP_DETAILS))))
-				RequestContext.getCurrentInstance().execute("PF('confirmSaveDetailsAll').show();");
-			else if (notesFormModel.isModelChanged() && ((createWizard != null && createWizard.getStep().equals(WIZARD_STEP_INFONOTES))
-					|| (updateWizard != null && updateWizard.getStep().equals(WIZARD_STEP_INFONOTES))
-					|| (copyWizard != null && copyWizard.getStep().equals(WIZARD_STEP_INFONOTES))))
-				RequestContext.getCurrentInstance().execute("PF('confirmSaveNotes').show();");
-			else if (relationsModified && ((createWizard != null && createWizard.getStep().equals(WIZARD_STEP_RELATIONS))
-					|| (updateWizard != null && updateWizard.getStep().equals(WIZARD_STEP_RELATIONS))
-					|| (copyWizard != null && copyWizard.getStep().equals(WIZARD_STEP_RELATIONS))))
-				RequestContext.getCurrentInstance().execute("PF('relationsDlg').show();");
-		}*/
-		if (showConfirmDialog()) {
+		if (!showConfirmDialog()) {
+			return form;
+		}
+		else {
+			 
 			if (detailsFormModel.isModelChanged()) {
 				RequestContext.getCurrentInstance().execute("PF('confirmSaveDetailsAll').show();");
-			} else if (notesChanged()) {
+			} else if (notesFormModel.isModelChanged()) {
 				RequestContext.getCurrentInstance().execute("PF('confirmSaveNotes').show();");
 			} else if (relationsModified) {
 				RequestContext.getCurrentInstance().execute("PF('confirmSaveRelations').show();");
 			}
 		}
-		else
-			return form;
 		return "";
 	}
-	
-	
-	public boolean notesChanged() {
-		if (notesFormModel != null && detailDTO != null) {
-			if (!detailDTO.getDescription().equals(notesFormModel.getDescription())  
-					|| !detailDTO.getSource().equals(notesFormModel.getSource()) 
-					|| !detailDTO.getNotes().equals(notesFormModel.getNotes()))
-				return true;
-		}
-		
-		return false;
-	}
+
 	
 	public String saveDetailsAndClose() {
-        if(detailsFormModel.validateForm()) {
+		/*if(detailsFormModel.validateForm()) {
             if(createWizard != null)
                 save();
             else if(copyWizard != null)
                 copy();
             else if(updateWizard != null)
                 update();
+            
+		}*/
+		//return formToOpen;
+        
+        if(detailsFormModel.validateForm()) {
+            if(createWizard != null) {
+            	//save();
+            	try {
+        			Long count = this.cmqBaseService.findCmqCountByCmqNameAndExtension(detailsFormModel.getExtension(), detailsFormModel.getName());
+
+        			if (count > 0) {
+        				String errorMsg = "Duplicate CMQ name ('"
+        						+ detailsFormModel.getName() + "') and extention ('"
+        						+ detailsFormModel.getExtension()
+        						+ "') found in db.";
+        				
+        				LOG.error(errorMsg);
+
+        				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, errorMsg, "");
+        				FacesContext.getCurrentInstance().addMessage(null, msg);
+
+        			} else {
+        				prepareDetailsFormSave();
+        				cmqBaseService.create(selectedData, this.authService.getUserCn()
+        						, this.authService.getUserGivenName(), this.authService.getUserSurName()
+        						, this.authService.getCombinedMappedGroupMembershipAsString());
+
+        				// retrieve the saved cmq base
+        				CmqBase190 savedEntity = cmqBaseService.findByCode(codevalue);
+                        setSelectedData(savedEntity);
+        				this.detailsFormModel.loadFromCmqBase190(selectedData);
+        				codeSelected = selectedData.getCmqCode();
+                        //set relations tab
+                        this.relationsModel.setClickedCmqCode(codeSelected);
+
+        				// save the cmq code to session
+        				FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("NEW-CMQ_BASE-ID",
+        						savedEntity.getId());
+
+        				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+        						"List '" + selectedData.getCmqName() + "' is successfully saved.", "");
+        				FacesContext.getCurrentInstance().addMessage(null, msg);
+        				
+        				setFormSaved(true); 
+        			}
+        		} catch (CqtServiceException e) {
+        			LOG.error("Exception occurred while creating CmqBase190.", e);
+        			if(selectedData.getId() != null) {
+        				// since it failed to save the record, clear the creation date/user info
+        				try {
+        					this.cmqBaseService.remove(selectedData.getCmqId(), this.authService.getUserCn()
+        							, this.authService.getUserGivenName(), this.authService.getUserSurName()
+        							, this.authService.getCombinedMappedGroupMembershipAsString());
+        				} catch (CqtServiceException e1) {
+        					//eat it. No problem here.
+        				}
+        			}
+        			
+        			//reset the on screen details.
+        			selectedData.setCmqId(null);
+        			selectedData.setCmqCode(null);
+        			selectedData.setCreationDate(null);
+        			selectedData.setCreatedBy(null);
+        			this.detailsFormModel.loadFromCmqBase190(selectedData);
+
+        			String error = CmqUtils.getExceptionMessageChain(e);
+        			
+        			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+        					"An error occurred while trying to save the details.", "Error: " + error);
+        			FacesContext.getCurrentInstance().addMessage(null, msg);
+        		}
+            }
+            else if(copyWizard != null) {
+                //copy();
+            
+            	boolean cmqSaved = false;
+        		boolean savedRelations = false;
+        		Long savedCmqId = null;
+        		Long savedCmqCode = null;
+            	try {
+        			prepareDetailsFormSave();
+        			
+        			//remoe the parent cmq from this cmq.
+        			selectedData.setCmqParentCode(null);
+        			selectedData.setCmqParentName(null);
+        			
+        			cmqBaseService.create(selectedData, this.authService.getUserCn()
+        					, this.authService.getUserGivenName(), this.authService.getUserSurName()
+        					, this.authService.getCombinedMappedGroupMembershipAsString());
+        			
+        			// retrieve the saved cmq base
+        			CmqBase190 savedEntity = cmqBaseService.findByCode(selectedData.getCmqCode());
+        			cmqSaved = true;
+        			savedCmqId = selectedData.getId();
+        			savedCmqCode = selectedData.getCmqCode();
+        			
+        			LOG.info("Successfully saved new cmq with cmq id " + savedCmqId + " and cmq_code " + savedCmqCode);
+        			
+        			long copiedCode = copyingCmqCode;
+
+        			this.copyRelationsToNewCmq(copiedCode, savedEntity);
+        			savedRelations = true;
+        			
+        			LOG.info("All updates completed.");		
+        			
+                    setSelectedData(savedEntity);
+        			this.detailsFormModel.loadFromCmqBase190(selectedData);
+        			this.detailsFormModel.setModelChanged(false);//model is saved now
+        			codeSelected = selectedData.getCmqCode();
+        			// save the cmq code to session
+        			FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("NEW-CMQ_BASE-ID",
+        					savedEntity.getId());
+
+        			LOG.info("populating relations table for new cmq with code " + savedCmqCode);
+        			
+                    relationsModel.setClickedCmqCode(savedCmqCode);
+                    FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+                            "List , Informative Notes and Relations are copied/updated successfully.", "");
+                    FacesContext.getCurrentInstance().addMessage(null, msg);
+                    
+                    setFormSaved(true);
+        		} catch (CqtServiceException e) {
+        			// roll back the selectedData
+        			setSelectedData(cmqBaseService.findByCode(copyingCmqCode));
+
+                    setCopiedCmq(selectedData);
+        			//
+        			LOG.error("Exception occurred while creating CmqBase190.", e);
+        			//delete the saves if any
+        			if(savedRelations) {
+        				List<CmqRelation190> cmqRelationList = this.cmqRelationService.findByCmqCode(savedCmqCode);
+        				for (CmqRelation190 cmqRelation190 : cmqRelationList) {
+        					try {
+        						this.cmqRelationService.remove(cmqRelation190, this.authService.getUserCn()
+        								, this.authService.getUserGivenName(), this.authService.getUserSurName()
+        								, this.authService.getCombinedMappedGroupMembershipAsString());
+        					} catch (CqtServiceException e1) {
+        						LOG.error("Exception occurred while deleting relation with relation id " + cmqRelation190.getId(), e);
+        					}
+        				}
+        			}
+        			
+        			if(cmqSaved) {
+        				try {
+        					this.cmqBaseService.remove(savedCmqId, this.authService.getUserCn()
+        												, this.authService.getUserGivenName(), this.authService.getUserSurName()
+        												, this.authService.getCombinedMappedGroupMembershipAsString());
+        				} catch (CqtServiceException e1) {
+        					LOG.error("Exception occurred while deleting cmq with id " + savedCmqId, e);
+        				}
+        			}
+        			String exceptionMessageChain = CmqUtils.getExceptionMessageChain(e);
+        			
+        			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+        					"An error occurred while trying to save the details.",
+                            "Exception is [" + exceptionMessageChain + "]");
+        			FacesContext.getCurrentInstance().addMessage(null, msg);
+
+        		}
+            }
+            else if(updateWizard != null) {
+            	 //update();
+            	try {
+        			
+        			Long count = this.cmqBaseService.findCmqCountByCmqNameAndExtension(detailsFormModel.getExtension(), detailsFormModel.getName());
+        			
+        			if(count < 2) {
+        				//we should have atmost 1
+        				prepareDetailsFormSave();
+        				cmqBaseService.update(selectedData, this.authService.getUserCn()
+        						, this.authService.getUserGivenName(), this.authService.getUserSurName()
+        						, this.authService.getCombinedMappedGroupMembershipAsString());
+        				
+        				// retrieve the saved cmq base
+        				CmqBase190 savedEntity = cmqBaseService.findByCode(selectedData.getCmqCode());		
+                        setSelectedData(savedEntity);
+        				detailsFormModel.loadFromCmqBase190(selectedData);
+
+        				// // save the cmq code to session
+        				FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("NEW-CMQ_BASE-ID",
+        						savedEntity.getId());
+
+        				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+        						"List '" + selectedData.getCmqName() + "' is successfully saved.", "");
+        				FacesContext.getCurrentInstance().addMessage(null, msg);
+        			} else {
+        				String errorMsg = "Duplicate CMQ name ('"
+        						+ detailsFormModel.getName() + "') and extention ('"
+        						+ detailsFormModel.getExtension()
+        						+ "') found in db.";
+        				
+        				LOG.error(errorMsg);
+
+        				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, errorMsg, "");
+        				FacesContext.getCurrentInstance().addMessage(null, msg);
+         			}
+        		} catch (CqtServiceException e) {
+        			LOG.error("Exception occurred while updating CmqBase190.", e);
+
+        			// rollback the data changes to the db's state
+                    setSelectedData(cmqBaseService.findByCode(selectedData.getCmqCode()));
+        			
+        			String error = CmqUtils.getExceptionMessageChain(e);
+        			
+        			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+        					"An error occurred while trying to update the details.", "Error: " + error);
+        			FacesContext.getCurrentInstance().addMessage(null, msg);
+        		}
+            }
+                
         }
-        return "formToOpen";
+        return formToOpen;
+        
 	}
 	
 	public String saveNotesAndClose() {
-		saveInformativeNotes();
+		notesFormModel.saveToCmqBase190(selectedData);
+		
+		Date d = new Date();
+		String lastModifiedByString = this.authService.getLastModifiedByUserAsString();
+		selectedData.setLastModifiedDate(d);
+		selectedData.setLastModifiedBy(lastModifiedByString);
+		
+		try {
+			this.cmqBaseService.update(selectedData, this.authService.getUserCn()
+					, this.authService.getUserGivenName(), this.authService.getUserSurName()
+					, this.authService.getCombinedMappedGroupMembershipAsString());
+			this.notesFormModel.loadFromCmqBase190(selectedData);
 
+			/*FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+					"Informative Notes are successfully saved for '" + selectedData.getCmqName() + "'", "");
+			FacesContext.getCurrentInstance().addMessage(null, msg);*/
+		} catch (CqtServiceException e) {
+			LOG.error("Exception occurred while updating CmqBase190 for add informative notes.", e);
+
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+					"An error occurred while trying to save Informative Notes.", "");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+
+		}
 		return formToOpen;  
 	}
 
@@ -399,7 +614,7 @@ public class CreateController implements Serializable {
 		return "";
 	}
 	
-	public void saveDetailsAndNextStep() {
+	public String saveDetailsAndNextStep() {
         if(detailsFormModel.validateForm()) {
             if(createWizard != null)
                 save();
@@ -407,11 +622,15 @@ public class CreateController implements Serializable {
                 copy();
             else if(updateWizard != null)
                 update();
+            
+            if (formToOpen != null && !formToOpen.equals(""))
+    			return formToOpen;
+            else
+            	goToWizardNextStep();
 
-            goToWizardNextStep();
-          
         }
-	}
+        return "";
+     }
 	
 	
 
@@ -696,6 +915,217 @@ public class CreateController implements Serializable {
 	public void updateRelationsAndNextStep(TreeNode relationsRoot) {
 		updateRelations(relationsRoot);
 		goToWizardNextStep();
+	}
+	
+	public String saveRelationsAndClose(TreeNode relationsRoot) {
+
+		if ((relationsRoot != null) && (relationsRoot.getChildCount() > 0)) {
+			Date lastModifiedDate = new Date();
+			String lastModifiedByString = this.authService.getLastModifiedByUserAsString();
+			
+			List<CmqRelation190> cmqRelationsList = new ArrayList<>();
+			List<CmqBase190> cmqBaseChildrenList = new ArrayList<>();
+			List<TreeNode> childTreeNodes = relationsRoot.getChildren();
+			//TEST laster if we really need this call.
+			CmqBase190 cmqBase = this.cmqBaseService.findByCode(selectedData.getCmqCode());
+			
+			List<CmqRelation190> existingRelation = this.cmqRelationService.findByCmqCode(selectedData.getCmqCode());
+			for (TreeNode childTreeNode : childTreeNodes) {
+				boolean matchFound = false;
+				boolean updateNeeded = false;
+				Map<String, Object> matchingMap = null;
+				HierarchyNode hierarchyNode = (HierarchyNode) childTreeNode.getData();
+				if (null != hierarchyNode) {
+					IEntity entity = hierarchyNode.getEntity();
+					if (entity instanceof CmqBase190) {
+						CmqBase190 cmqEntity = (CmqBase190) entity;
+						Long existingParentCode = cmqEntity.getCmqParentCode();
+						if((null == existingParentCode) || (existingParentCode.longValue() != cmqBase.getCmqCode().longValue())) {
+							//update only if needed
+							cmqEntity.setCmqParentCode(cmqBase.getCmqCode());
+							cmqEntity.setCmqParentName(cmqBase.getCmqName());
+							cmqBaseChildrenList.add(cmqEntity);
+						}
+					} else {
+						CmqRelation190 cmqRelation = null;						
+						if (entity instanceof MeddraDictHierarchySearchDto) {
+							MeddraDictHierarchySearchDto meddraDictHierarchySearchDto = (MeddraDictHierarchySearchDto) entity;
+							String level = hierarchyNode.getLevel();
+							long meddraDictCode = Long.parseLong(meddraDictHierarchySearchDto.getCode());
+							matchingMap = this.checkIfMeddraRelationExists(existingRelation, level, hierarchyNode);
+							matchFound = (boolean) matchingMap.get("MATCH_FOUND");
+							updateNeeded = (boolean) matchingMap.get("UPDATE_NEEDED");
+							
+							if(updateNeeded) {
+								cmqRelation = (CmqRelation190) matchingMap.get("TARGET_CMQ_RELATION_FOR_UPDATE");
+							} else {
+								cmqRelation = new CmqRelation190();
+								cmqRelation.setCmqCode(selectedData.getCmqCode());
+								cmqRelation.setCmqId(cmqBase.getId());
+								
+								// set the code first if needed
+								if (level.equalsIgnoreCase("SOC") && !matchFound) {
+									cmqRelation.setSocCode(meddraDictCode);
+								} else if (level.equalsIgnoreCase("HLGT") && !matchFound) {
+									cmqRelation.setHlgtCode(meddraDictCode);
+								} else if (level.equalsIgnoreCase("HLT") && !matchFound) {
+									cmqRelation.setHltCode(meddraDictCode);
+								} else if (level.equalsIgnoreCase("PT") && !matchFound) {
+									cmqRelation.setPtCode(meddraDictCode);
+								} else if (level.equalsIgnoreCase("LLT") && !matchFound) {
+									cmqRelation.setLltCode(meddraDictCode);
+								}
+							}
+						} else if (entity instanceof MeddraDictReverseHierarchySearchDto) {
+							MeddraDictReverseHierarchySearchDto searchDto = (MeddraDictReverseHierarchySearchDto)entity;
+							Long code = null;
+							if("PT".equalsIgnoreCase(hierarchyNode.getLevel())) {
+								code = Long.parseLong(searchDto.getPtCode());
+								matchingMap = this.checkIfReverseMeddraRelationExists(existingRelation, code, hierarchyNode);
+							} else if ("LLT".equalsIgnoreCase(hierarchyNode.getLevel())) {
+								code = Long.parseLong(searchDto.getLltCode());
+								matchingMap = this.checkIfReverseMeddraRelationExists(existingRelation, code, hierarchyNode);
+							} else if ("HLGT".equalsIgnoreCase(hierarchyNode.getLevel())) {
+								code = Long.parseLong(searchDto.getHlgtCode());
+								matchingMap = this.checkIfReverseMeddraRelationExists(existingRelation, code, hierarchyNode);
+							} else if ("HLT".equalsIgnoreCase(hierarchyNode.getLevel())) {
+								code = Long.parseLong(searchDto.getHltCode());
+								matchingMap = this.checkIfReverseMeddraRelationExists(existingRelation, code, hierarchyNode);
+							} else if ("SOC".equalsIgnoreCase(hierarchyNode.getLevel())) {
+								code = Long.parseLong(searchDto.getSocCode());
+								matchingMap = this.checkIfReverseMeddraRelationExists(existingRelation, code, hierarchyNode);
+							}
+							
+							matchFound = (boolean) matchingMap.get("MATCH_FOUND");
+							updateNeeded = (boolean) matchingMap.get("UPDATE_NEEDED");
+							if(updateNeeded) {
+								cmqRelation = (CmqRelation190) matchingMap.get("TARGET_CMQ_RELATION_FOR_UPDATE");
+							} else if(!matchFound) {
+								cmqRelation = new CmqRelation190();
+								cmqRelation.setCmqCode(selectedData.getCmqCode());
+								cmqRelation.setCmqId(cmqBase.getId());
+								if("PT".equalsIgnoreCase(hierarchyNode.getLevel())) {
+									cmqRelation.setPtCode(code);
+								} else if ("LLT".equalsIgnoreCase(hierarchyNode.getLevel())) {
+									cmqRelation.setLltCode(code);
+								}
+							}
+						} else if (entity instanceof SmqBase190) {
+							SmqBase190 smqBase = (SmqBase190) entity;
+							matchingMap = this.checkIfSmqBaseOrSmqRelationExists(existingRelation, smqBase.getSmqCode(), null, hierarchyNode);
+							matchFound = (boolean) matchingMap.get("MATCH_FOUND");
+							updateNeeded = (boolean) matchingMap.get("UPDATE_NEEDED");
+							if(updateNeeded) {
+								cmqRelation = (CmqRelation190) matchingMap.get("TARGET_CMQ_RELATION_FOR_UPDATE");
+							} else if(!matchFound) {
+								cmqRelation = new CmqRelation190();
+								cmqRelation.setCmqCode(selectedData.getCmqCode());
+								cmqRelation.setCmqId(cmqBase.getId());
+								cmqRelation.setSmqCode(smqBase.getSmqCode());
+							}
+						} else if (entity instanceof SmqRelation190) {
+							SmqRelation190 smqRelation = (SmqRelation190) entity;
+							matchingMap = this.checkIfSmqBaseOrSmqRelationExists(existingRelation, smqRelation.getSmqCode()
+																					, smqRelation.getPtCode(), hierarchyNode);
+							matchFound = (boolean) matchingMap.get("MATCH_FOUND");
+							updateNeeded = (boolean) matchingMap.get("UPDATE_NEEDED");
+							if(updateNeeded) {
+								cmqRelation = (CmqRelation190) matchingMap.get("TARGET_CMQ_RELATION_FOR_UPDATE");
+							} else if(!matchFound) {
+								cmqRelation = new CmqRelation190();
+								cmqRelation.setCmqCode(selectedData.getCmqCode());
+								cmqRelation.setCmqId(cmqBase.getId());
+								//we set both smqcode and pt code to show that this is an smq relation
+								cmqRelation.setSmqCode(smqRelation.getSmqCode());
+								cmqRelation.setPtCode(smqRelation.getPtCode().longValue());
+							}
+						} else if (entity instanceof SMQReverseHierarchySearchDto) {
+							SMQReverseHierarchySearchDto smqReverseHierarchySearchDto = (SMQReverseHierarchySearchDto) entity;
+							matchingMap = this.checkIfSmqBaseOrSmqRelationExists(existingRelation, smqReverseHierarchySearchDto.getSmqCode()
+																					, smqReverseHierarchySearchDto.getSmqCode().intValue(), hierarchyNode);
+							matchFound = (boolean) matchingMap.get("MATCH_FOUND");
+							updateNeeded = (boolean) matchingMap.get("UPDATE_NEEDED");
+							if(updateNeeded) {
+								cmqRelation = (CmqRelation190) matchingMap.get("TARGET_CMQ_RELATION_FOR_UPDATE");
+							} else if(!matchFound) {
+								cmqRelation = new CmqRelation190();
+								cmqRelation.setCmqCode(selectedData.getCmqCode());
+								cmqRelation.setCmqId(cmqBase.getId());
+								//we set both smqcode and pt code to show that this is an smq relation
+								cmqRelation.setSmqCode(smqReverseHierarchySearchDto.getSmqCode());
+								//cmqRelation.setPtCode(smqReverseHierarchySearchDto.getSmqCode());
+							}
+						}
+						
+						if(!matchFound || updateNeeded) {
+							cmqRelation.setTermWeight((!StringUtils.isBlank(hierarchyNode.getWeight()) 
+															&& !hierarchyNode.getWeight().equalsIgnoreCase("null"))
+														? Long.parseLong(hierarchyNode.getWeight()) : null);
+							cmqRelation.setTermScope(hierarchyNode.getScope());
+							cmqRelation.setTermCategory(hierarchyNode.getCategory());
+							cmqRelation.setDictionaryName(cmqBase.getDictionaryName());
+							cmqRelation.setDictionaryVersion(cmqBase.getDictionaryVersion());
+							cmqRelation.setCmqSubversion(cmqBase.getCmqSubversion());
+							if(!updateNeeded) {
+								cmqRelation.setCreationDate(lastModifiedDate);
+								cmqRelation.setCreatedBy(lastModifiedByString);
+							}
+							cmqRelation.setLastModifiedDate(lastModifiedDate);
+							cmqRelation.setLastModifiedBy(lastModifiedByString);
+							cmqRelationsList.add(cmqRelation);
+						}
+					}
+				}//end of if (null != hierarchyNode)
+			}
+			
+			if (!cmqRelationsList.isEmpty() || !cmqBaseChildrenList.isEmpty()) {
+				try {
+					if(!cmqRelationsList.isEmpty()) {
+						for (CmqRelation190 cmqRelation190 : cmqRelationsList) {
+							if(StringUtils.isBlank(cmqRelation190.getLastModifiedBy()) || cmqRelation190.getLastModifiedDate() == null) {
+								cmqRelation190.setLastModifiedBy(lastModifiedByString);
+								cmqRelation190.setLastModifiedDate(lastModifiedDate);
+							}
+							if(StringUtils.isBlank(cmqRelation190.getCreatedBy()) || cmqRelation190.getCreationDate() == null) {
+								cmqRelation190.setCreatedBy(lastModifiedByString);
+								cmqRelation190.setCreationDate(lastModifiedDate);
+							}
+						}
+						this.cmqRelationService.update(cmqRelationsList, this.authService.getUserCn()
+								, this.authService.getUserGivenName(), this.authService.getUserSurName()
+								, this.authService.getCombinedMappedGroupMembershipAsString());
+					}
+					if(!cmqBaseChildrenList.isEmpty()) {
+						
+						for (CmqBase190 cmqBase190 : cmqBaseChildrenList) {
+							cmqBase190.setLastModifiedBy(lastModifiedByString);
+							cmqBase190.setLastModifiedDate(lastModifiedDate);
+							if(StringUtils.isBlank(cmqBase190.getCreatedBy()) || cmqBase190.getCreationDate() == null) {
+								cmqBase190.setCreatedBy(lastModifiedByString);
+								cmqBase190.setCreationDate(lastModifiedDate);
+							}
+						}
+						this.cmqBaseService.update(cmqBaseChildrenList, this.authService.getUserCn()
+								, this.authService.getUserGivenName(), this.authService.getUserSurName()
+								, this.authService.getCombinedMappedGroupMembershipAsString());
+					}
+					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+							"Relations are successfully updated for '" + cmqBase.getCmqName() + "'", "");
+					FacesContext.getCurrentInstance().addMessage(null, msg);
+				} catch (CqtServiceException e) {
+					LOG.error("Exception occurred while updated the list of CmqRelations for CMQ base code "
+							+ cmqBase.getCmqCode(), e);
+
+					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+							"An error occurred while updated the list of CmqRelations for CMQ base code " + cmqBase.getCmqCode(),
+							"Error Details:" + e.getMessage());
+					FacesContext.getCurrentInstance().addMessage(null, msg);
+				}
+			}
+		}
+		relationsModified = false;	
+
+		return formToOpen;
 	}
 	
 	public void resetRelationsAndNextStep() {

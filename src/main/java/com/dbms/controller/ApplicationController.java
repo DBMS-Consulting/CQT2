@@ -1,6 +1,8 @@
 package com.dbms.controller;
 
  
+import java.io.Serializable;
+
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
@@ -9,7 +11,7 @@ import javax.faces.component.html.HtmlInputHidden;
 
 @ManagedBean
 @ViewScoped
-public class ApplicationController {
+public class ApplicationController implements Serializable {
 	
 	//private boolean formOpened;
 	private HtmlInputHidden form;

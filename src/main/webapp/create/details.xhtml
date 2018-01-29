@@ -20,7 +20,7 @@
 
 	<p:remoteCommand name="saveDetails"
 		update="@form:m1 @form:codeValue @form:wizardId"
-		actionListener="#{createController.saveDetailsAndClose}"
+		action="#{createController.saveDetailsAndClose}"
 		onstart="PF('confirmSaveDetailsAll').hide()" />
 
 	<h:panelGrid columns="3" cellpadding="5" id="detailsPanel"
@@ -42,10 +42,13 @@
 			</p:selectOneMenu>
 
 			<p:outputLabel value="* Name" />
-			<h:inputText required="#{!createController.readOnlyState}"
+			<p:inputText id="lname" required="#{!createController.readOnlyState}" autocomplete="true"
 				label="Name" disabled="#{createController.detailsFormDisabled}"
 				maxlength="200" value="#{createController.detailsFormModel.name}"
-				style="width: 300px !important" />
+				style="width: 300px !important">
+				
+				<p:ajax global="false" />
+			</p:inputText>
 
 			<p:outputLabel id="lDrug" value="* Drug Program" />
 			<p:selectOneMenu
@@ -209,7 +212,7 @@
 
 	<p:confirmDialog widgetVar="confirmSaveDetailsAll" showEffect="fade"
 		hideEffect="fade" header="Confirm about Unsaved Changes"
-		message="There are some unsaved changes. Do you want to save them before you continue?">
+		message="There are some unsaved changes. Do you want to save them before you continue ?">
 
 		<p:commandButton value="Yes" type="button"
 			styleClass="ui-confirmdialog-yes" icon="ui-icon-check"
