@@ -86,6 +86,9 @@ public class ReportController extends BaseController<CmqBase190> {
 	@ManagedProperty("#{RefCodeListService}")
 	private IRefCodeListService refCodeListService;
 	
+	@ManagedProperty("#{globalController}")
+    private GlobalController globalController;
+	
 	// Search & Filters
 	private Date reportStartDate = null;
 	private Date reportEndDate = null;
@@ -296,7 +299,8 @@ public class ReportController extends BaseController<CmqBase190> {
 	 */
 	public void generateMQReport(ListDetailsFormVM details, ListNotesFormVM notes, TreeNode relationsRoot) {
 		RefConfigCodeList currentMeddraVersionCodeList = this.refCodeListService.getCurrentMeddraVersion();
-		StreamedContent content = cmqBaseService.generateMQReport(details, notes, (currentMeddraVersionCodeList != null ? currentMeddraVersionCodeList.getValue() : ""),relationsRoot);
+		boolean filterLltFlag = this.globalController.isFilterLltsFlag();
+		StreamedContent content = cmqBaseService.generateMQReport(details, notes, (currentMeddraVersionCodeList != null ? currentMeddraVersionCodeList.getValue() : ""),relationsRoot, filterLltFlag);
 		setExcelFile(content); 
 	}
     
@@ -495,4 +499,12 @@ public class ReportController extends BaseController<CmqBase190> {
     public void setMeddraVersioningReport(String meddraVersioningReport) {
         this.meddraVersioningReport = meddraVersioningReport;
     }
+
+	public GlobalController getGlobalController() {
+		return globalController;
+	}
+
+	public void setGlobalController(GlobalController globalController) {
+		this.globalController = globalController;
+	}
 }

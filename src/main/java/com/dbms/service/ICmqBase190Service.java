@@ -56,7 +56,7 @@ public interface ICmqBase190Service extends ICqtPersistenceService<CmqBase190> {
 
 	StreamedContent generateExcelReport(ListDetailsFormVM details, String dictionaryVersion);
 
-	StreamedContent generateMQReport(ListDetailsFormVM details, ListNotesFormVM notes, String dictionaryVersion, TreeNode relationsRoot);
+	StreamedContent generateMQReport(ListDetailsFormVM details, ListNotesFormVM notes, String dictionaryVersion, TreeNode relationsRoot, boolean filterLlts);
 
 	Boolean checkIfCmqNamqExists(String cmqName);
 
