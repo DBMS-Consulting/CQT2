@@ -1289,7 +1289,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 
 		List<Future<MQReportRelationsWorkerDTO>> futures = new ArrayList<>();
 		int workerId = 1;
-		ExecutorService executorService = Executors.newFixedThreadPool(12);
+		ExecutorService executorService = Executors.newFixedThreadPool(8);
 		List<TreeNode> childTreeNodes = relationsRoot.getChildren();
 		Map<String,String> relationScopeMap = new HashMap<>();
 		
