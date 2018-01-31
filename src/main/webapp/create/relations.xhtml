@@ -348,6 +348,24 @@
 		action="#{createController.saveRelationsAndClose(createController.relationsModel.relationsRoot)}"
 		onstart="PF('confirmSaveRelations').hide()" />
 	<!-- Relations Dlg -->
+	
+	<p:confirmDialog widgetVar="sessionSaveRelationsConfirm" showEffect="fade"
+		hideEffect="fade" header="Inactive session"
+		message=" If session is inactive for longer than 10mins, you can lose data. Please click on Yes to save the data.">
+
+		<p:commandButton value="Yes" type="button"
+			styleClass="ui-confirmdialog-yes" icon="ui-icon-check"
+			onclick="sessionSave()">
+		</p:commandButton>
+
+		<p:commandButton value="No" styleClass="ui-confirmdialog-no" immediate="true" ajax="false"
+			icon="ui-icon-close" action="#{applicationController.redirectHome}" />
+	</p:confirmDialog>
+	
+	<p:remoteCommand name="sessionSave"
+		update="@form"
+		action="#{createController.saveRelationsAndClose(createController.relationsModel.relationsRoot)}"
+		onstart="PF('sessionSaveRelationsConfirm').hide()" />
 
 
 	<style>

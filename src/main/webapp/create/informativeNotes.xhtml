@@ -31,7 +31,7 @@
 					required="#{createController.activeWizard.step eq 'infonotes'}"
 					label="Description" style="width: 100%; min-height: 250px"
 					autoResize="true">
-					
+
 					<p:ajax global="false" />
 				</p:inputTextarea>
 			</p:tab>
@@ -39,7 +39,7 @@
 				<p:inputTextarea value="#{createController.notesFormModel.notes}"
 					readonly="#{createController.readOnlyState}"
 					style="width: 100%; min-height: 250px" autoResize="true">
-					
+
 					<p:ajax global="false" />
 				</p:inputTextarea>
 			</p:tab>
@@ -47,7 +47,7 @@
 				<p:inputTextarea value="#{createController.notesFormModel.source}"
 					readonly="#{createController.readOnlyState}"
 					style="width: 100%; min-height: 250px" autoResize="true">
-					
+
 					<p:ajax global="false" />
 				</p:inputTextarea>
 			</p:tab>
@@ -92,6 +92,25 @@
 				immediate="true" icon="ui-icon-close"
 				action="#{applicationController.openForm}" />
 		</p:confirmDialog>
+
+		<p:confirmDialog widgetVar="sessionSaveNotesConfirm" showEffect="fade"
+			hideEffect="fade" header="Inactive session"
+			message=" If session is inactive for longer than 10mins, you can lose data. Please click on Yes to save the data.">
+
+			<p:commandButton value="Yes" type="button"
+				styleClass="ui-confirmdialog-yes" icon="ui-icon-check"
+				onclick="sessionSave()">
+			</p:commandButton>
+
+			<p:commandButton value="No" styleClass="ui-confirmdialog-no" ajax="false"
+				immediate="true" icon="ui-icon-close"
+				action="#{applicationController.redirectHome}" />
+		</p:confirmDialog>
+
+		<p:remoteCommand name="sessionSave"
+			update="@form:m1 @form:wizardId"
+			action="#{createController.saveNotesAndClose}"
+			onstart="PF('sessionSaveNotesConfirm').hide()" />
 
 
 	</p:panel>

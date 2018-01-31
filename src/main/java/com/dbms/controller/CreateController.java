@@ -153,7 +153,7 @@ public class CreateController implements Serializable {
 	private DetailDTO detailDTO;
 	
 	private StreamedContent excelFile;
-
+	boolean detailB, notesB, relationsB;
 	
 	public CreateController() {
 		setSelectedData(null);
@@ -221,7 +221,26 @@ public class CreateController implements Serializable {
 		}
 		return "";
 	}
-
+	
+	
+	 
+	//TO MOVE TOAPP CONTROLLER
+	 public void onIdle() {
+		 setFormToOpen("index.xhtml?faces-redirect=true"); 
+		 if (showConfirmDialog()) {				 
+			if (detailsFormModel.isModelChanged()) {
+				detailB = true;
+				RequestContext.getCurrentInstance().execute("PF('sessionSaveDetailsConfirm').show();");
+			} else if (notesFormModel.isModelChanged()) {
+				notesB = true;
+				RequestContext.getCurrentInstance().execute("PF('sessionSaveNotesConfirm').show();");
+			} else if (relationsModified) {
+				relationsB = true;
+				RequestContext.getCurrentInstance().execute("PF('sessionSaveRelationsConfirm').show();");
+			}
+		}
+	 }
+	//TO MOVE TOAPP CONTROLLER
 	
 	public String saveDetailsAndClose() {
 		/*if(detailsFormModel.validateForm()) {

@@ -222,5 +222,23 @@
 		<p:commandButton value="No" styleClass="ui-confirmdialog-no" immediate="true"
 			icon="ui-icon-close" action="#{applicationController.openForm}" />
 	</p:confirmDialog>
+	
+	<p:confirmDialog widgetVar="sessionSaveDetailsConfirm" showEffect="fade"
+		hideEffect="fade" header="Inactive session"
+		message=" If session is inactive for longer than 10mins, you can lose data. Please click on Yes to save the data.">
+
+		<p:commandButton value="Yes" type="button"
+			styleClass="ui-confirmdialog-yes" icon="ui-icon-check"
+			onclick="sessionSave()">
+		</p:commandButton>
+
+		<p:commandButton value="No" styleClass="ui-confirmdialog-no" immediate="true" ajax="false"
+			icon="ui-icon-close" action="index.xhtml?faces-redirect=true" />
+	</p:confirmDialog>
+	
+	<p:remoteCommand name="sessionSave"
+		update="@form:m1 @form:codeValue @form:wizardId"
+		action="#{createController.saveDetailsAndClose}"
+		onstart="PF('sessionSaveDetailsConfirm').hide()" />
 
 </ui:composition>

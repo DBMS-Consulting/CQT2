@@ -114,31 +114,32 @@
 			</p:dialog>
 		</h:form>
 		<h:form>
-				
+
 			<p:menubar id="menubar">
-				<p:menuitem value="Create" id="pt_cmi1" update="@form" 
+				<p:menuitem value="Create" id="pt_cmi1" update="@form"
 					action="#{createController.initForm('/create/create')}"
 					styleClass="#{view.viewId == '/create/create.xhtml' ? 'ui-state-active2' : ''}"
 					style="font-weight:#{userBean.currentMenu eq 'CREATE_NEW_NMQ' ? 'bold' : 'normal'}"
 					rendered="#{AuthenticationService.getPermissonByUri('/create/create.xhtml')}">
 				</p:menuitem>
 
-				<p:menuitem value="Update" id="pt_cmi3" update="@form" 
+				<p:menuitem value="Update" id="pt_cmi3" update="@form"
 					action="#{createController.initForm('/create/update')}"
 					styleClass="#{view.viewId == '/create/update.xhtml' ? 'ui-state-active2' : ''}"
 					style="font-weight:#{userBean.currentMenu eq 'UPDATE_NMQ' ? 'bold' : 'normal'};"
 					rendered="#{AuthenticationService.getPermissonByUri('/create/update.xhtml')}" />
 
-				<p:menuitem value="Copy" id="pt_cmi5" 
-					action="#{createController.initForm('/create/copy')}" update="@form"
+				<p:menuitem value="Copy" id="pt_cmi5"
+					action="#{createController.initForm('/create/copy')}"
+					update="@form"
 					styleClass="#{view.viewId == '/create/copy.xhtml' ? 'ui-state-active2' : ''}"
 					style="font-weight:#{userBean.currentMenu eq 'COPY_NMQ' ? 'bold' : 'normal'};"
 					rendered="#{AuthenticationService.getPermissonByUri('/create/copy.xhtml')}">
-					
+
 					<p:ajax />
 				</p:menuitem>
 
- 				<p:menuitem value="Browse &amp; Search" id="pt_cmi17" update="@form"
+				<p:menuitem value="Browse &amp; Search" id="pt_cmi17" update="@form"
 					action="#{createController.initForm('/create/browseAndSearch')}"
 					styleClass="#{view.viewId == '/create/browseAndSearch.xhtml' ? 'ui-state-active2' : ''}"
 					style="font-weight:#{userBean.currentMenu eq 'BROWSE_SEARCH' ? 'bold' : 'normal'};"
@@ -263,11 +264,22 @@
 			<h:inputHidden value="#{createController.formToOpen}"
 				binding="#{applicationController.form}" />
 
-			<!-- AUTO SAVE -->
+			<!-- Session SAVE -->
+	<p:growl id="ms" showDetail="true" sticky="true" />
 
-			
+		<p:idleMonitor timeout="120000">
+			<!-- <p:ajax event="idle" listener="#{applicationController.onIdle}"
+				update="ms" />
+			<p:ajax event="active" listener="#{applicationController.onActive}"
+				update="ms" /> -->
 
-			<!-- AUTO SAVE -->
+			<p:ajax event="idle" listener="#{createController.onIdle}"
+				update="@form" />
+
+		</p:idleMonitor>
+
+
+			<!-- Session SAVE -->
 		</h:form>
 		<p:spacer width="10" height="5" id="pt_s1" />
 		<div id="panel-content">
@@ -285,6 +297,22 @@
 		<!-- <img src="/image/ajax-loader.gif" /> -->
  			Loading...
  	</p:dialog>
+
+
+
+
+
+
+
+	<h:form prependId="false">
+
+	
+
+
+	</h:form>
+
+
+
 	<style>
 .ui-state-active2 {
 	font-weight: bold !important;
@@ -293,27 +321,6 @@
 	color: #fff !important;
 	border-radius: 5px;
 }
-/* 
-.ui-widget .ui-widget {
-	font-size: 12px !important;
-}
-.ui-panelgrid-cell, .ui-panelgrid {
-	border: none !important;
-}
-.ui-inputfield, .ui-widget-content .ui-inputfield, .ui-widget-header .ui-inputfield
-	{
-	min-width: 200px !important;
-}
-.ui-wizard-step-title, .ui-menuitem-link {
-	font-size: 12px !important;
-}
- */
-/* .ui-icon-DELETE {
-	background-image: url("/resources/images/DELETE.PNG") !important;
-}
-.ui-icon-REFRESH {
-	background-image: url("/resources/images/REFRESH.PNG") !important;
-} */
 </style>
 </h:body>
 </html>
