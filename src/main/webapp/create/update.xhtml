@@ -34,7 +34,7 @@
 						<ui:include src="details.xhtml" />
 						
 						<h:panelGrid columns="2">
-							<p:commandButton value="Save" icon="ui-icon-disk" disabled="#{createController.readOnlyState}"
+							<p:commandButton value="Save" icon="ui-icon-disk" disabled="#{createController.readOnlyState}" process="@this"
 								update="@form:m1 @form:codeValue @form:detailsPanel" actionListener="#{createController.update}"
                                 action="#{searchController.setDataModified(true)}" />
 							

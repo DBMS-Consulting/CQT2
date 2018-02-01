@@ -37,7 +37,7 @@
 					var="extension" itemLabel="#{extension.value}"
 					itemValue="#{extension.codelistInternalValue}" />
 
-				<p:ajax listener="#{createController.changeLevel}"
+				<p:ajax listener="#{createController.changeLevel}" global="false"
 					update="level lProtocol protocol drug lDrug product lProduct @this" />
 			</p:selectOneMenu>
 
@@ -62,7 +62,7 @@
 					var="program" itemLabel="#{program.value}"
 					itemValue="#{program.codelistInternalValue}" />
 
-				<p:ajax update="@this" />
+				<p:ajax update="@this" global="false" />
 			</p:selectOneMenu>
 
 			<p:outputLabel id="lProtocol" value="* Protocol" />
@@ -77,7 +77,7 @@
 					var="protocol" itemLabel="#{protocol.value}"
 					itemValue="#{protocol.codelistInternalValue}" />
 
-				<p:ajax update="@this" />
+				<p:ajax update="@this" global="false" />
 			</p:selectOneMenu>
 
 			<p:outputLabel id="lProduct" value="* Product" rendered="true" />
@@ -95,7 +95,7 @@
 				<f:attribute name="minLimit"
 					value="#{createController.readOnlyState ? 0 : 1}" />
 				<f:attribute name="validatorLabel" value="Product" />
-				<p:ajax />
+				<p:ajax global="false" />
 			</p:selectCheckboxMenu>
 
 			<p:outputLabel value="* Designee" />
@@ -108,7 +108,7 @@
 				<f:selectItems
 					value="#{createController.detailsFormModel.designeeList}" var="d"
 					itemLabel="#{d.fullName}" itemValue="#{d.userName}" />
-				<p:ajax update="@this" />
+				<p:ajax update="@this" global="false" />
 			</p:selectOneMenu>
 		</h:panelGrid>
 
@@ -122,7 +122,7 @@
 				<f:selectItems
 					value="#{createController.detailsFormModel.designeeList}" var="d"
 					itemLabel="#{d.fullName}" itemValue="#{d.userName}" />
-				<p:ajax update="@this" />
+				<p:ajax update="@this" global="false" />
 			</p:selectOneMenu>
 
 			<p:outputLabel value="Designee 3" />
@@ -134,7 +134,7 @@
 				<f:selectItems
 					value="#{createController.detailsFormModel.designeeList}" var="d"
 					itemLabel="#{d.fullName}" itemValue="#{d.userName}" />
-				<p:ajax update="@this" />
+				<p:ajax update="@this" global="false" />
 			</p:selectOneMenu>
 
 			<p:outputLabel value="* Level" />
@@ -148,7 +148,7 @@
 				<f:selectItem itemValue="3" itemLabel="3" />
 				<f:selectItem itemValue="4" itemLabel="4" />
 				<f:selectItem itemValue="5" itemLabel="5" />
-				<p:ajax update="@this" />
+				<p:ajax update="@this" global="false" />
 			</p:selectOneMenu>
 			<!-- <p:inputText rendered="#{createController.disableLevel(createController.detailsFormModel)}" id="levelI" disabled="true" value="#{createController.detailsFormModel.level}"
                  styleClass="uppercase"></p:inputText> -->

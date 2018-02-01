@@ -224,18 +224,15 @@ public class CreateController implements Serializable {
 	
 	
 	 
-	//TO MOVE TOAPP CONTROLLER
+	//TO MOVE TO APP CONTROLLER
 	 public void onIdle() {
 		 setFormToOpen("index.xhtml?faces-redirect=true"); 
 		 if (showConfirmDialog()) {				 
 			if (detailsFormModel.isModelChanged()) {
-				detailB = true;
 				RequestContext.getCurrentInstance().execute("PF('sessionSaveDetailsConfirm').show();");
 			} else if (notesFormModel.isModelChanged()) {
-				notesB = true;
 				RequestContext.getCurrentInstance().execute("PF('sessionSaveNotesConfirm').show();");
 			} else if (relationsModified) {
-				relationsB = true;
 				RequestContext.getCurrentInstance().execute("PF('sessionSaveRelationsConfirm').show();");
 			}
 		}

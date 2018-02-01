@@ -30,7 +30,7 @@
 						<ui:include src="details.xhtml" />
 
 						<h:panelGrid columns="2">
-							<p:commandButton value="Save" icon="ui-icon-disk"
+							<p:commandButton value="Save" icon="ui-icon-disk" process="@this"
 								update="@form:m1 @form:detailsPanel @form:codeValue" actionListener="#{createController.copy}"
                                 action="#{searchController.setDataModified(true)}" />
 
