@@ -1112,7 +1112,7 @@ public class HistoricalViewController implements Serializable {
 		if(null == this.cmqBaseDTOSelectList) {
 			List<RefConfigCodeList> dict = new ArrayList<RefConfigCodeList>();
 			dict.add(refCodeListService.getCurrentMeddraVersion());
-			dict.add(refCodeListService.getTargetMeddraVersion());
+			//dict.add(refCodeListService.getTargetMeddraVersion());
 			List<CmqBaseDTO> results = this.auditTrailService.findLists(dict);
 			this.cmqBaseDTOSelectList = new ArrayList<>(results);
 			

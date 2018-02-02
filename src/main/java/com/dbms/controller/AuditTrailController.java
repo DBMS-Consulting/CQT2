@@ -120,7 +120,7 @@ public class AuditTrailController implements Serializable {
 	public List<CmqBaseDTO> selectList() {
 		List<RefConfigCodeList> dict = new ArrayList<RefConfigCodeList>();
 		dict.add(refCodeListService.getCurrentMeddraVersion());
-		dict.add(refCodeListService.getTargetMeddraVersion());
+		//dict.add(refCodeListService.getTargetMeddraVersion());
 		
  		return this.auditTrailService.findLists(dict);
 	}
