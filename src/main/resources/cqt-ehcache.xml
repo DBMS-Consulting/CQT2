@@ -10,6 +10,81 @@
 		overflowToDisk="false" diskPersistent="false"
 		memoryStoreEvictionPolicy="LRU" />
 
+	<cache name="OPENCQT.CMQ_PRODUCT_BASE_CURRENT" maxElementsInMemory="50000"
+		eternal="false" timeToIdleSeconds="1800" timeToLiveSeconds="3600"
+		overflowToDisk="false" diskPersistent="false"
+		memoryStoreEvictionPolicy="LRU" transactionalMode="off" />
+
+	<cache name="com.dbms.entity.cqt.CmqProductBaseCurrent"
+		maxElementsInMemory="50000" eternal="false" timeToIdleSeconds="1800"
+		timeToLiveSeconds="3600" overflowToDisk="false" diskPersistent="false"
+		memoryStoreEvictionPolicy="LRU" transactionalMode="off" />
+
+	<cache name="com.dbms.entity.cqt.CmqProductBaseTarget"
+		maxElementsInMemory="50000" eternal="false" timeToIdleSeconds="1800"
+		timeToLiveSeconds="3600" overflowToDisk="false" diskPersistent="false"
+		memoryStoreEvictionPolicy="LRU" transactionalMode="off" />
+
+	<cache name="com.dbms.entity.cqt.CmqRelation190"
+		maxElementsInMemory="50000" eternal="false" timeToIdleSeconds="1800"
+		timeToLiveSeconds="3600" overflowToDisk="false" diskPersistent="false"
+		memoryStoreEvictionPolicy="LRU" transactionalMode="off" />
+
+	<cache name="com.dbms.entity.cqt.CmqRelationTarget"
+		maxElementsInMemory="50000" eternal="false" timeToIdleSeconds="1800"
+		timeToLiveSeconds="3600" overflowToDisk="false" diskPersistent="false"
+		memoryStoreEvictionPolicy="LRU" transactionalMode="off" />
+
+	<cache name="com.dbms.entity.cqt.MeddraDict190"
+		maxElementsInMemory="50000" eternal="false" timeToIdleSeconds="1800"
+		timeToLiveSeconds="3600" overflowToDisk="false" diskPersistent="false"
+		memoryStoreEvictionPolicy="LRU" transactionalMode="off" />
+
+	<cache name="com.dbms.entity.cqt.MeddraDictTarget"
+		maxElementsInMemory="50000" eternal="false" timeToIdleSeconds="1800"
+		timeToLiveSeconds="3600" overflowToDisk="false" diskPersistent="false"
+		memoryStoreEvictionPolicy="LRU" transactionalMode="off" />
+
+	<cache name="com.dbms.entity.cqt.ProductConfigCodeList"
+		maxElementsInMemory="50000" eternal="false" timeToIdleSeconds="1800"
+		timeToLiveSeconds="3600" overflowToDisk="false" diskPersistent="false"
+		memoryStoreEvictionPolicy="LRU" transactionalMode="off" />
+
+	<cache name="com.dbms.entity.cqt.ProgramConfigCodeList"
+		maxElementsInMemory="50000" eternal="false" timeToIdleSeconds="1800"
+		timeToLiveSeconds="3600" overflowToDisk="false" diskPersistent="false"
+		memoryStoreEvictionPolicy="LRU" transactionalMode="off" />
+
+	<cache name="com.dbms.entity.cqt.ProtocolConfigCodeList"
+		maxElementsInMemory="50000" eternal="false" timeToIdleSeconds="1800"
+		timeToLiveSeconds="3600" overflowToDisk="false" diskPersistent="false"
+		memoryStoreEvictionPolicy="LRU" transactionalMode="off" />
+
+	<cache name="com.dbms.entity.cqt.RefConfigCodeList"
+		maxElementsInMemory="50000" eternal="false" timeToIdleSeconds="1800"
+		timeToLiveSeconds="3600" overflowToDisk="false" diskPersistent="false"
+		memoryStoreEvictionPolicy="LRU" transactionalMode="off" />
+
+	<cache name="com.dbms.entity.cqt.SmqBase190" maxElementsInMemory="50000"
+		eternal="false" timeToIdleSeconds="1800" timeToLiveSeconds="3600"
+		overflowToDisk="false" diskPersistent="false"
+		memoryStoreEvictionPolicy="LRU" transactionalMode="off" />
+
+	<cache name="com.dbms.entity.cqt.SmqBaseTarget"
+		maxElementsInMemory="50000" eternal="false" timeToIdleSeconds="1800"
+		timeToLiveSeconds="3600" overflowToDisk="false" diskPersistent="false"
+		memoryStoreEvictionPolicy="LRU" transactionalMode="off" />
+
+	<cache name="com.dbms.entity.cqt.SmqRelation190"
+		maxElementsInMemory="50000" eternal="false" timeToIdleSeconds="1800"
+		timeToLiveSeconds="3600" overflowToDisk="false" diskPersistent="false"
+		memoryStoreEvictionPolicy="LRU" transactionalMode="off" />
+
+	<cache name="com.dbms.entity.cqt.SmqRelationTarget"
+		maxElementsInMemory="50000" eternal="false" timeToIdleSeconds="1800"
+		timeToLiveSeconds="3600" overflowToDisk="false" diskPersistent="false"
+		memoryStoreEvictionPolicy="LRU" transactionalMode="off" />
+
 	<cache name="code-list-cache" maxElementsInMemory="50000"
 		diskPersistent="false" overflowToDisk="false" overflowToOffHeap="false"
 		eternal="false" timeToIdleSeconds="1200" timeToLiveSeconds="1800"
@@ -27,35 +102,5 @@
 		timeToLiveSeconds="3600" overflowToDisk="false" diskPersistent="false"
 		memoryStoreEvictionPolicy="LRU" transactionalMode="off">
 	</cache>
-
-	<cache name="com.dbms.entity.cqt.CmqBase190" maxElementsInMemory="50000"
-		eternal="false" timeToIdleSeconds="1800" timeToLiveSeconds="3600"
-		overflowToDisk="false" diskPersistent="false"
-		memoryStoreEvictionPolicy="LRU" transactionalMode="off" />
-
-	<cache name="com.dbms.entity.cqt.CmqBaseTarget"
-		maxElementsInMemory="50000" eternal="false" timeToIdleSeconds="1800"
-		timeToLiveSeconds="3600" overflowToDisk="false" diskPersistent="false"
-		memoryStoreEvictionPolicy="LRU" transactionalMode="off" />
-
-	<cache name="com.dbms.entity.cqt.CmqProductBaseCurrent"
-		maxElementsInMemory="50000" eternal="false" timeToIdleSeconds="1800"
-		timeToLiveSeconds="3600" overflowToDisk="false" diskPersistent="false"
-		memoryStoreEvictionPolicy="LRU" transactionalMode="off" />
-
-	<cache name="com.dbms.entity.cqt.CmqRelation190"
-		maxElementsInMemory="50000" eternal="false" timeToIdleSeconds="1800"
-		timeToLiveSeconds="3600" overflowToDisk="false" diskPersistent="false"
-		memoryStoreEvictionPolicy="LRU" transactionalMode="off" />
-
-	<cache name="com.dbms.entity.cqt.MeddraDict190"
-		maxElementsInMemory="50000" eternal="false" timeToIdleSeconds="1800"
-		timeToLiveSeconds="3600" overflowToDisk="false" diskPersistent="false"
-		memoryStoreEvictionPolicy="LRU" transactionalMode="off" />
-
-	<cache name="com.dbms.entity.cqt.RefConfigCodeList"
-		maxElementsInMemory="50000" eternal="false" timeToIdleSeconds="1800"
-		timeToLiveSeconds="3600" overflowToDisk="false" diskPersistent="false"
-		memoryStoreEvictionPolicy="LRU" transactionalMode="off" />
-
+	
 </ehcache>

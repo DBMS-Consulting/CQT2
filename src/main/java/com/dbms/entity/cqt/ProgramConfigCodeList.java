@@ -2,6 +2,7 @@ package com.dbms.entity.cqt;
 
 import java.util.Date;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,6 +11,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.GenericGenerator;
 
 import com.dbms.entity.BaseEntity;
@@ -19,6 +22,8 @@ import com.dbms.entity.BaseEntity;
  * @date Feb 11, 2017 6:39:33 AM
  **/
 @Entity
+@Cacheable
+@Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 @Table(name="PROGRAM_CONFIG_CODELIST")
 public class ProgramConfigCodeList extends BaseEntity {
 

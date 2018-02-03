@@ -2,6 +2,7 @@ package com.dbms.entity.cqt;
 
 import java.util.Date;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -22,6 +23,7 @@ import com.dbms.entity.BaseEntity;
  * @date Feb 10, 2017 8:46:36 AM
  **/
 @Entity
+@Cacheable
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 @Table(name = "MEDDRA_DICT_CURRENT")
 public class MeddraDict190 extends BaseEntity {

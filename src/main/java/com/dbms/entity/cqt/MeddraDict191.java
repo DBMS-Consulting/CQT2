@@ -2,6 +2,7 @@ package com.dbms.entity.cqt;
 
 import java.util.Date;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,6 +13,9 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 import com.dbms.entity.BaseEntity;
 
 /**
@@ -19,6 +23,8 @@ import com.dbms.entity.BaseEntity;
  * @date Feb 10, 2017 8:46:36 AM
  **/
 @Entity
+@Cacheable
+@Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 @Table(name="MEDDRA_DICT_191")
 @SequenceGenerator(name = "ID_GENERATOR", sequenceName = "SEQ_MEDDRA_DICT_191")
 public class MeddraDict191 extends BaseEntity{

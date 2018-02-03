@@ -1,9 +1,13 @@
 package com.dbms.entity.cqt;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import com.dbms.entity.BaseEntity;
 
@@ -12,6 +16,8 @@ import com.dbms.entity.BaseEntity;
  * @date Feb 11, 2017 6:21:09 AM
  **/
 @Entity
+@Cacheable
+@Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 @Table(name = "SMQ_RELATIONS_CURRENT")
 public class SmqRelation190 extends BaseEntity {
 

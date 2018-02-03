@@ -3,6 +3,7 @@ package com.dbms.entity.cqt;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -19,6 +20,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import com.dbms.entity.BaseEntity;
 
 @Entity
+@Cacheable
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 @Table(name = "REF_CONFIG_CODELIST")
 public class RefConfigCodeList extends BaseEntity {

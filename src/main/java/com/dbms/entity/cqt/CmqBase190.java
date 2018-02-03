@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
+import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -30,6 +31,7 @@ import com.dbms.entity.BaseEntity;
 import javax.persistence.Transient;
 
 @Entity
+@Cacheable
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 @Table(name = "CMQ_BASE_CURRENT")
 public class CmqBase190 extends BaseEntity {
@@ -164,11 +166,13 @@ public class CmqBase190 extends BaseEntity {
 	@Column(name = "CMQ_APPROVE_REASON", length = 4000)
 	private String cmqApproveReason;
 	
+	@Cache (usage=CacheConcurrencyStrategy.READ_WRITE)
 	@OneToMany(cascade=CascadeType.ALL, mappedBy="cmqBaseCurrent", fetch=FetchType.EAGER, orphanRemoval=true)
 	private List<CmqProductBaseCurrent> productsList;
     
     @Transient
     private CmqBaseTarget cmqBaseTarget;
+    
     @Transient
     private transient boolean cmqBaseTargetSet = false;
     

@@ -26,6 +26,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.persistence.CacheStoreMode;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.persistence.TemporalType;
@@ -219,6 +220,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 			}
 			
 			query.setHint("org.hibernate.cacheable", true);
+			query.setHint("javax.persistence.cache.storeMode", CacheStoreMode.USE);
 			
 			retVal = query.getResultList();
 		} catch (Exception e) {
