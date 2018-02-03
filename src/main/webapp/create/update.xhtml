@@ -12,7 +12,7 @@
             
 			<h:panelGrid columns="2" style="width: 100% !important">
                 <p:breadCrumb styleClass="breadcrumb">
-                    <p:menuitem value="Home" url="/index.xhtml" />
+                    <p:menuitem value="Home" immediate="true" action="#{createController.initForm('/index')}" />
                     <p:menuitem value="Update" />
                 </p:breadCrumb>
 			</h:panelGrid>

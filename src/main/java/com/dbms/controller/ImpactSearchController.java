@@ -244,6 +244,8 @@ public class ImpactSearchController implements Serializable {
 	}
 	
 	public String openForm() {
+		RequestContext.getCurrentInstance().execute("PF('confirmIASaveDetails').hide();");
+		RequestContext.getCurrentInstance().execute("PF('confirmIASaveNotes').hide();");
 		return formToOpen;
 	}
 	

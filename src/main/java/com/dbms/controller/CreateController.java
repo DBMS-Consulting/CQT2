@@ -209,6 +209,8 @@ public class CreateController implements Serializable {
 			return form;
 		}
 		else {
+			if (createWizard != null && detailsFormModel.getName() != null && detailsFormModel.getName().equals(""))
+				detailsFormModel.setModelChanged(true);
 			 
 			if (detailsFormModel.isModelChanged()) {
 				RequestContext.getCurrentInstance().execute("PF('confirmSaveDetailsAll').show();");
@@ -224,7 +226,15 @@ public class CreateController implements Serializable {
 		return form;
 	}
 	
+	/*public boolean formOpened() {
+		if (detailsFormModel.getName() != null && detailsFormModel.getName().equals(""))
+			return true;
+		return false;
+	}*/
+	
 	public String openForm() {
+		RequestContext.getCurrentInstance().execute("PF('confirmSaveNotes').hide();");
+		RequestContext.getCurrentInstance().execute("PF('confirmSaveRelations').hide();");
 		return formToOpen;
 	}
 	
