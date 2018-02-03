@@ -1441,18 +1441,18 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		cell.setCellValue("User name: " + user);
 
 		rowCount++;
-		Calendar cal = Calendar.getInstance();
+		//Calendar cal = Calendar.getInstance();
 		//.setTime(new Date());
-		String date = getWeekDay(cal.get(Calendar.DAY_OF_WEEK)) + ", " + 
+		/*String date = getWeekDay(cal.get(Calendar.DAY_OF_WEEK)) + ", " + 
 				getTwoDigits(cal.get(Calendar.DAY_OF_MONTH) + 1) + "-" + 
 				getMonth(cal.get(Calendar.MONTH)) + "-" + 
 				cal.get(Calendar.YEAR) + " : " + 
 				getTwoDigits(cal.get(Calendar.HOUR)) + ":" + 
 				getTwoDigits(cal.get(Calendar.MINUTE)) + ":" + 
-				getTwoDigits(cal.get(Calendar.SECOND)) + " EST";
+				getTwoDigits(cal.get(Calendar.SECOND)) + " EST";*/
 		row = worksheet.createRow(rowCount);
 		cell = row.createCell(0);
-		cell.setCellValue("Report Date/Time: " + date);
+		cell.setCellValue("Report Date/Time: " + new Date().toString());
 		
 		
 		cell = row.createCell(1);
