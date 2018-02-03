@@ -2026,7 +2026,7 @@ public class CreateController implements Serializable {
 		return products;
 	}
 	
-	public void reloadRelationsOnFilterLltFlagToggle(AjaxBehaviorEvent event) {
+	public void reloadRelationsOnFilterLltFlagToggle() {
 		if(null != this.getRelationsModel()) {
 			boolean filterLltFlag = this.globalController.isFilterLltsFlag();
 			this.getRelationsModel().hanldeFilterLltFlagToggle(filterLltFlag);

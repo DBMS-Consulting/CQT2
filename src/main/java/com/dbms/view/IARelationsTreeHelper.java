@@ -1579,6 +1579,7 @@ public class IARelationsTreeHelper {
 	public void populateCmqRelations(Long cmqCode, TreeNode expandedTreeNode, String cmqType, String uiSourceOfEvent, IEntity entityExpanded) {
         boolean bCurrentList = "current".equalsIgnoreCase(cmqType);
         boolean bEventFromTargetTable = "target-table".equalsIgnoreCase(uiSourceOfEvent);
+        boolean filterLltFlag = this.globalController.isFilterLltsFlag();
         
 		Map<Long, IEntity> socCodesMap = new HashMap<>();
 		Map<Long, IEntity> hlgtCodesMap = new HashMap<>();
@@ -1727,7 +1728,7 @@ public class IARelationsTreeHelper {
 				this.populateCmqRelationTreeNodes(ptDtos, expandedTreeNode, "PT", "LLT", cmqType, cmqCode, ptCodesMap, uiSourceOfEvent, entityExpanded);
 			}
 			
-			if(lltCodesMap.size() > 0) {
+			if(!filterLltFlag && lltCodesMap.size() > 0) {
 				boolean isRootListNode = isRootListNode(expandedTreeNode);
 				List<MeddraDictHierarchySearchDto> lltDtos;
 				List<Long> lltCodesList = new ArrayList<>(lltCodesMap.keySet());

@@ -248,12 +248,12 @@
 				<f:facet name="options">
 					<h:selectBooleanCheckbox id="flagG"
 						value="#{globalController.filterLltsFlag}">
-						<p:ajax update="@form"
+						<p:ajax event="change" update="@form"
 							listener="#{globalController.checkFilterLltsFlag}" />
-						<p:ajax update="@form"
+						<!-- <p:ajax update="@form"
 							listener="#{createController.reloadRelationsOnFilterLltFlagToggle}" />
 						<p:ajax update="@form"
-							listener="#{impactSearchController.reloadRelationsOnFilterLltFlagToggle}" />
+							listener="#{impactSearchController.reloadRelationsOnFilterLltFlagToggle}" /> -->
 					</h:selectBooleanCheckbox>
 					<h:outputText style="font-weight: bold" value="Filter out LLT" />
 				</f:facet>

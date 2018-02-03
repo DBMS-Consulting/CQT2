@@ -266,10 +266,10 @@ public class ImpactSearchController implements Serializable {
 			content = cmqBaseTargetService.generateCMQExcel(selectedNotImpactedCmqList, dictTarget, targetTableSelection, this.globalController.isFilterLltsFlag());
 			
 		if (isImpactedSmqSelected)
-			content = smqBaseTargetService.generateSMQExcel(selectedImpactedSmqList, dictTarget);
+			content = smqBaseTargetService.generateSMQExcel(selectedImpactedSmqList, dictTarget, this.globalController.isFilterLltsFlag());
 		
 		if (isNonImpactedSmqSelected) 
-			content = smqBaseTargetService.generateSMQExcel(selectedNotImpactedSmqList, dictTarget);
+			content = smqBaseTargetService.generateSMQExcel(selectedNotImpactedSmqList, dictTarget, this.globalController.isFilterLltsFlag());
 			
 		
 		setExcelFile(content);
@@ -1350,10 +1350,10 @@ public class ImpactSearchController implements Serializable {
 		dataTable.loadLazyData();
 	}
 
-	public void reloadRelationsOnFilterLltFlagToggle(AjaxBehaviorEvent event) {
-		boolean filterLltFlag = this.globalController.isFilterLltsFlag();
+	public void reloadRelationsOnFilterLltFlagToggle() {
+		this.updateCurrentTable();
 		if(null != this.currentTableRootTreeNode) {
-			List<TreeNode> childrenNodes = this.currentTableRootTreeNode.getChildren();
+			/*List<TreeNode> childrenNodes = this.currentTableRootTreeNode.getChildren();
 			for (TreeNode childTreeNode : childrenNodes) {
 				childTreeNode.setExpanded(false);
 				childTreeNode.getChildren().clear();//remove all children
@@ -1366,7 +1366,7 @@ public class ImpactSearchController implements Serializable {
 					dummyNode.setDummyNode(true);
 					new DefaultTreeNode(dummyNode, childTreeNode);
 				}
-			}
+			}*/
 			UIViewRoot viewRoot = FacesContext.getCurrentInstance().getViewRoot();
 			if(null != viewRoot) {
 				//in ia left side
@@ -1377,8 +1377,10 @@ public class ImpactSearchController implements Serializable {
 				}
 			}
 		}
+		
+		this.updateTargetTable();
 		if(null != this.targetTableRootTreeNode) {
-			List<TreeNode> childrenNodes = this.targetTableRootTreeNode.getChildren();
+			/*List<TreeNode> childrenNodes = this.targetTableRootTreeNode.getChildren();
 			for (TreeNode childTreeNode : childrenNodes) {
 				childTreeNode.setExpanded(false);
 				childTreeNode.getChildren().clear();//remove all children
@@ -1391,7 +1393,7 @@ public class ImpactSearchController implements Serializable {
 					dummyNode.setDummyNode(true);
 					new DefaultTreeNode(dummyNode, childTreeNode);
 				}
-			}
+			}*/
 			UIViewRoot viewRoot = FacesContext.getCurrentInstance().getViewRoot();
 			if(null != viewRoot) {
 				//in ia left side

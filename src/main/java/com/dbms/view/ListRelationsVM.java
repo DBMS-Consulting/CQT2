@@ -119,7 +119,40 @@ public class ListRelationsVM implements IRelationsChangeListener {
 	}
 
 	public void hanldeFilterLltFlagToggle(boolean filterLltFlag) {
-		if(null != this.relationsRoot) {
+		System.out.println("hanldeFilterLltFlagToggle called");
+		if(this.clickedCmqCode != null) {
+			myHierarchyDlgModel.resetForm();
+			CmqBaseRelationsTreeHelper treeHelper = new CmqBaseRelationsTreeHelper(cmqBaseService, smqBaseService, meddraDictService, cmqRelationService, globalController);
+	        treeHelper.setRelationView(true);
+	        treeHelper.setRequireDrillDown(true);
+			//this.clickedCmqCode = clickedCmqCode;
+			this.relationsRoot = treeHelper.getCmqBaseRelationsRootHierarchy(this.clickedCmqCode);
+			if(null != this.relationsRoot) {
+				UIViewRoot viewRoot = FacesContext.getCurrentInstance().getViewRoot();
+				if(null != viewRoot) {
+					//in crate, update copy
+					UIComponent relationTreeTableComponent = CmqUtils.findComponent(viewRoot, "resultRelations");
+					if(null != relationTreeTableComponent) {
+						//update has to be on relationTreeTableComponent.getClientId() and not on the xhtml id
+						RequestContext.getCurrentInstance().update(relationTreeTableComponent.getClientId());
+					}
+					//in b&s
+					UIComponent relationTreeTableForBrowseComponent = CmqUtils.findComponent(viewRoot, "relations-tree-table");
+					if(null != relationTreeTableForBrowseComponent) {
+						//update has to be on relationTreeTableForBrowseComponent.getClientId() and not on the xhtml id
+						RequestContext.getCurrentInstance().update(relationTreeTableForBrowseComponent.getClientId());
+					}
+					//in ia left side
+					UIComponent currentListsAndSmqsComponent = CmqUtils.findComponent(viewRoot, "currentListsAndSmqs");
+					if(null != currentListsAndSmqsComponent) {
+						//update has to be on currentListsAndSmqsComponent.getClientId() and not on the xhtml id
+						RequestContext.getCurrentInstance().update(currentListsAndSmqsComponent.getClientId());
+					}
+				}
+			}
+		}
+		
+		/*if(null != this.relationsRoot) {
 			List<TreeNode> childrenNodes = this.relationsRoot.getChildren();
 			for (TreeNode childTreeNode : childrenNodes) {
 				childTreeNode.setExpanded(false);
@@ -157,7 +190,7 @@ public class ListRelationsVM implements IRelationsChangeListener {
 					RequestContext.getCurrentInstance().update(currentListsAndSmqsComponent.getClientId());
 				}
 			}
-		}
+		}*/
 	}
 	
 	//uiEventSourceName is either relations or hierarchy

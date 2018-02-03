@@ -81,6 +81,7 @@ public class CmqBaseRelationsTreeHelper {
 		//for childsmqs where we need to add a C to level
 		List<Long> smqChildCodeList = new ArrayList<>();
 		Map<Long, TreeNode> smqChildTreeNodeMap = new HashMap<>();
+		boolean filterLltFlag = this.globalController.isFilterLltsFlag();
 		
 		for (CmqRelation190 cmqRelation : cmqRelationList) {
             if((cmqRelation.getSocCode() != null) && (cmqRelation.getSocCode() > 0)) {
@@ -91,7 +92,7 @@ public class CmqBaseRelationsTreeHelper {
                 hltCodesMap.put(cmqRelation.getHltCode(), cmqRelation);
             } else if((cmqRelation.getPtCode() != null) && (cmqRelation.getPtCode() > 0) && (cmqRelation.getSmqCode() == null)) {
                 ptCodesMap.put(cmqRelation.getPtCode(), cmqRelation);
-            } else if((cmqRelation.getLltCode() != null) && (cmqRelation.getLltCode() > 0)) {
+            } else if(!filterLltFlag && (cmqRelation.getLltCode() != null) && (cmqRelation.getLltCode() > 0)) {
                 lltCodesMap.put(cmqRelation.getLltCode(), cmqRelation);
             } else if((cmqRelation.getSmqCode() != null) && (cmqRelation.getSmqCode() > 0)) {
             	TreeNode treeNode = this.populateSmqTreeNode(cmqRelation, rootNode, cmqCode, false);

@@ -1,7 +1,5 @@
 package com.dbms.service;
 
-import com.dbms.csmq.CSMQBean;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -9,7 +7,6 @@ import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -19,15 +16,8 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Path;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import javax.persistence.metamodel.EntityType;
-import javax.persistence.metamodel.Metamodel;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.BorderStyle;
@@ -48,22 +38,14 @@ import org.primefaces.model.StreamedContent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.dbms.csmq.CSMQBean;
 import com.dbms.entity.cqt.CmqBase190;
-import com.dbms.entity.cqt.CmqBaseTarget;
-import com.dbms.entity.cqt.CmqRelationTarget;
-import com.dbms.entity.cqt.SmqBase190;
 import com.dbms.entity.cqt.SmqBaseTarget;
-import com.dbms.entity.cqt.SmqBaseTarget;
-import com.dbms.entity.cqt.SmqRelation190;
 import com.dbms.entity.cqt.SmqRelationTarget;
 import com.dbms.entity.cqt.dtos.MeddraDictHierarchySearchDto;
-import com.dbms.entity.cqt.dtos.ReportLineDataDto;
 import com.dbms.entity.cqt.dtos.SMQReverseHierarchySearchDto;
 import com.dbms.service.base.CqtPersistenceService;
 import com.dbms.util.CmqUtils;
-import com.dbms.util.CqtConstants;
-
-import org.apache.commons.collections4.CollectionUtils;
 
 /**
  * @author Jay G.(jayshanchn@hotmail.com)
@@ -802,7 +784,7 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 	}
 
 	@Override
-	public StreamedContent generateSMQExcel(SmqBaseTarget selectedImpactedSmqList, String dictionaryVersion) {
+	public StreamedContent generateSMQExcel(SmqBaseTarget selectedImpactedSmqList, String dictionaryVersion, boolean filterLltFalg) {
 		XSSFWorkbook workbook = new XSSFWorkbook();
 		XSSFSheet worksheet = null;
 
@@ -891,7 +873,9 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 			for (SmqRelationTarget relation : relations) {
 
 				if (relation.getSmqCode() != null) {
-
+					if(filterLltFalg && (relation.getSmqLevel() == 5)) {
+						continue;
+					}
 					/**
 					 * 
 					 * SMQs
@@ -914,7 +898,7 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 					} else if (relation.getSmqLevel() == 0) {
 						level = "Child SMQ";
 					}
-
+					
 					row = worksheet.createRow(rowCount);
 					buildChildCellsSMQ(level, relation.getPtCode() + "", relation.getPtName(),
 							relation.getPtTermCategory(), relation.getPtTermWeight() + "",
@@ -929,6 +913,10 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 							List<SmqRelationTarget> list = findSmqRelationsForSmqCode(smqSearched.getSmqCode());
 							if (list != null)
 								for (SmqRelationTarget smq3 : list) {
+									if(filterLltFalg && (smq3.getSmqLevel() == 5)) {
+										continue;
+									}
+									
 									if (smq3.getSmqLevel() == 2) {
 										level = "SMQ2";
 									} else if (smq3.getSmqLevel() == 3) {
@@ -957,6 +945,10 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 												Long.parseLong(smq3.getPtCode() + ""));
 										if (smqChildren != null)
 											for (SmqRelationTarget smqChild : smqChildren) {
+												if(filterLltFalg && (smqChild.getSmqLevel() == 5)) {
+													continue;
+												}
+												
 												if (smqChild.getSmqLevel() == 4)
 													level = "PT";
 												if (smqChild.getSmqLevel() == 5)
@@ -979,6 +971,10 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 															smqSearched.getSmqLevel(), smqChild.getPtName());
 													if (smqChildren != null)
 														for (SmqBaseTarget smqChildBis : smqChilds) {
+															if(filterLltFalg && (smqChildBis.getSmqLevel() == 5)) {
+																continue;
+															}
+															
 															if (smqChildBis.getSmqLevel() == 4)
 																level = "PT";
 															if (smqChildBis.getSmqLevel() == 5)
@@ -1006,6 +1002,10 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 							List<SmqRelationTarget> list = findSmqRelationsForSmqCode(smqSearched.getSmqCode());
 							if (list != null)
 								for (SmqRelationTarget smq3 : list) {
+									if(filterLltFalg && (smq3.getSmqLevel() == 5)) {
+										continue;
+									}
+									
 									if (smq3.getSmqLevel() == 4) {
 										level = "PT";
 									} else if (smq3.getSmqLevel() == 5) {
@@ -1027,6 +1027,10 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 												Long.parseLong(smq3.getPtCode() + ""));
 										if (smqChilds != null)
 											for (SmqRelationTarget smqChildBis : smqChilds) {
+												if(filterLltFalg && (smqChildBis.getSmqLevel() == 5)) {
+													continue;
+												}
+												
 												if (smqChildBis.getSmqLevel() == 4)
 													level = "PT";
 												if (smqChildBis.getSmqLevel() == 5)
@@ -1049,6 +1053,10 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 															Long.parseLong(smqChildBis.getPtCode() + ""));
 													if (smqChilds != null)
 														for (SmqRelationTarget smqChildTer : smqChildren) {
+															if(filterLltFalg && (smqChildTer.getSmqLevel() == 5)) {
+																continue;
+															}
+															
 															if (smqChildTer.getSmqLevel() == 4)
 																level = "PT";
 															if (smqChildTer.getSmqLevel() == 5)
@@ -1074,6 +1082,10 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 																		Long.parseLong(smqChildTer.getPtCode() + ""));
 																if (smqChilds != null)
 																	for (SmqRelationTarget smqChildQu : smqChildrenQu) {
+																		if(filterLltFalg && (smqChildQu.getSmqLevel() == 5)) {
+																			continue;
+																		}
+																		
 																		if (smqChildQu.getSmqLevel() == 4)
 																			level = "PT";
 																		if (smqChildQu.getSmqLevel() == 5)
@@ -1104,6 +1116,10 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 																									+ ""));
 																			if (smqChilds != null)
 																				for (SmqRelationTarget smqChildCq : smqChildrenCq) {
+																					if(filterLltFalg && (smqChildCq.getSmqLevel() == 5)) {
+																						continue;
+																					}
+																					
 																					if (smqChildCq.getSmqLevel() == 4)
 																						level = "PT";
 																					if (smqChildCq.getSmqLevel() == 5)
@@ -1150,7 +1166,10 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 							List<SmqRelationTarget> list = findSmqRelationsForSmqCode(smqSearched.getSmqCode());
 							if (list != null)
 								for (SmqRelationTarget smq3 : list) {
-
+									if(filterLltFalg && (smq3.getSmqLevel() == 5)) {
+										continue;
+									}
+									
 									row = worksheet.createRow(rowCount);
 									buildChildCellsSMQ("PT", smq3.getPtCode() + "", smq3.getPtName(),
 											smq3.getPtTermCategory(), smq3.getPtTermWeight() + "",
@@ -1168,6 +1187,9 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 							List<SmqRelationTarget> list = findSmqRelationsForSmqCode(smqSearched.getSmqCode());
 							if (list != null)
 								for (SmqRelationTarget smq3 : list) {
+									if(filterLltFalg && (smq3.getSmqLevel() == 5)) {
+										continue;
+									}
 									row = worksheet.createRow(rowCount);
 									buildChildCellsSMQ("PT", smq3.getPtCode() + "", smq3.getPtName(),
 											smq3.getPtTermCategory(), smq3.getPtTermWeight() + "",
@@ -1184,6 +1206,9 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 							List<SmqRelationTarget> list = findSmqRelationsForSmqCode(smqSearched.getSmqCode());
 							if (list != null)
 								for (SmqRelationTarget smq3 : list) {
+									if(filterLltFalg && (smq3.getSmqLevel() == 5)) {
+										continue;
+									}
 									row = worksheet.createRow(rowCount);
 									buildChildCellsSMQ("PT", smq3.getPtCode() + "", smq3.getPtName(),
 											smq3.getPtTermCategory(), smq3.getPtTermWeight() + "",
@@ -1199,7 +1224,7 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 					 * 
 					 * LLT.
 					 */
-					if (relation.getPtCode() != null && relation.getSmqCode() == null) {
+					if (!filterLltFalg && relation.getPtCode() != null && relation.getSmqCode() == null) {
 						List<Long> lltCodesList = new ArrayList<>();
 						lltCodesList.add(Long.valueOf(relation.getPtCode()));
 						List<MeddraDictHierarchySearchDto> llts = this.meddraDictService.findByCodes("LLT_",
@@ -1223,26 +1248,27 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 								cellStyle, relation.getPtTermStatus());
 						setCellStyleColumn(workbook, cell);
 						rowCount++;
-
-						/**
-						 * LLT.
-						 */
-						List<MeddraDictHierarchySearchDto> listPT = meddraDictService.findChildrenByParentCode("LLT_",
-								"PT_", Long.valueOf(relation.getPtCode()));
-						List<Long> hlgtCodesList = new ArrayList<>();
-						for (MeddraDictHierarchySearchDto meddra : listPT) {
-							hlgtCodesList.add(Long.parseLong(meddra.getCode()));
-						}
-
-						List<MeddraDictHierarchySearchDto> llts = this.meddraDictService.findByCodes("LLT_",
-								hlgtCodesList);
-						if (llts != null)
-							for (MeddraDictHierarchySearchDto llt : llts) {
-								row = worksheet.createRow(rowCount);
-								buildChildCells("LLT", llt.getCode(), llt.getTerm(), cell, row, "...............", "",
-										cellStyle);
-								rowCount++;
+						if(!filterLltFalg) {
+							/**
+							 * LLT.
+							 */
+							List<MeddraDictHierarchySearchDto> listPT = meddraDictService.findChildrenByParentCode("LLT_",
+									"PT_", Long.valueOf(relation.getPtCode()));
+							List<Long> hlgtCodesList = new ArrayList<>();
+							for (MeddraDictHierarchySearchDto meddra : listPT) {
+								hlgtCodesList.add(Long.parseLong(meddra.getCode()));
 							}
+
+							List<MeddraDictHierarchySearchDto> llts = this.meddraDictService.findByCodes("LLT_",
+									hlgtCodesList);
+							if (llts != null)
+								for (MeddraDictHierarchySearchDto llt : llts) {
+									row = worksheet.createRow(rowCount);
+									buildChildCells("LLT", llt.getCode(), llt.getTerm(), cell, row, "...............", "",
+											cellStyle);
+									rowCount++;
+								}
+						}
 					}
 
 				}
