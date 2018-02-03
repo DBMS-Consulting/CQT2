@@ -26,8 +26,12 @@
 		<h:form>
 			<h:panelGrid id="l1" columns="2" style="width: 100%">
 				<h:panelGroup>
-					<h:commandLink action="#{createController.initForm('/index')}">
+					<h:commandLink action="#{createController.initForm('/index')}" rendered="#{impactSearchController.iaWizard eq null}">
 						<p:graphicImage id="logo" title="desc" alt="logo"
+							value="/image/logo.jpg" />
+					</h:commandLink>
+					<h:commandLink action="#{impactSearchController.initForm('/index')}" rendered="#{impactSearchController.iaWizard ne null}">
+						<p:graphicImage id="logoIA" title="desc" alt="logo"
 							value="/image/logo.jpg" />
 					</h:commandLink>
 				</h:panelGroup>
@@ -115,7 +119,7 @@
 		</h:form>
 		<h:form>
 
-			<p:menubar id="menubar">
+			<p:menubar id="menubar" rendered="#{impactSearchController.iaWizard eq null}">
 				<p:menuitem value="Create" id="pt_cmi1" update="@form"
 					action="#{createController.initForm('/create/create')}"
 					styleClass="#{view.viewId == '/create/create.xhtml' ? 'ui-state-active2' : ''}"
@@ -243,8 +247,6 @@
 					style="font-weight:#{userBean.currentMenu eq 'REPORTS' ? 'bold' : 'normal'};"
 					rendered="#{AuthenticationService.getPermissonByUri('/audit/auditSearch.xhtml')}" />
 
-
-
 				<f:facet name="options">
 					<h:selectBooleanCheckbox id="flagG"
 						value="#{globalController.filterLltsFlag}">
@@ -257,29 +259,143 @@
 					</h:selectBooleanCheckbox>
 					<h:outputText style="font-weight: bold" value="Filter out LLT" />
 				</f:facet>
+			</p:menubar>
+			
+			<p:menubar id="iaMenuBar" rendered="#{impactSearchController.iaWizard ne null}">
+				<p:menuitem value="Create" id="mcreate" update="@form"
+					action="#{impactSearchController.initForm('/create/create')}"
+					styleClass="#{view.viewId == '/create/create.xhtml' ? 'ui-state-active2' : ''}"
+					style="font-weight:#{userBean.currentMenu eq 'CREATE_NEW_NMQ' ? 'bold' : 'normal'}"
+					rendered="#{AuthenticationService.getPermissonByUri('/create/create.xhtml')}">
+				</p:menuitem>
 
+				<p:menuitem value="Update" id="mupdate" update="@form"
+					action="#{impactSearchController.initForm('/create/update')}"
+					styleClass="#{view.viewId == '/create/update.xhtml' ? 'ui-state-active2' : ''}"
+					style="font-weight:#{userBean.currentMenu eq 'UPDATE_NMQ' ? 'bold' : 'normal'};"
+					rendered="#{AuthenticationService.getPermissonByUri('/create/update.xhtml')}" />
+
+				<p:menuitem value="Copy" id="mcopy"
+					action="#{impactSearchController.initForm('/create/copy')}"
+					update="@form"
+					styleClass="#{view.viewId == '/create/copy.xhtml' ? 'ui-state-active2' : ''}"
+					style="font-weight:#{userBean.currentMenu eq 'COPY_NMQ' ? 'bold' : 'normal'};"
+					rendered="#{AuthenticationService.getPermissonByUri('/create/copy.xhtml')}">
+				</p:menuitem>
+
+				<p:menuitem value="Browse &amp; Search" id="mbrowse" update="@form"
+					action="#{impactSearchController.initForm('/create/browseAndSearch')}"
+					styleClass="#{view.viewId == '/create/browseAndSearch.xhtml' ? 'ui-state-active2' : ''}"
+					style="font-weight:#{userBean.currentMenu eq 'BROWSE_SEARCH' ? 'bold' : 'normal'};"
+					rendered="#{AuthenticationService.getPermissonByUri('/create/browseAndSearch.xhtml')}">
+				</p:menuitem>
+
+				<p:submenu id="mpublish" label="Publish" icon="ui-icon-document"
+					style="font-weight:#{userBean.currentMenu eq 'NON_IMPACT_PUBLISH' or userBean.currentMenu eq 'IMPACT_PUBLISH' ? 'bold' : 'normal'};"
+					rendered="#{AuthenticationService.getPermissonByUri('Publish-Menu')}">
+
+					<p:menuitem value="Publish Current Version" id="mcurrent"
+						update="@form"
+						action="#{impactSearchController.initForm('/publish/publishCurrentVersion')}"
+						styleClass="#{view.viewId == '/publish/publishCurrentVersion.xhtml' ? 'ui-state-active2' : ''}"
+						style="font-weight:#{userBean.currentMenu eq 'NON_IMPACT_PUBLISH' ? 'bold' : 'normal'};"
+						rendered="#{AuthenticationService.getPermissonByUri('/publish/publishCurrentVersion.xhtml')}" />
+
+					<p:menuitem value="Publish Future Version" id="mfuture"
+						update="@form"
+						action="#{impactSearchController.initForm('/publish/publishFutureVersion')}"
+						styleClass="#{view.viewId == '/publish/publishFutureVersion.xhtml' ? 'ui-state-active2' : ''}"
+						style="font-weight:#{userBean.currentMenu eq 'IMPACT_PUBLISH' ? 'bold' : 'normal'};"
+						rendered="#{AuthenticationService.getPermissonByUri('/publish/publishFutureVersion.xhtml')}" />
+				</p:submenu>
+
+				<p:submenu label="Retire/Reactivate" icon="mretreact"
+					style="font-weight:#{userBean.currentMenu eq 'NON_IMPACT_PUBLISH' or userBean.currentMenu eq 'IMPACT_PUBLISH' ? 'bold' : 'normal'};"
+					rendered="#{AuthenticationService.getPermissonByUri('Reactivate/Retire-Menu')}">
+
+					<p:menuitem value="Retire Current" id="mretire" update="@form"
+						action="#{impactSearchController.initForm('/create/retire')}"
+						styleClass="#{view.viewId == '/create/retire.xhtml' ? 'ui-state-active2' : ''}"
+						rendered="#{AuthenticationService.getPermissonByUri('/create/retire.xhtml')}" />
+					<p:menuitem value="Reactivate Current" id="mreactivate"
+						update="@form"
+						action="#{impactSearchController.initForm('/create/reactivate')}"
+						styleClass="#{view.viewId == '/create/reactivate.xhtml' ? 'ui-state-active2' : ''}"
+						rendered="#{AuthenticationService.getPermissonByUri('/create/reactivate.xhtml')}" />
+				</p:submenu>
+
+				<p:menuitem value="Reports" id="mreport"
+					action="#{impactSearchController.initForm('/report/reports')}"
+					update="@form"
+					styleClass="#{view.viewId == '/report/reports.xhtml' ? 'ui-state-active2' : ''}"
+					style="font-weight:#{userBean.currentMenu eq 'REPORTS' ? 'bold' : 'normal'};"
+					disabled="false" />
+
+				<p:menuitem value="Impact Assessment" id="mia" update="@form"
+					action="#{impactSearchController.initForm('/impactAssessment/impactAssessment')}"
+					styleClass="#{view.viewId == '/impactAssessment/impactAssessment.xhtml' ? 'ui-state-active2' : ''}"
+					rendered="#{AuthenticationService.getPermissonByUri('/impactAssessment/impactAssessment.xhtml')}"
+					style="font-weight:#{userBean.currentMenu eq 'MEDDRA_IMPACT_ASSESSMENT' ? 'bold' : 'normal'};" />
+
+				<p:submenu label="View Version Impacts" icon="ui-icon-document"
+					id="mviewv"
+					style="font-weight:#{userBean.currentMenu eq 'VIEW_CURRENT_VERSION_IMPACT' or userBean.currentMenu eq 'VIEW_PREVIOUS_VERSION_IMPACT' ? 'bold' : 'normal'};"
+					rendered="#{AuthenticationService.getPermissonByUri('View-Version-Impacts-Menu')}">
+
+					<p:menuitem value="View Version Impact" id="mvia"
+						update="@form"
+						styleClass="#{view.viewId == '/viewVersionImpact/versionImpact.xhtml' ? 'ui-state-active2' : ''}"
+						action="#{impactSearchController.initForm('/viewVersionImpact/versionImpact')}"
+						style="font-weight:#{userBean.currentMenu eq 'VIEW_CURRENT_VERSION_IMPACT' ? 'bold' : 'normal'};"
+						rendered="#{AuthenticationService.getPermissonByUri('/viewVersionImpact/versionImpact.xhtml')}" />
+
+					<p:menuitem value="View Previous Version Impact" id="mvpia"
+						update="@form" action="VIEW_PREVIOUS_VERSION_IMPACT"
+						disabled="true"
+						styleClass="#{view.viewId == '/viewPreviousVersionImpact/previousVersionImpact.xhtml' ? 'ui-state-active2' : ''}"
+						style="font-weight:#{userBean.currentMenu eq 'VIEW_PREVIOUS_VERSION_IMPACT' ? 'bold' : 'normal'};"
+						url="/viewPreviousVersionImpact/previousVersionImpact.xhtml"
+						rendered="#{AuthenticationService.getPermissonByUri('/viewPreviousVersionImpact/previousVersionImpact.xhtml')}" />
+				</p:submenu>
+
+				<p:menuitem value="Administration" id="madmin"
+					action="#{impactSearchController.initForm('/admin/admin')}"
+					update="@form"
+					styleClass="#{view.viewId == '/admin/admin.xhtml' ? 'ui-state-active2' : ''}"
+					disabled="false"
+					rendered="#{AuthenticationService.getPermissonByUri('/admin/admin.xhtml')}" />
+
+				<p:menuitem value="Historic View" id="mhistoric"
+					action="#{impactSearchController.initForm('/history/historicView')}"
+					update="@form"
+					styleClass="#{view.viewId == '/history/historicView.xhtml' ? 'ui-state-active2' : ''}"
+					style="font-weight:#{userBean.currentMenu eq 'REPORTS' ? 'bold' : 'normal'};"
+					rendered="#{AuthenticationService.getPermissonByUri('/history/historicView.xhtml')}" />
+
+				<p:menuitem value="Audit Trail" id="maudit"
+					action="#{impactSearchController.initForm('/audit/auditSearch')}"
+					update="@form"
+					styleClass="#{view.viewId == '/audit/auditSearch.xhtml' ? 'ui-state-active2' : ''}"
+					style="font-weight:#{userBean.currentMenu eq 'REPORTS' ? 'bold' : 'normal'};"
+					rendered="#{AuthenticationService.getPermissonByUri('/audit/auditSearch.xhtml')}" />
+
+				<f:facet name="options">
+					<h:selectBooleanCheckbox id="flagGIA"
+						value="#{globalController.filterLltsFlag}">
+						<p:ajax event="change" update="@form"
+							listener="#{globalController.checkFilterLltsFlag}" />
+						<!-- <p:ajax update="@form"
+							listener="#{createController.reloadRelationsOnFilterLltFlagToggle}" />
+						<p:ajax update="@form"
+							listener="#{impactSearchController.reloadRelationsOnFilterLltFlagToggle}" /> -->
+					</h:selectBooleanCheckbox>
+					<h:outputText style="font-weight: bold" value="Filter out LLT" />
+				</f:facet>
 			</p:menubar>
 
 			<!-- INPUT HIDDEN TO GET FORM TO OPEN -->
 			<h:inputHidden value="#{createController.formToOpen}"
-				binding="#{applicationController.form}" />
-
-			<!-- Session SAVE -->
-	<p:growl id="ms" showDetail="true" sticky="true" />
-
-		<p:idleMonitor timeout="300000">
-			<!-- <p:ajax event="idle" listener="#{applicationController.onIdle}"
-				update="ms" />
-			<p:ajax event="active" listener="#{applicationController.onActive}"
-				update="ms" /> -->
-
-			<p:ajax event="idle" listener="#{createController.onIdle}"
-				update="@form" />
-
-		</p:idleMonitor>
-
-
-			<!-- Session SAVE -->
+				binding="#{impactSearchController.formClicked}" />
 		</h:form>
 		<p:spacer width="10" height="5" id="pt_s1" />
 		<div id="panel-content">
@@ -298,20 +414,7 @@
  			Loading...
  	</p:dialog>
 
-
-
-
-
-
-
-	<h:form prependId="false">
-
-	
-
-
-	</h:form>
-
-
+ 
 
 	<style>
 .ui-state-active2 {

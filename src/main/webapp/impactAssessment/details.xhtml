@@ -5,36 +5,44 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:p="http://primefaces.org/ui">
-	
+
 	<p:panel>
 		<h:panelGrid columns="4" cellpadding="15">
 
 			<h:panelGrid columns="2" columnClasses="label-cell, value-cell">
 				<p:outputLabel value="Extension:" />
-				<h:outputText value="#{RefCodeListService.findCodeByInternalCode('LIST_EXTENSION_TYPES', impactSearchController.detailsFormModel.extension)}" />
-				
+				<h:outputText
+					value="#{RefCodeListService.findCodeByInternalCode('LIST_EXTENSION_TYPES', impactSearchController.detailsFormModel.extension)}" />
+
 				<p:outputLabel value="Name:" />
-				<h:outputText value="#{impactSearchController.detailsFormModel.name}" />
+				<h:outputText
+					value="#{impactSearchController.detailsFormModel.name}" />
 
 				<p:outputLabel value="Drug Program:" />
-				<h:outputText value="#{RefCodeListService.findCodeByInternalCode('PROGRAM', impactSearchController.detailsFormModel.drugProgram)}" />
+				<h:outputText
+					value="#{RefCodeListService.findCodeByInternalCode('PROGRAM', impactSearchController.detailsFormModel.drugProgram)}" />
 
 				<p:outputLabel value="Protocol:" />
-				<h:outputText value="#{RefCodeListService.findCodeByInternalCode('PROTOCOL', impactSearchController.detailsFormModel.protocol)}" />
+				<h:outputText
+					value="#{RefCodeListService.findCodeByInternalCode('PROTOCOL', impactSearchController.detailsFormModel.protocol)}" />
 
 				<p:outputLabel value="Product:" />
-                <h:outputText value="#{impactSearchController.detailsFormModel.productsLabel}" />
+				<h:outputText
+					value="#{impactSearchController.detailsFormModel.productsLabel}" />
 			</h:panelGrid>
 
 			<h:panelGrid columns="2" columnClasses="label-cell, value-cell">
 				<p:outputLabel value="Level:" />
-				<h:outputText value="#{impactSearchController.detailsFormModel.level}" />
+				<h:outputText
+					value="#{impactSearchController.detailsFormModel.level}" />
 
 				<p:outputLabel value="Code:" />
-				<h:outputText value="#{impactSearchController.detailsFormModel.code}" />
+				<h:outputText
+					value="#{impactSearchController.detailsFormModel.code}" />
 
 				<p:outputLabel value="Algorithm:" />
-				<h:outputText value="#{impactSearchController.detailsFormModel.algorithm}" />
+				<h:outputText
+					value="#{impactSearchController.detailsFormModel.algorithm}" />
 
 				<p:spacer />
 				<p:spacer />
@@ -45,25 +53,31 @@
 
 			<h:panelGrid columns="2" columnClasses="label-cell, value-cell">
 				<p:outputLabel value="Status:" />
-				<h:outputText value="#{impactSearchController.detailsFormModel.status}" />
+				<h:outputText
+					value="#{impactSearchController.detailsFormModel.status}" />
 
 				<p:outputLabel value="State:" />
-				<h:outputText value="#{impactSearchController.detailsFormModel.state}" />
+				<h:outputText
+					value="#{impactSearchController.detailsFormModel.state}" />
 
 				<p:outputLabel value="Group:" />
-				<h:outputText value="#{impactSearchController.detailsFormModel.group}" />
+				<h:outputText
+					value="#{impactSearchController.detailsFormModel.group}" />
 
 				<p:outputLabel value="* Designee" />
-                <p:selectOneMenu filter="true" filterMatchMode="contains"
-                    value="#{impactSearchController.detailsFormModel.designee}"
-                    disabled="#{impactSearchController.detailsFormReadonly}"
-					required="#{not impactSearchController.detailsFormReadonly}" label="Designee" >
-                    <f:selectItem itemValue="" itemLabel="" noSelectionOption="true" />
-                    <f:selectItems value="#{createController.detailsFormModel.designeeList}" var="d"
-                                   itemLabel="#{d.fullName}" itemValue="#{d.userName}"/>
-                </p:selectOneMenu>
-                
-                
+				<p:selectOneMenu filter="true" filterMatchMode="contains"
+					value="#{impactSearchController.detailsFormModel.designee}"
+					disabled="#{impactSearchController.detailsFormReadonly}"
+					required="#{not impactSearchController.detailsFormReadonly}"
+					label="Designee">
+					<f:selectItem itemValue="" itemLabel="" noSelectionOption="true" />
+					<f:selectItems
+						value="#{createController.detailsFormModel.designeeList}" var="d"
+						itemLabel="#{d.fullName}" itemValue="#{d.userName}" />
+					<p:ajax update="@this" global="false" />
+				</p:selectOneMenu>
+
+
 				<p:spacer />
 				<p:spacer />
 			</h:panelGrid>
@@ -71,33 +85,41 @@
 
 			<h:panelGrid columns="2" columnClasses="label-cell, value-cell">
 				<p:outputLabel value="Designee 2" />
-				<p:selectOneMenu filter="true" disabled="#{impactSearchController.currentOrTarget == 1}"
-					value="#{impactSearchController.detailsFormModel.designeeTwo}" filterMatchMode="contains"
-					          label="Designee 2">
+				<p:selectOneMenu filter="true"
+					disabled="#{impactSearchController.currentOrTarget == 1}"
+					value="#{impactSearchController.detailsFormModel.designeeTwo}"
+					filterMatchMode="contains" label="Designee 2">
 					<f:selectItem itemValue="" itemLabel="" noSelectionOption="true" />
-					<f:selectItems value="#{createController.detailsFormModel.designeeList}" var="d"
-	                               itemLabel="#{d.fullName}" itemValue="#{d.userName}"/>
+					<f:selectItems
+						value="#{createController.detailsFormModel.designeeList}" var="d"
+						itemLabel="#{d.fullName}" itemValue="#{d.userName}" />
+					<p:ajax update="@this" global="false" />
 				</p:selectOneMenu>
-				
+
 				<p:outputLabel value="Designee 3" />
-				<p:selectOneMenu filter="true" disabled="#{impactSearchController.currentOrTarget == 1}"
-					value="#{impactSearchController.detailsFormModel.designeeThree}" filterMatchMode="contains"
-	                label="Designee 3">
+				<p:selectOneMenu filter="true"
+					disabled="#{impactSearchController.currentOrTarget == 1}"
+					value="#{impactSearchController.detailsFormModel.designeeThree}"
+					filterMatchMode="contains" label="Designee 3">
 					<f:selectItem itemValue="" itemLabel="" noSelectionOption="true" />
-					<f:selectItems value="#{createController.detailsFormModel.designeeList}" var="d"
-	                           itemLabel="#{d.fullName}" itemValue="#{d.userName}"/>
+					<f:selectItems
+						value="#{createController.detailsFormModel.designeeList}" var="d"
+						itemLabel="#{d.fullName}" itemValue="#{d.userName}" />
+					<p:ajax update="@this" global="false" />
 				</p:selectOneMenu>
 				<p:outputLabel value="Creation Date: " />
-				<h:outputText value="#{impactSearchController.detailsFormModel.creationDate}">
-					<f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss"/>
+				<h:outputText
+					value="#{impactSearchController.detailsFormModel.creationDate}">
+					<f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" />
 				</h:outputText>
 
 				<p:outputLabel value="Created By: " />
-				<h:outputText value="#{impactSearchController.detailsFormModel.createdBy}" />
+				<h:outputText
+					value="#{impactSearchController.detailsFormModel.createdBy}" />
 
 				<p:outputLabel value="Dictionary version: " />
-				<h:outputText value="#{impactSearchController.dictionaryVersion}" /> 
-				
+				<h:outputText value="#{impactSearchController.dictionaryVersion}" />
+
 				<p:spacer />
 				<p:spacer />
 			</h:panelGrid>

@@ -15,7 +15,6 @@ import javax.faces.context.FacesContext;
 @ViewScoped
 public class ApplicationController implements Serializable {
 	
-	//private boolean formOpened;
 	private HtmlInputHidden form;
 	
 	@PostConstruct
@@ -43,18 +42,4 @@ public class ApplicationController implements Serializable {
 	public void setForm(HtmlInputHidden form) {
 		this.form = form;
 	}
-
-	 
-	 public void onIdle() {
-	        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, 
-	                                        "No activity.", "What are you doing over there?"));
-	        
-	        
-	    }
-	 
-	    public void onActive() {
-	        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,
-	                                        "Welcome Back", "Well, that's a long coffee break!"));
-	    }
-	
 }

@@ -10,35 +10,47 @@
 
 	<p:panel id="panelNotes"
 		header="Informative Notes for #{impactSearchController.detailsFormModel.name}">
-		
+
 		<p:remoteCommand name="saveNotesAndGoToNextStep"
-				update="@form:messages"
-				actionListener="#{impactSearchController.saveNotesAndGoToNextStep}"
-				onstart="PF('confirmSaveNotesDlg').hide()" />
+			update="@form:messages"
+			actionListener="#{impactSearchController.saveNotesAndGoToNextStep}"
+			onstart="PF('confirmSaveNotesDlg').hide()" />
 		<p:remoteCommand name="resetNotesAndGoToNextStep"
-				update="@form:messages @form:panelNotes"
-				actionListener="#{impactSearchController.cancelNotesAndGoToNextStep}"
-				onstart="PF('confirmSaveNotesDlg').hide()" />
-						
+			update="@form:messages @form:panelNotes"
+			actionListener="#{impactSearchController.cancelNotesAndGoToNextStep}"
+			onstart="PF('confirmSaveNotesDlg').hide()" />
+
 		<p:tabView>
 			<p:tab title="Description">
 				<p:inputTextarea required="true"
 					readonly="#{impactSearchController.notesFormReadonly}"
 					placeholder="Please Enter Description"
 					value="#{impactSearchController.notesFormModel.description}"
-					label="Description"
-					style="width: 100%; min-height: 250px" autoResize="true" />
+					label="Description" style="width: 100%; min-height: 250px"
+					autoResize="true">
+					<p:ajax global="false" />
+
+
+				</p:inputTextarea>
 				<!-- <h:inputTextarea required="true" value="###"   /> -->
 			</p:tab>
 			<p:tab title="Notes">
-				<p:inputTextarea value="#{impactSearchController.notesFormModel.notes}"
+				<p:inputTextarea
+					value="#{impactSearchController.notesFormModel.notes}"
 					readonly="#{impactSearchController.notesFormReadonly}"
-					style="width: 100%; min-height: 250px" autoResize="true" />
+					style="width: 100%; min-height: 250px" autoResize="true">
+
+					<p:ajax global="false" />
+				</p:inputTextarea>
 			</p:tab>
 			<p:tab title="Source">
-				<p:inputTextarea value="#{impactSearchController.notesFormModel.source}"
+				<p:inputTextarea
+					value="#{impactSearchController.notesFormModel.source}"
 					readonly="#{impactSearchController.notesFormReadonly}"
-					style="width: 100%; min-height: 250px" autoResize="true" />
+					style="width: 100%; min-height: 250px" autoResize="true">
+					<p:ajax global="false" />
+
+				</p:inputTextarea>
 			</p:tab>
 		</p:tabView>
 
@@ -49,20 +61,45 @@
 
 			<p:commandButton value="Cancel" icon="ui-icon-close"
 				disabled="#{impactSearchController.notesFormReadonly}"
-				process="@this" update="@form:messages @form:panelNotes" style="float: right"
+				process="@this" update="@form:messages @form:panelNotes"
+				style="float: right"
 				actionListener="#{impactSearchController.cancelNotes}">
-				<p:confirm header="Confirm" message="Are you sure you want to erase these fields?" icon="ui-icon-alert" />
+				<p:confirm header="Confirm"
+					message="Are you sure you want to erase these fields?"
+					icon="ui-icon-alert" />
 			</p:commandButton>
 
 		</h:panelGrid>
-		
-		<p:confirmDialog widgetVar="confirmSaveNotesDlg" showEffect="fade" hideEffect="fade"
-			header="Confirm about Unsaved Changes"
+
+		<p:confirmDialog widgetVar="confirmSaveNotesDlg" showEffect="fade"
+			hideEffect="fade" header="Confirm about Unsaved Changes"
 			message="There are some unsaved changes. Do you want to save them before you continue?">
-	        <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" onclick="saveNotesAndGoToNextStep()" />
-	        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"  onclick="resetNotesAndGoToNextStep()" />
-	    </p:confirmDialog>
-					    
+			<p:commandButton value="Yes" type="button"
+				styleClass="ui-confirmdialog-yes" icon="ui-icon-check"
+				onclick="saveNotesAndGoToNextStep()" />
+			<p:commandButton value="No" type="button"
+				styleClass="ui-confirmdialog-no" icon="ui-icon-close"
+				onclick="resetNotesAndGoToNextStep()" />
+		</p:confirmDialog>
+
+		<!-- AUTO SAVE -->
+		<p:remoteCommand name="saveNotes" update="@form:messages"
+			action="#{impactSearchController.saveNotesAndClose}"
+			onstart="PF('confirmIASaveNotes').hide()" />
+
+		<p:confirmDialog widgetVar="confirmIASaveNotes" showEffect="fade"
+			hideEffect="fade" header="Confirm about Unsaved Changes"
+			message="There are some unsaved changes. Do you want to save them before you continue ?">
+
+			<p:commandButton value="Yes" type="button"
+				styleClass="ui-confirmdialog-yes" icon="ui-icon-check"
+				onclick="saveNotes()" />
+			<p:commandButton value="No" styleClass="ui-confirmdialog-no"
+				immediate="true" icon="ui-icon-close"
+				action="#{impactSearchController.openForm}" />
+		</p:confirmDialog>
+		<!-- AUTO SAVE -->
+
 	</p:panel>
 
 	<style>

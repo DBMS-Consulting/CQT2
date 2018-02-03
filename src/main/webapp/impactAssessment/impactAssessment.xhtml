@@ -8,38 +8,42 @@
 
 
 	<ui:define name="page-content">
-        <h:inputHidden id="hVersionUpgradePending" value="#{impactSearchController.versionUpgradePending}" />
-        
-        <p:dialog widgetVar="vunpDlg" modal="true" id="vunpDlg"
-                      closable="true" header="Not Available" resizable="false">
-            <h:panelGrid columns="1" cellpadding="10">
-                <h:outputText value="The Impact Assessment page is only available while MedDRA Versioning data is pending." />
-                
-                <p:commandButton type="button" onclick="PF('vunpDlg').hide()" value="OK" style="float: right" />
-            </h:panelGrid>
-        </p:dialog>
+		<h:inputHidden id="hVersionUpgradePending"
+			value="#{impactSearchController.versionUpgradePending}" />
+
+		<p:dialog widgetVar="vunpDlg" modal="true" id="vunpDlg"
+			closable="true" header="Not Available" resizable="false">
+			<h:panelGrid columns="1" cellpadding="10">
+				<h:outputText
+					value="The Impact Assessment page is only available while MedDRA Versioning data is pending." />
+
+				<p:commandButton type="button" onclick="PF('vunpDlg').hide()"
+					value="OK" style="float: right" />
+			</h:panelGrid>
+		</p:dialog>
 
 		<script type="text/javascript">
 			function initRelationDND() {
 				//dummy function kept here to prevent create/hierarchySearch from breaking 
 			}
-            
-            function checkVersionUpgradePending() {
-                var vup = $('#hVersionUpgradePending').val();
-                if(vup === "false")
-                {
-                    PF('vunpDlg').show();
-                }
-            }
-            
-            $(document).ready(function() {
-                checkVersionUpgradePending();
-            });
+
+			function checkVersionUpgradePending() {
+				var vup = $('#hVersionUpgradePending').val();
+				if (vup === "false") {
+					PF('vunpDlg').show();
+				}
+			}
+
+			$(document).ready(function() {
+				checkVersionUpgradePending();
+			});
 		</script>
 
 		<h:form id="impactAssessment">
-            <p:growl id="messages" life="#{appCSMQBean.defaultGrowlLife}" sticky="true" showDetail="#{appCSMQBean.degugMode}" autoUpdate="true"/>
-            <p:tooltip position="right" />
+			<p:growl id="messages" life="#{appCSMQBean.defaultGrowlLife}"
+				sticky="true" showDetail="#{appCSMQBean.degugMode}"
+				autoUpdate="true" />
+			<p:tooltip position="right" />
 
 			<h:panelGrid columns="1" styleClass="full-width">
 				<p:breadCrumb styleClass="breadcrumb">
@@ -50,7 +54,8 @@
 
 			<p:wizard
 				flowListener="#{impactSearchController.onIaWizardFlowProcess}"
-                binding="#{impactSearchController.iaWizard}" rendered="#{impactSearchController.versionUpgradePending}">
+				binding="#{impactSearchController.iaWizard}"
+				rendered="#{impactSearchController.versionUpgradePending}">
 
 				<!-- Impact -->
 				<p:tab id="impact" title="Impact Assessment">
@@ -62,7 +67,8 @@
 
 						<f:facet name="right">
 							<!-- FILTER btn -->
-							<p:commandButton value="Filter" actionListener="#"  disabled="#{!impactSearchController.filterEnabled}"
+							<p:commandButton value="Filter" actionListener="#"
+								disabled="#{!impactSearchController.filterEnabled}"
 								id="filterBtn" onclick="PF('filter').show()" icon="fa fa-filter" />
 							<p:spacer width="5" />
 							<!-- FILTER btn -->
@@ -100,32 +106,41 @@
 							<!-- <p:commandButton value="Export" actionListener="#" 
 								icon="fa fa-file-excel-o" update="messages" />
 							<p:spacer width="5" /> -->
-                            
-                            <!--Show Confirm Dialog if list has more than 1 children when clicking on "MQ Detailed Report" generation button-->
-                            <p:confirmDialog header="Export"  widgetVar="confirmExport"
-                                             message="You are submitting a request to generate the report. Do you want to continue?">  
-                                <i class="fa fa-check" style="position: absolute; margin-top: 14px; margin-left: 5px"></i>
-                                <h:commandLink value="Yes" onclick="PF('confirmExport').hide()" styleClass="generate" type="button"
-                                                 actionListener="#{impactSearchController.generateExcel}" >
-                                    <p:fileDownload value="#{impactSearchController.excelFile}" />
-                                </h:commandLink>
-                                <p:commandButton value="No" onclick="PF('confirmExport').hide()" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>   
-                            </p:confirmDialog>
-                            
-                            <i class="fa fa-file-excel-o"
-								style="position: absolute; margin-top: 8px; margin-left: 5px"></i>
-                            <h:commandLink rendered="#{impactSearchController.targetTableRootTreeNode.childCount gt 0 and impactSearchController.targetTableRootTreeNode.children.get(0).childCount gt 0}"
-                                           value="Export" type="button" disabled="#{!impactSearchController.exportEnabled}"
-                                       styleClass="generate" onclick="PF('confirmExport').show();return false;" />
 
-                            <h:commandLink rendered="#{impactSearchController.targetTableRootTreeNode.childCount le 0 or impactSearchController.targetTableRootTreeNode.children.get(0).childCount le 0}"
-                                           value="Export" disabled="#{!impactSearchController.exportEnabled}"
-                                        styleClass="generate"
-                                        actionListener="#{impactSearchController.generateExcel}">
-                                <p:fileDownload value="#{impactSearchController.excelFile}" />
-                            </h:commandLink>
-                            
-                            <p:spacer width="5" />
+							<!--Show Confirm Dialog if list has more than 1 children when clicking on "MQ Detailed Report" generation button-->
+							<p:confirmDialog header="Export" widgetVar="confirmExport"
+								message="You are submitting a request to generate the report. Do you want to continue?">
+								<i class="fa fa-check"
+									style="position: absolute; margin-top: 14px; margin-left: 5px"></i>
+								<h:commandLink value="Yes" onclick="PF('confirmExport').hide()"
+									styleClass="generate" type="button"
+									actionListener="#{impactSearchController.generateExcel}">
+									<p:fileDownload value="#{impactSearchController.excelFile}" />
+								</h:commandLink>
+								<p:commandButton value="No" onclick="PF('confirmExport').hide()"
+									type="button" styleClass="ui-confirmdialog-no"
+									icon="ui-icon-close" />
+							</p:confirmDialog>
+
+							<i class="fa fa-file-excel-o"
+								style="position: absolute; margin-top: 8px; margin-left: 5px"></i>
+							<h:commandLink
+								rendered="#{impactSearchController.targetTableRootTreeNode.childCount gt 0 and impactSearchController.targetTableRootTreeNode.children.get(0).childCount gt 0}"
+								value="Export" type="button"
+								disabled="#{!impactSearchController.exportEnabled}"
+								styleClass="generate"
+								onclick="PF('confirmExport').show();return false;" />
+
+							<h:commandLink
+								rendered="#{impactSearchController.targetTableRootTreeNode.childCount le 0 or impactSearchController.targetTableRootTreeNode.children.get(0).childCount le 0}"
+								value="Export"
+								disabled="#{!impactSearchController.exportEnabled}"
+								styleClass="generate"
+								actionListener="#{impactSearchController.generateExcel}">
+								<p:fileDownload value="#{impactSearchController.excelFile}" />
+							</h:commandLink>
+
+							<p:spacer width="5" />
 							<p:commandButton value="Legend" actionListener="#"
 								onclick="PF('legend').show()" icon="fa fa-bars"
 								update="messages" />
@@ -135,13 +150,11 @@
 					</p:toolbar>
 
 					<!-- PANEL -->
-					<p:panel>                      
+					<p:panel>
 						<h:panelGrid columns="2"
 							columnClasses="ui-grid-col-5 v-align-top, ui-grid-col-7 v-align-top"
 							styleClass="full-width">
-							<p:panel
-								style="width: 100%; padding: 0;"
-								id="pan">
+							<p:panel style="width: 100%; padding: 0;" id="pan">
 								<p:toolbar>
 									<f:facet name="left">
 										<p:commandButton value="Select Lists/SMQs" actionListener="#"
@@ -149,11 +162,13 @@
 											onclick="PF('select_mq').show();" />
 										<p:spacer width="10px" height="1px" />
 										<p:commandButton value="Hierarchy Search" id="ctb13"
-											update="@form:hierarchy-modal"  
+											update="@form:hierarchy-modal"
 											oncomplete="PF('current-hierarchy-search').show();"
 											icon="fa fa-search">
-											
-											<p:ajax listener="#{impactSearchController.currentHierarchySearchDlgModel.resetHS}" event="click" 
+
+											<p:ajax
+												listener="#{impactSearchController.currentHierarchySearchDlgModel.resetHS}"
+												event="click"
 												update="@form:levelH @form:termH @form:search-direction @form:resultHier" />
 										</p:commandButton>
 										<p:spacer width="40px" height="1px" />
@@ -169,16 +184,18 @@
 									value="#{impactSearchController.currentTableRootTreeNode}"
 									var="node" widgetVar="currentLists" id="currentListsAndSmqs"
 									styleClass="ui-treetable-currentListsAndSmqs"
-									selectionMode="single" selection="${impactSearchController.currentTableSelection}"
+									selectionMode="single"
+									selection="${impactSearchController.currentTableSelection}"
 									scrollable="true" scrollHeight="400" resizableColumns="true"
-									rowStyleClass="#{node.rowStyleClass}" >
+									rowStyleClass="#{node.rowStyleClass}">
 
 									<f:attribute name="uiEventSourceName" value="current-table" />
 									<p:ajax event="expand"
 										listener="#{impactSearchController.onNodeExpandCurrentTable}"
 										update="currentListsAndSmqs" />
-                                    
-                                    <p:ajax event="collapse" listener="#{impactSearchController.onNodeCollapseCurrentTable}" />
+
+									<p:ajax event="collapse"
+										listener="#{impactSearchController.onNodeCollapseCurrentTable}" />
 
 									<!-- Selection of the list fr workflow states -->
 									<p:ajax event="select"
@@ -189,62 +206,85 @@
 									<p:ajax event="unselect"
 										listener="#{impactSearchController.onUnselectCurrentRowTreeTable}"
 										update="@form:iaWorkflowCtrlPanel @form:futureListsAndSmqs" />
-                                    
+
 									<p:columnGroup type="header">
 										<p:row>
-											<p:column headerText="Existing Lists/SMQ" style="width:50%"/>
-											<p:column colspan="#{impactSearchController.displayScopeCatWeight eq 'false' ? 2 : 3}" headerText="Hierarchy Details" style="width:50%" />
+											<p:column headerText="Existing Lists/SMQ" style="width:50%" />
+											<p:column
+												colspan="#{impactSearchController.displayScopeCatWeight eq 'false' ? 2 : 3}"
+												headerText="Hierarchy Details" style="width:50%" />
 										</p:row>
 										<p:row>
-											<p:column styleClass="listName" headerText="#{impactSearchController.listName}" sortBy="#{node.term}" style="width:50%"/>
-											<p:column headerText="Code" sortBy="#{node.code}"  style="width:30%"/>
-											<p:column headerText="Level" style="width:#{impactSearchController.displayScopeCatWeight eq 'false' ? '20%' : '10%'}" />
-											<p:column rendered="#{impactSearchController.displayScopeCatWeight}" headerText="Scope" style="width:10%" />
+											<p:column styleClass="listName"
+												headerText="#{impactSearchController.listName}"
+												sortBy="#{node.term}" style="width:50%" />
+											<p:column headerText="Code" sortBy="#{node.code}"
+												style="width:30%" />
+											<p:column headerText="Level"
+												style="width:#{impactSearchController.displayScopeCatWeight eq 'false' ? '20%' : '10%'}" />
+											<p:column
+												rendered="#{impactSearchController.displayScopeCatWeight}"
+												headerText="Scope" style="width:10%" />
 										</p:row>
 									</p:columnGroup>
-                                    
-                                    <p:column styleClass="wrap"><h:outputText value="#{node.term}" /></p:column>
+
+									<p:column styleClass="wrap">
+										<h:outputText value="#{node.term}" />
+									</p:column>
 									<p:column>
-                                        <h:outputLink value="#" title="#{impactSearchController.getImpactDesc(node, 'current')}" >
-                                            <h:outputText value="#{node.code}" />
-                                        </h:outputLink>
-                                    </p:column>
-									<p:column><h:outputText value="#{node.level}" /></p:column>
-                                    <p:column rendered="#{impactSearchController.displayScopeCatWeight}"><h:outputText value="#{appCSMQBean.interpretCqtBaseScope(node.scope)}" /></p:column>
+										<h:outputLink value="#"
+											title="#{impactSearchController.getImpactDesc(node, 'current')}">
+											<h:outputText value="#{node.code}" />
+										</h:outputLink>
+									</p:column>
+									<p:column>
+										<h:outputText value="#{node.level}" />
+									</p:column>
+									<p:column
+										rendered="#{impactSearchController.displayScopeCatWeight}">
+										<h:outputText
+											value="#{appCSMQBean.interpretCqtBaseScope(node.scope)}" />
+									</p:column>
 								</p:treeTable>
 							</p:panel>
 
 							<p:panel style="width: 100%; padding: 0">
 								<p:toolbar id="futureListsToolbar">
 									<f:facet name="left">
-										<p:commandButton value="Hierarchy Search" actionListener="#" update="add-target-hs-btn"
+										<p:commandButton value="Hierarchy Search" actionListener="#"
+											update="add-target-hs-btn"
 											disabled="#{not impactSearchController.hierachySearchButtonEnabled}"
-											icon="fa fa-search" onclick="PF('target-hierarchy-search').show();">
-											
-											<p:ajax listener="#{impactSearchController.targetHierarchySearchDlgModel.resetHS}" event="click" 
+											icon="fa fa-search"
+											onclick="PF('target-hierarchy-search').show();">
+
+											<p:ajax
+												listener="#{impactSearchController.targetHierarchySearchDlgModel.resetHS}"
+												event="click"
 												update="@form:levelHT @form:termHT @form:search-direction-target @form:resultHierTarget @form:checkTarget" />
 										</p:commandButton>
-											
-										<p:commandButton value="New PTs" actionListener="#" id="new_pt_btn" update="new-pt-btn"
+
+										<p:commandButton value="New PTs" actionListener="#"
+											id="new_pt_btn" update="new-pt-btn"
 											disabled="#{impactSearchController.newPTButtonEnabled}"
 											onclick="PF('new_pt').show();" icon="fa fa-book" />
-											
-											<!-- disabled="#{not impactSearchController.selectNewPTButtonEnabled}" -->
-											
+
+										<!-- disabled="#{not impactSearchController.selectNewPTButtonEnabled}" -->
+
 										<p:spacer width="40px" height="1px" />
 										<h:outputText
 											value="#{configMB.dictionaryName} - #{configMB.targetMeddraVersion.value}" />
 									</f:facet>
-									
-							 
-									
+
+
+
 								</p:toolbar>
-								
+
 								<p:treeTable
 									value="#{impactSearchController.targetTableRootTreeNode}"
 									var="node" widgetVar="targetLists" id="futureListsAndSmqs"
 									styleClass="ui-treetable-futureListsAndSmqs"
-									selectionMode="single" selection="${impactSearchController.targetTableSelection}"
+									selectionMode="single"
+									selection="${impactSearchController.targetTableSelection}"
 									style="width: 100%;" scrollable="true" scrollHeight="400"
 									resizableColumns="true" rowStyleClass="#{node.rowStyleClass}">
 
@@ -252,7 +292,8 @@
 									<p:ajax event="expand"
 										listener="#{impactSearchController.onNodeExpandTargetTable}"
 										update="futureListsAndSmqs" />
-                                    <p:ajax event="collapse" listener="#{impactSearchController.onNodeCollapseTargetTable}" />
+									<p:ajax event="collapse"
+										listener="#{impactSearchController.onNodeCollapseTargetTable}" />
 
 									<!-- Selection of the list fr workflow states -->
 									<p:ajax event="select"
@@ -267,48 +308,72 @@
 										<p:row>
 											<p:column id="targetTitle" style="width:35%"
 												headerText="Future Lists/SMQ" />
-											<p:column colspan="#{impactSearchController.displayScopeCatWeight eq 'false' ? 3 : 6}" headerText="Hierarchy Details" />
+											<p:column
+												colspan="#{impactSearchController.displayScopeCatWeight eq 'false' ? 3 : 6}"
+												headerText="Hierarchy Details" />
 										</p:row>
 
 										<p:row>
-											<p:column styleClass="listName" headerText="#{impactSearchController.listName}" sortBy="#{node.term}" sortable="true" style="width:35%" />
-                                            <p:column headerText="Code" sortBy="#{node.code}" sortable="true" style="width:15%" />
+											<p:column styleClass="listName"
+												headerText="#{impactSearchController.listName}"
+												sortBy="#{node.term}" sortable="true" style="width:35%" />
+											<p:column headerText="Code" sortBy="#{node.code}"
+												sortable="true" style="width:15%" />
 											<p:column headerText="Level" style="width:8%" />
-											<p:column rendered="#{impactSearchController.displayScopeCatWeight}" headerText="Scope" style="width:15%" />
-											<p:column rendered="#{impactSearchController.displayScopeCatWeight}" headerText="Category" style="width:9% " />
-											<p:column rendered="#{impactSearchController.displayScopeCatWeight}" headerText="Weight" style="width:8%" />
+											<p:column
+												rendered="#{impactSearchController.displayScopeCatWeight}"
+												headerText="Scope" style="width:15%" />
+											<p:column
+												rendered="#{impactSearchController.displayScopeCatWeight}"
+												headerText="Category" style="width:9% " />
+											<p:column
+												rendered="#{impactSearchController.displayScopeCatWeight}"
+												headerText="Weight" style="width:8%" />
 											<p:column headerText="" style="width:5%" />
 										</p:row>
-										 
+
 									</p:columnGroup>
 
-									<p:column styleClass="wrap"><h:outputText value="#{node.term}" /></p:column>
-                                    <p:column>
-                                        <h:outputLink value="#" title="#{impactSearchController.getImpactDesc(node, 'target')}" >
-                                            <h:outputText value="#{node.code}" />
-                                        </h:outputLink>
-                                    </p:column>
-									<p:column><h:outputText value="#{node.level}" /></p:column>
-									<p:column rendered="#{impactSearchController.displayScopeCatWeight}">
-                                        <h:outputText rendered="#{not node.hideScope and node.readOnlyScope}" value="#{appCSMQBean.interpretCqtBaseScope(node.scope)}" />
-                                        <p:selectOneMenu value="#{node.scope}"
-                                            rendered="#{not node.hideScope and not node.readOnlyScope and (node.isSmqNode() or not node.algorithmN)}"
-                                            autoWidth="false" style="width:70%">
-                                            <!-- <f:selectItems value="#{appCSMQBean.cqtBaseScopes}" var="s" itemLabel="#{s[1]}" itemValue="#{s[0]}" /> -->
-                                            
-                                            <f:selectItems value="#{createController.detailsFormModel.SMQFilterLevels}" var="s"
-													itemLabel="#{s.value}"
-													itemValue="#{s.codelistInternalValue}" />
-                                            
-                                            <p:ajax event="change" listener="#{impactSearchController.filterRelationsByScopeInTargetTable(node)}" update="futureListsAndSmqs" />
-                                            <!-- <p:ajax listener="#{impactSearchController.setTargetRelationsUpdated()}" /> -->
-                                        </p:selectOneMenu>
+									<p:column styleClass="wrap">
+										<h:outputText value="#{node.term}" />
 									</p:column>
-									<p:column rendered="#{impactSearchController.displayScopeCatWeight}">
-                                        <h:outputText rendered="#{not node.hideCategory and node.readOnlyCategory}" 
-                                            value="#{appCSMQBean.interpretCqtBaseCategory(node.category)}" />
-                                        
-                                        <!-- Disable selection control, remove comments if we need to reactivate the field
+									<p:column>
+										<h:outputLink value="#"
+											title="#{impactSearchController.getImpactDesc(node, 'target')}">
+											<h:outputText value="#{node.code}" />
+										</h:outputLink>
+									</p:column>
+									<p:column>
+										<h:outputText value="#{node.level}" />
+									</p:column>
+									<p:column
+										rendered="#{impactSearchController.displayScopeCatWeight}">
+										<h:outputText
+											rendered="#{not node.hideScope and node.readOnlyScope}"
+											value="#{appCSMQBean.interpretCqtBaseScope(node.scope)}" />
+										<p:selectOneMenu value="#{node.scope}"
+											rendered="#{not node.hideScope and not node.readOnlyScope and (node.isSmqNode() or not node.algorithmN)}"
+											autoWidth="false" style="width:70%">
+											<!-- <f:selectItems value="#{appCSMQBean.cqtBaseScopes}" var="s" itemLabel="#{s[1]}" itemValue="#{s[0]}" /> -->
+
+											<f:selectItems
+												value="#{createController.detailsFormModel.SMQFilterLevels}"
+												var="s" itemLabel="#{s.value}"
+												itemValue="#{s.codelistInternalValue}" />
+
+											<p:ajax event="change"
+												listener="#{impactSearchController.filterRelationsByScopeInTargetTable(node)}"
+												update="futureListsAndSmqs" />
+											<!-- <p:ajax listener="#{impactSearchController.setTargetRelationsUpdated()}" /> -->
+										</p:selectOneMenu>
+									</p:column>
+									<p:column
+										rendered="#{impactSearchController.displayScopeCatWeight}">
+										<h:outputText
+											rendered="#{not node.hideCategory and node.readOnlyCategory}"
+											value="#{appCSMQBean.interpretCqtBaseCategory(node.category)}" />
+
+										<!-- Disable selection control, remove comments if we need to reactivate the field
                                         <h:outputText rendered="#{not node.hideCategory and node.readOnlyCategory}" 
                                             value="#{appCSMQBean.interpretCqtBaseCategory(node.category)}" />
                                         <p:selectOneMenu value="#{node.category}"
@@ -319,10 +384,13 @@
                                         </p:selectOneMenu>
                                         -->
 									</p:column>
-									<p:column rendered="#{impactSearchController.displayScopeCatWeight}">
-                                        <h:outputText rendered="#{not node.hideWeight and node.readOnlyWeight}" value="#{node.weight}" />
-                                        
-                                        <!-- Disable selection control, remove comments if we need to reactivate the field
+									<p:column
+										rendered="#{impactSearchController.displayScopeCatWeight}">
+										<h:outputText
+											rendered="#{not node.hideWeight and node.readOnlyWeight}"
+											value="#{node.weight}" />
+
+										<!-- Disable selection control, remove comments if we need to reactivate the field
                                         <h:outputText rendered="#{not node.hideWeight and node.readOnlyWeight}" value="#{node.weight}" />
                                         <p:spinner value="#{node.weight}" size="2"
                                             rendered="#{not node.hideWeight and not node.readOnlyWeight and (node.isSmqNode() or not node.algorithmN)}" >
@@ -333,10 +401,11 @@
 									<p:column>
 										<p:commandLink
 											action="#{impactSearchController.deleteRelation(impactSearchController.targetTableRootTreeNode, node)}"
-                                            style="color: red" update="futureListsAndSmqs" title="Delete"
-                                            disabled="#{impactSearchController.readOnlyIA}"
+											style="color: red" update="futureListsAndSmqs" title="Delete"
+											disabled="#{impactSearchController.readOnlyIA}"
 											rendered="#{not node.hideDelete}">
-											<i class="fa fa-trash"></i><h:outputText value="Delete" />
+											<i class="fa fa-trash"></i>
+											<h:outputText value="Delete" />
 											<p:confirm header="Delete relation"
 												message="Are you sure you want to delete this relation?"
 												icon="ui-icon-alert" />
@@ -370,6 +439,8 @@
 							styleClass="ui-confirmdialog-no" icon="ui-icon-close"
 							onclick="resetImpactsAndGoToNextStep()" />
 					</p:confirmDialog>
+
+
 				</p:tab>
 
 				<!-- Notes -->
@@ -412,10 +483,29 @@
 								styleClass="ui-confirmdialog-no" icon="ui-icon-close"
 								onclick="resetDetailsAndGoToNextStep()" />
 						</p:confirmDialog>
+
+						<!-- AUTO SAVE -->
+						<p:remoteCommand name="saveDetails" update="@form:messages"
+							action="#{impactSearchController.saveDetailsAndClose}"
+							onstart="PF('confirmIASaveDetails').hide()" />
+
+						<p:confirmDialog widgetVar="confirmIASaveDetails"
+							showEffect="fade" hideEffect="fade"
+							header="Confirm about Unsaved Changes"
+							message="There are some unsaved changes. Do you want to save them before you continue ?">
+
+							<p:commandButton value="Yes" type="button"
+								styleClass="ui-confirmdialog-yes" icon="ui-icon-check"
+								onclick="saveDetails()" />
+							<p:commandButton value="No" styleClass="ui-confirmdialog-no"
+								immediate="true" icon="ui-icon-close"
+								action="#{impactSearchController.openForm}" />
+						</p:confirmDialog>
+						<!-- AUTO SAVE -->
 					</p:panel>
 				</p:tab>
 			</p:wizard>
-			
+
 			<p:confirmDialog widgetVar="confirmOK" showEffect="fade"
 				hideEffect="fade" header="Warning"
 				message="#{impactSearchController.confirmMessage}">
@@ -425,56 +515,65 @@
 			</p:confirmDialog>
 
 			<p:dialog header="Impact Search" widgetVar="select_mq" width="800px"
-                      minWidth="800" minHeight="550">
-                <h:panelGrid columns="1" style="height:100%">
-                    <ui:include src="../impactCommon/impactSearch.xhtml"></ui:include>
-                    <h:panelGrid style="float: right;height:30px">
-                        <h:panelGrid columns="2">
-                            <p:commandButton value="Add selected"
-                                onclick="PF('select_mq').hide()"
-                                update="currentListsAndSmqs futureListsAndSmqs futureListsToolbar new_pt_btn filterBtn">
-                                <f:actionListener
-                                    binding="#{impactSearchController.updateCurrentTable()}" />
-                                <f:actionListener
-                                    binding="#{impactSearchController.updateTargetTable()}" />
-                            </p:commandButton>
-                            <p:commandButton value="Cancel" onclick="PF('select_mq').hide()" type="button" />
-                        </h:panelGrid>
-                    </h:panelGrid>
-                </h:panelGrid>
+				minWidth="800" minHeight="550">
+				<h:panelGrid columns="1" style="height:100%">
+					<ui:include src="../impactCommon/impactSearch.xhtml"></ui:include>
+					<h:panelGrid style="float: right;height:30px">
+						<h:panelGrid columns="2">
+							<p:commandButton value="Add selected"
+								onclick="PF('select_mq').hide()"
+								update="currentListsAndSmqs futureListsAndSmqs futureListsToolbar new_pt_btn filterBtn">
+								<f:actionListener
+									binding="#{impactSearchController.updateCurrentTable()}" />
+								<f:actionListener
+									binding="#{impactSearchController.updateTargetTable()}" />
+							</p:commandButton>
+							<p:commandButton value="Cancel" onclick="PF('select_mq').hide()"
+								type="button" />
+						</h:panelGrid>
+					</h:panelGrid>
+				</h:panelGrid>
 				<f:facet name="buttonBar">
 					<p:outputLabel value="Last Updated:" id="plam1" />
 					<h:outputText value="#{dummyView.value}" id="ot27" />
 				</f:facet>
 			</p:dialog>
 
-			<p:dialog widgetVar="current-hierarchy-search" modal="false" id="dialogHS"
-				header="Hierarchy Search Current" width="680px" minHeight="480">
-                <ui:include src="../create/hierarchySearch.xhtml">
-                    <ui:param name="paramDlgCtrl" value="#{impactSearchController.currentHierarchySearchDlgModel}" />
-                    <ui:param name="paramParentExtension" value="#{impactSearchController.selectedListExtension}" />
-                </ui:include>
-
-				<p:spacer height="10"></p:spacer>
-				<h:panelGrid style="float: right" columns="2">
-					<p:commandButton value="Exit" type="button" onclick="PF('current-hierarchy-search').hide()">
-						 
-					</p:commandButton>
-				</h:panelGrid>
-			</p:dialog>
-
-			<p:dialog widgetVar="target-hierarchy-search" modal="false" header="Hierarchy Search Target"
-				width="680px" minHeight="480">
-				<ui:include src="../impactCommon/targetHierarchySearch.xhtml">
-					<ui:param name="paramDlgCtrlTarget" value="#{impactSearchController.targetHierarchySearchDlgModel}" />
+			<p:dialog widgetVar="current-hierarchy-search" modal="false"
+				id="dialogHS" header="Hierarchy Search Current" width="680px"
+				minHeight="480">
+				<ui:include src="../create/hierarchySearch.xhtml">
+					<ui:param name="paramDlgCtrl"
+						value="#{impactSearchController.currentHierarchySearchDlgModel}" />
+					<ui:param name="paramParentExtension"
+						value="#{impactSearchController.selectedListExtension}" />
 				</ui:include>
 
 				<p:spacer height="10"></p:spacer>
 				<h:panelGrid style="float: right" columns="2">
-					<p:commandButton value="Add selected" onclick="PF('target-hierarchy-search').hide()" disabled="#{impactSearchController.readOnlyIA}"
+					<p:commandButton value="Exit" type="button"
+						onclick="PF('current-hierarchy-search').hide()">
+
+					</p:commandButton>
+				</h:panelGrid>
+			</p:dialog>
+
+			<p:dialog widgetVar="target-hierarchy-search" modal="false"
+				header="Hierarchy Search Target" width="680px" minHeight="480">
+				<ui:include src="../impactCommon/targetHierarchySearch.xhtml">
+					<ui:param name="paramDlgCtrlTarget"
+						value="#{impactSearchController.targetHierarchySearchDlgModel}" />
+				</ui:include>
+
+				<p:spacer height="10"></p:spacer>
+				<h:panelGrid style="float: right" columns="2">
+					<p:commandButton value="Add selected"
+						onclick="PF('target-hierarchy-search').hide()"
+						disabled="#{impactSearchController.readOnlyIA}"
 						update="futureListsAndSmqs" id="add-target-hs-btn"
 						action="#{impactSearchController.addSelectedToTargetRelation(impactSearchController.targetHierarchySearchDlgModel.selectedNodes)}" />
-					<p:commandButton value="Cancel" type="button" onclick="PF('target-hierarchy-search').hide()" />
+					<p:commandButton value="Cancel" type="button"
+						onclick="PF('target-hierarchy-search').hide()" />
 				</h:panelGrid>
 			</p:dialog>
 
@@ -515,10 +614,12 @@
 
 				<p:spacer height="10"></p:spacer>
 				<h:panelGrid style="float: right" columns="2">
-					<p:commandButton value="Add selected" onclick="PF('new_pt').hide()" disabled="#{impactSearchController.readOnlyIA}"
+					<p:commandButton value="Add selected" onclick="PF('new_pt').hide()"
+						disabled="#{impactSearchController.readOnlyIA}"
 						update="futureListsAndSmqs messages" id="new-pt-btn"
 						action="#{impactSearchController.addSelectedNewPtsToTargetRelation}" />
-					<p:commandButton value="Cancel" type="button" onclick="PF('new_pt').hide()" />
+					<p:commandButton value="Cancel" type="button"
+						onclick="PF('new_pt').hide()" />
 				</h:panelGrid>
 			</p:dialog>
 
@@ -531,145 +632,192 @@
 
 
 			<p:dialog widgetVar="legend" modal="true" id="historyD"
-                      closable="true" header="Impact Legend" resizable="false">
+				closable="true" header="Impact Legend" resizable="false">
 
 				<h:panelGrid columns="1" styleClass="full-width">
-                    <h:panelGrid columns="3" cellpadding="8">
-                        <p:graphicImage url="/image/impact/1010.png" />
-                        <p:spacer width="5" />
-                        <p:outputLabel value="Impacted"
-                            style="font-size:1.2em;"  styleClass="blue-colored"/>
-                        
-                        <p:graphicImage url="/image/impact/brown.png" />
-                        <p:spacer width="5" height="1" />
-                        <p:outputLabel value="Retired or Inactive List(Current List): Brown"
-                            style="font-size:1.2em;" styleClass="brown-colored" />
-                        
-                        <p:graphicImage url="/image/impact/1030.png" />
-                        <p:spacer width="5" height="1" />
-                        <p:outputLabel value="Indirect Impacts(Future List): Bold and Dark Grey"
-                            style="font-size:1.2em;" styleClass="darkgrey-colored" />
+					<h:panelGrid columns="3" cellpadding="8">
+						<p:graphicImage url="/image/impact/1010.png" />
+						<p:spacer width="5" />
+						<p:outputLabel value="Impacted" style="font-size:1.2em;"
+							styleClass="blue-colored" />
 
-                        <p:graphicImage url="/image/impact/1080.png" />
-                        <p:spacer width="5" />
-                        <p:outputLabel value="Renamed Terms (Italic BLACK)"
-                            style="font-size:1.2em;" styleClass="italic" />
+						<p:graphicImage url="/image/impact/brown.png" />
+						<p:spacer width="5" height="1" />
+						<p:outputLabel
+							value="Retired or Inactive List(Current List): Brown"
+							style="font-size:1.2em;" styleClass="brown-colored" />
 
-                        <p:graphicImage url="/image/impact/1040.png" />
-                        <p:spacer width="5" height="1" />
-                        <p:outputLabel value="MedDRA Inserted/Added Term/Relation"
-                            style="font-size:1.2em;" styleClass="orange-colored" />
+						<p:graphicImage url="/image/impact/1030.png" />
+						<p:spacer width="5" height="1" />
+						<p:outputLabel
+							value="Indirect Impacts(Future List): Bold and Dark Grey"
+							style="font-size:1.2em;" styleClass="darkgrey-colored" />
 
-                        <p:graphicImage url="/image/impact/1070.png" />
-                        <p:spacer width="5" height="1" />
-                        <p:outputLabel value="MQM Inserted/Added New PT"
-                            style="font-size:1.2em;" styleClass="green-colored" />
+						<p:graphicImage url="/image/impact/1080.png" />
+						<p:spacer width="5" />
+						<p:outputLabel value="Renamed Terms (Italic BLACK)"
+							style="font-size:1.2em;" styleClass="italic" />
 
-                        <p:graphicImage url="/image/impact/1020.png" />
-                        <p:spacer width="5" height="1" />
-                        <p:outputLabel value="Deleted/Merged/Moved Term/Relation"
-                            style="font-size:1.2em;" styleClass="red-colored"/>
-                        
-                        <p:graphicImage url="/image/impact/mauve.png" />
-                        <p:spacer width="5" height="1" />
-                        <p:outputLabel value="Non-Current LLT (Future Lists)"
-                            style="font-size:1.2em;" styleClass="mauve-colored" />
+						<p:graphicImage url="/image/impact/1040.png" />
+						<p:spacer width="5" height="1" />
+						<p:outputLabel value="MedDRA Inserted/Added Term/Relation"
+							style="font-size:1.2em;" styleClass="orange-colored" />
 
-                        <p:graphicImage url="/image/impact/1050.png" />
-                        <p:spacer width="5" height="1" />
-                        <p:outputLabel value="Change in TERM scope (SMQs)"
-                            style="font-size:1.2em;" styleClass="pink-colored"  />
-                    </h:panelGrid>
+						<p:graphicImage url="/image/impact/1070.png" />
+						<p:spacer width="5" height="1" />
+						<p:outputLabel value="MQM Inserted/Added New PT"
+							style="font-size:1.2em;" styleClass="green-colored" />
+
+						<p:graphicImage url="/image/impact/1020.png" />
+						<p:spacer width="5" height="1" />
+						<p:outputLabel value="Deleted/Merged/Moved Term/Relation"
+							style="font-size:1.2em;" styleClass="red-colored" />
+
+						<p:graphicImage url="/image/impact/mauve.png" />
+						<p:spacer width="5" height="1" />
+						<p:outputLabel value="Non-Current LLT (Future Lists)"
+							style="font-size:1.2em;" styleClass="mauve-colored" />
+
+						<p:graphicImage url="/image/impact/1050.png" />
+						<p:spacer width="5" height="1" />
+						<p:outputLabel value="Change in TERM scope (SMQs)"
+							style="font-size:1.2em;" styleClass="pink-colored" />
+					</h:panelGrid>
 
 					<h:panelGrid style="float: right" columns="1">
-						<p:commandButton value="OK" type="button" onclick="PF('legend').hide()" />
+						<p:commandButton value="OK" type="button"
+							onclick="PF('legend').hide()" />
 					</h:panelGrid>
 				</h:panelGrid>
 			</p:dialog>
-			
+
 			<!-- FILTER DLG -->
 			<p:dialog widgetVar="filter" modal="true" id="filterDlg"
-                      closable="true" header="Filter" resizable="false">
+				closable="true" header="Filter" resizable="false">
 
 				<h:panelGrid columns="2" styleClass="full-width" id="panel-filter">
-                    <h:panelGrid columns="2" cellpadding="2">
-                       	
-						<h:selectBooleanCheckbox id="all" value="#{impactSearchController.filterDTO.all}" >
-							<p:ajax update="panel-filter" listener="#{impactSearchController.selectAllFilter}" />
+					<h:panelGrid columns="2" cellpadding="2">
+
+						<h:selectBooleanCheckbox id="all"
+							value="#{impactSearchController.filterDTO.all}">
+							<p:ajax update="panel-filter"
+								listener="#{impactSearchController.selectAllFilter}" />
 						</h:selectBooleanCheckbox>
 						<label for="all">All</label>
-						
-						<h:selectBooleanCheckbox id="new" value="#{impactSearchController.filterDTO.newSuccessorPT}" disabled="#{impactSearchController.filterReadOnly}">
-							<p:ajax update="panel-filter" listener="#{impactSearchController.selectFilter}" />
+
+						<h:selectBooleanCheckbox id="new"
+							value="#{impactSearchController.filterDTO.newSuccessorPT}"
+							disabled="#{impactSearchController.filterReadOnly}">
+							<p:ajax update="panel-filter"
+								listener="#{impactSearchController.selectFilter}" />
 						</h:selectBooleanCheckbox>
 						<label for="new">New Successor PT</label>
-						
-						<h:selectBooleanCheckbox id="non-current" value="#{impactSearchController.filterDTO.nonCurrentLLT}" disabled="#{impactSearchController.filterReadOnly}">
-							<p:ajax update="panel-filter" listener="#{impactSearchController.selectFilter}" />
+
+						<h:selectBooleanCheckbox id="non-current"
+							value="#{impactSearchController.filterDTO.nonCurrentLLT}"
+							disabled="#{impactSearchController.filterReadOnly}">
+							<p:ajax update="panel-filter"
+								listener="#{impactSearchController.selectFilter}" />
 						</h:selectBooleanCheckbox>
 						<label for="non-current">Non-Current LLT</label>
-						
-						<h:selectBooleanCheckbox id="llt" value="#{impactSearchController.filterDTO.lltPromotedToPT}" disabled="#{impactSearchController.filterReadOnly}">
-							<p:ajax update="panel-filter" listener="#{impactSearchController.selectFilter}"/>
+
+						<h:selectBooleanCheckbox id="llt"
+							value="#{impactSearchController.filterDTO.lltPromotedToPT}"
+							disabled="#{impactSearchController.filterReadOnly}">
+							<p:ajax update="panel-filter"
+								listener="#{impactSearchController.selectFilter}" />
 						</h:selectBooleanCheckbox>
 						<label for="llt">LLT Promoted to PT</label>
-						
-						<h:selectBooleanCheckbox id="meddra" value="#{impactSearchController.filterDTO.medDraTermNameChanged}" disabled="#{impactSearchController.filterReadOnly}">
-							<p:ajax update="panel-filter" listener="#{impactSearchController.selectFilter}"/>
+
+						<h:selectBooleanCheckbox id="meddra"
+							value="#{impactSearchController.filterDTO.medDraTermNameChanged}"
+							disabled="#{impactSearchController.filterReadOnly}">
+							<p:ajax update="panel-filter"
+								listener="#{impactSearchController.selectFilter}" />
 						</h:selectBooleanCheckbox>
 						<label for="meddra">MedDRA Term Name Change</label>
-						
-						<h:selectBooleanCheckbox id="pt" value="#{impactSearchController.filterDTO.ptDemotedToLLT}" disabled="#{impactSearchController.filterReadOnly}">
-							<p:ajax update="panel-filter" listener="#{impactSearchController.selectFilter}"/>
+
+						<h:selectBooleanCheckbox id="pt"
+							value="#{impactSearchController.filterDTO.ptDemotedToLLT}"
+							disabled="#{impactSearchController.filterReadOnly}">
+							<p:ajax update="panel-filter"
+								listener="#{impactSearchController.selectFilter}" />
 						</h:selectBooleanCheckbox>
 						<label for="pt">PT Demoted to LLT</label>
-						
-						<h:selectBooleanCheckbox id="merged" value="#{impactSearchController.filterDTO.mergedHLGT}" disabled="#{impactSearchController.filterReadOnly}">
-							<p:ajax update="panel-filter" listener="#{impactSearchController.selectFilter}"/>
+
+						<h:selectBooleanCheckbox id="merged"
+							value="#{impactSearchController.filterDTO.mergedHLGT}"
+							disabled="#{impactSearchController.filterReadOnly}">
+							<p:ajax update="panel-filter"
+								listener="#{impactSearchController.selectFilter}" />
 						</h:selectBooleanCheckbox>
 						<label for="merged">Merged HLGT/HLT</label>
 					</h:panelGrid>
-                    <h:panelGrid columns="2" cellpadding="2">
-                    	
-						<h:selectBooleanCheckbox id="soc" value="#{impactSearchController.filterDTO.primarySOCChange}" disabled="#{impactSearchController.filterReadOnly}">
-							<p:ajax update="panel-filter" listener="#{impactSearchController.selectFilter}"/>
+					<h:panelGrid columns="2" cellpadding="2">
+
+						<h:selectBooleanCheckbox id="soc"
+							value="#{impactSearchController.filterDTO.primarySOCChange}"
+							disabled="#{impactSearchController.filterReadOnly}">
+							<p:ajax update="panel-filter"
+								listener="#{impactSearchController.selectFilter}" />
 						</h:selectBooleanCheckbox>
 						<label for="soc">Primary SOC Change</label>
-											
-						<h:selectBooleanCheckbox id="new-term" value="#{impactSearchController.filterDTO.newTermAdded}" disabled="#{impactSearchController.filterReadOnly}">
-							<p:ajax update="panel-filter" listener="#{impactSearchController.selectFilter}"/>
+
+						<h:selectBooleanCheckbox id="new-term"
+							value="#{impactSearchController.filterDTO.newTermAdded}"
+							disabled="#{impactSearchController.filterReadOnly}">
+							<p:ajax update="panel-filter"
+								listener="#{impactSearchController.selectFilter}" />
 						</h:selectBooleanCheckbox>
 						<label for="new-term">New Term added</label>
-						
-						<h:selectBooleanCheckbox id="term-moved" value="#{impactSearchController.filterDTO.termMoved}" disabled="#{impactSearchController.filterReadOnly}">
-							<p:ajax update="panel-filter" listener="#{impactSearchController.selectFilter}"/>
+
+						<h:selectBooleanCheckbox id="term-moved"
+							value="#{impactSearchController.filterDTO.termMoved}"
+							disabled="#{impactSearchController.filterReadOnly}">
+							<p:ajax update="panel-filter"
+								listener="#{impactSearchController.selectFilter}" />
 						</h:selectBooleanCheckbox>
 						<label for="term-moved">Term moved</label>
-						
-						<h:selectBooleanCheckbox id="scope" value="#{impactSearchController.filterDTO.scopechanged}" disabled="#{impactSearchController.filterReadOnly}">
-							<p:ajax update="panel-filter" listener="#{impactSearchController.selectFilter}"/>
-							</h:selectBooleanCheckbox>
+
+						<h:selectBooleanCheckbox id="scope"
+							value="#{impactSearchController.filterDTO.scopechanged}"
+							disabled="#{impactSearchController.filterReadOnly}">
+							<p:ajax update="panel-filter"
+								listener="#{impactSearchController.selectFilter}" />
+						</h:selectBooleanCheckbox>
 						<label for="scope">Scope Change</label>
-						
-						<h:selectBooleanCheckbox id="term-deleted" value="#{impactSearchController.filterDTO.termDeleted}" disabled="#{impactSearchController.filterReadOnly}">
-							<p:ajax update="panel-filter" listener="#{impactSearchController.selectFilter}"/>
+
+						<h:selectBooleanCheckbox id="term-deleted"
+							value="#{impactSearchController.filterDTO.termDeleted}"
+							disabled="#{impactSearchController.filterReadOnly}">
+							<p:ajax update="panel-filter"
+								listener="#{impactSearchController.selectFilter}" />
 						</h:selectBooleanCheckbox>
 						<label for="term-deleted">Term Deleted</label>
-						
-						<h:selectBooleanCheckbox id="status-changed" value="#{impactSearchController.filterDTO.statusChanged}" disabled="#{impactSearchController.filterReadOnly}">
-							<p:ajax update="panel-filter" listener="#{impactSearchController.selectFilter}"/>
+
+						<h:selectBooleanCheckbox id="status-changed"
+							value="#{impactSearchController.filterDTO.statusChanged}"
+							disabled="#{impactSearchController.filterReadOnly}">
+							<p:ajax update="panel-filter"
+								listener="#{impactSearchController.selectFilter}" />
 						</h:selectBooleanCheckbox>
 						<label for="status-changed">Status Changed</label>
-						
-						<h:selectBooleanCheckbox id="impacted-smq" value="#{impactSearchController.filterDTO.impactedSMQ}" disabled="#{impactSearchController.filterReadOnly}">
-							<p:ajax update="panel-filter" listener="#{impactSearchController.selectFilter}"/>
+
+						<h:selectBooleanCheckbox id="impacted-smq"
+							value="#{impactSearchController.filterDTO.impactedSMQ}"
+							disabled="#{impactSearchController.filterReadOnly}">
+							<p:ajax update="panel-filter"
+								listener="#{impactSearchController.selectFilter}" />
 						</h:selectBooleanCheckbox>
 						<label for="impacted-smq">Impacted SMQ</label>
-                    </h:panelGrid>
+					</h:panelGrid>
 
 					<h:panelGrid style="float: right" columns="1">
-						<p:commandButton value="OK" type="button" onclick="PF('filter').hide()">
-							<p:ajax update="@form:futureListsAndSmqs @form:currentListsAndSmqs" listener="#{impactSearchController.refreshTables}" />
+						<p:commandButton value="OK" type="button"
+							onclick="PF('filter').hide()">
+							<p:ajax
+								update="@form:futureListsAndSmqs @form:currentListsAndSmqs"
+								listener="#{impactSearchController.refreshTables}" />
 						</p:commandButton>
 					</h:panelGrid>
 				</h:panelGrid>
@@ -716,7 +864,6 @@
 	background: linear-gradient(#ececec, #cccccc);
 	text-decoration: none;
 }
-
 </style>
 	</ui:define>
 </ui:composition>

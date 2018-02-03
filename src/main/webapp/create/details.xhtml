@@ -220,10 +220,10 @@
 		</p:commandButton>
 
 		<p:commandButton value="No" styleClass="ui-confirmdialog-no" immediate="true"
-			icon="ui-icon-close" action="#{applicationController.openForm}" />
+			icon="ui-icon-close" action="#{createController.openForm}" />
 	</p:confirmDialog>
 	
-	<p:confirmDialog widgetVar="sessionSaveDetailsConfirm" showEffect="fade"
+	<!-- <p:confirmDialog widgetVar="sessionSaveDetailsConfirm" showEffect="fade"
 		hideEffect="fade" header="Inactive session"
 		message=" If session is inactive for longer than 10mins, you can lose data. Please click on Yes to save the data.">
 
@@ -240,5 +240,6 @@
 		update="@form:m1 @form:codeValue @form:wizardId"
 		action="#{createController.saveDetailsAndClose}"
 		onstart="PF('sessionSaveDetailsConfirm').hide()" />
+		-->
 
 </ui:composition>

@@ -93,9 +93,9 @@
 				action="#{applicationController.openForm}" />
 		</p:confirmDialog>
 
-		<p:confirmDialog widgetVar="sessionSaveNotesConfirm" showEffect="fade"
+		<!-- <p:confirmDialog widgetVar="sessionSaveNotesConfirm" showEffect="fade"
 			hideEffect="fade" header="Inactive session"
-			message=" If session is inactive for longer than 10mins, you can lose data. Please click on Yes to save the data.">
+			message="If session is inactive for longer than 10mins, you can lose data. Please click on Yes to save the data.">
 
 			<p:commandButton value="Yes" type="button"
 				styleClass="ui-confirmdialog-yes" icon="ui-icon-check"
@@ -111,7 +111,7 @@
 			update="@form:m1 @form:wizardId"
 			action="#{createController.saveNotesAndClose}"
 			onstart="PF('sessionSaveNotesConfirm').hide()" />
-
+-->
 
 	</p:panel>
 

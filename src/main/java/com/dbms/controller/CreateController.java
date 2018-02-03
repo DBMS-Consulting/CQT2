@@ -153,7 +153,6 @@ public class CreateController implements Serializable {
 	private DetailDTO detailDTO;
 	
 	private StreamedContent excelFile;
-	boolean detailB, notesB, relationsB;
 	
 	public CreateController() {
 		setSelectedData(null);
@@ -166,7 +165,7 @@ public class CreateController implements Serializable {
         this.workflowFormModel = new ListWorkflowFormVM(this.authService);
 		initAll();
 		detailDTO = new DetailDTO();
-		//this.formToOpen = "";
+		this.formToOpen = "";
 	}
 	
 	public void generateExcel(List<CmqBase190> list) {
@@ -213,19 +212,26 @@ public class CreateController implements Serializable {
 			 
 			if (detailsFormModel.isModelChanged()) {
 				RequestContext.getCurrentInstance().execute("PF('confirmSaveDetailsAll').show();");
+				return "";
 			} else if (notesFormModel.isModelChanged()) {
 				RequestContext.getCurrentInstance().execute("PF('confirmSaveNotes').show();");
+				return "";
 			} else if (relationsModified) {
 				RequestContext.getCurrentInstance().execute("PF('confirmSaveRelations').show();");
+				return "";
 			}
 		}
-		return "";
+		return form;
+	}
+	
+	public String openForm() {
+		return formToOpen;
 	}
 	
 	
 	 
 	//TO MOVE TO APP CONTROLLER
-	 public void onIdle() {
+	/* public void onIdle() {
 		 setFormToOpen("index.xhtml?faces-redirect=true"); 
 		 if (showConfirmDialog()) {				 
 			if (detailsFormModel.isModelChanged()) {
@@ -236,21 +242,10 @@ public class CreateController implements Serializable {
 				RequestContext.getCurrentInstance().execute("PF('sessionSaveRelationsConfirm').show();");
 			}
 		}
-	 }
+	 } */
 	//TO MOVE TOAPP CONTROLLER
 	
 	public String saveDetailsAndClose() {
-		/*if(detailsFormModel.validateForm()) {
-            if(createWizard != null)
-                save();
-            else if(copyWizard != null)
-                copy();
-            else if(updateWizard != null)
-                update();
-            
-		}*/
-		//return formToOpen;
-        
         if(detailsFormModel.validateForm()) {
             if(createWizard != null) {
             	//save();

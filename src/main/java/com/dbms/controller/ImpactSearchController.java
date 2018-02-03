@@ -19,6 +19,7 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
+import javax.faces.component.html.HtmlInputHidden;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
 
@@ -190,6 +191,10 @@ public class ImpactSearchController implements Serializable {
 	
 	private boolean dummySelected;
 	private FilterDTO filterDTO;
+	
+	private String formToOpen;
+	private HtmlInputHidden formClicked;
+
 
 
 	public ImpactSearchController() {
@@ -199,6 +204,11 @@ public class ImpactSearchController implements Serializable {
 	@PreDestroy
 	public void onDestroy() {
 		System.out.println("\n ***********************  onDetroy ImpactSearchController");
+
+		if (iaWizard != null) {
+			System.out.println("\n ***********   show DIALOG: " + showConfirmDialog());
+			RequestContext.getCurrentInstance().execute("PF('confirmIASaveDetails').show();");
+		}
 	}
 
 	@PostConstruct
@@ -229,6 +239,55 @@ public class ImpactSearchController implements Serializable {
 		setDictionaryVersion(currentMeddraVersionCodeList.getValue());
 		this.filterReadOnly = false;
 		filterDTO = new FilterDTO();
+		
+		//detailsFormModel.setModelChanged(false);
+	}
+	
+	public String openForm() {
+		return formToOpen;
+	}
+	
+	//AUTO SAVE
+	public boolean showConfirmDialog() {
+		boolean detailChanged = detailsFormModel.isModelChanged();
+		boolean notesChanged = notesFormModel.isModelChanged();
+				
+		if (detailChanged || notesChanged)		
+			return true;
+		
+		return false;
+	}
+	
+	public String initForm(String url) {
+		String form = url + ".xhtml?faces-redirect=true";
+		setFormToOpen(form);
+		System.out.println("\n  ---- FORM IAController: " + formToOpen);
+		
+		if (!showConfirmDialog()) {
+			return form;
+		}
+		else {
+			if (detailsFormModel.isModelChanged()) {
+				RequestContext.getCurrentInstance().execute("PF('confirmIASaveDetails').show();");
+				return "";
+			} else if (notesFormModel.isModelChanged()) {
+				RequestContext.getCurrentInstance().execute("PF('confirmIASaveNotes').show();");
+				return "";
+			} 
+		}
+		return form;
+	}
+		
+	public String saveDetailsAndClose() {
+		RequestContext.getCurrentInstance().execute("PF('confirmIASaveDetails').hide();");
+		saveDetails();
+		return formToOpen;
+	}
+	
+	public String saveNotesAndClose() {
+		RequestContext.getCurrentInstance().execute("PF('confirmIASaveNotes').hide();");
+		saveInformativeNotes();
+		return formToOpen;
 	}
 	
 	
@@ -2797,5 +2856,21 @@ public class ImpactSearchController implements Serializable {
 			impactFilterList.add("SCH");
 		}
 		return impactFilterList;
+	}
+
+	public String getFormToOpen() {
+		return formToOpen;
+	}
+
+	public void setFormToOpen(String formToOpen) {
+		this.formToOpen = formToOpen;
+	}
+
+	public HtmlInputHidden getFormClicked() {
+		return formClicked;
+	}
+
+	public void setFormClicked(HtmlInputHidden formClicked) {
+		this.formClicked = formClicked;
 	}
 }
