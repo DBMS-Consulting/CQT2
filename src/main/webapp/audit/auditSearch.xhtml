@@ -22,98 +22,136 @@
 
 			<p:panel header="Search" id="ph1" style=" padding:5px;">
 				<h:panelGrid columns="1" style="margin-left: 5%">
-					<h:panelGrid columns="12" columnClasses="label, value" id="searchPanel">
-						<p:outputLabel for="lname" value="List Name" styleClass="label-right" />
-						<p:selectOneMenu value="#{auditTrailController.listName}" filter="true" disabled="#{auditTrailController.listCode ne null}"
-							id="lname" style="width: 200px !important" filterMatchMode="contains">
+					<h:panelGrid columns="12" columnClasses="label, value"
+						id="searchPanel">
+						<p:outputLabel for="lname" value="List Name"
+							styleClass="label-right" />
+						<p:selectOneMenu value="#{auditTrailController.listName}"
+							filter="true" disabled="#{auditTrailController.listCode ne null}"
+							id="lname" style="width: 200px !important"
+							filterMatchMode="contains">
 							<f:selectItem itemValue="" itemLabel="" />
-							<f:selectItems value="#{auditTrailController.selectList()}" var="cmq"
-								itemLabel="#{cmq.listName}" itemValue="#{cmq.listName}" />
-								
-								<p:ajax update="lcode time" listener="#{auditTrailController.resetCode}" />
+							<f:selectItems value="#{auditTrailController.selectList()}"
+								var="cmq" itemLabel="#{cmq.listName}"
+								itemValue="#{cmq.listName}" />
+
+							<p:ajax update="lcode time"
+								listener="#{auditTrailController.resetCode}" />
 						</p:selectOneMenu>
 						<p:spacer width="50" />
 
-						<p:outputLabel for="lcode" value="List Code" styleClass="label-right" />
-						<p:selectOneMenu value="#{auditTrailController.listCode}" filter="true" disabled="#{auditTrailController.listName ne null}"
-							id="lcode" style="width: 200px !important" filterMatchMode="contains">
+						<p:outputLabel for="lcode" value="List Code"
+							styleClass="label-right" />
+						<p:selectOneMenu value="#{auditTrailController.listCode}"
+							filter="true" disabled="#{auditTrailController.listName ne null}"
+							id="lcode" style="width: 200px !important"
+							filterMatchMode="contains">
 							<f:selectItem itemValue="" itemLabel="" />
-							<f:selectItems value="#{auditTrailController.selectList()}" var="cmq"
-								itemLabel="#{cmq.listCode}" itemValue="#{cmq.listCode}" />
-								
-								<p:ajax update="lname time" listener="#{auditTrailController.resetName}" />
+							<f:selectItems value="#{auditTrailController.selectList()}"
+								var="cmq" itemLabel="#{cmq.listCode}"
+								itemValue="#{cmq.listCode}" />
+
+							<p:ajax update="lname time"
+								listener="#{auditTrailController.resetName}" />
 						</p:selectOneMenu>
 						<p:spacer width="50" />
 
-					 
-						<p:outputLabel for="dict" value="Dictionary Version" styleClass="label-right" />
- 						<p:selectOneMenu value="#{auditTrailController.dictionary}" filter="true" id="dict" filterMatchMode="contains">
+
+						<p:outputLabel for="dict" value="Dictionary Version"
+							styleClass="label-right" />
+						<p:selectOneMenu value="#{auditTrailController.dictionary}"
+							filter="true" id="dict" filterMatchMode="contains">
 							<f:selectItem itemValue="" itemLabel="" />
 							<f:selectItems value="#{configMB.allMeddraVersion}" var="d"
 								itemLabel="#{d.value}" itemValue="#{d.value}" />
-								
-								<p:ajax update="time" />
+
+							<p:ajax update="time" />
 						</p:selectOneMenu>
 						<p:spacer width="50" />
 
-						<p:outputLabel for="time" value="Audit Timestamp" styleClass="label-right" />
-						<p:selectOneMenu value="#{auditTrailController.auditTimestamp}" 
-							filter="true" filterMatchMode="contains" id="time" style="width: 170px !important">
+						<p:outputLabel for="time" value="Audit Timestamp"
+							styleClass="label-right" />
+						<p:selectOneMenu value="#{auditTrailController.auditTimestamp}"
+							filter="true" filterMatchMode="contains" id="time"
+							style="width: 170px !important">
 							<f:selectItem itemValue="" itemLabel="" />
-							<f:selectItems value="#{auditTrailController.findAuditTimestamps(auditTrailController.dictionary)}" var="at"
-								itemLabel="#{at}" itemValue="#{at}" />
-								<p:ajax />
+							<f:selectItems
+								value="#{auditTrailController.findAuditTimestamps(auditTrailController.dictionary)}"
+								var="at" itemLabel="#{at}" itemValue="#{at}" />
+							<p:ajax />
 						</p:selectOneMenu>
 						<p:spacer width="5" />
 					</h:panelGrid>
- 
+
 					<h:panelGrid columns="3" id="btnPanel" styleClass="row"
 						style="margin-left: 43%">
- 
+
 						<p:commandButton value="Search" process="@this"
+							onclick="searchRemote()"
 							action="#{auditTrailController.findAudit}"
-							update="@form:result @form:m1"/>
-						<p:commandButton action="#{auditTrailController.reset}" value="Clear"
-							process="@this" update="@form:result @form:searchPanel @form:m1" />
+							update="@form:result @form:m1 @form:dataPanel" />
+						<p:commandButton action="#{auditTrailController.reset}"
+							value="Clear" process="@this"
+							oncomplete="PF('auditDT').clearFilters()"
+							update="@form:result @form:searchPanel @form:dataPanel" />
+
+						
 							
-						<p:commandButton actionListener="#{auditTrailController.generateExcel(auditTrailController.datas)}" ajax="false" value="Export"
-							process="@this" update="@form:result">
+							
+						<p:commandButton
+							actionListener="#{auditTrailController.generateExcel(auditTrailController.datas)}"
+							ajax="false" value="Export" process="@this" update="@form:result">
 							<p:fileDownload value="#{auditTrailController.excelFile}" />
 						</p:commandButton>
 					</h:panelGrid>
 				</h:panelGrid>
+				
+				<p:remoteCommand name="searchRemote"
+							update="@form:result @form:dataPanel"
+							actionListener="#{auditTrailController.findAudit}" />
 
 				<p:spacer height="10" />
-				<p:outputPanel>
+				<p:outputPanel id="dataPanel">
 					<p:dataTable var="value" value="#{auditTrailController.datas}"
-						id="result" rows="10" paginator="true" paginatorPosition="bottom"
+						widgetVar="auditDT" id="result" rows="10" paginator="true"
+						paginatorPosition="bottom"
 						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-						rowsPerPageTemplate="5,10,25" resizableColumns="true" filteredValue="#{auditTrailController.filteredValues}">
+						rowsPerPageTemplate="5,10,25" resizableColumns="true"
+						filteredValue="#{auditTrailController.filteredValues}">
 
-						<p:column headerText="Change Type" filterBy="#{value.transactionType}" filterMatchMode="contains" filterable="true">
+						<p:column headerText="Change Type"
+							filterBy="#{value.transactionType}" filterMatchMode="contains"
+							filterable="true">
 							<h:outputText value="#{value.transactionType}" styleClass="wrap" />
 						</p:column>
 
-						<p:column headerText="Field Name" width="100" filterBy="#{value.columnName}" filterMatchMode="contains" styleClass="wrap" >
+						<p:column headerText="Field Name" width="100"
+							filterBy="#{value.columnName}" filterMatchMode="contains"
+							styleClass="wrap">
 							<h:outputText value="#{value.columnName}" />
 						</p:column>
-						<p:column headerText="Old Value" width="150" filterBy="#{value.oldValue}" filterMatchMode="contains">
+						<p:column headerText="Old Value" width="150"
+							filterBy="#{value.oldValue}" filterMatchMode="contains">
 							<h:outputText value="#{value.oldValue}" styleClass="wrap" />
 						</p:column>
-						<p:column headerText="New Value" width="150" filterBy="#{value.newValue}" filterMatchMode="contains">
+						<p:column headerText="New Value" width="150"
+							filterBy="#{value.newValue}" filterMatchMode="contains">
 							<h:outputText value="#{value.newValue}" styleClass="wrap" />
 						</p:column>
-						<p:column headerText="User Name" width="150" filterBy="#{value.userId}" filterMatchMode="contains">
+						<p:column headerText="User Name" width="150"
+							filterBy="#{value.userId}" filterMatchMode="contains">
 							<h:outputText value="#{value.userId}" styleClass="wrap" />
 						</p:column>
-						<p:column headerText="User Group" width="150" filterBy="#{value.groupName}" filterMatchMode="contains">
-							<h:outputText value="#{value.groupName}"/>
+						<p:column headerText="User Group" width="150"
+							filterBy="#{value.groupName}" filterMatchMode="contains">
+							<h:outputText value="#{value.groupName}" />
 						</p:column>
-						<p:column headerText="Audit Timestamp" sortBy="#{value.auditTimestamp}">
+						<p:column headerText="Audit Timestamp"
+							sortBy="#{value.auditTimestamp}">
 							<h:outputText value="#{value.auditTimestamp}" styleClass="wrap">
 								<f:convertDateTime pattern="dd-MMM-yyyy:hh:mm:ss a" />
 							</h:outputText>
-							<h:outputText value=" EST"/>
+							<h:outputText value=" EST" />
 						</p:column>
 
 					</p:dataTable>

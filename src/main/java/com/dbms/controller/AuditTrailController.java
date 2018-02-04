@@ -9,10 +9,12 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
 
 import org.apache.commons.lang3.StringUtils;
+import org.primefaces.context.RequestContext;
 import org.primefaces.model.StreamedContent;
 
 import com.dbms.entity.AuditableEntity;
@@ -68,31 +70,31 @@ public class AuditTrailController implements Serializable {
 		this.listName = null;
 		this.listCode = null;
 		this.dictionary = null;
-		this.auditTimestamp = null;
+		this.auditTimestamp = null;		
  	}
 	
-	public String findAudit() {
-		
+	public void findAudit() {
+		this.datas = new ArrayList<AuditTrailDto>();
 		if((listName == null || (listName != null && StringUtils.isBlank(listName))) 
 				&& (listCode == null || (listCode != null && StringUtils.isBlank(listCode)))) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN,
 	                "Please select List Name or List Code", "");
 	        FacesContext.getCurrentInstance().addMessage(null, msg);
-	        return "";
+	        return;
 		}
 		
 		if(dictionary == null || (dictionary != null && StringUtils.isBlank(dictionary))) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN,
 	                "Please select Dictionary version", "");
 	        FacesContext.getCurrentInstance().addMessage(null, msg);
-	        return "";
+	        return;
 		}
 		
 		if(auditTimestamp == null || (auditTimestamp != null && StringUtils.isBlank(auditTimestamp))) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN,
 	                "Please select Audit timestamp", "");
 	        FacesContext.getCurrentInstance().addMessage(null, msg);
-	        return "";
+	        return;
 		}
 		
 		Long listCodeSelected = null;
@@ -101,7 +103,9 @@ public class AuditTrailController implements Serializable {
 		}
 
 		datas = this.auditTrailService.findByCriterias(listCodeSelected, listName, Integer.valueOf(dictionary), auditTimestamp);
-		return "";
+		this.filteredValues = datas;
+		//RequestContext.getCurrentInstance().update("auditDT");
+
 	}
 	
 	public List<String> findAuditTimestamps(int dictionaryVersion) {
