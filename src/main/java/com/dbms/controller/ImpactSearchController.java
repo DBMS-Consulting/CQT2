@@ -2821,6 +2821,7 @@ public class ImpactSearchController implements Serializable {
 			impactFilterList.add("HDH");
 			impactFilterList.add("HDS");
 			impactFilterList.add("SCH");
+			impactFilterList.add("MQM");
 			return impactFilterList;
 		}
 		if(filterDTO.isLltPromotedToPT()) {
