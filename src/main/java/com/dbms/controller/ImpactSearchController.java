@@ -1422,9 +1422,9 @@ public class ImpactSearchController implements Serializable {
 	}
 
 	public void reloadRelationsOnFilterLltFlagToggle() {
-		this.updateCurrentTable();
+		boolean filterLltFlag = this.globalController.isFilterLltsFlag();
 		if(null != this.currentTableRootTreeNode) {
-			/*List<TreeNode> childrenNodes = this.currentTableRootTreeNode.getChildren();
+			List<TreeNode> childrenNodes = this.currentTableRootTreeNode.getChildren();
 			for (TreeNode childTreeNode : childrenNodes) {
 				childTreeNode.setExpanded(false);
 				childTreeNode.getChildren().clear();//remove all children
@@ -1437,7 +1437,7 @@ public class ImpactSearchController implements Serializable {
 					dummyNode.setDummyNode(true);
 					new DefaultTreeNode(dummyNode, childTreeNode);
 				}
-			}*/
+			}
 			UIViewRoot viewRoot = FacesContext.getCurrentInstance().getViewRoot();
 			if(null != viewRoot) {
 				//in ia left side
@@ -1448,10 +1448,8 @@ public class ImpactSearchController implements Serializable {
 				}
 			}
 		}
-		
-		this.updateTargetTable();
 		if(null != this.targetTableRootTreeNode) {
-			/*List<TreeNode> childrenNodes = this.targetTableRootTreeNode.getChildren();
+			List<TreeNode> childrenNodes = this.targetTableRootTreeNode.getChildren();
 			for (TreeNode childTreeNode : childrenNodes) {
 				childTreeNode.setExpanded(false);
 				childTreeNode.getChildren().clear();//remove all children
@@ -1464,7 +1462,7 @@ public class ImpactSearchController implements Serializable {
 					dummyNode.setDummyNode(true);
 					new DefaultTreeNode(dummyNode, childTreeNode);
 				}
-			}*/
+			}
 			UIViewRoot viewRoot = FacesContext.getCurrentInstance().getViewRoot();
 			if(null != viewRoot) {
 				//in ia left side
