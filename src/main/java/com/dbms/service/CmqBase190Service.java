@@ -206,12 +206,13 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 			queryParams.put("cmqDesignees", Arrays.asList(designees));
             first = false;
         }
+		sb.append(" order by c.cmqName asc");
         
 		EntityManager entityManager = this.cqtEntityManagerFactory
 				.getEntityManager();
 		try {
-			sb.append(" order by c.cmqName");
 			Query query = entityManager.createQuery(sb.toString());
+			
 
 			// now set the parameter values in the query
 			Set<String> keySet = queryParams.keySet();

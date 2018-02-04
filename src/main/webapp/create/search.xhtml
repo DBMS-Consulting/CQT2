@@ -118,9 +118,9 @@
 		<p:dataTable var="value" value="#{searchController.datas}" id="result"
 			rows="10" paginator="true" paginatorPosition="bottom"
 			paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-			rowsPerPageTemplate="5,10,25"
+			rowsPerPageTemplate="5,10,25" reflow="true"
 			resizableColumns="true">
-			<p:column headerText="List Name" width="180" sortBy="#{value.cmqName}">
+			<p:column headerText="List Name" width="180"  sortBy="#{value.cmqName}">
 				<h:outputText value="#{value.cmqName}" />
 			</p:column>
 			<p:column headerText="Extension" width="50" sortBy="#{RefCodeListService.interpretInternalCodeToValue('LIST_EXTENSION_TYPES', value.cmqTypeCd)}">
