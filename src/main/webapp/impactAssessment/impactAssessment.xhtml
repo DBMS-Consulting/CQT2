@@ -439,6 +439,27 @@
 							styleClass="ui-confirmdialog-no" icon="ui-icon-close"
 							onclick="resetImpactsAndGoToNextStep()" />
 					</p:confirmDialog>
+					
+					
+					<!-- AUTO SAVE -->
+					<p:remoteCommand name="saveRelations" update="@form:messages @form:impact"
+						action="#{impactSearchController.saveRelationsAndClose}"
+						onstart="PF('confirmIASaveRelations').hide()" />
+					
+					<!-- Save confirmation dialog -->
+					<p:confirmDialog widgetVar="confirmIASaveRelations"
+						showEffect="fade" hideEffect="fade"
+						header="Confirm about Unsaved Changes"
+						message="There are some unsaved changes. Do you want to save them before you continue ?">
+						
+						<p:commandButton value="Yes" type="button"
+							styleClass="ui-confirmdialog-yes" icon="ui-icon-check"
+							onclick="saveRelations()" />
+						<p:commandButton value="No" styleClass="ui-confirmdialog-no"
+							immediate="true" icon="ui-icon-close"
+							action="#{impactSearchController.openForm}" />
+					</p:confirmDialog>
+					
 
 
 				</p:tab>

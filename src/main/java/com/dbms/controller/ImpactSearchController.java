@@ -254,7 +254,7 @@ public class ImpactSearchController implements Serializable {
 		boolean detailChanged = detailsFormModel.isModelChanged();
 		boolean notesChanged = notesFormModel.isModelChanged();
 				
-		if (detailChanged || notesChanged)		
+		if (detailChanged || notesChanged || targetRelationsUpdated)		
 			return true;
 		
 		return false;
@@ -276,6 +276,10 @@ public class ImpactSearchController implements Serializable {
 				RequestContext.getCurrentInstance().execute("PF('confirmIASaveNotes').show();");
 				return "";
 			} 
+			else if (targetRelationsUpdated) {
+				RequestContext.getCurrentInstance().execute("PF('confirmIASaveRelations').show();");
+				return "";
+			}
 		}
 		return form;
 	}
@@ -289,6 +293,12 @@ public class ImpactSearchController implements Serializable {
 	public String saveNotesAndClose() {
 		RequestContext.getCurrentInstance().execute("PF('confirmIASaveNotes').hide();");
 		saveInformativeNotes();
+		return formToOpen;
+	}
+	
+	public String saveRelationsAndClose() {
+		RequestContext.getCurrentInstance().execute("PF('confirmIASaveRelations').hide();");
+		updateTargetRelations();
 		return formToOpen;
 	}
 	
