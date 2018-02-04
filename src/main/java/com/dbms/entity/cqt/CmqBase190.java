@@ -166,7 +166,7 @@ public class CmqBase190 extends BaseEntity {
 	@Column(name = "CMQ_APPROVE_REASON", length = 4000)
 	private String cmqApproveReason;
 	
-	@Cache (usage=CacheConcurrencyStrategy.READ_WRITE)
+	//@Cache (usage=CacheConcurrencyStrategy.READ_WRITE)
 	@OneToMany(cascade=CascadeType.ALL, mappedBy="cmqBaseCurrent", fetch=FetchType.EAGER, orphanRemoval=true)
 	private List<CmqProductBaseCurrent> productsList;
     
