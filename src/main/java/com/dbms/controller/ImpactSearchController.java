@@ -511,6 +511,11 @@ public class ImpactSearchController implements Serializable {
 	public void onNodeCollapseTargetTable(NodeCollapseEvent event) {
         event.getTreeNode().setExpanded(false);
     }
+	
+	public void updateTables() {
+		this.updateCurrentTable();
+		this.updateTargetTable();
+	}
     
 	public void updateCurrentTable() {
         IARelationsTreeHelper treeHelper = new IARelationsTreeHelper(

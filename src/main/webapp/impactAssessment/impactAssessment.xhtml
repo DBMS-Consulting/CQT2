@@ -544,10 +544,12 @@
 							<p:commandButton value="Add selected"
 								onclick="PF('select_mq').hide()"
 								update="currentListsAndSmqs futureListsAndSmqs futureListsToolbar new_pt_btn filterBtn">
-								<f:actionListener
+								<!-- <f:actionListener
 									binding="#{impactSearchController.updateCurrentTable()}" />
 								<f:actionListener
-									binding="#{impactSearchController.updateTargetTable()}" />
+									binding="#{impactSearchController.updateTargetTable()}" /> -->
+								<f:actionListener
+									binding="#{impactSearchController.updateTables()}" />
 							</p:commandButton>
 							<p:commandButton value="Cancel" onclick="PF('select_mq').hide()"
 								type="button" />
