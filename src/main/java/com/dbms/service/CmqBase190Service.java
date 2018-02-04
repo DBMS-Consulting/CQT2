@@ -5,6 +5,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -775,6 +777,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 			String dictionaryVersion) {
 		XSSFWorkbook workbook = new XSSFWorkbook();
 		XSSFSheet worksheet = null;
+		DateFormat dateTimeFormat = new SimpleDateFormat("dd-MMM-yyyy:hh:mm:ss a z");
 
 		worksheet = workbook.createSheet("List Report");
 		XSSFRow row = null;
@@ -826,7 +829,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		rowCount++;
 		row = worksheet.createRow(rowCount);
 		cell = row.createCell(0);
-		cell.setCellValue("Report Date/Time: " + new Date().toString());
+		cell.setCellValue("Report Date/Time: " + dateTimeFormat.format(new Date()));
 		cell = row.createCell(1);
 
 		rowCount += 2;
@@ -1075,6 +1078,8 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 	public StreamedContent generateMQReport(ListDetailsFormVM details, ListNotesFormVM notes, String dictionaryVersion, TreeNode relationsRoot, boolean filterLlts) {
 		XSSFWorkbook workbook = new XSSFWorkbook();
 		
+		DateFormat dateTimeFormat = new SimpleDateFormat("dd-MMM-yyyy:hh:mm:ss a z");
+		
 		XSSFSheet worksheet = null;
 
 		worksheet = workbook.createSheet("MQ Report");
@@ -1185,10 +1190,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		Calendar cal = Calendar.getInstance();
 		if (details.getCreationDate() != null) {
 			
-			cal.setTime(details.getCreationDate());
-			String creationDate = cal.get(Calendar.YEAR) + "-" + getTwoDigits(cal.get(Calendar.MONTH) + 1) + "-" + getTwoDigits(cal.get(Calendar.DAY_OF_MONTH)) 
-					+ " " + getTwoDigits(cal.get(Calendar.HOUR)) + ":" + getTwoDigits(cal.get(Calendar.MINUTE)) + ":" + getTwoDigits(cal.get(Calendar.SECOND));
-			cell.setCellValue("Initial Creation Date: " + creationDate);
+			cell.setCellValue("Initial Creation Date: " + dateTimeFormat.format(details.getCreationDate()));
 		}
 		else
 			cell.setCellValue("Initial Creation Date: ");
@@ -1205,13 +1207,8 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		rowCount++;
 		row = worksheet.createRow(rowCount);
 		cell = row.createCell(0);
-		cal = Calendar.getInstance();
 		if (details.getLastModifiedDate() != null) {
-			cal.setTime(details.getLastModifiedDate());
-			System.out.println("******* DATE : " + details.getLastModifiedDate());
-			String modificationDate = cal.get(Calendar.YEAR) + "-" + getTwoDigits(cal.get(Calendar.MONTH) + 1) + "-" + getTwoDigits(cal.get(Calendar.DAY_OF_MONTH)) 
-					+ " " + getTwoDigits(cal.get(Calendar.HOUR)) + ":" + getTwoDigits(cal.get(Calendar.MINUTE)) + ":" + getTwoDigits(cal.get(Calendar.SECOND));
-	 		cell.setCellValue("Last Modification Date: " + modificationDate);
+	 		cell.setCellValue("Last Modification Date: " + dateTimeFormat.format(details.getLastModifiedDate()));
 		}
 		else
 			cell.setCellValue("Last Modification Date: ");
@@ -1220,16 +1217,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		row = worksheet.createRow(rowCount);
 		cell = row.createCell(0);
 		
-		cal = Calendar.getInstance();
-		cal.setTime(new Date()); 
-		String date = getWeekDay(cal.get(Calendar.DAY_OF_WEEK)) + ", " + 
-				getTwoDigits(cal.get(Calendar.DAY_OF_MONTH) + 1) + "-" + 
-				getMonth(cal.get(Calendar.MONTH)) + "-" + 
-				cal.get(Calendar.YEAR) + " : " + 
-				getTwoDigits(cal.get(Calendar.HOUR)) + ":" + 
-				getTwoDigits(cal.get(Calendar.MINUTE)) + ":" + 
-				getTwoDigits(cal.get(Calendar.SECOND)) + " EST";
-		cell.setCellValue("Report Date/Time: " + date);
+		cell.setCellValue("Report Date/Time: " + dateTimeFormat.format(new Date()));
 		
 		rowCount += 2;
 		row = worksheet.createRow(rowCount);
@@ -1419,6 +1407,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 	public StreamedContent generateExcel(List<CmqBase190> datas, String module, String user) {
 		XSSFWorkbook workbook = new XSSFWorkbook();
 		XSSFSheet worksheet = null;
+		DateFormat dateTimeFormat = new SimpleDateFormat("dd-MMM-yyyy:hh:mm:ss a z");
 
 		worksheet = workbook.createSheet(module + "_ListSearch");
 		XSSFRow row = null;
@@ -1454,7 +1443,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 				getTwoDigits(cal.get(Calendar.SECOND)) + " EST";*/
 		row = worksheet.createRow(rowCount);
 		cell = row.createCell(0);
-		cell.setCellValue("Report Date/Time: " + new Date().toString());
+		cell.setCellValue("Report Date/Time: " + dateTimeFormat.format(new Date()));
 		
 		
 		cell = row.createCell(1);
