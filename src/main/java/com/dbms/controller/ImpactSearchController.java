@@ -240,7 +240,7 @@ public class ImpactSearchController implements Serializable {
 		this.filterReadOnly = false;
 		filterDTO = new FilterDTO();
 		
-		//detailsFormModel.setModelChanged(false);
+		detailsFormModel.setModelChanged(false);
 	}
 	
 	public String openForm() {
@@ -269,17 +269,19 @@ public class ImpactSearchController implements Serializable {
 			return form;
 		}
 		else {
-			if (detailsFormModel.isModelChanged()) {
-				RequestContext.getCurrentInstance().execute("PF('confirmIASaveDetails').show();");
-				return "";
-			} else if (notesFormModel.isModelChanged()) {
-				RequestContext.getCurrentInstance().execute("PF('confirmIASaveNotes').show();");
-				return "";
-			} 
-			else if (targetRelationsUpdated) {
+			if (targetRelationsUpdated) {
 				RequestContext.getCurrentInstance().execute("PF('confirmIASaveRelations').show();");
 				return "";
 			}
+			else if (notesFormModel.isModelChanged()) {
+				RequestContext.getCurrentInstance().execute("PF('confirmIASaveNotes').show();");
+				return "";
+			}
+			else if (detailsFormModel.isModelChanged()) {
+				RequestContext.getCurrentInstance().execute("PF('confirmIASaveDetails').show();");
+				return "";
+			}  
+			
 		}
 		return form;
 	}
