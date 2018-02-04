@@ -154,7 +154,7 @@ public class ReportController extends BaseController<CmqBase190> {
 
 		    	// TODO: generate report data using filter
 		    	List<CmqBase190> reportData = cmqBaseService.getPublishedListsReportData(reportStartDate!=null?calSD.getTime():null, reportEndDate!=null?calED.getTime():null);
-		    	String datetimeStr = new SimpleDateFormat("d-MMM-yyyy h:mm a z").format(new Date());
+		    	String datetimeStr = new SimpleDateFormat("dd-MMM-yyyy:hh:mm:ss a z").format(new Date());
 		    	
 		    	if(reportData.isEmpty()) {
 		    		throw new ReportGenerationException("No matching record found");

@@ -5,6 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -594,10 +595,10 @@ public class RefCodeListService extends
 
 	@Override
 	public StreamedContent generateReport(String codelistType) {
+		DateFormat dateTimeFormat = new SimpleDateFormat("dd-MMM-yyyy:hh:mm:ss a z");
 		XSSFWorkbook workbook = new XSSFWorkbook();
 		XSSFSheet worksheet = null;
 
-		Calendar cal = Calendar.getInstance();
 
 		worksheet = workbook.createSheet("Report " + codelistType);
 		XSSFRow row = null;
@@ -620,14 +621,7 @@ public class RefCodeListService extends
 		cell = row.createCell(0);
 		cell.setCellValue("Report Date:");
 		cell = row.createCell(1);
-		DateFormat dateFormat = DateFormat.getDateTimeInstance(
-		        DateFormat.LONG,
-		        DateFormat.LONG, new Locale("EN","en"));
-		
-//		cell.setCellValue(cal.get(Calendar.DATE) + "-"
-//				+ cal.get(Calendar.MONTH) + "-" + cal.get(Calendar.YEAR));
-		//cell.setCellValue(dateFormat.format(new Date()));
-		cell.setCellValue(new Date().toString());
+		cell.setCellValue(dateTimeFormat.format(new Date()));
 		rowCount += 2;
 
 		row = worksheet.createRow(rowCount);
