@@ -896,16 +896,14 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 				 * 
 				 * LLT.
 				 */
-				if(!filterLltFlag) {
-					if (relation.getLltCode() != null) {
-	 					List<Long> lltCodesList = new ArrayList<>();
-						lltCodesList.add(relation.getLltCode());
-						List<MeddraDictHierarchySearchDto> llts = meddraDictService.findByCodes("LLT_", lltCodesList);
-						for (MeddraDictHierarchySearchDto llt : llts) {
-	 						mapReport.put(cpt++, new ReportLineDataDto("LLT", llt.getCode() + "", llt.getTerm(), "", llt, getCmqRelationImpactDesc(relation.getRelationImpactType()))); 
-						}
-	 				}
-				}
+				if (relation.getLltCode() != null) {
+ 					List<Long> lltCodesList = new ArrayList<>();
+					lltCodesList.add(relation.getLltCode());
+					List<MeddraDictHierarchySearchDto> llts = meddraDictService.findByCodes("LLT_", lltCodesList);
+					for (MeddraDictHierarchySearchDto llt : llts) {
+ 						mapReport.put(cpt++, new ReportLineDataDto("LLT", llt.getCode() + "", llt.getTerm(), "", llt, getCmqRelationImpactDesc(relation.getRelationImpactType()))); 
+					}
+ 				}
 			}
 			 
 		}
