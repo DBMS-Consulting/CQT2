@@ -1149,12 +1149,14 @@ public class ImpactSearchController implements Serializable {
 				notesFormModel.loadFromCmqBase190((CmqBase190)d);
 				detailsFormModel.loadFromCmqBase190((CmqBase190)d);
 			} else if(d instanceof SmqBase190) {
-				notesFormModel.loadFromSmqBase190((SmqBase190)d);
+				SmqBase190 current = smqBaseCurrentService.findByCode(((SmqBase190) d).getSmqCode());
+				notesFormModel.loadFromSmqBase190(current);
 			} else if(d instanceof CmqBaseTarget) {
 				notesFormModel.loadFromCmqBaseTarget((CmqBaseTarget)d);
 				detailsFormModel.loadFromCmqBaseTarget((CmqBaseTarget)d);
 			} else if(d instanceof SmqBaseTarget) {
-				notesFormModel.loadFromSmqBaseTarget((SmqBaseTarget)d);
+				SmqBaseTarget target = smqBaseTargetService.findByCode(((SmqBaseTarget) d).getSmqCode());
+				notesFormModel.loadFromSmqBaseTarget(target);
 			} else {
 				if(unsavedRedirect)
 					iaWizardNextStep = event.getOldStep();
@@ -2037,17 +2039,44 @@ public class ImpactSearchController implements Serializable {
 			if (fetchedSmqBaseList != null) {
 				for (Map<String, Object> map : fetchedSmqBaseList) {
 					SmqBaseTarget target = new SmqBaseTarget();
+					if(null != map.get("dictionaryVersion")) {
+						target.setDictionaryVersion(map.get("dictionaryVersion").toString());
+					}
+					if(null != map.get("smqId")) {
+						target.setId(Long.valueOf(map.get("smqId").toString()));
+					}
 					if(null != map.get("impactType")) {
 						target.setImpactType(map.get("impactType").toString());
 					}
+					if(null != map.get("smqAlgorithm")) {
+						target.setSmqAlgorithm(map.get("smqAlgorithm").toString());
+					}
 					if(null != map.get("smqCode")) {
 						target.setSmqCode(Long.valueOf(map.get("smqCode").toString()));
+					}
+					if(null != map.get("smqDescription")) {
+						target.setSmqDescription(map.get("smqDescription").toString());
+					}
+					if(null != map.get("smqId")) {
+						target.setSmqId(Long.valueOf(map.get("smqId").toString()));
 					}
 					if(null != map.get("smqLevel")) {
 						target.setSmqLevel(Integer.valueOf(map.get("smqLevel").toString()));
 					}
 					if(null != map.get("smqName")) {
 						target.setSmqName(map.get("smqName").toString());
+					}
+					if(null != map.get("smqNote")) {
+						target.setSmqNote(map.get("smqNote").toString());
+					}
+					if(null != map.get("smqParentCode")) {
+						target.setSmqParentCode(Long.valueOf(map.get("smqParentCode").toString()));
+					}
+					if(null != map.get("smqParentName")) {
+						target.setSmqParentName(map.get("smqParentName").toString());
+					}
+					if(null != map.get("smqSource")) {
+						target.setSmqSource(map.get("smqSource").toString());
 					}
 					if(null != map.get("smqStatus")) {
 						target.setSmqStatus(map.get("smqStatus").toString());
