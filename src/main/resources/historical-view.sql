@@ -121,12 +121,12 @@ from
     (select max(creation_date)
        from opencqt.cmq_base_&&MedDRAAuditVersion.
        where cmq_id = cba.cmq_id) "CREATION_DATE",
-    nvl(cba.cmq_status_old,cba.cmq_status_new) "STATUS",
-    nvl(cba.cmq_state_old,cba.cmq_state_new) "STATE",
+    nvl(cba.cmq_status_new,cba.cmq_status_old) "STATUS",
+    nvl(cba.cmq_state_new,cba.cmq_state_old) "STATE",
     nvl(cba.cmq_designee_new,cba.cmq_designee_old) "DESIGNEE",
     nvl(cba.cmq_designee2_new,cba.cmq_designee2_old) "DESIGNEE2",
     nvl(cba.cmq_designee3_new,cba.cmq_designee3_old) "DESIGNEE3",
-    nvl(cba.cmq_description_old,cba.cmq_description_new) "DESCRIPTION",
+    nvl(cba.cmq_description_new,cba.cmq_description_old) "DESCRIPTION",
     substr(nvl(cba.DICTIONARY_VERSION_old,cba.DICTIONARY_VERSION_new),1,2)||'.'||substr(nvl(cba.DICTIONARY_VERSION_old,cba.DICTIONARY_VERSION_new),3,1) "DICTIONARY_VERSION",
     (select DISTINCT nvl(codelist_value,'No Group') from opencqt.ref_config_codelist 
      where codelist_configuration_type ='GROUP'
