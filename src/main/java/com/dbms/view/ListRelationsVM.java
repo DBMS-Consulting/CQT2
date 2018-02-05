@@ -381,6 +381,7 @@ public class ListRelationsVM implements IRelationsChangeListener {
                             new FacesMessage(FacesMessage.SEVERITY_INFO,
                                     "Selected relations added sucessfully.", ""));
 				}
+				myHierarchyDlgModel.setFilterLevel(""); 
 			} else {
                 FacesContext.getCurrentInstance().addMessage(null, 
                         new FacesMessage(FacesMessage.SEVERITY_INFO, "Please select one or more relations from Hierarchy Search Dialog", ""));
@@ -391,6 +392,9 @@ public class ListRelationsVM implements IRelationsChangeListener {
                     new FacesMessage(FacesMessage.SEVERITY_FATAL,
                             "An error occured while adding relations.", e.getMessage()));
 		}
+		
+		
+		//Reset HS level
 	}
 
 	/**
