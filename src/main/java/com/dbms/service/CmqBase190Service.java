@@ -1628,7 +1628,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 									level = "SMQ5";
 								}
 								
-								if ((smq.getSmqLevel() != 5) || (!filterLltFlag && smq.getSmqLevel() == 5)) {
+								//if ((smq.getSmqLevel() != 5) || (!filterLltFlag && smq.getSmqLevel() == 5)) {
 									relationsWorkerDTO.addToMapReport(cpt++, new ReportLineDataDto(level, smq.getSmqCode() + "", smq.getSmqName(), "", selectedScope,
 											(relation.getTermWeight() != null ? relation.getTermWeight() + "" : ""), relation.getTermCategory(), "", ""));
 									
@@ -1773,7 +1773,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 											}
 										}
 									}
-								}
+								//}
 							}
 						}
 					}
@@ -1978,7 +1978,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 				 * 
 				 * LLT.
 				 */
-				if (!filterLltFlag && (relation.getLltCode() != null)) {
+				if (relation.getLltCode() != null) {
 					//LOG.info("In {} Loading LLT code relations.", this.workerName);
 					List<Long> lltCodesList = new ArrayList<>();
 					lltCodesList.add(relation.getLltCode());
