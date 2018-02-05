@@ -72,7 +72,7 @@ from
     ) "PRODUCT",
     (select DISTINCT codelist_value from opencqt.ref_config_codelist 
      where codelist_configuration_type ='PROGRAM'
-     and codelist_internal_value = nvl(cba.cmq_program_cd_old,cba.cmq_program_cd_new)
+     and codelist_internal_value = nvl(cba.cmq_program_cd_new,cba.cmq_program_cd_old)
      and active_flag='Y'
      UNION ALL
      select DISTINCT codelist_internal_value from opencqt.ref_config_codelist 
@@ -82,17 +82,17 @@ from
         and serialnum = 
             (select max(serialnum) from opencqt.ref_config_codelist
              where codelist_configuration_type ='PROGRAM'
-             and codelist_internal_value = nvl(cba.cmq_program_cd_old,cba.cmq_program_cd_new)
+             and codelist_internal_value = nvl(cba.cmq_program_cd_new,cba.cmq_program_cd_old)
              and active_flag='N')
         and not exists
              (select 1 from opencqt.ref_config_codelist
               where codelist_configuration_type ='PROGRAM'
-              and codelist_internal_value = nvl(cba.cmq_program_cd_old,cba.cmq_program_cd_new)
+              and codelist_internal_value = nvl(cba.cmq_program_cd_new,cba.cmq_program_cd_old)
               and active_flag='Y')
     ) "DRUG_PROGRAM",
     (select DISTINCT codelist_value from opencqt.ref_config_codelist 
      where codelist_configuration_type ='PROTOCOL'
-     and codelist_internal_value = nvl(cba.cmq_protocol_cd_old,cba.cmq_protocol_cd_new)
+     and codelist_internal_value = nvl(cba.cmq_protocol_cd_new,cba.cmq_protocol_cd_old)
      and active_flag='Y'
      UNION ALL
      select DISTINCT codelist_internal_value from opencqt.ref_config_codelist 
@@ -102,19 +102,19 @@ from
         and serialnum = 
             (select max(serialnum) from opencqt.ref_config_codelist
              where codelist_configuration_type ='PROTOCOL'
-             and codelist_internal_value = nvl(cba.cmq_protocol_cd_old,cba.cmq_protocol_cd_new)
+             and codelist_internal_value = nvl(cba.cmq_protocol_cd_new,cba.cmq_protocol_cd_old)
              and active_flag='N')
         and not exists
              (select 1 from opencqt.ref_config_codelist
               where codelist_configuration_type ='PROTOCOL'
-              and codelist_internal_value = nvl(cba.cmq_protocol_cd_old,cba.cmq_protocol_cd_new)
+              and codelist_internal_value = nvl(cba.cmq_protocol_cd_new,cba.cmq_protocol_cd_old)
               and active_flag='Y')
     ) "PROTOCOL_NUMBER",   
-    nvl(cba.cmq_level_old,cba.cmq_level_new) "LIST_LEVEL",
-    nvl(cba.cmq_parent_name_old,cba.cmq_parent_name_new) "PARENT_LIST_NAME",
-    nvl(cba.cmq_algorithm_old,cba.cmq_algorithm_new) "ALGORITHM", 
-    nvl(cba.activation_date_old,cba.activation_date_new) "LAST_ACTIVATION_DATE",
-    nvl(cba.activated_by_old,cba.activated_by_new) "LAST_ACTIVATION_BY",
+    nvl(cba.cmq_level_new,cba.cmq_level_old) "LIST_LEVEL",
+    nvl(cba.cmq_parent_name_new,cba.cmq_parent_name_old) "PARENT_LIST_NAME",
+    nvl(cba.cmq_algorithm_new,cba.cmq_algorithm_old) "ALGORITHM", 
+    nvl(cba.activation_date_new,cba.activation_date_old) "LAST_ACTIVATION_DATE",
+    nvl(cba.activated_by_new,cba.activated_by_old) "LAST_ACTIVATION_BY",
     (select max(created_by) 
        from opencqt.cmq_base_&&MedDRAAuditVersion.
        where cmq_id = cba.cmq_id) "CREATED_BY",
