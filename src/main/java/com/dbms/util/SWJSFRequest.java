@@ -325,11 +325,11 @@ public class SWJSFRequest
                     	SearchResult sr = results.next();
                     	//System.out.println("inner Iterating over " + sr.getName());
                     	Attributes mattrs = sr.getAttributes();
-                    	System.out.println("mattrs is:" + mattrs);
+                    	//System.out.println("mattrs is:" + mattrs);
                     	NamingEnumeration<String> ids = mattrs.getIDs();
                     	while(ids.hasMore()) {
                     		String id = ids.next();
-                    		System.out.println("matters: id=" + id +", value=" + mattrs.get(id));
+                    		//System.out.println("matters: id=" + id +", value=" + mattrs.get(id));
                     	}
                     	PXEDUser usr = new PXEDUser();
                     	usr.setUserName(getCN(sr.getNameInNamespace()));
@@ -529,13 +529,13 @@ public class SWJSFRequest
 	    try {
 	        while (retEnum.hasMore()) {
 		        SearchResult sr = retEnum.next();
-		        System.out.println("\t" + ">>" + sr.getNameInNamespace());
+		        //System.out.println("\t" + ">>" + sr.getNameInNamespace());
 		        
 			    Attributes attrs = sr.getAttributes();
 			    
-			    for (String ID : IDs ) {
+			    /*for (String ID : IDs ) {
 			    	System.out.println("\t" + ID + " = " + getAttr(attrs, ID));
-			    }
+			    }*/
 	        }
 	    } catch (NamingException e) {
 	        e.printStackTrace();
