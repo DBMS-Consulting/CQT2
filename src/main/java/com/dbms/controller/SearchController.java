@@ -163,6 +163,11 @@ public class SearchController extends BaseController<CmqBase190> {
 	public void changeLevel(AjaxBehaviorEvent event) {
 		changeLevel();
 	}
+	
+	public int listNameSort(String s1, String s2){
+		return s1.compareTo(s2);	
+	}
+	
 
 	public void changeLevel() {
 		if(StringUtils.isBlank(this.myFltExtension)) {
