@@ -2469,18 +2469,20 @@ public class CreateController implements Serializable {
         */
          if ((createWizard != null || updateWizard != null || copyWizard != null) && userGroup != null &&
                 (userGroup.contains(AuthenticationService.REQUESTER_GROUP)
-                  || userGroup.contains("MQM")))
+                  || userGroup.contains("MQM") || userGroup.contains("OPENCQT_MQM"))) {
       			d = false;
-    	/**
-         * Restrictions on users from  REQUESTOR and ADMIN groups
-         */
-    	if (userGroup != null &&
+         } else if (userGroup != null &&
     			 (userGroup.contains(AuthenticationService.REQUESTER_GROUP)
-    	                    || userGroup.contains(AuthenticationService.ADMIN_GROUP))) {
-    		d = restrictionsByUserAuthentified();
-    	} else {
-            d = false;
-    	}
+ 	                    || userGroup.contains(AuthenticationService.ADMIN_GROUP))) {
+        	 /**
+              * Restrictions on users from  REQUESTOR and ADMIN groups
+              */
+        	 d = restrictionsByUserAuthentified();
+	 	} else {
+	         d = false;
+	 	}
+        	 
+    	
         if(updateWizard != null)
             return d || (!WIZARD_STEP_DETAILS.equals(getActiveWizard().getStep()) || this.isReadOnlyState() || this.isFormSaved());
         if(copyWizard != null)
@@ -2543,7 +2545,7 @@ public class CreateController implements Serializable {
         	}
     	} else if (copyWizard != null) {
     		if(userGroupList != null) {
-    			if(userGroupList.contains(AuthenticationService.REQUESTER_GROUP)) {
+    			if(userGroupList.contains(AuthenticationService.REQUESTER_GROUP) || userGroupList.contains(AuthenticationService.MANAGER_GROUP)) {
     				return false;
     			} else {
     				return true;
