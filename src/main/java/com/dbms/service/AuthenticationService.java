@@ -85,7 +85,7 @@ public class AuthenticationService {
 		ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
 	    ec.invalidateSession();
 	    try {
-			ec.redirect("index.html");
+			ec.redirect("index.xhtml");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
