@@ -2639,31 +2639,31 @@ public class AuditTrailService implements IAuditTrailService{
 		String queryString = "";
 		if (code != null && !code.equals("")) {
 			Long cmqCode = Long.parseLong(code);
-			queryString = "select distinct AUDIT_TIMESTAMP as audit_ts, to_char(AUDIT_TIMESTAMP, 'DD-MON-YYYY:hh:MI:SS AM')||' EST' as AUDIT_TIMESTAMP "
+			queryString = "select distinct cmq_id,AUDIT_TIMESTAMP as audit_ts, to_char(AUDIT_TIMESTAMP, 'DD-MON-YYYY:hh:MI:SS AM')||' EST' as AUDIT_TIMESTAMP "
 					+ " from CMQ_BASE_"+ dictionaryVersion 
-					+ "_AUDIT where CMQ_CODE_OLD = " + cmqCode + " or CMQ_CODE_NEW = " + cmqCode;
+					+ "_AUDIT cba where (CMQ_CODE_OLD = " + cmqCode + " or CMQ_CODE_NEW = " + cmqCode+") and exists (select 1 from CMQ_BASE_"+dictionaryVersion+" where cmq_code="+cmqCode+" and cmq_id=cba.cmq_id)";
 			
-			queryString += " union select distinct AUDIT_TIMESTAMP as audit_ts, to_char(AUDIT_TIMESTAMP, 'DD-MON-YYYY:hh:MI:SS AM')||' EST' as AUDIT_TIMESTAMP "
+			queryString += " union select distinct cmq_id,AUDIT_TIMESTAMP as audit_ts, to_char(AUDIT_TIMESTAMP, 'DD-MON-YYYY:hh:MI:SS AM')||' EST' as AUDIT_TIMESTAMP "
 					+ " from CMQ_RELATIONS_"+ dictionaryVersion 
-					+ "_AUDIT where CMQ_CODE_OLD = " + cmqCode + " or CMQ_CODE_NEW = " + cmqCode
+					+ "_AUDIT cba where (CMQ_CODE_OLD = " + cmqCode + " or CMQ_CODE_NEW = " + cmqCode
 					+ " or SMQ_CODE_OLD = " + cmqCode + " or SMQ_CODE_NEW = " + cmqCode
 					+ " or HLGT_CODE_OLD = " + cmqCode + " or HLGT_CODE_NEW = " + cmqCode
 					+ " or HLT_CODE_OLD = " + cmqCode + " or HLT_CODE_NEW = " + cmqCode
 					+ " or SOC_CODE_OLD = " + cmqCode + " or SOC_CODE_NEW = " + cmqCode
 					+ " or LLT_CODE_OLD = " + cmqCode + " or LLT_CODE_NEW = " + cmqCode
 					+ " or CMQ_CODE_OLD = " + cmqCode + " or CMQ_CODE_NEW = " + cmqCode
-					+ " or PT_CODE_OLD = " + cmqCode + " or PT_CODE_NEW = " + cmqCode
+					+ " or PT_CODE_OLD = " + cmqCode + " or PT_CODE_NEW = " + cmqCode+") and exists (select 1 from CMQ_BASE_"+dictionaryVersion+" where cmq_code="+cmqCode+" and cmq_id=cba.cmq_id)"
 	
  					+ " order by audit_ts desc";
 		}
 		if (name != null && !name.equals("")) {
-			queryString = "select distinct AUDIT_TIMESTAMP as audit_ts, to_char(AUDIT_TIMESTAMP, 'DD-MON-YYYY:hh:MI:SS AM')||' EST' as AUDIT_TIMESTAMP "
+			queryString = "select distinct cmq_id,AUDIT_TIMESTAMP as audit_ts, to_char(AUDIT_TIMESTAMP, 'DD-MON-YYYY:hh:MI:SS AM')||' EST' as AUDIT_TIMESTAMP "
 					+ " from CMQ_BASE_"+ dictionaryVersion 
-					+ "_AUDIT where CMQ_NAME_OLD = '" + name + "' or CMQ_NAME_NEW = '" + name;
+					+ "_AUDIT cba where (CMQ_NAME_OLD = '" + name + "' or CMQ_NAME_NEW = '" + name+"') and exists (select 1 from CMQ_BASE_"+dictionaryVersion+" where cmq_name='"+name+"' and cmq_id=cba.cmq_id)";
 			
-			queryString += "' union select distinct AUDIT_TIMESTAMP as audit_ts, to_char(AUDIT_TIMESTAMP, 'DD-MON-YYYY:hh:MI:SS AM')||' EST' as AUDIT_TIMESTAMP "
-					+ " from CMQ_RELATIONS_"+ dictionaryVersion + "_AUDIT where " 
-					+ " cmq_id = (select c.cmq_id from  CMQ_BASE_"+ dictionaryVersion + " c where c.cmq_name = '" + name + "')"
+			queryString += " union select distinct cmq_id,AUDIT_TIMESTAMP as audit_ts, to_char(AUDIT_TIMESTAMP, 'DD-MON-YYYY:hh:MI:SS AM')||' EST' as AUDIT_TIMESTAMP "
+					+ " from CMQ_RELATIONS_"+ dictionaryVersion + "_AUDIT cba where " 
+					+ " cmq_id = (select c.cmq_id from  CMQ_BASE_"+ dictionaryVersion + " c where c.cmq_name = '" + name + "') and exists (select 1 from CMQ_BASE_"+dictionaryVersion+" where cmq_name='"+name+"' and cmq_id=cba.cmq_id)"
 			
  					+ " order by audit_ts desc";
 		}
