@@ -248,6 +248,10 @@ public class AuthenticationService {
     
     public String getGroupName() {
         String gg = getGroupMembershipsAsString();
+        
+        String admin_grp = refCodeListService.findCodeByInternalCode("ADMIN");
+        String requestor_grp = refCodeListService.findCodeByInternalCode("REQUESTOR");
+        String mqm_grp = refCodeListService.findCodeByInternalCode("MANAGER");
 
      	
     	String[] list = gg.replace("[", "").replace("]", "").split(",");
@@ -256,15 +260,17 @@ public class AuthenticationService {
     		if (s.startsWith("OPENCQT_") || s.startsWith(" OPENCQT_")) {
     			String finalGrp  = s.replace("OPENCQT_", "").replace(" OPENCQT_", "").trim().replace(" ", "");
      			    			
-    			if (gg.contains("ADMIN"))
+    			if (admin_grp != null && gg.contains(admin_grp))
     				return "ADMIN";
-    			if (finalGrp.contains("MQM"))
     				return "MQM";
-    			if (gg.contains("REQUESTOR"))
+    			if (requestor_grp != null && gg.contains(requestor_grp))
     				return "REQUESTOR";
     		}
     	}
     	
+    	
+
+    			
 //        String g = getGroupMembershipsAsString();
 //        
 //        String[] gp = g.replaceAll("[\\[\\]]", "").split(",");
