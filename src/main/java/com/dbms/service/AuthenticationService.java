@@ -262,6 +262,7 @@ public class AuthenticationService {
      			    			
     			if (admin_grp != null && gg.contains(admin_grp))
     				return "ADMIN";
+    			if (mqm_grp != null && gg.contains(mqm_grp))
     				return "MQM";
     			if (requestor_grp != null && gg.contains(requestor_grp))
     				return "REQUESTOR";
