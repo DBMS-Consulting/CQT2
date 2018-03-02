@@ -257,7 +257,7 @@ public class AuthenticationService {
     	String[] list = gg.replace("[", "").replace("]", "").split(",");
     	
     	for (String s: list) {    		
-    		if (s.startsWith("OPENCQT_") || s.startsWith(" OPENCQT_")) {
+    		if (s.startsWith(" OPENCQT_")) {
     			String finalGrp  = s.replace("OPENCQT_", "").replace(" OPENCQT_", "").trim().replace(" ", "");
      			    			
     			if (admin_grp != null && gg.contains(admin_grp))
