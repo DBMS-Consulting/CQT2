@@ -1492,6 +1492,21 @@ public class CreateController implements Serializable {
 	 * @return
 	 */
 	public String save() {
+		if (this.detailsFormModel.getName() == null	|| StringUtils.isBlank(this.detailsFormModel.getName())) {
+			if (FacesContext.getCurrentInstance() != null) {
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "The name is required", "");
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+			}
+			return "";
+		}
+		if (this.detailsFormModel.getDesignee() == null || StringUtils.isBlank(this.detailsFormModel.getDesignee())) {
+			if (FacesContext.getCurrentInstance() != null) {
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "The designee is required", "");
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+			}
+			return "";
+		}
+		 
         if(!detailsFormModel.validateForm())
             return "";
         
