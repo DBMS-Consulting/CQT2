@@ -257,21 +257,17 @@ public class AuthenticationService {
     	String[] list = gg.replace("[", "").replace("]", "").split(",");
     	
     	for (String s: list) {    		
-    		if (s.startsWith(" OPENCQT_")) {
-    			String finalGrp  = s.replace("OPENCQT_", "").replace(" OPENCQT_", "").trim().replace(" ", "");
-     			    			
-    			if (admin_grp != null && gg.contains(admin_grp))
-    				return "ADMIN";
+    		if (s.startsWith(" OPENCQT_") || s.startsWith("OPENCQT_")) {
+    			//String finalGrp  = s.replace("OPENCQT_", "").replace(" OPENCQT_", "").trim().replace(" ", "");
     			if (mqm_grp != null && gg.contains(mqm_grp))
     				return "MQM";
     			if (requestor_grp != null && gg.contains(requestor_grp))
     				return "REQUESTOR";
+    			if (admin_grp != null && gg.contains(admin_grp))
+    				return "ADMIN";
     		}
     	}
     	
-    	
-
-    			
 //        String g = getGroupMembershipsAsString();
 //        
 //        String[] gp = g.replaceAll("[\\[\\]]", "").split(",");
