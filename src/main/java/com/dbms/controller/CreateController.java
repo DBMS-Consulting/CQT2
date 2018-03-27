@@ -1495,7 +1495,7 @@ public class CreateController implements Serializable {
 		boolean notValidated = false;
 		if (this.detailsFormModel.getName() == null	|| StringUtils.isBlank(this.detailsFormModel.getName())) {
 			if (FacesContext.getCurrentInstance() != null) {
-				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "The name is required", "");
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Name is required", "");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 			}
 			notValidated = true;
@@ -1503,7 +1503,7 @@ public class CreateController implements Serializable {
 		}
 		if (this.detailsFormModel.getDesignee() == null || StringUtils.isBlank(this.detailsFormModel.getDesignee())) {
 			if (FacesContext.getCurrentInstance() != null) {
-				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "The designee is required", "");
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Designee is required", "");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 			}
 			notValidated = true;

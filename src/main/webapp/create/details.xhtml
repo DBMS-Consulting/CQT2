@@ -42,13 +42,14 @@
 			</p:selectOneMenu>
 
 			<p:outputLabel value="* Name" />
-			<p:inputText id="lname" required="#{!createController.readOnlyState}" autocomplete="true"
+			<p:inputText id="lname" required="#{!createController.readOnlyState}"
 				label="Name" disabled="#{createController.detailsFormDisabled}"
 				maxlength="200" value="#{createController.detailsFormModel.name}"
 				style="width: 300px !important">
+								
+			<!-- <p:ajax update="@this" global="false" /> -->
 				
-				<p:ajax global="false" />
-			</p:inputText>
+ 			</p:inputText>
 
 			<p:outputLabel id="lDrug" value="* Drug Program" />
 			<p:selectOneMenu
@@ -241,5 +242,28 @@
 		action="#{createController.saveDetailsAndClose}"
 		onstart="PF('sessionSaveDetailsConfirm').hide()" />
 		-->
+		
+		<style>
+		.ui-state-error {
+			border: 1px solid #8c8c8c !important;
+			
+  		}
+  		.ui-selectonemenu.ui-widget.ui-state-default.ui-corner-all.ui-state-error {
+  			background: #cccccc !important;
+  		}
+  		.ui-selectonemenu-trigger.ui-state-default.ui-corner-right.ui-state-error {
+  			background: #cccccc !important;
+  			    border-right: 0 !important;
+    border-top: 0 !important;
+    border-bottom: 0 !important;
+     width: 16px !important;
+    height: 100% !important;
+    position: absolute !important;
+    right: 0 !important;
+    top: 0 !important;
+    padding: 0 3px !important;
+  		}
+ 
+		</style>
 
 </ui:composition>
