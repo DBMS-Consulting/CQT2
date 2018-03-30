@@ -165,7 +165,7 @@ public class SearchController extends BaseController<CmqBase190> {
 	}
 	
 	public int listNameSort(String s1, String s2){
-		return s1.compareTo(s2);	
+		return s1.toUpperCase().compareTo(s2.toUpperCase());	
 	}
 	
 
