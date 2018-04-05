@@ -596,7 +596,13 @@ public class CreateController implements Serializable {
 	private void goToWizardNextStep() {
 		if(createWizard != null) {
 			if (createWizardNextStep.equals(WIZARD_STEP_DETAILS))
-				createWizard.setStep(WIZARD_STEP_INFONOTES); 
+				createWizard.setStep(WIZARD_STEP_INFONOTES);
+			else if (createWizardNextStep.equals(WIZARD_STEP_INFONOTES))
+				createWizard.setStep(WIZARD_STEP_RELATIONS); 
+			else if (createWizardNextStep.equals(WIZARD_STEP_RELATIONS))
+				createWizard.setStep(WIZARD_STEP_RELATIONS);
+			else if (createWizardNextStep.equals(WIZARD_STEP_CONFIRM))
+				createWizard.setStep(WIZARD_STEP_CONFIRM);
 			LOG.error(createWizard.getStep());
 
             RequestContext.getCurrentInstance().update("fCreate:wizardNavbar");
