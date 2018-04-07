@@ -603,11 +603,20 @@ public class CreateController implements Serializable {
 				createWizard.setStep(WIZARD_STEP_RELATIONS);
 			else if (createWizardNextStep.equals(WIZARD_STEP_CONFIRM))
 				createWizard.setStep(WIZARD_STEP_CONFIRM);
-			LOG.error(createWizard.getStep());
+			// LOG.error(createWizard.getStep());
 
             RequestContext.getCurrentInstance().update("fCreate:wizardNavbar");
         } else if(copyWizard != null) {
-			copyWizard.setStep(copyWizardNextStep);
+			//copyWizard.setStep(copyWizardNextStep);
+        	if (copyWizardNextStep.equals(WIZARD_STEP_DETAILS))
+				copyWizard.setStep(WIZARD_STEP_INFONOTES);
+        	else if (copyWizardNextStep.equals(WIZARD_STEP_INFONOTES))
+        		copyWizard.setStep(WIZARD_STEP_RELATIONS); 
+			else if (copyWizardNextStep.equals(WIZARD_STEP_RELATIONS))
+				copyWizard.setStep(WIZARD_STEP_RELATIONS);
+			else if (copyWizardNextStep.equals(WIZARD_STEP_CONFIRM))
+				copyWizard.setStep(WIZARD_STEP_CONFIRM);
+        	
             RequestContext.getCurrentInstance().update("fCopy:wizardNavbar");
         } else if(updateWizard != null) {
 			updateWizard.setStep(updateWizardNextStep);
