@@ -259,9 +259,6 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 		}
 		queryString = queryString.replaceAll("#1#", whereClause);
 		
-		LOG.error("***** queryString 1:: " + queryString);
-
-		
 		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
 		Session session = entityManager.unwrap(Session.class);
 		try {
@@ -323,8 +320,6 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 		}
 		queryString = queryString.replaceAll("#1#", whereClause);
 		
-		LOG.error("***** queryString 2:: " + queryString);
-
 		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
 		Session session = entityManager.unwrap(Session.class);
 		try {

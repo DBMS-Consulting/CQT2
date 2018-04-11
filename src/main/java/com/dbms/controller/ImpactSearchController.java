@@ -1,7 +1,6 @@
 package com.dbms.controller;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -1971,7 +1970,6 @@ public class ImpactSearchController implements Serializable {
 						filters);
 				this.setRowCount(cmqBaseTargetService.findNotImpactedCount(filters).intValue());
 				
- 				LOG.error("***** Rowcount : " + this.getRowCount());
 			}
 			
 			if (fetchedCmqBaseList != null) {
