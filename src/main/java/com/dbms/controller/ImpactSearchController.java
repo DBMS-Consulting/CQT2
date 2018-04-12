@@ -1944,6 +1944,22 @@ public class ImpactSearchController implements Serializable {
 					if(null != map.get("cmqDesignee3")) {
 						target.setCmqDesignee3(map.get("cmqDesignee3").toString());
 					}
+					
+					if(null != map.get("cmqProgramCd")) {
+						target.setCmqProgramCd(map.get("cmqProgramCd").toString());
+					}
+					if(null != map.get("cmqProtocolCd")) {
+						target.setCmqProtocolCd(map.get("cmqProtocolCd").toString());
+					}
+					if(null != map.get("cmqGroup")) {
+						target.setCmqGroup(map.get("cmqGroup").toString());
+					}
+					if(null != map.get("createdBy")) {
+						target.setCreatedBy(map.get("createdBy").toString());
+					}
+					if(null != map.get("creationDate")) {
+						target.setCreationDate(new Date(map.get("creationDate").toString()));
+					}
 					paginatedList.add(target);
 				}
 				this.cmqBaseList.addAll(paginatedList);
@@ -2029,6 +2045,22 @@ public class ImpactSearchController implements Serializable {
 					if(null != map.get("cmqDesignee3")) {
 						target.setCmqDesignee3(map.get("cmqDesignee3").toString());
 					}
+					
+					if(null != map.get("cmqProgramCd")) {
+						target.setCmqProgramCd(map.get("cmqProgramCd").toString());
+					}
+					if(null != map.get("cmqProtocolCd")) {
+						target.setCmqProtocolCd(map.get("cmqProtocolCd").toString());
+					}
+					if(null != map.get("cmqGroup")) {
+						target.setCmqGroup(map.get("cmqGroup").toString());
+					}
+					if(null != map.get("createdBy")) {
+						target.setCreatedBy(map.get("createdBy").toString());
+					}
+					if(null != map.get("creationDate")) {
+						// target.setCreationDate(new Date(map.get("creationDate").toString()));
+					}
 					paginatedList.add(target);
 				}
 				this.cmqBaseList.addAll(paginatedList);
@@ -2043,7 +2075,7 @@ public class ImpactSearchController implements Serializable {
 				} catch (IndexOutOfBoundsException e) {
 					return paginatedList.subList(first, first + (dataSize % pageSize));
 				}
-			} else {
+			} else {save
 				return paginatedList;
 			}
 		}

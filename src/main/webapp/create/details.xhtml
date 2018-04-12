@@ -139,17 +139,16 @@
 			</p:selectOneMenu>
 
 			<p:outputLabel value="* Level" />
-			<p:selectOneMenu id="level"
-				value="#{createController.detailsFormModel.level}"
-				required="#{!createController.readOnlyState}" label="Level"
+			<p:selectOneMenu id="level" required="#{!createController.readOnlyState}"
+				value="#{createController.detailsFormModel.level}" label="Level"
 				disabled="#{createController.detailsFormDisabled || createController.disableLevel()}">
-				<f:selectItem itemValue="null" itemLabel="" />
+				<f:selectItem itemValue="0" itemLabel="" />
 				<f:selectItem itemValue="1" itemLabel="1" />
 				<f:selectItem itemValue="2" itemLabel="2" />
 				<f:selectItem itemValue="3" itemLabel="3" />
 				<f:selectItem itemValue="4" itemLabel="4" />
 				<f:selectItem itemValue="5" itemLabel="5" />
-				<p:ajax update="@this" global="false" />
+				<p:ajax update="@this" />
 			</p:selectOneMenu>
 			<!-- <p:inputText rendered="#{createController.disableLevel(createController.detailsFormModel)}" id="levelI" disabled="true" value="#{createController.detailsFormModel.level}"
                  styleClass="uppercase"></p:inputText> -->

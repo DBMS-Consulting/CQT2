@@ -1511,22 +1511,27 @@ public class CreateController implements Serializable {
 	 */
 	public String save() {
 		boolean notValidated = false;
+		if (this.detailsFormModel.getLevel() == null || (this.detailsFormModel.getLevel() != null && this.detailsFormModel.getLevel().intValue() == 0)) {
+			if (FacesContext.getCurrentInstance() == null) {
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Level is required", "");
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+			}
+			notValidated = true;
+		}
 		if (this.detailsFormModel.getName() == null	|| StringUtils.isBlank(this.detailsFormModel.getName())) {
 			if (FacesContext.getCurrentInstance() != null) {
 				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Name is required", "");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 			}
 			notValidated = true;
-			// return "";
 		}
+		
 		if (this.detailsFormModel.getDesignee() == null || StringUtils.isBlank(this.detailsFormModel.getDesignee())) {
 			if (FacesContext.getCurrentInstance() != null) {
 				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Designee is required", "");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 			}
 			notValidated = true;
-
-			// return "";
 		}
 		if (this.detailsFormModel.getProducts() == null || this.detailsFormModel.getProducts().length == 0) {
 			this.detailsFormModel.setProducts(null);
@@ -1535,8 +1540,6 @@ public class CreateController implements Serializable {
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 			}
 			notValidated = true;
-
-			// return "";
 		}
 		if (notValidated)
 			return "";

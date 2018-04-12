@@ -102,7 +102,11 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 		try {
 			String query = "SELECT CMQ_CODE as cmqCode, CMQ_NAME as cmqName, CMQ_LEVEL as cmqLevel, CMQ_STATUS as cmqStatus, "
 					+ " CMQ_TYPE_CD as cmqTypeCd, CMQ_STATE as cmqState, CMQ_DESIGNEE as cmqDesignee, CMQ_DESIGNEE2 as cmqDesignee2,  CMQ_DESIGNEE3 as cmqDesignee3, "
-					+ " IMPACT_TYPE as impactType "
+					+ " CMQ_ID as cmqId, CMQ_DESCRIPTION as cmqDescription, CMQ_SOURCE as cmqSource, CMQ_NOTE as cmqNote,  "
+					+ " CMQ_ALGORITHM as cmqAlgorithm, CMQ_PARENT_CODE as cmqParentCode, CMQ_PARENT_NAME as cmqParentName,"
+					+ " IMPACT_TYPE as impactType, DICTIONARY_VERSION as dictionaryVersion,"
+					+ " CREATION_DATE as creationDate, CREATED_BY as createdBy, CMQ_GROUP as cmqGroup,"
+					+ " CMQ_PROGRAM_CD as cmqProgramCd, CMQ_PROTOCOL_CD as cmqProtocolCd"
 					+ " FROM CMQ_BASE_TARGET WHERE (IMPACT_TYPE = 'IMPACTED' or IMPACT_TYPE = 'ICC') "  + " #1# "
  					+ " order by cmqName";
 
@@ -160,6 +164,20 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 			sqlQuery.addScalar("cmqDesignee2", StandardBasicTypes.STRING);
 			sqlQuery.addScalar("cmqDesignee3", StandardBasicTypes.STRING);
 
+			sqlQuery.addScalar("cmqId", StandardBasicTypes.LONG);
+			sqlQuery.addScalar("dictionaryVersion", StandardBasicTypes.STRING);
+			sqlQuery.addScalar("cmqAlgorithm", StandardBasicTypes.STRING);
+			sqlQuery.addScalar("cmqDescription", StandardBasicTypes.STRING);
+			sqlQuery.addScalar("cmqNote", StandardBasicTypes.STRING);
+			sqlQuery.addScalar("cmqSource", StandardBasicTypes.STRING);
+			sqlQuery.addScalar("cmqParentCode", StandardBasicTypes.LONG);
+			sqlQuery.addScalar("cmqParentName", StandardBasicTypes.STRING);
+			
+			sqlQuery.addScalar("cmqProgramCd", StandardBasicTypes.STRING);
+			sqlQuery.addScalar("cmqProtocolCd", StandardBasicTypes.STRING);
+			sqlQuery.addScalar("cmqGroup", StandardBasicTypes.STRING);
+			sqlQuery.addScalar("creationDate", StandardBasicTypes.DATE);
+			sqlQuery.addScalar("createdBy", StandardBasicTypes.STRING);
 			
 			sqlQuery.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
 			
@@ -349,7 +367,11 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 		try {
 			String query = "SELECT CMQ_CODE as cmqCode, CMQ_NAME as cmqName, CMQ_LEVEL as cmqLevel, CMQ_STATUS as cmqStatus, "
 					+ " CMQ_TYPE_CD as cmqTypeCd, CMQ_STATE as cmqState,  CMQ_DESIGNEE as cmqDesignee, CMQ_DESIGNEE2 as cmqDesignee2,  CMQ_DESIGNEE3 as cmqDesignee3, "
-					+ " IMPACT_TYPE as impactType "
+					+ " CMQ_ID as cmqId, CMQ_DESCRIPTION as cmqDescription, CMQ_SOURCE as cmqSource, CMQ_NOTE as cmqNote,  "
+					+ " CMQ_ALGORITHM as cmqAlgorithm, CMQ_PARENT_CODE as cmqParentCode, CMQ_PARENT_NAME as cmqParentName,"
+					+ " IMPACT_TYPE as impactType, DICTIONARY_VERSION as dictionaryVersion,"
+					+ " CREATION_DATE as creationDate, CREATED_BY as createdBy, CMQ_GROUP as cmqGroup,"
+					+ " CMQ_PROGRAM_CD as cmqProgramCd, CMQ_PROTOCOL_CD as cmqProtocolCd"
 					+ " FROM CMQ_BASE_TARGET WHERE IMPACT_TYPE = 'NON-IMPACTED' "
 					+ "#1#"
 					+ " order by cmqName";
@@ -406,6 +428,22 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 			sqlQuery.addScalar("cmqDesignee", StandardBasicTypes.STRING);
 			sqlQuery.addScalar("cmqDesignee2", StandardBasicTypes.STRING);
 			sqlQuery.addScalar("cmqDesignee3", StandardBasicTypes.STRING);
+			
+			sqlQuery.addScalar("cmqId", StandardBasicTypes.LONG);
+			sqlQuery.addScalar("dictionaryVersion", StandardBasicTypes.STRING);
+			sqlQuery.addScalar("cmqAlgorithm", StandardBasicTypes.STRING);
+			sqlQuery.addScalar("cmqDescription", StandardBasicTypes.STRING);
+			sqlQuery.addScalar("cmqNote", StandardBasicTypes.STRING);
+			sqlQuery.addScalar("cmqSource", StandardBasicTypes.STRING);
+			sqlQuery.addScalar("cmqParentCode", StandardBasicTypes.LONG);
+			sqlQuery.addScalar("cmqParentName", StandardBasicTypes.STRING);
+			
+			sqlQuery.addScalar("cmqProgramCd", StandardBasicTypes.STRING);
+			sqlQuery.addScalar("cmqProtocolCd", StandardBasicTypes.STRING);
+			sqlQuery.addScalar("cmqGroup", StandardBasicTypes.STRING);
+			sqlQuery.addScalar("creationDate", StandardBasicTypes.DATE);
+			sqlQuery.addScalar("createdBy", StandardBasicTypes.STRING);
+
 			
 			sqlQuery.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
 			
