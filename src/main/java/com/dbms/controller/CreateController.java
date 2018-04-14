@@ -1511,8 +1511,8 @@ public class CreateController implements Serializable {
 	 */
 	public String save() {
 		boolean notValidated = false;
-		if (this.detailsFormModel.getLevel() == null || (this.detailsFormModel.getLevel() != null && this.detailsFormModel.getLevel().intValue() == 0)) {
-			if (FacesContext.getCurrentInstance() == null) {
+		if (this.detailsFormModel.getLevel() == null) {
+			if (FacesContext.getCurrentInstance() != null) {
 				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Level is required", "");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 			}

@@ -271,7 +271,7 @@ public class ListDetailsFormVM implements Serializable {
 			else if ("PRO".equals(extension))
 				setLevel(2);
 			else
-				setLevel(0);
+				setLevel(null);
 		}
 		if(wizardType != WizardType.CopyWizard) {
 			//we are not doing copy so change others.
