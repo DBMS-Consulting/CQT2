@@ -1182,6 +1182,13 @@ public class CreateController implements Serializable {
 	public String onCreateWizardFlowProcess(FlowEvent event) {
 		String oldStep, nextStep;
 		oldStep = nextStep = event.getOldStep();
+		if (notesFormModel.getDescription().equals("") && oldStep.equals(WIZARD_STEP_INFONOTES)) {
+			if (FacesContext.getCurrentInstance() != null) {
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Description is required", "");
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+			}
+			return oldStep;
+		}
 		if(WIZARD_STEP_DETAILS.equalsIgnoreCase(oldStep) && detailsFormModel.isModelChanged()) {
 			// current step is "Details" and the form has some unsaved changes
 			
@@ -1229,6 +1236,13 @@ public class CreateController implements Serializable {
 		String oldStep, nextStep;
 		oldStep = nextStep = event.getOldStep();
 		if (codeSelected != null) {
+			if (notesFormModel.getDescription().equals("") && oldStep.equals(WIZARD_STEP_INFONOTES)) {
+				if (FacesContext.getCurrentInstance() != null) {
+					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Description is required", "");
+					FacesContext.getCurrentInstance().addMessage(null, msg);
+				}
+				return oldStep;
+			}
 			if(WIZARD_STEP_DETAILS.equalsIgnoreCase(oldStep) && detailsFormModel.isModelChanged()) {
 				// current step is "Details" and the form has some unsaved changes
 				
