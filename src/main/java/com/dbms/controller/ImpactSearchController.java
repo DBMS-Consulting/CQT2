@@ -2075,7 +2075,7 @@ public class ImpactSearchController implements Serializable {
 				} catch (IndexOutOfBoundsException e) {
 					return paginatedList.subList(first, first + (dataSize % pageSize));
 				}
-			} else {save
+			} else {
 				return paginatedList;
 			}
 		}
