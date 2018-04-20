@@ -1944,6 +1944,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 						List<Long> ptCodesList = new ArrayList<>();
 						for (MeddraDictHierarchySearchDto meddra : listPT) {
 							ptCodesList.add(Long.parseLong(meddra.getCode())); 
+							relationsWorkerDTO.addToMapReport(cpt++, new ReportLineDataDto("PT", meddra.getCode() + "", meddra.getTerm(), "......")); 
 						}
 						
 						if (!filterLltFlag) {
