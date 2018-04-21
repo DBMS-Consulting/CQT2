@@ -1944,10 +1944,10 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 						List<Long> ptCodesList = new ArrayList<>();
 						for (MeddraDictHierarchySearchDto meddra : listPT) {
 							ptCodesList.add(Long.parseLong(meddra.getCode())); 
-							relationsWorkerDTO.addToMapReport(cpt++, new ReportLineDataDto("PT", meddra.getCode() + "", meddra.getTerm(), "......")); 
+							//relationsWorkerDTO.addToMapReport(cpt++, new ReportLineDataDto("PT", meddra.getCode() + "", meddra.getTerm(), "......")); 
 						}
 						
-						if (!filterLltFlag) {
+						//if (!filterLltFlag) {
 							List<MeddraDictHierarchySearchDto> llts = meddraDictService.findByCodes("PT_", ptCodesList);
 							if (llts != null) {
 								for (MeddraDictHierarchySearchDto llt : llts) {
@@ -1965,12 +1965,13 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 									List<MeddraDictHierarchySearchDto> llts_0 = meddraDictService.findByCodes("LLT_", lltCodesList_0);
 									if (llts_0 != null) {
 										for (MeddraDictHierarchySearchDto llt_1 : llts_0) {
+											if (!filterLltFlag)
 											relationsWorkerDTO.addToMapReport(cpt++, new ReportLineDataDto("LLT", llt_1.getCode() + "", llt_1.getTerm(), ".............")); 
 										}
 									}
 								}
 							}
-						}
+						//}
 					}
 					//LOG.info("In {} Finished Loading HLT code relations.", this.workerName);
 				}
