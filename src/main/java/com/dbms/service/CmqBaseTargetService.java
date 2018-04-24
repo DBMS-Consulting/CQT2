@@ -50,6 +50,7 @@ import org.slf4j.LoggerFactory;
 
 import com.dbms.entity.cqt.CmqBase190;
 import com.dbms.entity.cqt.CmqBaseTarget;
+import com.dbms.entity.cqt.CmqProductBaseTarget;
 import com.dbms.entity.cqt.CmqRelation190;
 import com.dbms.entity.cqt.CmqRelationTarget;
 import com.dbms.entity.cqt.SmqBase190;
@@ -104,8 +105,8 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 					+ " CMQ_TYPE_CD as cmqTypeCd, CMQ_STATE as cmqState, CMQ_DESIGNEE as cmqDesignee, CMQ_DESIGNEE2 as cmqDesignee2,  CMQ_DESIGNEE3 as cmqDesignee3, "
 					+ " CMQ_ID as cmqId, CMQ_DESCRIPTION as cmqDescription, CMQ_SOURCE as cmqSource, CMQ_NOTE as cmqNote,  "
 					+ " CMQ_ALGORITHM as cmqAlgorithm, CMQ_PARENT_CODE as cmqParentCode, CMQ_PARENT_NAME as cmqParentName,"
-					+ " IMPACT_TYPE as impactType, DICTIONARY_VERSION as dictionaryVersion,"
-					+ " CREATION_DATE as creationDate, CREATED_BY as createdBy, CMQ_GROUP as cmqGroup,"
+					+ " IMPACT_TYPE as impactType, DICTIONARY_NAME as dictionaryName, DICTIONARY_VERSION as dictionaryVersion,"
+					+ " CMQ_SUBVERSION as cmqSubversion, CREATION_DATE as creationDate, CREATED_BY as createdBy, CMQ_GROUP as cmqGroup,"
 					+ " CMQ_PROGRAM_CD as cmqProgramCd, CMQ_PROTOCOL_CD as cmqProtocolCd"
 					+ " FROM CMQ_BASE_TARGET WHERE (IMPACT_TYPE = 'IMPACTED' or IMPACT_TYPE = 'ICC') "  + " #1# "
  					+ " order by cmqName";
@@ -165,7 +166,9 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 			sqlQuery.addScalar("cmqDesignee3", StandardBasicTypes.STRING);
 
 			sqlQuery.addScalar("cmqId", StandardBasicTypes.LONG);
+			sqlQuery.addScalar("dictionaryName", StandardBasicTypes.STRING);
 			sqlQuery.addScalar("dictionaryVersion", StandardBasicTypes.STRING);
+			sqlQuery.addScalar("cmqSubversion", StandardBasicTypes.STRING);
 			sqlQuery.addScalar("cmqAlgorithm", StandardBasicTypes.STRING);
 			sqlQuery.addScalar("cmqDescription", StandardBasicTypes.STRING);
 			sqlQuery.addScalar("cmqNote", StandardBasicTypes.STRING);
@@ -176,7 +179,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 			sqlQuery.addScalar("cmqProgramCd", StandardBasicTypes.STRING);
 			sqlQuery.addScalar("cmqProtocolCd", StandardBasicTypes.STRING);
 			sqlQuery.addScalar("cmqGroup", StandardBasicTypes.STRING);
-			sqlQuery.addScalar("creationDate", StandardBasicTypes.DATE);
+			sqlQuery.addScalar("creationDate", StandardBasicTypes.STRING);
 			sqlQuery.addScalar("createdBy", StandardBasicTypes.STRING);
 			
 			sqlQuery.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
@@ -369,9 +372,9 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 					+ " CMQ_TYPE_CD as cmqTypeCd, CMQ_STATE as cmqState,  CMQ_DESIGNEE as cmqDesignee, CMQ_DESIGNEE2 as cmqDesignee2,  CMQ_DESIGNEE3 as cmqDesignee3, "
 					+ " CMQ_ID as cmqId, CMQ_DESCRIPTION as cmqDescription, CMQ_SOURCE as cmqSource, CMQ_NOTE as cmqNote,  "
 					+ " CMQ_ALGORITHM as cmqAlgorithm, CMQ_PARENT_CODE as cmqParentCode, CMQ_PARENT_NAME as cmqParentName,"
-					+ " IMPACT_TYPE as impactType, DICTIONARY_VERSION as dictionaryVersion,"
+					+ " IMPACT_TYPE as impactType, DICTIONARY_NAME as dictionaryName, DICTIONARY_VERSION as dictionaryVersion,"
 					+ " CREATION_DATE as creationDate, CREATED_BY as createdBy, CMQ_GROUP as cmqGroup,"
-					+ " CMQ_PROGRAM_CD as cmqProgramCd, CMQ_PROTOCOL_CD as cmqProtocolCd"
+					+ " CMQ_SUBVERSION as cmqSubversion, CMQ_PROGRAM_CD as cmqProgramCd, CMQ_PROTOCOL_CD as cmqProtocolCd"
 					+ " FROM CMQ_BASE_TARGET WHERE IMPACT_TYPE = 'NON-IMPACTED' "
 					+ "#1#"
 					+ " order by cmqName";
@@ -430,7 +433,11 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 			sqlQuery.addScalar("cmqDesignee3", StandardBasicTypes.STRING);
 			
 			sqlQuery.addScalar("cmqId", StandardBasicTypes.LONG);
+			
+			sqlQuery.addScalar("dictionaryName", StandardBasicTypes.STRING);
 			sqlQuery.addScalar("dictionaryVersion", StandardBasicTypes.STRING);
+			sqlQuery.addScalar("cmqSubversion", StandardBasicTypes.STRING);
+			
 			sqlQuery.addScalar("cmqAlgorithm", StandardBasicTypes.STRING);
 			sqlQuery.addScalar("cmqDescription", StandardBasicTypes.STRING);
 			sqlQuery.addScalar("cmqNote", StandardBasicTypes.STRING);
@@ -441,7 +448,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 			sqlQuery.addScalar("cmqProgramCd", StandardBasicTypes.STRING);
 			sqlQuery.addScalar("cmqProtocolCd", StandardBasicTypes.STRING);
 			sqlQuery.addScalar("cmqGroup", StandardBasicTypes.STRING);
-			sqlQuery.addScalar("creationDate", StandardBasicTypes.DATE);
+			sqlQuery.addScalar("creationDate", StandardBasicTypes.STRING);
 			sqlQuery.addScalar("createdBy", StandardBasicTypes.STRING);
 
 			
@@ -574,6 +581,28 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 			msg.append("An error occurred while findCmqChildCountForCmqCode ")
 					.append(cmqCode).append(" Query used was ->")
 					.append(sb.toString());
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<CmqProductBaseTarget> findProductsByCmqCode(Long code) {
+		List<CmqProductBaseTarget> retVal = null;
+		String queryString = "from CmqProductBaseTarget c where c.cmqBaseTarget.cmqCode = :code ";
+		EntityManager entityManager = this.cqtEntityManagerFactory
+				.getEntityManager();
+		try {
+			Query query = entityManager.createQuery(queryString);
+			query.setParameter("code", code);
+			retVal = query.getResultList();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg.append("findProductsByCmqCode failed ")
+					.append("Query used was ->").append(queryString);
 			LOG.error(msg.toString(), e);
 		} finally {
 			this.cqtEntityManagerFactory.closeEntityManager(entityManager);

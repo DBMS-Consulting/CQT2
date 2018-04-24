@@ -9,6 +9,7 @@ import org.primefaces.model.StreamedContent;
 import org.primefaces.model.TreeNode;
 
 import com.dbms.entity.cqt.CmqBaseTarget;
+import com.dbms.entity.cqt.CmqProductBaseTarget;
 import com.dbms.service.base.ICqtPersistenceService;
 
 public interface ICmqBaseTargetService  extends ICqtPersistenceService<CmqBaseTarget>{
@@ -47,4 +48,6 @@ public interface ICmqBaseTargetService  extends ICqtPersistenceService<CmqBaseTa
     
 	BigDecimal findImpactedCount(Map<String, Object> filters);
 	BigDecimal findNotImpactedCount(Map<String, Object> filters);
+
+	List<CmqProductBaseTarget> findProductsByCmqCode(Long code);
 }

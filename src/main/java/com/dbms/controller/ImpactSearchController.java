@@ -1,6 +1,9 @@
 package com.dbms.controller;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -48,6 +51,7 @@ import com.dbms.csmq.HierarchyNode;
 import com.dbms.entity.IEntity;
 import com.dbms.entity.cqt.CmqBase190;
 import com.dbms.entity.cqt.CmqBaseTarget;
+import com.dbms.entity.cqt.CmqProductBaseTarget;
 import com.dbms.entity.cqt.CmqRelationTarget;
 import com.dbms.entity.cqt.RefConfigCodeList;
 import com.dbms.entity.cqt.SmqBase190;
@@ -1899,6 +1903,9 @@ public class ImpactSearchController implements Serializable {
 					if(null != map.get("dictionaryVersion")) {
 						target.setDictionaryVersion(map.get("dictionaryVersion").toString());
 					}
+					if(null != map.get("dictionaryName")) {
+						target.setDictionaryName(map.get("dictionaryName").toString());
+					}
 					if(null != map.get("cmqId")) {
 						target.setId(Long.valueOf(map.get("cmqId").toString()));
 					}
@@ -1957,9 +1964,20 @@ public class ImpactSearchController implements Serializable {
 					if(null != map.get("createdBy")) {
 						target.setCreatedBy(map.get("createdBy").toString());
 					}
-					if(null != map.get("creationDate")) {
-						target.setCreationDate(new Date(map.get("creationDate").toString()));
+					if(null != map.get("cmqSubversion")) {
+						target.setCmqSubversion(new BigDecimal(map.get("cmqSubversion").toString()));
 					}
+					if(null != map.get("creationDate")) {
+						SimpleDateFormat fomrat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+						try {
+							target.setCreationDate(fomrat.parse(map.get("creationDate").toString()));
+						} catch (ParseException e) {
+							LOG.error(e.getMessage(), e);
+						}
+					}
+					
+					List<CmqProductBaseTarget> products = cmqBaseTargetService.findProductsByCmqCode(target.getCmqCode());
+					target.setProductsList(products);
 					paginatedList.add(target);
 				}
 				this.cmqBaseList.addAll(paginatedList);
@@ -1985,7 +2003,6 @@ public class ImpactSearchController implements Serializable {
 				 fetchedCmqBaseList = cmqBaseTargetService.findNotImpactedWithPaginated(first, pageSize, null, null,
 						filters);
 				this.setRowCount(cmqBaseTargetService.findNotImpactedCount(filters).intValue());
-				
 			}
 			
 			if (fetchedCmqBaseList != null) {
@@ -1993,6 +2010,9 @@ public class ImpactSearchController implements Serializable {
 					CmqBaseTarget target = new CmqBaseTarget();
 					if(null != map.get("dictionaryVersion")) {
 						target.setDictionaryVersion(map.get("dictionaryVersion").toString());
+					}
+					if(null != map.get("dictionaryName")) {
+						target.setDictionaryName(map.get("dictionaryName").toString());
 					}
 					if(null != map.get("cmqId")) {
 						target.setId(Long.valueOf(map.get("cmqId").toString()));
@@ -2058,9 +2078,20 @@ public class ImpactSearchController implements Serializable {
 					if(null != map.get("createdBy")) {
 						target.setCreatedBy(map.get("createdBy").toString());
 					}
-					if(null != map.get("creationDate")) {
-						// target.setCreationDate(new Date(map.get("creationDate").toString()));
+					if(null != map.get("cmqSubversion")) {
+						target.setCmqSubversion(new BigDecimal(map.get("cmqSubversion").toString()));
 					}
+					if(null != map.get("creationDate")) {
+						SimpleDateFormat fomrat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+						try {
+							target.setCreationDate(fomrat.parse(map.get("creationDate").toString()));
+						} catch (ParseException e) {
+							LOG.error(e.getMessage(), e);
+						}
+					}
+					
+					List<CmqProductBaseTarget> products = cmqBaseTargetService.findProductsByCmqCode(target.getCmqCode());
+					target.setProductsList(products);
 					paginatedList.add(target);
 				}
 				this.cmqBaseList.addAll(paginatedList);
