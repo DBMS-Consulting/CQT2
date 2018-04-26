@@ -1284,12 +1284,25 @@ public class ImpactSearchController implements Serializable {
 				
 			} 			
 		}
+		RequestContext.getCurrentInstance().update("impactAssessment");
+
 		return nextStep;
 	}
 	
 	public void saveNotesAndGoToNextStep() {
 		saveInformativeNotes();
 		iaWizard.setStep(iaWizardNextStep);
+        RequestContext.getCurrentInstance().update("impactAssessment");
+	}
+	
+	public boolean isIAWizardNavbarShown() {
+		return true;
+	}
+	public boolean isIAWizardNavbarNextShown() {
+		return isIAWizardNavbarShown() && !"details".equals(iaWizard.getStep());
+	}
+	public boolean isIAWizardNavbarBackShown() {
+		return !"impact".equals(iaWizard.getStep());
 	}
 	
 	public void cancelNotesAndGoToNextStep() {
