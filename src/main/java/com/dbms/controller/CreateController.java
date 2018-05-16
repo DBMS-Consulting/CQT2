@@ -2374,6 +2374,16 @@ public class CreateController implements Serializable {
 	}
 
 	public boolean isDeleteDisabled() {
+		String userGroup = authService.getGroupMembershipHeader();
+		
+		//string will either be set to "-DUMMY" or "" in order to properly compare designee and UserCn
+		String dummyState = ""; 
+		
+		//checks if in dummy environment and changes the variable if so
+        if(AuthenticationService.ENTERPRISE_AD_PXED_DUMMY.equalsIgnoreCase(authService.getEnterpriseAdCodeListValue())){
+        	dummyState = "-Dummy";
+        }
+		
 		if (selectedData == null
 				|| !CmqBase190.CMQ_STATE_VALUE_DRAFT.equalsIgnoreCase(selectedData.getCmqState())
 				|| selectedData.getActivationDate() != null)
@@ -2382,6 +2392,15 @@ public class CreateController implements Serializable {
         // Disabled delete button if List has been approved once
         if(isSelectedDataApprovedOnce)
             return true;
+        
+        //Disables delete button if (user is REQUESTOR and is NOT designee of selected list) AND (not creator of selected list)
+        if(((userGroup != null && (userGroup.contains(AuthenticationService.REQUESTER_GROUP)))
+        		&& !(selectedData.getCmqDesignee() != null && (selectedData.getCmqDesignee() + dummyState).equalsIgnoreCase(authService.getUserCn())
+        			|| selectedData.getCmqDesignee2() != null && (selectedData.getCmqDesignee2() + dummyState).equalsIgnoreCase(authService.getUserCn())
+        			|| selectedData.getCmqDesignee3() != null && (selectedData.getCmqDesignee3() + dummyState).equalsIgnoreCase(authService.getUserCn())))
+        				&& ((listCreator != null) && !(listCreator.startsWith(authService.getUserCn()))))
+        	return true; 
+        
 		return false;
 	}
 
