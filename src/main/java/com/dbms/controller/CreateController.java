@@ -595,10 +595,12 @@ public class CreateController implements Serializable {
 	
 	private void goToWizardNextStep() {
 		if(createWizard != null) {
-			if (createWizardNextStep.equals(WIZARD_STEP_DETAILS))
+			if(createWizardNextStep.equals(WIZARD_STEP_DETAILS) && createWizard.getStep().equals(WIZARD_STEP_DETAILS))
 				createWizard.setStep(WIZARD_STEP_INFONOTES);
+			else if (createWizardNextStep.equals(WIZARD_STEP_DETAILS))
+				createWizard.setStep(WIZARD_STEP_DETAILS);
 			else if (createWizardNextStep.equals(WIZARD_STEP_INFONOTES))
-				createWizard.setStep(WIZARD_STEP_RELATIONS); 
+				createWizard.setStep(WIZARD_STEP_INFONOTES); 
 			else if (createWizardNextStep.equals(WIZARD_STEP_RELATIONS))
 				createWizard.setStep(WIZARD_STEP_RELATIONS);
 			else if (createWizardNextStep.equals(WIZARD_STEP_CONFIRM))
@@ -655,11 +657,11 @@ public class CreateController implements Serializable {
 	
 	public String saveDetailsAndNextStep() {
         if(detailsFormModel.validateForm()) {
-            if(createWizard != null)
+            if(createWizard != null) 
                 save();
-            else if(copyWizard != null)
+            else if(copyWizard != null) 
                 copy();
-            else if(updateWizard != null)
+            else if(updateWizard != null) 
                 update();
             
             if (formToOpen != null && !formToOpen.equals(""))
@@ -1306,6 +1308,8 @@ public class CreateController implements Serializable {
 	 * 
 	 * @return
 	 */
+
+	
 	public String update() {
         if(!detailsFormModel.validateForm())
             return "";
@@ -1314,8 +1318,7 @@ public class CreateController implements Serializable {
 			
 			Long count = this.cmqBaseService.findCmqCountByCmqNameAndExtension(detailsFormModel.getExtension(), detailsFormModel.getName());
 			
-			if(count < 2) {
-				//we should have atmost 1
+			if(count < 2) {		//we should have at most 1 
 				prepareDetailsFormSave();
 				cmqBaseService.update(selectedData, this.authService.getUserCn()
 						, this.authService.getUserGivenName(), this.authService.getUserSurName()
@@ -1335,7 +1338,7 @@ public class CreateController implements Serializable {
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 			} else {
 				String errorMsg = "Duplicate CMQ name ('"
-						+ detailsFormModel.getName() + "') and extention ('"
+						+ detailsFormModel.getName() + "') and extentsion ('"
 						+ detailsFormModel.getExtension()
 						+ "') found in db.";
 				
@@ -1570,7 +1573,7 @@ public class CreateController implements Serializable {
 
 			if (count > 0) {
 				String errorMsg = "Duplicate CMQ name ('"
-						+ detailsFormModel.getName() + "') and extention ('"
+						+ detailsFormModel.getName() + "') and extentsion ('"
 						+ detailsFormModel.getExtension()
 						+ "') found in db.";
 				
@@ -1817,7 +1820,7 @@ public class CreateController implements Serializable {
 		selectedData.setLastModifiedBy(lastModifiedByString);
 		selectedData.setLastModifiedDate(new Date()); 
 		
-		detailsFormModel.saveToCmqBase190(selectedData);
+		detailsFormModel.saveToCmqBase190(selectedData); 
 	}
 
 	/**
