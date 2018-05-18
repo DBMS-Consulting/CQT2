@@ -1196,8 +1196,10 @@ public class ImpactSearchController implements Serializable {
 				
 			} 
 			else {
-				if(unsavedRedirect)
+				if(unsavedRedirect) {
+					System.out.println("This is running");
 					iaWizardNextStep = event.getOldStep();
+				}
 				else
 					nextStep = event.getOldStep();
 			}
@@ -1392,6 +1394,7 @@ public class ImpactSearchController implements Serializable {
 						, this.authService.getUserGivenName(), this.authService.getUserSurName()
 						, this.authService.getCombinedMappedGroupMembershipAsString());
 			} else if(d != null && d instanceof CmqBaseTarget) {
+
 				((CmqBaseTarget)d).setCmqDesignee(detailsFormModel.getDesignee());
 				((CmqBaseTarget)d).setCmqDesignee2(detailsFormModel.getDesigneeTwo());
 				((CmqBaseTarget)d).setCmqDesignee3(detailsFormModel.getDesigneeThree());
@@ -1432,12 +1435,20 @@ public class ImpactSearchController implements Serializable {
 	public void saveDetailsAndGoToNextStep() {
 		saveDetails();
 		iaWizard.setStep(iaWizardNextStep);
+		RequestContext.getCurrentInstance().update("impactAssessment");
 	}
 	
 	public void cancelDetailsAndGoToNextStep() {
 		cancelDetails();
 		iaWizard.setStep(iaWizardNextStep);
 	}
+	
+	public void saveRelationsAndGoToNextStep() {
+		updateTargetRelations();
+		iaWizard.setStep(iaWizardNextStep);
+		RequestContext.getCurrentInstance().update("impactAssessment");
+	}
+	 
 	
 	public void loadNewPts() {
 		this.newPtSearchLazyDataModel = new NewPtSearchLazyDataModel();

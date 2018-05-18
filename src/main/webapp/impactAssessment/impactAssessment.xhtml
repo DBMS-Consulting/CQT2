@@ -421,7 +421,7 @@
 					</p:panel>
 					<p:remoteCommand name="saveImpactsAndGoToNextStep"
 						update="@form:messages"
-						actionListener="#{impactSearchController.updateTargetRelations}"
+						actionListener="#{impactSearchController.saveRelationsAndGoToNextStep}"
 						onstart="PF('confirmSaveImpactsDlg').hide()" />
 					<p:remoteCommand name="resetImpactsAndGoToNextStep"
 						update="@form:messages @form:impact"
