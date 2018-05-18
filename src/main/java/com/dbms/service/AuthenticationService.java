@@ -156,10 +156,10 @@ public class AuthenticationService {
 	}
 
 	private void setPxedDummyData() {
-		this.userCn = "ZUTSHM-Dummy";
-		this.userGivenName = "MEENAKSHI";
-		this.userSurName = "ZUTSHI";
-		this.userEmail = "meenakshi.zutshi@pfizer.com";
+		this.userCn = "cougha02";
+		this.userGivenName = "alexander";
+		this.userSurName = "coughlin";
+		this.userEmail = "amc@pfizer.com";
 		if(this.groupMembershipHeader == null) {
 			//if its not filled from the dummy ldap form
 			this.groupMembershipHeader = PXED_DUMMY_GROUP_MEMBERSHIP;

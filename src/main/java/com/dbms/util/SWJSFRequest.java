@@ -151,6 +151,7 @@ public class SWJSFRequest
             userList.add(new PXEDUser("tomn", "", ""));
             userList.add(new PXEDUser("zutshm", "Meenakshi", "Zutushi"));
             userList.add(new PXEDUser("shuklr04", "", ""));
+            userList.add(new PXEDUser("zutshm-dummy", "Meenakshi", "Zutishi"));
         } else {
             try {
                 Map<String, List<PXEDUser>> allGrps = findAllGroups();
