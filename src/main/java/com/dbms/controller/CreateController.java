@@ -610,10 +610,12 @@ public class CreateController implements Serializable {
             RequestContext.getCurrentInstance().update("fCreate:wizardNavbar");
         } else if(copyWizard != null) {
 			//copyWizard.setStep(copyWizardNextStep);
-        	if (copyWizardNextStep.equals(WIZARD_STEP_DETAILS))
+        	if(copyWizardNextStep.equals(WIZARD_STEP_DETAILS) && copyWizard.getStep().equals(WIZARD_STEP_DETAILS))
 				copyWizard.setStep(WIZARD_STEP_INFONOTES);
+        	else if (copyWizardNextStep.equals(WIZARD_STEP_DETAILS))
+				copyWizard.setStep(WIZARD_STEP_DETAILS);
         	else if (copyWizardNextStep.equals(WIZARD_STEP_INFONOTES))
-        		copyWizard.setStep(WIZARD_STEP_RELATIONS); 
+        		copyWizard.setStep(WIZARD_STEP_INFONOTES); 
 			else if (copyWizardNextStep.equals(WIZARD_STEP_RELATIONS))
 				copyWizard.setStep(WIZARD_STEP_RELATIONS);
 			else if (copyWizardNextStep.equals(WIZARD_STEP_CONFIRM))
@@ -1247,7 +1249,7 @@ public class CreateController implements Serializable {
 			}
 			if(WIZARD_STEP_DETAILS.equalsIgnoreCase(oldStep) && detailsFormModel.isModelChanged()) {
 				// current step is "Details" and the form has some unsaved changes
-				
+
 				//----Confirmation on unsaved changes
 				// 1. here in CreateController.onUpdateWizardFlowProcess(), check if the Details form model has been modified
 				
