@@ -1151,13 +1151,13 @@ public class ImpactSearchController implements Serializable {
 			
 			if(d instanceof CmqBase190) {
 				notesFormModel.loadFromCmqBase190((CmqBase190)d);
-				detailsFormModel.loadFromCmqBase190((CmqBase190)d);
+				//detailsFormModel.loadFromCmqBase190((CmqBase190)d);
 			} else if(d instanceof SmqBase190) {
 				SmqBase190 current = smqBaseCurrentService.findByCode(((SmqBase190) d).getSmqCode());
 				notesFormModel.loadFromSmqBase190(current);
 			} else if(d instanceof CmqBaseTarget) {
 				notesFormModel.loadFromCmqBaseTarget((CmqBaseTarget)d);
-				detailsFormModel.loadFromCmqBaseTarget((CmqBaseTarget)d);
+				//detailsFormModel.loadFromCmqBaseTarget((CmqBaseTarget)d);
 			} else if(d instanceof SmqBaseTarget) {
 				SmqBaseTarget target = smqBaseTargetService.findByCode(((SmqBaseTarget) d).getSmqCode());
 				notesFormModel.loadFromSmqBaseTarget(target);
