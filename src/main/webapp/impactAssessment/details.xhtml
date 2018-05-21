@@ -68,7 +68,7 @@
 				<p:selectOneMenu filter="true" filterMatchMode="contains"
 					value="#{impactSearchController.detailsFormModel.designee}"
 					disabled="#{impactSearchController.detailsFormReadonly}"
-					required="#{not impactSearchController.detailsFormReadonly}"
+					required="#{!impactSearchController.detailsFormReadonly}"
 					label="Designee">
 					<f:selectItem itemValue="" itemLabel="" noSelectionOption="true" />
 					<f:selectItems

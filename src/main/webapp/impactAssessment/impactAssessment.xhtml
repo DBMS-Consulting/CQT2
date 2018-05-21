@@ -431,7 +431,7 @@
 					<p:confirmDialog widgetVar="confirmSaveImpactsDlg"
 						showEffect="fade" hideEffect="fade"
 						header="Confirm about Unsaved Changes"
-						message="There are some unsaved changes. Please save them before you leave.">
+						message="There are some unsaved changes. Do you want to save them before you continue?">
 						<p:commandButton value="Yes" type="button"
 							styleClass="ui-confirmdialog-yes" icon="ui-icon-check"
 							onclick="saveImpactsAndGoToNextStep()" />
@@ -441,7 +441,7 @@
 					</p:confirmDialog>
 					
 					
-					<!-- AUTO SAVE -->
+					<!-- AUTO SAVE for when you are switching from one module to another. For example: (Impact Assessment -> Update) -->
 					<p:remoteCommand name="saveRelations" update="@form:messages @form:impact"
 						action="#{impactSearchController.saveRelationsAndClose}"
 						onstart="PF('confirmIASaveRelations').hide()" />
@@ -450,7 +450,7 @@
 					<p:confirmDialog widgetVar="confirmIASaveRelations"
 						showEffect="fade" hideEffect="fade"
 						header="Confirm about Unsaved Changes"
-						message="There are some unsaved changes. Do you want to save them before you continue ?">
+						message="There are some unsaved changes. Do you want to save them before you continue?">
 						
 						<p:commandButton value="Yes" type="button"
 							styleClass="ui-confirmdialog-yes" icon="ui-icon-check"
@@ -496,7 +496,7 @@
 						<p:confirmDialog widgetVar="confirmSaveDetailsDlg"
 							showEffect="fade" hideEffect="fade"
 							header="Confirm about Unsaved Changes"
-							message="There are some unsaved changes. Do you want to save them before continue.">
+							message="There are some unsaved changes. Do you want to save them before you continue?">
 							<p:commandButton value="Yes" type="button"
 								styleClass="ui-confirmdialog-yes" icon="ui-icon-check"
 								onclick="saveDetailsAndGoToNextStep()" />
@@ -505,7 +505,7 @@
 								onclick="resetDetailsAndGoToNextStep()" />
 						</p:confirmDialog>
 
-						<!-- AUTO SAVE -->
+						<!-- AUTO SAVE for when you are switching from one module to another. For example: (Impact Assessment -> Update)-->
 						<p:remoteCommand name="saveDetails" update="@form:messages"
 							action="#{impactSearchController.saveDetailsAndClose}"
 							onstart="PF('confirmIASaveDetails').hide()" />
@@ -513,7 +513,7 @@
 						<p:confirmDialog widgetVar="confirmIASaveDetails"
 							showEffect="fade" hideEffect="fade"
 							header="Confirm about Unsaved Changes"
-							message="There are some unsaved changes. Do you want to save them before you continue ?">
+							message="There are some unsaved changes. Do you want to save them before you continue?">
 
 							<p:commandButton value="Yes" type="button"
 								styleClass="ui-confirmdialog-yes" icon="ui-icon-check"
