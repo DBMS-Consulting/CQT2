@@ -94,12 +94,16 @@ public class RelationTreeNode implements Serializable,Comparable<RelationTreeNod
 		if (code == null) {
 			if (other.code != null)
 				return false;
-		} else if (!code.equals(other.code))
+		} 
+		
+		else if (!code.equals(other.code))
 			return false;
 		if (name == null) {
 			if (other.name != null)
 				return false;
-		} else if (!name.equals(other.name))
+		} 
+		
+		else if (!name.equals(other.name))
 			return false;
 		return true;
 	}

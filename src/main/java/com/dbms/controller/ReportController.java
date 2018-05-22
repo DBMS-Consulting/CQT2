@@ -269,12 +269,16 @@ public class ReportController extends BaseController<CmqBase190> {
 		    fc.responseComplete(); // Important! Otherwise JSF will attempt to render the response which obviously will fail since it's already written with a file and closed.
 		    // erase temp file
 		    tempFile.delete();
-	    } catch (ReportGenerationException e) {
+	    } 
+	    
+	    catch (ReportGenerationException e) {
 	    	log.error("Error while generating report: ", e.getMessage());
 			fc.addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR,
                             "Error while generating report", e.getMessage()));
-	    } catch(Exception e) {
+	    } 
+	    
+	    catch(Exception e) {
 	    	log.error("Error while generating report: ", e);
 			fc.addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -324,17 +328,23 @@ public class ReportController extends BaseController<CmqBase190> {
                 Files.copy(rptFile.toPath(), output);
 	
                 fc.responseComplete(); // Important! Otherwise JSF will attempt to render the response which obviously will fail since it's already written with a file and closed.
-            } else {
+            } 
+            
+            else {
                 fc.addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR,
                             "Can not read report file", ""));
             }
-        } else {
+        }
+        
+        else {
             if(meddraVersioningReport == null) {
                 fc.addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR,
                             "Please choose report to download", ""));
-            } else if(reportsPath == null) {
+            } 
+            
+            else if(reportsPath == null) {
                 fc.addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR,
                             "Invalid report files' directory configuration", ""));

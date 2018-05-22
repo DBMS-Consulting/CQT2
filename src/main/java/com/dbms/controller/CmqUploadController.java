@@ -66,6 +66,7 @@ public class CmqUploadController implements Serializable {
 				BufferedReader reader = new BufferedReader(isr);
 				String str = null;
 				boolean first = true;
+				
 				while ((str = reader.readLine()) != null) {
 					log.debug("read a line : {}", str);
 					String[] ss = str.split(",");
@@ -79,14 +80,17 @@ public class CmqUploadController implements Serializable {
 					if (StringUtils.isEmpty(ss[0])) {
 						failed++;continue;
 					}
+					
 					try {
 						id = Long.parseLong(ss[0]);
-					} catch (Exception e) {
+					} 
+					catch (Exception e) {
 						failed++;
 						continue;
 					}
 					log.debug("find by id {}",id);
 					base = cmqBaseService.findById(id);
+					
 					if (base != null) {
 						failed++;
 						continue;
@@ -102,21 +106,29 @@ public class CmqUploadController implements Serializable {
 					Integer level=null;
 					try{
 						level=Integer.parseInt(ss[6]);
-					}catch(Exception e){}
+					}
+					catch(Exception e){}
+					
 					base.setCmqLevel(level);
 					base.setCmqDesignee(ss[7]);
 					base.setCmqGroup(ss[8]);
 					base.setCmqStatus(ss[9]);
+					
 					if(StringUtils.isNotEmpty(ss[10])&&!ss[10].equalsIgnoreCase("NO GROUP")){
 						base.setCmqGroup(ss[10]);
 					}
 					base.setCmqAlgorithm(ss[11]);
+					
 					if(StringUtils.isNotEmpty(ss[12])){
 						if(ss[12].equalsIgnoreCase("pending")){
 							base.setCmqStatus("P");
-						}else if(ss[12].equalsIgnoreCase("active")){
+						}
+						
+						else if(ss[12].equalsIgnoreCase("active")){
 							base.setCmqStatus("A");
-						}else if(ss[12].equalsIgnoreCase("inactive")){
+						}
+						
+						else if(ss[12].equalsIgnoreCase("inactive")){
 							base.setCmqStatus("I");
 						}
 					}
@@ -147,7 +159,9 @@ public class CmqUploadController implements Serializable {
 				FacesMessage msg = new FacesMessage("Successful import "
 						+ file.getFileName()+", total="+total+",success="+success+",failed="+failed, null);
 				FacesContext.getCurrentInstance().addMessage(null, msg);
-			} catch (Exception e) {
+			} 
+			
+			catch (Exception e) {
 				e.printStackTrace();
 				FacesMessage msg = new FacesMessage("Failed to import "
 						+ file.getFileName() +", total="+total+",success="+success+",failed="+failed,

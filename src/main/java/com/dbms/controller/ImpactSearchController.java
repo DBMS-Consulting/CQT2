@@ -253,7 +253,7 @@ public class ImpactSearchController implements Serializable {
 		return formToOpen;
 	}
 	
-	//AUTO SAVE
+	//AUTO SAVE to make sure the unsaved data warning is displayed
 	public boolean showConfirmDialog() {
 		boolean detailChanged = detailsFormModel.isModelChanged();
 		boolean notesChanged = notesFormModel.isModelChanged();
@@ -325,16 +325,19 @@ public class ImpactSearchController implements Serializable {
 	
 	
 	/**
-	 * Generate Excel report on target datatable.
+	 * Generate Excel report on target data table.
 	 */
 	public void generateExcel() {
 		String dict = "", dictTarget = "";
 		RefConfigCodeList currentMeddraVersionCodeList = this.refCodeListService.getCurrentMeddraVersion();
 		RefConfigCodeList targetMeddraVersionCodeList = this.refCodeListService.getTargetMeddraVersion();
+		
 		if (currentMeddraVersionCodeList != null)
 			dict = currentMeddraVersionCodeList.getValue();
+		
 		if (targetMeddraVersionCodeList != null)
 			dictTarget = targetMeddraVersionCodeList.getValue();
+		
 		StreamedContent content = null;
 		if (isImpactedCmqSelected)
 			content = cmqBaseTargetService.generateCMQExcel(selectedImpactedCmqList, dictTarget, targetTableSelection, this.globalController.isFilterLltsFlag());
@@ -376,20 +379,28 @@ public class ImpactSearchController implements Serializable {
 				this.isNonImpactedCmqSelected = false;
 				this.isImpactedSmqSelected = false;
 				this.isNonImpactedSmqSelected = false;
-			} else {
+			} 
+			
+			else {
 				this.isImpactedCmqSelected = false;
 				this.isNonImpactedCmqSelected = true;
 				this.isImpactedSmqSelected = false;
 				this.isNonImpactedSmqSelected = false;
 			}
-		} else if(obj instanceof SmqBaseTarget) {
+			
+		} 
+		
+		else if(obj instanceof SmqBaseTarget) {
 			SmqBaseTarget smqBase = (SmqBaseTarget) obj;
 			if(CSMQBean.IMPACT_TYPE_IMPACTED.equalsIgnoreCase(smqBase.getImpactType())){
 				this.isImpactedCmqSelected = false;
 				this.isNonImpactedCmqSelected = false;
 				this.isImpactedSmqSelected = true;
 				this.isNonImpactedSmqSelected = false;
-			} else {
+				
+			} 
+			
+			else {
 				this.isImpactedCmqSelected = false;
 				this.isNonImpactedCmqSelected = false;
 				this.isImpactedSmqSelected = false;
@@ -413,6 +424,8 @@ public class ImpactSearchController implements Serializable {
 		
 		setDictionaryVersion(dict.getValue());
 	}
+	
+	
 	/**
 	 * Event fired on the unselection of a row from current list.
 	 * @param event NodeSelectEvent
@@ -421,8 +434,6 @@ public class ImpactSearchController implements Serializable {
 		//Updating the worflow buttons
 		if(currentOrTarget == SELECTED_CURRENT_LIST)
 			currentOrTarget = SELECTED_NO_LIST;
-		
-		
 	}
 	
 	/**
@@ -432,10 +443,17 @@ public class ImpactSearchController implements Serializable {
 	public void onSelectTargetRowTreeTable(NodeSelectEvent event) {
 		currentOrTarget = SELECTED_TARGET_LIST;
 		String code = "";
-		if (isImpactedCmqSelected && selectedImpactedCmqList != null) code = selectedImpactedCmqList.getCmqCode() + "";
-        else if (isNonImpactedCmqSelected && selectedNotImpactedCmqList != null) code = selectedNotImpactedCmqList.getCmqCode() + "";
-        else if (isImpactedSmqSelected && selectedImpactedSmqList != null ) code = selectedImpactedSmqList.getSmqCode() + "";
-        else if (isNonImpactedSmqSelected && selectedNotImpactedSmqList != null ) code = selectedNotImpactedSmqList.getSmqCode() + "";
+		if (isImpactedCmqSelected && selectedImpactedCmqList != null) 
+			code = selectedImpactedCmqList.getCmqCode() + "";
+		
+        else if (isNonImpactedCmqSelected && selectedNotImpactedCmqList != null) 
+        	code = selectedNotImpactedCmqList.getCmqCode() + "";
+		
+        else if (isImpactedSmqSelected && selectedImpactedSmqList != null ) 
+        	code = selectedImpactedSmqList.getSmqCode() + "";
+		
+        else if (isNonImpactedSmqSelected && selectedNotImpactedSmqList != null ) 
+        	code = selectedNotImpactedSmqList.getSmqCode() + "";
 		
 		HierarchyNode node;
 		if (event != null && event.getTreeNode() != null && event.getTreeNode().getData() != null) {
@@ -448,6 +466,8 @@ public class ImpactSearchController implements Serializable {
 		RefConfigCodeList dict = this.refCodeListService.getTargetMeddraVersion();
 		setDictionaryVersion(dict.getValue());
 	}
+	
+	
 	/**
 	 * Event fired on the unselection of a row from target list.
 	 * @param event NodeSelectEvent
@@ -470,10 +490,12 @@ public class ImpactSearchController implements Serializable {
         
 	}
     
+	
     public void onNodeCollapseCurrentTable(NodeCollapseEvent event) {
         event.getTreeNode().setExpanded(false);
     }
 	
+    
 	public void onNodeExpandTargetTable(NodeExpandEvent event) {
         IARelationsTreeHelper treeHelper = new IARelationsTreeHelper(
                 cmqBaseCurrentService, smqBaseCurrentService, meddraDictCurrentService, cmqRelationCurrentService,
@@ -487,6 +509,7 @@ public class ImpactSearchController implements Serializable {
 		if (n.getChildren().size() == 0) {
 			n.setSelected(false);
 		}
+		
 		else {
 			for (TreeNode s : n.getChildren()) {
 				collapsingORexpanding(s, option);
@@ -495,6 +518,7 @@ public class ImpactSearchController implements Serializable {
 			n.setSelected(false);
 		}
 	}
+	
 	
 	public void filterRelationsByScope(AjaxBehaviorEvent event) {
 		updateTargetRelations();
@@ -516,15 +540,18 @@ public class ImpactSearchController implements Serializable {
         event.getTreeNode().setExpanded(false);
     }
 	
+	
 	public void updateTables() {
 		this.updateCurrentTable();
 		this.updateTargetTable();
 	}
     
+	
 	public void updateCurrentTable() {
         IARelationsTreeHelper treeHelper = new IARelationsTreeHelper(
                 cmqBaseCurrentService, smqBaseCurrentService, meddraDictCurrentService, cmqRelationCurrentService,
                 cmqBaseTargetService, smqBaseTargetService, meddraDictTargetService, cmqRelationTargetService, globalController);
+        
         treeHelper.setImpactTypes(getSelectedImpactFilters());
 		//Init of the treenode to print only one selected list
 		currentTableRootTreeNode = new DefaultTreeNode("root", new HierarchyNode("CODE",
@@ -536,24 +563,30 @@ public class ImpactSearchController implements Serializable {
 			//Current List name
 			setListName(this.selectedImpactedCmqList.getCmqName());
 			setNewPTButtonEnabled(false);
-		} else if (this.isNonImpactedCmqSelected) {
+		} 
+		
+		else if (this.isNonImpactedCmqSelected) {
 			treeHelper.updateCurrentTableForCmqList(currentTableRootTreeNode, this.selectedNotImpactedCmqList);
 			//Current List name
 			setListName(this.selectedNotImpactedCmqList.getCmqName());
 			setNewPTButtonEnabled(false);
-		} else if (this.isImpactedSmqSelected) {
+		} 
+		
+		else if (this.isImpactedSmqSelected) {
 			treeHelper.updateCurrentTableForSmqList(currentTableRootTreeNode, this.selectedImpactedSmqList);
 			//Current List name
 			setListName(this.selectedImpactedSmqList.getSmqName());
-			setNewPTButtonEnabled(true);
-		} else if (this.isNonImpactedSmqSelected) {
+			setNewPTButtonEnabled(true);			
+		} 
+		
+		else if (this.isNonImpactedSmqSelected) {
 			treeHelper.updateCurrentTableForSmqList(currentTableRootTreeNode, this.selectedNotImpactedSmqList);
 			//Current List name
 			setListName(this.selectedNotImpactedSmqList.getSmqName());
 			setNewPTButtonEnabled(true);
 		}
 		
-		//reset value of selected to ze
+		//reset value of selected to zero
 		currentOrTarget = SELECTED_NO_LIST;
 	}
 
@@ -561,6 +594,7 @@ public class ImpactSearchController implements Serializable {
         IARelationsTreeHelper treeHelper = new IARelationsTreeHelper(
                 cmqBaseCurrentService, smqBaseCurrentService, meddraDictCurrentService, cmqRelationCurrentService,
                 cmqBaseTargetService, smqBaseTargetService, meddraDictTargetService, cmqRelationTargetService, globalController);
+        
         treeHelper.setImpactTypes(getSelectedImpactFilters());
 		//Init of the treenode to print only one selected list
 		targetTableRootTreeNode = new DefaultTreeNode("root", new HierarchyNode("CODE",
@@ -570,23 +604,27 @@ public class ImpactSearchController implements Serializable {
 		if(this.isImpactedCmqSelected) {
 			treeHelper.updateTargetTableForCmqList(targetTableRootTreeNode, this.selectedImpactedCmqList);
 			//Target List name
-			setListName(this.selectedImpactedCmqList.getCmqName());
-			 
-		} else if(this.isNonImpactedCmqSelected) {
+			setListName(this.selectedImpactedCmqList.getCmqName());			 
+		} 
+		
+		else if(this.isNonImpactedCmqSelected) {
 			treeHelper.updateTargetTableForCmqList(targetTableRootTreeNode, this.selectedNotImpactedCmqList);
 			//Target List name
-			setListName(this.selectedNotImpactedCmqList.getCmqName());
-			 
-		} else if (this.isImpactedSmqSelected) {
+			setListName(this.selectedNotImpactedCmqList.getCmqName());			 
+		} 
+		
+		else if (this.isImpactedSmqSelected) {
 			treeHelper.updateTargetTableForSmqList(targetTableRootTreeNode, this.selectedImpactedSmqList);
 			//Target List name
-			setListName(this.selectedImpactedSmqList.getSmqName());
-		} else if (this.isNonImpactedSmqSelected) {
+			setListName(this.selectedImpactedSmqList.getSmqName());			
+		} 
+		
+		else if (this.isNonImpactedSmqSelected) {
 			treeHelper.updateTargetTableForSmqList(targetTableRootTreeNode, this.selectedNotImpactedSmqList);
 			//Target List name
 			setListName(this.selectedNotImpactedSmqList.getSmqName());
 		}
-		//reset value of selected to ze
+		//reset value of selected to zero
 		currentOrTarget = SELECTED_NO_LIST;
 		
 		
@@ -601,22 +639,27 @@ public class ImpactSearchController implements Serializable {
 			if (nodes != null && nodes.length > 0) {
 				List<TreeNode> nodesList = Arrays.asList(nodes);
 				List<String> existingNodeTerms = new ArrayList<>();
+				
 				if(this.currentTableRootTreeNode.getChildCount() == 1){
 					//count will always be either 0 or 1.
 					TreeNode parentTreeNode = this.targetTableRootTreeNode.getChildren().get(0);
 					HierarchyNode parentHierarchyNode = (HierarchyNode) parentTreeNode.getData();
 					IEntity entity = (IEntity) parentHierarchyNode.getEntity();
+					
 					if(entity instanceof CmqBaseTarget) {
 						//allow additions 
 						for (TreeNode treeNode : nodesList) {
 							HierarchyNode hierarchyNode = (HierarchyNode) treeNode.getData();
+							
 							if ((null != hierarchyNode) && !hierarchyNode.isDummyNode()) {
-								//first check if this node is already added ot relations tree
+								//first check if this node is already added to relations tree
 								boolean exists = false;
 								List<TreeNode> existingRelationsTreeNodes = parentTreeNode.getChildren();
+								
 								if (CollectionUtils.isNotEmpty(existingRelationsTreeNodes)) {
 									for (TreeNode existingRelationsTreeNode : existingRelationsTreeNodes) {
 										HierarchyNode existingHierarchyNode = (HierarchyNode) existingRelationsTreeNode.getData();
+										
 										if(hierarchyNode.getCode().equalsIgnoreCase(existingHierarchyNode.getCode())
 												&& hierarchyNode.getLevel().equalsIgnoreCase(existingHierarchyNode.getLevel())) {
 											exists = true;
@@ -628,12 +671,15 @@ public class ImpactSearchController implements Serializable {
 							
 								if(!exists) {
 									TreeNode parentNode = treeNode.getParent();
+									
+									//if nodesList does not have a parent node
 									if (!nodesList.contains(parentNode)) {
 										HierarchyNode relationsHierarchyNode = hierarchyNode.copy();
 										relationsHierarchyNode.setRowStyleClass("green-colored");//mark this row as green
 										TreeNode relationsTreeNode = new DefaultTreeNode(relationsHierarchyNode, parentTreeNode);
 										relationsHierarchyNode.setDataFetchCompleted(false);
 										IEntity relationsHierarchyNodeEntity = relationsHierarchyNode.getEntity();
+										
 										if(relationsHierarchyNodeEntity instanceof SMQReverseHierarchySearchDto) {
 											Long ptCode = ((SMQReverseHierarchySearchDto) relationsHierarchyNodeEntity).getSmqCode();
 											SmqBaseTarget smqBaseTarget = this.smqBaseTargetService.findByCode(ptCode);
@@ -641,14 +687,18 @@ public class ImpactSearchController implements Serializable {
 											relationsHierarchyNode.setCode(smqBaseTarget.getSmqCode().toString());
 
 											List<TreeNode> childTreeNodes = treeNode.getChildren();
+											
 											if(CollectionUtils.isNotEmpty(childTreeNodes)) {
 												relationsHierarchyNode.setDataFetchCompleted(false);
 												HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
 												dummyNode.setDummyNode(true);
 												new DefaultTreeNode(dummyNode, relationsTreeNode);
 											}
+											
+										//if relationsHierarchyNodeEntity is not an instanceof SMQReverseHierarchySearchDto
 										} else {
 											List<TreeNode> childTreeNodes = treeNode.getChildren();
+											
 											if(CollectionUtils.isNotEmpty(childTreeNodes)) {
 												HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
 												dummyNode.setDummyNode(true);
@@ -662,25 +712,39 @@ public class ImpactSearchController implements Serializable {
 						}
 						
 						// setRelationSelected(nodes);
+						//if the relation already exists
 						if(CollectionUtils.isNotEmpty(existingNodeTerms)) {
 							FacesContext.getCurrentInstance().addMessage(null,
                                     new FacesMessage(FacesMessage.SEVERITY_WARN, "The relation already exists", ""));
-						} else {
+						} 
+						
+						//if the relation does not exist yet.
+						else {
 							FacesContext.getCurrentInstance().addMessage(null,
                                     new FacesMessage(FacesMessage.SEVERITY_INFO,
                                         "Selected relations added sucessfully.", ""));
 						}
-					} else {
+					} 
+					
+					//if entity is not an instanceof CmqBaseTarget
+					else {
 						FacesContext.getCurrentInstance().addMessage(null, 
                                 new FacesMessage(FacesMessage.SEVERITY_FATAL,
                                     "Adding relations is allowed for CMQs only.", ""));
 					}
 				}
-			} else {
+			} 
+			
+			//if nodes == null || nodes.length < 1
+			else {
                 FacesContext.getCurrentInstance().addMessage(null,
                         new FacesMessage(FacesMessage.SEVERITY_WARN, "The relation already exists", ""));
             }
-		} catch (Exception e) {
+			
+			
+		} 
+		
+		catch (Exception e) {
 			LOG.error(e.getMessage(), e);
 			FacesContext.getCurrentInstance().addMessage(null, 
                     new FacesMessage(FacesMessage.SEVERITY_FATAL,
@@ -703,29 +767,35 @@ public class ImpactSearchController implements Serializable {
 				TreeNode parentTreeNode = this.targetTableRootTreeNode.getChildren().get(0);
 				HierarchyNode parentHierarchyNode = (HierarchyNode) parentTreeNode.getData();
 				IEntity parentEntity = (IEntity) parentHierarchyNode.getEntity();
+				
 				if(parentEntity instanceof CmqBaseTarget) {
 					//allow save
 					CmqBaseTarget cmqBaseTarget = (CmqBaseTarget) parentEntity;
 					List<CmqRelationTarget> existingRelations = this.cmqRelationTargetService.findByCmqCode(cmqBaseTarget.getCmqCode());
 					List<TreeNode> childTreeNodes = parentTreeNode.getChildren();
+					
 					if (CollectionUtils.isNotEmpty(childTreeNodes)) {
 						for (TreeNode childTreeNode : childTreeNodes) {
 							boolean matchFound = false;
 							boolean updateNeeded = false;
 							Map<String, Object> matchingMap = null;
 							HierarchyNode hierarchyNode = (HierarchyNode) childTreeNode.getData();
+							
 							if (null != hierarchyNode) {
 								IEntity childEntity = hierarchyNode.getEntity();
+								
 								if (childEntity instanceof CmqBaseTarget) {
 									CmqBaseTarget cmqEntity = (CmqBaseTarget) childEntity;
 									cmqEntity.setCmqParentCode(cmqBaseTarget.getCmqCode());
 									cmqEntity.setCmqParentName(cmqBaseTarget.getCmqName());
+									
 									if("NON-IMPACTED".equals(cmqEntity.getImpactType())) {
 										cmqEntity.setImpactType("IPC");
 										cmqEntity.setCmqState("PENDING IA");
 										cmqEntity.setCmqStatus("P");
 									}
 									cmqBaseChildrenList.add(cmqEntity);
+									
 								} else {
 									CmqRelationTarget cmqRelation = null;
 									if (childEntity instanceof MeddraDictHierarchySearchDto) {
@@ -735,8 +805,10 @@ public class ImpactSearchController implements Serializable {
 										matchingMap = this.checkIfMeddraRelationExists(existingRelations, level, hierarchyNode);
 										matchFound = (boolean) matchingMap.get("MATCH_FOUND");
 										updateNeeded = (boolean) matchingMap.get("UPDATE_NEEDED");
+										
 										if(updateNeeded) {
 											cmqRelation = (CmqRelationTarget) matchingMap.get("TARGET_CMQ_RELATION_FOR_UPDATE");
+											
 										} else {
 											cmqRelation = new CmqRelationTarget();
 											cmqRelation.setCmqCode(cmqBaseTarget.getCmqCode());
@@ -745,80 +817,120 @@ public class ImpactSearchController implements Serializable {
 											// set the code first if needed
 											if (level.equalsIgnoreCase("SOC") && !matchFound) {
 												cmqRelation.setSocCode(meddraDictCode);
-											} else if (level.equalsIgnoreCase("HLGT") && !matchFound) {
+											} 
+											
+											else if (level.equalsIgnoreCase("HLGT") && !matchFound) {
 												cmqRelation.setHlgtCode(meddraDictCode);
-											} else if (level.equalsIgnoreCase("HLT") && !matchFound) {
+											} 
+											
+											else if (level.equalsIgnoreCase("HLT") && !matchFound) {
 												cmqRelation.setHltCode(meddraDictCode);
-											} else if (level.equalsIgnoreCase("PT") && !matchFound) { 
+											} 
+											
+											else if (level.equalsIgnoreCase("PT") && !matchFound) { 
 												cmqRelation.setPtCode(meddraDictCode);
-											} else if (level.equalsIgnoreCase("LLT") && !matchFound) {
+											} 
+											
+											else if (level.equalsIgnoreCase("LLT") && !matchFound) {
 												cmqRelation.setLltCode(meddraDictCode);
 											}
 										}
-									} else if (childEntity instanceof MeddraDictReverseHierarchySearchDto) {
+									} 
+									
+									else if (childEntity instanceof MeddraDictReverseHierarchySearchDto) {
 										MeddraDictReverseHierarchySearchDto searchDto = (MeddraDictReverseHierarchySearchDto)childEntity;
 										Long code = null;
 										if("PT".equalsIgnoreCase(hierarchyNode.getLevel())) {
 											code = Long.parseLong(searchDto.getPtCode());
 											matchingMap = this.checkIfReverseMeddraRelationExists(existingRelations, code, hierarchyNode);
-										} else if ("LLT".equalsIgnoreCase(hierarchyNode.getLevel())) {
+										} 
+										
+										else if ("LLT".equalsIgnoreCase(hierarchyNode.getLevel())) {
 											code = Long.parseLong(searchDto.getLltCode());
 											matchingMap = this.checkIfReverseMeddraRelationExists(existingRelations, code, hierarchyNode);
-										} else if ("HLGT".equalsIgnoreCase(hierarchyNode.getLevel())) {
+										} 
+										
+										else if ("HLGT".equalsIgnoreCase(hierarchyNode.getLevel())) {
 											code = Long.parseLong(searchDto.getHlgtCode());
 											matchingMap = this.checkIfReverseMeddraRelationExists(existingRelations, code, hierarchyNode);
-										} else if ("HLT".equalsIgnoreCase(hierarchyNode.getLevel())) {
+										} 
+										
+										else if ("HLT".equalsIgnoreCase(hierarchyNode.getLevel())) {
 											code = Long.parseLong(searchDto.getHltCode());
 											matchingMap = this.checkIfReverseMeddraRelationExists(existingRelations, code, hierarchyNode);
-										} else if ("SOC".equalsIgnoreCase(hierarchyNode.getLevel())) {
+										} 
+										
+										else if ("SOC".equalsIgnoreCase(hierarchyNode.getLevel())) {
 											code = Long.parseLong(searchDto.getSocCode());
 											matchingMap = this.checkIfReverseMeddraRelationExists(existingRelations, code, hierarchyNode);
 										}
 										
 										matchFound = (boolean) matchingMap.get("MATCH_FOUND");
 										updateNeeded = (boolean) matchingMap.get("UPDATE_NEEDED");
+										
 										if(updateNeeded) {
 											cmqRelation = (CmqRelationTarget) matchingMap.get("TARGET_CMQ_RELATION_FOR_UPDATE");
-										} else if(!matchFound) {
+										} 
+										
+										else if(!matchFound) {
 											cmqRelation = new CmqRelationTarget();
 											cmqRelation.setCmqCode(cmqBaseTarget.getCmqCode());
 											cmqRelation.setCmqId(cmqBaseTarget.getId());
 											cmqRelation.setRelationImpactType("MQM");
+											
 											if("PT".equalsIgnoreCase(hierarchyNode.getLevel())) {
 												cmqRelation.setPtCode(code);
-											} else if ("LLT".equalsIgnoreCase(hierarchyNode.getLevel())) {
+											} 
+											
+											else if ("LLT".equalsIgnoreCase(hierarchyNode.getLevel())) {
 												cmqRelation.setLltCode(code);
-											} else if ("HLGT".equalsIgnoreCase(hierarchyNode.getLevel())) {
+											} 
+											
+											else if ("HLGT".equalsIgnoreCase(hierarchyNode.getLevel())) {
 												cmqRelation.setHlgtCode(code);
-											} else if ("HLT".equalsIgnoreCase(hierarchyNode.getLevel())) {
+											} 
+											
+											else if ("HLT".equalsIgnoreCase(hierarchyNode.getLevel())) {
 												cmqRelation.setHltCode(code);
-											} else if ("SOC".equalsIgnoreCase(hierarchyNode.getLevel())) {
+											} 
+											
+											else if ("SOC".equalsIgnoreCase(hierarchyNode.getLevel())) {
 												cmqRelation.setSocCode(code);
 											}
 										}
-									} else if (childEntity instanceof SmqBaseTarget) {
+									} 
+									
+									else if (childEntity instanceof SmqBaseTarget) {
 										SmqBaseTarget smqBase = (SmqBaseTarget) childEntity;
 										matchingMap = this.checkIfSmqBaseOrSmqRelationExists(existingRelations, smqBase.getSmqCode(), null, hierarchyNode);
 										matchFound = (boolean) matchingMap.get("MATCH_FOUND");
 										updateNeeded = (boolean) matchingMap.get("UPDATE_NEEDED");
+										
 										if(updateNeeded) {
 											cmqRelation = (CmqRelationTarget) matchingMap.get("TARGET_CMQ_RELATION_FOR_UPDATE");
-										} else if(!matchFound) {
+										} 
+										
+										else if(!matchFound) {
 											cmqRelation = new CmqRelationTarget();
 											cmqRelation.setCmqCode(cmqBaseTarget.getCmqCode());
 											cmqRelation.setCmqId(cmqBaseTarget.getId());
 											cmqRelation.setSmqCode(smqBase.getSmqCode());
 											cmqRelation.setRelationImpactType("MQM");
 										}
-									} else if (childEntity instanceof SmqRelationTarget) {
+									} 
+									
+									else if (childEntity instanceof SmqRelationTarget) {
 										SmqRelationTarget smqRelation = (SmqRelationTarget) childEntity;
 										matchingMap = this.checkIfSmqBaseOrSmqRelationExists(existingRelations, smqRelation.getSmqCode()
 																								, smqRelation.getPtCode(), hierarchyNode);
 										matchFound = (boolean) matchingMap.get("MATCH_FOUND");
 										updateNeeded = (boolean) matchingMap.get("UPDATE_NEEDED");
+										
 										if(updateNeeded) {
 											cmqRelation = (CmqRelationTarget) matchingMap.get("TARGET_CMQ_RELATION_FOR_UPDATE");
-										} else if(!matchFound) {
+										} 
+										
+										else if(!matchFound) {
 											cmqRelation = new CmqRelationTarget();
 											cmqRelation.setCmqCode(cmqBaseTarget.getCmqCode());
 											cmqRelation.setCmqId(cmqBaseTarget.getId());
@@ -827,7 +939,9 @@ public class ImpactSearchController implements Serializable {
 											cmqRelation.setPtCode(smqRelation.getPtCode().longValue());
 											cmqRelation.setRelationImpactType("MQM");
 										}
-									} else if (childEntity instanceof SMQReverseHierarchySearchDto) {
+									} 
+									
+									else if (childEntity instanceof SMQReverseHierarchySearchDto) {
 										SMQReverseHierarchySearchDto smqReverseHierarchySearchDto = (SMQReverseHierarchySearchDto) childEntity;
 										matchingMap = this.checkIfSmqBaseOrSmqRelationExists(existingRelations, smqReverseHierarchySearchDto.getSmqCode()
 																								, smqReverseHierarchySearchDto.getSmqCode().intValue(), hierarchyNode);
@@ -835,7 +949,9 @@ public class ImpactSearchController implements Serializable {
 										updateNeeded = (boolean) matchingMap.get("UPDATE_NEEDED");
 										if(updateNeeded) {
 											cmqRelation = (CmqRelationTarget) matchingMap.get("TARGET_CMQ_RELATION_FOR_UPDATE");
-										} else if(!matchFound) {
+										} 
+										
+										else if(!matchFound) {
 											cmqRelation = new CmqRelationTarget();
 											cmqRelation.setCmqCode(cmqBaseTarget.getCmqCode());
 											cmqRelation.setCmqId(cmqBaseTarget.getId());
@@ -854,10 +970,13 @@ public class ImpactSearchController implements Serializable {
 										cmqRelation.setDictionaryName(cmqBaseTarget.getDictionaryName());
 										cmqRelation.setDictionaryVersion(cmqBaseTarget.getDictionaryVersion());
 										cmqRelation.setCmqSubversion(cmqBaseTarget.getCmqSubversion());
+										
 										if(updateNeeded) {
 											cmqRelation.setLastModifiedDate(new Date());
 											cmqRelation.setLastModifiedBy("test-user");
-										} else {
+										} 
+										
+										else {
 											cmqRelation.setCreationDate(new Date());
 											cmqRelation.setCreatedBy("test-user");
 										}
@@ -875,6 +994,7 @@ public class ImpactSearchController implements Serializable {
 											, this.authService.getUserGivenName(), this.authService.getUserSurName()
 											, this.authService.getCombinedMappedGroupMembershipAsString());
 								}
+								
 								if(!cmqBaseChildrenList.isEmpty()) {
 									this.cmqBaseTargetService.update(cmqBaseChildrenList, this.authService.getUserCn()
 											, this.authService.getUserGivenName(), this.authService.getUserSurName()
@@ -882,7 +1002,9 @@ public class ImpactSearchController implements Serializable {
 								}
 								
 								relationsAndChildUpdated = true;
-							} catch (CqtServiceException e) {
+							} 
+							
+							catch (CqtServiceException e) {
 								LOG.error("Exception occurred while updated the list of CmqRelations for CMQ base target code "
 										+ cmqBaseTarget.getCmqCode(), e);
 
@@ -897,6 +1019,7 @@ public class ImpactSearchController implements Serializable {
 						
 						//mark the cmqbase as Impacted if it is NON-IMPACTED
 						String impactType = cmqBaseTarget.getImpactType();
+						
 						if("NON-IMPACTED".equalsIgnoreCase(impactType)) {
 							cmqBaseTarget.setImpactType("IMPACTED");
 							cmqBaseTarget.setCmqState("PENDING IA");
@@ -914,11 +1037,15 @@ public class ImpactSearchController implements Serializable {
 								impactedCmqsList.add(parentCmq);
 							}
 							List<CmqBaseTarget> childrenOfParentCmq = this.cmqBaseTargetService.findChildCmqsByParentCode(parentCmq.getCmqCode());
+							
 							for (ListIterator<CmqBaseTarget> li = childrenOfParentCmq.listIterator(); li.hasNext();) {
 								CmqBaseTarget childOfParentCmq = li.next();
+								
 								if(childOfParentCmq.getCmqCode().longValue() == cmqBaseTarget.getCmqCode().longValue()) {
 									li.remove();//Remove this cmq as we are already dealing with it.
-								} else if("NON-IMPACTED".equalsIgnoreCase(childOfParentCmq.getImpactType())) {
+								} 
+								
+								else if("NON-IMPACTED".equalsIgnoreCase(childOfParentCmq.getImpactType())) {
 									childOfParentCmq.setImpactType("ICC");
 									childOfParentCmq.setCmqState("PENDING IA");
 									childOfParentCmq.setCmqStatus("P");
@@ -933,7 +1060,9 @@ public class ImpactSearchController implements Serializable {
 										, this.authService.getUserGivenName(), this.authService.getUserSurName()
 										, this.authService.getCombinedMappedGroupMembershipAsString());
 							}
-						} catch (CqtServiceException e) {
+						} 
+						
+						catch (CqtServiceException e) {
 							LOG.error("Exception occurred while updated the parent and its children for CMQ code "
 									+ cmqBaseTarget.getCmqCode(), e);
 
@@ -969,23 +1098,32 @@ public class ImpactSearchController implements Serializable {
 					if((null != cmqRelationTarget.getSocCode()) && (cmqRelationTarget.getSocCode().longValue() == nodeSocCode)){
 						matchingMap.put("MATCH_FOUND", true);
 					}
-				} else if(matchKey.equalsIgnoreCase("HLGT")) {
+				} 
+				
+				else if(matchKey.equalsIgnoreCase("HLGT")) {
 					if((null != cmqRelationTarget.getHlgtCode()) && (cmqRelationTarget.getHlgtCode().longValue() == nodeSocCode)){
 						matchingMap.put("MATCH_FOUND", true);
 					}
-				} else if(matchKey.equalsIgnoreCase("HLT")) {
+				} 
+				
+				else if(matchKey.equalsIgnoreCase("HLT")) {
 					if((null != cmqRelationTarget.getHltCode()) && (cmqRelationTarget.getHltCode().longValue() == nodeSocCode)){
 						matchingMap.put("MATCH_FOUND", true);
 					}
-				} else if(matchKey.equalsIgnoreCase("PT")) {
+				} 
+				
+				else if(matchKey.equalsIgnoreCase("PT")) {
 					if((null != cmqRelationTarget.getPtCode()) && (cmqRelationTarget.getPtCode().longValue() == nodeSocCode)){
 						matchingMap.put("MATCH_FOUND", true);
 					}
-				} else if(matchKey.equalsIgnoreCase("LLT")) {
+				} 
+				
+				else if(matchKey.equalsIgnoreCase("LLT")) {
 					if((null != cmqRelationTarget.getLltCode()) && (cmqRelationTarget.getLltCode().longValue() == nodeSocCode)){
 						matchingMap.put("MATCH_FOUND", true);
 					}
 				}
+				
 				Boolean matchFound = (Boolean) matchingMap.get("MATCH_FOUND");
 				if(matchFound) {
 					matchingMap.put("UPDATE_NEEDED", this.checkIfExistingRelationNeedsUpdate(cmqRelationTarget, hierarchyNode));
@@ -1007,17 +1145,26 @@ public class ImpactSearchController implements Serializable {
 			//check for PT or LLT
 			if((null != cmqRelationTarget.getPtCode()) && (cmqRelationTarget.getPtCode().longValue() == code.longValue())){
 				matchingMap.put("MATCH_FOUND", true);
-			} else if ((null != cmqRelationTarget.getLltCode()) && (cmqRelationTarget.getLltCode().longValue() == code.longValue())) {
+			} 
+			
+			else if ((null != cmqRelationTarget.getLltCode()) && (cmqRelationTarget.getLltCode().longValue() == code.longValue())) {
 				matchingMap.put("MATCH_FOUND", true);
-			} else if ((null != cmqRelationTarget.getHlgtCode()) && (cmqRelationTarget.getHlgtCode().longValue() == code.longValue())) {
+			} 
+			
+			else if ((null != cmqRelationTarget.getHlgtCode()) && (cmqRelationTarget.getHlgtCode().longValue() == code.longValue())) {
 				matchingMap.put("MATCH_FOUND", true);
-			} else if ((null != cmqRelationTarget.getHltCode()) && (cmqRelationTarget.getHltCode().longValue() == code.longValue())) {
+			} 
+			
+			else if ((null != cmqRelationTarget.getHltCode()) && (cmqRelationTarget.getHltCode().longValue() == code.longValue())) {
 				matchingMap.put("MATCH_FOUND", true);
-			} else if ((null != cmqRelationTarget.getSocCode()) && (cmqRelationTarget.getSocCode().longValue() == code.longValue())) {
+			} 
+			
+			else if ((null != cmqRelationTarget.getSocCode()) && (cmqRelationTarget.getSocCode().longValue() == code.longValue())) {
 				matchingMap.put("MATCH_FOUND", true);
 			}
 			
 			Boolean matchFound = (Boolean) matchingMap.get("MATCH_FOUND");
+			
 			if(matchFound) {
 				matchingMap.put("UPDATE_NEEDED", this.checkIfExistingRelationNeedsUpdate(cmqRelationTarget, hierarchyNode));
 				matchingMap.put("TARGET_CMQ_RELATION_FOR_UPDATE", cmqRelationTarget);
@@ -1039,7 +1186,9 @@ public class ImpactSearchController implements Serializable {
 					&& (null != cmqRelationTarget.getPtCode()) && (cmqRelationTarget.getPtCode().longValue() == ptCode.longValue())){
 				//its an smqrelation and not an smqbase
 				matchingMap.put("MATCH_FOUND", true);
-			} else if((null != cmqRelationTarget.getSmqCode()) && (cmqRelationTarget.getSmqCode().longValue() == smqCode.longValue())){
+			} 
+			
+			else if((null != cmqRelationTarget.getSmqCode()) && (cmqRelationTarget.getSmqCode().longValue() == smqCode.longValue())){
 				//its an smqbase
 				matchingMap.put("MATCH_FOUND", true);
 			}
@@ -1056,12 +1205,17 @@ public class ImpactSearchController implements Serializable {
 	
 	private boolean checkIfExistingRelationNeedsUpdate(CmqRelationTarget cmqRelationTarget, HierarchyNode hierarchyNode) {
 		boolean needsUpdate = false;
+		
 		//first match scope
 		if(StringUtils.isBlank(hierarchyNode.getScope()) && !StringUtils.isBlank(cmqRelationTarget.getTermScope())) {
 			needsUpdate = true;
-		} else if(!StringUtils.isBlank(hierarchyNode.getScope()) && StringUtils.isBlank(cmqRelationTarget.getTermScope())) {
+		} 
+		
+		else if(!StringUtils.isBlank(hierarchyNode.getScope()) && StringUtils.isBlank(cmqRelationTarget.getTermScope())) {
 			needsUpdate = true;
-		} else if(!StringUtils.isBlank(hierarchyNode.getScope()) && !StringUtils.isBlank(cmqRelationTarget.getTermScope())
+		} 
+		
+		else if(!StringUtils.isBlank(hierarchyNode.getScope()) && !StringUtils.isBlank(cmqRelationTarget.getTermScope())
 				&& !hierarchyNode.getScope().equals(cmqRelationTarget.getTermScope())){
 			needsUpdate = true;
 		}
@@ -1069,9 +1223,13 @@ public class ImpactSearchController implements Serializable {
 		//now so category
 		if(StringUtils.isBlank(hierarchyNode.getCategory()) && !StringUtils.isBlank(cmqRelationTarget.getTermCategory())) {
 			needsUpdate = true;
-		} else if(!StringUtils.isBlank(hierarchyNode.getCategory()) && StringUtils.isBlank(cmqRelationTarget.getTermCategory())) {
+		} 
+		
+		else if(!StringUtils.isBlank(hierarchyNode.getCategory()) && StringUtils.isBlank(cmqRelationTarget.getTermCategory())) {
 			needsUpdate = true;
-		} else if(!StringUtils.isBlank(hierarchyNode.getCategory()) && !StringUtils.isBlank(cmqRelationTarget.getTermCategory())
+		} 
+		
+		else if(!StringUtils.isBlank(hierarchyNode.getCategory()) && !StringUtils.isBlank(cmqRelationTarget.getTermCategory())
 				&& !hierarchyNode.getCategory().equals(cmqRelationTarget.getTermCategory())){
 			needsUpdate = true;
 		}
@@ -1079,9 +1237,13 @@ public class ImpactSearchController implements Serializable {
 		//now weight
 		if(StringUtils.isBlank(hierarchyNode.getWeight()) && (null != cmqRelationTarget.getTermWeight())) {
 			needsUpdate = true;
-		} else if(!StringUtils.isBlank(hierarchyNode.getWeight()) && (null == cmqRelationTarget.getTermWeight())) {
+		}
+		
+		else if(!StringUtils.isBlank(hierarchyNode.getWeight()) && (null == cmqRelationTarget.getTermWeight())) {
 			needsUpdate = true;
-		} else if(!StringUtils.isBlank(hierarchyNode.getWeight()) && (null != cmqRelationTarget.getTermWeight()) 
+		} 
+		
+		else if(!StringUtils.isBlank(hierarchyNode.getWeight()) && (null != cmqRelationTarget.getTermWeight()) 
 				&& StringUtils.isNumeric(hierarchyNode.getWeight())) {
 			long nodeWeight = Long.parseLong(hierarchyNode.getWeight());
 			if(nodeWeight != cmqRelationTarget.getTermWeight().longValue()) {
@@ -1091,6 +1253,7 @@ public class ImpactSearchController implements Serializable {
 		
 		return needsUpdate;
 	}
+	
 
 	/**
 	 * FlowListener of Browse Wizard Component
@@ -1102,6 +1265,7 @@ public class ImpactSearchController implements Serializable {
 //		if (selectedImpactedCmqList != null || selectedImpactedSmqList != null || selectedNotImpactedCmqList != null || selectedNotImpactedSmqList != null) {
 //			selected = true;			
 //		}
+		
 		if (currentOrTarget == SELECTED_NO_LIST)
 			selected = false;	
 			
@@ -1121,91 +1285,138 @@ public class ImpactSearchController implements Serializable {
 			iaWizardNextStep = nextStep;
 			nextStep = event.getOldStep();
 			RequestContext.getCurrentInstance().execute("PF('confirmSaveImpactsDlg').show();");
-		} else if("notes".equalsIgnoreCase(event.getOldStep()) && notesFormModel.isModelChanged()) {
+		} 
+		
+		else if("notes".equalsIgnoreCase(event.getOldStep()) && notesFormModel.isModelChanged()) {
 			iaWizardNextStep = nextStep;
 			nextStep = event.getOldStep();
 			RequestContext.getCurrentInstance().execute("PF('confirmSaveNotesDlg').show();");
-		}  else if("details".equalsIgnoreCase(event.getOldStep()) && detailsFormModel.isModelChanged()) {
+		}  
+		
+		else if("details".equalsIgnoreCase(event.getOldStep()) && detailsFormModel.isModelChanged()) {
 			iaWizardNextStep = nextStep;
 			nextStep = event.getOldStep();
 			RequestContext.getCurrentInstance().execute("PF('confirmSaveDetailsDlg').show();");
-		} else 
+		} 
+		
+		else 
 			unsavedRedirect = false;
 		
 		if("impact".equalsIgnoreCase(event.getNewStep())) {
 			// if the target tab is "Impact Assessment", allow it always
+			
 			if(unsavedRedirect)
 				iaWizardNextStep = event.getNewStep();
+			
 			else
 				nextStep = event.getNewStep();
-		} else if("notes".equalsIgnoreCase(event.getNewStep())) {
-			// if the target tab is "notes", allow it only when there is a valid CmqBase* or SmqBase* object selected from current or target lists
-			Object d = null;
-			if(currentOrTarget == SELECTED_CURRENT_LIST && currentTableSelection != null) {
-				HierarchyNode hn = (HierarchyNode)currentTableSelection.getData();
-				d = (hn != null ? hn.getEntity() : null); 
-			} else if(currentOrTarget == SELECTED_TARGET_LIST && targetTableSelection != null) {
-				HierarchyNode hn = (HierarchyNode)targetTableSelection.getData();
-				d = (hn != null ? hn.getEntity() : null); 
-			}
 			
-			if(d instanceof CmqBase190) {
-				notesFormModel.loadFromCmqBase190((CmqBase190)d);
-				//detailsFormModel.loadFromCmqBase190((CmqBase190)d);
-			} else if(d instanceof SmqBase190) {
-				SmqBase190 current = smqBaseCurrentService.findByCode(((SmqBase190) d).getSmqCode());
-				notesFormModel.loadFromSmqBase190(current);
-			} else if(d instanceof CmqBaseTarget) {
-				notesFormModel.loadFromCmqBaseTarget((CmqBaseTarget)d);
-				//detailsFormModel.loadFromCmqBaseTarget((CmqBaseTarget)d);
-			} else if(d instanceof SmqBaseTarget) {
-				SmqBaseTarget target = smqBaseTargetService.findByCode(((SmqBaseTarget) d).getSmqCode());
-				notesFormModel.loadFromSmqBaseTarget(target);
-			} else {
-				if(unsavedRedirect)
-					iaWizardNextStep = event.getOldStep();
-				else
-					nextStep = event.getOldStep();
-			}
-		} else if("details".equalsIgnoreCase(event.getNewStep())) {
-			// if the target tab is "details", allow it only when there is a valid CmqBase* or SmqBase* object selected from current or target lists
-			Object d = null;
-			if(currentOrTarget == SELECTED_CURRENT_LIST && currentTableSelection != null) {
-				HierarchyNode hn = (HierarchyNode)currentTableSelection.getData();
-				d = (hn != null ? hn.getEntity() : null); 					
-			} else if(currentOrTarget == SELECTED_TARGET_LIST && targetTableSelection != null) {
-				HierarchyNode hn = (HierarchyNode)targetTableSelection.getData();
-				d = (hn != null ? hn.getEntity() : null); 
-			}
-			if(d instanceof CmqBase190) {
-				detailsFormModel.loadFromCmqBase190((CmqBase190)d);
-			} else if(d instanceof CmqBaseTarget) {
-				detailsFormModel.loadFromCmqBaseTarget((CmqBaseTarget)d);
-			} else if(d instanceof SmqBase190) {
-				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Details tab is not accessible for SMQs", "");
-				FacesContext.getCurrentInstance().addMessage(null, msg);
-				RequestContext.getCurrentInstance().update("impactAssessment:messages");
-				//if (event.)
-				return "notes";
-				
-			} else if(d instanceof SmqBaseTarget) {
-				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Details tab is not accessible for SMQs", "");
-				FacesContext.getCurrentInstance().addMessage(null, msg);
-				RequestContext.getCurrentInstance().update("impactAssessment:messages");
-				return "notes";
-				
-			} 
-			else {
-				if(unsavedRedirect) {
-					System.out.println("This is running");
-					iaWizardNextStep = event.getOldStep();
-				}
-				else
-					nextStep = event.getOldStep();
-			}
+		} 
+		
+		else if("notes".equalsIgnoreCase(event.getNewStep())) {
+			notesEqualsNewStep(event, nextStep, unsavedRedirect);			
+		} 
+		
+		else if("details".equalsIgnoreCase(event.getNewStep())) {
+			detailsEqualsNewStep(event, nextStep, unsavedRedirect);
 		}
 		return nextStep;
 	}
+	
+	//function created to make onIaWizardFlowProcess() a simpler function. Only to be called from there
+	public String notesEqualsNewStep(FlowEvent event, String nextStep, boolean unsavedRedirect) {
+		// if the target tab is "notes", allow it only when there is a valid CmqBase* or SmqBase* object selected from current or target lists
+		Object d = null;
+		if(currentOrTarget == SELECTED_CURRENT_LIST && currentTableSelection != null) {
+			HierarchyNode hn = (HierarchyNode)currentTableSelection.getData();
+			d = (hn != null ? hn.getEntity() : null); 
+		} 
+		
+		else if(currentOrTarget == SELECTED_TARGET_LIST && targetTableSelection != null) {
+			HierarchyNode hn = (HierarchyNode)targetTableSelection.getData();
+			d = (hn != null ? hn.getEntity() : null); 
+		}
+		
+		if(d instanceof CmqBase190) {
+			notesFormModel.loadFromCmqBase190((CmqBase190)d);
+			//detailsFormModel.loadFromCmqBase190((CmqBase190)d);
+		} 
+		
+		else if(d instanceof SmqBase190) {
+			SmqBase190 current = smqBaseCurrentService.findByCode(((SmqBase190) d).getSmqCode());
+			notesFormModel.loadFromSmqBase190(current);
+		} 
+		
+		else if(d instanceof CmqBaseTarget) {
+			notesFormModel.loadFromCmqBaseTarget((CmqBaseTarget)d);
+			//detailsFormModel.loadFromCmqBaseTarget((CmqBaseTarget)d);
+		} 
+		
+		else if(d instanceof SmqBaseTarget) {
+			SmqBaseTarget target = smqBaseTargetService.findByCode(((SmqBaseTarget) d).getSmqCode());
+			notesFormModel.loadFromSmqBaseTarget(target);
+		}
+		
+		else {
+			if(unsavedRedirect)
+				iaWizardNextStep = event.getOldStep();
+			
+			else
+				nextStep = event.getOldStep();
+		}
+		return nextStep;
+	}
+	
+	//function created to make onIaWizardFlowProcess() a simpler function. Only to be called from there
+	public String detailsEqualsNewStep(FlowEvent event, String nextStep, boolean unsavedRedirect) {
+		// if the target tab is "details", allow it only when there is a valid CmqBase* or SmqBase* object selected from current or target lists
+		Object d = null;
+		if(currentOrTarget == SELECTED_CURRENT_LIST && currentTableSelection != null) {
+			HierarchyNode hn = (HierarchyNode)currentTableSelection.getData();
+			d = (hn != null ? hn.getEntity() : null); 					
+		} 
+		
+		else if(currentOrTarget == SELECTED_TARGET_LIST && targetTableSelection != null) {
+			HierarchyNode hn = (HierarchyNode)targetTableSelection.getData();
+			d = (hn != null ? hn.getEntity() : null); 
+		}
+		
+		if(d instanceof CmqBase190) {
+			detailsFormModel.loadFromCmqBase190((CmqBase190)d);
+		} 
+		
+		else if(d instanceof CmqBaseTarget) {
+			detailsFormModel.loadFromCmqBaseTarget((CmqBaseTarget)d);
+		} 
+		
+		else if(d instanceof SmqBase190) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Details tab is not accessible for SMQs", "");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			RequestContext.getCurrentInstance().update("impactAssessment:messages");
+			//if (event.)
+			return "notes";
+			
+		} 
+		
+		else if(d instanceof SmqBaseTarget) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Details tab is not accessible for SMQs", "");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			RequestContext.getCurrentInstance().update("impactAssessment:messages");
+			return "notes";
+			
+		} 
+		
+		else {
+			if(unsavedRedirect) {
+				//System.out.println("This is running");
+				iaWizardNextStep = event.getOldStep();
+			}
+			else
+				nextStep = event.getOldStep();
+		}
+		return nextStep;
+	}
+	
 	
 	/**
 	 * FlowListener of Browse Wizard Component
@@ -1234,13 +1445,17 @@ public class ImpactSearchController implements Serializable {
 				iaWizardNextStep = event.getNewStep();
 			else
 				nextStep = event.getNewStep();
-		} else*/ if("notes".equalsIgnoreCase(event.getNewStep())) {
+		} else*/ 
+		
+		if("notes".equalsIgnoreCase(event.getNewStep())) {
 			// if the target tab is "notes", allow it only when there is a valid CmqBase* or SmqBase* object selected from current or target lists
 			Object d = null;
 			if(currentOrTarget == SELECTED_CURRENT_LIST && currentTableSelection != null) {
 				HierarchyNode hn = (HierarchyNode)currentTableSelection.getData();
 				d = (hn != null ? hn.getEntity() : null); 
-			} else if(currentOrTarget == SELECTED_TARGET_LIST && targetTableSelection != null) {
+			} 
+			
+			else if(currentOrTarget == SELECTED_TARGET_LIST && targetTableSelection != null) {
 				HierarchyNode hn = (HierarchyNode)targetTableSelection.getData();
 				d = (hn != null ? hn.getEntity() : null); 
 			}
@@ -1248,37 +1463,53 @@ public class ImpactSearchController implements Serializable {
 			if(d instanceof CmqBase190) {
 				notesFormModel.loadFromCmqBase190((CmqBase190)d);
 				detailsFormModel.loadFromCmqBase190((CmqBase190)d);
-			} else if(d instanceof SmqBase190) {
+			} 
+			
+			else if(d instanceof SmqBase190) {
 				notesFormModel.loadFromSmqBase190((SmqBase190)d);
-			} else if(d instanceof CmqBaseTarget) {
+			} 
+			
+			else if(d instanceof CmqBaseTarget) {
 				notesFormModel.loadFromCmqBaseTarget((CmqBaseTarget)d);
 				detailsFormModel.loadFromCmqBaseTarget((CmqBaseTarget)d);
-			} else if(d instanceof SmqBaseTarget) {
+			} 
+			
+			else if(d instanceof SmqBaseTarget) {
 				notesFormModel.loadFromSmqBaseTarget((SmqBaseTarget)d);
 			}
-			
-		} else if("details".equalsIgnoreCase(event.getNewStep())) {
+		} 
+		
+		else if("details".equalsIgnoreCase(event.getNewStep())) {
 			// if the target tab is "details", allow it only when there is a valid CmqBase* or SmqBase* object selected from current or target lists
 			Object d = null;
 			if(currentOrTarget == SELECTED_CURRENT_LIST && currentTableSelection != null) {
 				HierarchyNode hn = (HierarchyNode)currentTableSelection.getData();
 				d = (hn != null ? hn.getEntity() : null); 					
-			} else if(currentOrTarget == SELECTED_TARGET_LIST && targetTableSelection != null) {
+			} 
+			
+			else if(currentOrTarget == SELECTED_TARGET_LIST && targetTableSelection != null) {
 				HierarchyNode hn = (HierarchyNode)targetTableSelection.getData();
 				d = (hn != null ? hn.getEntity() : null); 
 			}
+			
 			if(d instanceof CmqBase190) {
 				detailsFormModel.loadFromCmqBase190((CmqBase190)d);
-			} else if(d instanceof CmqBaseTarget) {
+			} 
+			
+			else if(d instanceof CmqBaseTarget) {
 				detailsFormModel.loadFromCmqBaseTarget((CmqBaseTarget)d);
-			} else if(d instanceof SmqBase190) {
+			} 
+			
+			else if(d instanceof SmqBase190) {
 				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Details tab is not accessible for SMQs", "");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 				RequestContext.getCurrentInstance().update("impactAssessment:messages");
 				//if (event.)
 				return "notes";
 				
-			} else if(d instanceof SmqBaseTarget) {
+			} 
+			
+			else if(d instanceof SmqBaseTarget) {
 				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Details tab is not accessible for SMQs", "");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 				RequestContext.getCurrentInstance().update("impactAssessment:messages");
@@ -1317,7 +1548,9 @@ public class ImpactSearchController implements Serializable {
 		if(currentOrTarget == SELECTED_CURRENT_LIST && currentTableSelection != null) {
 			HierarchyNode hn = (HierarchyNode)currentTableSelection.getData();
 			d = (hn != null ? hn.getEntity() : null); 
-		} else if(currentOrTarget == SELECTED_TARGET_LIST && targetTableSelection != null) {
+		} 
+		
+		else if(currentOrTarget == SELECTED_TARGET_LIST && targetTableSelection != null) {
 			HierarchyNode hn = (HierarchyNode)targetTableSelection.getData();
 			d = (hn != null ? hn.getEntity() : null); 
 		}
@@ -1328,16 +1561,22 @@ public class ImpactSearchController implements Serializable {
 				cmqBaseCurrentService.update((CmqBase190)d, this.authService.getUserCn()
 						, this.authService.getUserGivenName(), this.authService.getUserSurName()
 						, this.authService.getCombinedMappedGroupMembershipAsString());
-			} else if(d != null && d instanceof SmqBase190) {
+			} 
+			
+			else if(d != null && d instanceof SmqBase190) {
 				notesFormModel.saveToSmqBase190((SmqBase190)d);
 				//
-			} else if(d != null && d instanceof CmqBaseTarget) {
+			} 
+			
+			else if(d != null && d instanceof CmqBaseTarget) {
 				notesFormModel.saveToCmqBaseTarget((CmqBaseTarget)d);
 				cmqBaseTargetService.update((CmqBaseTarget)d, this.authService.getUserCn()
 						, this.authService.getUserGivenName(), this.authService.getUserSurName()
 						, this.authService.getCombinedMappedGroupMembershipAsString());
 				this.setCmqBaseAsImpacted((CmqBaseTarget)d);
-			} else if(d != null && d instanceof SmqBaseTarget) {
+			} 
+			
+			else if(d != null && d instanceof SmqBaseTarget) {
 				notesFormModel.saveToSmqBaseTarget((SmqBaseTarget)d);
 				//
 			}
@@ -1357,20 +1596,27 @@ public class ImpactSearchController implements Serializable {
 		if(currentOrTarget == SELECTED_CURRENT_LIST && currentTableSelection != null) {
 			HierarchyNode hn = (HierarchyNode)currentTableSelection.getData();
 			d = (hn != null ? hn.getEntity() : null); 
-		} else if(currentOrTarget == SELECTED_TARGET_LIST && targetTableSelection != null) {
+		} 
+		
+		else if(currentOrTarget == SELECTED_TARGET_LIST && targetTableSelection != null) {
 			HierarchyNode hn = (HierarchyNode)targetTableSelection.getData();
 			d = (hn != null ? hn.getEntity() : null); 
 		}
+		
 		if(d != null && d instanceof CmqBase190) {
 			notesFormModel.loadFromCmqBase190((CmqBase190)d);
-		} else if(d != null && d instanceof SmqBase190) {
+		} 
+		
+		else if(d != null && d instanceof SmqBase190) {
 			notesFormModel.loadFromSmqBase190((SmqBase190)d);
-			//
-		} else if(d != null && d instanceof CmqBaseTarget) {
+		} 
+		
+		else if(d != null && d instanceof CmqBaseTarget) {
 			notesFormModel.loadFromCmqBaseTarget((CmqBaseTarget)d);
-		} else if(d != null && d instanceof SmqBaseTarget) {
+		} 
+		
+		else if(d != null && d instanceof SmqBaseTarget) {
 			notesFormModel.loadFromSmqBaseTarget((SmqBaseTarget)d);
-			//
 		}
 	}
 	
@@ -1379,7 +1625,9 @@ public class ImpactSearchController implements Serializable {
 		if(currentOrTarget == SELECTED_CURRENT_LIST && currentTableSelection != null) {
 			HierarchyNode hn = (HierarchyNode)currentTableSelection.getData();
 			d = (hn != null ? hn.getEntity() : null); 
-		} else if(currentOrTarget == SELECTED_TARGET_LIST && targetTableSelection != null) {
+		} 
+		
+		else if(currentOrTarget == SELECTED_TARGET_LIST && targetTableSelection != null) {
 			HierarchyNode hn = (HierarchyNode)targetTableSelection.getData();
 			d = (hn != null ? hn.getEntity() : null); 
 		}
@@ -1393,7 +1641,9 @@ public class ImpactSearchController implements Serializable {
 				cmqBaseCurrentService.update((CmqBase190)d, this.authService.getUserCn()
 						, this.authService.getUserGivenName(), this.authService.getUserSurName()
 						, this.authService.getCombinedMappedGroupMembershipAsString());
-			} else if(d != null && d instanceof CmqBaseTarget) {
+			} 
+			
+			else if(d != null && d instanceof CmqBaseTarget) {
 
 				((CmqBaseTarget)d).setCmqDesignee(detailsFormModel.getDesignee());
 				((CmqBaseTarget)d).setCmqDesignee2(detailsFormModel.getDesigneeTwo());
@@ -1406,6 +1656,7 @@ public class ImpactSearchController implements Serializable {
 			detailsFormModel.setModelChanged(false);
 			FacesContext.getCurrentInstance()
 				.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Successfully saved details", ""));
+			
 		} catch(CqtServiceException e) {
 			FacesContext.getCurrentInstance()
 				.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed to save details", "Error: " + e.getMessage()));
@@ -1417,14 +1668,18 @@ public class ImpactSearchController implements Serializable {
 		if(currentOrTarget == SELECTED_CURRENT_LIST && currentTableSelection != null) {
 			HierarchyNode hn = (HierarchyNode)currentTableSelection.getData();
 			d = (hn != null ? hn.getEntity() : null); 
-		} else if(currentOrTarget == SELECTED_TARGET_LIST && targetTableSelection != null) {
+		} 
+		
+		else if(currentOrTarget == SELECTED_TARGET_LIST && targetTableSelection != null) {
 			HierarchyNode hn = (HierarchyNode)targetTableSelection.getData();
 			d = (hn != null ? hn.getEntity() : null); 
 		}
 		
 		if(d != null && d instanceof CmqBase190) {
 			detailsFormModel.loadFromCmqBase190((CmqBase190) d);
-		} else if(d != null && d instanceof CmqBaseTarget) {
+		} 
+		
+		else if(d != null && d instanceof CmqBaseTarget) {
 			detailsFormModel.loadFromCmqBaseTarget((CmqBaseTarget) d);
 		}
 		
@@ -1460,6 +1715,7 @@ public class ImpactSearchController implements Serializable {
 
 	public void reloadRelationsOnFilterLltFlagToggle() {
 		boolean filterLltFlag = this.globalController.isFilterLltsFlag();
+		
 		if(null != this.currentTableRootTreeNode) {
 			List<TreeNode> childrenNodes = this.currentTableRootTreeNode.getChildren();
 			for (TreeNode childTreeNode : childrenNodes) {
@@ -1476,17 +1732,21 @@ public class ImpactSearchController implements Serializable {
 				}
 			}
 			UIViewRoot viewRoot = FacesContext.getCurrentInstance().getViewRoot();
+			
 			if(null != viewRoot) {
 				//in ia left side
 				UIComponent currentListsAndSmqsComponent = CmqUtils.findComponent(viewRoot, "currentListsAndSmqs");
+				
 				if(null != currentListsAndSmqsComponent) {
 					//update has to be on currentListsAndSmqsComponent.getClientId() and not on the xhtml id
 					RequestContext.getCurrentInstance().update(currentListsAndSmqsComponent.getClientId());
 				}
 			}
 		}
+		
 		if(null != this.targetTableRootTreeNode) {
 			List<TreeNode> childrenNodes = this.targetTableRootTreeNode.getChildren();
+			
 			for (TreeNode childTreeNode : childrenNodes) {
 				childTreeNode.setExpanded(false);
 				childTreeNode.getChildren().clear();//remove all children
@@ -1501,9 +1761,11 @@ public class ImpactSearchController implements Serializable {
 				}
 			}
 			UIViewRoot viewRoot = FacesContext.getCurrentInstance().getViewRoot();
+			
 			if(null != viewRoot) {
 				//in ia left side
 				UIComponent targetListsAndSmqsComponent = CmqUtils.findComponent(viewRoot, "futureListsAndSmqs");
+				
 				if(null != targetListsAndSmqsComponent) {
 					//update has to be on targetListsAndSmqsComponent.getClientId() and not on the xhtml id
 					RequestContext.getCurrentInstance().update(targetListsAndSmqsComponent.getClientId());
@@ -1515,21 +1777,26 @@ public class ImpactSearchController implements Serializable {
 	public void addSelectedNewPtsToTargetRelation() {
         IARelationsTreeHelper treeHelper = new IARelationsTreeHelper(cmqBaseTargetService, smqBaseTargetService, meddraDictTargetService, cmqRelationTargetService, globalController);
         treeHelper.setImpactTypes(getSelectedImpactFilters());
+        
         if((this.selectedNewPtLists != null) && (this.currentTableRootTreeNode.getChildCount() == 1)) {
 			List<String> existingNodeTerms = new ArrayList<>();
 			//count will always be either 0 or 1.
 			TreeNode parentTreeNode = this.targetTableRootTreeNode.getChildren().get(0);
+			
 			for (MeddraDictHierarchySearchDto meddraDictHierarchySearchDto : selectedNewPtLists) {
 				Long dtoCode = Long.valueOf(meddraDictHierarchySearchDto.getCode());
 				
-				//first check if this node is already added ot relations tree
+				//first check if this node is already added to relations tree
 				boolean exists = false;
 				List<TreeNode> existingRelationsTreeNodes = parentTreeNode.getChildren();
+				
 				if (CollectionUtils.isNotEmpty(existingRelationsTreeNodes)) {
 					for (TreeNode existingRelationsTreeNode : existingRelationsTreeNodes) {
 						HierarchyNode existingHierarchyNode = (HierarchyNode) existingRelationsTreeNode.getData();
 						IEntity existingEntity = existingHierarchyNode.getEntity();
+						
 						if(existingEntity instanceof MeddraDictHierarchySearchDto) {
+							
 							if(dtoCode.toString().equalsIgnoreCase(existingHierarchyNode.getCode())
 									&& "PT".toString().equalsIgnoreCase(existingHierarchyNode.getLevel())) {
 								exists = true;
@@ -1544,8 +1811,8 @@ public class ImpactSearchController implements Serializable {
 					HierarchyNode node = treeHelper.createMeddraNode(meddraDictHierarchySearchDto, "PT");
 					node.setRowStyleClass("green-colored");
 					TreeNode treeNode = new DefaultTreeNode(node, parentTreeNode);
-				
 					Long countOfChildren = this.meddraDictTargetService.findChildrenCountByParentCode("LLT_", "PT_", dtoCode);
+					
 					if((null != countOfChildren) && (countOfChildren > 0)) {
 						// add a dummmy node to show expand arrow
 						HierarchyNode dummyNode = new HierarchyNode(null, null,
@@ -1560,13 +1827,17 @@ public class ImpactSearchController implements Serializable {
 			if(CollectionUtils.isNotEmpty(existingNodeTerms)) {
 				FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "The relation already exists", "");
 				FacesContext.getCurrentInstance().addMessage(null, message);
-			} else {
+			} 
+			
+			else {
 				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Selected New PTs added successfully.", "");
 				FacesContext ctx = FacesContext.getCurrentInstance();
 				ctx.addMessage(null, msg);
 			}
 			targetRelationsUpdated = true;
-		} else {
+		} 
+        
+        else {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "No New PTs selected for addition to target table.", "");
 			FacesContext ctx = FacesContext.getCurrentInstance();
 			ctx.addMessage(null, msg);
@@ -1577,17 +1848,21 @@ public class ImpactSearchController implements Serializable {
 			HierarchyNode selectedNode) {
 		if (rootNodeToSearchFrom.getChildCount() > 0) {
 			List<TreeNode> childTreeNodes = rootNodeToSearchFrom.getChildren();
+			
 			for (Iterator<TreeNode> treeNodeIterator = childTreeNodes
 					.listIterator(); treeNodeIterator.hasNext();) {
 				TreeNode childTreeNode = treeNodeIterator.next();
 				HierarchyNode childNode = (HierarchyNode) childTreeNode
 						.getData();
+				
 				if (childNode.equals(selectedNode)) {
 					treeNodeIterator.remove(); // remove it from the root node
 					this.deleteRelationFromDb(childNode);
 					this.targetRelationsUpdated = true;
 					break;
-				} else if (childTreeNode.getChildCount() > 0) {
+				} 
+				
+				else if (childTreeNode.getChildCount() > 0) {
 					// drill down
 					this.deleteRelation(childTreeNode, selectedNode);
 				}
@@ -1612,8 +1887,10 @@ public class ImpactSearchController implements Serializable {
 			CmqBaseTarget cmqBaseTarget = (CmqBaseTarget) parentEntity;
 			Long parentCmqCode = cmqBaseTarget.getCmqCode();
 			IEntity entity = hierarchyNode.getEntity();
+			
 			if(null != entity) {
 				boolean isDeletSuccessful = false;
+				
 				if (entity instanceof CmqBaseTarget) {
 					CmqBaseTarget cmqEntity = (CmqBaseTarget) entity;
 					cmqEntity.setCmqParentCode(null);
@@ -1623,7 +1900,9 @@ public class ImpactSearchController implements Serializable {
 								, this.authService.getUserGivenName(), this.authService.getUserSurName()
 								, this.authService.getCombinedMappedGroupMembershipAsString());
 						isDeletSuccessful = true;
-					} catch (CqtServiceException e) {
+					} 
+					
+					catch (CqtServiceException e) {
 						String exception = CmqUtils.getExceptionMessageChain(e);
 						LOG.error("Error while removing cmq_parent_code value from cmq_id " + cmqEntity.getId(), e);
 						FacesMessage message = new FacesMessage(
@@ -1631,50 +1910,68 @@ public class ImpactSearchController implements Serializable {
 								"Error while removing cmq_parent_code value from cmq_id " + cmqEntity.getId() + " Error is:" + exception);
 						FacesContext.getCurrentInstance().addMessage(null, message);
 					}
-				} else {
+				} 
+				
+				else {
 					List<CmqRelationTarget> existingRelation = this.cmqRelationTargetService.findByCmqCode(parentCmqCode);
+					
 					if((null != existingRelation) && (existingRelation.size() > 0)) {
 						boolean matchFound = false;
 						Long cmqRelationIdToDelete = null;
+						
 						if(entity instanceof MeddraDictHierarchySearchDto) {
 							MeddraDictHierarchySearchDto meddraDictHierarchySearchDto = (MeddraDictHierarchySearchDto) hierarchyNode.getEntity();
 							String level = hierarchyNode.getLevel();
 							long nodeCode = Long.parseLong(meddraDictHierarchySearchDto.getCode());
+							
 							for (CmqRelationTarget cmqRelationTarget : existingRelation) {
+								
 								if(level.equalsIgnoreCase("SOC")) {
 									if((null != cmqRelationTarget.getSocCode()) 
 											&& (cmqRelationTarget.getSocCode().longValue() == nodeCode)){
 										matchFound = true;
 									}
-								} else if(level.equalsIgnoreCase("HLGT")) {
+								} 
+								
+								else if(level.equalsIgnoreCase("HLGT")) {
 									if((null != cmqRelationTarget.getHlgtCode()) 
 											&& (cmqRelationTarget.getHlgtCode().longValue() == nodeCode)){
 										matchFound = true;
 									}
-								} else if(level.equalsIgnoreCase("HLT")) {
+								} 
+								
+								else if(level.equalsIgnoreCase("HLT")) {
 									if((null != cmqRelationTarget.getHltCode()) 
 											&& (cmqRelationTarget.getHltCode().longValue() == nodeCode)){
 										matchFound = true;
 									}
-								} else if(level.equalsIgnoreCase("PT")) {
+								} 
+								
+								else if(level.equalsIgnoreCase("PT")) {
 									if((null != cmqRelationTarget.getPtCode()) 
 											&& (cmqRelationTarget.getPtCode().longValue() == nodeCode)){
 										matchFound = true;
 									}
-								} else if(level.equalsIgnoreCase("LLT")) {
+								} 
+								
+								else if(level.equalsIgnoreCase("LLT")) {
 									if((null != cmqRelationTarget.getLltCode()) 
 											&& (cmqRelationTarget.getLltCode().longValue() == nodeCode)){
 										matchFound = true;
 									}
 								}
+								
 								if(matchFound) {
 									cmqRelationIdToDelete = cmqRelationTarget.getId();
 									break;
 								}
 							}
-						} else if(entity instanceof MeddraDictReverseHierarchySearchDto) {
+						} 
+						
+						else if(entity instanceof MeddraDictReverseHierarchySearchDto) {
 							MeddraDictReverseHierarchySearchDto reverseSearchDto = (MeddraDictReverseHierarchySearchDto) hierarchyNode.getEntity();
 							String level = hierarchyNode.getLevel();
+							
 							for (CmqRelationTarget cmqRelationTarget : existingRelation) {
 								if(level.equalsIgnoreCase("PT") && (cmqRelationTarget.getPtCode() != null)) {
 									Long relationPtCode = cmqRelationTarget.getPtCode();
@@ -1682,27 +1979,34 @@ public class ImpactSearchController implements Serializable {
 									if(null != reverseSearchDto.getPtCode()) {
 										reverseSearchDtoPtCode = Long.valueOf(reverseSearchDto.getPtCode());
 									}
+									
 									if((reverseSearchDtoPtCode != null) 
 											&& (relationPtCode.longValue() == reverseSearchDtoPtCode.longValue())) {
 										matchFound = true;
 									}
-								} else if(level.equalsIgnoreCase("LLT") && (null != cmqRelationTarget.getLltCode())) {
+								} 
+								
+								else if(level.equalsIgnoreCase("LLT") && (null != cmqRelationTarget.getLltCode())) {
 									Long relationLltCode = cmqRelationTarget.getLltCode();
 									Long reverseSearchDtoLltCode = null;
 									if(null != reverseSearchDto.getLltCode()) {
 										reverseSearchDtoLltCode = Long.valueOf(reverseSearchDto.getLltCode());
 									}
+									
 									if((reverseSearchDtoLltCode != null) 
 											&& (relationLltCode.longValue() == reverseSearchDtoLltCode.longValue())) {
 										matchFound = true;
 									}
 								}
+								
 								if(matchFound) {
 									cmqRelationIdToDelete = cmqRelationTarget.getId();
 									break;
 								}
 							}//end of for (CmqRelation190 cmqRelation190 : existingRelation)
-						} else if (entity instanceof SmqBaseTarget) {
+						} 
+						
+						else if (entity instanceof SmqBaseTarget) {
 							SmqBaseTarget smqBase = (SmqBaseTarget) entity;
 							for (CmqRelationTarget cmqRelationTarget : existingRelation) {
 								if((null != cmqRelationTarget.getSmqCode()) 
@@ -1712,7 +2016,9 @@ public class ImpactSearchController implements Serializable {
 									break;
 								}
 							}//end of for (CmqRelation190 cmqRelation190 : existingRelation)
-						} else if (entity instanceof SmqRelationTarget) {
+						} 
+						
+						else if (entity instanceof SmqRelationTarget) {
 							SmqRelationTarget smqRelation = (SmqRelationTarget) entity;
 							for (CmqRelationTarget cmqRelationTarget : existingRelation) {
 								if((null != cmqRelationTarget.getSmqCode()) 
@@ -1730,7 +2036,9 @@ public class ImpactSearchController implements Serializable {
 										, this.authService.getUserGivenName(), this.authService.getUserSurName()
 										, this.authService.getCombinedMappedGroupMembershipAsString());
 								isDeletSuccessful = true;
-							} catch (CqtServiceException e) {
+							} 
+							
+							catch (CqtServiceException e) {
 								LOG.error("Error while removing cmqbase relation.", e);
 								String exception = CmqUtils.getExceptionMessageChain(e);
 								FacesMessage message = new FacesMessage(
@@ -1751,7 +2059,9 @@ public class ImpactSearchController implements Serializable {
 						FacesContext.getCurrentInstance().addMessage(null, 
                                 new FacesMessage(FacesMessage.SEVERITY_INFO,
                                         "Relation deleted successfully.", ""));
-					} catch (CqtServiceException e) {
+					} 
+					
+					catch (CqtServiceException e) {
 						LOG.error("Error while making the cmq target as IMPACTED.", e);
 						String exception = CmqUtils.getExceptionMessageChain(e);
 						FacesContext.getCurrentInstance().addMessage(null,
@@ -1772,7 +2082,9 @@ public class ImpactSearchController implements Serializable {
 	public String workflowIAState(String state) {
 		if(this.isImpactedCmqSelected) {
 			updateWorkflowStates(this.selectedImpactedCmqList, state);
-		} else if(this.isNonImpactedCmqSelected){
+		} 
+		
+		else if(this.isNonImpactedCmqSelected){
 			updateWorkflowStates(this.selectedNotImpactedCmqList, state);
 		}
 		
@@ -1782,14 +2094,18 @@ public class ImpactSearchController implements Serializable {
 				cmqBaseTargetService.update(selectedImpactedCmqList, this.authService.getUserCn()
 						, this.authService.getUserGivenName(), this.authService.getUserSurName()
 						, this.authService.getCombinedMappedGroupMembershipAsString());
+			
 			if (this.isNonImpactedCmqSelected)
 				cmqBaseTargetService.update(selectedNotImpactedCmqList, this.authService.getUserCn()
 						, this.authService.getUserGivenName(), this.authService.getUserSurName()
 						, this.authService.getCombinedMappedGroupMembershipAsString());
+			
             FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_INFO,
                             "Workflow state has been updated", ""));
-		} catch (CqtServiceException e) {
+		} 
+		
+		catch (CqtServiceException e) {
 			e.printStackTrace();
 			FacesContext.getCurrentInstance().addMessage(null,
                     new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -1809,11 +2125,15 @@ public class ImpactSearchController implements Serializable {
 				// Pending IA to Reviewed IA
 				if (target.getCmqState().equals("PENDING IA"))
 					target.setCmqState("REVIEWED IA");
-			} else if (state.equals("approve")) {
+			} 
+			
+			else if (state.equals("approve")) {
 				// Review IA to Approved IA
 				if (target.getCmqState().equals("REVIEWED IA"))
 					target.setCmqState("APPROVED IA");
-			} else if (state.equals("demote")) {
+			} 
+			
+			else if (state.equals("demote")) {
 				// Review IA/APPROVED IA to Pending IA
 				if (target.getCmqState().equals("REVIEWED IA")
 						|| target.getCmqState().equals("APPROVED IA"))
@@ -1859,11 +2179,15 @@ public class ImpactSearchController implements Serializable {
 					impactedCmqsList.add(parentCmq);
 				}
 				List<CmqBaseTarget> childrenOfParentCmq = this.cmqBaseTargetService.findChildCmqsByParentCode(parentCmq.getCmqCode());
+				
 				for (ListIterator<CmqBaseTarget> li = childrenOfParentCmq.listIterator(); li.hasNext();) {
 					CmqBaseTarget childOfParentCmq = li.next();
+					
 					if(childOfParentCmq.getCmqCode().longValue() == cmqBaseTarget.getCmqCode().longValue()) {
 						li.remove();//Remove this cmq as we are already dealing with it.
-					} else if("NON-IMPACTED".equalsIgnoreCase(childOfParentCmq.getImpactType())) {
+					} 
+					
+					else if("NON-IMPACTED".equalsIgnoreCase(childOfParentCmq.getImpactType())) {
 						childOfParentCmq.setImpactType("ICC");
 						childOfParentCmq.setCmqState("PENDING IA");
 						childOfParentCmq.setCmqStatus("P");
@@ -1879,7 +2203,9 @@ public class ImpactSearchController implements Serializable {
 							, this.authService.getUserGivenName(), this.authService.getUserSurName()
 							, this.authService.getCombinedMappedGroupMembershipAsString());
 				}
-			} catch (CqtServiceException e) {
+			} 
+			
+			catch (CqtServiceException e) {
 				LOG.error("Exception occurred while updated the cmq, its parent and other children of the parent for base CMQ code "
 						+ cmqBaseTarget.getCmqCode(), e);
 
@@ -1908,12 +2234,15 @@ public class ImpactSearchController implements Serializable {
 				Map<String, Object> filters) {
 			List<CmqBaseTarget> paginatedList = new ArrayList<>();
 			List<Map<String, Object>> fetchedCmqBaseList = null;
+			
 			if (this.manageImpactedList) {
 				LOG.info("Loading more impacted list cmqs starting from " + first + " with page size of " + pageSize);
 				fetchedCmqBaseList = cmqBaseTargetService.findImpactedWithPaginated(first, pageSize, null, null,
 						filters);
 				this.setRowCount(cmqBaseTargetService.findImpactedCount(filters).intValue());
-			} else {
+			} 
+			
+			else {
 				LOG.info("Loading more not impacted list cmqs starting from " + first + " with page size of "
 						+ pageSize);
 				fetchedCmqBaseList = cmqBaseTargetService.findNotImpactedWithPaginated(first, pageSize, null, null,
@@ -1927,51 +2256,67 @@ public class ImpactSearchController implements Serializable {
 					if(null != map.get("dictionaryVersion")) {
 						target.setDictionaryVersion(map.get("dictionaryVersion").toString());
 					}
+					
 					if(null != map.get("dictionaryName")) {
 						target.setDictionaryName(map.get("dictionaryName").toString());
 					}
+					
 					if(null != map.get("cmqId")) {
 						target.setId(Long.valueOf(map.get("cmqId").toString()));
 					}
+					
 					if(null != map.get("impactType")) {
 						target.setImpactType(map.get("impactType").toString());
 					}
+					
 					if(null != map.get("cmqAlgorithm")) {
 						target.setCmqAlgorithm(map.get("cmqAlgorithm").toString());
 					}
+					
 					if(null != map.get("cmqCode")) {
 						target.setCmqCode(Long.valueOf(map.get("cmqCode").toString()));
 					}
+					
 					if(null != map.get("cmqDescription")) {
 						target.setCmqDescription(map.get("cmqDescription").toString());
 					} 
+					
 					if(null != map.get("cmqLevel")) {
 						target.setCmqLevel(Integer.valueOf(map.get("cmqLevel").toString()));
 					}
+					
 					if(null != map.get("cmqName")) {
 						target.setCmqName(map.get("cmqName").toString());
 					}
+					
 					if(null != map.get("cmqNote")) {
 						target.setCmqNote(map.get("cmqNote").toString());
 					}
+					
 					if(null != map.get("cmqParentCode")) {
 						target.setCmqParentCode(Long.valueOf(map.get("cmqParentCode").toString()));
 					}
+					
 					if(null != map.get("cmqParentName")) {
 						target.setCmqParentName(map.get("cmqParentName").toString());
 					}
+					
 					if(null != map.get("cmqSource")) {
 						target.setCmqSource(map.get("cmqSource").toString());
 					}
+					
 					if(null != map.get("cmqStatus")) {
 						target.setCmqStatus(map.get("cmqStatus").toString());
 					}
+					
 					if(null != map.get("cmqDesignee")) {
 						target.setCmqDesignee(map.get("cmqDesignee").toString());
 					}
+					
 					if(null != map.get("cmqDesignee2")) {
 						target.setCmqDesignee2(map.get("cmqDesignee2").toString());
 					}
+					
 					if(null != map.get("cmqDesignee3")) {
 						target.setCmqDesignee3(map.get("cmqDesignee3").toString());
 					}
@@ -1979,23 +2324,29 @@ public class ImpactSearchController implements Serializable {
 					if(null != map.get("cmqProgramCd")) {
 						target.setCmqProgramCd(map.get("cmqProgramCd").toString());
 					}
+					
 					if(null != map.get("cmqProtocolCd")) {
 						target.setCmqProtocolCd(map.get("cmqProtocolCd").toString());
 					}
+					
 					if(null != map.get("cmqGroup")) {
 						target.setCmqGroup(map.get("cmqGroup").toString());
 					}
+					
 					if(null != map.get("createdBy")) {
 						target.setCreatedBy(map.get("createdBy").toString());
 					}
+					
 					if(null != map.get("cmqSubversion")) {
 						target.setCmqSubversion(new BigDecimal(map.get("cmqSubversion").toString()));
 					}
+					
 					if(null != map.get("creationDate")) {
 						SimpleDateFormat fomrat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
 						try {
 							target.setCreationDate(fomrat.parse(map.get("creationDate").toString()));
-						} catch (ParseException e) {
+						} 
+						catch (ParseException e) {
 							LOG.error(e.getMessage(), e);
 						}
 					}
@@ -2021,7 +2372,9 @@ public class ImpactSearchController implements Serializable {
 				fetchedCmqBaseList = cmqBaseTargetService.findImpactedWithPaginated(first, pageSize, null, null,
 						filters);
 				this.setRowCount(cmqBaseTargetService.findImpactedCount(filters).intValue());
-			} else {
+			} 
+			
+			else {
 				LOG.info("Loading more not impacted list cmqs starting from " + first + " with page size of "
 						+ pageSize);
 				 fetchedCmqBaseList = cmqBaseTargetService.findNotImpactedWithPaginated(first, pageSize, null, null,
@@ -2035,57 +2388,75 @@ public class ImpactSearchController implements Serializable {
 					if(null != map.get("dictionaryVersion")) {
 						target.setDictionaryVersion(map.get("dictionaryVersion").toString());
 					}
+					
 					if(null != map.get("dictionaryName")) {
 						target.setDictionaryName(map.get("dictionaryName").toString());
 					}
+					
 					if(null != map.get("cmqId")) {
 						target.setId(Long.valueOf(map.get("cmqId").toString()));
 					}
+					
 					if(null != map.get("impactType")) {
 						target.setImpactType(map.get("impactType").toString());
 					}
+					
 					if(null != map.get("cmqAlgorithm")) {
 						target.setCmqAlgorithm(map.get("cmqAlgorithm").toString());
 					}
+					
 					if(null != map.get("cmqCode")) {
 						target.setCmqCode(Long.valueOf(map.get("cmqCode").toString()));
 					}
+					
 					if(null != map.get("cmqDescription")) {
 						target.setCmqDescription(map.get("cmqDescription").toString());
 					} 
+					
 					if(null != map.get("cmqLevel")) {
 						target.setCmqLevel(Integer.valueOf(map.get("cmqLevel").toString()));
 					}
+					
 					if(null != map.get("cmqName")) {
 						target.setCmqName(map.get("cmqName").toString());
 					}
+					
 					if(null != map.get("cmqNote")) {
 						target.setCmqNote(map.get("cmqNote").toString());
 					}
+					
 					if(null != map.get("cmqParentCode")) {
 						target.setCmqParentCode(Long.valueOf(map.get("cmqParentCode").toString()));
 					}
+					
 					if(null != map.get("cmqParentName")) {
 						target.setCmqParentName(map.get("cmqParentName").toString());
 					}
+					
 					if(null != map.get("cmqSource")) {
 						target.setCmqSource(map.get("cmqSource").toString());
 					}
+					
 					if(null != map.get("cmqStatus")) {
 						target.setCmqStatus(map.get("cmqStatus").toString());
 					}
+					
 					if(null != map.get("cmqState")) {
 						target.setCmqState(map.get("cmqState").toString());
 					}
+					
 					if(null != map.get("cmqTypeCd")) {
 						target.setCmqTypeCd(map.get("cmqTypeCd").toString());
 					}
+					
 					if(null != map.get("cmqDesignee")) {
 						target.setCmqDesignee(map.get("cmqDesignee").toString());
 					}
+					
 					if(null != map.get("cmqDesignee2")) {
 						target.setCmqDesignee2(map.get("cmqDesignee2").toString());
 					}
+					
 					if(null != map.get("cmqDesignee3")) {
 						target.setCmqDesignee3(map.get("cmqDesignee3").toString());
 					}
@@ -2093,23 +2464,29 @@ public class ImpactSearchController implements Serializable {
 					if(null != map.get("cmqProgramCd")) {
 						target.setCmqProgramCd(map.get("cmqProgramCd").toString());
 					}
+					
 					if(null != map.get("cmqProtocolCd")) {
 						target.setCmqProtocolCd(map.get("cmqProtocolCd").toString());
 					}
+					
 					if(null != map.get("cmqGroup")) {
 						target.setCmqGroup(map.get("cmqGroup").toString());
 					}
+					
 					if(null != map.get("createdBy")) {
 						target.setCreatedBy(map.get("createdBy").toString());
 					}
+					
 					if(null != map.get("cmqSubversion")) {
 						target.setCmqSubversion(new BigDecimal(map.get("cmqSubversion").toString()));
 					}
+					
 					if(null != map.get("creationDate")) {
 						SimpleDateFormat fomrat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
 						try {
 							target.setCreationDate(fomrat.parse(map.get("creationDate").toString()));
-						} catch (ParseException e) {
+						} 
+						catch (ParseException e) {
 							LOG.error(e.getMessage(), e);
 						}
 					}
@@ -2127,10 +2504,14 @@ public class ImpactSearchController implements Serializable {
 			if (dataSize > pageSize) {
 				try {
 					return paginatedList.subList(first, first + pageSize);
-				} catch (IndexOutOfBoundsException e) {
+				} 
+				
+				catch (IndexOutOfBoundsException e) {
 					return paginatedList.subList(first, first + (dataSize % pageSize));
 				}
-			} else {
+			} 
+			
+			else {
 				return paginatedList;
 			}
 		}
@@ -2170,12 +2551,15 @@ public class ImpactSearchController implements Serializable {
 				Map<String, Object> filters) {
 			List<SmqBaseTarget> paginatedList = new ArrayList<>();
 			List<Map<String, Object>> fetchedSmqBaseList = null;
+			
 			if (this.manageImpactedList) {
 				LOG.info("Loading more impacted list smqs starting from " + first + " with page size of " + pageSize);
 				fetchedSmqBaseList = smqBaseTargetService.findImpactedWithPaginated(first, pageSize, null, null,
 						filters);
 				this.setRowCount(smqBaseTargetService.findImpactedCount(filters).intValue());
-			} else {
+			} 
+			
+			else {
 				LOG.info("Loading more not impacted list smqs starting from " + first + " with page size of "
 						+ pageSize);
 				fetchedSmqBaseList = smqBaseTargetService.findNotImpactedWithPaginated(first, pageSize, null, null,
@@ -2189,45 +2573,59 @@ public class ImpactSearchController implements Serializable {
 					if(null != map.get("dictionaryVersion")) {
 						target.setDictionaryVersion(map.get("dictionaryVersion").toString());
 					}
+					
 					if(null != map.get("smqId")) {
 						target.setId(Long.valueOf(map.get("smqId").toString()));
 					}
+					
 					if(null != map.get("impactType")) {
 						target.setImpactType(map.get("impactType").toString());
 					}
+					
 					if(null != map.get("smqAlgorithm")) {
 						target.setSmqAlgorithm(map.get("smqAlgorithm").toString());
 					}
+					
 					if(null != map.get("smqCode")) {
 						target.setSmqCode(Long.valueOf(map.get("smqCode").toString()));
 					}
+					
 					if(null != map.get("smqDescription")) {
 						target.setSmqDescription(map.get("smqDescription").toString());
 					}
+					
 					if(null != map.get("smqId")) {
 						target.setSmqId(Long.valueOf(map.get("smqId").toString()));
 					}
+					
 					if(null != map.get("smqLevel")) {
 						target.setSmqLevel(Integer.valueOf(map.get("smqLevel").toString()));
 					}
+					
 					if(null != map.get("smqName")) {
 						target.setSmqName(map.get("smqName").toString());
 					}
+					
 					if(null != map.get("smqNote")) {
 						target.setSmqNote(map.get("smqNote").toString());
 					}
+					
 					if(null != map.get("smqParentCode")) {
 						target.setSmqParentCode(Long.valueOf(map.get("smqParentCode").toString()));
 					}
+					
 					if(null != map.get("smqParentName")) {
 						target.setSmqParentName(map.get("smqParentName").toString());
 					}
+					
 					if(null != map.get("smqSource")) {
 						target.setSmqSource(map.get("smqSource").toString());
 					}
+					
 					if(null != map.get("smqStatus")) {
 						target.setSmqStatus(map.get("smqStatus").toString());
 					}
+					
 					paginatedList.add(target);
 				}
 				this.smqBaseList.addAll(paginatedList);
@@ -2245,55 +2643,71 @@ public class ImpactSearchController implements Serializable {
 				fetchedSmqBaseList = smqBaseTargetService.findImpactedWithPaginated(first, pageSize, null, null,
 						filters);
 				this.setRowCount(smqBaseTargetService.findImpactedCount(filters).intValue());
-			} else {
+			} 
+			
+			else {
 				LOG.info("Loading more not impacted list cmqs starting from " + first + " with page size of "
 						+ pageSize);
 				fetchedSmqBaseList = smqBaseTargetService.findNotImpactedWithPaginated(first, pageSize, null, null,
 						filters);
 				this.setRowCount(smqBaseTargetService.findNotImpactedCount(filters).intValue());
  			}
+			
 			if (fetchedSmqBaseList != null) {
 				for (Map<String, Object> map : fetchedSmqBaseList) {
 					SmqBaseTarget target = new SmqBaseTarget();
 					if(null != map.get("dictionaryVersion")) {
 						target.setDictionaryVersion(map.get("dictionaryVersion").toString());
 					}
+					
 					if(null != map.get("smqId")) {
 						target.setId(Long.valueOf(map.get("smqId").toString()));
 					}
+					
 					if(null != map.get("impactType")) {
 						target.setImpactType(map.get("impactType").toString());
 					}
+					
 					if(null != map.get("smqAlgorithm")) {
 						target.setSmqAlgorithm(map.get("smqAlgorithm").toString());
 					}
+					
 					if(null != map.get("smqCode")) {
 						target.setSmqCode(Long.valueOf(map.get("smqCode").toString()));
 					}
+					
 					if(null != map.get("smqDescription")) {
 						target.setSmqDescription(map.get("smqDescription").toString());
 					}
+					
 					if(null != map.get("smqId")) {
 						target.setSmqId(Long.valueOf(map.get("smqId").toString()));
 					}
+					
 					if(null != map.get("smqLevel")) {
 						target.setSmqLevel(Integer.valueOf(map.get("smqLevel").toString()));
 					}
+					
 					if(null != map.get("smqName")) {
 						target.setSmqName(map.get("smqName").toString());
 					}
+					
 					if(null != map.get("smqNote")) {
 						target.setSmqNote(map.get("smqNote").toString());
 					}
+					
 					if(null != map.get("smqParentCode")) {
 						target.setSmqParentCode(Long.valueOf(map.get("smqParentCode").toString()));
 					}
+					
 					if(null != map.get("smqParentName")) {
 						target.setSmqParentName(map.get("smqParentName").toString());
 					}
+					
 					if(null != map.get("smqSource")) {
 						target.setSmqSource(map.get("smqSource").toString());
 					}
+					
 					if(null != map.get("smqStatus")) {
 						target.setSmqStatus(map.get("smqStatus").toString());
 					}
@@ -2308,10 +2722,13 @@ public class ImpactSearchController implements Serializable {
 			if (dataSize > pageSize) {
 				try {
 					return paginatedList.subList(first, first + pageSize);
-				} catch (IndexOutOfBoundsException e) {
+				} 
+				catch (IndexOutOfBoundsException e) {
 					return paginatedList.subList(first, first + (dataSize % pageSize));
 				}
-			} else {
+			} 
+			
+			else {
 				return paginatedList;
 			}
 		}
@@ -2374,9 +2791,11 @@ public class ImpactSearchController implements Serializable {
 			List<MeddraDictHierarchySearchDto> fetchedMeddraDictHierarchySearchDtos = null;
 			LOG.info("Loading more new pt list MeddraDictHierarchySearchDto starting from " + first + " with page size of " + pageSize);
 			String searchTerm = null;
+			
 			if(newPtSocSearchTerm != null) {
 				searchTerm = newPtSocSearchTerm;
 			}
+			
 			fetchedMeddraDictHierarchySearchDtos = meddraDictTargetService.findNewPtTerm(searchTerm, first, pageSize);
 			this.setRowCount(meddraDictTargetService.findNewPtTermRowCount(searchTerm).intValue());
 			this.meddraDictHierarchySearchDtos.addAll(fetchedMeddraDictHierarchySearchDtos);
@@ -2390,9 +2809,11 @@ public class ImpactSearchController implements Serializable {
 			List<MeddraDictHierarchySearchDto> fetchedMeddraDictHierarchySearchDtos = null;
 			LOG.info("Loading more new pt list MeddraDictHierarchySearchDto starting from " + first + " with page size of " + pageSize);
 			String searchTerm = null;
+			
 			if(newPtSocSearchTerm != null) {
 				searchTerm = newPtSocSearchTerm;
 			}
+			
 			fetchedMeddraDictHierarchySearchDtos = meddraDictTargetService.findNewPtTerm(searchTerm, first, pageSize);
 			this.setRowCount(meddraDictTargetService.findNewPtTermRowCount(searchTerm).intValue());
 			this.meddraDictHierarchySearchDtos.addAll(fetchedMeddraDictHierarchySearchDtos);
@@ -2435,10 +2856,13 @@ public class ImpactSearchController implements Serializable {
 		
 		if (designee1 != null && !designee1.equals(""))
 			result.append(designee1);
+		
 		if (designee2 != null && !designee2.equals(""))
 			result.append(", ").append(designee2);
+		
 		if (designee3 != null && !designee3.equals(""))
 			result.append(", ").append(designee3);
+		
 		return result.toString();
 	}
 	
@@ -2662,8 +3086,10 @@ public class ImpactSearchController implements Serializable {
 		 /**
          * Restrictions on users from  REQUESTOR and ADMIN groups
          */
+		
         if (authService.getGroupMembershipHeader() != null && (authService.getGroupMembershipHeader().contains(AuthenticationService.REQUESTER_GROUP)
-                || authService.getGroupMembershipHeader().contains("MQM"))) {        	
+                || authService.getGroupMembershipHeader().contains("MQM"))) {   
+        	
         	if (detailsFormModel.getStatus().equals(CmqBaseTarget.CMQ_STATUS_VALUE_ACTIVE) 
         			|| (detailsFormModel.getDesignee() != null && detailsFormModel.getDesignee().equals(authService.getUserCn()))
         			|| (detailsFormModel.getDesigneeTwo() != null && detailsFormModel.getDesigneeTwo().equals(authService.getUserCn()))
@@ -2677,8 +3103,10 @@ public class ImpactSearchController implements Serializable {
                 (detailsFormModel.getState().equals(CmqBaseTarget.CMQ_STATE_APPROVED_IA) ||
                 detailsFormModel.getState().equals(CmqBaseTarget.CMQ_STATE_PUBLISHED_IA)))
 			return true;
+		
 		if (this.currentOrTarget == SELECTED_TARGET_LIST)
 			return false;
+		
 		return true;
 	}
 	
@@ -2686,8 +3114,10 @@ public class ImpactSearchController implements Serializable {
 		 /**
          * Restrictions on users from  REQUESTOR and ADMIN groups
          */
+		
         if (authService.getGroupMembershipHeader()!= null && (authService.getGroupMembershipHeader().contains(AuthenticationService.REQUESTER_GROUP) || 
-        		authService.getGroupMembershipHeader().contains(AuthenticationService.ADMIN_GROUP))) {        	
+        		authService.getGroupMembershipHeader().contains(AuthenticationService.ADMIN_GROUP))) {    
+        	
         	if (detailsFormModel.getStatus().equals(CmqBaseTarget.CMQ_STATUS_VALUE_ACTIVE) 
         			|| (detailsFormModel.getDesignee() != null && detailsFormModel.getDesignee().equals(authService.getUserCn()))
         			|| (detailsFormModel.getDesigneeTwo() != null && detailsFormModel.getDesigneeTwo().equals(authService.getUserCn()))
@@ -2700,10 +3130,14 @@ public class ImpactSearchController implements Serializable {
 		
 		if (this.currentOrTarget == SELECTED_CURRENT_LIST ||
                 (detailsFormModel.getState().equals(CmqBaseTarget.CMQ_STATE_APPROVED_IA) ||
-                detailsFormModel.getState().equals(CmqBaseTarget.CMQ_STATE_PUBLISHED_IA)))
+                detailsFormModel.getState().equals(CmqBaseTarget.CMQ_STATE_PUBLISHED_IA))) {
 			return true;
-		if (this.currentOrTarget == SELECTED_TARGET_LIST)
+		}
+		
+		if (this.currentOrTarget == SELECTED_TARGET_LIST) {
 			return false;
+		}
+		
 		return true;
 	}
 	
@@ -2717,6 +3151,7 @@ public class ImpactSearchController implements Serializable {
 		this.updateCurrentTable();
 		this.updateTargetTable();
 	}
+	
 	public void selectFilter(AjaxBehaviorEvent event) {
 		
 		filterDTO.setAll(false);
@@ -2787,9 +3222,13 @@ public class ImpactSearchController implements Serializable {
 	public boolean isSelectNewPTButtonEnabled() {
 		if(selectedImpactedCmqList != null) {
 			return true;
-		} else if(selectedNotImpactedCmqList != null) {
+		} 
+		
+		else if(selectedNotImpactedCmqList != null) {
 			return true;
-		} else {
+		} 
+		
+		else {
 			return false;
 		} 
 	}
@@ -2929,9 +3368,12 @@ public class ImpactSearchController implements Serializable {
 				if(parentTreeNode != null) {
 					childTreeNodes = parentTreeNode.getChildren();
 				}
-			} else {
+			} 
+			
+			else {
 				childTreeNodes = rootNodeToSearchFrom.getChildren();
 			}
+			
 			if(CollectionUtils.isNotEmpty(childTreeNodes)) {
 				for (Iterator<TreeNode> treeNodeIterator = childTreeNodes
 						.listIterator(); treeNodeIterator.hasNext();) {
@@ -2945,7 +3387,9 @@ public class ImpactSearchController implements Serializable {
 				        new DefaultTreeNode(dummyNode, childTreeNode);
 				        treeNode = childTreeNode;
 						break;
-					} else if (childTreeNode.getChildCount() > 0) {
+					} 
+					
+					else if (childTreeNode.getChildCount() > 0) {
 						// drill down
 						treeNode = this.clearChildrenInTargetTableTreNode(childTreeNode, selectedNode);
 						if(treeNode != null) {
@@ -3077,44 +3521,56 @@ public class ImpactSearchController implements Serializable {
 		if(filterDTO.isLltPromotedToPT()) {
 			impactFilterList.add("LPP");
 		}
+		
 		if(filterDTO.isMedDraTermNameChanged()) {
 			impactFilterList.add("NCH");
 		}
+		
 		if(filterDTO.isMergedHLGT()) {
 			impactFilterList.add("MRG");
 		}
+		
 		if(filterDTO.isNewSuccessorPT()) {
 			impactFilterList.add("SDP");
 		}
+		
 		if(filterDTO.isNewTermAdded()) {
 			impactFilterList.add("NTR");
 		}
+		
 		if(filterDTO.isNonCurrentLLT()) {
 			impactFilterList.add("LCN");
 		}
+		
 		if(filterDTO.isPrimarySOCChange()) {
 			impactFilterList.add("HPP");
 			impactFilterList.add("HNP");
 		}
+		
 		if(filterDTO.isPtDemotedToLLT()) {
 			impactFilterList.add("PDL");
 		}
+		
 		if(filterDTO.isScopechanged()) {
 			impactFilterList.add("SWC");
 		}
+		
 		if(filterDTO.isStatusChanged()) {
 			impactFilterList.add("PSI");
 			impactFilterList.add("PSA");
 		}
+		
 		if(filterDTO.isTermDeleted()) {
 			impactFilterList.add("DTR");
 		}
+		
 		if(filterDTO.isTermMoved()) {
 			impactFilterList.add("LDP");
 			impactFilterList.add("PDH");
 			impactFilterList.add("HDH");
 			impactFilterList.add("HDS");
 		}
+		
 		if(filterDTO.isImpactedSMQ()) {
 			impactFilterList.add("SCH");
 		}

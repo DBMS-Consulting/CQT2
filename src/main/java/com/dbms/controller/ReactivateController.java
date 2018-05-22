@@ -113,7 +113,9 @@ public class ReactivateController implements Serializable {
                             "The list being reactivated has an associated list that must be reactivated", ""));
 			
 			return "";
-		} else {
+		} 
+		
+		else {
 			//now check the parents of these cmqs
 			if(targetCmqParentCodes.size() > 0) {
 				List<CmqBase190> parentCmqsList = this.cmqBaseService.findParentCmqsByCodes(targetCmqParentCodes);
@@ -147,13 +149,17 @@ public class ReactivateController implements Serializable {
                                 "The list being reactivated has an associated list that must be reactivated. ", ""));
 				
 				return "";
-			} else if (cptChildren > 0) {
+			} 
+			
+			else if (cptChildren > 0) {
 				FacesContext.getCurrentInstance().addMessage(null, 
                         new FacesMessage(FacesMessage.SEVERITY_ERROR,
                                 "The list being reactivated has an associated list that must be reactivated. ", ""));
 				
 				return "";
-			} else {
+			} 
+			
+			else {
 			
 				boolean hasErrorOccured = false;
 				boolean hasParentError = false;
@@ -194,7 +200,9 @@ public class ReactivateController implements Serializable {
 					this.cmqBaseService.update(targetCmqsSelected, this.authService.getUserCn()
 							, this.authService.getUserGivenName(), this.authService.getUserSurName()
 							, this.authService.getCombinedMappedGroupMembershipAsString());
-				} catch (CqtServiceException e) {
+				} 
+				
+				catch (CqtServiceException e) {
 					LOG.error(e.getMessage(), e);
 					hasErrorOccured = true;
 				}
@@ -211,7 +219,9 @@ public class ReactivateController implements Serializable {
 					FacesContext.getCurrentInstance().addMessage(null, 
                             new FacesMessage(FacesMessage.SEVERITY_ERROR,
                                     "The system could not reactivate the following cmqs :" + codes, ""));
-				} else {
+				} 
+				
+				else {
 					//update the dualListModel source and target
 					init();
 					
@@ -246,7 +256,9 @@ public class ReactivateController implements Serializable {
 			long inputValue = 0;
 			try {
 				inputValue = Long.valueOf(value);
-			} catch (Exception e) {
+			} 
+			
+			catch (Exception e) {
 				LOG.error(e.getMessage(), e);
 			}
 

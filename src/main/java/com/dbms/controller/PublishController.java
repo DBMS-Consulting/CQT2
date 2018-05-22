@@ -123,7 +123,9 @@ public class PublishController implements Serializable {
                             "The List being promoted has an associated list that must be Promoted", ""));
 			
 			return "";
-		} else {
+		} 
+		
+		else {
 			//now check the parents of these cmqs
 			if(targetCmqParentCodes.size() > 0) {
 				List<CmqBase190> parentCmqsList = this.cmqBaseService.findParentCmqsByCodes(targetCmqParentCodes);
@@ -156,7 +158,9 @@ public class PublishController implements Serializable {
                                 "The list being promoted has an associated list that must be Promoted. ", ""));
 				
 				return "";
-			} else {
+			} 
+			
+			else {
 				boolean hasErrorOccured = false;
 				boolean hasParentError = false;
 				String cmqError = "";
@@ -219,7 +223,9 @@ public class PublishController implements Serializable {
 					this.cmqBaseService.update(targetCmqsSelected, this.authService.getUserCn()
 							, this.authService.getUserGivenName(), this.authService.getUserSurName()
 							, this.authService.getCombinedMappedGroupMembershipAsString());
-				} catch (CqtServiceException e) {
+				} 
+				
+				catch (CqtServiceException e) {
 					LOG.error(e.getMessage(), e);
 					hasErrorOccured = true;
 				}
@@ -236,7 +242,9 @@ public class PublishController implements Serializable {
 					FacesContext.getCurrentInstance().addMessage(null, 
                             new FacesMessage(FacesMessage.SEVERITY_ERROR,
                                     "The system could not publish the following cmqs :" + codes, ""));
-				} else {
+				} 
+				
+				else {
 					//update the dualListModel source and target
 					init();
 					
@@ -265,6 +273,7 @@ public class PublishController implements Serializable {
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			
 		}
+		
 		else
 			RequestContext.getCurrentInstance().execute("PF('confirmPromote').show();");
 	}
@@ -454,7 +463,9 @@ public class PublishController implements Serializable {
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			
 			return "";
-		} else {
+		} 
+		
+		else {
 			//now check the parents of these cmqs
 			if(targetCmqParentCodes.size() > 0) {
 				List<CmqBaseTarget> parentCmqsList = this.cmqBaseTargetService.findParentCmqsByCodes(targetCmqParentCodes);
@@ -478,7 +489,9 @@ public class PublishController implements Serializable {
                                 "The list being promoted has an associated list that must be Promoted. ", ""));
 				
 				return "";
-			} else {
+			} 
+			
+			else {
 				boolean hasErrorOccured = false;
 				boolean hasParentError = false;
 				String cmqError = "";
@@ -514,7 +527,9 @@ public class PublishController implements Serializable {
 					this.cmqBaseTargetService.update(targetCmqsSelected, this.authService.getUserCn()
 							, this.authService.getUserGivenName(), this.authService.getUserSurName()
 							, this.authService.getCombinedMappedGroupMembershipAsString());
-				} catch (CqtServiceException e) {
+				} 
+				
+				catch (CqtServiceException e) {
 					LOG.error(e.getMessage(), e);
 					hasErrorOccured = true;
 				}
@@ -531,7 +546,9 @@ public class PublishController implements Serializable {
 					FacesContext.getCurrentInstance().addMessage(null, 
                             new FacesMessage(FacesMessage.SEVERITY_ERROR,
                                     "The system could not publish the following cmqs :" + codes, ""));
-				} else {
+				}
+				
+				else {
 					//update the dualListModel source and target
 					init();
 					
@@ -637,7 +654,9 @@ public class PublishController implements Serializable {
 			long inputValue = 0;
 			try{
 				inputValue = Long.valueOf(value);
-			} catch (Exception e) {
+			} 
+			
+			catch (Exception e) {
 				LOG.error(e.getMessage(), e);
 			}
 			for (CmqBaseTarget cmqBaseTarget : sourceIAList) {

@@ -134,11 +134,14 @@ public class RetireController implements Serializable {
 		List<Long> targetCmqCodes = new ArrayList<>();
 		List<CmqBase190> targetCmqParents = new ArrayList<CmqBase190>();
 		List<CmqBase190> targetCmqsSelected = new ArrayList<CmqBase190>(this.retireDualListModel.getTarget());
+		
 		if((targetCmqsSelected == null) || (targetCmqsSelected.size() == 0)) {
 			FacesContext.getCurrentInstance().addMessage(null, 
                     new FacesMessage(FacesMessage.SEVERITY_ERROR,
                             "Please select at least 1 list to retire.", ""));
-		} else {
+		} 
+		
+		else {
 			for (CmqBase190 cmqBase : targetCmqsSelected) {
 				targetCmqCodes.add(cmqBase.getCmqCode());
 			}
@@ -185,7 +188,9 @@ public class RetireController implements Serializable {
                         new FacesMessage(FacesMessage.SEVERITY_INFO,
                                 formatMsg, ""));
 				
-			} catch (CqtServiceException e) {
+			} 
+			
+			catch (CqtServiceException e) {
 				LOG.error(e.getMessage(), e);
 
 				//show error message popup for partial success.
@@ -211,9 +216,12 @@ public class RetireController implements Serializable {
 		public Object getAsObject(FacesContext context, UIComponent component,
 				String value) {
 			long inputValue = 0;
+			
 			try {
 				inputValue = Long.valueOf(value);
-			} catch (Exception e) {
+			} 
+			
+			catch (Exception e) {
 				LOG.error(e.getMessage(), e);
 			}
 
