@@ -119,9 +119,7 @@ public class RetireController implements Serializable {
 		if (childCmqsOftargets != null && !childCmqsOftargets.isEmpty() && childNotSelected) {
 			this.confirmMessage = "Not all associate child lists are selected for inactivation.";
 			RequestContext.getCurrentInstance().execute("PF('confirmRetireOK').show();");
-		}
-
-		else {
+		} else {
 			this.confirmMessage = "Are you sure you want to retire this list?";
 			RequestContext.getCurrentInstance().execute("PF('confirmRetire').show();");
 		}
@@ -139,9 +137,7 @@ public class RetireController implements Serializable {
 			FacesContext.getCurrentInstance().addMessage(null, 
                     new FacesMessage(FacesMessage.SEVERITY_ERROR,
                             "Please select at least 1 list to retire.", ""));
-		} 
-		
-		else {
+		} else {
 			for (CmqBase190 cmqBase : targetCmqsSelected) {
 				targetCmqCodes.add(cmqBase.getCmqCode());
 			}
@@ -188,9 +184,7 @@ public class RetireController implements Serializable {
                         new FacesMessage(FacesMessage.SEVERITY_INFO,
                                 formatMsg, ""));
 				
-			} 
-			
-			catch (CqtServiceException e) {
+			} catch (CqtServiceException e) {
 				LOG.error(e.getMessage(), e);
 
 				//show error message popup for partial success.
@@ -219,9 +213,7 @@ public class RetireController implements Serializable {
 			
 			try {
 				inputValue = Long.valueOf(value);
-			} 
-			
-			catch (Exception e) {
+			} catch (Exception e) {
 				LOG.error(e.getMessage(), e);
 			}
 

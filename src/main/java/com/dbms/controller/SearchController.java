@@ -431,23 +431,19 @@ public class SearchController extends BaseController<CmqBase190> {
 		// Item label is 'All' but value is empty string
 		if (StringUtils.isBlank(myFltStatus)) {
 			myFltStatus = null;
-		}
-		
+		}		
 		// Item label is 'All' but value is empty string
 		if (StringUtils.isBlank(critical)) {
 			critical = null;
-		}
-		
+		}		
 		// Item label is 'All' but value is empty string
 		if ((null != myFltLevel) && (myFltLevel.intValue() <= 0)) {
 			myFltLevel = null;
-		}
-		
+		}		
 		// Item label is 'All' but value is empty string
 		if ("".equalsIgnoreCase(myFltGroup)) {
 			myFltGroup = null;
 		}
-
 		if (StringUtils.isBlank(code)) {
 			code = null;
 		}

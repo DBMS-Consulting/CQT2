@@ -189,9 +189,7 @@ public class HistoricalViewController implements Serializable {
 					if(!productNamesList.contains(historicalViewDbDataDTO.getProduct())) {
 						productNamesList.add(historicalViewDbDataDTO.getProduct());
 					}
-				} 
-				
-				else {
+				} else {
 					List<String> productNamesList = new ArrayList<>();
 					productNamesList.add(historicalViewDbDataDTO.getProduct());
 					productNamesMap.put(cmqCode, productNamesList);
@@ -211,9 +209,7 @@ public class HistoricalViewController implements Serializable {
 							new DefaultTreeNode(hierarchyNode, rootNode);
 							addedHierarchyNodes.add(hierarchyNode);
 						}
-					} 
-					
-					else {
+					} else {
 						if (null == termCode) {
 							LOG.warn("Got empty term code for term name {} for list code {} in historical view result.",
 									term, cmqCode);
@@ -222,9 +218,7 @@ public class HistoricalViewController implements Serializable {
 									termCode, cmqCode);
 						}
 					}
-				} 
-				
-				else {
+				} else {
 					LOG.warn("No HistoricalViewDTO found in map for cmqCode {} but shoudl have been there.", cmqCode);
 				}
 			}
@@ -243,9 +237,7 @@ public class HistoricalViewController implements Serializable {
 
 			if (historicalViewDTOMap.size() > 0) {
 				this.datas = new ArrayList<HistoricalViewDTO>(historicalViewDTOMap.values());
-			} 
-			
-			else {
+			} else {
 				this.datas = new ArrayList<HistoricalViewDTO>();
 			}
 		}
@@ -275,9 +267,7 @@ public class HistoricalViewController implements Serializable {
 			CmqBase190 cmqBase190 = (CmqBase190)entity;
 			this.populateCmqBaseChildren(cmqBase190.getCmqCode(), expandedTreeNode);
             this.populateCmqRelations(cmqBase190.getCmqCode(), expandedTreeNode, entity);
-		} 
-		
-		else if (entity instanceof SmqBase190) {
+		} else if (entity instanceof SmqBase190) {
 			String scopeNameFromParent = this.getScopeFromParentSmq(hNode, expandedTreeNode);
 
 			// now find the children
@@ -285,9 +275,7 @@ public class HistoricalViewController implements Serializable {
 			this.populateSmqBaseChildren(smqBase.getSmqCode(), expandedTreeNode);
 			this.populateSmqRelations(smqBase.getSmqCode(), expandedTreeNode,
 					CSMQBean.getCqtBaseScopeByName(scopeNameFromParent));
-		} 
-		
-		else if (entity instanceof MeddraDictHierarchySearchDto) {
+		} else if (entity instanceof MeddraDictHierarchySearchDto) {
 			String parentLevel = hNode.getLevel();
 			MeddraDictHierarchySearchDto meddraDictHierarchySearchDto = (MeddraDictHierarchySearchDto) entity;
 			Long dtoCode = null;
@@ -305,25 +293,19 @@ public class HistoricalViewController implements Serializable {
 				childOfChildLevel = "HLT";
 				childchildOfChildSearchColumnTypePrefix = childOfChildLevel + "_";
 				dtoCode = Long.valueOf(meddraDictHierarchySearchDto.getSocCode());
-			} 
-			
-			else if ("HLGT".equalsIgnoreCase(parentLevel)) {
+			} else if ("HLGT".equalsIgnoreCase(parentLevel)) {
 				childLevel = "HLT";
 				childSearchColumnTypePrefix = childLevel + "_";
 				childOfChildLevel = "PT";
 				childchildOfChildSearchColumnTypePrefix = childOfChildLevel + "_";
 				dtoCode = Long.valueOf(meddraDictHierarchySearchDto.getHlgtCode());
-			}
-			
-			else if ("HLT".equalsIgnoreCase(parentLevel)) {
+			} else if ("HLT".equalsIgnoreCase(parentLevel)) {
 				childLevel = "PT";
 				childSearchColumnTypePrefix = childLevel + "_";
 				childOfChildLevel = "LLT";
 				childchildOfChildSearchColumnTypePrefix = childOfChildLevel + "_";
 				dtoCode = Long.valueOf(meddraDictHierarchySearchDto.getHltCode());
-			} 
-			
-			else if ("PT".equalsIgnoreCase(parentLevel)) {
+			} else if ("PT".equalsIgnoreCase(parentLevel)) {
 				childLevel = "LLT";
 				childSearchColumnTypePrefix = childLevel + "_";
 				dtoCode = Long.valueOf(meddraDictHierarchySearchDto.getPtCode());
@@ -342,14 +324,10 @@ public class HistoricalViewController implements Serializable {
 					if(!StringUtils.isBlank(childDto.getPrimaryPathFlag()) 
 							&& (childDto.getPrimaryPathFlag().equalsIgnoreCase("Y"))){
 						childNode.setPrimaryPathFlag(true);
-					} 
-					
-					else {
+					} else {
 						childNode.setPrimaryPathFlag(false);
 					}
-				} 
-				
-				else {
+				} else {
 					childNode.setPrimaryPathFlag(false);
 				}
 				
@@ -388,9 +366,7 @@ public class HistoricalViewController implements Serializable {
                 CmqBase190 childCmqBase = (CmqBase190) entity;
                 if(parentListView) {
                     node.setLevel(childCmqBase.getCmqTypeCd());
-                } 
-                
-                else {
+                } else {
                     node.setLevel(((HierarchyNode)expandedTreeNode.getData()).getLevel()); // levelH
                 }
                 node.setTerm(childCmqBase.getCmqName());
@@ -560,9 +536,7 @@ public class HistoricalViewController implements Serializable {
             	node.setHideDelete(true);
             }
             treeNode = new DefaultTreeNode(node, expandedTreeNode);
-        } 
-        
-        else {
+        } else {
             SmqBase190 entity2 = smqBaseService.findByCode(cmqRelation.getSmqCode(), dictionaryVersion);
             //Long childSmqCount = this.smqBaseSvc.findSmqChildRelationsCountForSmqCode(cmqRelation.getSmqCode());
             node = this.createSmqBaseNode(entity2, cmqRelation);
@@ -581,9 +555,7 @@ public class HistoricalViewController implements Serializable {
             if((null != smqBaseChildrenCount) && (smqBaseChildrenCount > 0)) {
                 // add a dummmy node to show expand arrow
                 createNewDummyNode(treeNode);
-            } 
-            
-            else {
+            } else {
                 Long childSmqrelationsCount;
                 childSmqrelationsCount = smqBaseService.findSmqRelationsCountForSmqCode(((SmqBase190)entity2).getSmqCode(),dictionaryVersion);
                 if((null != childSmqrelationsCount) && (childSmqrelationsCount > 0)) {
@@ -637,9 +609,7 @@ public class HistoricalViewController implements Serializable {
 				|| scopeFilter.equals(CSMQBean.SCOPE_BROAD) || scopeFilter.equals(CSMQBean.SCOPE_FULL))) {
 			childRelations = this.smqBaseService.findSmqRelationsForSmqCodeAndScope(smqCode, scopeFilter,
 					dictionaryVersion);
-		} 
-		
-		else {
+		} else {
 			childRelations = this.smqBaseService.findSmqRelationsForSmqCode(smqCode, dictionaryVersion);
 		}
 
@@ -664,9 +634,7 @@ public class HistoricalViewController implements Serializable {
 					isChildSmqNode = true;
 					// for finding the child smqs of this one.
 					smqChildCodeList.add(childRelation.getPtCode().longValue());
-				} 
-				
-				else if (childRelation.getSmqLevel() == 1) {
+				} else if (childRelation.getSmqLevel() == 1) {
 					childRelationNode.setLevel("SMQ1");
 					childRelationNode.setEntity(childRelation);
 					childRelationNode.setScope(
@@ -675,9 +643,7 @@ public class HistoricalViewController implements Serializable {
 							null != childRelation.getPtTermCategory() ? childRelation.getPtTermCategory() : "");
 					childRelationNode.setWeight(
 							null != childRelation.getPtTermWeight() ? childRelation.getPtTermWeight().toString() : "");
-				} 
-				
-				else if (childRelation.getSmqLevel() == 2) {
+				} else if (childRelation.getSmqLevel() == 2) {
 					childRelationNode.setLevel("SMQ2");
 					childRelationNode.setEntity(childRelation);
 					childRelationNode.setScope(
@@ -686,9 +652,7 @@ public class HistoricalViewController implements Serializable {
 							null != childRelation.getPtTermCategory() ? childRelation.getPtTermCategory() : "");
 					childRelationNode.setWeight(
 							null != childRelation.getPtTermWeight() ? childRelation.getPtTermWeight().toString() : "");
-				} 
-				
-				else if (childRelation.getSmqLevel() == 3) {
+				} else if (childRelation.getSmqLevel() == 3) {
 					childRelationNode.setLevel("SMQ3");
 					childRelationNode.setEntity(childRelation);
 					childRelationNode.setScope(
@@ -697,9 +661,7 @@ public class HistoricalViewController implements Serializable {
 							null != childRelation.getPtTermCategory() ? childRelation.getPtTermCategory() : "");
 					childRelationNode.setWeight(
 							null != childRelation.getPtTermWeight() ? childRelation.getPtTermWeight().toString() : "");
-				} 
-				
-				else if (childRelation.getSmqLevel() == 4) {
+				} else if (childRelation.getSmqLevel() == 4) {
 					childRelationNode.setLevel("PT");
 					childRelationNode.setScope(
 							null != childRelation.getPtTermScope() ? childRelation.getPtTermScope().toString() : "");
@@ -708,9 +670,7 @@ public class HistoricalViewController implements Serializable {
 					childRelationNode.setWeight(
 							null != childRelation.getPtTermWeight() ? childRelation.getPtTermWeight().toString() : "");
 					childRelationNode.setEntity(childRelation);
-				} 
-				
-				else if (childRelation.getSmqLevel() == 5) {
+				} else if (childRelation.getSmqLevel() == 5) {
 					childRelationNode.setLevel("LLT");
 					childRelationNode.setScope(
 							null != childRelation.getPtTermScope() ? childRelation.getPtTermScope().toString() : "");
@@ -764,9 +724,7 @@ public class HistoricalViewController implements Serializable {
 				&& (parentLevel1Up.equals("Broad") || parentLevel1Up.equals("Narrow")
 						|| parentLevel1Up.equals("Child Narrow") || parentLevel1Up.equals("Full"))) {
 			scopeNameFromParent = parentLevel1Up;
-		}
-		
-		else {
+		} else {
 			// level 2 up
 			TreeNode parentLevel2Up = expandedTreeNode.getParent();
 			HierarchyNode parentLevel2UpHnode = (HierarchyNode) parentLevel2Up.getData();
@@ -778,9 +736,7 @@ public class HistoricalViewController implements Serializable {
 						&& (parentLevel2UpScope.equals("1") || parentLevel2UpScope.equals("2")
 								|| parentLevel2UpScope.equals("3") || parentLevel2UpScope.equals("4"))) {
 					scopeNameFromParent = parentLevel2UpScope;
-				} 
-				
-				else {
+				} else {
 					// level 3 up
 					TreeNode parentLevel3Up = expandedTreeNode.getParent().getParent();
 					if (null != parentLevel3Up) {
@@ -794,9 +750,7 @@ public class HistoricalViewController implements Serializable {
 									&& (parentLevel3UpScope.equals("1") || parentLevel3UpScope.equals("2")
 											|| parentLevel3UpScope.equals("3") || parentLevel3UpScope.equals("4"))) {
 								scopeNameFromParent = parentLevel3UpScope;
-							} 
-							
-							else {
+							} else {
 								// level 4 up
 								TreeNode parentLevel4Up = expandedTreeNode.getParent().getParent().getParent();
 								
@@ -812,9 +766,7 @@ public class HistoricalViewController implements Serializable {
 														|| parentLevel4UpScope.equals("3")
 														|| parentLevel4UpScope.equals("4"))) {
 											scopeNameFromParent = parentLevel4UpScope;
-										} 
-										
-										else {
+										} else {
 											// level 5 up
 											TreeNode parentLevel5Up = expandedTreeNode.getParent().getParent()
 													.getParent().getParent();
@@ -832,9 +784,7 @@ public class HistoricalViewController implements Serializable {
 																	|| parentLevel5UpScope.equals("3")
 																	|| parentLevel5UpScope.equals("4"))) {
 														scopeNameFromParent = parentLevel5UpScope;
-													} 
-													
-													else {
+													} else {
 														// level 6 up
 														TreeNode parentLevel6Up = expandedTreeNode.getParent()
 																.getParent().getParent().getParent().getParent();
@@ -876,17 +826,11 @@ public class HistoricalViewController implements Serializable {
 		HierarchyNode node = new HierarchyNode();
 		if (smqRelation.getSmqLevel() == 1) {
 			node.setLevel("SMQ1");
-		} 
-		
-		else if (smqRelation.getSmqLevel() == 2) {
+		} else if (smqRelation.getSmqLevel() == 2) {
 			node.setLevel("SMQ2");
-		} 
-		
-		else if (smqRelation.getSmqLevel() == 3) {
+		} else if (smqRelation.getSmqLevel() == 3) {
 			node.setLevel("SMQ3");
-		} 
-		
-		else if ((smqRelation.getSmqLevel() == 4)
+		} else if ((smqRelation.getSmqLevel() == 4)
 				|| (smqRelation.getSmqLevel() == 0)
 				|| (smqRelation.getSmqLevel() == 5)) {
 			node.setLevel("PT");
@@ -947,63 +891,43 @@ public class HistoricalViewController implements Serializable {
 			node.setLevel("SMQ1");
 			isSmq = true;
 			smqLevel = 1;
-		} 
-		
-		else if (termDictLevel.equals("SMQ2")) {
+		} else if (termDictLevel.equals("SMQ2")) {
 			node.setLevel("SMQ2");
 			isSmq = true;
 			smqLevel = 2;
-		} 
-		
-		else if (termDictLevel.equals("SMQ3")) {
+		} else if (termDictLevel.equals("SMQ3")) {
 			node.setLevel("SMQ3");
 			isSmq = true;
 			smqLevel = 3;
-		} 
-		
-		else if (termDictLevel.equals("SMQ4")) {
+		} else if (termDictLevel.equals("SMQ4")) {
 			node.setLevel("SMQ4");
 			isSmq = true;
 			smqLevel = 4;
-		} 
-		
-		else if (termDictLevel.equals("SMQ5")) {
+		} else if (termDictLevel.equals("SMQ5")) {
 			node.setLevel("SMQ5");
 			isSmq = true;
 			smqLevel = 5;
-		} 
-		
-		else if (termDictLevel.equals("LLT")) {
+		} else if (termDictLevel.equals("LLT")) {
 			node.setLevel("LLT");
 			isMeddra = true;
 			meddraDictHierarchySearchDto.setLltCode(termCode + "");
-		} 
-		
-		else if (termDictLevel.equals("PT")) {
+		} else if (termDictLevel.equals("PT")) {
 			node.setLevel("PT");
 			isMeddra = true;
 			meddraDictHierarchySearchDto.setPtCode(termCode + "");
-		} 
-		
-		else if (termDictLevel.equals("HLT")) {
+		} else if (termDictLevel.equals("HLT")) {
 			node.setLevel("HLT");
 			isMeddra = true;
 			meddraDictHierarchySearchDto.setHltCode(termCode + "");
-		} 
-		
-		else if (termDictLevel.equals("HLGT")) {
+		} else if (termDictLevel.equals("HLGT")) {
 			node.setLevel("HLGT");
 			isMeddra = true;
 			meddraDictHierarchySearchDto.setHlgtCode(termCode + "");
-		} 
-		
-		else if (termDictLevel.equals("SOC")) {
+		} else if (termDictLevel.equals("SOC")) {
 			node.setLevel("SOC");
 			isMeddra = true;
 			meddraDictHierarchySearchDto.setSocCode(termCode + "");
-		} 
-		
-		else if (termDictLevel.equals("PRO")) {
+		} else if (termDictLevel.equals("PRO")) {
 			node.setLevel("PRO");
 			isPro = true;
 		}
@@ -1012,9 +936,7 @@ public class HistoricalViewController implements Serializable {
 		node.setCode(termCode + "");
 		if (StringUtils.isBlank(termScope)) {
 			node.setScope("");
-		} 
-		
-		else {
+		} else {
 			node.setScope(termScope);
 		}
 
@@ -1025,14 +947,10 @@ public class HistoricalViewController implements Serializable {
 			smqBase190.setSmqName(term);
 			node.setEntity(smqBase190);
 
-		} 
-		
-		else if (isMeddra) {
+		} else if (isMeddra) {
 			meddraDictHierarchySearchDto.setTerm(term);
 			node.setEntity(meddraDictHierarchySearchDto);
-		} 
-		
-		else if (isPro) {
+		} else if (isPro) {
 			CmqBase190 cmqBase190 = new CmqBase190();
 			cmqBase190.setCmqCode(termCode);
 			node.setEntity(cmqBase190);
@@ -1072,9 +990,7 @@ public class HistoricalViewController implements Serializable {
 				if ((null != smqBaseChildrenCount) && (smqBaseChildrenCount > 0)) {
 					// add a dummmy node to show expand arrow
 					createNewDummyNode(childNode);
-				} 
-				
-				else {
+				} else {
 					Long childSmqrelationsCount;
 					childSmqrelationsCount = this.smqBaseService
 							.findSmqRelationsCountForSmqCode(((SmqBase190) entity).getSmqCode());
@@ -1083,37 +999,25 @@ public class HistoricalViewController implements Serializable {
 						createNewDummyNode(childNode);
 					}
 				}
-			} 
-			
-			else if(entity instanceof MeddraDictHierarchySearchDto) {
+			} else if(entity instanceof MeddraDictHierarchySearchDto) {
 				MeddraDictHierarchySearchDto meddraDictHierarchySearchDto = (MeddraDictHierarchySearchDto)entity;
 				if(level.equals("LLT") && !StringUtils.isBlank(meddraDictHierarchySearchDto.getLltCode())) {
 					Long code = Long.valueOf(meddraDictHierarchySearchDto.getLltCode());
 					lltCodesMap.put(code, childNode);
-				} 
-				
-				else if(level.equals("PT") && !StringUtils.isBlank(meddraDictHierarchySearchDto.getPtCode())) {
+				} else if(level.equals("PT") && !StringUtils.isBlank(meddraDictHierarchySearchDto.getPtCode())) {
 					Long code = Long.valueOf(meddraDictHierarchySearchDto.getPtCode());
 					ptCodesMap.put(code, childNode);
-				} 
-				
-				else if(level.equals("HLGT") && !StringUtils.isBlank(meddraDictHierarchySearchDto.getHlgtCode())) {
+				} else if(level.equals("HLGT") && !StringUtils.isBlank(meddraDictHierarchySearchDto.getHlgtCode())) {
 					Long code = Long.valueOf(meddraDictHierarchySearchDto.getHlgtCode());
 					hlgtCodesMap.put(code, childNode);
-				} 
-				
-				else if(level.equals("HLT") && !StringUtils.isBlank(meddraDictHierarchySearchDto.getHltCode())) {
+				} else if(level.equals("HLT") && !StringUtils.isBlank(meddraDictHierarchySearchDto.getHltCode())) {
 					Long code = Long.valueOf(meddraDictHierarchySearchDto.getHltCode());
 					hltCodesMap.put(code, childNode);
-				} 
-				
-				else if(level.equals("SOC") && !StringUtils.isBlank(meddraDictHierarchySearchDto.getSocCode())) {
+				} else if(level.equals("SOC") && !StringUtils.isBlank(meddraDictHierarchySearchDto.getSocCode())) {
 					Long code = Long.valueOf(meddraDictHierarchySearchDto.getSocCode());
 					socCodesMap.put(code, childNode);
 				}
-			}
-			
-			else if(entity instanceof CmqBase190) {
+			} else if(entity instanceof CmqBase190) {
 				this.createNewDummyNode(childNode);
 			}
 		}

@@ -83,8 +83,7 @@ public class CmqUploadController implements Serializable {
 					
 					try {
 						id = Long.parseLong(ss[0]);
-					} 
-					catch (Exception e) {
+					} catch (Exception e) {
 						failed++;
 						continue;
 					}
@@ -106,8 +105,7 @@ public class CmqUploadController implements Serializable {
 					Integer level=null;
 					try{
 						level=Integer.parseInt(ss[6]);
-					}
-					catch(Exception e){}
+					} catch(Exception e){}
 					
 					base.setCmqLevel(level);
 					base.setCmqDesignee(ss[7]);
@@ -122,13 +120,9 @@ public class CmqUploadController implements Serializable {
 					if(StringUtils.isNotEmpty(ss[12])){
 						if(ss[12].equalsIgnoreCase("pending")){
 							base.setCmqStatus("P");
-						}
-						
-						else if(ss[12].equalsIgnoreCase("active")){
+						} else if(ss[12].equalsIgnoreCase("active")){
 							base.setCmqStatus("A");
-						}
-						
-						else if(ss[12].equalsIgnoreCase("inactive")){
+						} else if(ss[12].equalsIgnoreCase("inactive")){
 							base.setCmqStatus("I");
 						}
 					}

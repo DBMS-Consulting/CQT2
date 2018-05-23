@@ -102,9 +102,7 @@ public class DemoteToDraftController implements Serializable {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"Please select atleats 1 list to demote.", "");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-		} 
-		
-		else {
+		} else {
 			for (CmqBase190 cmqBase : targetCmqsSelected) {
 				targetCmqCodes.add(cmqBase.getCmqCode());
 				if(null != cmqBase.getCmqParentCode()) {
@@ -127,9 +125,7 @@ public class DemoteToDraftController implements Serializable {
 							&& childCmq.getCmqStatus().equalsIgnoreCase(CmqBase190.CMQ_STATUS_VALUE_PENDING)) {
 						isChildDemotedError = true;
 						faultyCmqs.add(childCmq);
-					} 
-					
-					else {
+					} else {
 						targetCmqsSelected.add(childCmq);//we need to demote this as well
 					}
 				}
@@ -140,9 +136,7 @@ public class DemoteToDraftController implements Serializable {
 				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 						"The lists being demoted have an associated active child list hence cannot be demoted.", "");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
-			} 
-			
-			else {
+			} else {
 				//If there is a child is being demoted, and the parent is NOT demoted, 
 				//it should give only a WARNING that the parent is not demoted but it should NOT stop the child from being demoted.
 				//and continue forward
@@ -163,9 +157,7 @@ public class DemoteToDraftController implements Serializable {
 					this.cmqBaseService.update(targetCmqsSelected, this.authService.getUserCn()
 							, this.authService.getUserGivenName(), this.authService.getUserSurName()
 							, this.authService.getCombinedMappedGroupMembershipAsString());
-				} 
-				
-				catch (CqtServiceException e) {
+				} catch (CqtServiceException e) {
 					LOG.error(e.getMessage(), e);
 					hasErrorOccured = true;
 				}
@@ -182,9 +174,7 @@ public class DemoteToDraftController implements Serializable {
 					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 							"The system could not demote the following cmqs :" + codes, "");
 					FacesContext.getCurrentInstance().addMessage(null, msg);
-				}
-				
-				else {
+				} else {
 					//update the dualListModel source and target
 					init();
 					
@@ -232,9 +222,7 @@ public class DemoteToDraftController implements Serializable {
                             "The List being promoted has an associated list that must be Demoted", ""));
 			
 			return "";
-		}
-		
-		else {
+		} else {
 			if(targetCmqParentCodes.size() > 0) {
 				List<CmqBaseTarget> parentCmqsList = this.cmqBaseTargetService.findParentCmqsByCodes(targetCmqParentCodes);
 				if(null != parentCmqsList) {
@@ -256,17 +244,14 @@ public class DemoteToDraftController implements Serializable {
                                 "The list being promoted has an associated list that must be Demoted. ", ""));
 				
 				return "";
-			}
-			
-			else {
+			} else {
 				//continue
 				boolean hasErrorOccured = false;
 				boolean hasParentError = false;
 				String cmqError = "";
 				for (CmqBaseTarget target : targetCmqsSelected) {
 					if (target.getCmqLevel() == 2 && target.getCmqParentCode() == null && target.getCmqParentName() == null)
-						hasParentError = true;
-				
+						hasParentError = true;				
 					else {
 						target.setCmqStatus("P");
 						target.setCmqState(CmqBaseTarget.CMQ_STATE_PENDING_IA);
@@ -283,9 +268,7 @@ public class DemoteToDraftController implements Serializable {
 					this.cmqBaseTargetService.update(targetCmqsSelected, this.authService.getUserCn()
 							, this.authService.getUserGivenName(), this.authService.getUserSurName()
 							, this.authService.getCombinedMappedGroupMembershipAsString());
-				} 
-				
-				catch (CqtServiceException e) {
+				} catch (CqtServiceException e) {
 					LOG.error(e.getMessage(), e);
 					hasErrorOccured = true;
 				}
@@ -302,9 +285,7 @@ public class DemoteToDraftController implements Serializable {
 					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 							"The system could not demote the following cmqs :" + codes, "");
 					FacesContext.getCurrentInstance().addMessage(null, msg);
-				}
-				
-				else {
+				} else {
 					//update the dualListModel source and target
 					init();
 
@@ -394,9 +375,7 @@ public class DemoteToDraftController implements Serializable {
 			
 			try{
 				inputValue = Long.valueOf(value);
-			} 
-			
-			catch (Exception e) {
+			} catch (Exception e) {
 				LOG.error(e.getMessage(), e);
 			}
 			/*PickList p = (PickList) component;
