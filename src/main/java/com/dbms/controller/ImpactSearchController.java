@@ -1191,12 +1191,12 @@ public class ImpactSearchController implements Serializable {
 			
 		} else if("notes".equalsIgnoreCase(event.getNewStep())) {
 			nextStep = validateAndLoadNotes(event, nextStep, unsavedRedirect);
-		}
-		 else if("details".equalsIgnoreCase(event.getNewStep())) 
+		} else if("details".equalsIgnoreCase(event.getNewStep())) {
 			nextStep = validateAndLoadDetails(event, nextStep, unsavedRedirect);
-		
+		}
 		return nextStep;
 	}
+	
 	
 	//function created to make onIaWizardFlowProcess() a simpler function. Only to be called from there
 	public String validateAndLoadNotes(FlowEvent event, String nextStep, boolean unsavedRedirect) {
@@ -1376,6 +1376,7 @@ public class ImpactSearchController implements Serializable {
 	public void cancelNotesAndGoToNextStep() {
 		cancelNotes();
 		iaWizard.setStep(iaWizardNextStep);
+		RequestContext.getCurrentInstance().update("impactAssessment");
 	}
 	
 	public void saveInformativeNotes() {
@@ -1507,6 +1508,7 @@ public class ImpactSearchController implements Serializable {
 	public void cancelDetailsAndGoToNextStep() {
 		cancelDetails();
 		iaWizard.setStep(iaWizardNextStep);
+		RequestContext.getCurrentInstance().update("impactAssessment");
 	}
 	
 	public void saveRelationsAndGoToNextStep() {
