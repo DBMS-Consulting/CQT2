@@ -329,30 +329,31 @@ public class ImpactSearchController implements Serializable {
 		RefConfigCodeList currentMeddraVersionCodeList = this.refCodeListService.getCurrentMeddraVersion();
 		RefConfigCodeList targetMeddraVersionCodeList = this.refCodeListService.getTargetMeddraVersion();
 		
-		if (currentMeddraVersionCodeList != null)
-			dict = currentMeddraVersionCodeList.getValue();
+		if(currentOrTarget == SELECTED_NO_LIST) {
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Select th List/SMQ to export", "");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			RequestContext.getCurrentInstance().update("impactAssessment:messages");
+		} else {			
 		
-		if (targetMeddraVersionCodeList != null)
-			dictTarget = targetMeddraVersionCodeList.getValue();
-		
-		StreamedContent content = null;
-		if (isImpactedCmqSelected)
-			content = cmqBaseTargetService.generateCMQExcel(selectedImpactedCmqList, dictTarget, targetTableSelection, this.globalController.isFilterLltsFlag());
-		
-		if (isNonImpactedCmqSelected) 
-			content = cmqBaseTargetService.generateCMQExcel(selectedNotImpactedCmqList, dictTarget, targetTableSelection, this.globalController.isFilterLltsFlag());
+			if (currentMeddraVersionCodeList != null)
+				dict = currentMeddraVersionCodeList.getValue();			
+			if (targetMeddraVersionCodeList != null)
+				dictTarget = targetMeddraVersionCodeList.getValue();			
+			StreamedContent content = null;
+			if (isImpactedCmqSelected)
+				content = cmqBaseTargetService.generateCMQExcel(selectedImpactedCmqList, dictTarget, targetTableSelection, this.globalController.isFilterLltsFlag());			
+			if (isNonImpactedCmqSelected) 
+				content = cmqBaseTargetService.generateCMQExcel(selectedNotImpactedCmqList, dictTarget, targetTableSelection, this.globalController.isFilterLltsFlag());				
+			if (isImpactedSmqSelected)
+				content = smqBaseTargetService.generateSMQExcel(selectedImpactedSmqList, dictTarget, this.globalController.isFilterLltsFlag());			
+			if (isNonImpactedSmqSelected)
+				content = smqBaseTargetService.generateSMQExcel(selectedNotImpactedSmqList, dictTarget, this.globalController.isFilterLltsFlag());
+					
+			setExcelFile(content);
 			
-		if (isImpactedSmqSelected)
-			content = smqBaseTargetService.generateSMQExcel(selectedImpactedSmqList, dictTarget, this.globalController.isFilterLltsFlag());
-		
-		if (isNonImpactedSmqSelected) 
-			content = smqBaseTargetService.generateSMQExcel(selectedNotImpactedSmqList, dictTarget, this.globalController.isFilterLltsFlag());
-			
-		
-		setExcelFile(content);
-		
-		//Clean content
-		content = null;
+			//Clean content
+			content = null;
+		}
 	}
 	
 	public void onRelationDrop() {
