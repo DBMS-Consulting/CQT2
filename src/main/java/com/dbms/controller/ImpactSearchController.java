@@ -334,7 +334,7 @@ public class ImpactSearchController implements Serializable {
 		RefConfigCodeList targetMeddraVersionCodeList = this.refCodeListService.getTargetMeddraVersion();
 		
 		if(currentOrTarget == SELECTED_NO_LIST) {
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Select th List/SMQ to export", "");
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Select the List/SMQ to export", "");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			RequestContext.getCurrentInstance().update("impactAssessment:messages");
 		} else {			
@@ -372,6 +372,7 @@ public class ImpactSearchController implements Serializable {
 	
 	public void onRowSelect(SelectEvent event) {
 		Object obj = event.getObject();
+		currentOrTarget = SELECTED_NO_LIST;
 		if(obj instanceof CmqBaseTarget) {
 			CmqBaseTarget cmqBase = (CmqBaseTarget) obj;
 			if(CSMQBean.IMPACT_TYPE_IMPACTED.equalsIgnoreCase(cmqBase.getImpactType())
@@ -406,8 +407,9 @@ public class ImpactSearchController implements Serializable {
 	}
 	
 	public void onRowUnselect(SelectEvent event) {
-		
+		currentOrTarget = SELECTED_NO_LIST;
 	}
+
 	
 	/**
 	 * Event fired on the selection of a row.
@@ -427,7 +429,7 @@ public class ImpactSearchController implements Serializable {
 	 * @param event NodeSelectEvent
 	 */
 	public void onUnselectCurrentRowTreeTable(NodeUnselectEvent event) {
-		//Updating the worflow buttons
+		//Updating the work flow buttons
 		if(currentOrTarget == SELECTED_CURRENT_LIST)
 			currentOrTarget = SELECTED_NO_LIST;
 	}
@@ -442,11 +444,11 @@ public class ImpactSearchController implements Serializable {
 		if (isImpactedCmqSelected && selectedImpactedCmqList != null) 
 			code = selectedImpactedCmqList.getCmqCode() + "";
 		else if (isNonImpactedCmqSelected && selectedNotImpactedCmqList != null) 
-        	code = selectedNotImpactedCmqList.getCmqCode() + "";		
+			code = selectedNotImpactedCmqList.getCmqCode() + "";		
         else if (isImpactedSmqSelected && selectedImpactedSmqList != null ) 
-        	code = selectedImpactedSmqList.getSmqCode() + "";		
+        		code = selectedImpactedSmqList.getSmqCode() + "";		
         else if (isNonImpactedSmqSelected && selectedNotImpactedSmqList != null ) 
-        	code = selectedNotImpactedSmqList.getSmqCode() + "";
+        		code = selectedNotImpactedSmqList.getSmqCode() + "";
 		
 		HierarchyNode node;
 		if (event != null && event.getTreeNode() != null && event.getTreeNode().getData() != null) {
@@ -466,7 +468,7 @@ public class ImpactSearchController implements Serializable {
 	 * @param event NodeSelectEvent
 	 */
 	public void onUnselectTargetRowTreeTable(NodeUnselectEvent event) {
-		//Updating the worflow buttons
+		//Updating the work flow buttons
 		if(currentOrTarget == SELECTED_TARGET_LIST)
 			currentOrTarget = SELECTED_NO_LIST;
 	}
@@ -1399,9 +1401,25 @@ public class ImpactSearchController implements Serializable {
 	}
 	
 	public void saveNotesAndGoToNextStep() {
+		Object d = null;
+		if(currentOrTarget == SELECTED_CURRENT_LIST && currentTableSelection != null) {
+			HierarchyNode hn = (HierarchyNode)currentTableSelection.getData();
+			d = (hn != null ? hn.getEntity() : null); 					
+		} else if(currentOrTarget == SELECTED_TARGET_LIST && targetTableSelection != null) {
+			HierarchyNode hn = (HierarchyNode)targetTableSelection.getData();
+			d = (hn != null ? hn.getEntity() : null); 
+		}
+		
 		saveInformativeNotes();
-		iaWizard.setStep(iaWizardNextStep);
-        RequestContext.getCurrentInstance().update("impactAssessment");
+
+		//stops user from being able to go to details tab if they have an SMQ selected
+		if(!(d instanceof SmqBaseTarget) && !(d instanceof SmqBase190)) {
+			iaWizard.setStep(iaWizardNextStep);
+	        RequestContext.getCurrentInstance().update("impactAssessment");
+		} else {
+			iaWizard.setStep("notes");
+			RequestContext.getCurrentInstance().update("impactAssessment");
+		}
 	}
 	
 	public boolean isIAWizardNavbarShown() {
@@ -2972,7 +2990,7 @@ public class ImpactSearchController implements Serializable {
 	}
 
 	public boolean isExportEnabled() {
-		return (currentOrTarget == SELECTED_TARGET_LIST);
+		return (currentOrTarget == SELECTED_TARGET_LIST && targetTableSelection != null);
 	}
 
 	public StreamedContent getExcelFile() {
