@@ -46,6 +46,7 @@ import com.dbms.entity.cqt.dtos.MeddraDictHierarchySearchDto;
 import com.dbms.service.AuthenticationService;
 import com.dbms.service.IAuditTrailService;
 import com.dbms.service.ICmqBase190Service;
+import com.dbms.service.ICmqParentChild200Service;
 import com.dbms.service.ICmqRelation190Service;
 import com.dbms.service.IHistoricalViewService;
 import com.dbms.service.IMeddraDictService;
@@ -105,6 +106,9 @@ public class HistoricalViewController implements Serializable {
 	@ManagedProperty("#{CmqRelation190Service}")
 	private ICmqRelation190Service cmqRelationService;
 
+	@ManagedProperty("#{CmqParentChild200Service}")
+	private ICmqParentChild200Service cmqParentChildService;
+	
 	@ManagedProperty("#{AuditTrailService}")
 	private IAuditTrailService auditTrailService;
 
@@ -1327,6 +1331,14 @@ public class HistoricalViewController implements Serializable {
 
 	public void setCmqRelationService(ICmqRelation190Service cmqRelationService) {
 		this.cmqRelationService = cmqRelationService;
+	}
+
+	public ICmqParentChild200Service getCmqParentChildService() {
+		return cmqParentChildService;
+	}
+
+	public void setCmqParentChildService(ICmqParentChild200Service cmqParentChildService) {
+		this.cmqParentChildService = cmqParentChildService;
 	}
 
 	public TreeNode getRelationsRoot() {

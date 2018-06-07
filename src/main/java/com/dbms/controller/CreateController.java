@@ -34,6 +34,7 @@ import com.dbms.csmq.HierarchyNode;
 import com.dbms.entity.IEntity;
 import com.dbms.entity.cqt.CmqBase190;
 import com.dbms.entity.cqt.CmqBaseTarget;
+import com.dbms.entity.cqt.CmqParentChild200;
 import com.dbms.entity.cqt.CmqProductBaseCurrent;
 import com.dbms.entity.cqt.CmqRelation190;
 import com.dbms.entity.cqt.RefConfigCodeList;
@@ -45,6 +46,7 @@ import com.dbms.entity.cqt.dtos.SMQReverseHierarchySearchDto;
 import com.dbms.service.AuthenticationService;
 import com.dbms.service.ICmqBase190Service;
 import com.dbms.service.ICmqBaseTargetService;
+import com.dbms.service.ICmqParentChild200Service;
 import com.dbms.service.ICmqRelation190Service;
 import com.dbms.service.ICqtCacheManager;
 import com.dbms.service.IMeddraDictService;
@@ -110,6 +112,9 @@ public class CreateController implements Serializable {
     @ManagedProperty("#{CqtCacheManager}")
 	private ICqtCacheManager cqtCacheManager;
 	
+    @ManagedProperty("#{CmqParentChild200Service}")
+	private ICmqParentChild200Service cmqParentChildService;
+	
     @ManagedProperty("#{globalController}")
     private GlobalController globalController;
     
@@ -161,7 +166,7 @@ public class CreateController implements Serializable {
 	@PostConstruct
 	public void init() {
   		this.detailsFormModel  = new ListDetailsFormVM(this.authService, this.refCodeListService, this.appSWJSFRequest);
-        this.relationsModel = new ListRelationsVM(authService, appSWJSFRequest, refCodeListService, cmqBaseService, smqBaseService, meddraDictService, cmqRelationService, globalController);
+        this.relationsModel = new ListRelationsVM(authService, appSWJSFRequest, refCodeListService, cmqBaseService, smqBaseService, meddraDictService, cmqRelationService, cmqParentChildService, globalController);
         this.workflowFormModel = new ListWorkflowFormVM(this.authService);
 		initAll();
 		detailDTO = new DetailDTO();
@@ -353,8 +358,9 @@ public class CreateController implements Serializable {
 			prepareDetailsFormSave();
 			
 			//remoe the parent cmq from this cmq.
-			selectedData.setCmqParentCode(null);
-			selectedData.setCmqParentName(null);
+			// TODO handle parent child changes here
+			//selectedData.setCmqParentCode(null);
+			//selectedData.setCmqParentName(null);
 			
 			cmqBaseService.create(selectedData, this.authService.getUserCn()
 					, this.authService.getUserGivenName(), this.authService.getUserSurName()
@@ -756,6 +762,36 @@ public class CreateController implements Serializable {
 		relationsModified = false;
 	}
 	
+	private void updateParentChildRelationship(CmqBase190 cmqEntity,CmqBase190 cmqBase, List<CmqParentChild200> newParentChildList) {
+		List<CmqParentChild200> existingParentChildList = this.cmqParentChildService.findParentsByCmqCode(cmqEntity.getCmqCode());
+		boolean parentAlreadyExists = false;
+		if (null!=existingParentChildList) {
+			for(CmqParentChild200 parentChild : existingParentChildList) {
+				Long existingParentCode = parentChild.getCmqParentCode();
+				if(existingParentCode.longValue() == cmqBase.getCmqCode().longValue()) {
+					parentAlreadyExists = true;
+					break;
+				}
+			}
+			
+			if(!parentAlreadyExists) {
+				
+				CmqParentChild200 newParentChild = new CmqParentChild200();
+				newParentChild.setCmqParentCode(cmqBase.getCmqCode());
+				newParentChild.setCmqParentName(cmqBase.getCmqName());
+				newParentChild.setCmqParentTypeCd(cmqBase.getCmqTypeCd());
+				newParentChild.setCmqChildCode(cmqEntity.getCmqCode());
+				newParentChild.setCmqChildName(cmqEntity.getCmqName());
+				newParentChild.setCmqChildTypeCd(cmqEntity.getCmqTypeCd());
+				newParentChild.setChildCmqId(cmqEntity.getCmqId());
+				newParentChild.setParentCmqId(cmqBase.getCmqId());
+				newParentChildList.add(newParentChild);
+				//this.cmqParentChildService.create(newParentChildList);
+			}
+		}
+		
+	}
+	
 	/**
 	 * Update relations on a list.
 	 * 
@@ -767,7 +803,7 @@ public class CreateController implements Serializable {
 			String lastModifiedByString = this.authService.getLastModifiedByUserAsString();
 			
 			List<CmqRelation190> cmqRelationsList = new ArrayList<>();
-			List<CmqBase190> cmqBaseChildrenList = new ArrayList<>();
+			List<CmqParentChild200> parentChildList = new ArrayList<>();
 			List<TreeNode> childTreeNodes = relationsRoot.getChildren();
 			//TEST laster if we really need this call.
 			CmqBase190 cmqBase = this.cmqBaseService.findByCode(selectedData.getCmqCode());
@@ -782,13 +818,15 @@ public class CreateController implements Serializable {
 					IEntity entity = hierarchyNode.getEntity();
 					if (entity instanceof CmqBase190) {
 						CmqBase190 cmqEntity = (CmqBase190) entity;
-						Long existingParentCode = cmqEntity.getCmqParentCode();
+						 updateParentChildRelationship(cmqEntity,cmqBase,parentChildList);
+						//change code here for parent child relationship
+						/*Long existingParentCode = cmqEntity.getCmqParentCode();
 						if((null == existingParentCode) || (existingParentCode.longValue() != cmqBase.getCmqCode().longValue())) {
 							//update only if needed
 							cmqEntity.setCmqParentCode(cmqBase.getCmqCode());
 							cmqEntity.setCmqParentName(cmqBase.getCmqName());
 							cmqBaseChildrenList.add(cmqEntity);
-						}
+						}*/
 					} else {
 						CmqRelation190 cmqRelation = null;						
 						if (entity instanceof MeddraDictHierarchySearchDto) {
@@ -921,7 +959,7 @@ public class CreateController implements Serializable {
 				}//end of if (null != hierarchyNode)
 			}
 			
-			if (!cmqRelationsList.isEmpty() || !cmqBaseChildrenList.isEmpty()) {
+			if (!cmqRelationsList.isEmpty() || !parentChildList.isEmpty()) {
 				try {
 					if(!cmqRelationsList.isEmpty()) {
 						for (CmqRelation190 cmqRelation190 : cmqRelationsList) {
@@ -938,17 +976,8 @@ public class CreateController implements Serializable {
 								, this.authService.getUserGivenName(), this.authService.getUserSurName()
 								, this.authService.getCombinedMappedGroupMembershipAsString());
 					}
-					if(!cmqBaseChildrenList.isEmpty()) {
-						
-						for (CmqBase190 cmqBase190 : cmqBaseChildrenList) {
-							cmqBase190.setLastModifiedBy(lastModifiedByString);
-							cmqBase190.setLastModifiedDate(lastModifiedDate);
-							if(StringUtils.isBlank(cmqBase190.getCreatedBy()) || cmqBase190.getCreationDate() == null) {
-								cmqBase190.setCreatedBy(lastModifiedByString);
-								cmqBase190.setCreationDate(lastModifiedDate);
-							}
-						}
-						this.cmqBaseService.update(cmqBaseChildrenList, this.authService.getUserCn()
+					if(!parentChildList.isEmpty()) {
+						this.cmqParentChildService.update(parentChildList,this.authService.getUserCn()
 								, this.authService.getUserGivenName(), this.authService.getUserSurName()
 								, this.authService.getCombinedMappedGroupMembershipAsString());
 					}
@@ -997,13 +1026,14 @@ public class CreateController implements Serializable {
 					IEntity entity = hierarchyNode.getEntity();
 					if (entity instanceof CmqBase190) {
 						CmqBase190 cmqEntity = (CmqBase190) entity;
-						Long existingParentCode = cmqEntity.getCmqParentCode();
+						//TODO update for parent child relationship
+						/*Long existingParentCode = cmqEntity.getCmqParentCode();
 						if((null == existingParentCode) || (existingParentCode.longValue() != cmqBase.getCmqCode().longValue())) {
 							//update only if needed
 							cmqEntity.setCmqParentCode(cmqBase.getCmqCode());
 							cmqEntity.setCmqParentName(cmqBase.getCmqName());
 							cmqBaseChildrenList.add(cmqEntity);
-						}
+						}*/
 					} else {
 						CmqRelation190 cmqRelation = null;						
 						if (entity instanceof MeddraDictHierarchySearchDto) {
@@ -1450,14 +1480,16 @@ public class CreateController implements Serializable {
         
 		boolean cmqSaved = false;
 		boolean savedRelations = false;
+		boolean savedParentChild = false;
 		Long savedCmqId = null;
 		Long savedCmqCode = null;
 		try {
 			prepareDetailsFormSave();
 			
 			//remoe the parent cmq from this cmq.
-			selectedData.setCmqParentCode(null);
-			selectedData.setCmqParentName(null);
+			//change code here for parent child relationship
+			/*selectedData.setCmqParentCode(null);
+			selectedData.setCmqParentName(null);*/
 			
 			cmqBaseService.create(selectedData, this.authService.getUserCn()
 					, this.authService.getUserGivenName(), this.authService.getUserSurName()
@@ -1475,6 +1507,9 @@ public class CreateController implements Serializable {
 
 			this.copyRelationsToNewCmq(copiedCode, savedEntity);
 			savedRelations = true;
+			
+			this.copyParentChildToNewCmq(copiedCode, savedEntity);
+			savedParentChild = true;
 			
 			LOG.info("All updates completed.");		
 			
@@ -1511,6 +1546,19 @@ public class CreateController implements Serializable {
 								, this.authService.getCombinedMappedGroupMembershipAsString());
 					} catch (CqtServiceException e1) {
 						LOG.error("Exception occurred while deleting relation with relation id " + cmqRelation190.getId(), e);
+					}
+				}
+			}
+			
+			if(savedParentChild) {
+				List<CmqParentChild200> cmqParentChildList = this.cmqParentChildService.findByParentOrChildCmqCode(savedCmqCode);
+				for (CmqParentChild200 cmqParentChild : cmqParentChildList) {
+					try {
+						this.cmqParentChildService.remove(cmqParentChild, this.authService.getUserCn()
+								, this.authService.getUserGivenName(), this.authService.getUserSurName()
+								, this.authService.getCombinedMappedGroupMembershipAsString());
+					} catch (CqtServiceException e1) {
+						LOG.error("Exception occurred while deleting entries from cmq_parent_child_current for relation id " + cmqParentChild.getId(), e);
 					}
 				}
 			}
@@ -1772,6 +1820,41 @@ public class CreateController implements Serializable {
 				, this.authService.getCombinedMappedGroupMembershipAsString());
 		LOG.info("Cmq relations saved.");
 	}
+	
+	private void copyParentChildToNewCmq(Long copiedCode, CmqBase190 savedEntity) throws CqtServiceException {
+		LOG.info("Saving parent child for the new cmq.");
+		//copy parent child now
+		List<CmqParentChild200> cmqChildList = this.cmqParentChildService.findChildsByCmqCode(copiedCode);
+		if(null!=cmqChildList && !cmqChildList.isEmpty()) {
+			for (CmqParentChild200 child : cmqChildList) {
+				child.setCmqParentCode(savedEntity.getCmqCode());
+				child.setCmqParentName(savedEntity.getCmqName());
+				child.setCmqParentTypeCd(savedEntity.getCmqTypeCd());
+				child.setCmqRelationId(null);
+			}
+			
+			this.cmqParentChildService.update(cmqChildList, this.authService.getUserCn()
+					, this.authService.getUserGivenName(), this.authService.getUserSurName()
+					, this.authService.getCombinedMappedGroupMembershipAsString());
+		}
+		
+		List<CmqParentChild200> cmqParentList = this.cmqParentChildService.findParentsByCmqCode(copiedCode);
+		if(null!=cmqParentList && !cmqParentList.isEmpty()) {
+			for (CmqParentChild200 child : cmqChildList) {
+				child.setCmqChildCode(savedEntity.getCmqCode());
+				child.setCmqChildName(savedEntity.getCmqName());
+				child.setCmqChildTypeCd(savedEntity.getCmqTypeCd());
+				child.setCmqRelationId(null);
+			}
+			this.cmqParentChildService.update(cmqChildList, this.authService.getUserCn()
+					, this.authService.getUserGivenName(), this.authService.getUserSurName()
+					, this.authService.getCombinedMappedGroupMembershipAsString());
+			
+		}
+		
+		LOG.info("Cmq parent child saved.");
+	}
+	
 	
 	private String getCopyCmqName(String newChildCmqName) {
 		if(newChildCmqName.endsWith("-Copy-")) {
@@ -2350,8 +2433,11 @@ public class CreateController implements Serializable {
         /*return ((selectedData.getCmqLevel() > 1)
                 && (selectedData.getCmqParentCode()!=null)
                 && !this.isReadOnlyState());*/
-        return ((selectedData.getCmqLevel() > 1)
-                && (selectedData.getCmqParentCode()!=null));
+		//change code here for parent child relationship. For now returning false
+		Long parentCount = this.cmqParentChildService.findCmqParentCountForChildCmqCode(selectedData.getCmqCode());
+		//return ((selectedData.getCmqLevel() > 1) && (parentCount!=null && parentCount >0) && !this.isReadOnlyState());
+		return ((selectedData.getCmqLevel() > 1) && (parentCount!=null && parentCount >0));
+        //return selectedData.getCmqLevel() <= 2;
 	}
 
 	public boolean isReactivateDisabled() {
@@ -2794,6 +2880,14 @@ public class CreateController implements Serializable {
 
 	public void setScopeFilter(String scopeFilter) {
 		this.scopeFilter = scopeFilter;
+	}
+
+	public ICmqParentChild200Service getCmqParentChildService() {
+		return cmqParentChildService;
+	}
+
+	public void setCmqParentChildService(ICmqParentChild200Service cmqParentChildService) {
+		this.cmqParentChildService = cmqParentChildService;
 	}
 
 	public String getFormToOpen() {

@@ -23,6 +23,8 @@ import com.dbms.entity.cqt.CmqBaseTarget;
 import com.dbms.service.AuthenticationService;
 import com.dbms.service.ICmqBase190Service;
 import com.dbms.service.ICmqBaseTargetService;
+import com.dbms.service.ICmqParentChild200Service;
+import com.dbms.service.ICmqParentChildTargetService;
 import com.dbms.service.ICmqRelation190Service;
 import com.dbms.service.IRefCodeListService;
 import com.dbms.util.exceptions.CqtServiceException;
@@ -53,6 +55,9 @@ public class DemoteToDraftController implements Serializable {
 
 	@ManagedProperty("#{AuthenticationService}")
 	private AuthenticationService authService;
+	
+	@ManagedProperty("#{CmqParentChildTargetService}")
+	private ICmqParentChildTargetService cmqParentChildTargetService;
 	
 	private List<CmqBase190> sourceList;
 	private List<CmqBase190> targetList;
@@ -105,9 +110,10 @@ public class DemoteToDraftController implements Serializable {
 		} else {
 			for (CmqBase190 cmqBase : targetCmqsSelected) {
 				targetCmqCodes.add(cmqBase.getCmqCode());
-				if(null != cmqBase.getCmqParentCode()) {
+				//TODO change code here for parent child relationship
+				/*if(null != cmqBase.getCmqParentCode()) {
 					targetCmqParentCodes.add(cmqBase.getCmqParentCode());
-				}
+				}*/
 			}
 			
 			List<CmqBase190> faultyCmqs = new ArrayList<>();
@@ -193,13 +199,14 @@ public class DemoteToDraftController implements Serializable {
 	 */
 	public String demoteIATargetList() {
 		List<Long> targetCmqCodes = new ArrayList<>();
-		List<Long> targetCmqParentCodes = new ArrayList<>();
+		//List<Long> targetCmqParentCodes = new ArrayList<>();
 		List<CmqBaseTarget> targetCmqsSelected = new ArrayList<CmqBaseTarget>(this.demoteTargetDualListModel.getTarget());
 		for (CmqBaseTarget cmqBase : targetCmqsSelected) {
 			targetCmqCodes.add(cmqBase.getCmqCode());
-			if(null != cmqBase.getCmqParentCode()) {
+			//TODO change code here for parent child relationship
+			/*if(null != cmqBase.getCmqParentCode()) {
 				targetCmqParentCodes.add(cmqBase.getCmqParentCode());
-			}
+			}*/
 		}
 		boolean isListPublishable = true;
  		List<CmqBaseTarget> childCmqsOftargets = this.cmqBaseTargetService.findChildCmqsByCodes(targetCmqCodes);
@@ -223,8 +230,8 @@ public class DemoteToDraftController implements Serializable {
 			
 			return "";
 		} else {
-			if(targetCmqParentCodes.size() > 0) {
-				List<CmqBaseTarget> parentCmqsList = this.cmqBaseTargetService.findParentCmqsByCodes(targetCmqParentCodes);
+			//if(targetCmqParentCodes.size() > 0) {
+				List<CmqBaseTarget> parentCmqsList = this.cmqBaseTargetService.findParentCmqsByCodes(targetCmqCodes);
 				if(null != parentCmqsList) {
 					for (CmqBaseTarget cmqBaseTarget : parentCmqsList) {
 						//if parent is not in the target list then check if its publisher or not
@@ -236,7 +243,7 @@ public class DemoteToDraftController implements Serializable {
 						}
 					}
 				}
-			}
+			//}
 			if(!isListPublishable) {
 				//show error dialog with names
 				FacesContext.getCurrentInstance().addMessage(null, 
@@ -244,14 +251,19 @@ public class DemoteToDraftController implements Serializable {
                                 "The list being promoted has an associated list that must be Demoted. ", ""));
 				
 				return "";
-			} else {
+			}
+			else {
 				//continue
 				boolean hasErrorOccured = false;
 				boolean hasParentError = false;
 				String cmqError = "";
 				for (CmqBaseTarget target : targetCmqsSelected) {
-					if (target.getCmqLevel() == 2 && target.getCmqParentCode() == null && target.getCmqParentName() == null)
+					//TODO change code here for parent child relationship. For now change the condition
+					Long parentCount = this.cmqParentChildTargetService.findCmqParentCountForChildCmqCode(target.getCmqCode());
+					//if (target.getCmqLevel() == 2 && target.getCmqParentCode() == null && target.getCmqParentName() == null)
+					if (target.getCmqLevel() == 2 && (null==parentCount || parentCount== 0))
 						hasParentError = true;				
+				
 					else {
 						target.setCmqStatus("P");
 						target.setCmqState(CmqBaseTarget.CMQ_STATE_PENDING_IA);
@@ -295,8 +307,13 @@ public class DemoteToDraftController implements Serializable {
 					FacesContext.getCurrentInstance().addMessage(null, msg);
 				}
 			}			
+			
 		}
+
 		targetCmqsSelected = new ArrayList<CmqBaseTarget>();
+
+		
+
 
 		return "";
 	}
@@ -459,6 +476,15 @@ public class DemoteToDraftController implements Serializable {
 
 	public void setAuthService(AuthenticationService authService) {
 		this.authService = authService;
+	}
+
+
+	public ICmqParentChildTargetService getCmqParentChildTargetService() {
+		return cmqParentChildTargetService;
+	}
+
+	public void setCmqParentChildTargetService(ICmqParentChildTargetService cmqParentChildTargetService) {
+		this.cmqParentChildTargetService = cmqParentChildTargetService;
 	}
 
 }

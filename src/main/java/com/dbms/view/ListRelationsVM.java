@@ -25,6 +25,7 @@ import com.dbms.controller.beans.HierarchySearchResultBean;
 import com.dbms.csmq.HierarchyNode;
 import com.dbms.entity.IEntity;
 import com.dbms.entity.cqt.CmqBase190;
+import com.dbms.entity.cqt.CmqParentChild200;
 import com.dbms.entity.cqt.CmqRelation190;
 import com.dbms.entity.cqt.SmqBase190;
 import com.dbms.entity.cqt.SmqRelation190;
@@ -33,6 +34,7 @@ import com.dbms.entity.cqt.dtos.MeddraDictReverseHierarchySearchDto;
 import com.dbms.entity.cqt.dtos.SMQReverseHierarchySearchDto;
 import com.dbms.service.AuthenticationService;
 import com.dbms.service.ICmqBase190Service;
+import com.dbms.service.ICmqParentChild200Service;
 import com.dbms.service.ICmqRelation190Service;
 import com.dbms.service.IMeddraDictService;
 import com.dbms.service.IRefCodeListService;
@@ -59,6 +61,7 @@ public class ListRelationsVM implements IRelationsChangeListener {
 	private ICmqRelation190Service cmqRelationService;
 	private IRefCodeListService refCodeListService;
 	private AuthenticationService authService;
+	private ICmqParentChild200Service cmqParentChildService;
 	private GlobalController globalController;
 	
 	private String[] selectedSOCs;
@@ -84,7 +87,7 @@ public class ListRelationsVM implements IRelationsChangeListener {
     
     public ListRelationsVM(AuthenticationService authService, SWJSFRequest appSWJSFRequest,
             IRefCodeListService refCodeListService, ICmqBase190Service cmqBaseService, ISmqBaseService smqBaseService,
-            IMeddraDictService meddraDictService, ICmqRelation190Service cmqRelationService
+            IMeddraDictService meddraDictService, ICmqRelation190Service cmqRelationService, ICmqParentChild200Service cmqParentChildService
             , GlobalController globalController) {
         this.authService = authService;
         this.refCodeListService = refCodeListService;
@@ -92,6 +95,7 @@ public class ListRelationsVM implements IRelationsChangeListener {
         this.smqBaseService = smqBaseService;
         this.meddraDictService = meddraDictService;
         this.cmqRelationService = cmqRelationService;
+        this.cmqParentChildService = cmqParentChildService;
         this.globalController = globalController;
         
         myHierarchyDlgModel = new CmqBaseHierarchySearchVM(cmqBaseService, smqBaseService, meddraDictService, cmqRelationService, globalController);
@@ -430,14 +434,19 @@ public class ListRelationsVM implements IRelationsChangeListener {
 			if(null != entity) {
 				if (entity instanceof CmqBase190) {
 					CmqBase190 cmqEntity = (CmqBase190) entity;
-					cmqEntity.setCmqParentCode(null);
-					cmqEntity.setCmqParentName(null);
+					//change code here for parent child relationship
+					/*cmqEntity.setCmqParentCode(null);
+					cmqEntity.setCmqParentName(null);*/
 					try {
+						CmqParentChild200 parentChildRelation = this.cmqParentChildService.findByParentAndChildCode(ownerCmqCode, cmqEntity.getCmqCode());
+						this.cmqParentChildService.remove(parentChildRelation, this.authService.getUserCn()
+								, this.authService.getUserGivenName(), this.authService.getUserSurName()
+								, this.authService.getCombinedMappedGroupMembershipAsString());
 						this.cmqBaseService.update(cmqEntity, this.authService.getUserCn()
 								, this.authService.getUserGivenName(), this.authService.getUserSurName()
 								, this.authService.getCombinedMappedGroupMembershipAsString());
 					} catch (CqtServiceException e) {
-						log.error("Error while removing cmq_parent_code value from cmq_id " + cmqEntity.getId(), e);
+						log.error("Error while removing parent child relation from cmq_parent_child_current for child_cmq_code " + cmqEntity.getCmqCode() +" and parent_cmq_code"+ ownerCmqCode, e);
 					}
 				} else {
 					List<CmqRelation190> existingRelation = this.cmqRelationService.findByCmqCode(ownerCmqCode);
@@ -715,7 +724,9 @@ public class ListRelationsVM implements IRelationsChangeListener {
 	}
 	
 	public void populateParentCmqByChild(CmqBase190 childCmq) {
-		if(childCmq.getCmqParentCode() != null) {
+		
+		// change code here for parent child relationship
+		/*if(childCmq.getCmqParentCode() != null) {
 			log.info("Populating cmq base parent for cmq child code " + childCmq.getCmqCode());
 			this.parentCmqEntity = this.cmqBaseService.findByCode(childCmq.getCmqParentCode());
 			if(null != parentCmqEntity) {
@@ -740,6 +751,40 @@ public class ListRelationsVM implements IRelationsChangeListener {
 					new DefaultTreeNode(dummyNode, treeNode);
 				}
 			}
+		} else {
+			log.info("No parent exists for cmq child code " + childCmq.getCmqCode());
+		}*/
+		List<CmqParentChild200> parents = this.cmqParentChildService.findParentsByCmqCode(childCmq.getCmqCode());
+		if(null!=parents && parents.size()>0) {
+			log.info("Populating cmq base parent for cmq child code " + childCmq.getCmqCode());
+			//this.parentCmqEntity = this.cmqBaseService.findByCode(childCmq.getCmqParentCode());
+			//if(null != parentCmqEntity) {
+				this.parentListRoot = new DefaultTreeNode("root"
+						, new HierarchyNode("LEVEL", "NAME", "CODE", "SCOPE", "CATEGORY", "WEIGHT", null)
+						, null);
+				for(CmqParentChild200 parent : parents) {
+					this.parentCmqEntity = this.cmqBaseService.findByCode(parent.getCmqParentCode());
+					HierarchyNode node = new HierarchyNode();
+					node.setLevel(parentCmqEntity.getCmqTypeCd());
+					node.setCode(parentCmqEntity.getCmqCode().toString());
+					node.setTerm(parentCmqEntity.getCmqName());
+					node.setCategory("");
+					node.setWeight("");
+					node.setScope("");
+					node.setEntity(parentCmqEntity);
+					
+					TreeNode treeNode = new DefaultTreeNode(node, this.parentListRoot);
+				
+					Long childCount = this.cmqRelationService.findCountByCmqCode(parent.getCmqParentCode());
+					if((null != childCount) && (childCount > 0)) {
+						HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
+						dummyNode.setDummyNode(true);
+						new DefaultTreeNode(dummyNode, treeNode);
+					}
+					
+				}
+				
+			//}
 		} else {
 			log.info("No parent exists for cmq child code " + childCmq.getCmqCode());
 		}

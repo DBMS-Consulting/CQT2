@@ -88,9 +88,10 @@ public class PublishController implements Serializable {
 		List<CmqBase190> targetCmqsSelected = new ArrayList<>(publishCurrentVersionDualListModel.getTarget());
 		for (CmqBase190 cmqBase : targetCmqsSelected) {
 			targetCmqCodes.add(cmqBase.getCmqCode());
-			if(null != cmqBase.getCmqParentCode()) {
+			//TODO update for parent child relationship
+			/*if(null != cmqBase.getCmqParentCode()) {
 				targetCmqParentCodes.add(cmqBase.getCmqParentCode());
-			}
+			}*/
 		}
 		
 		boolean isListPublishable = true;
@@ -162,7 +163,9 @@ public class PublishController implements Serializable {
 				String cmqError = "";
 				//success
 				for (CmqBase190 cmqBase190 : targetCmqsSelected) {
-					if (cmqBase190.getCmqLevel() == 2 && cmqBase190.getCmqParentCode() == null && cmqBase190.getCmqParentName() == null)
+					//TODO update for parent child relationship
+					//if (cmqBase190.getCmqLevel() == 2 && cmqBase190.getCmqParentCode() == null && cmqBase190.getCmqParentName() == null)
+					if (cmqBase190.getCmqLevel() == 2)
 						hasParentError = true;
 					else {
 						Date lastModifiedDate = new Date();
@@ -425,9 +428,10 @@ public class PublishController implements Serializable {
 		List<CmqBaseTarget> targetCmqsSelected = new ArrayList<>(publishFutureVersionDualListModel.getTarget());
 		for (CmqBaseTarget cmqBase : targetCmqsSelected) {
 			targetCmqCodes.add(cmqBase.getCmqCode());
-			if(null != cmqBase.getCmqParentCode()) {
+			//TODO update for parent child relationship
+			/*if(null != cmqBase.getCmqParentCode()) {
 				targetCmqParentCodes.add(cmqBase.getCmqParentCode());
-			}
+			}*/
 		}
 		
 		boolean isListPublishable = true;

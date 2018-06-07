@@ -64,11 +64,11 @@ public class CmqBaseTarget extends BaseEntity {
 	@Column(name = "CMQ_LEVEL", nullable = false, precision = 1)
 	private Integer cmqLevel;
 
-	@Column(name = "CMQ_PARENT_CODE", precision = 38, scale = 0)
-	private Long cmqParentCode;
+	//@Column(name = "CMQ_PARENT_CODE", precision = 38, scale = 0)
+	//private Long cmqParentCode;
 
-	@Column(name = "CMQ_PARENT_NAME", length = 200)
-	private String cmqParentName;
+	//@Column(name = "CMQ_PARENT_NAME", length = 200)
+	//private String cmqParentName;
 
 	@Column(name = "CMQ_DESCRIPTION", nullable = false, length = 4000)
 	private String cmqDescription;
@@ -199,13 +199,13 @@ public class CmqBaseTarget extends BaseEntity {
 		this.cmqLevel = cmqLevel;
 	}
 
-	public String getCmqParentName() {
+	/*public String getCmqParentName() {
 		return cmqParentName;
 	}
 
 	public void setCmqParentName(String cmqParentName) {
 		this.cmqParentName = cmqParentName;
-	}
+	}*/
 
 	public String getCmqDescription() {
 		return cmqDescription;
@@ -395,13 +395,13 @@ public class CmqBaseTarget extends BaseEntity {
 		return cmqId;
 	}
 
-	public Long getCmqParentCode() {
+	/*public Long getCmqParentCode() {
 		return cmqParentCode;
 	}
 
 	public void setCmqParentCode(Long cmqParentCode) {
 		this.cmqParentCode = cmqParentCode;
-	}
+	}*/
 
 	public String getCmqDesignee2() {
 		return cmqDesignee2;
