@@ -126,7 +126,7 @@
 								style="position: absolute; margin-top: 8px; margin-left: 5px"></i>
 							<h:commandLink
 								rendered="#{impactSearchController.targetTableRootTreeNode.childCount gt 0 and impactSearchController.targetTableRootTreeNode.children.get(0).childCount gt 0}"
-								value="Export" type="button"
+								value="Export" type="button" id="export-btn"
 								disabled="#{!impactSearchController.exportEnabled}"
 								styleClass="generate"
 								onclick="PF('confirmExport').show();return false;" />
@@ -543,7 +543,7 @@
 						<h:panelGrid columns="2">
 							<p:commandButton value="Add selected"
 								onclick="PF('select_mq').hide()"
-								update="currentListsAndSmqs futureListsAndSmqs futureListsToolbar new_pt_btn filterBtn">
+								update="currentListsAndSmqs futureListsAndSmqs futureListsToolbar new_pt_btn filterBtn export-btn">
 								<!-- <f:actionListener
 									binding="#{impactSearchController.updateCurrentTable()}" />
 								<f:actionListener
