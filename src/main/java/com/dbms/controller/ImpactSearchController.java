@@ -1401,25 +1401,9 @@ public class ImpactSearchController implements Serializable {
 	}
 	
 	public void saveNotesAndGoToNextStep() {
-		Object d = null;
-		if(currentOrTarget == SELECTED_CURRENT_LIST && currentTableSelection != null) {
-			HierarchyNode hn = (HierarchyNode)currentTableSelection.getData();
-			d = (hn != null ? hn.getEntity() : null); 					
-		} else if(currentOrTarget == SELECTED_TARGET_LIST && targetTableSelection != null) {
-			HierarchyNode hn = (HierarchyNode)targetTableSelection.getData();
-			d = (hn != null ? hn.getEntity() : null); 
-		}
-		
 		saveInformativeNotes();
-
-		//stops user from being able to go to details tab if they have an SMQ selected
-		if(!(d instanceof SmqBaseTarget) && !(d instanceof SmqBase190)) {
-			iaWizard.setStep(iaWizardNextStep);
-	        RequestContext.getCurrentInstance().update("impactAssessment");
-		} else {
-			iaWizard.setStep("notes");
-			RequestContext.getCurrentInstance().update("impactAssessment");
-		}
+		iaWizard.setStep(iaWizardNextStep);
+        RequestContext.getCurrentInstance().update("impactAssessment");
 	}
 	
 	public boolean isIAWizardNavbarShown() {
@@ -1497,6 +1481,9 @@ public class ImpactSearchController implements Serializable {
 		} else if(d != null && d instanceof SmqBaseTarget) {
 			notesFormModel.loadFromSmqBaseTarget((SmqBaseTarget)d);
 		}
+		
+		FacesContext.getCurrentInstance()
+		.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Canceled the notes form", ""));
 	}
 	
 	public void saveDetails() {
@@ -2833,17 +2820,32 @@ public class ImpactSearchController implements Serializable {
          * Restrictions on users from  REQUESTOR and ADMIN groups
          */
 		
+		//Makes the form read only if and SMQ is selected
+		Object d = null;
+		if(currentOrTarget == SELECTED_CURRENT_LIST && currentTableSelection != null) {
+			HierarchyNode hn = (HierarchyNode)currentTableSelection.getData();
+			d = (hn != null ? hn.getEntity() : null); 					
+		} else if(currentOrTarget == SELECTED_TARGET_LIST && targetTableSelection != null) {
+			HierarchyNode hn = (HierarchyNode)targetTableSelection.getData();
+			d = (hn != null ? hn.getEntity() : null); 
+		}
+
+		if(d instanceof SmqBaseTarget || d instanceof SmqBase190)
+			return true;
+		
         if (authService.getGroupMembershipHeader() != null && (authService.getGroupMembershipHeader().contains(AuthenticationService.REQUESTER_GROUP)
                 || authService.getGroupMembershipHeader().contains("MQM"))) {   
         	
-        	if (detailsFormModel.getStatus().equals(CmqBaseTarget.CMQ_STATUS_VALUE_ACTIVE) 
-        			|| (detailsFormModel.getDesignee() != null && detailsFormModel.getDesignee().equals(authService.getUserCn()))
-        			|| (detailsFormModel.getDesigneeTwo() != null && detailsFormModel.getDesigneeTwo().equals(authService.getUserCn()))
-        			|| (detailsFormModel.getDesigneeThree() != null && detailsFormModel.getDesigneeThree().equals(authService.getUserCn()))) {
-        		System.out.println("\n ******************** authService.getUserCn() " + authService.getUserCn());
-        		return  false;
-        	}
+	        	if (detailsFormModel.getStatus().equals(CmqBaseTarget.CMQ_STATUS_VALUE_ACTIVE) 
+	        			|| (detailsFormModel.getDesignee() != null && detailsFormModel.getDesignee().equals(authService.getUserCn()))
+	        			|| (detailsFormModel.getDesigneeTwo() != null && detailsFormModel.getDesigneeTwo().equals(authService.getUserCn()))
+	        			|| (detailsFormModel.getDesigneeThree() != null && detailsFormModel.getDesigneeThree().equals(authService.getUserCn()))) {
+	        		System.out.println("\n ******************** authService.getUserCn() " + authService.getUserCn());
+	        		return  false;
+	        	}
         }
+        
+        
         
 		if (this.currentOrTarget == SELECTED_CURRENT_LIST ||
                 (detailsFormModel.getState().equals(CmqBaseTarget.CMQ_STATE_APPROVED_IA) ||
