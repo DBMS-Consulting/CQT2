@@ -1316,12 +1316,12 @@ public class ImpactSearchController implements Serializable {
 			
 			if(d instanceof CmqBase190) {
 				notesFormModel.loadFromCmqBase190((CmqBase190)d);
-				detailsFormModel.loadFromCmqBase190((CmqBase190)d);
+				//detailsFormModel.loadFromCmqBase190((CmqBase190)d);
 			} else if(d instanceof SmqBase190) {
 				notesFormModel.loadFromSmqBase190((SmqBase190)d);
 			} else if(d instanceof CmqBaseTarget) {
 				notesFormModel.loadFromCmqBaseTarget((CmqBaseTarget)d);
-				detailsFormModel.loadFromCmqBaseTarget((CmqBaseTarget)d);
+				//detailsFormModel.loadFromCmqBaseTarget((CmqBaseTarget)d);
 			} else if(d instanceof SmqBaseTarget) {
 				notesFormModel.loadFromSmqBaseTarget((SmqBaseTarget)d);
 			}
@@ -1345,12 +1345,15 @@ public class ImpactSearchController implements Serializable {
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 				RequestContext.getCurrentInstance().update("impactAssessment:messages");
 				//if (event.)
+				notesFormModel.loadFromSmqBase190((SmqBase190)d);
 				return "notes";
+				
 				
 			} else if(d instanceof SmqBaseTarget) {
 				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Details tab is not accessible for SMQs", "");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 				RequestContext.getCurrentInstance().update("impactAssessment:messages");
+				notesFormModel.loadFromSmqBaseTarget((SmqBaseTarget)d);
 				return "notes";
 				
 			} 			
