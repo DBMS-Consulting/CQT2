@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Iterator;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -28,6 +29,7 @@ import com.dbms.service.AuthenticationService;
 import com.dbms.service.ICmqBase190Service;
 import com.dbms.service.ICmqBaseTargetService;
 import com.dbms.service.ICmqRelation190Service;
+import com.dbms.service.ICmqParentChild200Service;
 import com.dbms.service.IRefCodeListService;
 import com.dbms.util.exceptions.CqtServiceException;
 
@@ -58,6 +60,9 @@ public class PublishController implements Serializable {
 	@ManagedProperty("#{AuthenticationService}")
 	private AuthenticationService authService;
 	
+	@ManagedProperty("#{CmqParentChild200Service}")
+	private ICmqParentChild200Service cmqParentChildService;
+	
 	private List<CmqBase190> sourceList;
 	private List<CmqBase190> targetList;
 	
@@ -72,7 +77,7 @@ public class PublishController implements Serializable {
 	
 	@PostConstruct
 	public void init() {
-		sourceList = this.cmqBaseService.findApprovedCmqs();
+		sourceList = getApprovedSourceList();
 		targetList = new ArrayList<CmqBase190>();
 		sourceIAList = this.cmqBaseTargetService.findApprovedCmqs();
 		targetIAList = new ArrayList<CmqBaseTarget>();
@@ -81,10 +86,44 @@ public class PublishController implements Serializable {
 		this.cmqBaseDualListConverter = new CmqBaseDualListConverter();
 		this.cmqBaseTargetDualListConverter = new CmqBaseTargetDualListConverter();
 	}
+	
+	private List<CmqBase190> getApprovedSourceList() {
+		List<CmqBase190> approvedCmqList = this.cmqBaseService.findApprovedCmqs();
+		List<CmqBaseTarget> targetList = new ArrayList<>();
+		List<Long> baseCmqCodes = new ArrayList<>();
+		if(null!=approvedCmqList && !approvedCmqList.isEmpty()) {
+			for(CmqBase190 baseCmq :approvedCmqList) {
+				baseCmqCodes.add(baseCmq.getCmqCode());
+			}
+			targetList = this.cmqBaseTargetService.findByCodes(baseCmqCodes);
+			
+			if (targetList.isEmpty())
+				return approvedCmqList;
+			else{
+				Iterator<CmqBase190> baseCmqIterator = approvedCmqList.iterator();
+				while(baseCmqIterator.hasNext()) {
+					CmqBase190 baseCmq = baseCmqIterator.next();
+					for(CmqBaseTarget targetCmq : targetList) {
+						if(baseCmq.getCmqCode()==targetCmq.getCmqCode()) {
+							if(targetCmq.getCmqState().equalsIgnoreCase(CmqBaseTarget.CMQ_STATE_PENDING_IA)
+									||targetCmq.getCmqState().equalsIgnoreCase(CmqBaseTarget.CMQ_STATE_APPROVED_IA)
+									|| targetCmq.getCmqState().equalsIgnoreCase(CmqBaseTarget.CMQ_STATE_PUBLISHED_IA)){
+								
+								baseCmqIterator.remove();
+								break;
+							}
+							
+						}
+					}
+				}
+			}
+		}
+		return approvedCmqList;
+	}
 
 	public String promoteTargetList() {
 		List<Long> targetCmqCodes = new ArrayList<>();
-		List<Long> targetCmqParentCodes = new ArrayList<>();
+		//List<Long> targetCmqParentCodes = new ArrayList<>();
 		List<CmqBase190> targetCmqsSelected = new ArrayList<>(publishCurrentVersionDualListModel.getTarget());
 		for (CmqBase190 cmqBase : targetCmqsSelected) {
 			targetCmqCodes.add(cmqBase.getCmqCode());
@@ -121,26 +160,25 @@ public class PublishController implements Serializable {
 			LOG.info("\n\n ******  " + codes); 
 			FacesContext.getCurrentInstance().addMessage(null, 
                     new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                            "The List being promoted has an associated list that must be Promoted", ""));
+                            "The List being promoted has an associated list that must be Published in a group", ""));
 			
 			return "";
 		} else {
 			//now check the parents of these cmqs
-			if(targetCmqParentCodes.size() > 0) {
-				List<CmqBase190> parentCmqsList = this.cmqBaseService.findParentCmqsByCodes(targetCmqParentCodes);
-				if(null != parentCmqsList) {
-					for (CmqBase190 cmqBase190 : parentCmqsList) {
-						//if parent is not in the target list then check if its publisher or not
-						if(!targetCmqCodes.contains(cmqBase190.getCmqCode())) {
-							if(!cmqBase190.getCmqState().equalsIgnoreCase(CmqBase190.CMQ_STATE_VALUE_PUBLISHED)
-									&& cmqBase190.getCmqStatus().equalsIgnoreCase(CmqBase190.CMQ_STATUS_VALUE_PENDING)) {
-								isListPublishable = false;
-								faultyCmqs.add(cmqBase190);
-							}
+			List<CmqBase190> parentCmqsList = this.cmqBaseService.findParentCmqsByCodes(targetCmqCodes);
+			if(null != parentCmqsList) {
+				for (CmqBase190 cmqBase190 : parentCmqsList) {
+					//if parent is not in the target list then check if its publisher or not
+					if(!targetCmqCodes.contains(cmqBase190.getCmqCode())) {
+						if(!cmqBase190.getCmqState().equalsIgnoreCase(CmqBase190.CMQ_STATE_VALUE_PUBLISHED)
+								&& cmqBase190.getCmqStatus().equalsIgnoreCase(CmqBase190.CMQ_STATUS_VALUE_PENDING)) {
+							isListPublishable = false;
+							faultyCmqs.add(cmqBase190);
 						}
 					}
 				}
 			}
+			
 			
 			if(!isListPublishable) {
 				//show error dialog with names of faulty cmqs
@@ -163,9 +201,9 @@ public class PublishController implements Serializable {
 				String cmqError = "";
 				//success
 				for (CmqBase190 cmqBase190 : targetCmqsSelected) {
-					//TODO update for parent child relationship
 					//if (cmqBase190.getCmqLevel() == 2 && cmqBase190.getCmqParentCode() == null && cmqBase190.getCmqParentName() == null)
-					if (cmqBase190.getCmqLevel() == 2)
+					Long parentCount = this.cmqParentChildService.findCmqParentCountForChildCmqCode(cmqBase190.getCmqCode());
+					if (cmqBase190.getCmqLevel() == 2 && (null==parentCount || parentCount== 0))
 						hasParentError = true;
 					else {
 						Date lastModifiedDate = new Date();
@@ -703,6 +741,14 @@ public class PublishController implements Serializable {
 
 	public void setAuthService(AuthenticationService authService) {
 		this.authService = authService;
+	}
+	
+	public ICmqParentChild200Service getCmqParentChildService() {
+		return cmqParentChildService;
+	}
+
+	public void setCmqParentChildService(ICmqParentChild200Service cmqParentChildService) {
+		this.cmqParentChildService = cmqParentChildService;
 	}
 
 }
