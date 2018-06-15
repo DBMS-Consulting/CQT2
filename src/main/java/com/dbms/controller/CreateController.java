@@ -263,13 +263,13 @@ public class CreateController implements Serializable {
 	public String saveDetailsAndClose() {
         if(detailsFormModel.validateForm()) {
             if(createWizard != null) {
-            	createWizardSaveDetailsAndClose();
+            		createWizardSaveDetailsAndClose();
             }
             else if(copyWizard != null) {
                 copyWizardSaveDetailsAndClose();
             }
             else if(updateWizard != null) {
-            	updateWizardSaveDetailsAndClose();
+            		updateWizardSaveDetailsAndClose();
             }
                 
         }
@@ -818,7 +818,7 @@ public class CreateController implements Serializable {
 					IEntity entity = hierarchyNode.getEntity();
 					if (entity instanceof CmqBase190) {
 						CmqBase190 cmqEntity = (CmqBase190) entity;
-						 updateParentChildRelationship(cmqEntity,cmqBase,parentChildList);
+						updateParentChildRelationship(cmqEntity,cmqBase,parentChildList);
 						//change code here for parent child relationship
 						/*Long existingParentCode = cmqEntity.getCmqParentCode();
 						if((null == existingParentCode) || (existingParentCode.longValue() != cmqBase.getCmqCode().longValue())) {
@@ -1011,7 +1011,7 @@ public class CreateController implements Serializable {
 			String lastModifiedByString = this.authService.getLastModifiedByUserAsString();
 			
 			List<CmqRelation190> cmqRelationsList = new ArrayList<>();
-			List<CmqBase190> cmqBaseChildrenList = new ArrayList<>();
+			List<CmqParentChild200> parentChildList = new ArrayList<>();
 			List<TreeNode> childTreeNodes = relationsRoot.getChildren();
 			//TEST laster if we really need this call.
 			CmqBase190 cmqBase = this.cmqBaseService.findByCode(selectedData.getCmqCode());
@@ -1026,7 +1026,8 @@ public class CreateController implements Serializable {
 					IEntity entity = hierarchyNode.getEntity();
 					if (entity instanceof CmqBase190) {
 						CmqBase190 cmqEntity = (CmqBase190) entity;
-						//TODO update for parent child relationship
+						updateParentChildRelationship(cmqEntity,cmqBase,parentChildList);
+						//change code here for parent child relationship
 						/*Long existingParentCode = cmqEntity.getCmqParentCode();
 						if((null == existingParentCode) || (existingParentCode.longValue() != cmqBase.getCmqCode().longValue())) {
 							//update only if needed
@@ -1166,7 +1167,7 @@ public class CreateController implements Serializable {
 				}//end of if (null != hierarchyNode)
 			}
 			
-			if (!cmqRelationsList.isEmpty() || !cmqBaseChildrenList.isEmpty()) {
+			if (!cmqRelationsList.isEmpty() || !parentChildList.isEmpty()) {
 				try {
 					if(!cmqRelationsList.isEmpty()) {
 						for (CmqRelation190 cmqRelation190 : cmqRelationsList) {
@@ -1183,17 +1184,8 @@ public class CreateController implements Serializable {
 								, this.authService.getUserGivenName(), this.authService.getUserSurName()
 								, this.authService.getCombinedMappedGroupMembershipAsString());
 					}
-					if(!cmqBaseChildrenList.isEmpty()) {
-						
-						for (CmqBase190 cmqBase190 : cmqBaseChildrenList) {
-							cmqBase190.setLastModifiedBy(lastModifiedByString);
-							cmqBase190.setLastModifiedDate(lastModifiedDate);
-							if(StringUtils.isBlank(cmqBase190.getCreatedBy()) || cmqBase190.getCreationDate() == null) {
-								cmqBase190.setCreatedBy(lastModifiedByString);
-								cmqBase190.setCreationDate(lastModifiedDate);
-							}
-						}
-						this.cmqBaseService.update(cmqBaseChildrenList, this.authService.getUserCn()
+					if(!parentChildList.isEmpty()) {
+						this.cmqParentChildService.update(parentChildList,this.authService.getUserCn()
 								, this.authService.getUserGivenName(), this.authService.getUserSurName()
 								, this.authService.getCombinedMappedGroupMembershipAsString());
 					}
