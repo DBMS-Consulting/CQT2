@@ -30,6 +30,7 @@ import com.dbms.service.ICmqBase190Service;
 import com.dbms.service.ICmqBaseTargetService;
 import com.dbms.service.ICmqRelation190Service;
 import com.dbms.service.ICmqParentChild200Service;
+import com.dbms.service.ICmqParentChildTargetService;
 import com.dbms.service.IRefCodeListService;
 import com.dbms.util.exceptions.CqtServiceException;
 
@@ -62,6 +63,9 @@ public class PublishController implements Serializable {
 	
 	@ManagedProperty("#{CmqParentChild200Service}")
 	private ICmqParentChild200Service cmqParentChildService;
+	
+	@ManagedProperty("#{CmqParentChildTargetService}")
+	private ICmqParentChildTargetService cmqParentChildTargetService;
 	
 	private List<CmqBase190> sourceList;
 	private List<CmqBase190> targetList;
@@ -462,14 +466,9 @@ public class PublishController implements Serializable {
 	 */
 	public String promoteIATargetList() {
 		List<Long> targetCmqCodes = new ArrayList<>();
-		List<Long> targetCmqParentCodes = new ArrayList<>();
 		List<CmqBaseTarget> targetCmqsSelected = new ArrayList<>(publishFutureVersionDualListModel.getTarget());
 		for (CmqBaseTarget cmqBase : targetCmqsSelected) {
 			targetCmqCodes.add(cmqBase.getCmqCode());
-			//TODO update for parent child relationship
-			/*if(null != cmqBase.getCmqParentCode()) {
-				targetCmqParentCodes.add(cmqBase.getCmqParentCode());
-			}*/
 		}
 		
 		boolean isListPublishable = true;
@@ -495,20 +494,19 @@ public class PublishController implements Serializable {
 			return "";
 		} else {
 			//now check the parents of these cmqs
-			if(targetCmqParentCodes.size() > 0) {
-				List<CmqBaseTarget> parentCmqsList = this.cmqBaseTargetService.findParentCmqsByCodes(targetCmqParentCodes);
-				if(null != parentCmqsList) {
-					for (CmqBaseTarget cmqBaseTarget : parentCmqsList) {
-						//if parent is not in the target list then check if its publisher or not
-						if(!targetCmqCodes.contains(cmqBaseTarget.getCmqCode())) {
-							if(!cmqBaseTarget.getCmqState().equalsIgnoreCase(CmqBaseTarget.CMQ_STATE_PUBLISHED_IA)
-									&& cmqBaseTarget.getCmqStatus().equalsIgnoreCase(CmqBase190.CMQ_STATUS_VALUE_PENDING)) {
-								isListPublishable = false;
-							}
+			List<CmqBaseTarget> parentCmqsList = this.cmqBaseTargetService.findParentCmqsByCodes(targetCmqCodes);
+			if(null != parentCmqsList) {
+				for (CmqBaseTarget cmqBaseTarget : parentCmqsList) {
+					//if parent is not in the target list then check if its publisher or not
+					if(!targetCmqCodes.contains(cmqBaseTarget.getCmqCode())) {
+						if(!cmqBaseTarget.getCmqState().equalsIgnoreCase(CmqBaseTarget.CMQ_STATE_PUBLISHED_IA)
+								&& cmqBaseTarget.getCmqStatus().equalsIgnoreCase(CmqBase190.CMQ_STATUS_VALUE_PENDING)) {
+							isListPublishable = false;
 						}
 					}
 				}
 			}
+			
 			
 			if(!isListPublishable) {
 				//show error dialog with names
@@ -523,10 +521,13 @@ public class PublishController implements Serializable {
 				String cmqError = "";
 				//success
 				for (CmqBaseTarget cmqBaseTarget : targetCmqsSelected) {
-//					if ((cmqBaseTarget.getCmqLevel() == 2 || cmqBaseTarget.getCmqLevel() == 1) 
-//							&& cmqBaseTarget.getCmqParentCode() == null && cmqBaseTarget.getCmqParentName() == null)
-//						hasParentError = true;
-//					else {
+					if ((cmqBaseTarget.getCmqLevel() == 2)) {
+						Long parentCount = this.cmqParentChildTargetService.findCmqParentCountForChildCmqCode(cmqBaseTarget.getCmqCode());
+						if(null==parentCount || parentCount <1)
+							hasParentError = true;
+						}
+												
+					else {
 						Date lastModifiedDate = new Date();
 						String lastModifiedByString = this.authService.getLastModifiedByUserAsString();
 						cmqBaseTarget.setCmqState(CmqBaseTarget.CMQ_STATE_PUBLISHED_IA);
@@ -534,17 +535,17 @@ public class PublishController implements Serializable {
 						cmqBaseTarget.setActivationDate(lastModifiedDate);
 						cmqBaseTarget.setLastModifiedDate(lastModifiedDate);
 						cmqBaseTarget.setLastModifiedBy(lastModifiedByString);
-					//}
+					}
 
-//					if (hasParentError) {
-//						cmqError = cmqBaseTarget.getCmqName();
-//						break;
-//					}
+					if (hasParentError) {
+						cmqError = cmqBaseTarget.getCmqName();
+						break;
+					}
 				}
 				if (hasParentError) {
 					FacesContext.getCurrentInstance().addMessage(null, 
                             new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                                    "The list being promoted has an associated list that must be Promoted.", ""));
+                                    "The list being promoted has an associated list that must be Promoted.", cmqError));
 					
 					return "";
 				}
@@ -749,6 +750,14 @@ public class PublishController implements Serializable {
 
 	public void setCmqParentChildService(ICmqParentChild200Service cmqParentChildService) {
 		this.cmqParentChildService = cmqParentChildService;
+	}
+	
+	public ICmqParentChildTargetService getCmqParentChildTargetService() {
+		return cmqParentChildTargetService;
+	}
+	
+	public void setCmqParentChildTargetService(ICmqParentChildTargetService cmqParentChildTargetService) {
+		this.cmqParentChildTargetService = cmqParentChildTargetService;
 	}
 
 }
