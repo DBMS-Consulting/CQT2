@@ -14,15 +14,14 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 
-import org.primefaces.context.RequestContext;
 import org.primefaces.model.DualListModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.dbms.entity.cqt.CmqBase190;
-import com.dbms.entity.cqt.CmqBaseTarget;
 import com.dbms.service.AuthenticationService;
 import com.dbms.service.ICmqBase190Service;
+import com.dbms.service.ICmqParentChild200Service;
 import com.dbms.service.ICmqRelation190Service;
 import com.dbms.service.IRefCodeListService;
 import com.dbms.util.exceptions.CqtServiceException;
@@ -50,6 +49,9 @@ public class ReactivateController implements Serializable {
 	@ManagedProperty("#{AuthenticationService}")
 	private AuthenticationService authService;
 	
+	@ManagedProperty("#{CmqParentChild200Service}")
+	private ICmqParentChild200Service cmqParentChildService;
+	
 	private List<CmqBase190> sourceListToReactivate;
 
 	private List<CmqBase190> targetList;
@@ -73,14 +75,10 @@ public class ReactivateController implements Serializable {
 	public String reactivateTargetList() {
 		int cptChildren = 0;
 		List<Long> targetCmqCodes = new ArrayList<>();
-		List<Long> targetCmqParentCodes = new ArrayList<>();
 		List<CmqBase190> targetCmqsSelected = new ArrayList<>(reactivateDualListModel.getTarget());
 		for (CmqBase190 cmqBase : targetCmqsSelected) {
 			targetCmqCodes.add(cmqBase.getCmqCode());
-			//TODO update for parent child relationship
-			/*if(null != cmqBase.getCmqParentCode()) {
-				targetCmqParentCodes.add(cmqBase.getCmqParentCode());
-			}*/
+			
 		}
 		
 		boolean isListPublishable = true;
@@ -116,22 +114,21 @@ public class ReactivateController implements Serializable {
 			return "";
 		} else {
 			//now check the parents of these cmqs
-			if(targetCmqParentCodes.size() > 0) {
-				List<CmqBase190> parentCmqsList = this.cmqBaseService.findParentCmqsByCodes(targetCmqParentCodes);
-				if(null != parentCmqsList) {
-					for (CmqBase190 cmqBase190 : parentCmqsList) {
-						//if parent is not in the target list then check if its reactivated or not
-						if(!targetCmqCodes.contains(cmqBase190.getCmqCode()) && (!cmqBase190.getCmqStatus().equalsIgnoreCase(CmqBase190.CMQ_STATUS_VALUE_ACTIVE))) {
-							cptChildren++;
-							//if() {
-								isListPublishable = false;
-								faultyCmqs.add(cmqBase190);
-								
-							//}
-						}
+			List<CmqBase190> parentCmqsList = this.cmqBaseService.findParentCmqsByCodes(targetCmqCodes);
+			if(null != parentCmqsList) {
+				for (CmqBase190 cmqBase190 : parentCmqsList) {
+					//if parent is not in the target list then check if its reactivated or not
+					if(!targetCmqCodes.contains(cmqBase190.getCmqCode()) && (!cmqBase190.getCmqStatus().equalsIgnoreCase(CmqBase190.CMQ_STATUS_VALUE_ACTIVE))) {
+						cptChildren++;
+						//if() {
+							isListPublishable = false;
+							faultyCmqs.add(cmqBase190);
+							
+						//}
 					}
 				}
 			}
+			
 			
 			if(!isListPublishable) {
 				//show error dialog with names of faulty cmqs
@@ -161,10 +158,10 @@ public class ReactivateController implements Serializable {
 				String cmqError = "";
 				//success
 				for (CmqBase190 cmqBase190 : targetCmqsSelected) {
-					//TODO update for parent child relationship
 					//if (cmqBase190.getCmqLevel() == 2 && cmqBase190.getCmqParentCode() == null && cmqBase190.getCmqParentName() == null)
-					if (cmqBase190.getCmqLevel() == 2)	
-					hasParentError = true;
+					Long parentCount = this.cmqParentChildService.findCmqParentCountForChildCmqCode(cmqBase190.getCmqCode());
+					if (cmqBase190.getCmqLevel() == 2 && (null==parentCount || parentCount== 0))	
+						hasParentError = true;
 					else {
 						cmqBase190.setCmqState(CmqBase190.CMQ_STATE_VALUE_DRAFT);
 	 					cmqBase190.setCmqStatus(CmqBase190.CMQ_STATUS_VALUE_PENDING); 
@@ -231,6 +228,7 @@ public class ReactivateController implements Serializable {
 		return "";
 	}
 
+	/*
 	private boolean isSelected(Long cmqCode, List<CmqBase190> targetCmqsSelected) {
 		int cpt = 0;
 		for (CmqBase190 cmq : targetCmqsSelected)
@@ -240,6 +238,7 @@ public class ReactivateController implements Serializable {
 			return true;
 		return false;
 	}
+	*/
 
 	private class CmqBaseDualListConverter implements Converter {
 
@@ -345,4 +344,13 @@ public class ReactivateController implements Serializable {
 	public void setAuthService(AuthenticationService authService) {
 		this.authService = authService;
 	} 
+	
+	public ICmqParentChild200Service getCmqParentChildService() {
+		return cmqParentChildService;
+	}
+		
+		
+	public void setCmqParentChildService(ICmqParentChild200Service cmqParentChildService) {
+		this.cmqParentChildService = cmqParentChildService;
+	}
 }
