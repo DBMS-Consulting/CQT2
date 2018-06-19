@@ -114,7 +114,6 @@ public class RetireController implements Serializable {
 						&& childCmq.getCmqState().equalsIgnoreCase(CmqBase190.CMQ_STATE_VALUE_PUBLISHED))
 					cptChild++;
 				for (CmqBase190 srcCmq : targetCmqsSelected) {
-					//TODO update for parent child relationship
 					List<Long> parentCodes = getParentCMQCodes(this.cmqParentChildService.findParentsByCmqCode(childCmq.getCmqCode()));
 					if(null==parentCodes) {
 						if (childCmq.getCmqCode().equals(srcCmq.getCmqCode())) 
@@ -131,8 +130,8 @@ public class RetireController implements Serializable {
 				childNotSelected = false;
 		}
 		if (childCmqsOftargets != null && !childCmqsOftargets.isEmpty() && childNotSelected) {
-			this.confirmMessage = "Not all associate child lists are selected for inactivation.";
-			RequestContext.getCurrentInstance().execute("PF('confirmRetireOK').show();");
+			this.confirmMessage = "Not all associated child lists are selected. Do you want to proceed?";
+			RequestContext.getCurrentInstance().execute("PF('confirmRetire').show();");
 		}  
 		else {
 			this.confirmMessage = "Are you sure you want to retire this list?";
@@ -184,8 +183,13 @@ public class RetireController implements Serializable {
 			//(If the child is status in active then show a error 
 			//"The list being retire has an associated active child list hence cannot be retire.”
 			List<CmqBase190> childCmqsOftargets = this.cmqBaseService.findChildCmqsByCodes(targetCmqCodes);
-			if (childNotSelected && childCmqsOftargets != null && childCmqsOftargets.size() > 0)
-				return "";
+			for(CmqBase190 cmqBase : childCmqsOftargets) {
+				List<Long> parentCodes = getParentCMQCodes(this.cmqParentChildService.findParentsByCmqCode(cmqBase.getCmqCode()));
+				if (childNotSelected && childCmqsOftargets != null && childCmqsOftargets.size() > 0
+						&& parentCodes.size() < 2)
+					return "";
+			}
+			
 			if((null != childCmqsOftargets) && (childCmqsOftargets.size() > 0)) {
 				//add them to the selected cmqs list
 				for (CmqBase190 childCmq : childCmqsOftargets) {
