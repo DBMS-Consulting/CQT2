@@ -150,8 +150,21 @@ public class RetireController implements Serializable {
 		}
 		return cmqCodes;
 	}
+	
+	private List<CmqBase190> getParentCMQS(List<Long> parentChildList) {
+		List<CmqBase190> parentCmqs  = null;
+				
+		if(null!=parentChildList) {
+			parentCmqs = new ArrayList<>();
+			for(Long parentChild : parentChildList) {
+				parentCmqs.add(this.cmqBaseService.findByCode(parentChild));
+			}
+		}
+		return parentCmqs;
+	}
 	 
 
+	@SuppressWarnings("null")
 	public String retireTargetList() {
 		String lastModifiedByString = this.authService.getLastModifiedByUserAsString();
 
@@ -184,9 +197,16 @@ public class RetireController implements Serializable {
 			//"The list being retire has an associated active child list hence cannot be retire.”
 			List<CmqBase190> childCmqsOftargets = this.cmqBaseService.findChildCmqsByCodes(targetCmqCodes);
 			for(CmqBase190 cmqBase : childCmqsOftargets) {
+				int activeParents = 0;
 				List<Long> parentCodes = getParentCMQCodes(this.cmqParentChildService.findParentsByCmqCode(cmqBase.getCmqCode()));
+				List<CmqBase190> parentCmqs = getParentCMQS(parentCodes);
+				for(CmqBase190 cmq : parentCmqs) {
+					if(cmq.getCmqStatus().charAt(0) == 'A')
+						activeParents++;
+				}
+				System.out.println(activeParents);
 				if (childNotSelected && childCmqsOftargets != null && childCmqsOftargets.size() > 0
-						&& parentCodes.size() < 2)
+						&& activeParents < 2)
 					return "";
 			}
 			
