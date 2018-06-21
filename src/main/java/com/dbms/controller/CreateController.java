@@ -2015,10 +2015,14 @@ public class CreateController implements Serializable {
 		
 		for (CmqRelation190 cmqRelation190 : existingRelation) {
 			//check for PT or LLT
-			if((null != cmqRelation190.getPtCode()) && (cmqRelation190.getPtCode().longValue() == code.longValue())){
-				matchingMap.put("MATCH_FOUND", true);
-			} else if ((null != cmqRelation190.getLltCode()) && (cmqRelation190.getLltCode().longValue() == code.longValue())) {
-				matchingMap.put("MATCH_FOUND", true);
+			if(StringUtils.equalsIgnoreCase(hierarchyNode.getLevel(), "LLT")) {
+				if ((null != cmqRelation190.getLltCode()) && (cmqRelation190.getLltCode().longValue() == code.longValue())) {
+					matchingMap.put("MATCH_FOUND", true);
+				}
+			} else if(StringUtils.equalsIgnoreCase(hierarchyNode.getLevel(), "PT")) {
+				if((null != cmqRelation190.getPtCode()) && (cmqRelation190.getPtCode().longValue() == code.longValue())){
+					matchingMap.put("MATCH_FOUND", true);
+				}
 			}
 			
 			Boolean matchFound = (Boolean) matchingMap.get("MATCH_FOUND");
