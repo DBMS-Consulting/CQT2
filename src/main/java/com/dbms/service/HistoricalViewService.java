@@ -3,6 +3,7 @@ package com.dbms.service;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
@@ -92,6 +93,14 @@ public class HistoricalViewService implements IHistoricalViewService {
 				query.addScalar("designee3", StandardBasicTypes.STRING);
 				query.addScalar("medicalConcept", StandardBasicTypes.STRING);
 				
+				if (!StringUtils.isBlank(auditTimeStampString)) {
+					DateTimeFormatter formatter = new DateTimeFormatterBuilder().parseCaseInsensitive().appendPattern("dd-MMM-yyyy:hh:mm:ss a z").toFormatter();
+					 LocalDateTime date = LocalDateTime.parse(auditTimeStampString, formatter);
+					 Timestamp timestamp = Timestamp.valueOf(date);
+					 query.setParameter("CMQAuditTimestamp", timestamp);
+					 
+				}
+
 				// query.setFetchSize(1000);
 				query.setResultTransformer(Transformers.aliasToBean(HistoricalViewDbDataDTO.class));
 				query.setCacheable(false);

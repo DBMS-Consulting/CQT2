@@ -90,6 +90,22 @@ public class AuditTrailService implements IAuditTrailService{
 	 				+"	 when TRANSACTION_TYPE = 'D' THEN "
 	 				+"	 'Relation Deleted' "
 	 				+"	 end "
+	 				+"	 WHEN TABLE_NAME IN ('CMQ_PARENT_CHILD_"+dictionaryVersion+"_AUDIT') AND COLUMN_NAME IN ('CMQ_CHILD_CODE','CMQ_CHILD_NAME') THEN  "
+	 				+"	case when TRANSACTION_TYPE = 'I' THEN "
+	 				+"	 'New CHILD Inserted' "
+	 				+"	     when TRANSACTION_TYPE = 'U' THEN "
+	 				+"	 'CHILD Updated' "
+	 				+"	 when TRANSACTION_TYPE = 'D' THEN "
+	 				+"	 'CHILD Deleted' "
+	 				+"	 end "
+	 				+"	 WHEN TABLE_NAME IN ('CMQ_PARENT_CHILD_"+dictionaryVersion+"_AUDIT') AND COLUMN_NAME IN ('CMQ_PARENT_CODE','CMQ_PARENT_NAME') THEN  "
+	 				+"	case when TRANSACTION_TYPE = 'I' THEN "
+	 				+"	 'New PARENT Inserted' "
+	 				+"	     when TRANSACTION_TYPE = 'U' THEN "
+	 				+"	 'PARENT Updated' "
+	 				+"	 when TRANSACTION_TYPE = 'D' THEN "
+	 				+"	 'PARENT Deleted' "
+	 				+"	 end "
 	 				+"	 end transactionType "
 	 				+" , cb.CMQ_CODE cmqCode "
 	 				+" , cmq_all_audit.OLD oldValue "
@@ -205,7 +221,49 @@ public class AuditTrailService implements IAuditTrailService{
 	 				+"         and cmq_id = cba.cmq_id) "
 	 				+"    and audit_timestamp <= :auditTimeStampString"
 	 				+"  UNION "
-	 				+"SELECT CMQ_ID "
+	 				+"  SELECT PARENT_CMQ_ID CMQ_ID "
+	 				+"  , TO_CHAR(CMQ_CHILD_CODE_New) NEW "
+	 				+"  , TO_CHAR(CMQ_CHILD_CODE_old) OLD "
+	 				+"  , TRANSACTION_ID "
+	 				+"  , TRANSACTION_TYPE "
+	 				+"  , FIRST_NAME "
+	 				+"  , LAST_NAME "
+	 				+"  , USERID "
+	 				+"  , GROUP_NAME "
+	 				+"  , AUDIT_TIMESTAMP "
+	 				+"  ,'CMQ_CHILD_CODE' column_name "
+	 				+"  ,'CMQ_PARENT_CHILD_"+dictionaryVersion+"_AUDIT' table_name "
+	 				+"  FROM CMQ_PARENT_CHILD_"+dictionaryVersion+"_AUDIT cba "
+	 				+"  WHERE NVL(TO_CHAR(CMQ_CHILD_CODE_New),'xoxox') <> NVL(TO_CHAR(CMQ_CHILD_CODE_OLD),'xoxox') "
+	 				+"      and exists "
+	 				+"        (select 1 from "
+	 				+"         CMQ_BASE_"+dictionaryVersion+" "
+	 				+"         where cmq_name = :listName "
+	 				+"         and cmq_id = cba.PARENT_CMQ_ID) "
+	 				+"    and audit_timestamp <= :auditTimeStampString"
+	 				+"  UNION "
+	 				+"  SELECT PARENT_CMQ_ID CMQ_ID "
+	 				+"  , TO_CHAR(CMQ_CHILD_NAME_New) NEW "
+	 				+"  , TO_CHAR(CMQ_CHILD_NAME_old) OLD "
+	 				+"  , TRANSACTION_ID "
+	 				+"  , TRANSACTION_TYPE "
+	 				+"  , FIRST_NAME "
+	 				+"  , LAST_NAME "
+	 				+"  , USERID "
+	 				+"  , GROUP_NAME "
+	 				+"  , AUDIT_TIMESTAMP "
+	 				+"  ,'CMQ_CHILD_NAME' column_name "
+	 				+"  ,'CMQ_PARENT_CHILD_"+dictionaryVersion+"_AUDIT' table_name "
+	 				+"  FROM CMQ_PARENT_CHILD_"+dictionaryVersion+"_AUDIT cba "
+	 				+"  WHERE NVL(TO_CHAR(CMQ_CHILD_NAME_New),'xoxox') <> NVL(TO_CHAR(CMQ_CHILD_NAME_OLD),'xoxox') "
+	 				+"    and exists "
+	 				+"        (select 1 from "
+	 				+"         CMQ_BASE_"+dictionaryVersion+" "
+	 				+"         where cmq_name = :listName "
+	 				+"         and cmq_id = cba.PARENT_CMQ_ID) "
+	 				+"    and audit_timestamp <= :auditTimeStampString"
+	 				+"	UNION "
+	 				+"	SELECT CHILD_CMQ_ID CMQ_ID "
 	 				+"  , TO_CHAR(CMQ_PARENT_CODE_New) NEW "
 	 				+"  , TO_CHAR(CMQ_PARENT_CODE_old) OLD "
 	 				+"  , TRANSACTION_ID "
@@ -216,17 +274,17 @@ public class AuditTrailService implements IAuditTrailService{
 	 				+"  , GROUP_NAME "
 	 				+"  , AUDIT_TIMESTAMP "
 	 				+"  ,'CMQ_PARENT_CODE' column_name "
-	 				+"  ,'CMQ_BASE_"+dictionaryVersion+"_AUDIT' table_name "
-	 				+"  FROM CMQ_BASE_"+dictionaryVersion+"_AUDIT cba "
+	 				+"  ,'CMQ_PARENT_CHILD_"+dictionaryVersion+"_AUDIT' table_name "
+	 				+"  FROM CMQ_PARENT_CHILD_"+dictionaryVersion+"_AUDIT cba "
 	 				+"  WHERE NVL(TO_CHAR(CMQ_PARENT_CODE_New),'xoxox') <> NVL(TO_CHAR(CMQ_PARENT_CODE_OLD),'xoxox') "
 	 				+"      and exists "
 	 				+"        (select 1 from "
 	 				+"         CMQ_BASE_"+dictionaryVersion+" "
 	 				+"         where cmq_name = :listName "
-	 				+"         and cmq_id = cba.cmq_id) "
+	 				+"         and cmq_id = cba.CHILD_CMQ_ID) "
 	 				+"    and audit_timestamp <= :auditTimeStampString"
 	 				+"  UNION "
-	 				+"  SELECT CMQ_ID "
+	 				+"  SELECT CHILD_CMQ_ID CMQ_ID "
 	 				+"  , TO_CHAR(CMQ_PARENT_NAME_New) NEW "
 	 				+"  , TO_CHAR(CMQ_PARENT_NAME_old) OLD "
 	 				+"  , TRANSACTION_ID "
@@ -237,14 +295,14 @@ public class AuditTrailService implements IAuditTrailService{
 	 				+"  , GROUP_NAME "
 	 				+"  , AUDIT_TIMESTAMP "
 	 				+"  ,'CMQ_PARENT_NAME' column_name "
-	 				+"  ,'CMQ_BASE_"+dictionaryVersion+"_AUDIT' table_name "
-	 				+"  FROM CMQ_BASE_"+dictionaryVersion+"_AUDIT cba "
+	 				+"  ,'CMQ_PARENT_CHILD_"+dictionaryVersion+"_AUDIT' table_name "
+	 				+"  FROM CMQ_PARENT_CHILD_"+dictionaryVersion+"_AUDIT cba "
 	 				+"  WHERE NVL(TO_CHAR(CMQ_PARENT_NAME_New),'xoxox') <> NVL(TO_CHAR(CMQ_PARENT_NAME_OLD),'xoxox') "
 	 				+"    and exists "
 	 				+"        (select 1 from "
 	 				+"         CMQ_BASE_"+dictionaryVersion+" "
 	 				+"         where cmq_name = :listName "
-	 				+"         and cmq_id = cba.cmq_id) "
+	 				+"         and cmq_id = cba.CHILD_CMQ_ID) "
 	 				+"    and audit_timestamp <= :auditTimeStampString"
 	 				+"  UNION "
 	 				+"  SELECT CMQ_ID "
@@ -268,36 +326,6 @@ public class AuditTrailService implements IAuditTrailService{
 	 				+"         and cmq_id = cba.cmq_id) "
 	 				+"    and audit_timestamp <= :auditTimeStampString"
 	 				+"  UNION "
-	 				
-+"  SELECT CMQ_ID "
-+"  , TO_CHAR(CMQ_NAME_New) NEW "
-+"  , TO_CHAR(CMQ_NAME_old) OLD "
-+"  , TRANSACTION_ID "
-+"  , TRANSACTION_TYPE "
-+"  , FIRST_NAME "
-+"  , LAST_NAME "
-+"  , USERID "
-+"  , GROUP_NAME "
-+"  , AUDIT_TIMESTAMP "
-+"  ,'CMQ_CHILD_NAME' column_name "
-+"  ,'CMQ_BASE_"+dictionaryVersion+"_AUDIT' table_name "
-+"  FROM CMQ_BASE_"+dictionaryVersion+"_AUDIT cba "
-+"  WHERE NVL(TO_CHAR(CMQ_PARENT_NAME_New),'xoxox') <> NVL(TO_CHAR(CMQ_PARENT_NAME_OLD),'xoxox') "
-+"    and  "
-+"        (exists "
-+"        (select 1 from "
-+"         CMQ_BASE_"+dictionaryVersion+" "
-+"         where cmq_parent_name = :listName "
-+"         and cmq_parent_code = cba.cmq_parent_code_old) "
-+"    and audit_timestamp <= :auditTimeStampString )"
-+"    or "
-+"        (exists "
-+"        (select 1 from "
-+"         CMQ_BASE_"+dictionaryVersion+" "
-+"         where cmq_parent_name = :listName "
-+"         and cmq_parent_code = cba.cmq_parent_code_new) "
-+"    and audit_timestamp <= :auditTimeStampString )"
-+"  UNION "
 	 				+"  SELECT CMQ_ID "
 	 				+"  , TO_CHAR(CMQ_STATUS_New) NEW "
 	 				+"  , TO_CHAR(CMQ_STATUS_old) OLD "
@@ -1309,8 +1337,6 @@ public class AuditTrailService implements IAuditTrailService{
 	 				+"  where  "
 	 				+"        cb.cmq_name=:listName "
 	 				+"    and cmq_all_audit.cmq_id = cb.cmq_id "
-	 				+"	  or (cb.cmq_parent_name=:listName "
-	 		        +"    and cmq_all_audit.cmq_id = cb.cmq_id) "
 	 				+"  order by  "
 	 				+"    cmq_all_audit.AUDIT_TIMESTAMP desc, "
 	 				+"    cmq_all_audit.TRANSACTION_ID,  "
@@ -1345,6 +1371,22 @@ public class AuditTrailService implements IAuditTrailService{
 	 				+"	 'Relation Updated' "
 	 				+"	 when TRANSACTION_TYPE = 'D' THEN "
 	 				+"	 'Relation Deleted' "
+	 				+"	 end "
+	 				+"	 WHEN TABLE_NAME IN ('CMQ_PARENT_CHILD_"+dictionaryVersion+"_AUDIT') AND COLUMN_NAME IN ('CMQ_CHILD_CODE','CMQ_CHILD_NAME') THEN  "
+	 				+"	case when TRANSACTION_TYPE = 'I' THEN "
+	 				+"	 'New CHILD Inserted' "
+	 				+"	     when TRANSACTION_TYPE = 'U' THEN "
+	 				+"	 'CHILD Updated' "
+	 				+"	 when TRANSACTION_TYPE = 'D' THEN "
+	 				+"	 'CHILD Deleted' "
+	 				+"	 end "
+	 				+"	 WHEN TABLE_NAME IN ('CMQ_PARENT_CHILD_"+dictionaryVersion+"_AUDIT') AND COLUMN_NAME IN ('CMQ_PARENT_CODE','CMQ_PARENT_NAME') THEN  "
+	 				+"	case when TRANSACTION_TYPE = 'I' THEN "
+	 				+"	 'New PARENT Inserted' "
+	 				+"	     when TRANSACTION_TYPE = 'U' THEN "
+	 				+"	 'PARENT Updated' "
+	 				+"	 when TRANSACTION_TYPE = 'D' THEN "
+	 				+"	 'PARENT Deleted' "
 	 				+"	 end "
 	 				+"	 end transactionType "
 	 				+" , cb.CMQ_CODE cmqCode "
@@ -1461,7 +1503,49 @@ public class AuditTrailService implements IAuditTrailService{
 	 				+"         and cmq_id = cba.cmq_id) "
 	 				+"    and audit_timestamp <= :auditTimeStampString"
 	 				+"  UNION "
-	 				+"SELECT CMQ_ID "
+	 				+"  SELECT PARENT_CMQ_ID CMQ_ID "
+	 				+"  , TO_CHAR(CMQ_CHILD_CODE_New) NEW "
+	 				+"  , TO_CHAR(CMQ_CHILD_CODE_old) OLD "
+	 				+"  , TRANSACTION_ID "
+	 				+"  , TRANSACTION_TYPE "
+	 				+"  , FIRST_NAME "
+	 				+"  , LAST_NAME "
+	 				+"  , USERID "
+	 				+"  , GROUP_NAME "
+	 				+"  , AUDIT_TIMESTAMP "
+	 				+"  ,'CMQ_CHILD_CODE' column_name "
+	 				+"  ,'CMQ_PARENT_CHILD_"+dictionaryVersion+"_AUDIT' table_name "
+	 				+"  FROM CMQ_PARENT_CHILD_"+dictionaryVersion+"_AUDIT cba "
+	 				+"  WHERE NVL(TO_CHAR(CMQ_CHILD_CODE_New),'xoxox') <> NVL(TO_CHAR(CMQ_CHILD_CODE_OLD),'xoxox') "
+	 				+"      and exists "
+	 				+"        (select 1 from "
+	 				+"         CMQ_BASE_"+dictionaryVersion+" "
+	 				+"         where cmq_code = :listCode "
+	 				+"         and cmq_id = cba.PARENT_CMQ_ID) "
+	 				+"    and audit_timestamp <= :auditTimeStampString"
+	 				+"  UNION "
+	 				+"  SELECT PARENT_CMQ_ID CMQ_ID "
+	 				+"  , TO_CHAR(CMQ_CHILD_NAME_New) NEW "
+	 				+"  , TO_CHAR(CMQ_CHILD_NAME_old) OLD "
+	 				+"  , TRANSACTION_ID "
+	 				+"  , TRANSACTION_TYPE "
+	 				+"  , FIRST_NAME "
+	 				+"  , LAST_NAME "
+	 				+"  , USERID "
+	 				+"  , GROUP_NAME "
+	 				+"  , AUDIT_TIMESTAMP "
+	 				+"  ,'CMQ_CHILD_NAME' column_name "
+	 				+"  ,'CMQ_PARENT_CHILD_"+dictionaryVersion+"_AUDIT' table_name "
+	 				+"  FROM CMQ_PARENT_CHILD_"+dictionaryVersion+"_AUDIT cba "
+	 				+"  WHERE NVL(TO_CHAR(CMQ_CHILD_NAME_New),'xoxox') <> NVL(TO_CHAR(CMQ_CHILD_NAME_OLD),'xoxox') "
+	 				+"    and exists "
+	 				+"        (select 1 from "
+	 				+"         CMQ_BASE_"+dictionaryVersion+" "
+	 				+"         where cmq_code = :listCode "
+	 				+"         and cmq_id = cba.PARENT_CMQ_ID) "
+	 				+"    and audit_timestamp <= :auditTimeStampString"
+	 				+"	UNION "
+	 				+"	SELECT CHILD_CMQ_ID CMQ_ID "
 	 				+"  , TO_CHAR(CMQ_PARENT_CODE_New) NEW "
 	 				+"  , TO_CHAR(CMQ_PARENT_CODE_old) OLD "
 	 				+"  , TRANSACTION_ID "
@@ -1472,17 +1556,17 @@ public class AuditTrailService implements IAuditTrailService{
 	 				+"  , GROUP_NAME "
 	 				+"  , AUDIT_TIMESTAMP "
 	 				+"  ,'CMQ_PARENT_CODE' column_name "
-	 				+"  ,'CMQ_BASE_"+dictionaryVersion+"_AUDIT' table_name "
-	 				+"  FROM CMQ_BASE_"+dictionaryVersion+"_AUDIT cba "
+	 				+"  ,'CMQ_PARENT_CHILD_"+dictionaryVersion+"_AUDIT' table_name "
+	 				+"  FROM CMQ_PARENT_CHILD_"+dictionaryVersion+"_AUDIT cba "
 	 				+"  WHERE NVL(TO_CHAR(CMQ_PARENT_CODE_New),'xoxox') <> NVL(TO_CHAR(CMQ_PARENT_CODE_OLD),'xoxox') "
 	 				+"      and exists "
 	 				+"        (select 1 from "
 	 				+"         CMQ_BASE_"+dictionaryVersion+" "
 	 				+"         where cmq_code = :listCode "
-	 				+"         and cmq_id = cba.cmq_id) "
+	 				+"         and cmq_id = cba.CHILD_CMQ_ID) "
 	 				+"    and audit_timestamp <= :auditTimeStampString"
 	 				+"  UNION "
-	 				+"  SELECT CMQ_ID "
+	 				+"  SELECT CHILD_CMQ_ID CMQ_ID "
 	 				+"  , TO_CHAR(CMQ_PARENT_NAME_New) NEW "
 	 				+"  , TO_CHAR(CMQ_PARENT_NAME_old) OLD "
 	 				+"  , TRANSACTION_ID "
@@ -1493,14 +1577,14 @@ public class AuditTrailService implements IAuditTrailService{
 	 				+"  , GROUP_NAME "
 	 				+"  , AUDIT_TIMESTAMP "
 	 				+"  ,'CMQ_PARENT_NAME' column_name "
-	 				+"  ,'CMQ_BASE_"+dictionaryVersion+"_AUDIT' table_name "
-	 				+"  FROM CMQ_BASE_"+dictionaryVersion+"_AUDIT cba "
+	 				+"  ,'CMQ_PARENT_CHILD_"+dictionaryVersion+"_AUDIT' table_name "
+	 				+"  FROM CMQ_PARENT_CHILD_"+dictionaryVersion+"_AUDIT cba "
 	 				+"  WHERE NVL(TO_CHAR(CMQ_PARENT_NAME_New),'xoxox') <> NVL(TO_CHAR(CMQ_PARENT_NAME_OLD),'xoxox') "
 	 				+"    and exists "
 	 				+"        (select 1 from "
 	 				+"         CMQ_BASE_"+dictionaryVersion+" "
 	 				+"         where cmq_code = :listCode "
-	 				+"         and cmq_id = cba.cmq_id) "
+	 				+"         and cmq_id = cba.CHILD_CMQ_ID) "
 	 				+"    and audit_timestamp <= :auditTimeStampString"
 	 				+"  UNION "
 	 				+"  SELECT CMQ_ID "
@@ -1523,35 +1607,6 @@ public class AuditTrailService implements IAuditTrailService{
 	 				+"         where cmq_code = :listCode "
 	 				+"         and cmq_id = cba.cmq_id) "
 	 				+"    and audit_timestamp <= :auditTimeStampString"
-	 				+"  UNION "
-	 				+"  SELECT CMQ_ID "
-	 				+"  , TO_CHAR(CMQ_NAME_New) NEW "
-	 				+"  , TO_CHAR(CMQ_NAME_old) OLD "
-	 				+"  , TRANSACTION_ID "
-	 				+"  , TRANSACTION_TYPE "
-	 				+"  , FIRST_NAME "
-	 				+"  , LAST_NAME "
-	 				+"  , USERID "
-	 				+"  , GROUP_NAME "
-	 				+"  , AUDIT_TIMESTAMP "
-	 				+"  ,'CMQ_CHILD_NAME' column_name "
-	 				+"  ,'CMQ_BASE_"+dictionaryVersion+"_AUDIT' table_name "
-	 				+"  FROM CMQ_BASE_"+dictionaryVersion+"_AUDIT cba "
-	 				+"  WHERE NVL(TO_CHAR(CMQ_PARENT_NAME_New),'xoxox') <> NVL(TO_CHAR(CMQ_PARENT_NAME_OLD),'xoxox') "
-	 				+"    and  "
-	 				+"        (exists "
-	 				+"        (select 1 from "
-	 				+"         CMQ_BASE_"+dictionaryVersion+" "
-	 				+"         where cmq_parent_code = :listCode "
-	 				+"         and cmq_parent_code = cba.cmq_parent_code_old) "
-	 				+"    and audit_timestamp <= :auditTimeStampString )"
-	 				+"    or "
-	 				+"        (exists "
-	 				+"        (select 1 from "
-	 				+"         CMQ_BASE_"+dictionaryVersion+" "
-	 				+"         where cmq_parent_code = :listCode "
-	 				+"         and cmq_parent_code = cba.cmq_parent_code_new) "
-	 				+"    and audit_timestamp <= :auditTimeStampString )"
 	 				+"  UNION "
 	 				+"  SELECT CMQ_ID "
 	 				+"  , TO_CHAR(CMQ_STATUS_New) NEW "
@@ -2564,8 +2619,6 @@ public class AuditTrailService implements IAuditTrailService{
 	 				+"  where  "
 	 				+"        cb.cmq_code=:listCode "
 	 				+"    and cmq_all_audit.cmq_id = cb.cmq_id "
-	 				+"	  or (cb.cmq_parent_code=:listCode "
-	 		        +"    and cmq_all_audit.cmq_id = cb.cmq_id) "
 	 				+"  order by  "
 	 				+"    cmq_all_audit.AUDIT_TIMESTAMP desc, "
 	 				+"    cmq_all_audit.TRANSACTION_ID,  "
@@ -2634,24 +2687,25 @@ public class AuditTrailService implements IAuditTrailService{
 		String queryString = "";
 		if (code != null && !code.equals("")) {
 			Long cmqCode = Long.parseLong(code);
-			queryString = "select distinct cmq_id,AUDIT_TIMESTAMP as audit_ts, to_char(AUDIT_TIMESTAMP, 'DD-MON-YYYY:hh:MI:SS AM')||' EST' as AUDIT_TIMESTAMP "
+			queryString = "select distinct AUDIT_TIMESTAMP as audit_ts, to_char(AUDIT_TIMESTAMP, 'DD-MON-YYYY:hh:MI:SS AM')||' EST' as AUDIT_TIMESTAMP "
 					+ " from CMQ_BASE_"+ dictionaryVersion 
-					+ "_AUDIT cba where (CMQ_CODE_OLD = " + cmqCode + " or CMQ_CODE_NEW = " + cmqCode+") and exists (select 1 from CMQ_BASE_"+dictionaryVersion+" where cmq_code="+cmqCode+" and cmq_id=cba.cmq_id)";
+					+ "_AUDIT where CMQ_CODE_OLD = " + cmqCode + " or CMQ_CODE_NEW = " + cmqCode;
 			
-			queryString += " union select distinct cmq_id,AUDIT_TIMESTAMP as audit_ts, to_char(AUDIT_TIMESTAMP, 'DD-MON-YYYY:hh:MI:SS AM')||' EST' as AUDIT_TIMESTAMP "
+			queryString += " union select distinct AUDIT_TIMESTAMP as audit_ts, to_char(AUDIT_TIMESTAMP, 'DD-MON-YYYY:hh:MI:SS AM')||' EST' as AUDIT_TIMESTAMP "
 					+ " from CMQ_RELATIONS_"+ dictionaryVersion 
-					+ "_AUDIT cba where (CMQ_CODE_OLD = " + cmqCode + " or CMQ_CODE_NEW = " + cmqCode
+					+ "_AUDIT where CMQ_CODE_OLD = " + cmqCode + " or CMQ_CODE_NEW = " + cmqCode
 					+ " or SMQ_CODE_OLD = " + cmqCode + " or SMQ_CODE_NEW = " + cmqCode
 					+ " or HLGT_CODE_OLD = " + cmqCode + " or HLGT_CODE_NEW = " + cmqCode
 					+ " or HLT_CODE_OLD = " + cmqCode + " or HLT_CODE_NEW = " + cmqCode
 					+ " or SOC_CODE_OLD = " + cmqCode + " or SOC_CODE_NEW = " + cmqCode
 					+ " or LLT_CODE_OLD = " + cmqCode + " or LLT_CODE_NEW = " + cmqCode
 					+ " or CMQ_CODE_OLD = " + cmqCode + " or CMQ_CODE_NEW = " + cmqCode
-					+ " or PT_CODE_OLD = " + cmqCode + " or PT_CODE_NEW = " + cmqCode+") and exists (select 1 from CMQ_BASE_"+dictionaryVersion+" where cmq_code="+cmqCode+" and cmq_id=cba.cmq_id)";
+					+ " or PT_CODE_OLD = " + cmqCode + " or PT_CODE_NEW = " + cmqCode;
 			
-			queryString += " union select distinct cmq_id,AUDIT_TIMESTAMP as audit_ts, to_char(AUDIT_TIMESTAMP, 'DD-MON-YYYY:hh:MI:SS AM')||' EST' as AUDIT_TIMESTAMP "
-							+ " from CMQ_PRODUCT_BASE_"+ dictionaryVersion 
-							+ "_AUDIT cba where (CMQ_CODE_OLD = " + cmqCode + " or CMQ_CODE_NEW = " + cmqCode+") and exists (select 1 from CMQ_BASE_"+dictionaryVersion+" where cmq_code="+cmqCode+" and cmq_id=cba.cmq_id)"
+			queryString += " union select distinct AUDIT_TIMESTAMP as audit_ts, to_char(AUDIT_TIMESTAMP, 'DD-MON-YYYY:hh:MI:SS AM')||' EST' as AUDIT_TIMESTAMP "
+					+ " from CMQ_PARENT_CHILD_"+ dictionaryVersion 
+					+ "_AUDIT where CMQ_PARENT_CODE_OLD = " + cmqCode + " or CMQ_PARENT_CODE_NEW = " + cmqCode
+					+ " or CMQ_CHILD_CODE_OLD = " + cmqCode + " or CMQ_CHILD_CODE_NEW = " + cmqCode
 					
  					+ " order by audit_ts desc";
 		}
@@ -2664,9 +2718,10 @@ public class AuditTrailService implements IAuditTrailService{
 					+ " from CMQ_RELATIONS_"+ dictionaryVersion + "_AUDIT where " 
 					+ " cmq_id = (select c.cmq_id from  CMQ_BASE_"+ dictionaryVersion + " c where c.cmq_name = '" + name + "')";
 			
-			queryString += "' union select distinct AUDIT_TIMESTAMP as audit_ts, to_char(AUDIT_TIMESTAMP, 'DD-MON-YYYY:hh:MI:SS AM')||' EST' as AUDIT_TIMESTAMP "
-					+ " from CMQ_PRODUCT_BASE_"+ dictionaryVersion 
-					+ "_AUDIT where CMQ_NAME_OLD = '" + name + "' or CMQ_NAME_NEW = '" + name + "')"
+			queryString += " union select distinct AUDIT_TIMESTAMP as audit_ts, to_char(AUDIT_TIMESTAMP, 'DD-MON-YYYY:hh:MI:SS AM')||' EST' as AUDIT_TIMESTAMP "
+					+ " from CMQ_PARENT_CHILD_"+ dictionaryVersion 
+					+ "_AUDIT where CMQ_PARENT_NAME_OLD = '" + name + "' or CMQ_PARENT_NAME_NEW = '" + name
+					+ "' or CMQ_CHILD_NAME_OLD = '" + name + "' or CMQ_CHILD_NAME_NEW = '" + name
 			
  					+ "' order by audit_ts desc";
 		}
@@ -2702,33 +2757,43 @@ public class AuditTrailService implements IAuditTrailService{
 		String queryString = "";
 		if (code != null && !code.equals("")) {
 			Long cmqCode = Long.parseLong(code);
-			queryString = "select distinct cmq_id,AUDIT_TIMESTAMP as audit_ts, to_char(AUDIT_TIMESTAMP, 'DD-MON-YYYY:hh:MI:SS AM')||' EST' as AUDIT_TIMESTAMP "
+			queryString = "select distinct AUDIT_TIMESTAMP as audit_ts, to_char(AUDIT_TIMESTAMP, 'DD-MON-YYYY:hh:MI:SS AM')||' EST' as AUDIT_TIMESTAMP "
 					+ " from CMQ_BASE_"+ dictionaryVersion 
-					+ "_AUDIT cba where (CMQ_CODE_OLD = " + cmqCode + " or CMQ_CODE_NEW = " + cmqCode+") and exists (select 1 from CMQ_BASE_"+dictionaryVersion+" where cmq_code="+cmqCode+" and cmq_id=cba.cmq_id)";
+					+ "_AUDIT where CMQ_CODE_OLD = " + cmqCode + " or CMQ_CODE_NEW = " + cmqCode;
 			
-			queryString += " union select distinct cmq_id,AUDIT_TIMESTAMP as audit_ts, to_char(AUDIT_TIMESTAMP, 'DD-MON-YYYY:hh:MI:SS AM')||' EST' as AUDIT_TIMESTAMP "
+			queryString += " union select distinct AUDIT_TIMESTAMP as audit_ts, to_char(AUDIT_TIMESTAMP, 'DD-MON-YYYY:hh:MI:SS AM')||' EST' as AUDIT_TIMESTAMP "
 					+ " from CMQ_RELATIONS_"+ dictionaryVersion 
-					+ "_AUDIT cba where (CMQ_CODE_OLD = " + cmqCode + " or CMQ_CODE_NEW = " + cmqCode
+					+ "_AUDIT where CMQ_CODE_OLD = " + cmqCode + " or CMQ_CODE_NEW = " + cmqCode
 					+ " or SMQ_CODE_OLD = " + cmqCode + " or SMQ_CODE_NEW = " + cmqCode
 					+ " or HLGT_CODE_OLD = " + cmqCode + " or HLGT_CODE_NEW = " + cmqCode
 					+ " or HLT_CODE_OLD = " + cmqCode + " or HLT_CODE_NEW = " + cmqCode
 					+ " or SOC_CODE_OLD = " + cmqCode + " or SOC_CODE_NEW = " + cmqCode
 					+ " or LLT_CODE_OLD = " + cmqCode + " or LLT_CODE_NEW = " + cmqCode
 					+ " or CMQ_CODE_OLD = " + cmqCode + " or CMQ_CODE_NEW = " + cmqCode
-					+ " or PT_CODE_OLD = " + cmqCode + " or PT_CODE_NEW = " + cmqCode+") and exists (select 1 from CMQ_BASE_"+dictionaryVersion+" where cmq_code="+cmqCode+" and cmq_id=cba.cmq_id)"
+					+ " or PT_CODE_OLD = " + cmqCode + " or PT_CODE_NEW = " + cmqCode;
+					
+			queryString += " union select distinct AUDIT_TIMESTAMP as audit_ts, to_char(AUDIT_TIMESTAMP, 'DD-MON-YYYY:hh:MI:SS AM')||' EST' as AUDIT_TIMESTAMP "
+					+ " from CMQ_PARENT_CHILD_"+ dictionaryVersion 
+					+ "_AUDIT where CMQ_PARENT_CODE_OLD = " + cmqCode + " or CMQ_PARENT_CODE_NEW = " + cmqCode
+					+ " or CMQ_CHILD_CODE_OLD = " + cmqCode + " or CMQ_CHILD_CODE_NEW = " + cmqCode
 	
  					+ " order by audit_ts desc";
 		}
 		if (name != null && !name.equals("")) {
-			queryString = "select distinct cmq_id,AUDIT_TIMESTAMP as audit_ts, to_char(AUDIT_TIMESTAMP, 'DD-MON-YYYY:hh:MI:SS AM')||' EST' as AUDIT_TIMESTAMP "
+			queryString = "select distinct AUDIT_TIMESTAMP as audit_ts, to_char(AUDIT_TIMESTAMP, 'DD-MON-YYYY:hh:MI:SS AM')||' EST' as AUDIT_TIMESTAMP "
 					+ " from CMQ_BASE_"+ dictionaryVersion 
-					+ "_AUDIT cba where (CMQ_NAME_OLD = '" + name + "' or CMQ_NAME_NEW = '" + name+"') and exists (select 1 from CMQ_BASE_"+dictionaryVersion+" where cmq_name='"+name+"' and cmq_id=cba.cmq_id)";
+					+ "_AUDIT where CMQ_NAME_OLD = '" + name + "' or CMQ_NAME_NEW = '" + name;
 			
-			queryString += " union select distinct cmq_id,AUDIT_TIMESTAMP as audit_ts, to_char(AUDIT_TIMESTAMP, 'DD-MON-YYYY:hh:MI:SS AM')||' EST' as AUDIT_TIMESTAMP "
-					+ " from CMQ_RELATIONS_"+ dictionaryVersion + "_AUDIT cba where " 
-					+ " cmq_id = (select c.cmq_id from  CMQ_BASE_"+ dictionaryVersion + " c where c.cmq_name = '" + name + "') and exists (select 1 from CMQ_BASE_"+dictionaryVersion+" where cmq_name='"+name+"' and cmq_id=cba.cmq_id)"
+			queryString += "' union select distinct AUDIT_TIMESTAMP as audit_ts, to_char(AUDIT_TIMESTAMP, 'DD-MON-YYYY:hh:MI:SS AM')||' EST' as AUDIT_TIMESTAMP "
+					+ " from CMQ_RELATIONS_"+ dictionaryVersion + "_AUDIT where " 
+					+ " cmq_id = (select c.cmq_id from  CMQ_BASE_"+ dictionaryVersion + " c where c.cmq_name = '" + name + "')";
 			
- 					+ " order by audit_ts desc";
+			queryString += " union select distinct AUDIT_TIMESTAMP as audit_ts, to_char(AUDIT_TIMESTAMP, 'DD-MON-YYYY:hh:MI:SS AM')||' EST' as AUDIT_TIMESTAMP "
+					+ " from CMQ_PARENT_CHILD_"+ dictionaryVersion 
+					+ "_AUDIT where CMQ_PARENT_NAME_OLD = '" + name + "' or CMQ_PARENT_NAME_NEW = '" + name
+					+ "' or CMQ_CHILD_NAME_OLD = '" + name + "' or CMQ_CHILD_NAME_NEW = '" + name
+			
+ 					+ "' order by audit_ts desc";
 		}
 		
 		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();

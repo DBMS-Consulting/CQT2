@@ -6,7 +6,7 @@ select distinct
   cmq_base.drug_program as drugProgram,
   cmq_base.protocol_number as protocolNumber,
   cmq_base.list_level as listLevel,
-  cmq_base.parent_list_name as parentListName,
+  cmq_parent_child.parent_list as parentListName,
   cmq_base.status,
   cmq_base.state,
   cmq_base.creation_date as creationDate,
@@ -111,7 +111,7 @@ from
               and active_flag='Y')
     ) "PROTOCOL_NUMBER",   
     nvl(cba.cmq_level_new,cba.cmq_level_old) "LIST_LEVEL",
-    nvl(cba.cmq_parent_name_new,cba.cmq_parent_name_old) "PARENT_LIST_NAME",
+    --nvl(cba.cmq_parent_name_new,cba.cmq_parent_name_old) "PARENT_LIST_NAME",
     nvl(cba.cmq_algorithm_new,cba.cmq_algorithm_old) "ALGORITHM", 
     nvl(cba.activation_date_new,cba.activation_date_old) "LAST_ACTIVATION_DATE",
     nvl(cba.activated_by_new,cba.activated_by_old) "LAST_ACTIVATION_BY",
@@ -196,8 +196,8 @@ from
                (select max(audit_timestamp) 
                 from opencqt.cmq_base_&&MedDRAAuditVersion._audit 
                 where
-                    cmq_code_new = cba.cmq_parent_code_new
-                    and cmq_code_new is NOT NULL
+                    --cmq_code_new = cba.cmq_parent_code_new
+                    cmq_code_new is NOT NULL
                     and transaction_type in ('U','I')
                     and audit_timestamp <= to_date('&&CMQAuditTimestamp','DD-MON-RRRR:HH24:MI:SS')
                )
@@ -439,55 +439,32 @@ from
       and cra_upsert.smq_code_new = cra_delete.smq_code_old (+)
       and cra_upsert.max_audit_timestamp >=
          nvl(cra_delete.max_audit_timestamp,to_date('1-JAN-1900:00:00:00','DD-MON-RRRR:HH24:MI:SS'))
-  UNION ALL
-  -- Select Parent/Child CMQ Relations
-  select distinct
-     nvl(cba.cmq_name_old,cba.cmq_name_old) "TERM",
-     trim(to_char(nvl(cba.cmq_code_old,cba.cmq_code_new))) "TERM_CODE",
-      nvl(cba.cmq_type_cd_old,cba.cmq_type_cd_new) "TERM_DICT_LEVEL",
-      NULL "SCOPE",
-      nvl(cba.cmq_parent_code_old,cba.cmq_parent_code_new) "CMQ_CODE",
-      cba.audit_timestamp "MAX_UPSERT_AUDIT_TS"
+     ) cmq_relations,
+     
+     
+     (select NVL(cpc_upsert.cmq_parent_name_new,cpc_delete.cmq_parent_name_old) parent_list,cpc_upsert.cmq_code cmq_code
    from 
-      opencqt.cmq_base_&&MedDRAAuditVersion._audit cba
+        (select cmq_parent_name_new,cmq_child_code_new cmq_code,max(audit_timestamp) max_audit_timestamp
+        from cmq_parent_child_&&MedDRAAuditVersion._audit 
+        where child_cmq_id=(select cmq_id from cmq_base_&&MedDRAAuditVersion. where cmq_code=&&CMQCodeForAudit)
+        and transaction_type in ('I','U')
+        and audit_timestamp <= :CMQAuditTimestamp
+        group by cmq_parent_name_new, cmq_child_code_new)cpc_upsert,
+        
+        (select cmq_parent_name_old,cmq_child_code_old cmq_code,max(audit_timestamp) max_audit_timestamp 
+        from cmq_parent_child_&&MedDRAAuditVersion._audit 
+        where child_cmq_id=(select cmq_id from cmq_base_&&MedDRAAuditVersion. where cmq_code=&&CMQCodeForAudit)
+        and transaction_type in ('D')
+        and audit_timestamp <= :CMQAuditTimestamp
+        group by cmq_parent_name_old, cmq_child_code_old)cpc_delete
+        
    where 
-      cba.audit_timestamp = 
-         (select max(audit_timestamp) 
-          from opencqt.cmq_base_&&MedDRAAuditVersion._audit 
-          where
-              cmq_code_new = cba.cmq_code_new
-              and transaction_type in ('U','I')
-              and audit_timestamp <= to_date('&&CMQAuditTimestamp','DD-MON-RRRR:HH24:MI:SS')
-          )
-     and exists
-         (select 1 from 
-              opencqt.cmq_base_&&MedDRAAuditVersion._audit
-           where
-              cmq_base_&&MedDRAAuditVersion._audit.cmq_code_new = cba.cmq_parent_code_new
-           and cmq_base_&&MedDRAAuditVersion._audit.audit_timestamp <=
-               to_date('&&CMQAuditTimestamp','DD-MON-RRRR:HH24:MI:SS')
-               and cmq_base_&&MedDRAAuditVersion._audit.transaction_type in ('U','I')
-               and cmq_base_&&MedDRAAuditVersion._audit.cmq_code_new is NOT NULL
-          )
-     and not exists
-         (select 1 from 
-              opencqt.cmq_base_&&MedDRAAuditVersion._audit
-           where
-              cmq_base_&&MedDRAAuditVersion._audit.cmq_code_old = cba.cmq_parent_code_new
-           and cmq_base_&&MedDRAAuditVersion._audit.audit_timestamp <=
-               to_date('&&CMQAuditTimestamp','DD-MON-RRRR:HH24:MI:SS')
-           and cmq_base_&&MedDRAAuditVersion._audit.audit_timestamp >=
-               (select max(audit_timestamp) 
-                from opencqt.cmq_base_&&MedDRAAuditVersion._audit 
-                where
-                    cmq_code_new = cba.cmq_parent_code_new
-                    and transaction_type in ('U','I')
-                    and audit_timestamp <= to_date('&&CMQAuditTimestamp','DD-MON-RRRR:HH24:MI:SS')
-               )
-           and cmq_base_&&MedDRAAuditVersion._audit.transaction_type = 'D'
-         )
-     and cba.transaction_type in ('U','I')  
-     ) cmq_relations
+      cpc_upsert.cmq_parent_name_new= cpc_delete.cmq_parent_name_old (+)
+      and cpc_upsert.max_audit_timestamp >=
+         nvl(cpc_delete.max_audit_timestamp,to_date('1-JAN-1900:00:00:00','DD-MON-RRRR:HH24:MI:SS'))
+         )cmq_parent_child
+ 
   where cmq_base.cmq_code = cmq_relations.cmq_code (+)
+  and cmq_base.cmq_code = cmq_parent_child.cmq_code (+)
   and cmq_base.cmq_code = &&CMQCodeForAudit
   
