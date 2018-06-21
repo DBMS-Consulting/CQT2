@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui">
+
+
+	<p:panel header="Informative Notes for #{historicalViewController.selectedHistoricalViewDTO.listName}">
+		<p:tabView>
+			<p:tab title="Description">
+				<h:inputTextarea readonly="true" style="width: 100%; min-height: 250px" value="#{historicalViewController.selectedHistoricalViewDTO.description}" />
+
+			</p:tab>
+			<p:tab title="Notes">
+				<h:inputTextarea readonly="true" style="width: 100%; min-height: 250px" value="#{historicalViewController.selectedHistoricalViewDTO.notes}" />
+			</p:tab>
+			<p:tab title="Source">
+				<h:inputTextarea readonly="true" style="width: 100%; min-height: 250px" value="#{historicalViewController.selectedHistoricalViewDTO.source}" />
+			</p:tab>
+		</p:tabView>
+	</p:panel>
+</ui:composition>

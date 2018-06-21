@@ -1109,7 +1109,7 @@ public class HistoricalViewController implements Serializable {
 	}
 
 	public boolean isWizardNavbarNextShown() {
-		return isWizardNavbarShown() && "details".equals(historicalViewWizard.getStep());
+		return isWizardNavbarShown() && (("details".equals(historicalViewWizard.getStep())) || ("notes".equals(historicalViewWizard.getStep())));
 	}
 
 	public boolean isWizardNavbarBackShown() {
