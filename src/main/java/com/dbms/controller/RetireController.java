@@ -129,11 +129,23 @@ public class RetireController implements Serializable {
 			if (cpt == cptChild) //if (cpt == childCmqsOftargets.size())
 				childNotSelected = false;
 		}
-		if (childCmqsOftargets != null && !childCmqsOftargets.isEmpty() && childNotSelected) {
+		int activeParents = 0;
+		for(CmqBase190 childCmq : childCmqsOftargets) {
+			List<Long> parentCodes = getParentCMQCodes(this.cmqParentChildService.findParentsByCmqCode(childCmq.getCmqCode()));
+			List<CmqBase190> parentCmqs = getParentCMQS(parentCodes);
+			for(CmqBase190 cmq : parentCmqs) {
+				if(cmq.getCmqStatus().charAt(0) == 'A')
+					activeParents++;
+			}
+			
+		}
+		if (childCmqsOftargets != null && !childCmqsOftargets.isEmpty() && childNotSelected && activeParents == 1) {
+			this.confirmMessage = "The associated child lists are not selected.";
+			RequestContext.getCurrentInstance().execute("PF('confirmRetireOK').show();");
+		} else if (childCmqsOftargets != null && !childCmqsOftargets.isEmpty() && childNotSelected) {
 			this.confirmMessage = "Not all associated child lists are selected. Do you want to proceed?";
 			RequestContext.getCurrentInstance().execute("PF('confirmRetire').show();");
-		}  
-		else {
+		} else {
 			this.confirmMessage = "Are you sure you want to retire this list?";
 			RequestContext.getCurrentInstance().execute("PF('confirmRetire').show();");
 		}
@@ -204,7 +216,6 @@ public class RetireController implements Serializable {
 					if(cmq.getCmqStatus().charAt(0) == 'A')
 						activeParents++;
 				}
-				System.out.println(activeParents);
 				if (childNotSelected && childCmqsOftargets != null && childCmqsOftargets.size() > 0
 						&& activeParents < 2)
 					return "";
