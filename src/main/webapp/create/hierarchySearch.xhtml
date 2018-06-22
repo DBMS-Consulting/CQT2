@@ -58,7 +58,8 @@
                 <f:selectItem itemLabel="Up" itemValue="1" itemDisabled="#{paramDlgCtrl.searchUpDisabled}" />
                 <f:selectItem itemLabel="Down" itemValue="2" itemDisabled="#{paramDlgCtrl.searchDownDisabled}"/>
                 
-                <p:ajax update="resultHier" listener="#{paramDlgCtrl.refreshHS}" /> 
+                <p:ajax update="resultHier" listener="#{paramDlgCtrl.refreshHS}"
+                oncomplete="initRelationDND()" /> 
             </p:selectOneRadio>
         </h:panelGrid>
             
