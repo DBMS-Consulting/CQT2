@@ -30,6 +30,8 @@ public class HistoricalViewDTO implements Serializable {
 	private Date lastActivationDate;
 	private String lastActivationBy;
 	private String description;
+	private String notes;
+	private String source;
 	private String dictionaryVersion;
 	private String designee;
 	private String designee2;
@@ -147,6 +149,22 @@ public class HistoricalViewDTO implements Serializable {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+	
+	public String getNotes() {
+		return notes;
+	}
+
+	public void setNotes(String notes) {
+		this.notes = notes;
+	}
+	
+	public String getSource() {
+		return source;
+	}
+
+	public void setSource(String source) {
+		this.source = source;
 	}
 
 	public String getDictionaryVersion() {

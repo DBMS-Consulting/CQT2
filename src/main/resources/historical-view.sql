@@ -16,6 +16,8 @@ select distinct
   cmq_base.last_activation_date as lastActivationDate,
   cmq_base.last_activation_by as lastActivationBy,
   cmq_base.description,
+  TO_CHAR(SUBSTR(cmq_base.notes,1,4000)) as Notes,
+  cmq_base.source,
   cmq_relations.term,
   cmq_relations.term_dict_level as termDictLevel,
   cmq_relations.term_code as termCode,
@@ -127,6 +129,8 @@ from
     nvl(cba.cmq_designee2_new,cba.cmq_designee2_old) "DESIGNEE2",
     nvl(cba.cmq_designee3_new,cba.cmq_designee3_old) "DESIGNEE3",
     nvl(cba.cmq_description_new,cba.cmq_description_old) "DESCRIPTION",
+    nvl(cba.cmq_note_new,cba.cmq_note_old) "NOTES",
+    nvl(cba.cmq_source_new,cba.cmq_source_old) "SOURCE",
     substr(nvl(cba.DICTIONARY_VERSION_old,cba.DICTIONARY_VERSION_new),1,2)||'.'||substr(nvl(cba.DICTIONARY_VERSION_old,cba.DICTIONARY_VERSION_new),3,1) "DICTIONARY_VERSION",
     (select DISTINCT nvl(codelist_value,'No Group') from opencqt.ref_config_codelist 
      where codelist_configuration_type ='GROUP'

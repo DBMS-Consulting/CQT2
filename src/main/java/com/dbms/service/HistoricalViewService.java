@@ -83,6 +83,8 @@ public class HistoricalViewService implements IHistoricalViewService {
 				query.addScalar("lastActivationDate", StandardBasicTypes.DATE);
 				query.addScalar("lastActivationBy", StandardBasicTypes.STRING);
 				query.addScalar("description", StandardBasicTypes.STRING);
+				query.addScalar("notes", StandardBasicTypes.STRING);
+				query.addScalar("source", StandardBasicTypes.STRING);
 				query.addScalar("term", StandardBasicTypes.STRING);
 				query.addScalar("termDictLevel", StandardBasicTypes.STRING);
 				query.addScalar("termCode", StandardBasicTypes.LONG);

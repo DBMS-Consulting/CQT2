@@ -24,6 +24,8 @@ public class HistoricalViewDbDataDTO implements Serializable {
 	private Date lastActivationDate;
 	private String lastActivationBy;
 	private String description;
+	private String notes;
+	private String source;
 	private String term;
 	private String termDictLevel;
 	private Long termCode;
@@ -144,6 +146,22 @@ public class HistoricalViewDbDataDTO implements Serializable {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+	
+	public String getNotes() {
+		return notes;
+	}
+
+	public void setNotes(String notes) {
+		this.notes = notes;
+	}
+	
+	public String getSource() {
+		return source;
+	}
+
+	public void setSource(String source) {
+		this.source = source;
 	}
 
 	public String getTerm() {
