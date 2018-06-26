@@ -59,7 +59,7 @@
                 <f:selectItem itemLabel="Down" itemValue="2" itemDisabled="#{paramDlgCtrl.searchDownDisabled}"/>
                 
                 <p:ajax update="resultHier" listener="#{paramDlgCtrl.refreshHS}"
-                oncomplete="initRelationDND()" /> 
+               	 	oncomplete="initRelationDND()" /> 
             </p:selectOneRadio>
         </h:panelGrid>
             
@@ -76,7 +76,7 @@
 
 				<f:attribute name="uiEventSourceName" value="hierarchy-search" />
 				<p:ajax event="expand" listener="#{paramDlgCtrl.onNodeExpand}"
-					update="resultHier">
+					update="resultHier" oncomplete="initRelationDND()">
 				</p:ajax>
 
 				<p:column headerText="Level" style="width: 100px !important">
