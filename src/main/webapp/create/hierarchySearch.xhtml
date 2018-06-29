@@ -36,7 +36,7 @@
 				onkeypress="if (event.keyCode == 13) { return false; }"
 				value="#{paramDlgCtrl.filterTermName}" />
             
-			<p:commandButton value="Search" update="resultHier search-direction"
+			<p:commandButton value="Search" update="resultHier"
 				action="#{paramDlgCtrl.hierarchySearch}"
 				oncomplete="initRelationDND()" />
 

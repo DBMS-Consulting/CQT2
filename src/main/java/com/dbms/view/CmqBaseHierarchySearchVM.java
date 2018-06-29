@@ -101,9 +101,8 @@ public class CmqBaseHierarchySearchVM {
 		myHierarchyRoot = new DefaultTreeNode("root", new HierarchyNode("LEVEL",
 				"NAME", "CODE", null), null);
 		        
-        searchDirection = SEARCH_DIRECTION_UP; //UP
-      
-		enableRadioButtons = true;
+        searchDirection = 0;       
+		enableRadioButtons = false;
  	}
 
 	public void onRowCancel(RowEditEvent event) {
