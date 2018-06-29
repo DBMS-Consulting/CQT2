@@ -106,6 +106,7 @@ public class RetireController implements Serializable {
 			targetCmqCodes.add(cmqBase.getCmqCode());
 		
 		List<CmqBase190> childCmqsOftargets = this.cmqBaseService.findChildCmqsByCodes(targetCmqCodes);
+		int activeParents = 0;
 		
 		if((null != childCmqsOftargets) && (childCmqsOftargets.size() > 0)) {
 			//add them to the selected cmqs list
@@ -128,17 +129,20 @@ public class RetireController implements Serializable {
 			}
 			if (cpt == cptChild) //if (cpt == childCmqsOftargets.size())
 				childNotSelected = false;
-		}
-		int activeParents = 0;
-		for(CmqBase190 childCmq : childCmqsOftargets) {
-			List<Long> parentCodes = getParentCMQCodes(this.cmqParentChildService.findParentsByCmqCode(childCmq.getCmqCode()));
-			List<CmqBase190> parentCmqs = getParentCMQS(parentCodes);
-			for(CmqBase190 cmq : parentCmqs) {
-				if(cmq.getCmqStatus().charAt(0) == 'A')
-					activeParents++;
-			}
 			
+			//check for how many parents the child has
+			for(CmqBase190 childCmq : childCmqsOftargets) {
+				List<Long> parentCodes = getParentCMQCodes(this.cmqParentChildService.findParentsByCmqCode(childCmq.getCmqCode()));
+				List<CmqBase190> parentCmqs = getParentCMQS(parentCodes);
+				for(CmqBase190 cmq : parentCmqs) {
+					if(cmq.getCmqStatus().charAt(0) == 'A')
+						activeParents++;
+				}
+				
+			}
 		}
+		
+		
 		if (childCmqsOftargets != null && !childCmqsOftargets.isEmpty() && childNotSelected && activeParents == 1) {
 			this.confirmMessage = "The associated child lists are not selected.";
 			RequestContext.getCurrentInstance().execute("PF('confirmRetireOK').show();");
@@ -192,6 +196,7 @@ public class RetireController implements Serializable {
 		} else {
 			for (CmqBase190 cmqBase : targetCmqsSelected) {
 				targetCmqCodes.add(cmqBase.getCmqCode());
+				/*
 				if(cmqBase.getCmqLevel()==2) {// remove parent child relation for this child
 					List<CmqParentChild200> parentChildRelationList = this.cmqParentChildService.findParentsByCmqCode(cmqBase.getCmqCode());
 					if(null!=parentChildRelationList) {
@@ -200,6 +205,7 @@ public class RetireController implements Serializable {
 						}
 					}
 				}
+				*/
 			}
 			
 			
@@ -208,17 +214,19 @@ public class RetireController implements Serializable {
 			//(If the child is status in active then show a error 
 			//"The list being retire has an associated active child list hence cannot be retire.”
 			List<CmqBase190> childCmqsOftargets = this.cmqBaseService.findChildCmqsByCodes(targetCmqCodes);
-			for(CmqBase190 cmqBase : childCmqsOftargets) {
-				int activeParents = 0;
-				List<Long> parentCodes = getParentCMQCodes(this.cmqParentChildService.findParentsByCmqCode(cmqBase.getCmqCode()));
-				List<CmqBase190> parentCmqs = getParentCMQS(parentCodes);
-				for(CmqBase190 cmq : parentCmqs) {
-					if(cmq.getCmqStatus().charAt(0) == 'A')
-						activeParents++;
+			if(childCmqsOftargets != null && !childCmqsOftargets.isEmpty()) {
+				for(CmqBase190 cmqBase : childCmqsOftargets) {
+					int activeParents = 0;
+					List<Long> parentCodes = getParentCMQCodes(this.cmqParentChildService.findParentsByCmqCode(cmqBase.getCmqCode()));
+					List<CmqBase190> parentCmqs = getParentCMQS(parentCodes);
+					for(CmqBase190 cmq : parentCmqs) {
+						if(cmq.getCmqStatus().charAt(0) == 'A')
+							activeParents++;
+					}
+					if (childNotSelected && childCmqsOftargets != null && childCmqsOftargets.size() > 0
+							&& activeParents == 1)
+						return "";
 				}
-				if (childNotSelected && childCmqsOftargets != null && childCmqsOftargets.size() > 0
-						&& activeParents < 2)
-					return "";
 			}
 			
 			if((null != childCmqsOftargets) && (childCmqsOftargets.size() > 0)) {
