@@ -40,6 +40,8 @@ import com.dbms.service.IMeddraDictService;
 import com.dbms.service.IRefCodeListService;
 import com.dbms.service.ISmqBaseService;
 import com.dbms.util.CmqUtils;
+import com.dbms.util.MeddraDictLevelHelper;
+import com.dbms.util.SMQLevelHelper;
 import com.dbms.util.SWJSFRequest;
 import com.dbms.util.exceptions.CqtServiceException;
 import com.dbms.view.CmqBaseHierarchySearchVM.IRelationsChangeListener;
@@ -795,7 +797,16 @@ public class ListRelationsVM implements IRelationsChangeListener {
 	 */
 	@Override
 	public void onDropRelations() {
+		//saves filterLevel state after onDropRelations is performed and reassigns it so search direction buttons continue to work after
+		String smqLevelH = (myHierarchyDlgModel.getFilterLevel());
+		String meddraLevelH = (myHierarchyDlgModel.getFilterLevel());
+		
         addSelectedRelations(myHierarchyDlgModel.getSelectedNodes());
+        
+        if(smqLevelH != null)
+        		myHierarchyDlgModel.setFilterLevel(smqLevelH);
+        else
+        		myHierarchyDlgModel.setFilterLevel(meddraLevelH);
 	}
 	
 	/**
