@@ -1055,8 +1055,42 @@ public class HistoricalViewController implements Serializable {
                     , "PT_", ptCodesList, dictionaryVersion);
             this.addCountDummyNodeToMeddranodes(countsOfChildren, ptCodesMap);
         }
+        
+        populateChildCmqsByParent(cmqCode, relationsRoot);
+        
 		
 		RequestContext.getCurrentInstance().execute("PF('wizard').next()");
+	}
+	
+	public void populateChildCmqsByParent(Long parentCmqCode, TreeNode rootTreeNode) {
+		//now process the cmq parent child relations
+		List<CmqBase190> childCmqs = this.cmqBaseService.findChildCmqsByParentCode(parentCmqCode);
+		if((null != childCmqs) && (childCmqs.size() > 0)) {
+			for (CmqBase190 childCmq : childCmqs) {
+				HierarchyNode node = this.createCmqBaseNode(childCmq);
+				node.setEntity(childCmq);
+				TreeNode treeNode = new DefaultTreeNode(node, rootTreeNode);
+			
+				Long childCount = this.cmqRelationService.findCountByCmqCode(childCmq.getCmqCode());
+				if((null != childCount) && (childCount > 0)) {
+					HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
+					dummyNode.setDummyNode(true);
+					new DefaultTreeNode(dummyNode, treeNode);
+				}
+			}
+		}
+	}
+	
+	private HierarchyNode createCmqBaseNode(CmqBase190 childCmq) {
+		HierarchyNode node = new HierarchyNode();
+		node.setLevel(childCmq.getCmqTypeCd());
+		node.setTerm(childCmq.getCmqName());
+		node.setCode(childCmq.getCmqCode().toString());
+		node.setCategory("");
+		node.setWeight("");
+		node.setScope("");
+		node.setEntity(childCmq);
+		return node;
 	}
 
 	private void addCountDummyNodeToMeddranodes( List<Map<String, Object>> countsOfChildren
