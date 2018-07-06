@@ -631,17 +631,19 @@ public class CreateController implements Serializable {
             RequestContext.getCurrentInstance().update("fCreate:wizardNavbar");
         } else if(copyWizard != null) {
 			//copyWizard.setStep(copyWizardNextStep);
-        	if(copyWizardNextStep.equals(WIZARD_STEP_DETAILS) && copyWizard.getStep().equals(WIZARD_STEP_DETAILS))
-				copyWizard.setStep(WIZARD_STEP_INFONOTES);
-        	else if (copyWizardNextStep.equals(WIZARD_STEP_DETAILS))
+	        	if(copyWizardNextStep.equals(WIZARD_STEP_DETAILS) && copyWizard.getStep().equals(WIZARD_STEP_DETAILS))
+					copyWizard.setStep(WIZARD_STEP_INFONOTES);
+	        	else if(copyWizardNextStep.equals(COPY_WIZARD_STEP_SEARCH))
+	        		copyWizard.setStep(COPY_WIZARD_STEP_SEARCH);
+	        	else if (copyWizardNextStep.equals(WIZARD_STEP_DETAILS))
 				copyWizard.setStep(WIZARD_STEP_DETAILS);
-        	else if (copyWizardNextStep.equals(WIZARD_STEP_INFONOTES))
-        		copyWizard.setStep(WIZARD_STEP_INFONOTES); 
+	        	else if (copyWizardNextStep.equals(WIZARD_STEP_INFONOTES))
+	        		copyWizard.setStep(WIZARD_STEP_INFONOTES); 
 			else if (copyWizardNextStep.equals(WIZARD_STEP_RELATIONS))
 				copyWizard.setStep(WIZARD_STEP_RELATIONS);
 			else if (copyWizardNextStep.equals(WIZARD_STEP_CONFIRM))
 				copyWizard.setStep(WIZARD_STEP_CONFIRM);
-        	
+   
             RequestContext.getCurrentInstance().update("fCopy:wizardNavbar");
         } else if(updateWizard != null) {
 			updateWizard.setStep(updateWizardNextStep);
@@ -657,7 +659,8 @@ public class CreateController implements Serializable {
             if(copyWizard != null
                     && COPY_WIZARD_STEP_SEARCH.equals(copyWizardNextStep))
                 copyingCmqCode = null;
-			goToWizardNextStep();
+            copyWizard.setStep(COPY_WIZARD_STEP_SEARCH);
+            RequestContext.getCurrentInstance().update("fCopy:wizardNavbar");
 		}
 	}
 	
@@ -712,7 +715,12 @@ public class CreateController implements Serializable {
 
 	public void cancelNotesAndNextStep() {
 		cancelNotes();
-		goToWizardNextStep();
+		if(copyWizard != null) {
+			copyWizard.setStep(COPY_WIZARD_STEP_SEARCH);
+            RequestContext.getCurrentInstance().update("fCopy:wizardNavbar");
+		} else {
+			goToWizardNextStep();
+		}
 	}
 	
 
@@ -1210,7 +1218,12 @@ public class CreateController implements Serializable {
 	
 	public void resetRelationsAndNextStep() {
 		relationsModified = false;
-		goToWizardNextStep();
+		if(copyWizard != null) {
+			copyWizard.setStep(COPY_WIZARD_STEP_SEARCH);
+            RequestContext.getCurrentInstance().update("fCopy:wizardNavbar");
+		} else {
+			goToWizardNextStep();
+		}
 	}
 	
 	//----------------------- Create Wizard ------------------------
