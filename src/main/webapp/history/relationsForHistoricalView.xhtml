@@ -52,17 +52,27 @@
 				</h:commandLink>
 				
 				<p:spacer width="10" />
-				 				
+
+			-->
+		<p:toolbar>
+			<f:facet name="left">				
 				<p:commandButton value="Parent List" id="ctb15"
-                    styleClass="#{createController.parentViewable ? '' : 'btn-disabled'}" update="@form"
-                    actionListener="#{createController.relationsModel.populateParentCmqByChild(createController.selectedData)}"
-					disabled="#{createController.parentViewable ? false : true}"
+                    styleClass="#{historicalViewController.parentViewable ? '' : 'btn-disabled'}" update="@form"
+                    actionListener="#{historicalViewController.populateParentCmqByChild(historicalViewController.selectedCmq)}"
+					disabled="#{historicalViewController.parentViewable ? false : true}"
                     oncomplete="PF('parentDlg').show()" icon="fa fa-level-up">
 				</p:commandButton>
 			</f:facet>
 		</p:toolbar>
 
+		<br />
+				<!--
+			</f:facet>
+		</p:toolbar>
+
 		<br /> -->
+
+
 		<p:treeTable value="#{historicalViewController.relationsRoot}" var="node" resizableColumns="true" id="relations-tree-table"
 			selectionMode="checkbox" styleClass="hide-sel-chkbox">
 			
@@ -114,6 +124,17 @@
 		</p:treeTable>
 		<br />
  	</h:panelGrid>
+
+ 	<p:dialog widgetVar="parentDlg" modal="false" header="Parent List"
+		height="auto" width="auto">
+		<ui:include src="parent.xhtml"></ui:include>
+
+		<p:spacer height="10"></p:spacer>
+		<h:panelGrid style="float: right" columns="2">
+			<p:commandButton value="Close" onclick="PF('parentDlg').hide()"
+				type="button" />
+		</h:panelGrid>
+	</p:dialog>
 	
 	<!-- <p:dialog widgetVar="parentDlg" modal="false" header="Parent List" height="auto" width="auto">
         <ui:include src="parent.xhtml"></ui:include>

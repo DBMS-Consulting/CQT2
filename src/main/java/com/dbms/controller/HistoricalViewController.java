@@ -34,6 +34,7 @@ import com.dbms.csmq.CSMQBean;
 import com.dbms.csmq.HierarchyNode;
 import com.dbms.entity.IEntity;
 import com.dbms.entity.cqt.CmqBase190;
+import com.dbms.entity.cqt.CmqParentChild200;
 import com.dbms.entity.cqt.CmqRelation190;
 import com.dbms.entity.cqt.RefConfigCodeList;
 import com.dbms.entity.cqt.SmqBase190;
@@ -76,6 +77,7 @@ public class HistoricalViewController implements Serializable {
 	private List<HistoricalViewDbDataDTO> searchResults;
 	private List<HistoricalViewDTO> datas;
 	private Long selectedCmqCode;
+	private CmqBase190 selectedCmq;
 	private HistoricalViewDbDataDTO selectedHistoricalViewDbDataDTO;
 	private HistoricalViewDTO selectedHistoricalViewDTO;
 	private ListRelationsVM relationsModel;
@@ -115,6 +117,9 @@ public class HistoricalViewController implements Serializable {
 	private List<CmqBaseDTO> cmqBaseDTOSelectList;
 	private List<CmqBaseDTO> cmqBaseDTOSelectListForName;
 	private List<CmqBaseDTO> cmqBaseDTOSelectListForCode;
+	
+	private TreeNode parentListRoot;
+	private CmqBase190 parentCmqEntity;
 	
 	boolean relationView = true;
     boolean parentListView = false;
@@ -1081,6 +1086,44 @@ public class HistoricalViewController implements Serializable {
 		}
 	}
 	
+public void populateParentCmqByChild(CmqBase190 childCmq) {
+		
+		
+		List<CmqParentChild200> parents = this.cmqParentChildService.findParentsByCmqCode(childCmq.getCmqCode());
+		if(null!=parents && parents.size()>0) {
+			LOG.info("Populating cmq base parent for cmq child code " + childCmq.getCmqCode());
+			//this.parentCmqEntity = this.cmqBaseService.findByCode(childCmq.getCmqParentCode());
+			//if(null != parentCmqEntity) {
+				this.parentListRoot = new DefaultTreeNode("root"
+						, new HierarchyNode("LEVEL", "NAME", "CODE", "SCOPE", "CATEGORY", "WEIGHT", null)
+						, null);
+				for(CmqParentChild200 parent : parents) {
+					this.parentCmqEntity = this.cmqBaseService.findByCode(parent.getCmqParentCode());
+					HierarchyNode node = new HierarchyNode();
+					node.setLevel(parentCmqEntity.getCmqTypeCd());
+					node.setCode(parentCmqEntity.getCmqCode().toString());
+					node.setTerm(parentCmqEntity.getCmqName());
+					node.setCategory("");
+					node.setWeight("");
+					node.setScope("");
+					node.setEntity(parentCmqEntity);
+					
+					TreeNode treeNode = new DefaultTreeNode(node, this.parentListRoot);
+				
+					Long childCount = this.cmqRelationService.findCountByCmqCode(parent.getCmqParentCode());
+					if((null != childCount) && (childCount > 0)) {
+						HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
+						dummyNode.setDummyNode(true);
+						new DefaultTreeNode(dummyNode, treeNode);
+					}
+					
+				}
+				
+		} else {
+			LOG.info("No parent exists for cmq child code " + childCmq.getCmqCode());
+		}
+	}
+	
 	private HierarchyNode createCmqBaseNode(CmqBase190 childCmq) {
 		HierarchyNode node = new HierarchyNode();
 		node.setLevel(childCmq.getCmqTypeCd());
@@ -1199,6 +1242,13 @@ public class HistoricalViewController implements Serializable {
 		} else {
 			return this.cmqBaseDTOSelectListForCode;
 		}
+	}
+	
+	public boolean isParentViewable() {
+        
+		Long parentCount = this.cmqParentChildService.findCmqParentCountForChildCmqCode(selectedHistoricalViewDTO.getCmqCode());
+		return (parentCount!=null && parentCount >0);
+    
 	}
 
 	public void resetCode(AjaxBehaviorEvent event) {
@@ -1423,6 +1473,10 @@ public class HistoricalViewController implements Serializable {
 
 	public void setCmqBaseDTOSelectListForCode(List<CmqBaseDTO> cmqBaseDTOSelectListForCode) {
 		this.cmqBaseDTOSelectListForCode = cmqBaseDTOSelectListForCode;
+	}
+	
+	public CmqBase190 getSelectedCmq() {
+		return cmqBaseService.findByCode(selectedCmqCode);
 	}
 
 }
