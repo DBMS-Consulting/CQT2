@@ -1247,10 +1247,11 @@ public class CreateController implements Serializable {
 			// current step is "Details" and the form has some unsaved changes
 			
 			//----Confirmation on unsaved changes: see onUpdateWizardFlowProcess's "details" step
-			if(codeSelected != null)
+			//if(codeSelected != null)
 				createWizardNextStep = event.getNewStep();
-			else
+			/*else
 				createWizardNextStep = WIZARD_STEP_DETAILS;
+			*/
 			RequestContext.getCurrentInstance().execute("PF('confirmSaveDetailsDlg').show();");
 		} else if(codeSelected != null && WIZARD_STEP_INFONOTES.equalsIgnoreCase(oldStep) && notesFormModel.isModelChanged()) {
 			// current step is "Informative Notes" and the form has some unsaved changes			
