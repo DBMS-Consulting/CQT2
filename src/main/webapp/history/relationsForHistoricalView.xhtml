@@ -58,7 +58,7 @@
 			<f:facet name="left">				
 				<p:commandButton value="Parent List" id="ctb15"
                     styleClass="#{historicalViewController.parentViewable ? '' : 'btn-disabled'}" update="@form"
-                    actionListener="#{historicalViewController.populateParentCmqByChild(historicalViewController.selectedCmq)}"
+                    actionListener="#{historicalViewController.relationsModel.populateParentCmqByChild(historicalViewController.selectedCmq)}"
 					disabled="#{historicalViewController.parentViewable ? false : true}"
                     oncomplete="PF('parentDlg').show()" icon="fa fa-level-up">
 				</p:commandButton>
