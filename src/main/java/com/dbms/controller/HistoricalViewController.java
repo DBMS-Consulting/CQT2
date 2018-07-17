@@ -113,6 +113,9 @@ public class HistoricalViewController implements Serializable {
 	
 	@ManagedProperty("#{AuditTrailService}")
 	private IAuditTrailService auditTrailService;
+	
+	@ManagedProperty("#{globalController}")
+    private GlobalController globalController;
 
 	private List<CmqBaseDTO> cmqBaseDTOSelectList;
 	private List<CmqBaseDTO> cmqBaseDTOSelectListForName;
@@ -127,6 +130,8 @@ public class HistoricalViewController implements Serializable {
 	@PostConstruct
 	public void init() {
 		this.displayScopeCatWeight = refCodeListService.getLevelScopeCategorySystemConfig();
+		this.relationsModel = new ListRelationsVM(authService, appSWJSFRequest, refCodeListService, cmqBaseService, smqBaseService, meddraDictService, cmqRelationService, cmqParentChildService, globalController);
+
 	}
 
 	public void search() {
@@ -1477,6 +1482,14 @@ public void populateParentCmqByChild(CmqBase190 childCmq) {
 	
 	public CmqBase190 getSelectedCmq() {
 		return cmqBaseService.findByCode(selectedCmqCode);
+	}
+	
+	public GlobalController getGlobalController() {
+		return globalController;
+	}
+
+	public void setGlobalController(GlobalController globalController) {
+		this.globalController = globalController;
 	}
 
 }
