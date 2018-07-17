@@ -2214,6 +2214,7 @@ public class ImpactSearchController implements Serializable {
 					if(null != map.get("cmqNote")) {
 						target.setCmqNote(map.get("cmqNote").toString());
 					}
+					/*
 					if(null != map.get("cmqParentCode")) {
 						//TODO update for parent child relationship
 						//target.setCmqParentCode(Long.valueOf(map.get("cmqParentCode").toString()));
@@ -2222,6 +2223,7 @@ public class ImpactSearchController implements Serializable {
 						//TODO update for parent child relationship
 						//target.setCmqParentName(map.get("cmqParentName").toString());
 					}
+					*/
 					if(null != map.get("cmqSource")) {
 						target.setCmqSource(map.get("cmqSource").toString());
 					}

@@ -104,7 +104,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 			String query = "SELECT CMQ_CODE as cmqCode, CMQ_NAME as cmqName, CMQ_LEVEL as cmqLevel, CMQ_STATUS as cmqStatus, "
 					+ " CMQ_TYPE_CD as cmqTypeCd, CMQ_STATE as cmqState, CMQ_DESIGNEE as cmqDesignee, CMQ_DESIGNEE2 as cmqDesignee2,  CMQ_DESIGNEE3 as cmqDesignee3, "
 					+ " CMQ_ID as cmqId, CMQ_DESCRIPTION as cmqDescription, CMQ_SOURCE as cmqSource, CMQ_NOTE as cmqNote,  "
-					+ " CMQ_ALGORITHM as cmqAlgorithm, CMQ_PARENT_CODE as cmqParentCode, CMQ_PARENT_NAME as cmqParentName,"
+					+ " CMQ_ALGORITHM as cmqAlgorithm,"
 					+ " IMPACT_TYPE as impactType, DICTIONARY_NAME as dictionaryName, DICTIONARY_VERSION as dictionaryVersion,"
 					+ " CMQ_SUBVERSION as cmqSubversion, CREATION_DATE as creationDate, CREATED_BY as createdBy, CMQ_GROUP as cmqGroup,"
 					+ " CMQ_PROGRAM_CD as cmqProgramCd, CMQ_PROTOCOL_CD as cmqProtocolCd"
@@ -173,8 +173,8 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 			sqlQuery.addScalar("cmqDescription", StandardBasicTypes.STRING);
 			sqlQuery.addScalar("cmqNote", StandardBasicTypes.STRING);
 			sqlQuery.addScalar("cmqSource", StandardBasicTypes.STRING);
-			sqlQuery.addScalar("cmqParentCode", StandardBasicTypes.LONG);
-			sqlQuery.addScalar("cmqParentName", StandardBasicTypes.STRING);
+			//sqlQuery.addScalar("cmqParentCode", StandardBasicTypes.LONG);
+			//sqlQuery.addScalar("cmqParentName", StandardBasicTypes.STRING);
 			
 			sqlQuery.addScalar("cmqProgramCd", StandardBasicTypes.STRING);
 			sqlQuery.addScalar("cmqProtocolCd", StandardBasicTypes.STRING);
@@ -371,7 +371,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 			String query = "SELECT CMQ_CODE as cmqCode, CMQ_NAME as cmqName, CMQ_LEVEL as cmqLevel, CMQ_STATUS as cmqStatus, "
 					+ " CMQ_TYPE_CD as cmqTypeCd, CMQ_STATE as cmqState,  CMQ_DESIGNEE as cmqDesignee, CMQ_DESIGNEE2 as cmqDesignee2,  CMQ_DESIGNEE3 as cmqDesignee3, "
 					+ " CMQ_ID as cmqId, CMQ_DESCRIPTION as cmqDescription, CMQ_SOURCE as cmqSource, CMQ_NOTE as cmqNote,  "
-					+ " CMQ_ALGORITHM as cmqAlgorithm, CMQ_PARENT_CODE as cmqParentCode, CMQ_PARENT_NAME as cmqParentName,"
+					+ " CMQ_ALGORITHM as cmqAlgorithm,"
 					+ " IMPACT_TYPE as impactType, DICTIONARY_NAME as dictionaryName, DICTIONARY_VERSION as dictionaryVersion,"
 					+ " CREATION_DATE as creationDate, CREATED_BY as createdBy, CMQ_GROUP as cmqGroup,"
 					+ " CMQ_SUBVERSION as cmqSubversion, CMQ_PROGRAM_CD as cmqProgramCd, CMQ_PROTOCOL_CD as cmqProtocolCd"
@@ -442,8 +442,8 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 			sqlQuery.addScalar("cmqDescription", StandardBasicTypes.STRING);
 			sqlQuery.addScalar("cmqNote", StandardBasicTypes.STRING);
 			sqlQuery.addScalar("cmqSource", StandardBasicTypes.STRING);
-			sqlQuery.addScalar("cmqParentCode", StandardBasicTypes.LONG);
-			sqlQuery.addScalar("cmqParentName", StandardBasicTypes.STRING);
+			//sqlQuery.addScalar("cmqParentCode", StandardBasicTypes.LONG);
+			//sqlQuery.addScalar("cmqParentName", StandardBasicTypes.STRING);
 			
 			sqlQuery.addScalar("cmqProgramCd", StandardBasicTypes.STRING);
 			sqlQuery.addScalar("cmqProtocolCd", StandardBasicTypes.STRING);
