@@ -108,7 +108,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 					+ " IMPACT_TYPE as impactType, DICTIONARY_NAME as dictionaryName, DICTIONARY_VERSION as dictionaryVersion,"
 					+ " CMQ_SUBVERSION as cmqSubversion, CREATION_DATE as creationDate, CREATED_BY as createdBy, CMQ_GROUP as cmqGroup,"
 					+ " CMQ_PROGRAM_CD as cmqProgramCd, CMQ_PROTOCOL_CD as cmqProtocolCd"
-					+ " FROM CMQ_BASE_TARGET WHERE (IMPACT_TYPE = 'IMPACTED' or IMPACT_TYPE = 'ICC') "  + " #1# "
+					+ " FROM CMQ_BASE_TARGET WHERE (IMPACT_TYPE = 'IMPACTED' or IMPACT_TYPE = 'ICC' or IMPACT_TYPE = 'IPC') "  + " #1# "
  					+ " order by cmqName";
 
 			String whereClause = "";
