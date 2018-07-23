@@ -691,9 +691,11 @@ public class CreateController implements Serializable {
                 update();
             
             if (formToOpen != null && !formToOpen.equals(""))
-    			return formToOpen;
-            else
-            	goToWizardNextStep();
+    				return formToOpen;
+            else {
+				if (formSaved)
+	            		goToWizardNextStep();
+            }
 
         }
         return "";
