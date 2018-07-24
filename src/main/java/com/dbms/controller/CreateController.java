@@ -693,6 +693,7 @@ public class CreateController implements Serializable {
             if (formToOpen != null && !formToOpen.equals(""))
     				return formToOpen;
             else {
+            		Long count = this.cmqBaseService.findCmqCountByCmqNameAndExtension(detailsFormModel.getExtension(), detailsFormModel.getName());
 				if (formSaved)
 	            		goToWizardNextStep();
             }
@@ -1392,6 +1393,7 @@ public class CreateController implements Serializable {
 				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
 						"List '" + selectedData.getCmqName() + "' is successfully saved.", "");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
+				setFormSaved(true);
 			} else {
 				String errorMsg = "The record already exists for List Name <"
 						+ detailsFormModel.getName() + "> and Extention <"
@@ -1403,6 +1405,7 @@ public class CreateController implements Serializable {
 				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, errorMsg, "");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 
+				 
 				return null;
 			}
 		} catch (CqtServiceException e) {
