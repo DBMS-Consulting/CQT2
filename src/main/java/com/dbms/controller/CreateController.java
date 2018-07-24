@@ -279,10 +279,10 @@ public class CreateController implements Serializable {
 			Long count = this.cmqBaseService.findCmqCountByCmqNameAndExtension(detailsFormModel.getExtension(), detailsFormModel.getName());
 
 			if (count > 0) {
-				String errorMsg = "The record already exists for List Name <"
-						+ detailsFormModel.getName() + "> and Extention <"
+				String errorMsg = "The record already exists for List Name "
+						+ detailsFormModel.getName() + " and Extention "
 						+ detailsFormModel.getExtension()
-						+ ">.";
+						+ ".";
 				
 				LOG.error(errorMsg);
 
@@ -458,10 +458,10 @@ public class CreateController implements Serializable {
 						"List '" + selectedData.getCmqName() + "' is successfully saved.", "");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 			} else {
-				String errorMsg = "The record already exists for List Name <"
-						+ detailsFormModel.getName() + "> and Extention <"
+				String errorMsg = "The record already exists for List Name "
+						+ detailsFormModel.getName() + " and Extention "
 						+ detailsFormModel.getExtension()
-						+ ">.";
+						+ ".";
 				
 				LOG.error(errorMsg);
 
@@ -1371,10 +1371,10 @@ public class CreateController implements Serializable {
 						"List '" + selectedData.getCmqName() + "' is successfully saved.", "");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 			} else {
-				String errorMsg = "The record already exists for List Name <"
-						+ detailsFormModel.getName() + "> and Extention <"
+				String errorMsg = "The record already exists for List Name "
+						+ detailsFormModel.getName() + " and Extention "
 						+ detailsFormModel.getExtension()
-						+ ">.";
+						+ ".";
 				
 				LOG.error(errorMsg);
 
@@ -1389,10 +1389,10 @@ public class CreateController implements Serializable {
 			// rollback the data changes to the db's state
             setSelectedData(cmqBaseService.findByCode(selectedData.getCmqCode()));
 			
-			String errorMsg = "The record already exists for List Name <"
-					+ detailsFormModel.getName() + "> and Extention <"
+			String errorMsg = "The record already exists for List Name "
+					+ detailsFormModel.getName() + " and Extention "
 					+ detailsFormModel.getExtension()
-					+ ">.";
+					+ ".";
 			
 			LOG.error(errorMsg);
 
@@ -1545,10 +1545,10 @@ public class CreateController implements Serializable {
 					LOG.error("Exception occurred while deleting cmq with id " + savedCmqId, e);
 				}
 			}
-			String errorMsg = "The record already exists for List Name <"
-					+ detailsFormModel.getName() + "> and Extention <"
+			String errorMsg = "The record already exists for List Name "
+					+ detailsFormModel.getName() + " and Extention "
 					+ detailsFormModel.getExtension()
-					+ ">.";
+					+ ".";
 			
 			LOG.error(errorMsg);
 
@@ -1613,10 +1613,10 @@ public class CreateController implements Serializable {
 			Long count = this.cmqBaseService.findCmqCountByCmqNameAndExtension(detailsFormModel.getExtension(), detailsFormModel.getName());
 
 			if (count > 0) {
-				String errorMsg = "The record already exists for List Name <"
-						+ detailsFormModel.getName() + "> and Extention <"
+				String errorMsg = "The record already exists for List Name "
+						+ detailsFormModel.getName() + " and Extention "
 						+ detailsFormModel.getExtension()
-						+ ">.";
+						+ ".";
 				
 				LOG.error(errorMsg);
 
