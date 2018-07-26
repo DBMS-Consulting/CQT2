@@ -1214,14 +1214,14 @@ public class ImpactSearchController implements Serializable {
 		}
 		
 		if(d instanceof CmqBase190) {
+			detailsFormModel.loadFromCmqBase190((CmqBase190)d);
 			notesFormModel.loadFromCmqBase190((CmqBase190)d);
-			//detailsFormModel.loadFromCmqBase190((CmqBase190)d);
 		} else if(d instanceof SmqBase190) {
 			SmqBase190 current = smqBaseCurrentService.findByCode(((SmqBase190) d).getSmqCode());
 			notesFormModel.loadFromSmqBase190(current);
 		} else if(d instanceof CmqBaseTarget) {
+			detailsFormModel.loadFromCmqBaseTarget((CmqBaseTarget)d);
 			notesFormModel.loadFromCmqBaseTarget((CmqBaseTarget)d);
-			//detailsFormModel.loadFromCmqBaseTarget((CmqBaseTarget)d);
 		} else if(d instanceof SmqBaseTarget) {
 			SmqBaseTarget target = smqBaseTargetService.findByCode(((SmqBaseTarget) d).getSmqCode());
 			notesFormModel.loadFromSmqBaseTarget(target);
@@ -2800,14 +2800,14 @@ public class ImpactSearchController implements Serializable {
 	        	}
         }
         
-        
-        
-		if (this.currentOrTarget == SELECTED_CURRENT_LIST ||
+        System.out.print("Notes: ");
+        System.out.println(detailsFormModel.getState());
+		if (currentOrTarget == SELECTED_CURRENT_LIST ||
                 (detailsFormModel.getState().equals(CmqBaseTarget.CMQ_STATE_APPROVED_IA) ||
                 detailsFormModel.getState().equals(CmqBaseTarget.CMQ_STATE_PUBLISHED_IA)))
 			return true;
 		
-		if (this.currentOrTarget == SELECTED_TARGET_LIST)
+		if (currentOrTarget == SELECTED_TARGET_LIST)
 			return false;
 		
 		return true;
@@ -2829,8 +2829,8 @@ public class ImpactSearchController implements Serializable {
         		return  false;
         	}
         }
-        
-		
+        System.out.print("Details: ");
+        System.out.println(detailsFormModel.getState());
 		if (this.currentOrTarget == SELECTED_CURRENT_LIST ||
                 (detailsFormModel.getState().equals(CmqBaseTarget.CMQ_STATE_APPROVED_IA) ||
                 detailsFormModel.getState().equals(CmqBaseTarget.CMQ_STATE_PUBLISHED_IA))) {
