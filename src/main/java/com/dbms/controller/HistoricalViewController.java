@@ -80,6 +80,8 @@ public class HistoricalViewController implements Serializable {
 	private ListRelationsVM relationsModel;
 	private TreeNode relationsRoot;
 	private boolean displayScopeCatWeight;
+	
+	private TreeNode parentListRoot;
 
 	@ManagedProperty("#{HistoricalViewService}")
 	private IHistoricalViewService historicalViewService;
@@ -128,7 +130,9 @@ public class HistoricalViewController implements Serializable {
 	public void init() {
 		this.displayScopeCatWeight = refCodeListService.getLevelScopeCategorySystemConfig();
 		this.relationsModel = new ListRelationsVM(authService, appSWJSFRequest, refCodeListService, cmqBaseService, smqBaseService, meddraDictService, cmqRelationService, cmqParentChildService, globalController);
-
+		this.parentListRoot = new DefaultTreeNode("root"
+				, new HierarchyNode("LEVEL", "NAME", "CODE", "SCOPE", "CATEGORY", "WEIGHT", null)
+				, null);
 	}
 
 	public void search() {
@@ -162,6 +166,7 @@ public class HistoricalViewController implements Serializable {
 		}
 		this.searchResults = historicalViewService.findByCriterias(listCode, dictionaryVersion,
 				auditTimestamp);
+		
 		Map<Long, HistoricalViewDTO> historicalViewDTOMap = new HashMap<Long, HistoricalViewDTO>();
 		List<HierarchyNode> addedHierarchyNodes = new ArrayList<>();
 		
@@ -1077,7 +1082,9 @@ public class HistoricalViewController implements Serializable {
 	
 	public void populateChildCmqsByParent(Long parentCmqCode, TreeNode rootTreeNode) {
 		//now process the cmq parent child relations
-		List<CmqBase190> childCmqs = this.cmqBaseService.findChildCmqsByParentCode(parentCmqCode);
+		CmqBase190 parent = cmqBaseService.findByCode(parentCmqCode);
+		List<Long> childCmqCodes = this.historicalViewService.findHistoricalChildsByCmqId(parent.getCmqId(), auditTimestamp);
+		List<CmqBase190> childCmqs = cmqBaseService.findByCodes(childCmqCodes);
 		if((null != childCmqs) && (childCmqs.size() > 0)) {
 			for (CmqBase190 childCmq : childCmqs) {
 				HierarchyNode node = this.createCmqBaseNode(childCmq);
@@ -1214,6 +1221,41 @@ public class HistoricalViewController implements Serializable {
 			return this.cmqBaseDTOSelectListForCode;
 		}
 	}
+	
+	public void populateHistoricalParentCmqByChild(CmqBase190 childCmq) {
+		List<Long> parentsCmqCode = this.historicalViewService.findHistoricalParentsByCmqId(childCmq.getCmqId(), auditTimestamp);
+		List<CmqBase190> parents = cmqBaseService.findByCodes(parentsCmqCode);
+		if(null!=parents && parents.size()>0) {
+				this.parentListRoot = new DefaultTreeNode("root"
+						, new HierarchyNode("LEVEL", "NAME", "CODE", "SCOPE", "CATEGORY", "WEIGHT", null)
+						, null);
+				for(CmqBase190 parent : parents) {
+					HierarchyNode node = new HierarchyNode();
+					node.setLevel(parent.getCmqTypeCd());
+					node.setCode(parent.getCmqCode().toString());
+					node.setTerm(parent.getCmqName());
+					node.setCategory("");
+					node.setWeight("");
+					node.setScope("");
+					node.setEntity(parent);
+					
+					TreeNode treeNode = new DefaultTreeNode(node, this.parentListRoot);
+				
+					Long childCount = this.cmqRelationService.findCountByCmqCode(parent.getCmqCode());
+					if((null != childCount) && (childCount > 0)) {
+						HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
+						dummyNode.setDummyNode(true);
+						new DefaultTreeNode(dummyNode, treeNode);
+					}
+					
+				}
+				
+			//}
+		} else {
+			LOG.info("No parent exists for cmq child code " + childCmq.getCmqCode());
+		}
+	}
+	
 	
 	public boolean isParentViewable() {
         
@@ -1456,6 +1498,14 @@ public class HistoricalViewController implements Serializable {
 
 	public void setGlobalController(GlobalController globalController) {
 		this.globalController = globalController;
+	}
+
+	public TreeNode getParentListRoot() {
+		return parentListRoot;
+	}
+
+	public void setParentListRoot(TreeNode parentListRoot) {
+		this.parentListRoot = parentListRoot;
 	}
 
 }

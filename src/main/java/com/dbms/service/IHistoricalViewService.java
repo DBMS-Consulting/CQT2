@@ -8,5 +8,8 @@ public interface IHistoricalViewService {
 
 	List<HistoricalViewDbDataDTO> findByCriterias(String listCode, String dictionaryVersion,
 			String auditTimeStamp);
+	
+	List<Long> findHistoricalParentsByCmqId(Long childCmqId, String auditTimeStampString);
+	List<Long> findHistoricalChildsByCmqId(Long parentCmqId, String auditTimeStampString);
 
 }

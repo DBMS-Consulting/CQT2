@@ -27,6 +27,7 @@ public interface ICmqBase190Service extends ICqtPersistenceService<CmqBase190> {
 	Long getNextCodeValue() throws CqtServiceException;
 
 	CmqBase190 findByCode(Long cmqCode);
+	List<CmqBase190> findByCodes(List<Long> cmqCodes);
 
 	List<CmqBase190> findByLevelAndTerm(Integer level, String searchTerm);
 

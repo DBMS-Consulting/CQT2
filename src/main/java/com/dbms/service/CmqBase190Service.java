@@ -404,6 +404,28 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		}
 		return retVal;
 	}
+	
+	public List<CmqBase190> findByCodes(List<Long> cmqCodes) {
+		List<CmqBase190> retVal = null;
+		String queryString = "from CmqBase190 c where c.cmqCode in (:cmqCodes)";
+		EntityManager entityManager = this.cqtEntityManagerFactory
+				.getEntityManager();
+		try {
+			Query query = entityManager.createQuery(queryString);
+			query.setParameter("cmqCodes", cmqCodes);
+			query.setHint("org.hibernate.cacheable", true);
+			retVal = query.getResultList();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg.append("findByCode failed for CMQ_CODE value'").append(cmqCodes)
+					.append("' ").append("Query used was ->")
+					.append(queryString);
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
 
 	@SuppressWarnings("unchecked")
     @Override

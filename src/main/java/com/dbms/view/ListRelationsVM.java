@@ -726,36 +726,6 @@ public class ListRelationsVM implements IRelationsChangeListener {
 	}
 	
 	public void populateParentCmqByChild(CmqBase190 childCmq) {
-		
-		// change code here for parent child relationship
-		/*if(childCmq.getCmqParentCode() != null) {
-			log.info("Populating cmq base parent for cmq child code " + childCmq.getCmqCode());
-			this.parentCmqEntity = this.cmqBaseService.findByCode(childCmq.getCmqParentCode());
-			if(null != parentCmqEntity) {
-				this.parentListRoot = new DefaultTreeNode("root"
-						, new HierarchyNode("LEVEL", "NAME", "CODE", "SCOPE", "CATEGORY", "WEIGHT", null)
-						, null);
-				HierarchyNode node = new HierarchyNode();
-				node.setLevel(parentCmqEntity.getCmqTypeCd());
-				node.setCode(parentCmqEntity.getCmqCode().toString());
-				node.setTerm(parentCmqEntity.getCmqName());
-				node.setCategory("");
-				node.setWeight("");
-				node.setScope("");
-				node.setEntity(parentCmqEntity);
-				
-				TreeNode treeNode = new DefaultTreeNode(node, this.parentListRoot);
-			
-				Long childCount = this.cmqRelationService.findCountByCmqCode(childCmq.getCmqParentCode());
-				if((null != childCount) && (childCount > 0)) {
-					HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
-					dummyNode.setDummyNode(true);
-					new DefaultTreeNode(dummyNode, treeNode);
-				}
-			}
-		} else {
-			log.info("No parent exists for cmq child code " + childCmq.getCmqCode());
-		}*/
 		List<CmqParentChild200> parents = this.cmqParentChildService.findParentsByCmqCode(childCmq.getCmqCode());
 		if(null!=parents && parents.size()>0) {
 			log.info("Populating cmq base parent for cmq child code " + childCmq.getCmqCode());
@@ -823,6 +793,7 @@ public class ListRelationsVM implements IRelationsChangeListener {
 	public TreeNode getParentListRoot() {
 		return parentListRoot;
 	}
+	
 
 	public void setParentListRoot(TreeNode parentListRoot) {
 		this.parentListRoot = parentListRoot;
