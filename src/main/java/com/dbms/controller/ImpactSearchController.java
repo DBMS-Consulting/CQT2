@@ -476,9 +476,9 @@ public class ImpactSearchController implements Serializable {
 
 	public void onNodeExpandCurrentTable(NodeExpandEvent event) {
         event.getTreeNode().setExpanded(true);
-        IARelationsTreeHelper treeHelper = new IARelationsTreeHelper(
-                cmqBaseCurrentService, smqBaseCurrentService, meddraDictCurrentService, cmqRelationCurrentService,
-                cmqBaseTargetService, smqBaseTargetService, meddraDictTargetService, cmqRelationTargetService, globalController);
+        IARelationsTreeHelper treeHelper = new IARelationsTreeHelper(cmqBaseCurrentService, smqBaseCurrentService, 
+meddraDictCurrentService, cmqRelationCurrentService,cmqBaseTargetService, smqBaseTargetService,
+ meddraDictTargetService, cmqRelationTargetService, globalController);
         
         treeHelper.setImpactTypes(getSelectedImpactFilters());
         treeHelper.onNodeExpandCurrentTable(currentTableRootTreeNode, event);
@@ -2056,238 +2056,45 @@ public class ImpactSearchController implements Serializable {
 		@Override
 		public List<CmqBaseTarget> load(int first, int pageSize, List<SortMeta> multiSortMeta,
 				Map<String, Object> filters) {
-			List<CmqBaseTarget> paginatedList = new ArrayList<>();
-			List<Map<String, Object>> fetchedCmqBaseList = null;
-			
+			List<CmqBaseTarget> fetchedCmqBaseList = null;
 			if (this.manageImpactedList) {
 				LOG.info("Loading more impacted list cmqs starting from " + first + " with page size of " + pageSize);
 				fetchedCmqBaseList = cmqBaseTargetService.findImpactedWithPaginated(first, pageSize, null, null,
 						filters);
-				this.setRowCount(cmqBaseTargetService.findImpactedCount(filters).intValue());
+				this.setRowCount(fetchedCmqBaseList.size());
 			} else {
 				LOG.info("Loading more not impacted list cmqs starting from " + first + " with page size of "
 						+ pageSize);
 				fetchedCmqBaseList = cmqBaseTargetService.findNotImpactedWithPaginated(first, pageSize, null, null,
 						filters);
-				this.setRowCount(cmqBaseTargetService.findNotImpactedCount(filters).intValue());
+				this.setRowCount(fetchedCmqBaseList.size());
 			}
 
-			if (fetchedCmqBaseList != null) {
-				for (Map<String, Object> map : fetchedCmqBaseList) {
-					CmqBaseTarget target = new CmqBaseTarget();
-					if(null != map.get("dictionaryVersion")) {
-						target.setDictionaryVersion(map.get("dictionaryVersion").toString());
-					}					
-					if(null != map.get("dictionaryName")) {
-						target.setDictionaryName(map.get("dictionaryName").toString());
-					}					
-					if(null != map.get("cmqId")) {
-						target.setId(Long.valueOf(map.get("cmqId").toString()));
-					}					
-					if(null != map.get("impactType")) {
-						target.setImpactType(map.get("impactType").toString());
-					}					
-					if(null != map.get("cmqAlgorithm")) {
-						target.setCmqAlgorithm(map.get("cmqAlgorithm").toString());
-					}					
-					if(null != map.get("cmqCode")) {
-						target.setCmqCode(Long.valueOf(map.get("cmqCode").toString()));
-					}					
-					if(null != map.get("cmqDescription")) {
-						target.setCmqDescription(map.get("cmqDescription").toString());
-					} 					
-					if(null != map.get("cmqLevel")) {
-						target.setCmqLevel(Integer.valueOf(map.get("cmqLevel").toString()));
-					}					
-					if(null != map.get("cmqName")) {
-						target.setCmqName(map.get("cmqName").toString());
-					}
-					if(null != map.get("cmqNote")) {
-						target.setCmqNote(map.get("cmqNote").toString());
-					}
-					if(null != map.get("cmqParentCode")) {
-						//TODO update for parent child relationship
-						//target.setCmqParentCode(Long.valueOf(map.get("cmqParentCode").toString()));
-					}
-					if(null != map.get("cmqParentName")) {
-						//TODO update for parent child relationship
-						//target.setCmqParentName(map.get("cmqParentName").toString());
-					}
-					if(null != map.get("cmqSource")) {
-						target.setCmqSource(map.get("cmqSource").toString());
-					}
-					if(null != map.get("cmqStatus")) {
-						target.setCmqStatus(map.get("cmqStatus").toString());
-					}
-					if(null != map.get("cmqDesignee")) {
-						target.setCmqDesignee(map.get("cmqDesignee").toString());
-					}
-					if(null != map.get("cmqDesignee2")) {
-						target.setCmqDesignee2(map.get("cmqDesignee2").toString());
-					}
-					if(null != map.get("cmqDesignee3")) {
-						target.setCmqDesignee3(map.get("cmqDesignee3").toString());
-					}
-					if(null != map.get("cmqProgramCd")) {
-						target.setCmqProgramCd(map.get("cmqProgramCd").toString());
-					}
-					if(null != map.get("cmqProtocolCd")) {
-						target.setCmqProtocolCd(map.get("cmqProtocolCd").toString());
-					}
-					if(null != map.get("cmqGroup")) {
-						target.setCmqGroup(map.get("cmqGroup").toString());
-					}
-					if(null != map.get("createdBy")) {
-						target.setCreatedBy(map.get("createdBy").toString());
-					}
-					if(null != map.get("cmqSubversion")) {
-						target.setCmqSubversion(new BigDecimal(map.get("cmqSubversion").toString()));
-					}
-					if(null != map.get("creationDate")) {
-						SimpleDateFormat fomrat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
-						try {
-							target.setCreationDate(fomrat.parse(map.get("creationDate").toString()));
-						} catch (ParseException e) {
-							LOG.error(e.getMessage(), e);
-						}
-					}
-					
-					List<CmqProductBaseTarget> products = cmqBaseTargetService.findProductsByCmqCode(target.getCmqCode());
-					target.setProductsList(products);
-					paginatedList.add(target);
-				}
-				this.cmqBaseList.addAll(paginatedList);
-			}
-			return paginatedList;
+			if (fetchedCmqBaseList != null)
+				this.cmqBaseList.addAll(fetchedCmqBaseList);
+			return fetchedCmqBaseList;
 		}
 
 		@Override
 		public List<CmqBaseTarget> load(int first, int pageSize, String sortField, SortOrder sortOrder,
 				Map<String, Object> filters) {
-			
-			List<CmqBaseTarget> paginatedList = new ArrayList<>();
-			List<Map<String, Object>> fetchedCmqBaseList = null;
-
+			List<CmqBaseTarget> fetchedCmqBaseList = null;
 			if (this.manageImpactedList) {
 				LOG.info("Loading more impacted list cmqs starting from " + first + " with page size of " + pageSize);
 				fetchedCmqBaseList = cmqBaseTargetService.findImpactedWithPaginated(first, pageSize, null, null,
 						filters);
-				this.setRowCount(cmqBaseTargetService.findImpactedCount(filters).intValue());
+				this.setRowCount(cmqBaseTargetService.findImpactedCount().intValue());
 			} else {
 				LOG.info("Loading more not impacted list cmqs starting from " + first + " with page size of "
 						+ pageSize);
-				 fetchedCmqBaseList = cmqBaseTargetService.findNotImpactedWithPaginated(first, pageSize, null, null,
+				fetchedCmqBaseList = cmqBaseTargetService.findNotImpactedWithPaginated(first, pageSize, null, null,
 						filters);
-				this.setRowCount(cmqBaseTargetService.findNotImpactedCount(filters).intValue());
-			}
-			
-			if (fetchedCmqBaseList != null) {
-				for (Map<String, Object> map : fetchedCmqBaseList) {
-					CmqBaseTarget target = new CmqBaseTarget();
-					if(null != map.get("dictionaryVersion")) {
-						target.setDictionaryVersion(map.get("dictionaryVersion").toString());
-					}					
-					if(null != map.get("dictionaryName")) {
-						target.setDictionaryName(map.get("dictionaryName").toString());
-					}					
-					if(null != map.get("cmqId")) {
-						target.setId(Long.valueOf(map.get("cmqId").toString()));
-					}					
-					if(null != map.get("impactType")) {
-						target.setImpactType(map.get("impactType").toString());
-					}	
-					if(null != map.get("cmqAlgorithm")) {
-						target.setCmqAlgorithm(map.get("cmqAlgorithm").toString());
-					}
-					if(null != map.get("cmqCode")) {
-						target.setCmqCode(Long.valueOf(map.get("cmqCode").toString()));
-					}
-					if(null != map.get("cmqDescription")) {
-						target.setCmqDescription(map.get("cmqDescription").toString());
-					} 
-					if(null != map.get("cmqLevel")) {
-						target.setCmqLevel(Integer.valueOf(map.get("cmqLevel").toString()));
-					}
-					if(null != map.get("cmqName")) {
-						target.setCmqName(map.get("cmqName").toString());
-					}
-					if(null != map.get("cmqNote")) {
-						target.setCmqNote(map.get("cmqNote").toString());
-					}
-					/*
-					if(null != map.get("cmqParentCode")) {
-						//TODO update for parent child relationship
-						//target.setCmqParentCode(Long.valueOf(map.get("cmqParentCode").toString()));
-					}
-					if(null != map.get("cmqParentName")) {
-						//TODO update for parent child relationship
-						//target.setCmqParentName(map.get("cmqParentName").toString());
-					}
-					*/
-					if(null != map.get("cmqSource")) {
-						target.setCmqSource(map.get("cmqSource").toString());
-					}
-					if(null != map.get("cmqStatus")) {
-						target.setCmqStatus(map.get("cmqStatus").toString());
-					}
-					if(null != map.get("cmqState")) {
-						target.setCmqState(map.get("cmqState").toString());
-					}
-					if(null != map.get("cmqTypeCd")) {
-						target.setCmqTypeCd(map.get("cmqTypeCd").toString());
-					}
-					if(null != map.get("cmqDesignee")) {
-						target.setCmqDesignee(map.get("cmqDesignee").toString());
-					}
-					if(null != map.get("cmqDesignee2")) {
-						target.setCmqDesignee2(map.get("cmqDesignee2").toString());
-					}
-					if(null != map.get("cmqDesignee3")) {
-						target.setCmqDesignee3(map.get("cmqDesignee3").toString());
-					}
-					if(null != map.get("cmqProgramCd")) {
-						target.setCmqProgramCd(map.get("cmqProgramCd").toString());
-					}
-					if(null != map.get("cmqProtocolCd")) {
-						target.setCmqProtocolCd(map.get("cmqProtocolCd").toString());
-					}
-					if(null != map.get("cmqGroup")) {
-						target.setCmqGroup(map.get("cmqGroup").toString());
-					}
-					if(null != map.get("createdBy")) {
-						target.setCreatedBy(map.get("createdBy").toString());
-					}
-					if(null != map.get("cmqSubversion")) {
-						target.setCmqSubversion(new BigDecimal(map.get("cmqSubversion").toString()));
-					}
-					if(null != map.get("creationDate")) {
-						SimpleDateFormat fomrat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
-						try {
-							target.setCreationDate(fomrat.parse(map.get("creationDate").toString()));
-						} catch (ParseException e) {
-							LOG.error(e.getMessage(), e);
-						}
-					}
-					
-					List<CmqProductBaseTarget> products = cmqBaseTargetService.findProductsByCmqCode(target.getCmqCode());
-					target.setProductsList(products);
-					paginatedList.add(target);
-				}
-				this.cmqBaseList.addAll(paginatedList);
+				this.setRowCount(cmqBaseTargetService.findNotImpactedCount().intValue());
 			}
 
-			int dataSize = fetchedCmqBaseList.size();
-
-			// paginate
-			if (dataSize > pageSize) {
-				try {
-					return paginatedList.subList(first, first + pageSize);
-				} catch (IndexOutOfBoundsException e) {
-					return paginatedList.subList(first, first + (dataSize % pageSize));
-				}
-			} else {
-				return paginatedList;
-			}
+			if (fetchedCmqBaseList != null)
+				this.cmqBaseList.addAll(fetchedCmqBaseList);
+			return fetchedCmqBaseList;
 		}
 
 		@Override

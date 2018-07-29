@@ -18,7 +18,8 @@
 				
 				<p:ajax event="rowSelect" listener="#{impactSearchController.onRowSelect}" />
 				
-				<p:column filterFunction="PF('statusDialog').hide()" headerText="SMQ Name" id="c52" styleClass="ia-search-term-col wrap"
+				<p:column filterFunction="PF('statusDialog').hide()" headerText="SMQ Name" id="c52" 
+				styleClass="ia-search-term-col wrap"
 					 filterBy="#{smqList.smqName}" filterMatchMode="contains" >
 					<h:outputText value="#{smqList.smqName}" id="ot54" />
 				</p:column>

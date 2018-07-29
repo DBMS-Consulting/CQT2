@@ -14,12 +14,12 @@ import com.dbms.service.base.ICqtPersistenceService;
 
 public interface ICmqBaseTargetService  extends ICqtPersistenceService<CmqBaseTarget>{
 
-	List<Map<String, Object>> findImpactedWithPaginated(int first, int pageSize, String sortField, SortOrder sortOrder,
+	List<CmqBaseTarget> findImpactedWithPaginated(int first, int pageSize, String sortField, SortOrder sortOrder,
 			Map<String, Object> filters);
 
 	Long findImpactedCount();
 
-	List<Map<String, Object>> findNotImpactedWithPaginated(int first, int pageSize, String sortField, SortOrder sortOrder,
+	List<CmqBaseTarget> findNotImpactedWithPaginated(int first, int pageSize, String sortField, SortOrder sortOrder,
 			Map<String, Object> filters);
 
 	Long findNotImpactedCount();

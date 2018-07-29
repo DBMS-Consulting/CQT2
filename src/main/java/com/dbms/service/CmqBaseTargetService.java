@@ -50,6 +50,7 @@ import org.slf4j.LoggerFactory;
 
 import com.dbms.entity.cqt.CmqBase190;
 import com.dbms.entity.cqt.CmqBaseTarget;
+import com.dbms.entity.cqt.CmqParentChildTarget;
 import com.dbms.entity.cqt.CmqProductBaseTarget;
 import com.dbms.entity.cqt.CmqRelation190;
 import com.dbms.entity.cqt.CmqRelationTarget;
@@ -91,109 +92,68 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 	@ManagedProperty("#{RefCodeListService}")
 	private IRefCodeListService refCodeListService;
     
+	@ManagedProperty("#{CmqParentChildTargetService}")
+	private ICmqParentChildTargetService parentChildService;
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Map<String, Object>> findImpactedWithPaginated(int first, int pageSize, String sortField
+	public List<CmqBaseTarget> findImpactedWithPaginated(int first, int pageSize, String sortField
 														, SortOrder sortOrder, Map<String, Object> filters) {
-		List<Map<String, Object>> retVal = null;
+		List<CmqBaseTarget> retVal = null;
 		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
-		
-		Session session = entityManager.unwrap(Session.class);
 		try {
-			String query = "SELECT CMQ_CODE as cmqCode, CMQ_NAME as cmqName, CMQ_LEVEL as cmqLevel, CMQ_STATUS as cmqStatus, "
-					+ " CMQ_TYPE_CD as cmqTypeCd, CMQ_STATE as cmqState, CMQ_DESIGNEE as cmqDesignee, CMQ_DESIGNEE2 as cmqDesignee2,  CMQ_DESIGNEE3 as cmqDesignee3, "
-					+ " CMQ_ID as cmqId, CMQ_DESCRIPTION as cmqDescription, CMQ_SOURCE as cmqSource, CMQ_NOTE as cmqNote,  "
-					+ " CMQ_ALGORITHM as cmqAlgorithm,"
-					+ " IMPACT_TYPE as impactType, DICTIONARY_NAME as dictionaryName, DICTIONARY_VERSION as dictionaryVersion,"
-					+ " CMQ_SUBVERSION as cmqSubversion, CREATION_DATE as creationDate, CREATED_BY as createdBy, CMQ_GROUP as cmqGroup,"
-					+ " CMQ_PROGRAM_CD as cmqProgramCd, CMQ_PROTOCOL_CD as cmqProtocolCd"
-					+ " FROM CMQ_BASE_TARGET WHERE (IMPACT_TYPE = 'IMPACTED' or IMPACT_TYPE = 'ICC' or IMPACT_TYPE = 'IPC') "  + " #1# "
- 					+ " order by cmqName";
+			CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+			CriteriaQuery<CmqBaseTarget> cq = cb.createQuery(CmqBaseTarget.class);
+			Root<CmqBaseTarget> cmqRoot = cq.from(CmqBaseTarget.class);
+		
+			List<Predicate> pred = new ArrayList<Predicate>();
 
-			String whereClause = "";
+			pred.add(cb.or(cb.equal(cmqRoot.get("impactType"), CSMQBean.IMPACT_TYPE_IMPACTED), 
+					cb.equal(cmqRoot.get("impactType"), CSMQBean.IMPACT_TYPE_ICC),
+					cb.equal(cmqRoot.get("impactType"), CSMQBean.IMPACT_TYPE_IPC)
+			));
 
 			if (filters.containsKey("cmqName") && filters.get("cmqName") != null) {
 				String f = ((String) filters.get("cmqName")).toLowerCase();
-				String cmqNameFilter = " and LOWER(CMQ_NAME) like '%" + f + "%' ";
-				whereClause = whereClause + cmqNameFilter;
+                f = f.contains("%") ? f : ("%" + f + "%");
+				pred.add(cb.like(cb.lower(cmqRoot.<String>get("cmqName")), f));
 			}
 
-			if (filters.containsKey("cmqLevel") && filters.get("cmqLevel") != null) {
-				String cmqLevelFilter = " and CMQ_LEVEL = " + filters.get("cmqLevel");
-				whereClause = whereClause + cmqLevelFilter;
-			}
+			if(filters.containsKey("cmqTypeCd") && filters.get("cmqTypeCd") != null)
+				pred.add(cb.equal(cmqRoot.get("cmqTypeCd"), filters.get("cmqTypeCd")));
 			
-			if (filters.containsKey("cmqState") && filters.get("cmqState") != null) {
-				String f = ((String) filters.get("cmqState")).toLowerCase();
-				String cmqStateFilter = " and LOWER(CMQ_STATE) like '%" + f + "%' ";
-				whereClause = whereClause + cmqStateFilter;
-			}
+			if(filters.containsKey("cmqLevel") && filters.get("cmqLevel") != null)
+				pred.add(cb.equal(cmqRoot.get("cmqLevel"), filters.get("cmqLevel")));
 			
-			if (filters.containsKey("cmqTypeCd") && filters.get("cmqTypeCd") != null) {
- 				String f = ((String) filters.get("cmqTypeCd")).toLowerCase();
-				String filter = " and LOWER(CMQ_TYPE_CD) like '%" + f + "%' ";
-				whereClause = whereClause + filter;
+            if(filters.containsKey("cmqState") && filters.get("cmqState") != null)
+				pred.add(cb.equal(cmqRoot.get("cmqState"), filters.get("cmqState")));
+			
+            if(filters.containsKey("cmqDesignee") && filters.get("cmqDesignee") != null) {
+	            	pred.add(cb.or(cb.equal(cmqRoot.get("cmqDesignee"), filters.get("cmqDesignee")), 
+	    					cb.equal(cmqRoot.get("cmqDesignee2"), filters.get("cmqDesignee")),
+	    					cb.equal(cmqRoot.get("cmqDesignee3"), filters.get("cmqDesignee"))
+	    			));
 			}
 
 			if (filters.containsKey("cmqCode") && filters.get("cmqCode") != null) {
 				String f = ((String) filters.get("cmqCode"));
-				String cmqCodeFilter = " and CMQ_CODE = " + f;
-				whereClause = whereClause + cmqCodeFilter;
-			}
-			
-			if (filters.containsKey("cmqDesignee") && filters.get("cmqDesignee") != null) {
-				String f = ((String) filters.get("cmqDesignee")).toLowerCase();
-				
-				String filter = " and (LOWER(CMQ_DESIGNEE) like '%" + f + "%' ";
-				filter += " or LOWER(CMQ_DESIGNEE2) like '%" + f + "%' ";
-				filter += " or LOWER(CMQ_DESIGNEE3) like '%" + f + "%'"  + ")";
-				whereClause = whereClause + filter;
+                f = f.contains("%") ? f : ("%" + f + "%");
+				pred.add(cb.like(cmqRoot.get("cmqCode").as(String.class), f));
 			}
 
-			query = query.replaceAll("#1#", whereClause);
+			cq.where(cb.and(pred.toArray(new Predicate[0])));
+			cq.orderBy(cb.asc(cmqRoot.get("cmqName")));
 
-			SQLQuery sqlQuery = session.createSQLQuery(query);
-			sqlQuery.addScalar("cmqCode", StandardBasicTypes.LONG);
-			sqlQuery.addScalar("cmqName", StandardBasicTypes.STRING);
-			sqlQuery.addScalar("cmqLevel", StandardBasicTypes.INTEGER);
-			sqlQuery.addScalar("cmqStatus", StandardBasicTypes.STRING);
-			sqlQuery.addScalar("impactType", StandardBasicTypes.STRING);
-			sqlQuery.addScalar("cmqState", StandardBasicTypes.STRING);
-			sqlQuery.addScalar("cmqTypeCd", StandardBasicTypes.STRING);
-			sqlQuery.addScalar("cmqDesignee", StandardBasicTypes.STRING);
-			sqlQuery.addScalar("cmqDesignee2", StandardBasicTypes.STRING);
-			sqlQuery.addScalar("cmqDesignee3", StandardBasicTypes.STRING);
-
-			sqlQuery.addScalar("cmqId", StandardBasicTypes.LONG);
-			sqlQuery.addScalar("dictionaryName", StandardBasicTypes.STRING);
-			sqlQuery.addScalar("dictionaryVersion", StandardBasicTypes.STRING);
-			sqlQuery.addScalar("cmqSubversion", StandardBasicTypes.STRING);
-			sqlQuery.addScalar("cmqAlgorithm", StandardBasicTypes.STRING);
-			sqlQuery.addScalar("cmqDescription", StandardBasicTypes.STRING);
-			sqlQuery.addScalar("cmqNote", StandardBasicTypes.STRING);
-			sqlQuery.addScalar("cmqSource", StandardBasicTypes.STRING);
-			//sqlQuery.addScalar("cmqParentCode", StandardBasicTypes.LONG);
-			//sqlQuery.addScalar("cmqParentName", StandardBasicTypes.STRING);
-			
-			sqlQuery.addScalar("cmqProgramCd", StandardBasicTypes.STRING);
-			sqlQuery.addScalar("cmqProtocolCd", StandardBasicTypes.STRING);
-			sqlQuery.addScalar("cmqGroup", StandardBasicTypes.STRING);
-			sqlQuery.addScalar("creationDate", StandardBasicTypes.STRING);
-			sqlQuery.addScalar("createdBy", StandardBasicTypes.STRING);
-			
-			sqlQuery.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
-			
-			LOG.error("*****query 1 :" + query);
+			TypedQuery<CmqBaseTarget> tq = entityManager.createQuery(cq);
 
 			if (pageSize >= 0) {
-				sqlQuery.setMaxResults(pageSize);
+	            tq.setMaxResults(pageSize);
 			}
 			if (first >= 0) {
-				sqlQuery.setFirstResult(first);
+	            tq.setFirstResult(first);
 			}
 			
-			retVal = sqlQuery.list();
+			retVal = tq.getResultList();
 		} catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
 			msg.append("An error occurred while fetching paginated impacted CmqBaseTarget.");
@@ -362,109 +322,62 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Map<String, Object>> findNotImpactedWithPaginated(int first, int pageSize, String sortField
+	public List<CmqBaseTarget> findNotImpactedWithPaginated(int first, int pageSize, String sortField
 			, SortOrder sortOrder, Map<String, Object> filters) {
-		List<Map<String, Object>> retVal = null;
+		List<CmqBaseTarget> retVal = null;
 		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
 		Session session = entityManager.unwrap(Session.class);
 		try {
-			String query = "SELECT CMQ_CODE as cmqCode, CMQ_NAME as cmqName, CMQ_LEVEL as cmqLevel, CMQ_STATUS as cmqStatus, "
-					+ " CMQ_TYPE_CD as cmqTypeCd, CMQ_STATE as cmqState,  CMQ_DESIGNEE as cmqDesignee, CMQ_DESIGNEE2 as cmqDesignee2,  CMQ_DESIGNEE3 as cmqDesignee3, "
-					+ " CMQ_ID as cmqId, CMQ_DESCRIPTION as cmqDescription, CMQ_SOURCE as cmqSource, CMQ_NOTE as cmqNote,  "
-					+ " CMQ_ALGORITHM as cmqAlgorithm,"
-					+ " IMPACT_TYPE as impactType, DICTIONARY_NAME as dictionaryName, DICTIONARY_VERSION as dictionaryVersion,"
-					+ " CREATION_DATE as creationDate, CREATED_BY as createdBy, CMQ_GROUP as cmqGroup,"
-					+ " CMQ_SUBVERSION as cmqSubversion, CMQ_PROGRAM_CD as cmqProgramCd, CMQ_PROTOCOL_CD as cmqProtocolCd"
-					+ " FROM CMQ_BASE_TARGET WHERE IMPACT_TYPE = 'NON-IMPACTED' "
-					+ "#1#"
-					+ " order by cmqName";
+			CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+			CriteriaQuery<CmqBaseTarget> cq = cb.createQuery(CmqBaseTarget.class);
+			Root<CmqBaseTarget> cmqRoot = cq.from(CmqBaseTarget.class);
+			List<Predicate> pred = new ArrayList<Predicate>();
+			
+			pred.add(cb.equal(cmqRoot.get("impactType"), CSMQBean.IMPACT_TYPE_NONIMPACTED));
 
-			String whereClause = "";
+			//String whereClause = "";
 			if (filters.containsKey("cmqName") && filters.get("cmqName") != null) {
 				String f = ((String) filters.get("cmqName")).toLowerCase();
-				String cmqNameFilter = " and LOWER(CMQ_NAME) like '%" + f + "%' ";
-				whereClause = whereClause + cmqNameFilter;
+                f = f.contains("%") ? f : ("%" + f + "%");
+				pred.add(cb.like(cb.lower(cmqRoot.<String>get("cmqName")), f));
 			}
 
-			if (filters.containsKey("cmqLevel") && filters.get("cmqLevel") != null) {
-				String cmqLevelFilter = " and CMQ_LEVEL = " + filters.get("cmqLevel");
-				whereClause = whereClause + cmqLevelFilter;
-			}
+			if(filters.containsKey("cmqTypeCd") && filters.get("cmqTypeCd") != null)
+				pred.add(cb.equal(cmqRoot.get("cmqTypeCd"), filters.get("cmqTypeCd")));
 			
-			if (filters.containsKey("cmqState") && filters.get("cmqState") != null) {
-				String f = ((String) filters.get("cmqState")).toLowerCase();
-				String cmqStateFilter = " and LOWER(CMQ_STATE) like '%" + f + "%' ";
-				whereClause = whereClause + cmqStateFilter;
-			}
+			if(filters.containsKey("cmqLevel") && filters.get("cmqLevel") != null)
+				pred.add(cb.equal(cmqRoot.get("cmqLevel"), filters.get("cmqLevel")));
 			
-			if (filters.containsKey("cmqTypeCd") && filters.get("cmqTypeCd") != null) {
- 				String f = ((String) filters.get("cmqTypeCd")).toLowerCase();
-				String filter = " and LOWER(CMQ_TYPE_CD) like '%" + f + "%' ";
-				whereClause = whereClause + filter;
-			}
+            if(filters.containsKey("cmqState") && filters.get("cmqState") != null)
+				pred.add(cb.equal(cmqRoot.get("cmqState"), filters.get("cmqState")));
 
 			if (filters.containsKey("cmqCode") && filters.get("cmqCode") != null) {
 				String f = ((String) filters.get("cmqCode"));
-				String cmqCodeFilter = " and CMQ_CODE = " + f;
-				whereClause = whereClause + cmqCodeFilter;
+                f = f.contains("%") ? f : ("%" + f + "%");
+				pred.add(cb.like(cmqRoot.get("cmqCode").as(String.class), f));
 			}
 			
 			if (filters.containsKey("cmqDesignee") && filters.get("cmqDesignee") != null) {
-				String f = ((String) filters.get("cmqDesignee")).toLowerCase();
-				
-				String filter = " and (LOWER(CMQ_DESIGNEE) like '%" + f + "%' ";
-				filter += " or LOWER(CMQ_DESIGNEE2) like '%" + f + "%' ";
-				filter += " or LOWER(CMQ_DESIGNEE3) like '%" + f + "%'"  + ")";
-				
-				whereClause = whereClause + filter;
+            	pred.add(cb.or(cb.equal(cmqRoot.get("cmqDesignee"), filters.get("cmqDesignee")), 
+    					cb.equal(cmqRoot.get("cmqDesignee2"), filters.get("cmqDesignee")),
+    					cb.equal(cmqRoot.get("cmqDesignee3"), filters.get("cmqDesignee"))
+    			));
 			}
-			query = query.replaceAll("#1#", whereClause);
+			//query = query.replaceAll("#1#", whereClause);
 
-			SQLQuery sqlQuery = session.createSQLQuery(query);
-			sqlQuery.addScalar("cmqCode", StandardBasicTypes.LONG);
-			sqlQuery.addScalar("cmqName", StandardBasicTypes.STRING);
-			sqlQuery.addScalar("cmqLevel", StandardBasicTypes.INTEGER);
-			sqlQuery.addScalar("cmqStatus", StandardBasicTypes.STRING);
-			sqlQuery.addScalar("impactType", StandardBasicTypes.STRING);
-			sqlQuery.addScalar("cmqState", StandardBasicTypes.STRING);
-			sqlQuery.addScalar("cmqTypeCd", StandardBasicTypes.STRING);
-			sqlQuery.addScalar("cmqDesignee", StandardBasicTypes.STRING);
-			sqlQuery.addScalar("cmqDesignee2", StandardBasicTypes.STRING);
-			sqlQuery.addScalar("cmqDesignee3", StandardBasicTypes.STRING);
-			
-			sqlQuery.addScalar("cmqId", StandardBasicTypes.LONG);
-			
-			sqlQuery.addScalar("dictionaryName", StandardBasicTypes.STRING);
-			sqlQuery.addScalar("dictionaryVersion", StandardBasicTypes.STRING);
-			sqlQuery.addScalar("cmqSubversion", StandardBasicTypes.STRING);
-			
-			sqlQuery.addScalar("cmqAlgorithm", StandardBasicTypes.STRING);
-			sqlQuery.addScalar("cmqDescription", StandardBasicTypes.STRING);
-			sqlQuery.addScalar("cmqNote", StandardBasicTypes.STRING);
-			sqlQuery.addScalar("cmqSource", StandardBasicTypes.STRING);
-			//sqlQuery.addScalar("cmqParentCode", StandardBasicTypes.LONG);
-			//sqlQuery.addScalar("cmqParentName", StandardBasicTypes.STRING);
-			
-			sqlQuery.addScalar("cmqProgramCd", StandardBasicTypes.STRING);
-			sqlQuery.addScalar("cmqProtocolCd", StandardBasicTypes.STRING);
-			sqlQuery.addScalar("cmqGroup", StandardBasicTypes.STRING);
-			sqlQuery.addScalar("creationDate", StandardBasicTypes.STRING);
-			sqlQuery.addScalar("createdBy", StandardBasicTypes.STRING);
+			cq.where(cb.and(pred.toArray(new Predicate[0])));
 
-			
-			sqlQuery.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
-			
-			LOG.error("*****query 2 :" + query);
-
+			cq.orderBy(cb.asc(cmqRoot.get("cmqName")));
+			TypedQuery<CmqBaseTarget> tq = entityManager.createQuery(cq);
 
 			if (pageSize >= 0) {
-				sqlQuery.setMaxResults(pageSize);
+			tq.setMaxResults(pageSize);
 			}
 			if (first >= 0) {
-				sqlQuery.setFirstResult(first);
+			tq.setFirstResult(first);
 			}
 			
-			retVal = sqlQuery.list();
+			retVal = tq.getResultList();
 		} catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
 			msg.append("An error occurred while fetching paginated impacted CmqBaseTarget.");
@@ -530,96 +443,33 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Map<String, Object>> findCmqChildCountForParentCmqCodes(List<Long> cmqCodes) {
-		List<Map<String, Object>> retVal = null;
-        
-        if(CollectionUtils.isEmpty(cmqCodes))
+        if(CollectionUtils.isEmpty(cmqCodes)) {
             return null;
-        
-		String queryString = CmqUtils.convertArrayToTableWith(cmqCodes, "tempCmqCodes", "code")
-                + " select CMQ_CODE, count(*) as COUNT"
-                + " from CMQ_BASE_TARGET cmqTbl"
-                + " inner join tempCmqCodes on tempCmqCodes.code=cmqTbl.CMQ_PARENT_CODE"
-                + " group by CMQ_CODE";
-
-		EntityManager entityManager = this.cqtEntityManagerFactory
-				.getEntityManager();
-		Session session = entityManager.unwrap(Session.class);
-		try {
-			SQLQuery query = session.createSQLQuery(queryString);
-			query.addScalar("CMQ_CODE", StandardBasicTypes.LONG);
-			query.addScalar("COUNT", StandardBasicTypes.LONG);
-            
-			query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
-			retVal = query.list();
-		} catch (Exception e) {
-			StringBuilder msg = new StringBuilder();
-			msg.append(
-					"An error occurred while findCmqChildCountForParentCmqCode ")
-					.append(cmqCodes).append(" Query used was ->")
-					.append(queryString);
-			LOG.error(msg.toString(), e);
-		} finally {
-			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+        } else {
+        	return this.parentChildService.findCmqChildCountForParentCmqCodes(cmqCodes);
 		}
-		return retVal;
+		//return retVal;
 	}
 
 	@Override
 	public Long findCmqChildCountForParentCmqCode(Long cmqCode) {
-		Long retVal = null;
-		StringBuilder sb = new StringBuilder();
-		sb.append("select count(*) from CmqBaseTarget c where c.cmqParentCode = :cmqCode");
-
-		EntityManager entityManager = this.cqtEntityManagerFactory
-				.getEntityManager();
-		try {
-			Query query = entityManager.createQuery(sb.toString());
-			query.setParameter("cmqCode", cmqCode);
-			retVal = (Long) query.getSingleResult();
-		} catch (Exception e) {
-			StringBuilder msg = new StringBuilder();
-			msg.append("An error occurred while findCmqChildCountForCmqCode ")
-					.append(cmqCode).append(" Query used was ->")
-					.append(sb.toString());
-			LOG.error(msg.toString(), e);
-		} finally {
-			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
-		}
-		return retVal;
-	}
-	
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<CmqProductBaseTarget> findProductsByCmqCode(Long code) {
-		List<CmqProductBaseTarget> retVal = null;
-		String queryString = "from CmqProductBaseTarget c where c.cmqBaseTarget.cmqCode = :code ";
-		EntityManager entityManager = this.cqtEntityManagerFactory
-				.getEntityManager();
-		try {
-			Query query = entityManager.createQuery(queryString);
-			query.setParameter("code", code);
-			retVal = query.getResultList();
-		} catch (Exception e) {
-			StringBuilder msg = new StringBuilder();
-			msg.append("findProductsByCmqCode failed ")
-					.append("Query used was ->").append(queryString);
-			LOG.error(msg.toString(), e);
-		} finally {
-			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
-		}
-		return retVal;
+		return this.parentChildService.findCmqChildCountForParentCmqCode(cmqCode);
 	}
 	
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<CmqBaseTarget> findChildCmqsByParentCode(Long code) {
 		List<CmqBaseTarget> retVal = null;
-		String queryString = "from CmqBaseTarget c where c.cmqParentCode = :codeList ";
+		List<CmqParentChildTarget> childList = this.parentChildService.findChildsByCmqCode(code);
+		if(null!=childList && !childList.isEmpty()) {
+			List<Long> childCMQCodeList = getChildCMQCodeList(childList);
+			String queryString = "from CmqBaseTarget c where c.cmqCode in (:codeList) ";
 		EntityManager entityManager = this.cqtEntityManagerFactory
 				.getEntityManager();
 		try {
 			Query query = entityManager.createQuery(queryString);
-			query.setParameter("codeList", code);
+				query.setParameter("codeList", childCMQCodeList);
+				query.setHint("org.hibernate.cacheable", true);
 			retVal = query.getResultList();
 		} catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
@@ -628,6 +478,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 			LOG.error(msg.toString(), e);
 		} finally {
 			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
 		}
 		return retVal;
 	}
@@ -638,7 +489,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 		List<CmqBaseTarget> retVal = null;
 		StringBuilder sb = new StringBuilder();
 		//sb.append("from CmqBaseTarget c where c.cmqLevel = :cmqLevel and c.cmqParentCode is null and c.cmqStatus = 'I' ");
-		sb.append("from CmqBaseTarget c where c.cmqLevel = :cmqLevel and c.cmqParentCode is null ");
+		sb.append("from CmqBaseTarget c where c.cmqLevel = :cmqLevel and c.cmqStatus != 'A' and c.cmqState != 'PUBLISHED' ");
 		if (!StringUtils.isBlank(searchTerm)) {
 			sb.append("and upper(c.cmqName) like :cmqName");
 		}
@@ -2501,12 +2352,16 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 	@Override
 	public List<CmqBaseTarget> findChildCmqsByCodes(List<Long> codes) {
 		List<CmqBaseTarget> retVal = null;
-		String queryString = "from CmqBaseTarget c where c.cmqParentCode in (:codeList) ";
+		List<CmqParentChildTarget> childList = this.parentChildService.findChildCmqsByParentCodes(codes);
+		if(null!=childList && !childList.isEmpty()) {
+			List<Long> childCMQCodeList  = getChildCMQCodeList(childList);
+			String queryString = "from CmqBaseTarget c where c.cmqCode in (:codeList) ";
 		EntityManager entityManager = this.cqtEntityManagerFactory
 				.getEntityManager();
 		try {
 			Query query = entityManager.createQuery(queryString);
-			query.setParameter("codeList", codes);
+				query.setParameter("codeList", childCMQCodeList);
+				query.setHint("org.hibernate.cacheable", true);
 			retVal = query.getResultList();
 		} catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
@@ -2516,18 +2371,23 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 		} finally {
 			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
 		}
+		}
 		return retVal;
 	}
 	
 	@Override
 	public List<CmqBaseTarget> findParentCmqsByCodes(List<Long> codes) {
 		List<CmqBaseTarget> retVal = null;
+		List<CmqParentChildTarget> parentList = this.parentChildService.findParentCmqsByChildCodes(codes);
+		if(null!=parentList && !parentList.isEmpty()) {
+			List<Long> parentCMQCodeList = getParentCMQCodeList(parentList);
 		String queryString = "from CmqBaseTarget c where c.cmqCode in (:codeList) ";
 		EntityManager entityManager = this.cqtEntityManagerFactory
 				.getEntityManager();
 		try {
 			Query query = entityManager.createQuery(queryString);
-			query.setParameter("codeList", codes);
+				query.setParameter("codeList", parentCMQCodeList);
+				query.setHint("org.hibernate.cacheable", true);
 			retVal = query.getResultList();
 		} catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
@@ -2536,6 +2396,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 			LOG.error(msg.toString(), e);
 		} finally {
 			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
 		}
 		return retVal;
 	}
@@ -2661,5 +2522,51 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
 		}
 		return retVal;
+	}
+	
+	private List<Long> getChildCMQCodeList(List<CmqParentChildTarget> childList) {
+		List<Long> childCMQCodeList = new ArrayList<>();
+		for(CmqParentChildTarget child : childList) {
+			childCMQCodeList.add(child.getCmqChildCode());
+		}
+		return childCMQCodeList;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<CmqProductBaseTarget> findProductsByCmqCode(Long code) {
+		List<CmqProductBaseTarget> retVal = null;
+		String queryString = "from CmqProductBaseTarget c where c.cmqBaseTarget.cmqCode = :code ";
+		EntityManager entityManager = this.cqtEntityManagerFactory
+				.getEntityManager();
+		try {
+			Query query = entityManager.createQuery(queryString);
+			query.setParameter("code", code);
+			retVal = query.getResultList();
+		} catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg.append("findProductsByCmqCode failed ")
+					.append("Query used was ->").append(queryString);
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
+	
+	private List<Long> getParentCMQCodeList(List<CmqParentChildTarget> parentList) {
+		List<Long> parentCMQCodeList = new ArrayList<>();
+		for(CmqParentChildTarget parent : parentList) {
+			parentCMQCodeList.add(parent.getCmqParentCode());
+		}
+		return parentCMQCodeList;
+	}
+
+	public ICmqParentChildTargetService getParentChildService() {
+		return parentChildService;
+	}
+
+	public void setParentChildService(ICmqParentChildTargetService parentChildService) {
+		this.parentChildService = parentChildService;
 	}
 }
