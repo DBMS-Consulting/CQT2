@@ -42,6 +42,7 @@ public class CSMQBean {
 
     // ******** GENERAL *********
     public static String appName;
+    public static String supportURL;
     public static String customMQName;
     public static final String SMQ_NAME = "SMQ";
     private String tmsURL;
@@ -887,6 +888,12 @@ public class CSMQBean {
     public String interpretCqtBaseCategory(String categoryVal) {
         return categoryVal;
     }
+    
+    public String getSupportURL() {
+		RefConfigCodeList s = getRefCodeListService().findByConfigTypeAndInternalCode(CqtConstants.CODE_LIST_TYPE_SYSTEM_CONFIG, "SUPPORT_URL");
+		System.out.println(s.getValue());
+		return s.getValue();
+	}
     /**
      * @return the refCodeListService
      */

@@ -39,7 +39,7 @@
 				<h:panelGroup style="float:right;">
 					<ul class="nav nav-right">
 						<li><h:outputText value="Version: " rendered="true" /> <h:outputText
-								value="2.0.00" style="font-weight:bold;" rendered="true" /></li>
+								value="1.0.40" style="font-weight:bold;" rendered="true" /></li>
 						<li><h:outputText value="Logged in as: " id="pt_ot1"
 								rendered="true" /> <h:outputText
 								value="${AuthenticationService.userSurName}, ${AuthenticationService.userGivenName}"
@@ -51,7 +51,11 @@
 						<li><p:commandButton value="Logoff" id="pt_cb1"
 								rendered="true"
 								action="#{AuthenticationService.logout(request)}"
-								immediate="true" /></li>
+								immediate="true" /></li><br/><br/>
+								
+						<li><h:outputText value="Click " rendered="true" />
+						<h:outputLink value="#{appCSMQBean.supportURL}">here</h:outputLink>
+						<h:outputText value=" to open a support ticket" rendered="true" /></li>
 					</ul>
 
 					<h:panelGrid columns="3" style="float: right">
