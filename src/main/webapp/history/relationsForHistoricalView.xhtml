@@ -57,9 +57,9 @@
 		<p:toolbar>
 			<f:facet name="left">				
 				<p:commandButton value="Parent List" id="ctb15"
-                    styleClass="#{historicalViewController.parentViewable ? '' : 'btn-disabled'}" update="@form"
+                    styleClass="#{historicalViewController.isParentViewable(historicalViewController.selectedCmq) ? '' : 'btn-disabled'}" update="@form"
                     actionListener="#{historicalViewController.populateHistoricalParentCmqByChild(historicalViewController.selectedCmq)}"
-					disabled="#{historicalViewController.parentViewable ? false : true}"
+					disabled="#{historicalViewController.isParentViewable(historicalViewController.selectedCmq) ? false : true}"
                     oncomplete="PF('parentDlg').show()" icon="fa fa-level-up">
 				</p:commandButton>
 			</f:facet>

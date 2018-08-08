@@ -1257,10 +1257,11 @@ public class HistoricalViewController implements Serializable {
 	}
 	
 	
-	public boolean isParentViewable() {
+	public boolean isParentViewable(CmqBase190 childCmq) {
         
-		Long parentCount = this.cmqParentChildService.findCmqParentCountForChildCmqCode(selectedHistoricalViewDTO.getCmqCode());
-		return (parentCount!=null && parentCount >0);
+		//Long parentCount = this.cmqParentChildService.findCmqParentCountForChildCmqCode(selectedHistoricalViewDTO.getCmqCode());
+		List<Long> parentsCmqCode = this.historicalViewService.findHistoricalParentsByCmqId(childCmq.getCmqId(), auditTimestamp);
+		return (parentsCmqCode!=null && parentsCmqCode.size() >0);
     
 	}
 
