@@ -525,7 +525,16 @@ public class PublishController implements Serializable {
 						Long parentCount = this.cmqParentChildTargetService.findCmqParentCountForChildCmqCode(cmqBaseTarget.getCmqCode());
 						if(null==parentCount || parentCount <1)
 							hasParentError = true;
+						else {
+							Date lastModifiedDate = new Date();
+							String lastModifiedByString = this.authService.getLastModifiedByUserAsString();
+							cmqBaseTarget.setCmqState(CmqBaseTarget.CMQ_STATE_PUBLISHED_IA);
+							cmqBaseTarget.setActivatedBy(lastModifiedByString);
+							cmqBaseTarget.setActivationDate(lastModifiedDate);
+							cmqBaseTarget.setLastModifiedDate(lastModifiedDate);
+							cmqBaseTarget.setLastModifiedBy(lastModifiedByString);
 						}
+					}
 												
 					else {
 						Date lastModifiedDate = new Date();

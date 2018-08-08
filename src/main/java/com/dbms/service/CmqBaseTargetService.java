@@ -2345,6 +2345,8 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 		} finally {
 			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
 		}
+		for (CmqBaseTarget c : retVal)
+			System.out.println("PUBLISH FUTURE: " + c.getCmqName());
 		return retVal;
 
 	}
