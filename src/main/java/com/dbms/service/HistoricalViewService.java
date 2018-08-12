@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 
 import com.dbms.entity.cqt.CmqParentChild200;
 import com.dbms.entity.cqt.dtos.HistoricalViewDbDataDTO;
+import com.dbms.entity.cqt.dtos.ParentChildAuditDBDataDTO;
 import com.dbms.util.ICqtEntityManagerFactory;
 
 @ManagedBean(name = "HistoricalViewService")
@@ -126,15 +127,21 @@ public class HistoricalViewService implements IHistoricalViewService {
 		return retVal;
 	}
 	
-	public List<Long> findHistoricalParentsByCmqId(Long childCmqId, String auditTimeStampString) {
-		List<Long> retVal = null;
+	public List<ParentChildAuditDBDataDTO> findHistoricalParentsByCmqId(Long childCmqId, String auditTimeStampString) {
+		List<ParentChildAuditDBDataDTO> retVal = null;
 		StringBuilder sb = new StringBuilder();
-		sb.append("select DISTINCT(cmq_parent_code_new) from cmq_parent_child_current_audit where child_cmq_id = :childCmqId and audit_timestamp <= :auditTimeStampString AND cmq_parent_code_new IS NOT NULL");
+		sb.append("select transaction_type as transactionType,cmq_parent_code_old as cmqParentCodeOld,cmq_parent_code_new as cmqParentCodeNew,cmq_child_code_old as cmqChildCodeOld,cmq_child_code_new as cmqChildCodeNew,parent_cmq_id as parentCmqId,child_cmq_id as childCmqId from cmq_parent_child_current_audit where child_cmq_id = :childCmqId and audit_timestamp <= :auditTimeStampString order by audit_timestamp asc");
 		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
 		Session session = entityManager.unwrap(Session.class);
 		try {
 			SQLQuery query = session.createSQLQuery(sb.toString());
-			query.addScalar("cmq_parent_code_new", StandardBasicTypes.LONG);
+			query.addScalar("transactionType", StandardBasicTypes.STRING);
+			query.addScalar("cmqParentCodeOld", StandardBasicTypes.LONG);
+			query.addScalar("cmqParentCodeNew", StandardBasicTypes.LONG);
+			query.addScalar("cmqChildCodeOld", StandardBasicTypes.LONG);
+			query.addScalar("cmqChildCodeNew", StandardBasicTypes.LONG);
+			query.addScalar("parentCmqId", StandardBasicTypes.LONG);
+			query.addScalar("childCmqId", StandardBasicTypes.LONG);
 			query.setParameter("childCmqId", childCmqId);
 			if (!StringUtils.isBlank(auditTimeStampString)) {
 				DateTimeFormatter formatter = new DateTimeFormatterBuilder().parseCaseInsensitive().appendPattern("dd-MMM-yyyy:hh:mm:ss a z").toFormatter();
@@ -142,7 +149,7 @@ public class HistoricalViewService implements IHistoricalViewService {
 				 Timestamp timestamp = Timestamp.valueOf(date);
 				 query.setParameter("auditTimeStampString", timestamp);
 			}
-
+			query.setResultTransformer(Transformers.aliasToBean(ParentChildAuditDBDataDTO.class));
 			retVal = query.list();
 		} catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
@@ -157,15 +164,21 @@ public class HistoricalViewService implements IHistoricalViewService {
 		return retVal;
 	}
 	
-	public List<Long> findHistoricalChildsByCmqId(Long parentCmqId, String auditTimeStampString) {
-		List<Long> retVal = null;
+	public List<ParentChildAuditDBDataDTO> findHistoricalChildsByCmqId(Long parentCmqId, String auditTimeStampString) {
+		List<ParentChildAuditDBDataDTO> retVal = null;
 		StringBuilder sb = new StringBuilder();
-		sb.append("select DISTINCT(cmq_child_code_new) from cmq_parent_child_current_audit where parent_cmq_id = :parentCmqId and audit_timestamp <= :auditTimeStampString AND cmq_child_code_new IS NOT NULL");
+		sb.append("select transaction_type as transactionType,cmq_parent_code_old as cmqParentCodeOld,cmq_parent_code_new as cmqParentCodeNew,cmq_child_code_old as cmqChildCodeOld,cmq_child_code_new as cmqChildCodeNew,parent_cmq_id as parentCmqId,child_cmq_id as childCmqId from cmq_parent_child_current_audit where parent_cmq_id = :parentCmqId and audit_timestamp <= :auditTimeStampString order by audit_timestamp asc");
 		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
 		Session session = entityManager.unwrap(Session.class);
 		try {
 			SQLQuery query = session.createSQLQuery(sb.toString());
-			query.addScalar("cmq_child_code_new", StandardBasicTypes.LONG);
+			query.addScalar("transactionType", StandardBasicTypes.STRING);
+			query.addScalar("cmqParentCodeOld", StandardBasicTypes.LONG);
+			query.addScalar("cmqParentCodeNew", StandardBasicTypes.LONG);
+			query.addScalar("cmqChildCodeOld", StandardBasicTypes.LONG);
+			query.addScalar("cmqChildCodeNew", StandardBasicTypes.LONG);
+			query.addScalar("parentCmqId", StandardBasicTypes.LONG);
+			query.addScalar("childCmqId", StandardBasicTypes.LONG);
 			query.setParameter("parentCmqId", parentCmqId);
 			if (!StringUtils.isBlank(auditTimeStampString)) {
 				DateTimeFormatter formatter = new DateTimeFormatterBuilder().parseCaseInsensitive().appendPattern("dd-MMM-yyyy:hh:mm:ss a z").toFormatter();
@@ -173,7 +186,7 @@ public class HistoricalViewService implements IHistoricalViewService {
 				 Timestamp timestamp = Timestamp.valueOf(date);
 				 query.setParameter("auditTimeStampString", timestamp);
 			}
-
+			query.setResultTransformer(Transformers.aliasToBean(ParentChildAuditDBDataDTO.class));
 			retVal = query.list();
 		} catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
