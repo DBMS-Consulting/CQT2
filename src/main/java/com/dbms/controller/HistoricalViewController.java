@@ -5,9 +5,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
@@ -42,6 +44,7 @@ import com.dbms.entity.cqt.dtos.CmqBaseDTO;
 import com.dbms.entity.cqt.dtos.HistoricalViewDTO;
 import com.dbms.entity.cqt.dtos.HistoricalViewDbDataDTO;
 import com.dbms.entity.cqt.dtos.MeddraDictHierarchySearchDto;
+import com.dbms.entity.cqt.dtos.ParentChildAuditDBDataDTO;
 import com.dbms.service.AuthenticationService;
 import com.dbms.service.IAuditTrailService;
 import com.dbms.service.ICmqBase190Service;
@@ -1083,25 +1086,58 @@ public class HistoricalViewController implements Serializable {
 	public void populateChildCmqsByParent(Long parentCmqCode, TreeNode rootTreeNode) {
 		//now process the cmq parent child relations
 		CmqBase190 parent = cmqBaseService.findByCode(parentCmqCode);
-		List<Long> childCmqCodes = this.historicalViewService.findHistoricalChildsByCmqId(parent.getCmqId(), auditTimestamp);
-		List<CmqBase190> childCmqs = cmqBaseService.findByCodes(childCmqCodes);
-		if((null != childCmqs) && (childCmqs.size() > 0)) {
-			for (CmqBase190 childCmq : childCmqs) {
-				HierarchyNode node = this.createCmqBaseNode(childCmq);
-				node.setEntity(childCmq);
-				TreeNode treeNode = new DefaultTreeNode(node, rootTreeNode);
-			
-				Long childCount = this.cmqRelationService.findCountByCmqCode(childCmq.getCmqCode());
-				if((null != childCount) && (childCount > 0)) {
-					HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
-					dummyNode.setDummyNode(true);
-					new DefaultTreeNode(dummyNode, treeNode);
+		List<ParentChildAuditDBDataDTO> parentChildAudit = this.historicalViewService.findHistoricalChildsByCmqId(parent.getCmqId(), auditTimestamp);
+		Set<Long> childCmqCodes = extractHistoricChild(parentChildAudit);
+		if(childCmqCodes!=null && !childCmqCodes.isEmpty()) {
+			List<CmqBase190> childCmqs = cmqBaseService.findByCodes(new ArrayList<>(childCmqCodes));
+			if((null != childCmqs) && (childCmqs.size() > 0)) {
+				for (CmqBase190 childCmq : childCmqs) {
+					HierarchyNode node = this.createCmqBaseNode(childCmq);
+					node.setEntity(childCmq);
+					TreeNode treeNode = new DefaultTreeNode(node, rootTreeNode);
+				
+					Long childCount = this.cmqRelationService.findCountByCmqCode(childCmq.getCmqCode());
+					if((null != childCount) && (childCount > 0)) {
+						HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
+						dummyNode.setDummyNode(true);
+						new DefaultTreeNode(dummyNode, treeNode);
+					}
 				}
 			}
 		}
 	}
 	
 	
+	private Set<Long> extractHistoricChild(List<ParentChildAuditDBDataDTO> parentChildAudit) {
+		Set<Long> historiChilds = new HashSet<>();
+		if(parentChildAudit!=null && !parentChildAudit.isEmpty()) {
+			for (ParentChildAuditDBDataDTO auditDBDataDTO : parentChildAudit) {
+				if(auditDBDataDTO.getTransactionType().equalsIgnoreCase("I")) {
+					historiChilds.add(auditDBDataDTO.getCmqChildCodeNew());
+				} else if(auditDBDataDTO.getTransactionType().equalsIgnoreCase("D")) {
+					historiChilds.remove(auditDBDataDTO.getCmqChildCodeOld());
+				}
+			}
+		}
+		
+		return historiChilds;
+	}
+	
+	private Set<Long> extractHistoricParent(List<ParentChildAuditDBDataDTO> parentChildAudit) {
+		Set<Long> historiParents = new HashSet<>();
+		if(parentChildAudit!=null && !parentChildAudit.isEmpty()) {
+			for (ParentChildAuditDBDataDTO auditDBDataDTO : parentChildAudit) {
+				if(auditDBDataDTO.getTransactionType().equalsIgnoreCase("I")) {
+					historiParents.add(auditDBDataDTO.getCmqParentCodeNew());
+				} else if(auditDBDataDTO.getTransactionType().equalsIgnoreCase("D")) {
+					historiParents.remove(auditDBDataDTO.getCmqParentCodeOld());
+				}
+			}
+		}
+		
+		return historiParents;
+	}
+
 	private HierarchyNode createCmqBaseNode(CmqBase190 childCmq) {
 		HierarchyNode node = new HierarchyNode();
 		node.setLevel(childCmq.getCmqTypeCd());
@@ -1223,45 +1259,50 @@ public class HistoricalViewController implements Serializable {
 	}
 	
 	public void populateHistoricalParentCmqByChild(CmqBase190 childCmq) {
-		List<Long> parentsCmqCode = this.historicalViewService.findHistoricalParentsByCmqId(childCmq.getCmqId(), auditTimestamp);
-		List<CmqBase190> parents = cmqBaseService.findByCodes(parentsCmqCode);
-		if(null!=parents && parents.size()>0) {
-				this.parentListRoot = new DefaultTreeNode("root"
-						, new HierarchyNode("LEVEL", "NAME", "CODE", "SCOPE", "CATEGORY", "WEIGHT", null)
-						, null);
-				for(CmqBase190 parent : parents) {
-					HierarchyNode node = new HierarchyNode();
-					node.setLevel(parent.getCmqTypeCd());
-					node.setCode(parent.getCmqCode().toString());
-					node.setTerm(parent.getCmqName());
-					node.setCategory("");
-					node.setWeight("");
-					node.setScope("");
-					node.setEntity(parent);
+		List<ParentChildAuditDBDataDTO> parentChildAudit = this.historicalViewService.findHistoricalParentsByCmqId(childCmq.getCmqId(), auditTimestamp);
+		Set<Long> parentCmqCodes = extractHistoricParent(parentChildAudit);
+		if(parentCmqCodes!=null && !parentCmqCodes.isEmpty()) {
+			List<CmqBase190> parents = cmqBaseService.findByCodes(new ArrayList<>(parentCmqCodes));
+			if(null!=parents && parents.size()>0) {
+					this.parentListRoot = new DefaultTreeNode("root"
+							, new HierarchyNode("LEVEL", "NAME", "CODE", "SCOPE", "CATEGORY", "WEIGHT", null)
+							, null);
+					for(CmqBase190 parent : parents) {
+						HierarchyNode node = new HierarchyNode();
+						node.setLevel(parent.getCmqTypeCd());
+						node.setCode(parent.getCmqCode().toString());
+						node.setTerm(parent.getCmqName());
+						node.setCategory("");
+						node.setWeight("");
+						node.setScope("");
+						node.setEntity(parent);
+						
+						TreeNode treeNode = new DefaultTreeNode(node, this.parentListRoot);
 					
-					TreeNode treeNode = new DefaultTreeNode(node, this.parentListRoot);
-				
-					Long childCount = this.cmqRelationService.findCountByCmqCode(parent.getCmqCode());
-					if((null != childCount) && (childCount > 0)) {
-						HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
-						dummyNode.setDummyNode(true);
-						new DefaultTreeNode(dummyNode, treeNode);
+						Long childCount = this.cmqRelationService.findCountByCmqCode(parent.getCmqCode());
+						if((null != childCount) && (childCount > 0)) {
+							HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
+							dummyNode.setDummyNode(true);
+							new DefaultTreeNode(dummyNode, treeNode);
+						}
+						
 					}
 					
-				}
-				
-			//}
-		} else {
-			LOG.info("No parent exists for cmq child code " + childCmq.getCmqCode());
+				//}
+			} else {
+				LOG.info("No parent exists for cmq child code " + childCmq.getCmqCode());
+			}
 		}
+		
 	}
 	
 	
 	public boolean isParentViewable(CmqBase190 childCmq) {
         
 		//Long parentCount = this.cmqParentChildService.findCmqParentCountForChildCmqCode(selectedHistoricalViewDTO.getCmqCode());
-		List<Long> parentsCmqCode = this.historicalViewService.findHistoricalParentsByCmqId(childCmq.getCmqId(), auditTimestamp);
-		return (parentsCmqCode!=null && parentsCmqCode.size() >0);
+		List<ParentChildAuditDBDataDTO> parentChildAudit = this.historicalViewService.findHistoricalParentsByCmqId(childCmq.getCmqId(), auditTimestamp);
+		Set<Long> parentCmqCodes = extractHistoricParent(parentChildAudit);
+		return (parentCmqCodes!=null && parentCmqCodes.size() >0);
     
 	}
 
