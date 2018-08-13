@@ -516,8 +516,9 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 			SQLQuery query = session.createSQLQuery(q);
 			query.setParameter("cmqCode", cmqCode);
             query.addScalar("CMQ_STATE_OLD", StandardBasicTypes.STRING);
-			query.setCacheable(true);
+			query.setCacheable(false);
             
+			System.out.println("HERE:    " + query.getQueryString());
             List<Object> rows = query.list();
 
             for(Object row : rows) {

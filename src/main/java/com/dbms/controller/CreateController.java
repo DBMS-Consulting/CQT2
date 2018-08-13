@@ -2503,6 +2503,7 @@ public class CreateController implements Serializable {
 	}
 
 	public boolean isDeleteDisabled() {
+		setSelectedData(selectedData);
 		String userGroup = authService.getGroupMembershipHeader();
 		
 		if (selectedData == null
