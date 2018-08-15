@@ -1490,41 +1490,43 @@ meddraDictCurrentService, cmqRelationCurrentService,cmqBaseTargetService, smqBas
 	}
 	
 	public void saveDetails() {
-		Object d = null;
-		if(currentOrTarget == SELECTED_CURRENT_LIST && currentTableSelection != null) {
-			HierarchyNode hn = (HierarchyNode)currentTableSelection.getData();
-			d = (hn != null ? hn.getEntity() : null); 
-		} else if(currentOrTarget == SELECTED_TARGET_LIST && targetTableSelection != null) {
-			HierarchyNode hn = (HierarchyNode)targetTableSelection.getData();
-			d = (hn != null ? hn.getEntity() : null); 
-		}
-		
-		try {
-			if(d != null && d instanceof CmqBase190) {
-				((CmqBase190)d).setCmqDesignee(detailsFormModel.getDesignee());
-				((CmqBase190)d).setCmqDesignee2(detailsFormModel.getDesigneeTwo());
-				((CmqBase190)d).setCmqDesignee3(detailsFormModel.getDesigneeThree());
-
-				cmqBaseCurrentService.update((CmqBase190)d, this.authService.getUserCn()
-						, this.authService.getUserGivenName(), this.authService.getUserSurName()
-						, this.authService.getCombinedMappedGroupMembershipAsString());
-			} else if(d != null && d instanceof CmqBaseTarget) {
-
-				((CmqBaseTarget)d).setCmqDesignee(detailsFormModel.getDesignee());
-				((CmqBaseTarget)d).setCmqDesignee2(detailsFormModel.getDesigneeTwo());
-				((CmqBaseTarget)d).setCmqDesignee3(detailsFormModel.getDesigneeThree());
-				cmqBaseTargetService.update((CmqBaseTarget)d, this.authService.getUserCn()
-						, this.authService.getUserGivenName(), this.authService.getUserSurName()
-						, this.authService.getCombinedMappedGroupMembershipAsString());
-				this.setCmqBaseAsImpacted((CmqBaseTarget)d);
+		if(detailsFormModel.validateForm()) {
+			Object d = null;
+			if(currentOrTarget == SELECTED_CURRENT_LIST && currentTableSelection != null) {
+				HierarchyNode hn = (HierarchyNode)currentTableSelection.getData();
+				d = (hn != null ? hn.getEntity() : null); 
+			} else if(currentOrTarget == SELECTED_TARGET_LIST && targetTableSelection != null) {
+				HierarchyNode hn = (HierarchyNode)targetTableSelection.getData();
+				d = (hn != null ? hn.getEntity() : null); 
 			}
-			detailsFormModel.setModelChanged(false);
-			FacesContext.getCurrentInstance()
-				.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Successfully saved details", ""));
 			
-		} catch(CqtServiceException e) {
-			FacesContext.getCurrentInstance()
-				.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed to save details", "Error: " + e.getMessage()));
+			try {
+				if(d != null && d instanceof CmqBase190) {
+					((CmqBase190)d).setCmqDesignee(detailsFormModel.getDesignee());
+					((CmqBase190)d).setCmqDesignee2(detailsFormModel.getDesigneeTwo());
+					((CmqBase190)d).setCmqDesignee3(detailsFormModel.getDesigneeThree());
+	
+					cmqBaseCurrentService.update((CmqBase190)d, this.authService.getUserCn()
+							, this.authService.getUserGivenName(), this.authService.getUserSurName()
+							, this.authService.getCombinedMappedGroupMembershipAsString());
+				} else if(d != null && d instanceof CmqBaseTarget) {
+	
+					((CmqBaseTarget)d).setCmqDesignee(detailsFormModel.getDesignee());
+					((CmqBaseTarget)d).setCmqDesignee2(detailsFormModel.getDesigneeTwo());
+					((CmqBaseTarget)d).setCmqDesignee3(detailsFormModel.getDesigneeThree());
+					cmqBaseTargetService.update((CmqBaseTarget)d, this.authService.getUserCn()
+							, this.authService.getUserGivenName(), this.authService.getUserSurName()
+							, this.authService.getCombinedMappedGroupMembershipAsString());
+					this.setCmqBaseAsImpacted((CmqBaseTarget)d);
+				}
+				detailsFormModel.setModelChanged(false);
+				FacesContext.getCurrentInstance()
+					.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Successfully saved details", ""));
+				
+			} catch(CqtServiceException e) {
+				FacesContext.getCurrentInstance()
+					.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed to save details", "Error: " + e.getMessage()));
+			}
 		}
 	}
 	
@@ -1549,9 +1551,11 @@ meddraDictCurrentService, cmqRelationCurrentService,cmqBaseTargetService, smqBas
 	}
 	
 	public void saveDetailsAndGoToNextStep() {
-		saveDetails();
-		iaWizard.setStep(iaWizardNextStep);
-		RequestContext.getCurrentInstance().update("impactAssessment");
+		if(detailsFormModel.validateForm()) {
+			saveDetails();
+			iaWizard.setStep(iaWizardNextStep);
+			RequestContext.getCurrentInstance().update("impactAssessment");
+		}
 	}
 	
 	public void cancelDetailsAndGoToNextStep() {
