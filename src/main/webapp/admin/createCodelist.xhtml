@@ -1,0 +1,135 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<!--
+	<p:remoteCommand name="saveDetailsAndGoToNextStep"
+		update="@form:m1 @form:wizardId @form:codeValue"
+		actionListener="#{createController.saveDetailsAndNextStep}"
+		action="#{searchController.setDataModified(true)}"
+		onstart="PF('confirmSaveDetailsDlg').hide()" />
+	<p:remoteCommand name="resetDetailsAndGoToNextStep"
+		update="@form:wizardId @form:detailsPanel"
+		actionListener="#{createController.cancelDetailsAndNextStep}"
+		onstart="PF('confirmSaveDetailsDlg').hide()" />
+
+
+	<p:remoteCommand name="saveCodelist"
+		update="@form:m1 @form:codeValue @form:wizardId"
+		action="#{createController.saveDetailsAndClose}"
+		onstart="PF('confirmSaveDetailsAll').hide()" />
+
+-->
+
+	<h:panelGrid columns="3" cellpadding="5" id="detailsPanel"
+		columnClasses="pad-lr30,pad-lr30,pad-lr30">
+
+		<h:panelGrid columns="2" columnClasses="label-cell, value-cell">
+
+			<p:outputLabel value="Codelist Type Name" styleClass="label-right" />
+				<p:inputText required="true" label="Extension Name" id="codelistNameText"
+					value="#{adminController.ref.value}" 
+					style="width: 300px !important; float: left">
+
+				</p:inputText>
+
+			<p:outputLabel value="Serial #" styleClass="label-right" />
+				<p:spinner style="float: left"
+					required="true" label="Serial #"
+					value="#{adminController.ref.serialNum}" min="1" />
+
+				<p:outputLabel value="Code" styleClass="label-right" />
+				<p:inputText required="true" label="Code" id="codeText" 
+					value="#{adminController.ref.codelistInternalValue}"
+					validatorMessage="Length of the Extension Code can not be more than 3 characters"
+					style="width: 50px !important;  float: left">
+
+					<f:validateLength minimum="1" maximum="3" />
+				<p:ajax update="msgExtension" event="blur"    />
+
+				</p:inputText>
+
+				<p:outputLabel value="Extension Name" styleClass="label-right" />
+				<p:inputText required="true" label="Extension Name" id="nameText"
+					value="#{adminController.ref.value}" 
+					style="width: 300px !important; float: left">
+
+				</p:inputText>
+
+				<p:outputLabel value="Active flag" styleClass="label-right" />
+				<p:selectOneMenu value="#{adminController.ref.activeFlag}" style="float: left"
+					id="actvFlagEX">
+					<f:selectItem itemValue="Y" itemLabel="Y" />
+					<f:selectItem itemValue="N" itemLabel="N" />
+				</p:selectOneMenu>
+
+				<p:outputLabel value="Default flag" styleClass="label-right" />
+				<p:selectOneMenu value="#{adminController.ref.defaultFlag}" style="float: left"
+					id="defFlagEX">
+					<f:selectItem itemValue="N" itemLabel="N" />
+					<f:selectItem itemValue="Y" itemLabel="Y" />
+				</p:selectOneMenu>
+
+		</h:panelGrid>
+	</h:panelGrid>
+
+<!--
+	<p:confirmDialog widgetVar="confirmSaveDetailsDlg" showEffect="fade"
+		hideEffect="fade" header="Confirm about Unsaved Changes"
+		message="There are some unsaved changes. Do you want to save them before you continue?">
+		<p:commandButton value="Yes" type="button"
+			styleClass="ui-confirmdialog-yes" icon="ui-icon-check"
+			onclick="saveDetailsAndGoToNextStep()" />
+		<p:commandButton value="No" type="button"
+			styleClass="ui-confirmdialog-no" icon="ui-icon-close"
+			onclick="resetDetailsAndGoToNextStep()" />
+	</p:confirmDialog>
+
+
+	<p:confirmDialog widgetVar="confirmSaveDetailsAll" showEffect="fade"
+		hideEffect="fade" header="Confirm about Unsaved Changes"
+		message="There are some unsaved changes. Do you want to save them before you continue?">
+
+		<p:commandButton value="Yes" type="button"
+			styleClass="ui-confirmdialog-yes" icon="ui-icon-check"
+			onclick="saveCodelist()">
+		</p:commandButton>
+
+		<p:commandButton value="No" styleClass="ui-confirmdialog-no"
+			immediate="true" icon="ui-icon-close"
+			action="#{createController.openForm}" />
+	</p:confirmDialog>
+
+		-->
+
+	<style>
+.ui-state-error {
+	border: 1px solid #8c8c8c !important;
+}
+
+.ui-selectonemenu.ui-widget.ui-state-default.ui-corner-all.ui-state-error
+	{
+	background: #cccccc !important;
+}
+
+.ui-selectonemenu-trigger.ui-state-default.ui-corner-right.ui-state-error
+	{
+	background: #cccccc !important;
+	border-right: 0 !important;
+	border-top: 0 !important;
+	border-bottom: 0 !important;
+	width: 16px !important;
+	height: 100% !important;
+	position: absolute !important;
+	right: 0 !important;
+	top: 0 !important;
+	padding: 0 3px !important;
+}
+
+</style>
+
+</ui:composition>
