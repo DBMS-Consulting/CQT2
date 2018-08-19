@@ -1613,7 +1613,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
  						 * 
  						 * LLT.
  						 */
- 						if (!filterLltFlag && (relation.getLltCode() != null)) {
+ 						if ((relation.getLltCode() != null)) {
  							List<Long> lltCodesList = new ArrayList<>();
  							lltCodesList.add(relation.getLltCode());
  							List<MeddraDictHierarchySearchDto> llts = meddraDictService
