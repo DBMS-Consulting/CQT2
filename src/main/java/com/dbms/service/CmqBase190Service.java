@@ -505,6 +505,43 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		}
 		return retVal;
     }
+    
+    @Override
+    public boolean checkIfInactiveFor10Mins(Long cmqCode) {
+    		Date d = new Date();
+        boolean retVal = false;
+        String q = "SELECT CMQ_STATUS_NEW FROM CMQ_BASE_CURRENT_AUDIT cmqTblAudit WHERE cmqTblAudit.CMQ_CODE_NEW=:cmqCode ORDER BY AUDIT_TIMESTAMP DESC";
+        EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+        Session session = entityManager.unwrap(Session.class);
+        
+        
+		try {
+			SQLQuery query = session.createSQLQuery(q);
+			query.setParameter("cmqCode", cmqCode);
+            //query.addScalar("AUDIT_TIMESTAMP", StandardBasicTypes.TIMESTAMP);
+            query.addScalar("CMQ_STATUS_NEW", StandardBasicTypes.STRING);
+			query.setCacheable(false);
+            
+            List<Object> rows = query.list();
+
+            for(Object row : rows) {
+                if(row != null && CmqBase190.CMQ_STATUS_VALUE_INACTIVE.equalsIgnoreCase(row.toString())) {
+                		if(d.getTime() - findByCode(cmqCode).getLastModifiedDate().getTime() > 600000)
+                		retVal = true;
+                }
+            }
+		} catch (Exception e) {
+			retVal = false;
+            StringBuilder msg = new StringBuilder();
+			msg.append("An error occurred while checkAuditForNewStatus ")
+					.append(cmqCode).append(" Query used was ->")
+					.append(q);
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+    }
 
 	public Long findCmqChildCountForParentCmqCode(Long cmqCode) {
 		Long retVal = null;

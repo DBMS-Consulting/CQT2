@@ -76,4 +76,6 @@ public interface ICmqBase190Service extends ICqtPersistenceService<CmqBase190> {
 	List<? extends IEntity> findChildCmqsByParentCode(Long cmqCode, String dictionaryVersion);
 
 	List<Map<String, Object>> findCmqChildCountForParentCmqCodes(List<Long> cmqCodes, String dictionaryVersion);
+
+	boolean checkIfInactiveFor10Mins(Long cmqCode);
 }
