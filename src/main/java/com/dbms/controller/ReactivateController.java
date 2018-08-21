@@ -202,6 +202,18 @@ public class ReactivateController implements Serializable {
                                     "The List '"+ cmqError + "' does not have an associated parent list, hence cannot be reactivated", ""));
 					
 					return "";
+				} else {
+					for(CmqBase190 target : targetCmqsSelected) {
+						if (!cmqBaseService.checkIfInactiveFor10Mins(target.getCmqCode())) {
+							FacesContext.getCurrentInstance().addMessage(null, 
+		                            new FacesMessage(FacesMessage.SEVERITY_ERROR,
+		                                    "List(s) can be reactivated only after 10 minutes of list inactivation. Please try again later.", ""));
+							
+							return "";
+						}
+					}
+				
+					
 				}
 				
 				try {
