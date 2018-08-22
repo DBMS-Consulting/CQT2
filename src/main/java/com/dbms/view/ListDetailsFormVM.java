@@ -266,7 +266,7 @@ public class ListDetailsFormVM implements Serializable {
 	 */
 	public void afterChangeExtension(AjaxBehaviorEvent event) {
 		if (wizardType == WizardType.CreateWizard || wizardType == WizardType.UpdateWizard || wizardType == WizardType.CopyWizard) {
-			if("TME".equals(extension) || "TR1".equals(extension) || "CPT".equals(extension) || "DME".equals(extension))
+			if("TME".equals(extension) || "TR1".equals(extension) || "CPT".equals(extension) || "DME".equals(extension) || !"PRO".equals(extension))
 				setLevel(1);
 			else if ("PRO".equals(extension))
 				setLevel(2);
