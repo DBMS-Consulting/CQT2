@@ -19,9 +19,11 @@ public interface IRefCodeListService extends ICqtPersistenceService<RefConfigCod
 	
 	public List<RefConfigCodeList> findAllByConfigType(String codelistConfigType, OrderBy orderBy);
 
+	public List<RefConfigCodeList> getMeddraVersions();
 	public RefConfigCodeList getCurrentMeddraVersion();
 	public RefConfigCodeList getTargetMeddraVersion();
 
+	public List<RefConfigCodeList> findByConfigType(String configType); 
 	public RefConfigCodeList findByConfigTypeAndInternalCode(String configType, String internalCode);
 	public RefConfigCodeList findByCriterias(String configType, String internalCode, String activeFlag);
 	public RefConfigCodeList findByDefaultFlag(String configType, String defaultFlag);
@@ -66,5 +68,5 @@ public interface IRefCodeListService extends ICqtPersistenceService<RefConfigCod
 	boolean getLevelScopeCategorySystemConfig();
     
     public RefConfigCodeList getDefaultForConfigType(String configType);
-	public RefConfigCodeList findBySerialNumber(double val); 
+	public RefConfigCodeList findBySerialNumber(double val);
 }

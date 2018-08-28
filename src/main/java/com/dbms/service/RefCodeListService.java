@@ -302,6 +302,59 @@ public class RefCodeListService extends
 	}
 	
 	@Override
+	public List<RefConfigCodeList> getMeddraVersions(){
+		List<RefConfigCodeList> list = new ArrayList<>();
+		List<RefConfigCodeList> retVal = new ArrayList<>();
+		list = findByConfigType(CqtConstants.CODE_LIST_TYPE_MEDDRA_VERSIONS);
+		for(RefConfigCodeList item: list) {
+			if(!item.getCodelistInternalValue().equalsIgnoreCase("DICTIONARY_NAME") 
+					&& !item.getCodelistInternalValue().equalsIgnoreCase("LOAD_CMQ_CURRENT_OR_TARGET")) {
+				retVal.add(item);
+			}
+		}
+		return retVal;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<RefConfigCodeList> findByConfigType(String configType){
+		List<RefConfigCodeList> ref = new ArrayList<>();
+		String cacheKey = "[" + configType + "]";
+		
+		// try to get it from cache first
+        Object cv = (List<RefConfigCodeList>)this.cqtCacheManager.getFromCache(CACHE_NAME, cacheKey);
+        if(cv != null && cv instanceof RefConfigCodeList) {
+            return (List<RefConfigCodeList>) cv;
+        }
+		
+		String queryString = "from RefConfigCodeList a where a.codelistConfigType = :codelistConfigType";
+		
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		try {
+			Query query = entityManager.createQuery(queryString);
+			query.setParameter("codelistConfigType", configType);
+			query.setHint("org.hibernate.cacheable", true);
+			ref = (List<RefConfigCodeList>) query.getResultList();
+		} catch (javax.persistence.NoResultException e) {
+            LOG.info("findByConfigTypeAndInternalCode found no result for ConfigType: " + configType);
+        } catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg.append(
+					"findCodeByInternalCode failed for codelistConfigType = '")
+					.append(configType).append("' ")
+					.append("Query used was ->").append(queryString);
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		if (ref != null) {
+            this.cqtCacheManager.addToCache(CACHE_NAME, cacheKey, ref);
+			return ref;
+        }
+		return null;
+	}
+	
+	@Override
 	public RefConfigCodeList findByConfigTypeAndInternalCode(String configType, String internalCode) {
 		RefConfigCodeList ref = null;
         String cacheKey = "[" + configType + "-" + internalCode + "]";
