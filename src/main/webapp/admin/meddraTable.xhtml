@@ -67,7 +67,10 @@
 <i class="fa fa-plus"></i>
 		<p:commandLink type="button" value="Add MedDRA" update="dialogM"
 			process="@this" oncomplete="PF('meddraD').show()"
-			actionListener="#{adminController.initAddCodelist}" />
+			actionListener="#{adminController.initAddCodelist}" >
+
+			<p:ajax update="medCode MedVal" resetValues="true" />
+		</p:commandLink>
 	</h:panelGrid>
 
 	<p:dialog header="MedDRA details" widgetVar="meddraD" modal="true" id="dialogM"
@@ -81,17 +84,19 @@
 					value="#{adminController.ref.serialNum}" min="1" />
 
 				<p:outputLabel value="Code" styleClass="label-right" />
-				<p:inputText required="true" label="Code"
+				<p:inputText required="true" label="Code" id="medCode"
 					value="#{adminController.ref.codelistInternalValue}"
 					style="width: 150px !important;  float: left" />
 
 				<p:outputLabel value="MedDRA Value" styleClass="label-right" />
-				<p:inputText required="true" label="MedDRA Value"
+				<p:inputText required="true" label="MedDRA Value" id="MedVal"
 					value="#{adminController.ref.value}" validatorMessage="Decimal and character values are not allowed in dictionary version number."
 					style="width: 300px !important; float: left">
-
+					
 					<f:validateRegex pattern="^[0-9]+$" />
+					<!--
 					<p:ajax update="msgMeddra" event="blur"    />
+					-->
  				</p:inputText>
 
 				<p:outputLabel value="Active flag" styleClass="label-right" />

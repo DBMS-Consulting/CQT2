@@ -444,11 +444,12 @@ public class RefCodeListService extends
 		RefConfigCodeList ref = null;
         String cacheKey = "[" + configType  + "]";
         
-        // try to get it from cache first
+        /* try to get it from cache first
         Object cv = (RefConfigCodeList)this.cqtCacheManager.getFromCache(CACHE_NAME, cacheKey);
         if(cv != null && cv instanceof RefConfigCodeList) {
             return (RefConfigCodeList) cv;
         }
+        */
         
 		String queryString = "from RefConfigCodeList a where a.codelistConfigType = :codelistConfigType "
 				+ " and a.defaultFlag=:defaultFlag";
