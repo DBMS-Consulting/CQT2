@@ -308,7 +308,8 @@ public class RefCodeListService extends
 		list = findByConfigType(CqtConstants.CODE_LIST_TYPE_MEDDRA_VERSIONS);
 		for(RefConfigCodeList item: list) {
 			if(!item.getCodelistInternalValue().equalsIgnoreCase("DICTIONARY_NAME") 
-					&& !item.getCodelistInternalValue().equalsIgnoreCase("LOAD_CMQ_CURRENT_OR_TARGET")) {
+					&& !item.getCodelistInternalValue().equalsIgnoreCase("LOAD_CMQ_CURRENT_OR_TARGET")
+					&& item.getActiveFlag().equalsIgnoreCase("Y")) {
 				retVal.add(item);
 			}
 		}
