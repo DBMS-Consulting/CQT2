@@ -77,6 +77,8 @@ public class AdminController implements Serializable {
 	private List<RefConfigCodeList> extensions, programs, protocols, products,
 			meddras, workflows, usergroups, sysconfigs, cmqImpactTypes,
 			smqImpactTypes, meddraImpactTypes, levels, smqfilters;
+	
+	private List<RefConfigCodeList> codelistType;
 
 	private RefConfigCodeList selectedRow, myFocusRef;
 	private StreamedContent excelFile;
@@ -104,6 +106,8 @@ public class AdminController implements Serializable {
 	}
 
 	public void switchCodelist(AjaxBehaviorEvent event) {
+		getCodelistList();
+		/*
 		if (codelist.equals(CqtConstants.CODE_LIST_TYPE_EXTENSION)
 				&& extensions == null) {
 			getExtensionList();
@@ -149,6 +153,7 @@ public class AdminController implements Serializable {
 				&& smqfilters == null) {
 			getSMQFilters();
 		}
+		*/
 	}
 
 	public List<RefConfigCodeList> getSMQFilters() {
@@ -269,6 +274,14 @@ public class AdminController implements Serializable {
 		}
 
 		return "";
+	}
+	
+	public List<RefConfigCodeList> getCodelistList(){
+		codelistType = refCodeListService.findAllByConfigType(codelist, OrderBy.ASC);
+		if(codelistType == null) {
+			codelistType = new ArrayList<RefConfigCodeList>();
+		}
+		return codelistType;
 	}
 
 	public List<RefConfigCodeList> getExtensionList() {
@@ -963,6 +976,21 @@ public class AdminController implements Serializable {
 	        msg.setSeverity(FacesMessage.SEVERITY_ERROR);
 	        throw new ValidatorException(msg);
 		}
+	}
+	
+	public String getSaveValue() {
+		String retVal = "Add " + getCodelist();
+		return retVal;
+	}
+	
+	public String getName() {
+		String retVal = getCodelist() + " Name";
+		return retVal;
+	}
+	
+	public String getHeader() {
+		String retVal = getCodelist() + " CodeList";
+		return retVal;
 	}
 	
 	public List<CodelistDTO> getList() {

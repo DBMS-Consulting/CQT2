@@ -316,6 +316,57 @@ public class RefCodeListService extends
 		return retVal;
 	}
 	
+	public List<RefConfigCodeList> getAllCodelistTypes(){
+		List<RefConfigCodeList> list = new ArrayList<>();
+		list = findAllCodelistTypes();
+		/*
+		List<RefConfigCodeList> retVal = new ArrayList<>();
+		for(RefConfigCodeList item: list) {
+			retVal.add(item.getCodelistConfigType());
+		}*/
+		return list;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<RefConfigCodeList> findAllCodelistTypes(){
+		String defaultFlag = "Y";
+		List<RefConfigCodeList> ref = new ArrayList<>();
+		String cacheKey = "[" + defaultFlag + "]";
+		
+		// try to get it from cache first
+        Object cv = (List<RefConfigCodeList>)this.cqtCacheManager.getFromCache(CACHE_NAME, cacheKey);
+        if(cv != null && cv instanceof List<?>) {
+            return (List<RefConfigCodeList>) cv;
+        }
+		
+		String queryString = "from RefConfigCodeList a where a.defaultFlag = :defaultFlag";
+		
+		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+		try {
+			Query query = entityManager.createQuery(queryString);
+			query.setParameter("defaultFlag", defaultFlag);
+			query.setHint("org.hibernate.cacheable", true);
+			ref = (List<RefConfigCodeList>) query.getResultList();
+		} catch (javax.persistence.NoResultException e) {
+            LOG.info("findAllCodelistTypes found no result for defaultFlag: " + defaultFlag);
+        } catch (Exception e) {
+			StringBuilder msg = new StringBuilder();
+			msg.append(
+					"findAllCodelistTypes failed for defaultFlag = '")
+					.append(defaultFlag).append("' ")
+					.append("Query used was ->").append(queryString);
+			LOG.error(msg.toString(), e);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		if (ref != null) {
+            this.cqtCacheManager.addToCache(CACHE_NAME, cacheKey, ref);
+			return ref;
+        }
+		return null;
+	}
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<RefConfigCodeList> findByConfigType(String configType){

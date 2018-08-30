@@ -22,6 +22,10 @@
 					<h:panelGrid columns="2">
 						<p:outputLabel value="Codelist Type" />
 						<p:selectOneMenu label="Codelist Type" value="#{adminController.codelist}">
+							<f:selectItem itemValue="" itemLabel="" />
+							<f:selectItems value="#{configMB.codelistTypes}" var="cl"
+								itemLabel="#{cl.codelistConfigType}" itemValue="#{cl.codelistConfigType}" />
+						<!--
 							<f:selectItem itemLabel="EXTENSION" itemValue="LIST_EXTENSION_TYPES" />
 							<f:selectItem itemLabel="PROGRAM" itemValue="PROGRAM" />
 							<f:selectItem itemLabel="PROTOCOL" itemValue="PROTOCOL" />
@@ -35,6 +39,7 @@
                             <f:selectItem itemLabel="MEDDRA DICTIONARY IMPACT TYPE" itemValue="MEDDRA_DICTIONARY_IMPACT_TYPE" />
                             <f:selectItem itemLabel="DICTIONARY CMQ LEVELS TYPE" itemValue="DICTIONARY_CMQ_LEVELS" />
                             <f:selectItem itemLabel="SMQ FILTER LEVELS TYPE" itemValue="SMQ_FILTER_LEVELS" />
+                        -->
                             
 
 							<p:ajax update="@form" event="change" listener="#{adminController.switchCodelist}" />
@@ -42,6 +47,11 @@
 					</h:panelGrid>
 					<p:spacer height="10" />
 
+					<ui:fragment rendered="#{adminController.codelist eq adminController.codelist}">
+						<ui:include src="adminTable.xhtml"></ui:include>
+					</ui:fragment>
+
+					<!--
 					<ui:fragment rendered="#{adminController.codelist eq 'LIST_EXTENSION_TYPES'}">
 						<ui:include src="extensionTable.xhtml"></ui:include>
 					</ui:fragment>
@@ -93,6 +103,7 @@
 					<ui:fragment rendered="#{adminController.codelist eq 'SMQ_FILTER_LEVELS'}">
 						<ui:include src="smqFilterLevelTable.xhtml"></ui:include> 
 					</ui:fragment>
+				-->
 				</p:tab>
 
 				<p:tab title="Mappings">

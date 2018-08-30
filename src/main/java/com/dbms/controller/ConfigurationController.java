@@ -225,6 +225,12 @@ public class ConfigurationController implements Serializable {
 		
 	}
 	
+	public List<RefConfigCodeList> getCodelistTypes(){
+		List<RefConfigCodeList> list = new ArrayList<>();
+		list = refCodeListService.getAllCodelistTypes();
+		return list;
+	}
+	
 	public IRefCodeListService getRefCodeListService() {
 		return refCodeListService;
 	}
