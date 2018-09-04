@@ -67,6 +67,7 @@ public class AdminController implements Serializable {
 
 	List<CodelistDTO> list;
 	private String codelist;
+	private boolean isRendered = false;
 
 	@ManagedProperty("#{RefCodeListService}")
 	private IRefCodeListService refCodeListService;
@@ -106,54 +107,72 @@ public class AdminController implements Serializable {
 	}
 
 	public void switchCodelist(AjaxBehaviorEvent event) {
-		getCodelistList();
-		/*
 		if (codelist.equals(CqtConstants.CODE_LIST_TYPE_EXTENSION)
 				&& extensions == null) {
+			isRendered = false;
 			getExtensionList();
 		} else if (codelist.equals(CqtConstants.CODE_LIST_TYPE_MEDDRA_VERSIONS)
 				&& meddras == null) {
+			isRendered = false;
 			getMeddraList();
 		} else if (codelist.equals(CqtConstants.CODE_LIST_TYPE_PRODUCT)
 				&& products == null) {
+			isRendered = false;
 			getProductList();
 		} else if (codelist.equals(CqtConstants.CODE_LIST_TYPE_PROGRAM)
 				&& programs == null) {
+			isRendered = false;
 			getProgramList();
 		} else if (codelist.equals(CqtConstants.CODE_LIST_TYPE_PROTOCOL)
 				&& protocols == null) {
+			isRendered = false;
 			getProtocolList();
 		} else if (codelist.equals(CqtConstants.CODE_LIST_TYPE_WORKFLOW_STATES)
 				&& workflows == null) {
+			isRendered = false;
 			getWorkflowList();
 		} else if (codelist.equals(CqtConstants.CODE_LIST_TYPE_USER_GROUPS)
 				&& usergroups == null) {
+			isRendered = false;
 			getUsergroupList();
 		} else if (codelist.equals(CqtConstants.CODE_LIST_TYPE_SYSTEM_CONFIG)
 				&& sysconfigs == null) {
+			isRendered = false;
 			getSysconfigList();
 		} else if (codelist
 				.equals(CqtConstants.CODE_LIST_TYPE_CMQ_RELATION_IMPACT_TYPE)
 				&& cmqImpactTypes == null) {
+			isRendered = false;
 			getCmqImpactTypeList();
 		} else if (codelist
 				.equals(CqtConstants.CODE_LIST_TYPE_SMQ_RELATION_IMPACT_TYPE)
 				&& smqImpactTypes == null) {
+			isRendered = false;
 			getSmqImpactTypeList();
 		} else if (codelist
 				.equals(CqtConstants.CODE_LIST_TYPE_MEDDRA_DICT_IMPACT_TYPE)
 				&& meddraImpactTypes == null) {
+			isRendered = false;
 			getMeddraImpactTypeList();
 		} else if (codelist
 				.equals(CqtConstants.CODE_LIST_TYPE_DICTIONARY_LEVELS)
 				&& levels == null) {
+			isRendered = false;
 			getLevelList();
 		} else if (codelist
 				.equals(CqtConstants.CODE_LIST_TYPE_SMQ_FILTER_LEVELS)
 				&& smqfilters == null) {
+			isRendered = false;
 			getSMQFilters();
+		} else {
+			getCodelistList();
+			isRendered = true;
 		}
-		*/
+		
+	}
+	
+	public boolean getIsRendered() {
+		return isRendered;
 	}
 
 	public List<RefConfigCodeList> getSMQFilters() {
@@ -168,6 +187,12 @@ public class AdminController implements Serializable {
 	public String initAddCodelist() {
 		BigDecimal lastSerial = new BigDecimal(0);
 		myFocusRef = new RefConfigCodeList();
+		
+		myFocusRef.setCodelistConfigType(codelist);
+		if(codelistType != null && !codelistType.isEmpty()) {
+			lastSerial = codelistType.get(codelistType.size() - 1).getSerialNum();
+		}
+		/*
 		if (codelist.equals(CqtConstants.CODE_LIST_TYPE_EXTENSION)) {
 			myFocusRef
 					.setCodelistConfigType(CqtConstants.CODE_LIST_TYPE_EXTENSION);
@@ -247,6 +272,8 @@ public class AdminController implements Serializable {
 				lastSerial = getSmqfilters().get(getSmqfilters().size() - 1)
 						.getSerialNum();
 		}
+		*/
+		
 		myFocusRef.setCreationDate(new Date());
 		myFocusRef.setLastModificationDate(new Date());
 		myFocusRef.setSerialNum(lastSerial.add(new BigDecimal(1)));
@@ -452,7 +479,7 @@ public class AdminController implements Serializable {
 
 	public void addRefCodelist() {
 		if (myFocusRef.getCodelistConfigType().equals(CqtConstants.CODE_LIST_TYPE_EXTENSION)) {
-			//validate the ref code. cannot be mroe than 3 characters long if codelist is extension
+			//validate the ref code. cannot be more than 3 characters long if codelist is extension
 			if((myFocusRef.getCodelistInternalValue() != null) && (myFocusRef.getCodelistInternalValue().length() > 3)) {
 				FacesMessage msg = new FacesMessage(
 						FacesMessage.SEVERITY_ERROR,
@@ -485,7 +512,7 @@ public class AdminController implements Serializable {
 		}
 		
 		
-		// Getting old serial numbre before save
+		// Getting old serial number before save
 		RefConfigCodeList oldCodelist = refCodeListService.findById(myFocusRef.getId());
 		
 		// check if changed
@@ -679,59 +706,63 @@ public class AdminController implements Serializable {
 			}
 			String type = "";
 
+			type = myFocusRef.getCodelistConfigType();
+			getCodelistList();
+			/*
 			if (myFocusRef.getCodelistConfigType().equals(
 					CqtConstants.CODE_LIST_TYPE_EXTENSION)) {
 				type = "Extension";
-				getExtensionList();
+				getCodelistList();
 			} else if (myFocusRef.getCodelistConfigType().equals(
 					CqtConstants.CODE_LIST_TYPE_MEDDRA_VERSIONS)) {
 				type = "MedDRA Dictionary";
-				getMeddraList();
+				getCodelistList();
 			} else if (myFocusRef.getCodelistConfigType().equals(
 					CqtConstants.CODE_LIST_TYPE_PRODUCT)) {
 				type = "Product";
-				getProductList();
+				getCodelistList();
 			} else if (myFocusRef.getCodelistConfigType().equals(
 					CqtConstants.CODE_LIST_TYPE_PROGRAM)) {
 				type = "Program";
-				getProgramList();
+				getCodelistList();
 			} else if (myFocusRef.getCodelistConfigType().equals(
 					CqtConstants.CODE_LIST_TYPE_PROTOCOL)) {
 				type = "Protocol";
-				getProtocolList();
+				getCodelistList();
 			} else if (myFocusRef.getCodelistConfigType().equals(
 					CqtConstants.CODE_LIST_TYPE_WORKFLOW_STATES)) {
 				type = "Workflow State";
-				getWorkflowList();
+				getCodelistList();
 			} else if (myFocusRef.getCodelistConfigType().equals(
 					CqtConstants.CODE_LIST_TYPE_USER_GROUPS)) {
 				type = "User Group";
-				getUsergroupList();
+				getCodelistList();
 			} else if (myFocusRef.getCodelistConfigType().equals(
 					CqtConstants.CODE_LIST_TYPE_SYSTEM_CONFIG)) {
 				type = "System Config";
-				getSysconfigList();
+				getCodelistList();
 			} else if (myFocusRef.getCodelistConfigType().equals(
 					CqtConstants.CODE_LIST_TYPE_CMQ_RELATION_IMPACT_TYPE)) {
 				type = "CMQ Relation Impact Type";
-				getCmqImpactTypeList();
+				getCodelistList();
 			} else if (myFocusRef.getCodelistConfigType().equals(
 					CqtConstants.CODE_LIST_TYPE_SMQ_RELATION_IMPACT_TYPE)) {
 				type = "SMQ Relation Impact Type";
-				getSmqImpactTypeList();
+				getCodelistList();
 			} else if (myFocusRef.getCodelistConfigType().equals(
 					CqtConstants.CODE_LIST_TYPE_MEDDRA_DICT_IMPACT_TYPE)) {
 				type = "Meddra Dictionary Impact Type";
-				getMeddraImpactTypeList();
+				getCodelistList();
 			} else if (myFocusRef.getCodelistConfigType().equals(
 					CqtConstants.CODE_LIST_TYPE_DICTIONARY_LEVELS)) {
 				type = "Dictionary CMQ Level Type";
-				getLevelList();
+				getCodelistList();
 			} else if (myFocusRef.getCodelistConfigType().equals(
 					CqtConstants.CODE_LIST_TYPE_SMQ_FILTER_LEVELS)) {
 				type = "SMQ Filter Level Type";
-				getSMQFilters();
+				getCodelistList();
 			}
+			*/
 			//clear cache
 			this.cqtCacheManager.removeAllFromCache("code-list-cache");
 			FacesMessage msg = null;
@@ -765,6 +796,7 @@ public class AdminController implements Serializable {
 		
 
 		myFocusRef = new RefConfigCodeList();
+		init();
 
 	}
 
@@ -979,18 +1011,18 @@ public class AdminController implements Serializable {
 	}
 	
 	public String getSaveValue() {
-		String retVal = "Add " + getCodelist();
-		return retVal;
+		String save = "Add " + getCodelist();
+		return save;
 	}
 	
 	public String getName() {
-		String retVal = getCodelist() + " Name";
-		return retVal;
+		String name = getCodelist() + " Name";
+		return name;
 	}
 	
 	public String getHeader() {
-		String retVal = getCodelist() + " CodeList";
-		return retVal;
+		String header = getCodelist() + " CodeList";
+		return header;
 	}
 	
 	public List<CodelistDTO> getList() {

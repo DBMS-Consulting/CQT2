@@ -42,7 +42,7 @@
 		<p:column style="width:32px;text-align: center">
 			<p:commandButton update="@form" process="@this"
 				action="#{adminController.initGetRef}"
-				oncomplete="PF('adminD').show()" icon="ui-icon-pencil"
+				oncomplete="PF('extensionD').show()" icon="ui-icon-pencil"
 				title="View/Edit">
 				<f:setPropertyActionListener value="#{val}"
 					target="#{adminController.selectedRow}" />
@@ -52,16 +52,16 @@
 
 	<h:panelGrid columns="2" cellpadding="5">
 		<!-- <p:commandButton value="Add Admin" icon="fa fa-plus"
-			immediate="true" onclick="PF('adminD').show()"
+			immediate="true" onclick="PF('extensionD').show()"
 			action="#{adminController.initAddCodelist}" /> -->
 
 		<i class="fa fa-plus"></i>
 		<p:commandLink type="button" value="#{adminController.saveValue}"
-			update="dialogAdmin" process="@this" oncomplete="PF('adminD').show()"
+			update="dialogAdmin" process="@this" oncomplete="PF('extensionD').show()"
 			actionListener="#{adminController.initAddCodelist}" />
  	</h:panelGrid>
 
-	<p:dialog header="Admin details" widgetVar="adminD" modal="true" id="dialogAdmin"
+	<p:dialog header="Details" widgetVar="extensionD" modal="true" id="dialogAdmin"
 		showEffect="fade" hideEffect="fade" resizable="false">
 		<p:outputPanel style="text-align:center;">
 			<h:panelGrid columns="2" columnClasses="label, value">
@@ -98,11 +98,11 @@
 
 			<h:panelGrid columns="2" cellpadding="5">
 				<p:commandButton value="Save" icon="fa fa-plus"
-					onclick="PF('adminD').hide()" update="tableAdmin msgAdmin"
+					onclick="PF('extensionD').hide()" update="tableAdmin msgAdmin"
 					action="#{adminController.addRefCodelist}" oncomplete="PF('tblAdmins').filter()" />
 
 				<p:commandButton value="Cancel" icon="fa fa-close"
-					onclick="PF('adminD').hide()" update="tableAdmin msgAdmin"
+					onclick="PF('extensionD').hide()" update="tableAdmin msgAdmin"
 					immediate="true" />
 			</h:panelGrid>
 

@@ -42,16 +42,11 @@
                         -->
                             
 
-							<p:ajax update="@form" event="change" listener="#{adminController.switchCodelist}" />
+							<p:ajax update="f1" event="change" listener="#{adminController.switchCodelist}" />
 						</p:selectOneMenu>
 					</h:panelGrid>
 					<p:spacer height="10" />
 
-					<ui:fragment rendered="#{adminController.codelist eq adminController.codelist}">
-						<ui:include src="adminTable.xhtml"></ui:include>
-					</ui:fragment>
-
-					<!--
 					<ui:fragment rendered="#{adminController.codelist eq 'LIST_EXTENSION_TYPES'}">
 						<ui:include src="extensionTable.xhtml"></ui:include>
 					</ui:fragment>
@@ -103,7 +98,11 @@
 					<ui:fragment rendered="#{adminController.codelist eq 'SMQ_FILTER_LEVELS'}">
 						<ui:include src="smqFilterLevelTable.xhtml"></ui:include> 
 					</ui:fragment>
-				-->
+
+					<ui:fragment rendered="#{adminController.isRendered}">
+						<ui:include src="adminTable.xhtml"></ui:include>
+					</ui:fragment>
+				
 				</p:tab>
 
 				<p:tab title="Mappings">
