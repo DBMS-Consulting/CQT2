@@ -67,7 +67,6 @@ public class AdminController implements Serializable {
 
 	List<CodelistDTO> list;
 	private String codelist;
-	private boolean isRendered = false;
 
 	@ManagedProperty("#{RefCodeListService}")
 	private IRefCodeListService refCodeListService;
@@ -90,8 +89,9 @@ public class AdminController implements Serializable {
 
 	@PostConstruct
 	public void init() {
-
-		getExtensionList();
+		
+		getCodelistList();
+		//getExtensionList();
 		// getProductList();
 		// getProgramList();
 		// getProtocolList();
@@ -107,72 +107,54 @@ public class AdminController implements Serializable {
 	}
 
 	public void switchCodelist(AjaxBehaviorEvent event) {
+		getCodelistList();
+		/*
 		if (codelist.equals(CqtConstants.CODE_LIST_TYPE_EXTENSION)
 				&& extensions == null) {
-			isRendered = false;
 			getExtensionList();
 		} else if (codelist.equals(CqtConstants.CODE_LIST_TYPE_MEDDRA_VERSIONS)
 				&& meddras == null) {
-			isRendered = false;
 			getMeddraList();
 		} else if (codelist.equals(CqtConstants.CODE_LIST_TYPE_PRODUCT)
 				&& products == null) {
-			isRendered = false;
 			getProductList();
 		} else if (codelist.equals(CqtConstants.CODE_LIST_TYPE_PROGRAM)
 				&& programs == null) {
-			isRendered = false;
 			getProgramList();
 		} else if (codelist.equals(CqtConstants.CODE_LIST_TYPE_PROTOCOL)
 				&& protocols == null) {
-			isRendered = false;
 			getProtocolList();
 		} else if (codelist.equals(CqtConstants.CODE_LIST_TYPE_WORKFLOW_STATES)
 				&& workflows == null) {
-			isRendered = false;
 			getWorkflowList();
 		} else if (codelist.equals(CqtConstants.CODE_LIST_TYPE_USER_GROUPS)
 				&& usergroups == null) {
-			isRendered = false;
 			getUsergroupList();
 		} else if (codelist.equals(CqtConstants.CODE_LIST_TYPE_SYSTEM_CONFIG)
 				&& sysconfigs == null) {
-			isRendered = false;
 			getSysconfigList();
 		} else if (codelist
 				.equals(CqtConstants.CODE_LIST_TYPE_CMQ_RELATION_IMPACT_TYPE)
 				&& cmqImpactTypes == null) {
-			isRendered = false;
 			getCmqImpactTypeList();
 		} else if (codelist
 				.equals(CqtConstants.CODE_LIST_TYPE_SMQ_RELATION_IMPACT_TYPE)
 				&& smqImpactTypes == null) {
-			isRendered = false;
 			getSmqImpactTypeList();
 		} else if (codelist
 				.equals(CqtConstants.CODE_LIST_TYPE_MEDDRA_DICT_IMPACT_TYPE)
 				&& meddraImpactTypes == null) {
-			isRendered = false;
 			getMeddraImpactTypeList();
 		} else if (codelist
 				.equals(CqtConstants.CODE_LIST_TYPE_DICTIONARY_LEVELS)
 				&& levels == null) {
-			isRendered = false;
 			getLevelList();
 		} else if (codelist
 				.equals(CqtConstants.CODE_LIST_TYPE_SMQ_FILTER_LEVELS)
 				&& smqfilters == null) {
-			isRendered = false;
 			getSMQFilters();
-		} else {
-			getCodelistList();
-			isRendered = true;
-		}
+		} */
 		
-	}
-	
-	public boolean getIsRendered() {
-		return isRendered;
 	}
 
 	public List<RefConfigCodeList> getSMQFilters() {
@@ -796,7 +778,6 @@ public class AdminController implements Serializable {
 		
 
 		myFocusRef = new RefConfigCodeList();
-		init();
 
 	}
 
