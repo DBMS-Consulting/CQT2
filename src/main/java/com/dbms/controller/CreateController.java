@@ -659,8 +659,10 @@ public class CreateController implements Serializable {
             if(copyWizard != null
                     && COPY_WIZARD_STEP_SEARCH.equals(copyWizardNextStep))
                 copyingCmqCode = null;
-            copyWizard.setStep(COPY_WIZARD_STEP_SEARCH);
+            /*copyWizard.setStep(COPY_WIZARD_STEP_SEARCH);
             RequestContext.getCurrentInstance().update("fCopy:wizardNavbar");
+            */
+            goToWizardNextStep();
 		}
 	}
 	
