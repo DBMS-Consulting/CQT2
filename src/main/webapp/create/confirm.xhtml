@@ -70,7 +70,7 @@
             <h:panelGrid columns="2" columnClasses="label-cell, value-cell">
                 <p:outputLabel value="Creation Date: " />
 				<h:outputText value="#{createController.selectedData.creationDate}">
-					<f:convertDateTime pattern="dd-MM-yyyy HH:mm:ss"/>
+					<f:convertDateTime pattern="dd-MMM-yyyy HH:mm:ss"/>
 				</h:outputText>
 
 				<p:outputLabel value="Created By: " />
@@ -79,7 +79,7 @@
 				<p:outputLabel value="Last Activation Date: " />
 				<h:outputText
 					value="#{createController.selectedData.activationDate}">
-					<f:convertDateTime pattern="dd-MM-yyyy HH:mm:ss"/>
+					<f:convertDateTime pattern="dd-MMM-yyyy HH:mm:ss"/>
 				</h:outputText>
 
 				<p:outputLabel value="Last Activation By: " />
