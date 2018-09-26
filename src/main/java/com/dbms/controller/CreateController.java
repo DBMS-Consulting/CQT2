@@ -118,6 +118,9 @@ public class CreateController implements Serializable {
     @ManagedProperty("#{globalController}")
     private GlobalController globalController;
     
+    @ManagedProperty("#configControl")
+    private ConfigurationController configControl;
+    
 	private ListDetailsFormVM detailsFormModel;
 	private ListNotesFormVM notesFormModel = new ListNotesFormVM();
     private ListRelationsVM relationsModel;

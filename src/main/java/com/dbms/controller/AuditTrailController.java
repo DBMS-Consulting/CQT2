@@ -58,6 +58,9 @@ public class AuditTrailController implements Serializable {
 	@ManagedProperty("#{AuthenticationService}")
 	private AuthenticationService authService;
 	
+	@ManagedProperty("#configControl")
+    private ConfigurationController configControl;
+	
 	@PostConstruct
 	public void init() {
 		this.datas = new ArrayList<AuditTrailDto>();

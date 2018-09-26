@@ -56,6 +56,15 @@
 						<li><h:outputText value="Click " rendered="true" />
 						<h:outputLink value="#{appCSMQBean.supportURL}" target="_blank">here</h:outputLink>
 						<h:outputText value=" to open a support ticket" rendered="true" /></li>
+
+						<li><h:outputText value="Timezone" rendered="true" /></li>
+
+						<li><p:outputLabel value="" />
+						<p:selectOneMenu label="Timezone" value="#{configMB.timezone}" style="width:120px">
+							<f:selectItem itemValue="" itemLabel="" />
+							<f:selectItems value="#{configMB.timezoneList}" var="tz"
+								itemLabel="#{tz.value}" itemValue="#{tz.value}" />
+						</p:selectOneMenu></li>
 					</ul>
 
 					<h:panelGrid columns="3" style="float: right">

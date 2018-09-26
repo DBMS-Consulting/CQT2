@@ -43,9 +43,10 @@ public class ConfigurationController implements Serializable {
 	@ManagedProperty("#{RefCodeListService}")
 	private IRefCodeListService refCodeListService;
 
-	private List<RefConfigCodeList> extensions, programs, protocols, products, workflows, levels;
+	private List<RefConfigCodeList> extensions, programs, protocols, products, workflows, levels, timezones;
 
 	private RefConfigCodeList currentMeddraVersionCodeList;
+	private RefConfigCodeList timezone;
 	
 	private String dictionaryName;
     
@@ -197,6 +198,20 @@ public class ConfigurationController implements Serializable {
 		return levels;
 	}
 	
+	/**
+	 * Returns extensions list.
+	 * 
+	 * @return
+	 */
+	public List<RefConfigCodeList> getTimezoneList() {
+		timezones = refCodeListService.findByConfigType(
+				"USER_TIMEZONE", OrderBy.ASC);
+		if (timezones == null) {
+			timezones = new ArrayList<>();
+		}
+		return timezones;
+	}
+	
 	
 	public RefConfigCodeList getCurrentMeddraVersion() {
 		this.currentMeddraVersionCodeList = refCodeListService.getCurrentMeddraVersion();
@@ -285,6 +300,22 @@ public class ConfigurationController implements Serializable {
 
 	public void setWorkflows(List<RefConfigCodeList> workflows) {
 		this.workflows = workflows;
+	}
+	
+	public List<RefConfigCodeList> getTimezones(){
+		return timezones;
+	}
+	
+	public void setTimezones(List<RefConfigCodeList> timezones) {
+		this.timezones = timezones;
+	}
+	
+	public RefConfigCodeList getTimezone(){
+		return timezone;
+	}
+	
+	public void setTimezone(RefConfigCodeList timezone) {
+		this.timezone = timezone;
 	}
     
     public List<String[]> getCmqBaseListStates() {

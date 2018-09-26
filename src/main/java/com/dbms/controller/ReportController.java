@@ -89,6 +89,9 @@ public class ReportController extends BaseController<CmqBase190> {
 	@ManagedProperty("#{globalController}")
     private GlobalController globalController;
 	
+	@ManagedProperty("#configControl")
+    private ConfigurationController configControl;
+	
 	// Search & Filters
 	private Date reportStartDate = null;
 	private Date reportEndDate = null;

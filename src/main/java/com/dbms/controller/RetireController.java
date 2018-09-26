@@ -61,6 +61,9 @@ public class RetireController implements Serializable {
 	@ManagedProperty("#{CmqParentChild200Service}")
 	private ICmqParentChild200Service cmqParentChildService;
 	
+	@ManagedProperty("#configControl")
+    private ConfigurationController configControl;
+	
 	private List<CmqBase190> sourceListToRetire;
 
 	private List<CmqBase190> targetList;

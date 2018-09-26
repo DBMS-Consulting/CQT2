@@ -73,6 +73,9 @@ public class AdminController implements Serializable {
 
 	@ManagedProperty("#{AuthenticationService}")
 	private AuthenticationService authService;
+	
+	@ManagedProperty("#configControl")
+    private ConfigurationController configControl;
 
 	private List<RefConfigCodeList> extensions, programs, protocols, products,
 			meddras, workflows, usergroups, sysconfigs, cmqImpactTypes,
@@ -849,7 +852,7 @@ public class AdminController implements Serializable {
  		double newVal = savedRef.getSerialNum().doubleValue();
  		double val = newVal;
 		if (oldRef != null)
-			System.out.println("olf value " + oldRef.getSerialNum().doubleValue() + " for " + oldRef.getCodelistInternalValue());
+			System.out.println("old value " + oldRef.getSerialNum().doubleValue() + " for " + oldRef.getCodelistInternalValue());
 
 		System.out.println("new value " + savedRef.getSerialNum().doubleValue() + " for " + savedRef.getCodelistInternalValue());
 		
@@ -870,7 +873,7 @@ public class AdminController implements Serializable {
  		double modifiedSrNo = -1d;
         if(newVal > refList.size()) {
         	modifiedSrNo = refList.size();
-        	System.out.println("Defaulting new valeu to " + modifiedSrNo + " as it is mroe than max in list.");
+        	System.out.println("Defaulting new value to " + modifiedSrNo + " as it is more than max in list.");
         }
  		if (refList != null && !refList.isEmpty()) {
             refList.sort(new Comparator<RefConfigCodeList> () {

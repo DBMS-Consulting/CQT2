@@ -51,6 +51,9 @@ public class ParentListController extends BaseController<CmqBase190> {
 	@ManagedProperty("#{globalController}")
     private GlobalController globalController;
 	
+	@ManagedProperty("#configControl")
+    private ConfigurationController configControl;
+	
 	// Search & Filters
 	private String searchTermName;
 	private String searchExtension;
