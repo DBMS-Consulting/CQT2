@@ -139,7 +139,6 @@ public class ImpactSearchController implements Serializable {
 	@ManagedProperty("#{globalController}")
     private GlobalController globalController;
 	
-	@ManagedProperty("#configControl")
     private ConfigurationController configControl;
 	
 	Wizard iaWizard, iaVersionWizard;

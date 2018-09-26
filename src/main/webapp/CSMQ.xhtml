@@ -61,9 +61,8 @@
 
 						<li><p:outputLabel value="" />
 						<p:selectOneMenu label="Timezone" value="#{configMB.timezone}" style="width:120px">
-							<f:selectItem itemValue="" itemLabel="" />
 							<f:selectItems value="#{configMB.timezoneList}" var="tz"
-								itemLabel="#{tz.value}" itemValue="#{tz.value}" />
+								itemLabel="#{tz.codelistInternalValue}" itemValue="#{tz.codelistInternalValue}" />
 						</p:selectOneMenu></li>
 					</ul>
 

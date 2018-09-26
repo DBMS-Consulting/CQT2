@@ -65,6 +65,12 @@ public class ConfigurationController implements Serializable {
 	@PostConstruct
 	public void init() {
 		dictionaryName = "MEDDRA";
+		
+		List<RefConfigCodeList> defaultTZ = getTimezoneList();
+		for(RefConfigCodeList tz : defaultTZ) {
+			if(tz.getDefaultFlag().equalsIgnoreCase("Y"))
+				setTimezone(tz);
+		}
 //		getExtensionList();
 //		getProgramList();
 //		getProtocolList();
