@@ -59,7 +59,6 @@ public class DemoteToDraftController implements Serializable {
 	@ManagedProperty("#{CmqParentChildTargetService}")
 	private ICmqParentChildTargetService cmqParentChildTargetService;
 	
-	@ManagedProperty("#configControl")
     private ConfigurationController configControl;
 	
 	private List<CmqBase190> sourceList;

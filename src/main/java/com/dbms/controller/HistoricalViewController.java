@@ -119,7 +119,6 @@ public class HistoricalViewController implements Serializable {
 	@ManagedProperty("#{globalController}")
     private GlobalController globalController;
 	
-	@ManagedProperty("#configControl")
     private ConfigurationController configControl;
 
 	private List<CmqBaseDTO> cmqBaseDTOSelectList;

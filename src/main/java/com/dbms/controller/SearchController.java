@@ -62,7 +62,6 @@ public class SearchController extends BaseController<CmqBase190> {
 	@ManagedProperty("#{globalController}")
     private GlobalController globalController;
 	
-	@ManagedProperty("#configControl")
     private ConfigurationController configControl;
 	
 	private String releaseStatus;

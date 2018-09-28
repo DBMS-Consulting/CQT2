@@ -74,7 +74,6 @@ public class AdminController implements Serializable {
 	@ManagedProperty("#{AuthenticationService}")
 	private AuthenticationService authService;
 	
-	@ManagedProperty("#configControl")
     private ConfigurationController configControl;
 
 	private List<RefConfigCodeList> extensions, programs, protocols, products,

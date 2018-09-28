@@ -48,7 +48,6 @@ public class ParentListController extends BaseController<CmqBase190> {
 	@ManagedProperty("#{RefCodeListService}")
 	private IRefCodeListService refCodeListService;
 	
-	@ManagedProperty("#{globalController}")
     private GlobalController globalController;
 	
 	@ManagedProperty("#configControl")
