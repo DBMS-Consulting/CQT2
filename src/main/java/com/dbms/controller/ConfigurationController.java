@@ -56,6 +56,7 @@ public class ConfigurationController implements Serializable {
     @ManagedProperty("#{CqtCacheManager}")
    	private ICqtCacheManager cqtCacheManager;
     
+    @ManagedProperty("#{globalController}")
     private GlobalController globalController;
     
 	private final String CACHE_NAME = "code-list-cache";
