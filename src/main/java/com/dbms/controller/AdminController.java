@@ -283,6 +283,8 @@ public class AdminController implements Serializable {
 					"The codeList selected does not exist.", "");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}
+		else
+			myFocusRef = selectedRow;
 
 		return "";
 	}
