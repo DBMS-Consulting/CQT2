@@ -197,6 +197,8 @@ public class CmqBaseRelationsTreeHelper {
     
 
 	public void populateCmqRelations(Long cmqCode, TreeNode expandedTreeNode, IEntity entityExpanded) {
+		CmqBase190 baseCmq = this.cmqBaseSvc.findByCode(cmqCode);
+		String dictionaryVersion = baseCmq.getDictionaryVersion();
         List<CmqRelation190> cmqRelationList = this.cmqRelationSvc.findByCmqCode(cmqCode);
         
         Map<Long, IEntity> socCodesMap = new HashMap<>();
@@ -225,35 +227,35 @@ public class CmqBaseRelationsTreeHelper {
         if(socCodesMap.size() > 0) {
             List<MeddraDictHierarchySearchDto> socDtos;
             List<Long> socCodesList = new ArrayList<>(socCodesMap.keySet());
-            socDtos = this.meddraDictSvc.findByCodes("SOC_", socCodesList);
+            socDtos = this.meddraDictSvc.findByCodes("SOC_", socCodesList,dictionaryVersion);
             this.populateCmqRelationTreeNodes(socDtos, expandedTreeNode, "SOC", "HLGT", cmqCode, socCodesMap);
         }
 
         if(hlgtCodesMap.size() > 0) {
             List<MeddraDictHierarchySearchDto> hlgtDtos;
             List<Long> hlgtCodesList = new ArrayList<>(hlgtCodesMap.keySet());
-            hlgtDtos = this.meddraDictSvc.findByCodes("HLGT_", hlgtCodesList);
+            hlgtDtos = this.meddraDictSvc.findByCodes("HLGT_", hlgtCodesList,dictionaryVersion);
             this.populateCmqRelationTreeNodes(hlgtDtos, expandedTreeNode, "HLGT", "HLT", cmqCode, hlgtCodesMap);
         }
 
         if(hltCodesMap.size() > 0) {
             List<MeddraDictHierarchySearchDto> hltDtos;
             List<Long> hltCodesList = new ArrayList<>(hltCodesMap.keySet());
-            hltDtos = this.meddraDictSvc.findByCodes("HLT_", hltCodesList);
+            hltDtos = this.meddraDictSvc.findByCodes("HLT_", hltCodesList,dictionaryVersion);
             this.populateCmqRelationTreeNodes(hltDtos, expandedTreeNode, "HLT", "PT", cmqCode, hltCodesMap);
         }
 
         if(ptCodesMap.size() > 0) {
             List<MeddraDictHierarchySearchDto> ptDtos;
             List<Long> ptCodesList = new ArrayList<>(ptCodesMap.keySet());
-            ptDtos = this.meddraDictSvc.findByCodes("PT_", ptCodesList);
+            ptDtos = this.meddraDictSvc.findByCodes("PT_", ptCodesList,dictionaryVersion);
             this.populateCmqRelationTreeNodes(ptDtos, expandedTreeNode, "PT", "LLT", cmqCode, ptCodesMap);
         }
 
         if(lltCodesMap.size() > 0) {
             List<MeddraDictHierarchySearchDto> lltDtos;
             List<Long> lltCodesList = new ArrayList<>(lltCodesMap.keySet());
-            lltDtos = this.meddraDictSvc.findByCodes("LLT_", lltCodesList);
+            lltDtos = this.meddraDictSvc.findByCodes("LLT_", lltCodesList,dictionaryVersion);
             this.populateCmqRelationTreeNodes(lltDtos, expandedTreeNode, "LLT", null, cmqCode, lltCodesMap);
         }
 	}

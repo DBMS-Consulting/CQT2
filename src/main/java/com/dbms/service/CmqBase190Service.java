@@ -961,6 +961,8 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		// Retrieval of relations - Loop
 		List<CmqRelation190> relations = cmqRelationService
 				.findByCmqCode(details.getCode());
+		CmqBase190 cmq = findByCode(details.getCode());
+		String cmqDictionaryVersion = cmq.getDictionaryVersion();
 		
 		//Long code = null;
  		// MeddraDictReverseHierarchySearchDto search = null;
@@ -1022,14 +1024,14 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 				else if (relation.getPtCode() != null) {
 					level = "PT";
 					MeddraDictReverseHierarchySearchDto search = this.meddraDictService
-							.findByPtOrLltCode("PT_", relation.getPtCode());
+							.findByPtOrLltCode("PT_", relation.getPtCode(),cmqDictionaryVersion);
 					if (search != null) {
 						term = search.getPtTerm();
 						codeTerm = relation.getPtCode() + "";			
 					}
 				} else if (relation.getHlgtCode() != null) {
 					MeddraDictHierarchySearchDto searchDto = this.meddraDictService
-							.findByCode("HLGT_", relation.getHlgtCode());
+							.findByCode("HLGT_", relation.getHlgtCode(),cmqDictionaryVersion);
 					if (searchDto != null) {
 						term = searchDto.getTerm();
 						codeTerm = relation.getHlgtCode() + "";		
@@ -1037,7 +1039,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 					level = "HLGT";
 				} else if (relation.getHltCode() != null) {					
 					MeddraDictHierarchySearchDto searchDto = this.meddraDictService
-							.findByCode("HLT_", relation.getHltCode());
+							.findByCode("HLT_", relation.getHltCode(),cmqDictionaryVersion);
 					if (searchDto != null) {
 						term = searchDto.getTerm();
 						codeTerm = relation.getHltCode() + "";			
@@ -1045,7 +1047,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 					level = "HLT";
 				} else if (relation.getSocCode() != null) {
 					MeddraDictHierarchySearchDto searchDto = this.meddraDictService
-							.findByCode("SOC_", relation.getSocCode());
+							.findByCode("SOC_", relation.getSocCode(),cmqDictionaryVersion);
 					if (searchDto != null) {
 						term = searchDto.getTerm();
 						codeTerm = relation.getSocCode() + "";
@@ -1053,7 +1055,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 					level = "SOC";
 				} else if (relation.getLltCode() != null) {
 					MeddraDictReverseHierarchySearchDto searchDto = this.meddraDictService
-							.findByPtOrLltCode("LLT_", relation.getLltCode());
+							.findByPtOrLltCode("LLT_", relation.getLltCode(),cmqDictionaryVersion);
 					if (searchDto != null) {
 						term = searchDto.getLltTerm();
 						codeTerm = relation.getLltCode() + "";				
@@ -2044,7 +2046,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 						/**
 						 * PT.
 						 */
-						List<MeddraDictHierarchySearchDto> listPT =  meddraDictService.findChildrenByParentCode("PT_", "HLT_", Long.valueOf(hlt.getCode()));
+						List<MeddraDictHierarchySearchDto> listPT =  meddraDictService.findChildrenByParentCode("PT_", "HLT_", Long.valueOf(hlt.getCode()),dictionaryVersion);
 						List<Long> ptCodesList = new ArrayList<>();
 						for (MeddraDictHierarchySearchDto meddra : listPT) {
 							ptCodesList.add(Long.parseLong(meddra.getCode())); 
@@ -2060,7 +2062,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 									/**
 									 * LLT.
 									 */
-									List<MeddraDictHierarchySearchDto> lltCodesList =  meddraDictService.findChildrenByParentCode("LLT_", "PT_", Long.valueOf(llt.getCode()));
+									List<MeddraDictHierarchySearchDto> lltCodesList =  meddraDictService.findChildrenByParentCode("LLT_", "PT_", Long.valueOf(llt.getCode()),dictionaryVersion);
 									List<Long> lltCodesList_0 = new ArrayList<>();
 									for (MeddraDictHierarchySearchDto meddra : lltCodesList) {
 										lltCodesList_0.add(Long.parseLong(meddra.getCode())); 
@@ -2111,7 +2113,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 							/**
 							 * LLT.
 							 */
-							List<MeddraDictHierarchySearchDto> listPT =  meddraDictService.findChildrenByParentCode("LLT_", "PT_", Long.valueOf(pt.getCode()));
+							List<MeddraDictHierarchySearchDto> listPT =  meddraDictService.findChildrenByParentCode("LLT_", "PT_", Long.valueOf(pt.getCode()),dictionaryVersion);
 							List<Long> hlgtCodesList = new ArrayList<>();
 							for (MeddraDictHierarchySearchDto meddra : listPT) {
 								hlgtCodesList.add(Long.parseLong(meddra.getCode())); 
@@ -2145,7 +2147,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 						/**
 						 * HLGT.
 						 */
-						List<MeddraDictHierarchySearchDto> listHLGT =  meddraDictService.findChildrenByParentCode("HLGT_", "SOC_", Long.valueOf(soc.getCode()));
+						List<MeddraDictHierarchySearchDto> listHLGT =  meddraDictService.findChildrenByParentCode("HLGT_", "SOC_", Long.valueOf(soc.getCode()),dictionaryVersion);
 						List<Long> hlgtCodesList = new ArrayList<>();
 						for (MeddraDictHierarchySearchDto meddra : listHLGT) {
 							hlgtCodesList.add(Long.parseLong(meddra.getCode())); 
@@ -2159,7 +2161,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 								/**
 								 * HLT.
 								 */
-								List<MeddraDictHierarchySearchDto> listHLT =  meddraDictService.findChildrenByParentCode("HLT_", "HLGT_", Long.valueOf(hlgt.getCode()));
+								List<MeddraDictHierarchySearchDto> listHLT =  meddraDictService.findChildrenByParentCode("HLT_", "HLGT_", Long.valueOf(hlgt.getCode()),dictionaryVersion);
 								List<Long> hltCodesList = new ArrayList<>();
 								for (MeddraDictHierarchySearchDto meddra : listHLT) {
 									hltCodesList.add(Long.parseLong(meddra.getCode())); 
@@ -2173,7 +2175,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 										/**
 										 * PT.
 										 */
-										List<MeddraDictHierarchySearchDto> listHT =  meddraDictService.findChildrenByParentCode("PT_", "HLT_", Long.valueOf(hlt.getCode()));
+										List<MeddraDictHierarchySearchDto> listHT =  meddraDictService.findChildrenByParentCode("PT_", "HLT_", Long.valueOf(hlt.getCode()),dictionaryVersion);
 										List<Long> ptCodesList = new ArrayList<>();
 										for (MeddraDictHierarchySearchDto meddra : listHT) {
 											ptCodesList.add(Long.parseLong(meddra.getCode())); 
@@ -2188,7 +2190,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 													/**
 													 * LLT.
 													 */
-													List<MeddraDictHierarchySearchDto> listPT =  meddraDictService.findChildrenByParentCode("LLT_", "PT_", Long.valueOf(pt.getCode()));
+													List<MeddraDictHierarchySearchDto> listPT =  meddraDictService.findChildrenByParentCode("LLT_", "PT_", Long.valueOf(pt.getCode()),dictionaryVersion);
 													List<Long> lltCodesList = new ArrayList<>();
 													for (MeddraDictHierarchySearchDto meddra : listPT) {
 														lltCodesList.add(Long.parseLong(meddra.getCode())); 
@@ -2227,7 +2229,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 						/**
 						 * HLT.
 						 */
-						List<MeddraDictHierarchySearchDto> listHLGT =  meddraDictService.findChildrenByParentCode("HLT_", "HLGT_", Long.valueOf(hlgt.getCode()));
+						List<MeddraDictHierarchySearchDto> listHLGT =  meddraDictService.findChildrenByParentCode("HLT_", "HLGT_", Long.valueOf(hlgt.getCode()),dictionaryVersion);
 						List<Long> hltCodesList = new ArrayList<>();
 						for (MeddraDictHierarchySearchDto meddra : listHLGT) {
 							hltCodesList.add(Long.parseLong(meddra.getCode())); 
@@ -2241,7 +2243,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 								/**
 								 * PT.
 								 */
-								List<MeddraDictHierarchySearchDto> listHT =  meddraDictService.findChildrenByParentCode("PT_", "HLT_", Long.valueOf(hlt.getCode()));
+								List<MeddraDictHierarchySearchDto> listHT =  meddraDictService.findChildrenByParentCode("PT_", "HLT_", Long.valueOf(hlt.getCode()),dictionaryVersion);
 								List<Long> ptCodesList = new ArrayList<>();
 								for (MeddraDictHierarchySearchDto meddra : listHT) {
 									ptCodesList.add(Long.parseLong(meddra.getCode())); 
@@ -2256,7 +2258,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 											/**
 											 * LLT.
 											 */
-											List<MeddraDictHierarchySearchDto> listLLT =  meddraDictService.findChildrenByParentCode("LLT_", "PT_", Long.valueOf(pt.getCode()));
+											List<MeddraDictHierarchySearchDto> listLLT =  meddraDictService.findChildrenByParentCode("LLT_", "PT_", Long.valueOf(pt.getCode()),dictionaryVersion);
 											List<Long> lltCodesList = new ArrayList<>();
 											for (MeddraDictHierarchySearchDto meddra : listLLT) {
 												lltCodesList.add(Long.parseLong(meddra.getCode())); 
