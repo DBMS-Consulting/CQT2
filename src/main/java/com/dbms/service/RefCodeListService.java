@@ -7,10 +7,8 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
@@ -563,6 +561,91 @@ public class RefCodeListService extends
 			return ref.getValue();
 		return codelistInternalValue;
 	}
+
+	@Override
+	public boolean existingCodelistByInternalValue(String codelistInternalValue) {
+        Long retVal = null;
+        StringBuilder sb = new StringBuilder();
+        sb.append("select count(*) from RefConfigCodeList c where lower(c.codelistInternalValue) = lower(:codelistInternalValue)");
+
+        EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+        try {
+            Query query = entityManager.createQuery(sb.toString());
+            query.setParameter("codelistInternalValue", codelistInternalValue);
+            query.setHint("org.hibernate.cacheable", true);
+            retVal = (Long)query.getSingleResult();
+			if (retVal > 0)
+                return true;
+        } catch (Exception e) {
+            StringBuilder msg = new StringBuilder();
+            msg
+                    .append("An error occurred while findSmqRelationsCountForSmqCode ")
+                    .append(codelistInternalValue)
+                    .append(" Query used was ->")
+                    .append(sb.toString());
+            LOG.error(msg.toString(), e);
+        } finally {
+            this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+        }
+        return false;
+	}
+
+    @Override
+    public boolean existingCodelistByValue(String value) {
+        Long retVal = null;
+        StringBuilder sb = new StringBuilder();
+        sb.append("select count(*) from RefConfigCodeList c where lower(c.value) = lower(:value)");
+
+        EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+        try {
+            Query query = entityManager.createQuery(sb.toString());
+            query.setParameter("value", value);
+            query.setHint("org.hibernate.cacheable", true);
+            retVal = (Long)query.getSingleResult();
+			if (retVal > 0)
+                return true;
+        } catch (Exception e) {
+            StringBuilder msg = new StringBuilder();
+            msg
+                    .append("An error occurred while existingCodelistByValue ")
+                    .append(value)
+                    .append(" Query used was ->")
+                    .append(sb.toString());
+            LOG.error(msg.toString(), e);
+        } finally {
+            this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+        }
+        return false;
+    }
+
+    @Override
+    public boolean existingCodelistByConfigType(String codelistConfigType) {
+        Long retVal = null;
+        StringBuilder sb = new StringBuilder();
+        sb.append("select count(*) from RefConfigCodeList c where lower(c.codelistConfigType) = lower(:codelistConfigType)");
+
+        EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
+        try {
+            Query query = entityManager.createQuery(sb.toString());
+            query.setParameter("codelistConfigType", codelistConfigType);
+            query.setHint("org.hibernate.cacheable", true);
+            retVal = (Long)query.getSingleResult();
+			if (retVal > 0)
+                return true;
+        } catch (Exception e) {
+            StringBuilder msg = new StringBuilder();
+            msg
+                    .append("An error occurred while existingCodelistByConfigType ")
+                    .append(codelistConfigType)
+                    .append(" Query used was ->")
+                    .append(sb.toString());
+            LOG.error(msg.toString(), e);
+        } finally {
+            this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+        }
+        return false;
+    }
+
 
 	@Override
 	public String findCodeByInternalCode(String configType, String internalCode) {
