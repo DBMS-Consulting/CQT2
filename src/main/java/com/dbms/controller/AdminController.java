@@ -122,14 +122,15 @@ public class AdminController implements Serializable {
 		return "";
 	}
 
-	public void cancelCodelist() {
-		myFocusRef = new RefConfigCodeList();
+	public String cancelCodelist() {
+		this.initNewCodelist();
 		FacesMessage msg = new FacesMessage(
 				FacesMessage.SEVERITY_WARN,
 				"Form canceled",
 				"");
 		FacesContext.getCurrentInstance().addMessage(null, msg);
-		return;
+		//RequestContext.getCurrentInstance().update("f1:codelistForm");
+		return "";
 	}
 
 
@@ -172,12 +173,14 @@ public class AdminController implements Serializable {
                             .getUserCn(), this.authService.getUserGivenName(),
                     this.authService.getUserSurName(), this.authService
                             .getCombinedMappedGroupMembershipAsString());
+			this.initNewCodelist();
 			FacesMessage msg = new FacesMessage(
 					FacesMessage.SEVERITY_INFO,
 					"Codelist created successfully.",
 					"");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
-			this.myFocusRef = new RefConfigCodeList();
+			//RequestContext.getCurrentInstance().update("f1:codelistForm");
+
 
 		} catch (CqtServiceException e) {
 			e.printStackTrace();

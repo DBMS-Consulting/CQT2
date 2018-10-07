@@ -60,11 +60,18 @@
 
 						<h:panelGrid columns="2" cellpadding="5">
 							<p:commandButton value="Save" icon="fa fa-plus">
-								<p:ajax process="codelistForm" update="msgAdmin" listener="#{adminController.addCodelist}" />
+								<p:ajax process="codelistForm" update="codelistForm msgAdmin" listener="#{adminController.addCodelist}" />
 							</p:commandButton>
-							<p:commandButton value="Cancel" icon="fa fa-close"
+							<p:commandButton value="Cancel" icon="fa fa-close">
+
+								<p:ajax process="codelistForm" update="codelistForm msgAdmin" listener="#{adminController.cancelCodelist}" />
+							</p:commandButton>
+
+
+
+							<!-- <p:commandButton value="Cancel" icon="fa fa-close" immediate="true"
 											 update="codelistForm msgAdmin"
-											 immediate="true" action="#{adminController.cancelCodelist}"  />
+											 actionListener="#{adminController.cancelCodelist}"  /> -->
 						</h:panelGrid>
 					</p:outputPanel>
 				</p:tab>
