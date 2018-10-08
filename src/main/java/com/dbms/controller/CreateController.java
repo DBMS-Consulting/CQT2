@@ -2520,12 +2520,12 @@ public class CreateController implements Serializable {
             return true;
         
         //Disables delete button if (user is REQUESTOR and is NOT designee of selected list) AND (not creator of selected list)
-        if(((userGroup != null && (userGroup.contains(AuthenticationService.REQUESTER_GROUP)))
+        if(((userGroup != null && (userGroup.contains(AuthenticationService.REQUESTER_GROUP)) || (userGroup.contains(AuthenticationService.MQM_GROUP)))
         		&& !(selectedData.getCmqDesignee() != null && (selectedData.getCmqDesignee()).equalsIgnoreCase(authService.getUserCn())
         			|| selectedData.getCmqDesignee2() != null && (selectedData.getCmqDesignee2()).equalsIgnoreCase(authService.getUserCn())
         			|| selectedData.getCmqDesignee3() != null && (selectedData.getCmqDesignee3()).equalsIgnoreCase(authService.getUserCn())))
         				&& ((listCreator != null) && !(listCreator.startsWith(authService.getUserCn()))))
-        	return true; 
+        		return true; 
         
 		return false;
 	}
@@ -2732,10 +2732,11 @@ public class CreateController implements Serializable {
 				2) the list's status is P
 				3) they are any designee or they have created the list
         	 */
-        	if (userGroupList != null && (userGroupList.contains("MQM") || userGroupList.contains("MANAGER"))) {
+        	if (userGroupList != null && userGroupList.contains("MANAGER")) {
         		return false;
         	} else if (userGroupList != null && (userGroupList.contains(AuthenticationService.REQUESTER_GROUP) 
-        										|| userGroupList.contains(AuthenticationService.ADMIN_GROUP)) 
+        										|| userGroupList.contains(AuthenticationService.ADMIN_GROUP)
+        										|| userGroupList.contains(AuthenticationService.MQM_GROUP)) 
         			&& selectedData.getCmqStatus().equals("P") 
         			&& (selectedData.getCmqState().equals("DRAFT") || selectedData.getCmqState().equals("REVIEWED"))
         			&& (((listCreator != null) && (listCreator.startsWith(authService.getUserCn())))
