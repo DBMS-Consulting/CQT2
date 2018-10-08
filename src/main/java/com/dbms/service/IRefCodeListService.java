@@ -72,4 +72,9 @@ public interface IRefCodeListService extends ICqtPersistenceService<RefConfigCod
     
     public RefConfigCodeList getDefaultForConfigType(String configType);
 	public RefConfigCodeList findBySerialNumber(double val);
+
+    public boolean existingCodelistByInternalValue(String codelistInternalValue);
+    public boolean existingCodelistByValue(String value);
+    public boolean existingCodelistByConfigType(String configType);
+
 }

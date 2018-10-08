@@ -106,6 +106,92 @@ public class AdminController implements Serializable {
 		// getMeddraImpactTypeList();
 		// getLevelList();
 		// getSMQFilters();
+
+		// Init add codelist
+		this.initNewCodelist();
+	}
+
+	public String initNewCodelist() {
+		myFocusRef = new RefConfigCodeList();
+		myFocusRef.setCreationDate(new Date());
+		myFocusRef.setLastModificationDate(new Date());
+		myFocusRef.setSerialNum(new BigDecimal(1));
+		myFocusRef.setValue("");
+		myFocusRef.setCodelistInternalValue("");
+
+		return "";
+	}
+
+	public String cancelCodelist() {
+		this.initNewCodelist();
+		FacesMessage msg = new FacesMessage(
+				FacesMessage.SEVERITY_WARN,
+				"Form canceled",
+				"");
+		FacesContext.getCurrentInstance().addMessage(null, msg);
+		//RequestContext.getCurrentInstance().update("f1:codelistForm");
+		return "";
+	}
+
+
+	public String addCodelist() {
+		boolean codelistName = refCodeListService.existingCodelistByConfigType(myFocusRef.getCodelistConfigType());
+		if (codelistName) {
+			FacesMessage msg = new FacesMessage(
+					FacesMessage.SEVERITY_WARN,
+					"This Codelist Name already exists",
+					"");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return "";
+		}
+		boolean codelistValue = refCodeListService.existingCodelistByValue(myFocusRef.getValue());
+		if (codelistValue) {
+			FacesMessage msg = new FacesMessage(
+					FacesMessage.SEVERITY_WARN,
+					"This Codelist Value already exists",
+					"");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return "";
+		}
+		boolean codelistInternalValue = refCodeListService.existingCodelistByInternalValue(myFocusRef.getCodelistInternalValue());
+		if (codelistInternalValue) {
+			FacesMessage msg = new FacesMessage(
+					FacesMessage.SEVERITY_WARN,
+					"This Codelist Internal Value already exists",
+					"");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			return "";
+		}
+		String lastModifiedByString = this.authService
+				.getLastModifiedByUserAsString();
+		System.out.println("--->  created by : " + lastModifiedByString);
+
+		myFocusRef.setCreatedBy(lastModifiedByString);
+
+		try {
+			refCodeListService.create(myFocusRef, this.authService
+                            .getUserCn(), this.authService.getUserGivenName(),
+                    this.authService.getUserSurName(), this.authService
+                            .getCombinedMappedGroupMembershipAsString());
+			this.initNewCodelist();
+			FacesMessage msg = new FacesMessage(
+					FacesMessage.SEVERITY_INFO,
+					"Codelist created successfully.",
+					"");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+			//RequestContext.getCurrentInstance().update("f1:codelistForm");
+
+
+		} catch (CqtServiceException e) {
+			e.printStackTrace();
+			FacesMessage msg = new FacesMessage(
+					FacesMessage.SEVERITY_ERROR,
+					"An error occured while creating a new codelist.",
+					"");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+		}
+
+		return "";
 	}
 
 	public void switchCodelist(AjaxBehaviorEvent event) {
@@ -283,6 +369,8 @@ public class AdminController implements Serializable {
 					"The codeList selected does not exist.", "");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}
+		else
+			myFocusRef = selectedRow;
 
 		return "";
 	}
@@ -486,7 +574,7 @@ public class AdminController implements Serializable {
 			    	RequestContext context = RequestContext.getCurrentInstance();
 			    	FacesMessage msg = new FacesMessage(
 							FacesMessage.SEVERITY_ERROR,
-							"MedDRA Value is requried.",
+							"MedDRA Value is required.",
 							"");
 					FacesContext.getCurrentInstance().addMessage(null, msg);
 					context.addCallbackParam("validationFailed", true);
@@ -1127,8 +1215,8 @@ public class AdminController implements Serializable {
 	}
 
 	/**
-	 * @param usergroups
-	 *            the usergroups to set
+	 * @param
+	 *
 	 */
 	public void setSysconfigs(List<RefConfigCodeList> sysconfigs) {
 		this.sysconfigs = sysconfigs;

@@ -41,4 +41,11 @@ public interface IMeddraDictService {
 
 	List<MeddraDictHierarchySearchDto> findByCodes(String searchColumnTypePrefix, List<Long> codes,
 			String dictionaryVersion);
+
+	List<MeddraDictReverseHierarchySearchDto> findByPtOrLltCodes(String searchColumnTypePrefix, List<Long> codes,
+			String dictionaryVersion);
+	
+	MeddraDictReverseHierarchySearchDto findByPtOrLltCode(String searchColumnTypePrefix, Long code,String dictionaryVersion);
+	
+	MeddraDictHierarchySearchDto findByCode(String searchColumnTypePrefix, Long code, String dictionaryVersion);
 }
