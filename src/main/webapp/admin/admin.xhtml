@@ -35,13 +35,13 @@
 
 							<p:outputLabel value="Codelist Value" styleClass="label-right" />
 							<p:inputText label="Codelist Value" required="true"
-										 value="#{adminController.ref.value}" maxlength="4"
-										 style="width: 100px !important; float: left" />
+										 value="#{adminController.ref.value}" maxlength="40"
+										 style="width: 300px !important; float: left" />
 
 							<p:outputLabel value="Codelist Internal Value" styleClass="label-right" />
-							<p:inputText label="Code Internal Value" maxlength="30" required="true"
+							<p:inputText label="Code Internal Value" maxlength="4" required="true"
 										 value="#{adminController.ref.codelistInternalValue}"
-										 style="width: 300px !important; float: left" />
+										 style="width: 100px !important; float: left" />
 
 							<p:outputLabel value="Default flag" styleClass="label-right" />
 							<p:selectOneMenu value="#{adminController.ref.defaultFlag}"
@@ -99,7 +99,7 @@
                             -->
 
 
-							<p:ajax update="tableAdmin" event="change" listener="#{adminController.switchCodelist}" />
+							<p:ajax update="adminPanel" event="change" listener="#{adminController.switchCodelist}" />
 						</p:selectOneMenu>
 					</h:panelGrid>
 					<p:spacer height="10" />
@@ -165,7 +165,7 @@
 
 				</p:tab>
 
-				<p:tab title="Mappings">
+				<p:tab title="Mappings" disabled="true">
 					<p:panel style=" padding:5px;">
 						<h3 style="text-align: center"></h3>
 						<p:spacer height="10" />
@@ -179,6 +179,16 @@
 				float: right;
 				margin-right: 20px;
 				font-size: 14px !important;
+			}
+			.ui-state-error {
+			.ui-inputfield, .ui-widget-content .ui-inputfield, .ui-widget-header .ui-inputfield {
+				background: #ffffff !important;
+				-moz-box-shadow: inset 0 2px 2px #8f8f8f;
+				-webkit-box-shadow: inset 0 2px 2px #8f8f8f;
+				box-shadow: inset 0 2px 2px #8f8f8f;
+				color: #222222;
+				filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
+			}
 			}
 		</style>
 	</ui:define>

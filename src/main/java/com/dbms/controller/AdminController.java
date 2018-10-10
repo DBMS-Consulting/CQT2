@@ -164,8 +164,6 @@ public class AdminController implements Serializable {
 		}
 		String lastModifiedByString = this.authService
 				.getLastModifiedByUserAsString();
-		System.out.println("--->  created by : " + lastModifiedByString);
-
 		myFocusRef.setCreatedBy(lastModifiedByString);
 
 		try {
@@ -174,6 +172,7 @@ public class AdminController implements Serializable {
                     this.authService.getUserSurName(), this.authService
                             .getCombinedMappedGroupMembershipAsString());
 			this.initNewCodelist();
+			getCodelistList();
 			FacesMessage msg = new FacesMessage(
 					FacesMessage.SEVERITY_INFO,
 					"Codelist created successfully.",
@@ -257,6 +256,8 @@ public class AdminController implements Serializable {
 	public String initAddCodelist() {
 		BigDecimal lastSerial = new BigDecimal(0);
 		myFocusRef = new RefConfigCodeList();
+		myFocusRef.setCodelistInternalValue("");
+		myFocusRef.setValue("");
 		
 		myFocusRef.setCodelistConfigType(codelist);
 		if(codelistType != null && !codelistType.isEmpty()) {
