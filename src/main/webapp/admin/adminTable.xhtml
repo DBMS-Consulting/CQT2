@@ -8,62 +8,65 @@
 
 	<p:growl id="msgAdmin" life="#{appCSMQBean.defaultGrowlLife}" sticky="true" showDetail="#{appCSMQBean.degugMode}" />
 
-	<h3 style="text-align: center">#{adminController.header}</h3>
-	<p:dataTable id="tableAdmin" var="val" rows="10" widgetVar="tblAdmins"
-		value="#{adminController.codelistList}" style="margin-bottom:20px"
-		paginator="true" paginatorPosition="bottom"
-		paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-		rowsPerPageTemplate="5,10,25">
+	<p:outputPanel id="adminPanel">
+		<h3 style="text-align: center">#{adminController.header}</h3>
+		<p:dataTable id="tableAdmin" var="val" rows="10" widgetVar="tblAdmins"
+					 value="#{adminController.codelistList}" style="margin-bottom:20px"
+					 paginator="true" paginatorPosition="bottom"
+					 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					 rowsPerPageTemplate="5,10,25">
 
-		<p:column headerText="Serial #" style="text-align: center"
-                  sortable="true" sortBy="#{val.serialNum}">
-			<h:outputText value="#{val.serialNum}" />
-		</p:column>
+			<p:column headerText="Serial #" style="text-align: center"
+					  sortable="true" sortBy="#{val.serialNum}">
+				<h:outputText value="#{val.serialNum}" />
+			</p:column>
 
-		<p:column headerText="Code" style="text-align: center"
-                  sortable="true" sortBy="#{val.codelistInternalValue}">
-			<h:outputText value="#{val.codelistInternalValue}" />
-		</p:column>
+			<p:column headerText="Code" style="text-align: center"
+					  sortable="true" sortBy="#{val.codelistInternalValue}">
+				<h:outputText value="#{val.codelistInternalValue}" />
+			</p:column>
 
-		<p:column headerText="#{adminController.name}" style="text-align: center"
-                  filterBy="#{val.value}" filterMatchMode="contains"
-                  sortable="true" sortBy="#{val.value}">
-			<h:outputText value="#{val.value}" />
-		</p:column>
+			<p:column headerText="#{adminController.name}" style="text-align: center"
+					  filterBy="#{val.value}" filterMatchMode="contains"
+					  sortable="true" sortBy="#{val.value}">
+				<h:outputText value="#{val.value}" />
+			</p:column>
 
-		<p:column headerText="Active?" style="text-align: center">
-			<h:outputText value="#{val.activeFlag}" />
-		</p:column>
+			<p:column headerText="Active?" style="text-align: center">
+				<h:outputText value="#{val.activeFlag}" />
+			</p:column>
 
-		<p:column headerText="Default?" style="text-align: center">
-			<h:outputText value="#{val.defaultFlag}" />
-		</p:column>
+			<p:column headerText="Default?" style="text-align: center">
+				<h:outputText value="#{val.defaultFlag}" />
+			</p:column>
 
-		<p:column style="width:32px;text-align: center">
-			<p:commandButton update="@form" process="@this"
-				action="#{adminController.initGetRef}"
-				oncomplete="PF('extensionD').show()" icon="ui-icon-pencil"
-				title="View/Edit">
-				<f:setPropertyActionListener value="#{val}"
-					target="#{adminController.selectedRow}" />
-			</p:commandButton>
-		</p:column>
-	</p:dataTable>
+			<p:column style="width:32px;text-align: center">
+				<p:commandButton update="f1:pb1:dialogAdmin" process="@this"
+								 action="#{adminController.initGetRef}"
+								 oncomplete="PF('extensionD').show()" icon="ui-icon-pencil"
+								 title="View/Edit">
+					<f:setPropertyActionListener value="#{val}"
+												 target="#{adminController.selectedRow}" />
+				</p:commandButton>
+			</p:column>
+		</p:dataTable>
 
-	<h:panelGrid columns="2" cellpadding="5">
-		<!-- <p:commandButton value="Add Admin" icon="fa fa-plus"
-			immediate="true" onclick="PF('extensionD').show()"
-			action="#{adminController.initAddCodelist}" /> -->
+		<h:panelGrid columns="2" cellpadding="5">
+			<!-- <p:commandButton value="Add Admin" icon="fa fa-plus"
+				immediate="true" onclick="PF('extensionD').show()"
+				action="#{adminController.initAddCodelist}" /> -->
 
-		<i class="fa fa-plus"></i>
-		<p:commandLink type="button" value="#{adminController.saveValue}"
-			update="dialogAdmin" process="@this" oncomplete="PF('extensionD').show()"
-			actionListener="#{adminController.initAddCodelist}" />
- 	</h:panelGrid>
+			<i class="fa fa-plus"></i>
+			<p:commandLink type="button" value="#{adminController.saveValue}"
+						   update="dialogAdmin" process="@this" oncomplete="PF('extensionD').show()"
+						   actionListener="#{adminController.initAddCodelist}" />
+		</h:panelGrid>
+	</p:outputPanel>
+
 
 	<p:dialog header="Details" widgetVar="extensionD" modal="true" id="dialogAdmin"
 		showEffect="fade" hideEffect="fade" resizable="false">
-		<p:outputPanel style="text-align:center;">
+		<p:outputPanel style="text-align:center;" id="addForm">
 			<h:panelGrid columns="2" columnClasses="label, value">
 
 				<p:outputLabel value="Serial #" styleClass="label-right" />
@@ -98,8 +101,10 @@
 
 			<h:panelGrid columns="2" cellpadding="5">
 				<p:commandButton value="Save" icon="fa fa-plus"
-					onclick="PF('extensionD').hide()" update="tableAdmin msgAdmin"
-					action="#{adminController.addRefCodelist}" oncomplete="PF('tblAdmins').filter()" />
+					onclick="PF('extensionD').hide()" >
+
+					<p:ajax process="addForm" update="tableAdmin msgAdmin" listener="#{adminController.addRefCodelist}" oncomplete="PF('tblAdmins').filter()" />
+				</p:commandButton>
 
 				<p:commandButton value="Cancel" icon="fa fa-close"
 					onclick="PF('extensionD').hide()" update="tableAdmin msgAdmin"
@@ -113,6 +118,10 @@
 	float: right;
 	margin-right: 20px;
 	font-size: 14px !important;
+}
+
+.ui-state-error, .ui-widget-content .ui-state-error, .ui-widget-header .ui-state-error {
+	border : 1px solid #8c8c8c !important;
 }
 </style>
 
