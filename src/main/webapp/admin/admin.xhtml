@@ -46,8 +46,8 @@
 							<p:outputLabel value="Default flag" styleClass="label-right" />
 							<p:selectOneMenu value="#{adminController.ref.defaultFlag}"
 											 style="float: left" id="defaultFlagCode">
-								<f:selectItem itemValue="N" itemLabel="N" />
 								<f:selectItem itemValue="Y" itemLabel="Y" />
+								<f:selectItem itemValue="N" itemLabel="N" />
 							</p:selectOneMenu>
 
 							<p:outputLabel value="Active flag" styleClass="label-right" />
@@ -60,7 +60,7 @@
 
 						<h:panelGrid columns="2" cellpadding="5">
 							<p:commandButton value="Save" icon="fa fa-plus">
-								<p:ajax process="codelistForm" update="codelistForm msgAdmin" listener="#{adminController.addCodelist}" />
+								<p:ajax process="codelistForm" update="codelistForm msgAdmin codelistSelect" listener="#{adminController.addCodelist}" />
 							</p:commandButton>
 							<p:commandButton value="Cancel" icon="fa fa-close">
 
@@ -78,7 +78,7 @@
 				<p:tab title="Update Codelist">
 					<h:panelGrid columns="2">
 						<p:outputLabel value="Codelist Type" />
-						<p:selectOneMenu label="Codelist Type" value="#{adminController.codelist}">
+						<p:selectOneMenu label="Codelist Type" value="#{adminController.codelist}" id="codelistSelect">
 							<f:selectItem itemValue="" itemLabel="" />
 							<f:selectItems value="#{configMB.codelistTypes}" var="cl"
 										   itemLabel="#{cl.codelistConfigType}" itemValue="#{cl.codelistConfigType}" />
@@ -99,7 +99,7 @@
                             -->
 
 
-							<p:ajax update="adminPanel" event="change" listener="#{adminController.switchCodelist}" />
+							<p:ajax update="adminPanel" oncomplete="PF('tblAdmins').filter()" event="change" listener="#{adminController.switchCodelist}" />
 						</p:selectOneMenu>
 					</h:panelGrid>
 					<p:spacer height="10" />

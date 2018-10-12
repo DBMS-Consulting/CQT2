@@ -86,26 +86,12 @@ public class AdminController implements Serializable {
 	private StreamedContent excelFile;
 
 	public AdminController() {
-		codelist = CqtConstants.CODE_LIST_TYPE_EXTENSION;
+		codelist = CqtConstants.CODE_LIST_TYPE_CMQ_RELATION_IMPACT_TYPE;
 	}
 
 	@PostConstruct
 	public void init() {
-		
 		getCodelistList();
-		//getExtensionList();
-		// getProductList();
-		// getProgramList();
-		// getProtocolList();
-		// getMeddraList();
-		// getWorkflowList();
-		// getUsergroupList();
-		// getSysconfigList();
-		// getCmqImpactTypeList();
-		// getSmqImpactTypeList();
-		// getMeddraImpactTypeList();
-		// getLevelList();
-		// getSMQFilters();
 
 		// Init add codelist
 		this.initNewCodelist();
@@ -364,6 +350,7 @@ public class AdminController implements Serializable {
 		}
 
 		myFocusRef = refCodeListService.findById(selectedRow.getId());
+		System.out.println("\n #### myFocusRef ID getRef: " + myFocusRef.getId());
 
 		if (myFocusRef == null) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
