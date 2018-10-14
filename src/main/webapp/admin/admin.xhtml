@@ -26,32 +26,32 @@
 							<p:outputLabel value="Serial Number" styleClass="label-right" />
 							<p:spinner style="float: left"
 									   required="true" label="Serial #"
-									   value="#{adminController.ref.serialNum}" min="1" />
+									   value="#{adminController.newCodelist.serialNum}" min="1" />
 
 							<p:outputLabel value="Codelist Name" styleClass="label-right" />
 							<p:inputText label="Codelist name" maxlength="30" required="true"
-										 value="#{adminController.ref.codelistConfigType}"
+										 value="#{adminController.newCodelist.codelistConfigType}"
 										 style="width: 300px !important;  float: left" />
 
 							<p:outputLabel value="Codelist Value" styleClass="label-right" />
 							<p:inputText label="Codelist Value" required="true"
-										 value="#{adminController.ref.value}" maxlength="40"
+										 value="#{adminController.newCodelist.value}" maxlength="40"
 										 style="width: 300px !important; float: left" />
 
 							<p:outputLabel value="Codelist Internal Value" styleClass="label-right" />
 							<p:inputText label="Code Internal Value" maxlength="4" required="true"
-										 value="#{adminController.ref.codelistInternalValue}"
+										 value="#{adminController.newCodelist.codelistInternalValue}"
 										 style="width: 100px !important; float: left" />
 
 							<p:outputLabel value="Default flag" styleClass="label-right" />
-							<p:selectOneMenu value="#{adminController.ref.defaultFlag}"
+							<p:selectOneMenu value="#{adminController.newCodelist.defaultFlag}"
 											 style="float: left" id="defaultFlagCode">
 								<f:selectItem itemValue="Y" itemLabel="Y" />
 								<f:selectItem itemValue="N" itemLabel="N" />
 							</p:selectOneMenu>
 
 							<p:outputLabel value="Active flag" styleClass="label-right" />
-							<p:selectOneMenu value="#{adminController.ref.activeFlag}"
+							<p:selectOneMenu value="#{adminController.newCodelist.activeFlag}"
 											 style="float: left" id="activeFlagCode">
 								<f:selectItem itemValue="Y" itemLabel="Y" />
 								<f:selectItem itemValue="N" itemLabel="N" />
@@ -107,62 +107,6 @@
 					<ui:fragment id="table" rendered="true">
 						<ui:include src="adminTable.xhtml"></ui:include>
 					</ui:fragment>
-
-					<!--
-					<ui:fragment rendered="#{adminController.codelist eq 'LIST_EXTENSION_TYPES'}">
-						<ui:include src="extensionTable.xhtml"></ui:include>
-					</ui:fragment>
-
-					<ui:fragment rendered="#{adminController.codelist eq 'PRODUCT'}">
-						<ui:include src="productTable.xhtml"></ui:include>
-					</ui:fragment>
-
-					<ui:fragment rendered="#{adminController.codelist eq 'PROGRAM'}">
-						<ui:include src="programTable.xhtml"></ui:include>
-					</ui:fragment>
-
-					<ui:fragment rendered="#{adminController.codelist eq 'PROTOCOL'}">
-						<ui:include src="protocolsTable.xhtml"></ui:include>
-					</ui:fragment>
-
-					<ui:fragment rendered="#{adminController.codelist eq 'MEDDRA_VERSIONS'}">
-						<ui:include src="meddraTable.xhtml"></ui:include>
-					</ui:fragment>
-
-					<ui:fragment rendered="#{adminController.codelist eq 'WORKFLOW_STATES'}">
-						<ui:include src="workflowStateTable.xhtml"></ui:include>
-					</ui:fragment>
-
-                    <ui:fragment rendered="#{adminController.codelist eq 'USER_GROUPS'}">
-						<ui:include src="usergroupTable.xhtml"></ui:include>
-					</ui:fragment>
-
-                    <ui:fragment rendered="#{adminController.codelist eq 'SYSTEM_CONFIG'}">
-						<ui:include src="sysconfigTable.xhtml"></ui:include>
-					</ui:fragment>
-
-                    <ui:fragment rendered="#{adminController.codelist eq 'CMQ_RELATION_IMPACT_TYPE'}">
-						<ui:include src="cmqRelImpTypeTable.xhtml"></ui:include>
-					</ui:fragment>
-
-                    <ui:fragment rendered="#{adminController.codelist eq 'SMQ_RELATION_IMPACT_TYPE'}">
-						<ui:include src="smqRelImpTypeTable.xhtml"></ui:include>
-					</ui:fragment>
-
-                    <ui:fragment rendered="#{adminController.codelist eq 'MEDDRA_DICTIONARY_IMPACT_TYPE'}">
-						<ui:include src="meddraDictImpTypeTable.xhtml"></ui:include>
-					</ui:fragment>
-
-					 <ui:fragment rendered="#{adminController.codelist eq 'DICTIONARY_CMQ_LEVELS'}">
-						<ui:include src="dictionaryLevelTable.xhtml"></ui:include>
-					</ui:fragment>
-
-					<ui:fragment rendered="#{adminController.codelist eq 'SMQ_FILTER_LEVELS'}">
-						<ui:include src="smqFilterLevelTable.xhtml"></ui:include>
-					</ui:fragment>
-
-					-->
-
 				</p:tab>
 
 				<p:tab title="Mappings" disabled="true">
@@ -180,7 +124,7 @@
 				margin-right: 20px;
 				font-size: 14px !important;
 			}
-			.ui-state-error {
+			.ui-state-error
 			.ui-inputfield, .ui-widget-content .ui-inputfield, .ui-widget-header .ui-inputfield {
 				background: #ffffff !important;
 				-moz-box-shadow: inset 0 2px 2px #8f8f8f;
@@ -189,7 +133,7 @@
 				color: #222222;
 				filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
 			}
-			}
+
 		</style>
 	</ui:define>
 </ui:composition>
