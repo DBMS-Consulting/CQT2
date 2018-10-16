@@ -121,8 +121,8 @@ public class CreateController implements Serializable {
     @ManagedProperty("#{globalController}")
     private GlobalController globalController;
     
-    @ManagedProperty("#{configMB}")
-    private ConfigurationController configMB;
+    //@Inject
+    //private ConfigurationController configMB;
     
 	private ListDetailsFormVM detailsFormModel;
 	private ListNotesFormVM notesFormModel = new ListNotesFormVM();
@@ -177,7 +177,12 @@ public class CreateController implements Serializable {
 		initAll();
 		detailDTO = new DetailDTO();
 		this.formToOpen = "";
-		//System.out.println(configMB.getTimezone().toString());
+		
+		FacesContext context = FacesContext.getCurrentInstance();
+		ConfigurationController configMB = (ConfigurationController) context.getApplication().evaluateExpressionGet(context, "#{configMB}", ConfigurationController.class);
+
+
+		System.out.println(configMB.getTimezone().toString());
 	}
 	
 	public void generateExcel(List<CmqBase190> list) {
@@ -2946,13 +2951,13 @@ public class CreateController implements Serializable {
 		this.globalController = globalController;
 	}
 	
-	public ConfigurationController getConfigurationController() {
+	/*public ConfigurationController getConfigurationController() {
 		return configMB;
 	}
 
 	public void setConfigurationController(ConfigurationController configMB) {
 		this.configMB = configMB;
-	}
+	}*/
 
 	public StreamedContent getExcelFile() {
 		return excelFile;
