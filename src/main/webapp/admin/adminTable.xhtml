@@ -43,7 +43,7 @@
 			<p:column style="width:32px;text-align: center">
 				<p:commandButton update="f1:pb1:dialogAdmin" process="@this"
 								 action="#{adminController.initGetRef}"
-								 oncomplete="PF('extensionD').show()" icon="ui-icon-pencil"
+								 oncomplete="PF('extensionD').show(); return false;" icon="ui-icon-pencil"
 								 title="View/Edit">
 					<f:setPropertyActionListener value="#{val}"
 												 target="#{adminController.selectedRow}" />
@@ -58,60 +58,57 @@
 
 			<i class="fa fa-plus"></i>
 			<p:commandLink type="button" value="#{adminController.saveValue}"
-						   update="dialogAdmin" process="@this" oncomplete="PF('extensionD').show()"
-						   actionListener="#{adminController.initAddCodelist}" />
+				update="@form:pb1:dialogAdmin" process="@this" 
+				oncomplete="PF('extensionD').show();" resetValues="true"
+				actionListener="#{adminController.initAddCodelist}" />
 		</h:panelGrid>
 	</p:outputPanel>
 
 
-	<p:dialog header="Details" widgetVar="extensionD" modal="true" id="dialogAdmin"
+	<p:dialog header="Details" widgetVar="extensionD" modal="true" id="dialogAdmin" 
 		showEffect="fade" hideEffect="fade" resizable="false">
-		<p:outputPanel style="text-align:center;" id="addForm">
-			<h:panelGrid columns="2" columnClasses="label, value">
+		<h:panelGrid columns="2" columnClasses="label, value">
 
-				<p:outputLabel value="Serial #" styleClass="label-right" />
-				<p:spinner style="float: left"
-					required="true" label="Serial #"
-					value="#{adminController.ref.serialNum}" min="1" />
+			<p:outputLabel value="Serial #" styleClass="label-right" />
+			<p:spinner style="float: left"
+				required="true" label="Serial #"
+				value="#{adminController.ref.serialNum}" min="1" />
 
-				<p:outputLabel value="Code" styleClass="label-right" />
-				<p:inputText required="true" label="Code"
-					value="#{adminController.ref.codelistInternalValue}"
-					style="width: 100px !important;  float: left" />
+			<p:outputLabel value="Code" styleClass="label-right" />
+			<p:inputText required="true" label="Code" id="code"
+				value="#{adminController.ref.codelistInternalValue}"
+				style="width: 100px !important;  float: left" />
 
-				<p:outputLabel value="#{adminController.name}" styleClass="label-right" />
-				<p:inputText required="true" label="Admin Name"
-					value="#{adminController.ref.value}"
-					style="width: 300px !important; float: left" />
+			<p:outputLabel value="#{adminController.name}" styleClass="label-right" />
+			<p:inputText required="true" label="Admin Name"
+				value="#{adminController.ref.value}"
+				style="width: 300px !important; float: left" />
 
-				<p:outputLabel value="Active flag" styleClass="label-right" />
-				<p:selectOneMenu value="#{adminController.ref.activeFlag}"
-					style="float: left" id="activeFlagAdmin">
-					<f:selectItem itemValue="Y" itemLabel="Y" />
-					<f:selectItem itemValue="N" itemLabel="N" />
-				</p:selectOneMenu>
+			<p:outputLabel value="Active flag" styleClass="label-right" />
+			<p:selectOneMenu value="#{adminController.ref.activeFlag}"
+				style="float: left" id="activeFlagAdmin">
+				<f:selectItem itemValue="Y" itemLabel="Y" />
+				<f:selectItem itemValue="N" itemLabel="N" />
+			</p:selectOneMenu>
 
-				<p:outputLabel value="Default flag" styleClass="label-right" />
-				<p:selectOneMenu value="#{adminController.ref.defaultFlag}"
-					style="float: left" id="defaultFlagAdmin">
-					<f:selectItem itemValue="N" itemLabel="N" />
-					<f:selectItem itemValue="Y" itemLabel="Y" />
-				</p:selectOneMenu>
-			</h:panelGrid>
+			<p:outputLabel value="Default flag" styleClass="label-right" />
+			<p:selectOneMenu value="#{adminController.ref.defaultFlag}"
+				style="float: left" id="defaultFlagAdmin">
+				<f:selectItem itemValue="N" itemLabel="N" />
+				<f:selectItem itemValue="Y" itemLabel="Y" />
+			</p:selectOneMenu>
+		</h:panelGrid>
 
-			<h:panelGrid columns="2" cellpadding="5">
-				<p:commandButton value="Save" icon="fa fa-plus"
-					onclick="PF('extensionD').hide()" >
+		<h:panelGrid columns="2" cellpadding="5">
+			<p:commandButton value="Save" icon="fa fa-plus">
 
-					<p:ajax process="addForm" update="tableAdmin msgAdmin" listener="#{adminController.addRefCodelist}" oncomplete="PF('tblAdmins').filter()" />
-				</p:commandButton>
+				<p:ajax process="@this" update="tableAdmin msgAdmin" listener="#{adminController.addRefCodelist}" oncomplete="PF('tblAdmins').filter(); PF('extensionD').hide()" />
+			</p:commandButton>
 
-				<p:commandButton value="Cancel" icon="fa fa-close"
-					onclick="PF('extensionD').hide()" update="tableAdmin msgAdmin"
-					immediate="true" />
-			</h:panelGrid>
-
-		</p:outputPanel>
+			<p:commandButton value="Cancel" icon="fa fa-close"
+				onclick="PF('extensionD').hide()" update="tableAdmin msgAdmin"
+				immediate="true" />
+		</h:panelGrid>
 	</p:dialog>
 	<style>
 .label-right {

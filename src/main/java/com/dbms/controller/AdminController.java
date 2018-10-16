@@ -82,42 +82,29 @@ public class AdminController implements Serializable {
 	
 	private List<RefConfigCodeList> codelistType;
 
-	private RefConfigCodeList selectedRow, myFocusRef;
+	private RefConfigCodeList selectedRow, myFocusRef, myCodelist;
 	private StreamedContent excelFile;
 
 	public AdminController() {
-		codelist = CqtConstants.CODE_LIST_TYPE_EXTENSION;
+		codelist = CqtConstants.CODE_LIST_TYPE_CMQ_RELATION_IMPACT_TYPE;
 	}
 
 	@PostConstruct
 	public void init() {
-		
+		codelist = CqtConstants.CODE_LIST_TYPE_CMQ_RELATION_IMPACT_TYPE;
 		getCodelistList();
-		//getExtensionList();
-		// getProductList();
-		// getProgramList();
-		// getProtocolList();
-		// getMeddraList();
-		// getWorkflowList();
-		// getUsergroupList();
-		// getSysconfigList();
-		// getCmqImpactTypeList();
-		// getSmqImpactTypeList();
-		// getMeddraImpactTypeList();
-		// getLevelList();
-		// getSMQFilters();
 
 		// Init add codelist
 		this.initNewCodelist();
 	}
 
 	public String initNewCodelist() {
-		myFocusRef = new RefConfigCodeList();
-		myFocusRef.setCreationDate(new Date());
-		myFocusRef.setLastModificationDate(new Date());
-		myFocusRef.setSerialNum(new BigDecimal(1));
-		myFocusRef.setValue("");
-		myFocusRef.setCodelistInternalValue("");
+		myCodelist = new RefConfigCodeList();
+		myCodelist.setCreationDate(new Date());
+		myCodelist.setLastModificationDate(new Date());
+		myCodelist.setSerialNum(new BigDecimal(1));
+		myCodelist.setValue("");
+		myCodelist.setCodelistInternalValue("");
 
 		return "";
 	}
@@ -135,7 +122,7 @@ public class AdminController implements Serializable {
 
 
 	public String addCodelist() {
-		boolean codelistName = refCodeListService.existingCodelistByConfigType(myFocusRef.getCodelistConfigType());
+		boolean codelistName = refCodeListService.existingCodelistByConfigType(myCodelist.getCodelistConfigType());
 		if (codelistName) {
 			FacesMessage msg = new FacesMessage(
 					FacesMessage.SEVERITY_WARN,
@@ -144,7 +131,7 @@ public class AdminController implements Serializable {
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			return "";
 		}
-		boolean codelistValue = refCodeListService.existingCodelistByValue(myFocusRef.getValue());
+		boolean codelistValue = refCodeListService.existingCodelistByValue(myCodelist.getValue());
 		if (codelistValue) {
 			FacesMessage msg = new FacesMessage(
 					FacesMessage.SEVERITY_WARN,
@@ -153,7 +140,7 @@ public class AdminController implements Serializable {
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			return "";
 		}
-		boolean codelistInternalValue = refCodeListService.existingCodelistByInternalValue(myFocusRef.getCodelistInternalValue());
+		boolean codelistInternalValue = refCodeListService.existingCodelistByInternalValue(myCodelist.getCodelistInternalValue());
 		if (codelistInternalValue) {
 			FacesMessage msg = new FacesMessage(
 					FacesMessage.SEVERITY_WARN,
@@ -164,10 +151,10 @@ public class AdminController implements Serializable {
 		}
 		String lastModifiedByString = this.authService
 				.getLastModifiedByUserAsString();
-		myFocusRef.setCreatedBy(lastModifiedByString);
+		myCodelist.setCreatedBy(lastModifiedByString);
 
 		try {
-			refCodeListService.create(myFocusRef, this.authService
+			refCodeListService.create(myCodelist, this.authService
                             .getUserCn(), this.authService.getUserGivenName(),
                     this.authService.getUserSurName(), this.authService
                             .getCombinedMappedGroupMembershipAsString());
@@ -195,53 +182,8 @@ public class AdminController implements Serializable {
 
 	public void switchCodelist(AjaxBehaviorEvent event) {
 		getCodelistList();
-		/*
-		if (codelist.equals(CqtConstants.CODE_LIST_TYPE_EXTENSION)
-				&& extensions == null) {
-			getExtensionList();
-		} else if (codelist.equals(CqtConstants.CODE_LIST_TYPE_MEDDRA_VERSIONS)
-				&& meddras == null) {
-			getMeddraList();
-		} else if (codelist.equals(CqtConstants.CODE_LIST_TYPE_PRODUCT)
-				&& products == null) {
-			getProductList();
-		} else if (codelist.equals(CqtConstants.CODE_LIST_TYPE_PROGRAM)
-				&& programs == null) {
-			getProgramList();
-		} else if (codelist.equals(CqtConstants.CODE_LIST_TYPE_PROTOCOL)
-				&& protocols == null) {
-			getProtocolList();
-		} else if (codelist.equals(CqtConstants.CODE_LIST_TYPE_WORKFLOW_STATES)
-				&& workflows == null) {
-			getWorkflowList();
-		} else if (codelist.equals(CqtConstants.CODE_LIST_TYPE_USER_GROUPS)
-				&& usergroups == null) {
-			getUsergroupList();
-		} else if (codelist.equals(CqtConstants.CODE_LIST_TYPE_SYSTEM_CONFIG)
-				&& sysconfigs == null) {
-			getSysconfigList();
-		} else if (codelist
-				.equals(CqtConstants.CODE_LIST_TYPE_CMQ_RELATION_IMPACT_TYPE)
-				&& cmqImpactTypes == null) {
-			getCmqImpactTypeList();
-		} else if (codelist
-				.equals(CqtConstants.CODE_LIST_TYPE_SMQ_RELATION_IMPACT_TYPE)
-				&& smqImpactTypes == null) {
-			getSmqImpactTypeList();
-		} else if (codelist
-				.equals(CqtConstants.CODE_LIST_TYPE_MEDDRA_DICT_IMPACT_TYPE)
-				&& meddraImpactTypes == null) {
-			getMeddraImpactTypeList();
-		} else if (codelist
-				.equals(CqtConstants.CODE_LIST_TYPE_DICTIONARY_LEVELS)
-				&& levels == null) {
-			getLevelList();
-		} else if (codelist
-				.equals(CqtConstants.CODE_LIST_TYPE_SMQ_FILTER_LEVELS)
-				&& smqfilters == null) {
-			getSMQFilters();
-		} */
-		
+
+		myFocusRef = new RefConfigCodeList();
 	}
 
 	public List<RefConfigCodeList> getSMQFilters() {
@@ -254,6 +196,7 @@ public class AdminController implements Serializable {
 	}
 
 	public String initAddCodelist() {
+		selectedRow = null;
 		BigDecimal lastSerial = new BigDecimal(0);
 		myFocusRef = new RefConfigCodeList();
 		myFocusRef.setCodelistInternalValue("");
@@ -263,91 +206,14 @@ public class AdminController implements Serializable {
 		if(codelistType != null && !codelistType.isEmpty()) {
 			lastSerial = codelistType.get(codelistType.size() - 1).getSerialNum();
 		}
-		/*
-		if (codelist.equals(CqtConstants.CODE_LIST_TYPE_EXTENSION)) {
-			myFocusRef
-					.setCodelistConfigType(CqtConstants.CODE_LIST_TYPE_EXTENSION);
-			if (extensions != null && !extensions.isEmpty())
-				lastSerial = extensions.get(extensions.size() - 1)
-						.getSerialNum();
-		} else if (codelist.equals(CqtConstants.CODE_LIST_TYPE_PRODUCT)) {
-			myFocusRef
-					.setCodelistConfigType(CqtConstants.CODE_LIST_TYPE_PRODUCT);
-			if (products != null && !products.isEmpty())
-				lastSerial = products.get(products.size() - 1).getSerialNum();
-		} else if (codelist.equals(CqtConstants.CODE_LIST_TYPE_PROGRAM)) {
-			myFocusRef
-					.setCodelistConfigType(CqtConstants.CODE_LIST_TYPE_PROGRAM);
-			if (programs != null && !programs.isEmpty())
-				lastSerial = programs.get(programs.size() - 1).getSerialNum();
-		} else if (codelist.equals(CqtConstants.CODE_LIST_TYPE_PROTOCOL)) {
-			myFocusRef
-					.setCodelistConfigType(CqtConstants.CODE_LIST_TYPE_PROTOCOL);
-			if (protocols != null && !protocols.isEmpty())
-				lastSerial = protocols.get(protocols.size() - 1).getSerialNum();
-		} else if (codelist.equals(CqtConstants.CODE_LIST_TYPE_MEDDRA_VERSIONS)) {
-			myFocusRef
-					.setCodelistConfigType(CqtConstants.CODE_LIST_TYPE_MEDDRA_VERSIONS);
-			if (meddras != null && !meddras.isEmpty())
-				lastSerial = meddras.get(meddras.size() - 1).getSerialNum();
-		} else if (codelist.equals(CqtConstants.CODE_LIST_TYPE_WORKFLOW_STATES)) {
-			myFocusRef
-					.setCodelistConfigType(CqtConstants.CODE_LIST_TYPE_WORKFLOW_STATES);
-			if (workflows != null && !workflows.isEmpty())
-				lastSerial = workflows.get(workflows.size() - 1).getSerialNum();
-		} else if (codelist.equals(CqtConstants.CODE_LIST_TYPE_USER_GROUPS)) {
-			myFocusRef
-					.setCodelistConfigType(CqtConstants.CODE_LIST_TYPE_USER_GROUPS);
-			if (usergroups != null && !usergroups.isEmpty())
-				lastSerial = usergroups.get(usergroups.size() - 1)
-						.getSerialNum();
-		} else if (codelist.equals(CqtConstants.CODE_LIST_TYPE_SYSTEM_CONFIG)) {
-			myFocusRef
-					.setCodelistConfigType(CqtConstants.CODE_LIST_TYPE_SYSTEM_CONFIG);
-			if (sysconfigs != null && !sysconfigs.isEmpty())
-				lastSerial = sysconfigs.get(sysconfigs.size() - 1)
-						.getSerialNum();
-		} else if (codelist
-				.equals(CqtConstants.CODE_LIST_TYPE_CMQ_RELATION_IMPACT_TYPE)) {
-			myFocusRef
-					.setCodelistConfigType(CqtConstants.CODE_LIST_TYPE_CMQ_RELATION_IMPACT_TYPE);
-			if (getCmqImpactTypes() != null && !cmqImpactTypes.isEmpty())
-				lastSerial = getCmqImpactTypes().get(
-						getCmqImpactTypes().size() - 1).getSerialNum();
-		} else if (codelist
-				.equals(CqtConstants.CODE_LIST_TYPE_SMQ_RELATION_IMPACT_TYPE)) {
-			myFocusRef
-					.setCodelistConfigType(CqtConstants.CODE_LIST_TYPE_SMQ_RELATION_IMPACT_TYPE);
-			if (getSmqImpactTypes() != null && !smqImpactTypes.isEmpty())
-				lastSerial = getSmqImpactTypes().get(
-						getSmqImpactTypes().size() - 1).getSerialNum();
-		} else if (codelist
-				.equals(CqtConstants.CODE_LIST_TYPE_MEDDRA_DICT_IMPACT_TYPE)) {
-			myFocusRef
-					.setCodelistConfigType(CqtConstants.CODE_LIST_TYPE_MEDDRA_DICT_IMPACT_TYPE);
-			if (getMeddraImpactTypes() != null && !meddraImpactTypes.isEmpty())
-				lastSerial = getMeddraImpactTypes().get(
-						getMeddraImpactTypes().size() - 1).getSerialNum();
-		} else if (codelist
-				.equals(CqtConstants.CODE_LIST_TYPE_DICTIONARY_LEVELS)) {
-			myFocusRef
-					.setCodelistConfigType(CqtConstants.CODE_LIST_TYPE_DICTIONARY_LEVELS);
-			if (getLevels() != null && !levels.isEmpty())
-				lastSerial = getLevels().get(getLevels().size() - 1)
-						.getSerialNum();
-		} else if (codelist
-				.equals(CqtConstants.CODE_LIST_TYPE_SMQ_FILTER_LEVELS)) {
-			myFocusRef
-					.setCodelistConfigType(CqtConstants.CODE_LIST_TYPE_SMQ_FILTER_LEVELS);
-			if (getSmqfilters() != null && !smqfilters.isEmpty())
-				lastSerial = getSmqfilters().get(getSmqfilters().size() - 1)
-						.getSerialNum();
-		}
-		*/
-		
+		System.out.println("\n #### lastSerial : " + lastSerial + "\n");
+
 		myFocusRef.setCreationDate(new Date());
 		myFocusRef.setLastModificationDate(new Date());
 		myFocusRef.setSerialNum(lastSerial.add(new BigDecimal(1)));
+
+		System.out.println("\n #### myFocusRef.getSerialNum() : " + myFocusRef.getSerialNum() + "\n");
+
 		myFocusRef.setValue("");
 		myFocusRef.setCodelistInternalValue(""); 
 
@@ -364,7 +230,6 @@ public class AdminController implements Serializable {
 		}
 
 		myFocusRef = refCodeListService.findById(selectedRow.getId());
-
 		if (myFocusRef == null) {
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
 					"The codeList selected does not exist.", "");
@@ -868,7 +733,7 @@ public class AdminController implements Serializable {
 		}
 		
 
-		myFocusRef = new RefConfigCodeList();
+		//myFocusRef = new RefConfigCodeList();
 
 	}
 
@@ -1167,6 +1032,14 @@ public class AdminController implements Serializable {
 
 	public void setRef(RefConfigCodeList ref) {
 		this.myFocusRef = ref;
+	}
+
+	public RefConfigCodeList getNewCodelist() {
+		return myCodelist;
+	}
+
+	public void setNewCodelist(RefConfigCodeList ref) {
+		this.myCodelist = ref;
 	}
 
 	public List<RefConfigCodeList> getMeddras() {

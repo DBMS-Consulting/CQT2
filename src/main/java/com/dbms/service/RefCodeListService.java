@@ -338,7 +338,7 @@ public class RefCodeListService extends
             return (List<RefConfigCodeList>) cv;
         }
 		
-		String queryString = "from RefConfigCodeList a where a.defaultFlag = :defaultFlag";
+		String queryString = "from RefConfigCodeList a where a.defaultFlag = :defaultFlag order by a.codelistConfigType asc";
 		
 		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
 		try {
@@ -364,7 +364,7 @@ public class RefCodeListService extends
         }
 		return null;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<RefConfigCodeList> findByConfigType(String configType){
