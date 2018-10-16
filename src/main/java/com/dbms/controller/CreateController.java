@@ -177,7 +177,7 @@ public class CreateController implements Serializable {
 		initAll();
 		detailDTO = new DetailDTO();
 		this.formToOpen = "";
-		System.out.println(configMB.getTimezone().toString());
+		//System.out.println(configMB.getTimezone().toString());
 	}
 	
 	public void generateExcel(List<CmqBase190> list) {
