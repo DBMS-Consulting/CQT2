@@ -20,6 +20,7 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.component.html.HtmlInputText;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
+import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 import org.primefaces.component.wizard.Wizard;
@@ -63,6 +64,8 @@ import com.dbms.view.ListNotesFormVM;
 import com.dbms.view.ListRelationsVM;
 import com.dbms.view.ListWorkflowFormVM;
 import com.dbms.web.dto.DetailDTO;
+
+import com.dbms.controller.ConfigurationController;
 
 /**
  * @author Jay G.(jayshanchn@hotmail.com)
@@ -118,7 +121,8 @@ public class CreateController implements Serializable {
     @ManagedProperty("#{globalController}")
     private GlobalController globalController;
     
-    private ConfigurationController configControl;
+    @ManagedProperty("#{configMB}")
+    private ConfigurationController configMB;
     
 	private ListDetailsFormVM detailsFormModel;
 	private ListNotesFormVM notesFormModel = new ListNotesFormVM();
@@ -173,6 +177,7 @@ public class CreateController implements Serializable {
 		initAll();
 		detailDTO = new DetailDTO();
 		this.formToOpen = "";
+		System.out.println(configMB.getTimezone().toString());
 	}
 	
 	public void generateExcel(List<CmqBase190> list) {
@@ -2939,6 +2944,14 @@ public class CreateController implements Serializable {
 
 	public void setGlobalController(GlobalController globalController) {
 		this.globalController = globalController;
+	}
+	
+	public ConfigurationController getConfigurationController() {
+		return configMB;
+	}
+
+	public void setConfigurationController(ConfigurationController configMB) {
+		this.configMB = configMB;
 	}
 
 	public StreamedContent getExcelFile() {
