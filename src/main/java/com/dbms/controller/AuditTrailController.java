@@ -58,11 +58,12 @@ public class AuditTrailController implements Serializable {
 	@ManagedProperty("#{AuthenticationService}")
 	private AuthenticationService authService;
 	
-    private ConfigurationController configControl;
-	
 	@PostConstruct
 	public void init() {
 		this.datas = new ArrayList<AuditTrailDto>();
+		
+		FacesContext context = FacesContext.getCurrentInstance();
+		ConfigurationController configMB = (ConfigurationController) context.getApplication().evaluateExpressionGet(context, "#{configMB}", ConfigurationController.class);
 	}
 
 	

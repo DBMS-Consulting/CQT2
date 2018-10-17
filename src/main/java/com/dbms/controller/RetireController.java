@@ -61,8 +61,6 @@ public class RetireController implements Serializable {
 	@ManagedProperty("#{CmqParentChild200Service}")
 	private ICmqParentChild200Service cmqParentChildService;
 	
-    private ConfigurationController configControl;
-	
 	private List<CmqBase190> sourceListToRetire;
 
 	private List<CmqBase190> targetList;
@@ -81,7 +79,10 @@ public class RetireController implements Serializable {
 		targetList = new ArrayList<CmqBase190>();
 		retireDualListModel = new DualListModel<CmqBase190>(
 				sourceListToRetire, targetList);
-		this.cmqBaseDualListConverter = new CmqBaseDualListConverter();		
+		this.cmqBaseDualListConverter = new CmqBaseDualListConverter();	
+		
+		FacesContext context = FacesContext.getCurrentInstance();
+		ConfigurationController configMB = (ConfigurationController) context.getApplication().evaluateExpressionGet(context, "#{configMB}", ConfigurationController.class);
 	}
 	
 	

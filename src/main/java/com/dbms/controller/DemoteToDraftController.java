@@ -59,8 +59,6 @@ public class DemoteToDraftController implements Serializable {
 	@ManagedProperty("#{CmqParentChildTargetService}")
 	private ICmqParentChildTargetService cmqParentChildTargetService;
 	
-    private ConfigurationController configControl;
-	
 	private List<CmqBase190> sourceList;
 	private List<CmqBase190> targetList;
 	
@@ -84,6 +82,9 @@ public class DemoteToDraftController implements Serializable {
 		demoteTargetDualListModel = new DualListModel<CmqBaseTarget>(sourceIAList, targetIAList);
 		this.cmqBaseDualListConverter = new CmqBaseDualListConverter();
 		this.cmqBaseTargetDualListConverter = new CmqBaseTargetDualListConverter();
+		
+		FacesContext context = FacesContext.getCurrentInstance();
+		ConfigurationController configMB = (ConfigurationController) context.getApplication().evaluateExpressionGet(context, "#{configMB}", ConfigurationController.class);
 	}
 	
 	/**

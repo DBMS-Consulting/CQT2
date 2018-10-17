@@ -139,8 +139,6 @@ public class ImpactSearchController implements Serializable {
 	@ManagedProperty("#{globalController}")
     private GlobalController globalController;
 	
-    private ConfigurationController configControl;
-	
 	Wizard iaWizard, iaVersionWizard;
 	private String iaWizardNextStep;
 
@@ -254,7 +252,6 @@ public class ImpactSearchController implements Serializable {
 		
 		FacesContext context = FacesContext.getCurrentInstance();
 		ConfigurationController configMB = (ConfigurationController) context.getApplication().evaluateExpressionGet(context, "#{configMB}", ConfigurationController.class);
-		System.out.println(configMB.getTimezone().toString());
 	}
 	
 	public String openForm() {

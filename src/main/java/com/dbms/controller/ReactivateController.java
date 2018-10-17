@@ -52,8 +52,6 @@ public class ReactivateController implements Serializable {
 	@ManagedProperty("#{CmqParentChild200Service}")
 	private ICmqParentChild200Service cmqParentChildService;
 	
-    private ConfigurationController configControl;
-	
 	private List<CmqBase190> sourceListToReactivate;
 
 	private List<CmqBase190> targetList;
@@ -71,6 +69,9 @@ public class ReactivateController implements Serializable {
 		reactivateDualListModel = new DualListModel<CmqBase190>(
 				sourceListToReactivate, targetList);
 		this.cmqBaseDualListConverter = new CmqBaseDualListConverter();
+		
+		FacesContext context = FacesContext.getCurrentInstance();
+		ConfigurationController configMB = (ConfigurationController) context.getApplication().evaluateExpressionGet(context, "#{configMB}", ConfigurationController.class);
 	}
 	
 	

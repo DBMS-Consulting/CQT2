@@ -118,8 +118,6 @@ public class HistoricalViewController implements Serializable {
 	
 	@ManagedProperty("#{globalController}")
     private GlobalController globalController;
-	
-    private ConfigurationController configControl;
 
 	private List<CmqBaseDTO> cmqBaseDTOSelectList;
 	private List<CmqBaseDTO> cmqBaseDTOSelectListForName;
@@ -138,6 +136,9 @@ public class HistoricalViewController implements Serializable {
 		this.parentListRoot = new DefaultTreeNode("root"
 				, new HierarchyNode("LEVEL", "NAME", "CODE", "SCOPE", "CATEGORY", "WEIGHT", null)
 				, null);
+		
+		FacesContext context = FacesContext.getCurrentInstance();
+		ConfigurationController configMB = (ConfigurationController) context.getApplication().evaluateExpressionGet(context, "#{configMB}", ConfigurationController.class);
 	}
 
 	public void search() {

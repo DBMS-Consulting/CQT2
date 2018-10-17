@@ -62,8 +62,6 @@ public class SearchController extends BaseController<CmqBase190> {
 	@ManagedProperty("#{globalController}")
     private GlobalController globalController;
 	
-    private ConfigurationController configControl;
-	
 	private String releaseStatus;
 	private String criticalEvent;
 	private String termName;
@@ -125,6 +123,9 @@ public class SearchController extends BaseController<CmqBase190> {
 		//Dictionary version
 		RefConfigCodeList currentMeddraVersionCodeList = this.refCodeListService.getCurrentMeddraVersion();
 		setDictionaryVersion(currentMeddraVersionCodeList.getValue());
+		
+		FacesContext context = FacesContext.getCurrentInstance();
+		ConfigurationController configMB = (ConfigurationController) context.getApplication().evaluateExpressionGet(context, "#{configMB}", ConfigurationController.class);
 	}
 
 	/**

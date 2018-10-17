@@ -67,8 +67,6 @@ public class PublishController implements Serializable {
 	@ManagedProperty("#{CmqParentChildTargetService}")
 	private ICmqParentChildTargetService cmqParentChildTargetService;
 	
-    private ConfigurationController configControl;
-	
 	private List<CmqBase190> sourceList;
 	private List<CmqBase190> targetList;
 	
@@ -91,6 +89,9 @@ public class PublishController implements Serializable {
 		publishFutureVersionDualListModel = new DualListModel<CmqBaseTarget>(sourceIAList, targetIAList);
 		this.cmqBaseDualListConverter = new CmqBaseDualListConverter();
 		this.cmqBaseTargetDualListConverter = new CmqBaseTargetDualListConverter();
+		
+		FacesContext context = FacesContext.getCurrentInstance();
+		ConfigurationController configMB = (ConfigurationController) context.getApplication().evaluateExpressionGet(context, "#{configMB}", ConfigurationController.class);
 	}
 	
 	private List<CmqBase190> getApprovedSourceList() {

@@ -42,7 +42,6 @@ public class CmqRelationUploadController implements Serializable {
 	@ManagedProperty("#{AuthenticationService}")
 	private AuthenticationService authService;
 	
-    private ConfigurationController configControl;
 	
 	private UploadedFile file;
 

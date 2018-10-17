@@ -5,6 +5,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
 
 import org.primefaces.event.NodeExpandEvent;
@@ -50,9 +51,6 @@ public class ParentListController extends BaseController<CmqBase190> {
 	
     private GlobalController globalController;
 	
-	@ManagedProperty("#configControl")
-    private ConfigurationController configControl;
-	
 	// Search & Filters
 	private String searchTermName;
 	private String searchExtension;
@@ -72,6 +70,9 @@ public class ParentListController extends BaseController<CmqBase190> {
 	@PostConstruct
 	public void init() {
 		parentRelationsRoot = new DefaultTreeNode("root", new HierarchyNode("LEVEL", "NAME", "CODE", null), null);
+		
+		FacesContext context = FacesContext.getCurrentInstance();
+		ConfigurationController configMB = (ConfigurationController) context.getApplication().evaluateExpressionGet(context, "#{configMB}", ConfigurationController.class);
 	}
 	
 	/**

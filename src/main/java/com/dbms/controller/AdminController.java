@@ -74,7 +74,6 @@ public class AdminController implements Serializable {
 	@ManagedProperty("#{AuthenticationService}")
 	private AuthenticationService authService;
 	
-    private ConfigurationController configControl;
 
 	private List<RefConfigCodeList> extensions, programs, protocols, products,
 			meddras, workflows, usergroups, sysconfigs, cmqImpactTypes,
@@ -96,6 +95,9 @@ public class AdminController implements Serializable {
 
 		// Init add codelist
 		this.initNewCodelist();
+		
+		FacesContext context = FacesContext.getCurrentInstance();
+		ConfigurationController configMB = (ConfigurationController) context.getApplication().evaluateExpressionGet(context, "#{configMB}", ConfigurationController.class);
 	}
 
 	public String initNewCodelist() {

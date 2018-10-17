@@ -89,8 +89,6 @@ public class ReportController extends BaseController<CmqBase190> {
 	@ManagedProperty("#{globalController}")
     private GlobalController globalController;
 	
-    private ConfigurationController configControl;
-	
 	// Search & Filters
 	private Date reportStartDate = null;
 	private Date reportEndDate = null;
@@ -105,6 +103,8 @@ public class ReportController extends BaseController<CmqBase190> {
 
 	@PostConstruct
 	public void init() {
+		FacesContext context = FacesContext.getCurrentInstance();
+		ConfigurationController configMB = (ConfigurationController) context.getApplication().evaluateExpressionGet(context, "#{configMB}", ConfigurationController.class);
 	}
 	
 	@Override
