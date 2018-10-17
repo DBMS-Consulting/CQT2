@@ -213,10 +213,6 @@ public class AdminController implements Serializable {
 		myFocusRef.setSerialNum(lastSerial.add(new BigDecimal(1)));
 
 		System.out.println("\n #### myFocusRef.getSerialNum() : " + myFocusRef.getSerialNum() + "\n");
-
-		myFocusRef.setValue("");
-		myFocusRef.setCodelistInternalValue(""); 
-
 		return "";
 	}
 
@@ -415,7 +411,7 @@ public class AdminController implements Serializable {
 		return meddraImpactTypes;
 	}
 
-	public void addRefCodelist() {
+	public String addRefCodelist() {
 		if (myFocusRef.getCodelistConfigType().equals(CqtConstants.CODE_LIST_TYPE_EXTENSION)) {
 			//validate the ref code. cannot be more than 3 characters long if codelist is extension
 			if((myFocusRef.getCodelistInternalValue() != null) && (myFocusRef.getCodelistInternalValue().length() > 3)) {
@@ -424,7 +420,7 @@ public class AdminController implements Serializable {
 						"Length of EXTENSION Code cannot exceed 3 characters.",
 						"");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
-				return;
+				return "";
 			}
 		} else if(myFocusRef.getCodelistConfigType().equals(CqtConstants.CODE_LIST_TYPE_MEDDRA_VERSIONS)) {
 			if(myFocusRef.getValue() != null) {
@@ -435,7 +431,7 @@ public class AdminController implements Serializable {
 			    	FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Decimal is not allowed in the version number.", "");
 					FacesContext.getCurrentInstance().addMessage(null, msg);
 					context.addCallbackParam("validationFailed", true);
-					return;
+					return "";
 			    } catch(NullPointerException e) {
 			    	RequestContext context = RequestContext.getCurrentInstance();
 			    	FacesMessage msg = new FacesMessage(
@@ -444,7 +440,7 @@ public class AdminController implements Serializable {
 							"");
 					FacesContext.getCurrentInstance().addMessage(null, msg);
 					context.addCallbackParam("validationFailed", true);
-					return;
+					return "";
 			    }
 			}
 		}
@@ -468,7 +464,7 @@ public class AdminController implements Serializable {
 							oldValue.getDefaultFlag())
 					&& myFocusRef.getValue().equals(oldValue.getValue())) {
 				// Nothing has been changed
-				return;
+				return "";
 			}
 		}
 
@@ -493,7 +489,7 @@ public class AdminController implements Serializable {
 							"The active codelist value exists for the same code",
 							"");
 					FacesContext.getCurrentInstance().addMessage(null, msg);
-					return;
+					return "";
 				}
 			}
 		}
@@ -610,7 +606,7 @@ public class AdminController implements Serializable {
 				myFocusRef.setLastModifiedBy(lastModifiedByString);
 				myFocusRef.setCreationDate(lastModifiedDate);
 				myFocusRef.setCreatedBy(lastModifiedByString);
-				if (myFocusRef.getDefaultFlag().equals("Y")) {
+				if (myFocusRef.getDefaultFlag() != null && myFocusRef.getDefaultFlag().equals("Y")) {
 					myFocusRef.setSerialNum(new BigDecimal(1.0));
 				} else {
 					List<RefConfigCodeList> refList = refCodeListService.findAllByConfigType(myFocusRef
@@ -734,7 +730,7 @@ public class AdminController implements Serializable {
 		
 
 		//myFocusRef = new RefConfigCodeList();
-
+		return "";
 	}
 
 	private void updateSerialNumberOfNewAdd(String codelistConfigType, RefConfigCodeList savedRef) {
