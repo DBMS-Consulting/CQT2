@@ -41,7 +41,7 @@
 			</p:column>
 
 			<p:column style="width:32px;text-align: center">
-				<p:commandButton update="f1:pb1:dialogAdmin" process="@this"
+				<p:commandButton update="f1:pb1:dialogAdmin" process="@this" resetValues="true"
 								 action="#{adminController.initGetRef}"
 								 oncomplete="PF('extensionD').show(); return false;" icon="ui-icon-pencil"
 								 title="View/Edit">
@@ -58,8 +58,8 @@
 
 			<i class="fa fa-plus"></i>
 			<p:commandLink type="button" value="#{adminController.saveValue}"
-				update="@form:pb1:dialogAdmin" process="@this" 
-				oncomplete="PF('extensionD').show();" resetValues="true"
+				update="@form:pb1:dialogAdmin" process="@this" resetValues="true"
+				oncomplete="PF('extensionD').show();"
 				actionListener="#{adminController.initAddCodelist}" />
 		</h:panelGrid>
 	</p:outputPanel>
@@ -101,9 +101,14 @@
 
 		<h:panelGrid columns="2" cellpadding="5">
 			<p:commandButton value="Save" icon="fa fa-plus">
-
-				<p:ajax process="@this" update="tableAdmin msgAdmin" listener="#{adminController.addRefCodelist}" oncomplete="PF('tblAdmins').filter(); PF('extensionD').hide()" />
+				<p:ajax process="dialogAdmin" resetValues="true" update="tableAdmin msgAdmin" 
+				onclick="PF('extensionD').hide()" listener="#{adminController.addRefCodelist}" 
+				oncomplete="PF('tblAdmins').filter()" />
 			</p:commandButton>
+			
+			<!-- <p:commandButton value="Save" icon="fa fa-plus" resetValues="true" process="@this"
+					onclick="PF('extensionD').hide()" update="tableAdmin msgAdmin"
+					action="#{adminController.addRefCodelist}" oncomplete="PF('tblAdmins').filter()" /> -->
 
 			<p:commandButton value="Cancel" icon="fa fa-close"
 				onclick="PF('extensionD').hide()" update="tableAdmin msgAdmin"
