@@ -251,6 +251,10 @@ public class ImpactSearchController implements Serializable {
 		filterDTO = new FilterDTO();
 		
 		detailsFormModel.setModelChanged(false);
+		
+		FacesContext context = FacesContext.getCurrentInstance();
+		ConfigurationController configMB = (ConfigurationController) context.getApplication().evaluateExpressionGet(context, "#{configMB}", ConfigurationController.class);
+		System.out.println(configMB.getTimezone().toString());
 	}
 	
 	public String openForm() {
