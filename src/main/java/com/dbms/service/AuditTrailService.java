@@ -2819,7 +2819,7 @@ public class AuditTrailService implements IAuditTrailService{
 	 * Excel Report.
 	 */
 	@Override
-	public StreamedContent generateExcel(List<AuditTrailDto> datas, String user) {
+	public StreamedContent generateExcel(List<AuditTrailDto> datas, String user, String timezone) {
 		XSSFWorkbook workbook = new XSSFWorkbook();
 		XSSFSheet worksheet = null;
 
@@ -2854,7 +2854,7 @@ public class AuditTrailService implements IAuditTrailService{
 				cal.get(Calendar.YEAR) + "  " + 
 				getTwoDigits(cal.get(Calendar.HOUR)) + ":" + 
 				getTwoDigits(cal.get(Calendar.MINUTE)) + ":" + 
-				getTwoDigits(cal.get(Calendar.SECOND)) + " EST";
+				getTwoDigits(cal.get(Calendar.SECOND)) + " " + timezone;
 		row = worksheet.createRow(rowCount);
 		cell = row.createCell(0);
 		cell.setCellValue("Report Date/Time: " + date);

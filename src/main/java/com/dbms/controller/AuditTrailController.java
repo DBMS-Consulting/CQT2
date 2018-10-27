@@ -2,7 +2,9 @@ package com.dbms.controller;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -58,12 +60,15 @@ public class AuditTrailController implements Serializable {
 	@ManagedProperty("#{AuthenticationService}")
 	private AuthenticationService authService;
 	
+	private String timezone;
+	
 	@PostConstruct
 	public void init() {
 		this.datas = new ArrayList<AuditTrailDto>();
 		
 		FacesContext context = FacesContext.getCurrentInstance();
-		ConfigurationController configMB = (ConfigurationController) context.getApplication().evaluateExpressionGet(context, "#{configMB}", ConfigurationController.class);
+		GlobalController controller = (GlobalController) context.getApplication().evaluateExpressionGet(context, "#{globalController}", GlobalController.class);
+ 		this.timezone = controller.getTimezone(); 		
 	}
 
 	
@@ -143,8 +148,8 @@ public class AuditTrailController implements Serializable {
 	
 	public void generateExcel(List<AuditTrailDto> list) {
 		String user =  this.authService.getUserGivenName() + " " + this.authService.getUserSurName();
-		StreamedContent content = auditTrailService.generateExcel(list, user);
-		setExcelFile(content); 
+		StreamedContent content = auditTrailService.generateExcel(list, user, timezone);
+		setExcelFile(content); 		 
 	}
 
 	public String getAuditTimestamp() {
