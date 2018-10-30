@@ -60,9 +60,12 @@
 						<li><h:outputText value="Timezone" rendered="true" style="font-weight:bold;"/></li>
 
 						<li><p:outputLabel value="" />
-						<p:selectOneMenu label="Timezone" value="#{configMB.timezone}" style="width:120px">
+						<p:selectOneMenu label="Timezone" value="#{globalController.timezone}" style="width:120px">
 							<f:selectItems value="#{configMB.timezoneList}" var="tz"
-								itemLabel="#{tz.value}" itemValue="#{tz.value}" />
+								itemLabel="#{tz.value}" itemValue="#{tz.codelistInternalValue}" />
+								
+								<p:ajax event="change"
+							listener="#{globalController.timezoneSwitch}" />
 						</p:selectOneMenu></li>
 					</ul>
 
