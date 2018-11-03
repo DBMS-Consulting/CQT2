@@ -55,9 +55,9 @@ public interface ICmqBase190Service extends ICqtPersistenceService<CmqBase190> {
 	 */
 	List<CmqBase190> getPublishedListsReportData(Date filterPublishedBetweenFrom, Date filterPublishedBetweenTo);
 
-	StreamedContent generateExcelReport(ListDetailsFormVM details, String dictionaryVersion);
+	StreamedContent generateExcelReport(ListDetailsFormVM details, String dictionaryVersion, String timezone);
 
-	StreamedContent generateMQReport(ListDetailsFormVM details, ListNotesFormVM notes, String dictionaryVersion, TreeNode relationsRoot, boolean filterLlts);
+	StreamedContent generateMQReport(ListDetailsFormVM details, ListNotesFormVM notes, String dictionaryVersion, TreeNode relationsRoot, boolean filterLlts, String timezone);
 
 	Boolean checkIfCmqNamqExists(String cmqName);
 
@@ -68,7 +68,7 @@ public interface ICmqBase190Service extends ICqtPersistenceService<CmqBase190> {
      */
     boolean checkIfApprovedOnce(Long cmqCode);
 
-	StreamedContent generateExcel(List<CmqBase190> datas, String module, String user);
+	StreamedContent generateExcel(List<CmqBase190> datas, String module, String user, String timezone);
 	
 	CmqBase190 findByName(String cmqName);
 	

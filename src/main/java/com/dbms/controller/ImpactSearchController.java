@@ -326,7 +326,11 @@ public class ImpactSearchController implements Serializable {
         return ((Comparable) value).compareTo(Integer.valueOf(filterText)) > 0;
     }
 	
-	
+	public String getTimezone() {
+		FacesContext context = FacesContext.getCurrentInstance();
+		GlobalController controller = (GlobalController) context.getApplication().evaluateExpressionGet(context, "#{globalController}", GlobalController.class);
+ 		return  controller.getTimezone(); 
+	}
 	
 	/**
 	 * Generate Excel report on target data table.
@@ -348,13 +352,13 @@ public class ImpactSearchController implements Serializable {
 				dictTarget = targetMeddraVersionCodeList.getValue();			
 			StreamedContent content = null;
 			if (isImpactedCmqSelected)
-				content = cmqBaseTargetService.generateCMQExcel(selectedImpactedCmqList, dictTarget, targetTableSelection, this.globalController.isFilterLltsFlag());			
+				content = cmqBaseTargetService.generateCMQExcel(selectedImpactedCmqList, dictTarget, targetTableSelection, this.globalController.isFilterLltsFlag(), getTimezone());			
 			if (isNonImpactedCmqSelected) 
-				content = cmqBaseTargetService.generateCMQExcel(selectedNotImpactedCmqList, dictTarget, targetTableSelection, this.globalController.isFilterLltsFlag());				
+				content = cmqBaseTargetService.generateCMQExcel(selectedNotImpactedCmqList, dictTarget, targetTableSelection, this.globalController.isFilterLltsFlag(), getTimezone());				
 			if (isImpactedSmqSelected)
-				content = smqBaseTargetService.generateSMQExcel(selectedImpactedSmqList, dictTarget, this.globalController.isFilterLltsFlag());			
+				content = smqBaseTargetService.generateSMQExcel(selectedImpactedSmqList, dictTarget, this.globalController.isFilterLltsFlag(), getTimezone());			
 			if (isNonImpactedSmqSelected)
-				content = smqBaseTargetService.generateSMQExcel(selectedNotImpactedSmqList, dictTarget, this.globalController.isFilterLltsFlag());
+				content = smqBaseTargetService.generateSMQExcel(selectedNotImpactedSmqList, dictTarget, this.globalController.isFilterLltsFlag(), getTimezone());
 					
 			setExcelFile(content);
 			

@@ -5,7 +5,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TimeZone;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -60,7 +60,6 @@ import org.primefaces.model.TreeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.dbms.controller.GlobalController;
 import com.dbms.csmq.CSMQBean;
 import com.dbms.csmq.HierarchyNode;
 import com.dbms.entity.cqt.CmqBase190;
@@ -878,10 +877,12 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 	 */
 	@Override
 	public StreamedContent generateExcelReport(ListDetailsFormVM details,
-			String dictionaryVersion) {
+			String dictionaryVersion, String timezone) {
 		XSSFWorkbook workbook = new XSSFWorkbook();
 		XSSFSheet worksheet = null;
-		DateFormat dateTimeFormat = new SimpleDateFormat("dd-MMM-yyyy:hh:mm:ss a z");
+		SimpleDateFormat sdf =  new SimpleDateFormat("dd-MMM-yyyy:hh:mm:ss a z");
+		if (timezone != null)
+			sdf.setTimeZone(TimeZone.getTimeZone(timezone));
 
 		worksheet = workbook.createSheet("List Report");
 		XSSFRow row = null;
@@ -933,7 +934,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		rowCount++;
 		row = worksheet.createRow(rowCount);
 		cell = row.createCell(0);
-		cell.setCellValue("Report Date/Time: " + dateTimeFormat.format(new Date()));
+		cell.setCellValue("Report Date/Time: " + sdf.format(new Date()));
 		cell = row.createCell(1);
 
 		rowCount += 2;
@@ -1181,10 +1182,13 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 	 * MQ Report.
 	 */
 	@Override
-	public StreamedContent generateMQReport(ListDetailsFormVM details, ListNotesFormVM notes, String dictionaryVersion, TreeNode relationsRoot, boolean filterLlts) {
+	public StreamedContent generateMQReport(ListDetailsFormVM details, ListNotesFormVM notes, String dictionaryVersion, TreeNode relationsRoot, boolean filterLlts, String timezone) {
 		XSSFWorkbook workbook = new XSSFWorkbook();
 		
-		DateFormat dateTimeFormat = new SimpleDateFormat("dd-MMM-yyyy:hh:mm:ss a z");
+		//DateFormat dateTimeFormat = new SimpleDateFormat("dd-MMM-yyyy:hh:mm:ss a z");
+		SimpleDateFormat dateTimeFormat =  new SimpleDateFormat("dd-MMM-yyyy:hh:mm:ss a z");
+		if (timezone != null)
+			dateTimeFormat.setTimeZone(TimeZone.getTimeZone(timezone));
 		
 		XSSFSheet worksheet = null;
 
@@ -1510,10 +1514,13 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 	 * Excel Report.
 	 */
 	@Override
-	public StreamedContent generateExcel(List<CmqBase190> datas, String module, String user) {
+	public StreamedContent generateExcel(List<CmqBase190> datas, String module, String user, String timezone) {
 		XSSFWorkbook workbook = new XSSFWorkbook();
 		XSSFSheet worksheet = null;
-		DateFormat dateTimeFormat = new SimpleDateFormat("dd-MMM-yyyy:hh:mm:ss a z");
+		
+		SimpleDateFormat dateTimeFormat = new SimpleDateFormat("dd-MMM-yyyy:hh:mm:ss a z");
+		if (timezone != null)
+			dateTimeFormat.setTimeZone(TimeZone.getTimeZone(timezone));
 
 		worksheet = workbook.createSheet(module + "_ListSearch");
 		XSSFRow row = null;

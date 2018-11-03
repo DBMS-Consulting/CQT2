@@ -58,7 +58,7 @@ public interface IRefCodeListService extends ICqtPersistenceService<RefConfigCod
 	public String interpretProductCodesToValuesLabel(String[] productCds);
     public String convertProductCodesToValuesLabel(List<CmqProductBaseCurrent> products); 
 
-	public StreamedContent generateReport(String codelistType);
+	public StreamedContent generateReport(String codelistType, String timezone);
 	
 	public RefConfigCodeList findEnterpriseAdType();
 

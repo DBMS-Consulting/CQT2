@@ -1,20 +1,16 @@
 package com.dbms.service;
 
-import com.dbms.controller.GlobalController;
-import com.dbms.csmq.CSMQBean;
-import com.dbms.csmq.HierarchyNode;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
@@ -27,6 +23,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.BorderStyle;
@@ -39,8 +36,6 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
-import org.hibernate.transform.Transformers;
-import org.hibernate.type.StandardBasicTypes;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.SortOrder;
 import org.primefaces.model.StreamedContent;
@@ -48,23 +43,19 @@ import org.primefaces.model.TreeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.dbms.entity.cqt.CmqBase190;
+import com.dbms.csmq.CSMQBean;
+import com.dbms.csmq.HierarchyNode;
 import com.dbms.entity.cqt.CmqBaseTarget;
 import com.dbms.entity.cqt.CmqParentChildTarget;
 import com.dbms.entity.cqt.CmqProductBaseTarget;
 import com.dbms.entity.cqt.CmqRelation190;
 import com.dbms.entity.cqt.CmqRelationTarget;
-import com.dbms.entity.cqt.SmqBase190;
 import com.dbms.entity.cqt.SmqBaseTarget;
-import com.dbms.entity.cqt.SmqRelation190;
 import com.dbms.entity.cqt.SmqRelationTarget;
 import com.dbms.entity.cqt.dtos.MeddraDictHierarchySearchDto;
 import com.dbms.entity.cqt.dtos.ReportLineDataDto;
 import com.dbms.service.base.CqtPersistenceService;
-import com.dbms.util.CmqUtils;
 import com.dbms.util.CqtConstants;
-
-import org.apache.commons.collections4.CollectionUtils;
 
 /**
  * @author Jay G.(jayshanchn@hotmail.com)
@@ -518,7 +509,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 	}
 
 	@Override
-	public StreamedContent generateCMQExcel(CmqBaseTarget selectedImpactedCmqList, String dictionaryVersion, TreeNode selectedNode, boolean filterLltFlag) {
+	public StreamedContent generateCMQExcel(CmqBaseTarget selectedImpactedCmqList, String dictionaryVersion, TreeNode selectedNode, boolean filterLltFlag, String timezone) {
 		
 		List<TreeNode> childTreeNodes = selectedNode.getChildren();
 		Map<String,String> relationScopeMap = new HashMap<>();
@@ -534,9 +525,12 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 		worksheet = workbook.createSheet("IA Report");
 		XSSFRow row = null;
 		int rowCount = 0;
-		DateFormat dateFormat = DateFormat.getDateTimeInstance(
+		/*DateFormat dateFormat = DateFormat.getDateTimeInstance(
 		        DateFormat.LONG,
-		        DateFormat.LONG, new Locale("EN","en"));
+		        DateFormat.LONG, new Locale("EN","en"));*/
+		SimpleDateFormat sdf =  new SimpleDateFormat("dd-MMM-yyyy:hh:mm:ss a z");
+		if (timezone != null)
+			sdf.setTimeZone(TimeZone.getTimeZone(timezone));
 		
 		Map<Integer, ReportLineDataDto> mapReport = new HashMap<Integer, ReportLineDataDto>();
 		int cpt = 0;
@@ -567,7 +561,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 		rowCount++;
 		row = worksheet.createRow(rowCount);
 		cell = row.createCell(0);
-		cell.setCellValue("Report Date/Time: " + dateFormat.format(new Date()));
+		cell.setCellValue("Report Date/Time: " + sdf.format(new Date()));
 		
 
 		rowCount += 2;
