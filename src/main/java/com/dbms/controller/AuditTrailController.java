@@ -23,6 +23,7 @@ import com.dbms.service.AuthenticationService;
 import com.dbms.service.IAuditTrailService;
 import com.dbms.service.ICmqBase190Service;
 import com.dbms.service.IRefCodeListService;
+import com.dbms.util.CmqUtils;
 
 
 @ManagedBean
@@ -104,7 +105,12 @@ public class AuditTrailController implements Serializable {
 			listCodeSelected = Long.valueOf(listCode);
 		}
 
-		datas = this.auditTrailService.findByCriterias(listCodeSelected, listName, Integer.valueOf(dictionary), auditTimestamp);
+		datas = this.auditTrailService.findByCriterias(listCodeSelected, listName, Integer.valueOf(dictionary), CmqUtils.convertimeZone("dd-MMM-yyyy:hh:mm:ss a z", auditTimestamp, getTimezone(), "dd-MMM-yyyy:hh:mm:ss a z", "EST"));
+		if(null!=datas && !datas.isEmpty()){
+			for(AuditTrailDto dto : datas) {
+				dto.setAuditTimestamp(CmqUtils.convertimeZone("dd-MMM-yyyy:hh:mm:ss a", dto.getAuditTimestamp(), "EST", "dd-MMM-yyyy:hh:mm:ss a z",getTimezone()));
+			}
+		}
 		this.filteredValues = datas;
 		//RequestContext.getCurrentInstance().update("auditDT");
 
@@ -120,7 +126,7 @@ public class AuditTrailController implements Serializable {
 				listCodeSelected = String.valueOf(cmq.getCmqCode());
 			}
 		}
-		return this.auditTrailService.findAuditTimestamps(dictionaryVersion, listCodeSelected, null);
+		return this.auditTrailService.findAuditTimestamps(dictionaryVersion, listCodeSelected, null,getTimezone());
 	}
 	
 	public List<CmqBaseDTO> selectList() {

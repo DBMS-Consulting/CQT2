@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -44,9 +45,11 @@ import org.primefaces.model.StreamedContent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.dbms.csmq.CSMQBean;
 import com.dbms.entity.cqt.RefConfigCodeList;
 import com.dbms.entity.cqt.dtos.AuditTrailDto;
 import com.dbms.entity.cqt.dtos.CmqBaseDTO;
+import com.dbms.util.CmqUtils;
 import com.dbms.util.ICqtEntityManagerFactory;
 
 @ManagedBean(name = "AuditTrailService")
@@ -115,7 +118,7 @@ public class AuditTrailService implements IAuditTrailService{
 	 				+" , cmq_all_audit.LAST_NAME lastName "
 	 				+" , cmq_all_audit.USERID userId "
 	 				+" , cmq_all_audit.GROUP_NAME groupName "
-	 				+" , cmq_all_audit.AUDIT_TIMESTAMP auditTimestamp "
+	 				+" , to_char(cmq_all_audit.AUDIT_TIMESTAMP, 'DD-MON-YYYY:hh:MI:SS AM') auditTimestamp "
 	 				+"from "
 	 				+"  (SELECT CMQ_ID "
 	 				+"  , TO_CHAR(DICTIONARY_VERSION_New) NEW "
@@ -1376,7 +1379,7 @@ public class AuditTrailService implements IAuditTrailService{
 	 				+" , cmq_all_audit.LAST_NAME lastName "
 	 				+" , cmq_all_audit.USERID userId "
 	 				+" , cmq_all_audit.GROUP_NAME groupName "
-	 				+" , cmq_all_audit.AUDIT_TIMESTAMP auditTimestamp "
+	 				+" , to_char(cmq_all_audit.AUDIT_TIMESTAMP, 'DD-MON-YYYY:hh:MI:SS AM') auditTimestamp "
 	 				+"from "
 	 				+"  (SELECT CMQ_ID "
 	 				+"  , TO_CHAR(DICTIONARY_VERSION_New) NEW "
@@ -2602,7 +2605,7 @@ public class AuditTrailService implements IAuditTrailService{
 			query.addScalar("lastName", StandardBasicTypes.STRING);
 			query.addScalar("userId", StandardBasicTypes.STRING);
 			query.addScalar("groupName", StandardBasicTypes.STRING);
-			query.addScalar("auditTimestamp", StandardBasicTypes.DATE);
+			query.addScalar("auditTimestamp", StandardBasicTypes.STRING);
 			
 			if (!StringUtils.isBlank(auditTimeStampString)) {
 				DateTimeFormatter formatter = new DateTimeFormatterBuilder().parseCaseInsensitive().appendPattern("dd-MMM-yyyy:hh:mm:ss a z").toFormatter();
@@ -2641,16 +2644,16 @@ public class AuditTrailService implements IAuditTrailService{
 	}
 
 	@Override
-	public List<String> findAuditTimestamps(int dictionaryVersion, String code, String name) {
+	public List<String> findAuditTimestamps(int dictionaryVersion, String code, String name,String timezone) {
 		List<String> retVal = null;
 		String queryString = "";
 		if (code != null && !code.equals("")) {
 			Long cmqCode = Long.parseLong(code);
-			queryString = "select distinct AUDIT_TIMESTAMP as audit_ts, to_char(AUDIT_TIMESTAMP, 'DD-MON-YYYY:hh:MI:SS AM')||' EST' as AUDIT_TIMESTAMP "
+			queryString = "select distinct AUDIT_TIMESTAMP as audit_ts, to_char(AUDIT_TIMESTAMP, 'DD-MON-YYYY:hh:MI:SS AM')||' "+timezone+"' as AUDIT_TIMESTAMP "
 					+ " from CMQ_BASE_"+ dictionaryVersion 
 					+ "_AUDIT where CMQ_CODE_OLD = " + cmqCode + " or CMQ_CODE_NEW = " + cmqCode;
 			
-			queryString += " union select distinct AUDIT_TIMESTAMP as audit_ts, to_char(AUDIT_TIMESTAMP, 'DD-MON-YYYY:hh:MI:SS AM')||' EST' as AUDIT_TIMESTAMP "
+			queryString += " union select distinct AUDIT_TIMESTAMP as audit_ts, to_char(AUDIT_TIMESTAMP, 'DD-MON-YYYY:hh:MI:SS AM')||' "+timezone+"' as AUDIT_TIMESTAMP "
 					+ " from CMQ_RELATIONS_"+ dictionaryVersion 
 					+ "_AUDIT where CMQ_CODE_OLD = " + cmqCode + " or CMQ_CODE_NEW = " + cmqCode
 					+ " or SMQ_CODE_OLD = " + cmqCode + " or SMQ_CODE_NEW = " + cmqCode
@@ -2661,7 +2664,7 @@ public class AuditTrailService implements IAuditTrailService{
 					+ " or CMQ_CODE_OLD = " + cmqCode + " or CMQ_CODE_NEW = " + cmqCode
 					+ " or PT_CODE_OLD = " + cmqCode + " or PT_CODE_NEW = " + cmqCode;
 			
-			queryString += " union select distinct AUDIT_TIMESTAMP as audit_ts, to_char(AUDIT_TIMESTAMP, 'DD-MON-YYYY:hh:MI:SS AM')||' EST' as AUDIT_TIMESTAMP "
+			queryString += " union select distinct AUDIT_TIMESTAMP as audit_ts, to_char(AUDIT_TIMESTAMP, 'DD-MON-YYYY:hh:MI:SS AM')||' "+timezone+"' as AUDIT_TIMESTAMP "
 					+ " from CMQ_PARENT_CHILD_"+ dictionaryVersion 
 					+ "_AUDIT where CMQ_PARENT_CODE_OLD = " + cmqCode + " or CMQ_PARENT_CODE_NEW = " + cmqCode
 					+ " or CMQ_CHILD_CODE_OLD = " + cmqCode + " or CMQ_CHILD_CODE_NEW = " + cmqCode
@@ -2669,15 +2672,15 @@ public class AuditTrailService implements IAuditTrailService{
  					+ " order by audit_ts desc";
 		}
 		if (name != null && !name.equals("")) {
-			queryString = "select distinct AUDIT_TIMESTAMP as audit_ts, to_char(AUDIT_TIMESTAMP, 'DD-MON-YYYY:hh:MI:SS AM')||' EST' as AUDIT_TIMESTAMP "
+			queryString = "select distinct AUDIT_TIMESTAMP as audit_ts, to_char(AUDIT_TIMESTAMP, 'DD-MON-YYYY:hh:MI:SS AM')||' "+timezone+"' as AUDIT_TIMESTAMP "
 					+ " from CMQ_BASE_"+ dictionaryVersion 
 					+ "_AUDIT where CMQ_NAME_OLD = '" + name + "' or CMQ_NAME_NEW = '" + name;
 			
-			queryString += "' union select distinct AUDIT_TIMESTAMP as audit_ts, to_char(AUDIT_TIMESTAMP, 'DD-MON-YYYY:hh:MI:SS AM')||' EST' as AUDIT_TIMESTAMP "
+			queryString += "' union select distinct AUDIT_TIMESTAMP as audit_ts, to_char(AUDIT_TIMESTAMP, 'DD-MON-YYYY:hh:MI:SS AM')||' "+timezone+"' as AUDIT_TIMESTAMP "
 					+ " from CMQ_RELATIONS_"+ dictionaryVersion + "_AUDIT where " 
 					+ " cmq_id = (select c.cmq_id from  CMQ_BASE_"+ dictionaryVersion + " c where c.cmq_name = '" + name + "')";
 			
-			queryString += " union select distinct AUDIT_TIMESTAMP as audit_ts, to_char(AUDIT_TIMESTAMP, 'DD-MON-YYYY:hh:MI:SS AM')||' EST' as AUDIT_TIMESTAMP "
+			queryString += " union select distinct AUDIT_TIMESTAMP as audit_ts, to_char(AUDIT_TIMESTAMP, 'DD-MON-YYYY:hh:MI:SS AM')||' "+timezone+"' as AUDIT_TIMESTAMP "
 					+ " from CMQ_PARENT_CHILD_"+ dictionaryVersion 
 					+ "_AUDIT where CMQ_PARENT_NAME_OLD = '" + name + "' or CMQ_PARENT_NAME_NEW = '" + name
 					+ "' or CMQ_CHILD_NAME_OLD = '" + name + "' or CMQ_CHILD_NAME_NEW = '" + name
@@ -2688,13 +2691,21 @@ public class AuditTrailService implements IAuditTrailService{
 		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
 		Session session = entityManager.unwrap(Session.class);
 		try {
+			List<String> result = null;
 			SQLQuery query = session.createSQLQuery(queryString);
 			query.addScalar("AUDIT_TIMESTAMP", StandardBasicTypes.STRING);
 			 
 			//query.setFetchSize(400);
  			//query.setResultTransformer(Transformers.aliasToBean(String.class));
 			query.setCacheable(false);
-			retVal = query.list();
+			result = query.list();
+			//convert timezone
+			if(null!=result && !result.isEmpty()){
+				retVal = new ArrayList<>();
+				for(String time: result) {
+					retVal.add(CmqUtils.convertimeZone("dd-MMM-yyyy:hh:mm:ss a z", time, "EST", "dd-MMM-yyyy:hh:mm:ss a z", timezone));
+				}
+			}
 		}catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
 			msg.append("An error occurred while fetching findAuditTimestamps on AuditTrail ")
@@ -2711,16 +2722,16 @@ public class AuditTrailService implements IAuditTrailService{
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<String> findAuditTimestampsForHistoricalView(int dictionaryVersion, String code, String name) {
-		List<String> retVal = null;
+	public List<String> findAuditTimestampsForHistoricalView(int dictionaryVersion, String code, String name,String timezone) {
 		String queryString = "";
+		List<String> retVal = null;
 		if (code != null && !code.equals("")) {
 			Long cmqCode = Long.parseLong(code);
-			queryString = "select distinct AUDIT_TIMESTAMP as audit_ts, to_char(AUDIT_TIMESTAMP, 'DD-MON-YYYY:hh:MI:SS AM')||' EST' as AUDIT_TIMESTAMP "
+			queryString = "select distinct AUDIT_TIMESTAMP as audit_ts, to_char(AUDIT_TIMESTAMP, 'DD-MON-YYYY:hh:MI:SS AM')||' "+timezone+"' as AUDIT_TIMESTAMP "
 					+ " from CMQ_BASE_"+ dictionaryVersion 
 					+ "_AUDIT where CMQ_CODE_OLD = " + cmqCode + " or CMQ_CODE_NEW = " + cmqCode;
 			
-			queryString += " union select distinct AUDIT_TIMESTAMP as audit_ts, to_char(AUDIT_TIMESTAMP, 'DD-MON-YYYY:hh:MI:SS AM')||' EST' as AUDIT_TIMESTAMP "
+			queryString += " union select distinct AUDIT_TIMESTAMP as audit_ts, to_char(AUDIT_TIMESTAMP, 'DD-MON-YYYY:hh:MI:SS AM')||' "+timezone+"' as AUDIT_TIMESTAMP "
 					+ " from CMQ_RELATIONS_"+ dictionaryVersion 
 					+ "_AUDIT where CMQ_CODE_OLD = " + cmqCode + " or CMQ_CODE_NEW = " + cmqCode
 					+ " or SMQ_CODE_OLD = " + cmqCode + " or SMQ_CODE_NEW = " + cmqCode
@@ -2731,7 +2742,7 @@ public class AuditTrailService implements IAuditTrailService{
 					+ " or CMQ_CODE_OLD = " + cmqCode + " or CMQ_CODE_NEW = " + cmqCode
 					+ " or PT_CODE_OLD = " + cmqCode + " or PT_CODE_NEW = " + cmqCode;
 					
-			queryString += " union select distinct AUDIT_TIMESTAMP as audit_ts, to_char(AUDIT_TIMESTAMP, 'DD-MON-YYYY:hh:MI:SS AM')||' EST' as AUDIT_TIMESTAMP "
+			queryString += " union select distinct AUDIT_TIMESTAMP as audit_ts, to_char(AUDIT_TIMESTAMP, 'DD-MON-YYYY:hh:MI:SS AM')||' "+timezone+"' as AUDIT_TIMESTAMP "
 					+ " from CMQ_PARENT_CHILD_"+ dictionaryVersion 
 					+ "_AUDIT where CMQ_PARENT_CODE_OLD = " + cmqCode + " or CMQ_PARENT_CODE_NEW = " + cmqCode
 					+ " or CMQ_CHILD_CODE_OLD = " + cmqCode + " or CMQ_CHILD_CODE_NEW = " + cmqCode
@@ -2739,15 +2750,15 @@ public class AuditTrailService implements IAuditTrailService{
  					+ " order by audit_ts desc";
 		}
 		if (name != null && !name.equals("")) {
-			queryString = "select distinct AUDIT_TIMESTAMP as audit_ts, to_char(AUDIT_TIMESTAMP, 'DD-MON-YYYY:hh:MI:SS AM')||' EST' as AUDIT_TIMESTAMP "
+			queryString = "select distinct AUDIT_TIMESTAMP as audit_ts, to_char(AUDIT_TIMESTAMP, 'DD-MON-YYYY:hh:MI:SS AM')||' "+timezone+"' as AUDIT_TIMESTAMP "
 					+ " from CMQ_BASE_"+ dictionaryVersion 
 					+ "_AUDIT where CMQ_NAME_OLD = '" + name + "' or CMQ_NAME_NEW = '" + name;
 			
-			queryString += "' union select distinct AUDIT_TIMESTAMP as audit_ts, to_char(AUDIT_TIMESTAMP, 'DD-MON-YYYY:hh:MI:SS AM')||' EST' as AUDIT_TIMESTAMP "
+			queryString += "' union select distinct AUDIT_TIMESTAMP as audit_ts, to_char(AUDIT_TIMESTAMP, 'DD-MON-YYYY:hh:MI:SS AM')||' "+timezone+"' as AUDIT_TIMESTAMP "
 					+ " from CMQ_RELATIONS_"+ dictionaryVersion + "_AUDIT where " 
 					+ " cmq_id = (select c.cmq_id from  CMQ_BASE_"+ dictionaryVersion + " c where c.cmq_name = '" + name + "')";
 			
-			queryString += " union select distinct AUDIT_TIMESTAMP as audit_ts, to_char(AUDIT_TIMESTAMP, 'DD-MON-YYYY:hh:MI:SS AM')||' EST' as AUDIT_TIMESTAMP "
+			queryString += " union select distinct AUDIT_TIMESTAMP as audit_ts, to_char(AUDIT_TIMESTAMP, 'DD-MON-YYYY:hh:MI:SS AM')||' "+timezone+"' as AUDIT_TIMESTAMP "
 					+ " from CMQ_PARENT_CHILD_"+ dictionaryVersion 
 					+ "_AUDIT where CMQ_PARENT_NAME_OLD = '" + name + "' or CMQ_PARENT_NAME_NEW = '" + name
 					+ "' or CMQ_CHILD_NAME_OLD = '" + name + "' or CMQ_CHILD_NAME_NEW = '" + name
@@ -2758,13 +2769,21 @@ public class AuditTrailService implements IAuditTrailService{
 		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
 		Session session = entityManager.unwrap(Session.class);
 		try {
+			List<String> result = null;
 			SQLQuery query = session.createSQLQuery(queryString);
 			query.addScalar("AUDIT_TIMESTAMP", StandardBasicTypes.STRING);
 			 
 			//query.setFetchSize(400);
  			//query.setResultTransformer(Transformers.aliasToBean(String.class));
 			query.setCacheable(false);
-			retVal = query.list();
+			result = query.list();
+			//convert timezone
+			if(null!=result && !result.isEmpty()){
+				retVal = new ArrayList<>();
+				for(String time: result) {
+					retVal.add(CmqUtils.convertimeZone("dd-MMM-yyyy:hh:mm:ss a z", time, "EST", "dd-MMM-yyyy:hh:mm:ss a z", timezone));
+				}
+			}
 		}catch (Exception e) {
 			StringBuilder msg = new StringBuilder();
 			msg.append("An error occurred while fetching findAuditTimestamps on Historic view ")

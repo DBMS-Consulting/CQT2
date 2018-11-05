@@ -54,6 +54,7 @@ import com.dbms.service.IHistoricalViewService;
 import com.dbms.service.IMeddraDictService;
 import com.dbms.service.IRefCodeListService;
 import com.dbms.service.ISmqBaseService;
+import com.dbms.util.CmqUtils;
 import com.dbms.util.HistoricalViewrelationsComparator;
 import com.dbms.util.SMQLevelHelper;
 import com.dbms.util.SWJSFRequest;
@@ -174,7 +175,7 @@ public class HistoricalViewController implements Serializable {
 			}
 		}
 		this.searchResults = historicalViewService.findByCriterias(listCode, dictionaryVersion,
-				auditTimestamp);
+				CmqUtils.convertimeZone("dd-MMM-yyyy:hh:mm:ss a z", auditTimestamp, getTimezone(), "dd-MMM-yyyy:hh:mm:ss a z", "EST"));
 		
 		Map<Long, HistoricalViewDTO> historicalViewDTOMap = new HashMap<Long, HistoricalViewDTO>();
 		List<HierarchyNode> addedHierarchyNodes = new ArrayList<>();
@@ -1092,7 +1093,7 @@ public class HistoricalViewController implements Serializable {
 	public void populateChildCmqsByParent(Long parentCmqCode, TreeNode rootTreeNode) {
 		//now process the cmq parent child relations
 		CmqBase190 parent = cmqBaseService.findByCode(parentCmqCode);
-		List<ParentChildAuditDBDataDTO> parentChildAudit = this.historicalViewService.findHistoricalChildsByCmqId(parent.getCmqId(), auditTimestamp);
+		List<ParentChildAuditDBDataDTO> parentChildAudit = this.historicalViewService.findHistoricalChildsByCmqId(parent.getCmqId(), CmqUtils.convertimeZone("dd-MMM-yyyy:hh:mm:ss a z", auditTimestamp, getTimezone(), "dd-MMM-yyyy:hh:mm:ss a z", "EST"));
 		Set<Long> childCmqCodes = extractHistoricChild(parentChildAudit);
 		if(childCmqCodes!=null && !childCmqCodes.isEmpty()) {
 			List<CmqBase190> childCmqs = cmqBaseService.findByCodes(new ArrayList<>(childCmqCodes));
@@ -1216,10 +1217,11 @@ public class HistoricalViewController implements Serializable {
 	}
 	
 	public List<String> findAuditTimestamps(int dictionaryVersion) {
+		System.out.println("***********"+getTimezone());
 		if (this.listCode == null && this.listName == null)
 			return null;
 		if(dictionaryVersion != 0) {
-			return this.auditTrailService.findAuditTimestampsForHistoricalView(dictionaryVersion, this.listCode, this.listName);
+			return this.auditTrailService.findAuditTimestampsForHistoricalView(dictionaryVersion, this.listCode, this.listName,getTimezone());
 		} else {
 			return null;
 		}
@@ -1265,7 +1267,7 @@ public class HistoricalViewController implements Serializable {
 	}
 	
 	public void populateHistoricalParentCmqByChild(CmqBase190 childCmq) {
-		List<ParentChildAuditDBDataDTO> parentChildAudit = this.historicalViewService.findHistoricalParentsByCmqId(childCmq.getCmqId(), auditTimestamp);
+		List<ParentChildAuditDBDataDTO> parentChildAudit = this.historicalViewService.findHistoricalParentsByCmqId(childCmq.getCmqId(), CmqUtils.convertimeZone("dd-MMM-yyyy:hh:mm:ss a z", auditTimestamp, getTimezone(), "dd-MMM-yyyy:hh:mm:ss a z", "EST"));
 		Set<Long> parentCmqCodes = extractHistoricParent(parentChildAudit);
 		if(parentCmqCodes!=null && !parentCmqCodes.isEmpty()) {
 			List<CmqBase190> parents = cmqBaseService.findByCodes(new ArrayList<>(parentCmqCodes));
@@ -1306,7 +1308,7 @@ public class HistoricalViewController implements Serializable {
 	public boolean isParentViewable(CmqBase190 childCmq) {
         
 		//Long parentCount = this.cmqParentChildService.findCmqParentCountForChildCmqCode(selectedHistoricalViewDTO.getCmqCode());
-		List<ParentChildAuditDBDataDTO> parentChildAudit = this.historicalViewService.findHistoricalParentsByCmqId(childCmq.getCmqId(), auditTimestamp);
+		List<ParentChildAuditDBDataDTO> parentChildAudit = this.historicalViewService.findHistoricalParentsByCmqId(childCmq.getCmqId(), CmqUtils.convertimeZone("dd-MMM-yyyy:hh:mm:ss a z", auditTimestamp, getTimezone(), "dd-MMM-yyyy:hh:mm:ss a z", "EST"));
 		Set<Long> parentCmqCodes = extractHistoricParent(parentChildAudit);
 		return (parentCmqCodes!=null && parentCmqCodes.size() >0);
     

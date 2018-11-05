@@ -77,7 +77,7 @@
 							<f:selectItem itemValue="" itemLabel="" />
 							<f:selectItems
 								value="#{auditTrailController.findAuditTimestamps(auditTrailController.dictionary)}"
-								var="at" itemLabel="#{formatTimestamp(at)}" itemValue="#{at}" />
+								var="at" itemLabel="#{at}" itemValue="#{at}" />
 							<p:ajax />
 						</p:selectOneMenu>
 						<p:spacer width="5" />
@@ -148,10 +148,7 @@
 						</p:column>
 						<p:column headerText="Audit Timestamp"
 							sortBy="#{value.auditTimestamp}">
-							<h:outputText value="#{value.auditTimestamp}" styleClass="wrap">
-								<f:convertDateTime pattern="dd-MM-yyyy:hh:mm:ss a" />
-							</h:outputText>
-							<h:outputText value=" EST" />
+							<h:outputText value="#{value.auditTimestamp}" styleClass="wrap"/>
 						</p:column>
 
 					</p:dataTable>

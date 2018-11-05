@@ -27,7 +27,7 @@ public class AuditTrailDto implements Serializable {
 
 	private String groupName;
 
-	private Date auditTimestamp;
+	private String auditTimestamp;
 
 	public String getTableName() {
 		return tableName;
@@ -117,11 +117,11 @@ public class AuditTrailDto implements Serializable {
 		this.groupName = groupName;
 	}
 
-	public Date getAuditTimestamp() {
+	public String getAuditTimestamp() {
 		return auditTimestamp;
 	}
 
-	public void setAuditTimestamp(Date auditTimestamp) {
+	public void setAuditTimestamp(String auditTimestamp) {
 		this.auditTimestamp = auditTimestamp;
 	}
 }

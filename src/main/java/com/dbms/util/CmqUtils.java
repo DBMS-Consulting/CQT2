@@ -1,7 +1,14 @@
 package com.dbms.util;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import javax.faces.component.UIComponent;
 
@@ -10,6 +17,17 @@ import org.apache.commons.lang3.StringUtils;
 
 public class CmqUtils {
     public static int SQL_IN_CLAUSE_SPLIT = 999;
+    
+    private static final Map<String, String> timeZoneMap = createMap();
+    private static Map<String, String> createMap()
+    {
+        Map<String,String> timeZoneMap = new HashMap<>();
+        timeZoneMap.put("EST", "America/New_York");
+        timeZoneMap.put("PST", "America/Los_Angeles");
+        timeZoneMap.put("CST", "America/Chicago");
+        timeZoneMap.put("IST", "Asia/Kolkata");
+        return timeZoneMap;
+    }
     
 	public static String getExceptionMessageChain(Throwable throwable) {
 	    StringBuilder sb = new StringBuilder();
@@ -53,5 +71,42 @@ public class CmqUtils {
 				break;
 		}
 		return result;
+	}
+	
+	public static String convertimeZone(String inputDatePattern,String inputDateString,String inputTimezone,String outputDatePattern,String outputTimezone) {
+		DateTimeFormatter formatter = new DateTimeFormatterBuilder().parseCaseInsensitive().appendPattern(inputDatePattern).toFormatter();
+		//Input date time from UI for a given timezone
+		//"17-SEP-2018:10:39:27 AM PST"
+		LocalDateTime inputDateTime = LocalDateTime.parse(inputDateString, formatter);
+		
+		// Input date time from UI timezone
+		getDateZoneId(inputTimezone);
+		ZoneId fromTimeZone = getDateZoneId(inputTimezone);    //Source timezone
+		
+		// Output date time is always EST since DB is in EST
+        ZoneId toTimeZone = getDateZoneId(outputTimezone);  //Target timezone
+         
+         
+        //Zoned date time at source timezone
+        ZonedDateTime inputZoneTime = inputDateTime.atZone(fromTimeZone);      
+         
+        //Zoned date time at target timezone
+        ZonedDateTime outputZoneTime = inputZoneTime.withZoneSameInstant(toTimeZone);
+		
+		DateTimeFormatter formatter2 = new DateTimeFormatterBuilder().parseCaseInsensitive().appendPattern(outputDatePattern).toFormatter();
+         
+        return formatter2.format(outputZoneTime);
+	}
+
+	private static ZoneId getDateZoneId(String inputTimezone) {
+		ZoneId id = null;
+		if(StringUtils.isEmpty(inputTimezone)) {
+			id = ZoneId.of(timeZoneMap.get("EST"));
+		} else {
+			id = ZoneId.of(timeZoneMap.get(inputTimezone));
+		}
+		return id;
+		 
+		
 	}
 }
