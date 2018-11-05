@@ -2,6 +2,7 @@ package com.dbms.controller;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.TimeZone;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -20,7 +22,6 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.component.html.HtmlInputText;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
-import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 import org.primefaces.component.wizard.Wizard;
@@ -64,8 +65,6 @@ import com.dbms.view.ListNotesFormVM;
 import com.dbms.view.ListRelationsVM;
 import com.dbms.view.ListWorkflowFormVM;
 import com.dbms.web.dto.DetailDTO;
-
-import com.dbms.controller.ConfigurationController;
 
 /**
  * @author Jay G.(jayshanchn@hotmail.com)
@@ -164,6 +163,7 @@ public class CreateController implements Serializable {
 	private DetailDTO detailDTO;
 	
 	private StreamedContent excelFile;
+	private String creationDate, lastActivationDate;
 	
 	public CreateController() {
 		setSelectedData(null);
@@ -177,12 +177,12 @@ public class CreateController implements Serializable {
 		initAll();
 		detailDTO = new DetailDTO();
 		this.formToOpen = "";
-		
+	}
+	
+	public String getTimezone() {
 		FacesContext context = FacesContext.getCurrentInstance();
-		ConfigurationController configMB = (ConfigurationController) context.getApplication().evaluateExpressionGet(context, "#{configMB}", ConfigurationController.class);
-
-
-		System.out.println(configMB.getTimezone().toString());
+		GlobalController controller = (GlobalController) context.getApplication().evaluateExpressionGet(context, "#{globalController}", GlobalController.class);
+ 		return  controller.getTimezone(); 
 	}
 	
 	public void generateExcel(List<CmqBase190> list) {
@@ -194,7 +194,7 @@ public class CreateController implements Serializable {
 		if (browseWizard != null)
 			module = "BROWSE_SEARCH";
 		String user =  this.authService.getUserGivenName() + " " + this.authService.getUserSurName();
-		StreamedContent content = cmqBaseService.generateExcel(list, module, user);
+		StreamedContent content = cmqBaseService.generateExcel(list, module, user, getTimezone());
 		setExcelFile(content); 
 	}
 	
@@ -1829,7 +1829,13 @@ public class CreateController implements Serializable {
         
         detailDTO.copyDatas(detailsFormModel);
         detailDTO.copyNotes(notesFormModel); 
-
+        
+        SimpleDateFormat dateTimeFormat = new SimpleDateFormat("dd-MMM-yyyy:hh:mm:ss a z");
+		if (getTimezone() != null)
+			dateTimeFormat.setTimeZone(TimeZone.getTimeZone(getTimezone()));
+        
+        creationDate = dateTimeFormat.format(selectedData.getCreationDate());
+        lastActivationDate = dateTimeFormat.format(selectedData.getActivationDate());
       	return null;
 	}
 
@@ -2966,5 +2972,23 @@ public class CreateController implements Serializable {
 	public void setExcelFile(StreamedContent excelFile) {
 		this.excelFile = excelFile;
 	}
+
+	public String getCreationDate() {
+		return creationDate;
+	}
+
+	public void setCreationDate(String creationDate) {
+		this.creationDate = creationDate;
+	}
+
+	public String getLastActivationDate() {
+		return lastActivationDate;
+	}
+
+	public void setLastActivationDate(String lastActivationDate) {
+		this.lastActivationDate = lastActivationDate;
+	}
+	
+	
  
 }

@@ -135,10 +135,13 @@ public class HistoricalViewController implements Serializable {
 		this.relationsModel = new ListRelationsVM(authService, appSWJSFRequest, refCodeListService, cmqBaseService, smqBaseService, meddraDictService, cmqRelationService, cmqParentChildService, globalController);
 		this.parentListRoot = new DefaultTreeNode("root"
 				, new HierarchyNode("LEVEL", "NAME", "CODE", "SCOPE", "CATEGORY", "WEIGHT", null)
-				, null);
-		
+				, null);		
+	}
+	
+	public String getTimezone() {
 		FacesContext context = FacesContext.getCurrentInstance();
-		ConfigurationController configMB = (ConfigurationController) context.getApplication().evaluateExpressionGet(context, "#{configMB}", ConfigurationController.class);
+		GlobalController controller = (GlobalController) context.getApplication().evaluateExpressionGet(context, "#{globalController}", GlobalController.class);
+ 		return  controller.getTimezone(); 
 	}
 
 	public void search() {

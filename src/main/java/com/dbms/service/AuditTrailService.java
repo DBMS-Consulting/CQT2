@@ -12,6 +12,7 @@ import java.time.format.DateTimeFormatterBuilder;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
@@ -2846,20 +2847,23 @@ public class AuditTrailService implements IAuditTrailService{
 		cell.setCellValue("User name: " + user);
 
 		rowCount++;
-		Calendar cal = Calendar.getInstance();
+		SimpleDateFormat dateTimeFormat = new SimpleDateFormat("dd-MMM-yyyy:hh:mm:ss a z");
+		if (timezone != null)
+			dateTimeFormat.setTimeZone(TimeZone.getTimeZone(timezone));
+
+		//Calendar cal = Calendar.getInstance();
 		//.setTime(new Date());
-		String date = getWeekDay(cal.get(Calendar.DAY_OF_WEEK)) + " " + 
+		/*String date = getWeekDay(cal.get(Calendar.DAY_OF_WEEK)) + " " + 
 				getTwoDigits(cal.get(Calendar.DAY_OF_MONTH) + 1) + "-" + 
 				getMonth(cal.get(Calendar.MONTH)) + "-" + 
 				cal.get(Calendar.YEAR) + "  " + 
 				getTwoDigits(cal.get(Calendar.HOUR)) + ":" + 
 				getTwoDigits(cal.get(Calendar.MINUTE)) + ":" + 
-				getTwoDigits(cal.get(Calendar.SECOND)) + " " + timezone;
+				getTwoDigits(cal.get(Calendar.SECOND)) + " " + timezone;*/
+		String date = dateTimeFormat.format(new Date());
 		row = worksheet.createRow(rowCount);
 		cell = row.createCell(0);
 		cell.setCellValue("Report Date/Time: " + date);
-		
-		
 		cell = row.createCell(1);
 
 		//Columns

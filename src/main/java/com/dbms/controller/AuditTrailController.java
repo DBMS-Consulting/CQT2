@@ -2,24 +2,19 @@ package com.dbms.controller;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
-import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
 
 import org.apache.commons.lang3.StringUtils;
-import org.primefaces.context.RequestContext;
 import org.primefaces.model.StreamedContent;
 
-import com.dbms.entity.AuditableEntity;
 import com.dbms.entity.cqt.CmqBase190;
 import com.dbms.entity.cqt.RefConfigCodeList;
 import com.dbms.entity.cqt.dtos.AuditTrailDto;
@@ -28,8 +23,6 @@ import com.dbms.service.AuthenticationService;
 import com.dbms.service.IAuditTrailService;
 import com.dbms.service.ICmqBase190Service;
 import com.dbms.service.IRefCodeListService;
-
- 
 
 
 @ManagedBean
@@ -65,12 +58,13 @@ public class AuditTrailController implements Serializable {
 	@PostConstruct
 	public void init() {
 		this.datas = new ArrayList<AuditTrailDto>();
-		
+	}
+	
+	public String getTimezone() {
 		FacesContext context = FacesContext.getCurrentInstance();
 		GlobalController controller = (GlobalController) context.getApplication().evaluateExpressionGet(context, "#{globalController}", GlobalController.class);
- 		this.timezone = controller.getTimezone(); 		
+ 		return  controller.getTimezone(); 
 	}
-
 	
 	public void reset() {
 		this.filteredValues = new ArrayList<AuditTrailDto>();
@@ -147,8 +141,10 @@ public class AuditTrailController implements Serializable {
 	}
 	
 	public void generateExcel(List<AuditTrailDto> list) {
+ 		System.out.println("*** audit " + timezone + "\n");	
+
 		String user =  this.authService.getUserGivenName() + " " + this.authService.getUserSurName();
-		StreamedContent content = auditTrailService.generateExcel(list, user, timezone);
+		StreamedContent content = auditTrailService.generateExcel(list, user, getTimezone());
 		setExcelFile(content); 		 
 	}
 
@@ -252,4 +248,6 @@ public class AuditTrailController implements Serializable {
 	public void setFilteredValues(List<AuditTrailDto> filteredValues) {
 		this.filteredValues = filteredValues;
 	}
+ 
+	
 }

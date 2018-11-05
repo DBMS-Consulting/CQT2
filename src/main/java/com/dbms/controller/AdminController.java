@@ -83,6 +83,7 @@ public class AdminController implements Serializable {
 
 	private RefConfigCodeList selectedRow, myFocusRef, myCodelist;
 	private StreamedContent excelFile;
+	private String timezone;
 
 	public AdminController() {
 		codelist = CqtConstants.CODE_LIST_TYPE_CMQ_RELATION_IMPACT_TYPE;
@@ -95,9 +96,12 @@ public class AdminController implements Serializable {
 
 		// Init add codelist
 		this.initNewCodelist();
-		
+	}
+	
+	public String getTimezone() {
 		FacesContext context = FacesContext.getCurrentInstance();
-		ConfigurationController configMB = (ConfigurationController) context.getApplication().evaluateExpressionGet(context, "#{configMB}", ConfigurationController.class);
+		GlobalController controller = (GlobalController) context.getApplication().evaluateExpressionGet(context, "#{globalController}", GlobalController.class);
+ 		return  controller.getTimezone(); 
 	}
 
 	public String initNewCodelist() {
@@ -918,8 +922,10 @@ public class AdminController implements Serializable {
   	}
 
 	public void generateConfigReport() {
+ 		System.out.println("*** report " + timezone + "\n");	
+
 		StreamedContent content = refCodeListService
-				.generateReport(this.codelist);
+				.generateReport(this.codelist, getTimezone());
 		setExcelFile(content);
 	}
 
@@ -1169,5 +1175,5 @@ public class AdminController implements Serializable {
 
 	public void setCqtCacheManager(ICqtCacheManager cqtCacheManager) {
 		this.cqtCacheManager = cqtCacheManager;
-	}
+	}	
 }

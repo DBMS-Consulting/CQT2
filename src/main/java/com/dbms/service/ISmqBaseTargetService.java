@@ -47,7 +47,7 @@ public interface ISmqBaseTargetService {
 
 	BigDecimal findNotImpactedCount(Map<String, Object> filters);
 
-	StreamedContent generateSMQExcel(SmqBaseTarget selectedImpactedSmqList, String dictionaryVersion, boolean filterLltFalg);
+	StreamedContent generateSMQExcel(SmqBaseTarget selectedImpactedSmqList, String dictionaryVersion, boolean filterLltFalg, String timezone);
 
 	List<SmqRelationTarget> findSmqRelationsForSmqCodeAndScope(Long smqCode, String scope);
 	

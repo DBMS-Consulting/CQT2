@@ -173,16 +173,20 @@
 				value="#{createController.selectedData.cmqCode}" />
 
 			<p:outputLabel value="Creation Date  " />
-			<h:outputText value="#{createController.selectedData.creationDate}">
+			<!-- <h:outputText value="#{createController.selectedData.creationDate}">
 				<f:convertDateTime pattern="dd-MMM-yyyy HH:mm:ss" />
+			</h:outputText> -->
+			<h:outputText value="#{createController.creationDate}">
 			</h:outputText>
 
 			<p:outputLabel value="Created By  " />
 			<h:outputText value="#{createController.detailsFormModel.createdBy}" />
 
 			<p:outputLabel value="Last Activation Date  " />
-			<h:outputText value="#{createController.selectedData.activationDate}">
+			<!-- <h:outputText value="#{createController.selectedData.activationDate}">
 				<f:convertDateTime pattern="dd-MMM-yyyy HH:mm:ss" />
+			</h:outputText> -->
+			<h:outputText value="#{createController.lastActivationDate}">
 			</h:outputText>
 
 			<p:outputLabel value="Last Activation By  " />

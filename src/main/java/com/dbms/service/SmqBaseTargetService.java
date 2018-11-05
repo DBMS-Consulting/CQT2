@@ -4,12 +4,12 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
@@ -784,15 +784,19 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 	}
 
 	@Override
-	public StreamedContent generateSMQExcel(SmqBaseTarget selectedImpactedSmqList, String dictionaryVersion, boolean filterLltFalg) {
+	public StreamedContent generateSMQExcel(SmqBaseTarget selectedImpactedSmqList, String dictionaryVersion, boolean filterLltFalg, String timezone) {
 		XSSFWorkbook workbook = new XSSFWorkbook();
 		XSSFSheet worksheet = null;
 
 		worksheet = workbook.createSheet("IA Report");
 		XSSFRow row = null;
 		int rowCount = 0;
-		DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG,
-				new Locale("EN", "en"));
+		/*DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG,
+				new Locale("EN", "en"));*/
+		
+		SimpleDateFormat sdf =  new SimpleDateFormat("dd-MMM-yyyy:hh:mm:ss a z");
+		if (timezone != null)
+			sdf.setTimeZone(TimeZone.getTimeZone(timezone));
 
 		/**
 		 * Première ligne - entêtes
@@ -819,7 +823,7 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 		rowCount++;
 		row = worksheet.createRow(rowCount);
 		cell = row.createCell(0);
-		cell.setCellValue("Report Date/Time: " + dateFormat.format(new Date()));
+		cell.setCellValue("Report Date/Time: " + sdf.format(new Date()));
 
 		rowCount += 2;
 		row = worksheet.createRow(rowCount);

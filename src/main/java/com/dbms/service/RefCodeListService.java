@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
@@ -783,8 +784,10 @@ public class RefCodeListService extends
     }
 
 	@Override
-	public StreamedContent generateReport(String codelistType) {
-		DateFormat dateTimeFormat = new SimpleDateFormat("dd-MMM-yyyy:hh:mm:ss a z");
+	public StreamedContent generateReport(String codelistType, String timezone) {
+		SimpleDateFormat dateTimeFormat = new SimpleDateFormat("dd-MMM-yyyy:hh:mm:ss a z");
+		if (timezone != null)
+			dateTimeFormat.setTimeZone(TimeZone.getTimeZone(timezone));
 		XSSFWorkbook workbook = new XSSFWorkbook();
 		XSSFSheet worksheet = null;
 

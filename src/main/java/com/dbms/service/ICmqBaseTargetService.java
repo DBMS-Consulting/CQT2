@@ -34,7 +34,7 @@ public interface ICmqBaseTargetService  extends ICqtPersistenceService<CmqBaseTa
 
 	List<CmqBaseTarget> findByLevelAndTerm(Integer level, String searchTerm);
 
-	StreamedContent generateCMQExcel(CmqBaseTarget selectedImpactedCmqList, String dictionaryVersion,TreeNode selectedNode, boolean filterLltFlag);
+	StreamedContent generateCMQExcel(CmqBaseTarget selectedImpactedCmqList, String dictionaryVersion,TreeNode selectedNode, boolean filterLltFlag, String timezone);
 
 	List<CmqBaseTarget> findApprovedCmqs();
 

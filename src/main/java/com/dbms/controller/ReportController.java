@@ -3,16 +3,20 @@ package com.dbms.controller;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -21,6 +25,12 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+
+import net.sf.jasperreports.engine.JREmptyDataSource;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -43,15 +53,6 @@ import com.dbms.util.CqtConstants;
 import com.dbms.util.exceptions.ReportGenerationException;
 import com.dbms.view.ListDetailsFormVM;
 import com.dbms.view.ListNotesFormVM;
-import java.io.FilenameFilter;
-import java.util.ArrayList;
-import java.util.Calendar;
-
-import net.sf.jasperreports.engine.JREmptyDataSource;
-import net.sf.jasperreports.engine.JasperExportManager;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
 
 /**
  * @date Feb 7, 2017 7:39:34 AM
@@ -97,14 +98,19 @@ public class ReportController extends BaseController<CmqBase190> {
     private String meddraVersioningReport;
 	
 	private StreamedContent excelFile;
-
+	
 	public ReportController() {
 	}
 
 	@PostConstruct
 	public void init() {
+	
+	}
+	
+	public String getTimezone() {
 		FacesContext context = FacesContext.getCurrentInstance();
-		ConfigurationController configMB = (ConfigurationController) context.getApplication().evaluateExpressionGet(context, "#{configMB}", ConfigurationController.class);
+		GlobalController controller = (GlobalController) context.getApplication().evaluateExpressionGet(context, "#{globalController}", GlobalController.class);
+ 		return  controller.getTimezone(); 
 	}
 	
 	@Override
@@ -156,7 +162,10 @@ public class ReportController extends BaseController<CmqBase190> {
 
 		    	// TODO: generate report data using filter
 		    	List<CmqBase190> reportData = cmqBaseService.getPublishedListsReportData(reportStartDate!=null?calSD.getTime():null, reportEndDate!=null?calED.getTime():null);
-		    	String datetimeStr = new SimpleDateFormat("dd-MMM-yyyy:hh:mm:ss a z").format(new Date());
+		    	SimpleDateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy:hh:mm:ss a z");
+		    	if (getTimezone() != null)
+		    		sdf.setTimeZone(TimeZone.getTimeZone(getTimezone())); 
+		    	String datetimeStr = sdf.format(new Date());
 		    	
 		    	if(reportData.isEmpty()) {
 		    		throw new ReportGenerationException("No matching record found");
@@ -290,7 +299,7 @@ public class ReportController extends BaseController<CmqBase190> {
 	 */
 	public void generateExcelReport(ListDetailsFormVM details) {
 		RefConfigCodeList currentMeddraVersionCodeList = this.refCodeListService.getCurrentMeddraVersion();
-		StreamedContent content = cmqBaseService.generateExcelReport(details, (currentMeddraVersionCodeList != null ? currentMeddraVersionCodeList.getValue() : ""));
+		StreamedContent content = cmqBaseService.generateExcelReport(details, (currentMeddraVersionCodeList != null ? currentMeddraVersionCodeList.getValue() : ""), getTimezone());
 		setExcelFile(content); 
 	}
 	
@@ -302,7 +311,7 @@ public class ReportController extends BaseController<CmqBase190> {
 	public void generateMQReport(ListDetailsFormVM details, ListNotesFormVM notes, TreeNode relationsRoot) {
 		RefConfigCodeList currentMeddraVersionCodeList = this.refCodeListService.getCurrentMeddraVersion();
 		boolean filterLltFlag = this.globalController.isFilterLltsFlag();
-		StreamedContent content = cmqBaseService.generateMQReport(details, notes, (currentMeddraVersionCodeList != null ? currentMeddraVersionCodeList.getValue() : ""),relationsRoot, filterLltFlag);
+		StreamedContent content = cmqBaseService.generateMQReport(details, notes, (currentMeddraVersionCodeList != null ? currentMeddraVersionCodeList.getValue() : ""),relationsRoot, filterLltFlag, getTimezone());
 		setExcelFile(content); 
 	}
     

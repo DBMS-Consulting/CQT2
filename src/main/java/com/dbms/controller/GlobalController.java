@@ -1,12 +1,7 @@
 package com.dbms.controller;
 
-import java.io.Serializable;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.TimeZone;
+import java.io.Serializable; 
 
-import javax.enterprise.inject.spi.Bean;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
@@ -30,7 +25,8 @@ public class GlobalController implements Serializable {
  	private boolean myFlag;
  	
  	private String timezone;
-	
+ 	
+ 	
 	/**
 	 * Event listener when checking the flag.
 	 * @param event
@@ -54,25 +50,24 @@ public class GlobalController implements Serializable {
 	}
 	
 	public void timezoneSwitch(AjaxBehaviorEvent event) {
- 		System.out.println("*** " + timezone);		
-		TimeZone.setDefault(TimeZone.getTimeZone(timezone));
-
+ 		System.out.println("*** " + timezone + "\n");	
+ 		setTimezone(timezone);
+ 		 		
+ 		//TimeZone.setDefault(TimeZone.getTimeZone(timezone)); 		
+ 		//System.out.println("*** " + TimeZone.getDefault() + "\n");
 	}
 
 	public boolean isMyFlag() {
 		return myFlag;
 	}
 
-
 	public void setMyFlag(boolean myFlag) {
 		this.myFlag = myFlag;
 	}
 
-
 	public boolean isFilterLltsFlag() {
 		return filterLltsFlag;
 	}
-
 
 	public void setFilterLltsFlag(boolean filterLltsFlag) {
 		this.filterLltsFlag = filterLltsFlag;
@@ -85,8 +80,4 @@ public class GlobalController implements Serializable {
 	public void setTimezone(String timezone) {
 		this.timezone = timezone;
 	}
-	
-	
-	
-	 
 }
