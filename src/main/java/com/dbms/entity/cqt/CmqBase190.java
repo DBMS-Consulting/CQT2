@@ -31,7 +31,7 @@ import com.dbms.entity.BaseEntity;
 import javax.persistence.Transient;
 
 @Entity
-@Cacheable
+@Cacheable(false)
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 @Table(name = "CMQ_BASE_CURRENT")
 public class CmqBase190 extends BaseEntity {
