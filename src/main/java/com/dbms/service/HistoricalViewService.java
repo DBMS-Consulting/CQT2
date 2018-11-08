@@ -80,10 +80,10 @@ public class HistoricalViewService implements IHistoricalViewService {
 				query.addScalar("parentListName", StandardBasicTypes.STRING);
 				query.addScalar("status", StandardBasicTypes.STRING);
 				query.addScalar("state", StandardBasicTypes.STRING);
-				query.addScalar("creationDate", StandardBasicTypes.DATE);
+				query.addScalar("creationDate", StandardBasicTypes.STRING);
 				query.addScalar("createdBy", StandardBasicTypes.STRING);
 				query.addScalar("algorithm", StandardBasicTypes.STRING);
-				query.addScalar("lastActivationDate", StandardBasicTypes.DATE);
+				query.addScalar("lastActivationDate", StandardBasicTypes.STRING);
 				query.addScalar("lastActivationBy", StandardBasicTypes.STRING);
 				query.addScalar("description", StandardBasicTypes.STRING);
 				query.addScalar("notes", StandardBasicTypes.STRING);

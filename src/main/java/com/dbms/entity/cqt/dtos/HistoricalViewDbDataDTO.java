@@ -18,10 +18,10 @@ public class HistoricalViewDbDataDTO implements Serializable {
 	private String parentListName;
 	private String status;
 	private String state;
-	private Date creationDate;
+	private String creationDate;
 	private String createdBy;
 	private String algorithm;
-	private Date lastActivationDate;
+	private String lastActivationDate;
 	private String lastActivationBy;
 	private String description;
 	private String notes;
@@ -116,11 +116,11 @@ public class HistoricalViewDbDataDTO implements Serializable {
 		this.state = state;
 	}
 
-	public Date getCreationDate() {
+	public String getCreationDate() {
 		return creationDate;
 	}
 
-	public void setCreationDate(Date creationDate) {
+	public void setCreationDate(String creationDate) {
 		this.creationDate = creationDate;
 	}
 
@@ -132,11 +132,11 @@ public class HistoricalViewDbDataDTO implements Serializable {
 		this.createdBy = createdBy;
 	}
 
-	public Date getLastActivationDate() {
+	public String getLastActivationDate() {
 		return lastActivationDate;
 	}
 
-	public void setLastActivationDate(Date lastActivationDate) {
+	public void setLastActivationDate(String lastActivationDate) {
 		this.lastActivationDate = lastActivationDate;
 	}
 

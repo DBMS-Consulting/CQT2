@@ -176,6 +176,12 @@ public class HistoricalViewController implements Serializable {
 		}
 		this.searchResults = historicalViewService.findByCriterias(listCode, dictionaryVersion,
 				CmqUtils.convertimeZone("dd-MMM-yyyy:hh:mm:ss a z", auditTimestamp, getTimezone(), "dd-MMM-yyyy:hh:mm:ss a z", "EST"));
+		if(null!=searchResults && !searchResults.isEmpty()){
+			for(HistoricalViewDbDataDTO dto : searchResults) {
+				dto.setCreationDate(CmqUtils.convertimeZone("dd-MMM-yyyy:hh:mm:ss a", dto.getCreationDate(), "EST", "dd-MMM-yyyy:hh:mm:ss a z",getTimezone()));
+				dto.setLastActivationDate(CmqUtils.convertimeZone("dd-MMM-yyyy:hh:mm:ss a", dto.getLastActivationDate(), "EST", "dd-MMM-yyyy:hh:mm:ss a z",getTimezone()));
+			}
+		}
 		
 		Map<Long, HistoricalViewDTO> historicalViewDTOMap = new HashMap<Long, HistoricalViewDTO>();
 		List<HierarchyNode> addedHierarchyNodes = new ArrayList<>();
