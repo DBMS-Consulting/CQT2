@@ -2957,9 +2957,7 @@ public class AuditTrailService implements IAuditTrailService{
  					getTwoDigits(calAudit.get(Calendar.SECOND));
  					*/
  			
- 			//
- 			String datetimeStr = new SimpleDateFormat("dd-MMM-yyyy:hh:mm:ss a").format(dto.getAuditTimestamp());
-  			cell.setCellValue(datetimeStr + " EST");
+  			cell.setCellValue(dto.getAuditTimestamp());
   			
  			rowCount++;
 		}
@@ -2999,68 +2997,6 @@ public class AuditTrailService implements IAuditTrailService{
 		cell.setCellStyle(cellStyle);
 	}
 	
-	private String getTwoDigits(int number) {
-		if (number < 10)
-			return "0"+number;
-		else return number+"";
-		
-	}
-	
-	private String getWeekDay(int weekday) {
-		switch (weekday) {
-		case 0:
-			return "Monday";
-		case 1:
-			return "Tuesday";
-		case 2:
-			return "Wednesday";
-		case 3:
-			return "Thursday";
-		case 4:
-			return "Friday";
-		case 5:
-			return "Saturday";
-		case 6:
-			return "Sunday";
-
-		default:
-			break;
-		}
-		return "";
-	}
-	
-	private String getMonth(int month) {
-		switch (month) {
-		case 0:
-			return "Jan";
-		case 1:
-			return "Feb";
-		case 2:
-			return "Mar";
-		case 3:
-			return "Apr";
-		case 4:
-			return "May";
-		case 5:
-			return "Jun";
-		case 6:
-			return "Jul";
-		case 7:
-			return "Aug";
-		case 8:
-			return "Sep";
-		case 9:
-			return "Oct";
-		case 10:
-			return "Nov";
-		case 11:
-			return "Dec";
-
-		default:
-			break;
-		}
-		return "";
-	}
 	
 	private void insertExporLogoImage(XSSFSheet sheet, XSSFWorkbook wb)
 			throws IOException {
