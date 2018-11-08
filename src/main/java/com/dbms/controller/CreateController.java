@@ -1690,6 +1690,12 @@ public class CreateController implements Serializable {
 				// retrieve the saved cmq base
 				CmqBase190 savedEntity = cmqBaseService.findByCode(codevalue);
                 setSelectedData(savedEntity);
+                this.setCreationDate(CmqUtils.convertimeZone("yyyy-MM-dd HH:mm:ss.S", selectedData.getCreationDate().toString(), "EST", "dd-MMM-yyyy:hh:mm:ss a z", getTimezone()));
+                //creationDate = dateTimeFormat.format(selectedData.getCreationDate());
+                //lastActivationDate = dateTimeFormat.format(selectedData.getActivationDate());
+        		if(selectedData.getActivationDate()!=null) {
+        			this.setLastActivationDate(CmqUtils.convertimeZone("yyyy-MM-dd HH:mm:ss.S", selectedData.getActivationDate().toString(), "EST", "dd-MMM-yyyy:hh:mm:ss a z", getTimezone()));
+        		}
 				this.detailsFormModel.loadFromCmqBase190(selectedData);
 				codeSelected = selectedData.getCmqCode();
                 //set relations tab
@@ -1829,13 +1835,14 @@ public class CreateController implements Serializable {
         
         detailDTO.copyDatas(detailsFormModel);
         detailDTO.copyNotes(notesFormModel); 
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         
-        SimpleDateFormat dateTimeFormat = new SimpleDateFormat("dd-MMM-yyyy:hh:mm:ss a z");
-		if (getTimezone() != null)
-			dateTimeFormat.setTimeZone(TimeZone.getTimeZone(getTimezone()));
-        
-        creationDate = dateTimeFormat.format(selectedData.getCreationDate());
-        lastActivationDate = dateTimeFormat.format(selectedData.getActivationDate());
+        this.setCreationDate(CmqUtils.convertimeZone("yyyy-MM-dd HH:mm:ss", sdf.format(selectedData.getCreationDate()), "EST", "dd-MMM-yyyy:hh:mm:ss a z", getTimezone()));
+        //creationDate = dateTimeFormat.format(selectedData.getCreationDate());
+        //lastActivationDate = dateTimeFormat.format(selectedData.getActivationDate());
+		if(selectedData.getActivationDate()!=null) {
+			this.setLastActivationDate(CmqUtils.convertimeZone("yyyy-MM-dd HH:mm:ss", sdf.format(selectedData.getActivationDate()), "EST", "dd-MMM-yyyy:hh:mm:ss a z", getTimezone()));
+		}
       	return null;
 	}
 

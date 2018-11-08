@@ -124,20 +124,14 @@
 
 								<p:outputLabel styleClass="label-right" value="Creation Date:" />
 								<h:outputText
-									value="#{createController.selectedData.creationDate}">
-									<f:convertDateTime pattern="dd-MMM-yyyy HH:mm:ss" />
-								</h:outputText>
+									value="#{createController.creationDate}"/>
 
 								<p:outputLabel styleClass="label-right" value="Created By: " />
 								<h:outputText value="#{createController.detailsFormModel.createdBy}" />
 
 								<p:outputLabel styleClass="label-right"
 									value="Last Activation Date:" />
-								<h:outputText
-									value="#{createController.selectedData.activationDate}">
-
-									<f:convertDateTime pattern="dd-MMM-yyyy HH:mm:ss" />
-								</h:outputText>
+								<h:outputText value="#{createController.lastActivationDate}"/>
 
 								<p:outputLabel styleClass="label-right"
 									value="Last Activation By: " />
