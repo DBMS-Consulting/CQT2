@@ -104,7 +104,7 @@ public class ReportController extends BaseController<CmqBase190> {
 
 	@PostConstruct
 	public void init() {
-	
+
 	}
 	
 	public String getTimezone() {

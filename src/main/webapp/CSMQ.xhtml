@@ -63,9 +63,9 @@
 						<p:selectOneMenu label="Timezone" value="#{globalController.timezone}" style="width:120px" id="timezone">
 							<f:selectItems value="#{configMB.timezoneList}" var="tz"
 								itemLabel="#{tz.value}" itemValue="#{tz.codelistInternalValue}" />
-								
-								<p:ajax event="change"
-							listener="#{globalController.timezoneSwitch}" />
+
+								<p:ajax event="change" update="@all"
+									listener="#{globalController.timezoneSwitch}" />
 						</p:selectOneMenu></li>
 					</ul>
 

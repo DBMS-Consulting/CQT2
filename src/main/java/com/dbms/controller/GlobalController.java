@@ -24,7 +24,7 @@ public class GlobalController implements Serializable {
 	
  	private boolean myFlag;
  	
- 	private String timezone;
+ 	private String timezone = "EST";
  	
  	
 	/**
@@ -50,11 +50,8 @@ public class GlobalController implements Serializable {
 	}
 	
 	public void timezoneSwitch(AjaxBehaviorEvent event) {
- 		System.out.println("*** " + timezone + "\n");	
+ 		//System.out.println("*** " + timezone + "\n");
  		setTimezone(timezone);
- 		 		
- 		//TimeZone.setDefault(TimeZone.getTimeZone(timezone)); 		
- 		//System.out.println("*** " + TimeZone.getDefault() + "\n");
 	}
 
 	public boolean isMyFlag() {
