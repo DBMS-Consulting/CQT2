@@ -1,14 +1,12 @@
 package com.dbms.util;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.faces.component.UIComponent;
 
@@ -108,5 +106,13 @@ public class CmqUtils {
 		return id;
 		 
 		
+	}
+
+	public static String getFormattedDate(String timezone, Date dateToFormat) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss a z");
+		sdf.setTimeZone(TimeZone.getTimeZone(timezone));
+		String formattedDate = sdf.format(dateToFormat);
+
+    	return formattedDate;
 	}
 }

@@ -164,6 +164,7 @@ public class CreateController implements Serializable {
 	
 	private StreamedContent excelFile;
 	private String creationDate, lastActivationDate;
+	private String timezone;
 	
 	public CreateController() {
 		setSelectedData(null);
@@ -177,12 +178,15 @@ public class CreateController implements Serializable {
 		initAll();
 		detailDTO = new DetailDTO();
 		this.formToOpen = "";
+
+		this.getTimezone();
 	}
 	
 	public String getTimezone() {
 		FacesContext context = FacesContext.getCurrentInstance();
 		GlobalController controller = (GlobalController) context.getApplication().evaluateExpressionGet(context, "#{globalController}", GlobalController.class);
- 		return  controller.getTimezone(); 
+		this.timezone = controller.getTimezone();
+ 		return this.timezone;
 	}
 	
 	public void generateExcel(List<CmqBase190> list) {
@@ -2981,6 +2985,9 @@ public class CreateController implements Serializable {
 	}
 
 	public String getCreationDate() {
+		if (selectedData.getCreationDate() != null) {
+			creationDate = CmqUtils.getFormattedDate(getTimezone(), selectedData.getCreationDate());
+		}
 		return creationDate;
 	}
 
@@ -2989,13 +2996,17 @@ public class CreateController implements Serializable {
 	}
 
 	public String getLastActivationDate() {
+		if(selectedData.getActivationDate() != null) {
+			lastActivationDate = CmqUtils.getFormattedDate(getTimezone(), selectedData.getActivationDate());
+		}
 		return lastActivationDate;
 	}
 
 	public void setLastActivationDate(String lastActivationDate) {
 		this.lastActivationDate = lastActivationDate;
 	}
-	
-	
- 
+
+	public void setTimezone(String timezone) {
+		this.timezone = timezone;
+	}
 }
