@@ -22,6 +22,7 @@ import javax.faces.event.AjaxBehaviorEvent;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.util.StringUtil;
 import org.primefaces.component.wizard.Wizard;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.FlowEvent;
@@ -179,7 +180,9 @@ public class HistoricalViewController implements Serializable {
 		if(null!=searchResults && !searchResults.isEmpty()){
 			for(HistoricalViewDbDataDTO dto : searchResults) {
 				dto.setCreationDate(CmqUtils.convertimeZone("dd-MMM-yyyy:hh:mm:ss a", dto.getCreationDate(), "EST", "dd-MMM-yyyy:hh:mm:ss a z",getTimezone()));
-				dto.setLastActivationDate(CmqUtils.convertimeZone("dd-MMM-yyyy:hh:mm:ss a", dto.getLastActivationDate(), "EST", "dd-MMM-yyyy:hh:mm:ss a z",getTimezone()));
+				if(!StringUtils.isBlank(dto.getLastActivationDate())){
+					dto.setLastActivationDate(CmqUtils.convertimeZone("dd-MMM-yyyy:hh:mm:ss a", dto.getLastActivationDate(), "EST", "dd-MMM-yyyy:hh:mm:ss a z",getTimezone()));
+				}
 			}
 		}
 		
