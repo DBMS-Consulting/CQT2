@@ -1694,11 +1694,11 @@ public class CreateController implements Serializable {
 				// retrieve the saved cmq base
 				CmqBase190 savedEntity = cmqBaseService.findByCode(codevalue);
                 setSelectedData(savedEntity);
-                this.setCreationDate(CmqUtils.convertimeZone("yyyy-MM-dd HH:mm:ss.S", selectedData.getCreationDate().toString(), "EST", "dd-MMM-yyyy:hh:mm:ss a z", getTimezone()));
+                this.setCreationDate(CmqUtils.convertimeZone("yyyy-MM-dd HH:mm:ss.S", selectedData.getCreationDate().toString(), "EST5EDT", "dd-MMM-yyyy:hh:mm:ss a z", getTimezone()));
                 //creationDate = dateTimeFormat.format(selectedData.getCreationDate());
                 //lastActivationDate = dateTimeFormat.format(selectedData.getActivationDate());
         		if(selectedData.getActivationDate()!=null) {
-        			this.setLastActivationDate(CmqUtils.convertimeZone("yyyy-MM-dd HH:mm:ss.S", selectedData.getActivationDate().toString(), "EST", "dd-MMM-yyyy:hh:mm:ss a z", getTimezone()));
+        			this.setLastActivationDate(CmqUtils.convertimeZone("yyyy-MM-dd HH:mm:ss.S", selectedData.getActivationDate().toString(), "EST5EDT", "dd-MMM-yyyy:hh:mm:ss a z", getTimezone()));
         		}
 				this.detailsFormModel.loadFromCmqBase190(selectedData);
 				codeSelected = selectedData.getCmqCode();
@@ -1841,11 +1841,11 @@ public class CreateController implements Serializable {
         detailDTO.copyNotes(notesFormModel); 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         
-        this.setCreationDate(CmqUtils.convertimeZone("yyyy-MM-dd HH:mm:ss", sdf.format(selectedData.getCreationDate()), "EST", "dd-MMM-yyyy:hh:mm:ss a z", getTimezone()));
+        this.setCreationDate(CmqUtils.convertimeZone("yyyy-MM-dd HH:mm:ss", sdf.format(selectedData.getCreationDate()), "EST5EDT", "dd-MMM-yyyy:hh:mm:ss a z", getTimezone()));
         //creationDate = dateTimeFormat.format(selectedData.getCreationDate());
         //lastActivationDate = dateTimeFormat.format(selectedData.getActivationDate());
 		if(selectedData.getActivationDate()!=null) {
-			this.setLastActivationDate(CmqUtils.convertimeZone("yyyy-MM-dd HH:mm:ss", sdf.format(selectedData.getActivationDate()), "EST", "dd-MMM-yyyy:hh:mm:ss a z", getTimezone()));
+			this.setLastActivationDate(CmqUtils.convertimeZone("yyyy-MM-dd HH:mm:ss", sdf.format(selectedData.getActivationDate()), "EST5EDT", "dd-MMM-yyyy:hh:mm:ss a z", getTimezone()));
 		}
       	return null;
 	}

@@ -24,7 +24,7 @@ public class GlobalController implements Serializable {
 	
  	private boolean myFlag;
  	
- 	private String timezone = "EST";
+ 	private String timezone = "EST5EDT";
  	
  	
 	/**

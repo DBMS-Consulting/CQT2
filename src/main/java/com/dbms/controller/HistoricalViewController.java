@@ -176,12 +176,12 @@ public class HistoricalViewController implements Serializable {
 			}
 		}
 		this.searchResults = historicalViewService.findByCriterias(listCode, dictionaryVersion,
-				CmqUtils.convertimeZone("dd-MMM-yyyy:hh:mm:ss a z", auditTimestamp, getTimezone(), "dd-MMM-yyyy:hh:mm:ss a z", "EST"));
+				CmqUtils.convertimeZone("dd-MMM-yyyy:hh:mm:ss a z", auditTimestamp, getTimezone(), "dd-MMM-yyyy:hh:mm:ss a z", "EST5EDT"));
 		if(null!=searchResults && !searchResults.isEmpty()){
 			for(HistoricalViewDbDataDTO dto : searchResults) {
-				dto.setCreationDate(CmqUtils.convertimeZone("dd-MMM-yyyy:hh:mm:ss a", dto.getCreationDate(), "EST", "dd-MMM-yyyy:hh:mm:ss a z",getTimezone()));
+				dto.setCreationDate(CmqUtils.convertimeZone("dd-MMM-yyyy:hh:mm:ss a", dto.getCreationDate(), "EST5EDT", "dd-MMM-yyyy:hh:mm:ss a z",getTimezone()));
 				if(!StringUtils.isBlank(dto.getLastActivationDate())){
-					dto.setLastActivationDate(CmqUtils.convertimeZone("dd-MMM-yyyy:hh:mm:ss a", dto.getLastActivationDate(), "EST", "dd-MMM-yyyy:hh:mm:ss a z",getTimezone()));
+					dto.setLastActivationDate(CmqUtils.convertimeZone("dd-MMM-yyyy:hh:mm:ss a", dto.getLastActivationDate(), "EST5EDT", "dd-MMM-yyyy:hh:mm:ss a z",getTimezone()));
 				}
 			}
 		}
@@ -1102,7 +1102,7 @@ public class HistoricalViewController implements Serializable {
 	public void populateChildCmqsByParent(Long parentCmqCode, TreeNode rootTreeNode) {
 		//now process the cmq parent child relations
 		CmqBase190 parent = cmqBaseService.findByCode(parentCmqCode);
-		List<ParentChildAuditDBDataDTO> parentChildAudit = this.historicalViewService.findHistoricalChildsByCmqId(parent.getCmqId(), CmqUtils.convertimeZone("dd-MMM-yyyy:hh:mm:ss a z", auditTimestamp, getTimezone(), "dd-MMM-yyyy:hh:mm:ss a z", "EST"));
+		List<ParentChildAuditDBDataDTO> parentChildAudit = this.historicalViewService.findHistoricalChildsByCmqId(parent.getCmqId(), CmqUtils.convertimeZone("dd-MMM-yyyy:hh:mm:ss a z", auditTimestamp, getTimezone(), "dd-MMM-yyyy:hh:mm:ss a z", "EST5EDT"));
 		Set<Long> childCmqCodes = extractHistoricChild(parentChildAudit);
 		if(childCmqCodes!=null && !childCmqCodes.isEmpty()) {
 			List<CmqBase190> childCmqs = cmqBaseService.findByCodes(new ArrayList<>(childCmqCodes));
@@ -1276,7 +1276,7 @@ public class HistoricalViewController implements Serializable {
 	}
 	
 	public void populateHistoricalParentCmqByChild(CmqBase190 childCmq) {
-		List<ParentChildAuditDBDataDTO> parentChildAudit = this.historicalViewService.findHistoricalParentsByCmqId(childCmq.getCmqId(), CmqUtils.convertimeZone("dd-MMM-yyyy:hh:mm:ss a z", auditTimestamp, getTimezone(), "dd-MMM-yyyy:hh:mm:ss a z", "EST"));
+		List<ParentChildAuditDBDataDTO> parentChildAudit = this.historicalViewService.findHistoricalParentsByCmqId(childCmq.getCmqId(), CmqUtils.convertimeZone("dd-MMM-yyyy:hh:mm:ss a z", auditTimestamp, getTimezone(), "dd-MMM-yyyy:hh:mm:ss a z", "EST5EDT"));
 		Set<Long> parentCmqCodes = extractHistoricParent(parentChildAudit);
 		if(parentCmqCodes!=null && !parentCmqCodes.isEmpty()) {
 			List<CmqBase190> parents = cmqBaseService.findByCodes(new ArrayList<>(parentCmqCodes));
@@ -1317,7 +1317,7 @@ public class HistoricalViewController implements Serializable {
 	public boolean isParentViewable(CmqBase190 childCmq) {
         
 		//Long parentCount = this.cmqParentChildService.findCmqParentCountForChildCmqCode(selectedHistoricalViewDTO.getCmqCode());
-		List<ParentChildAuditDBDataDTO> parentChildAudit = this.historicalViewService.findHistoricalParentsByCmqId(childCmq.getCmqId(), CmqUtils.convertimeZone("dd-MMM-yyyy:hh:mm:ss a z", auditTimestamp, getTimezone(), "dd-MMM-yyyy:hh:mm:ss a z", "EST"));
+		List<ParentChildAuditDBDataDTO> parentChildAudit = this.historicalViewService.findHistoricalParentsByCmqId(childCmq.getCmqId(), CmqUtils.convertimeZone("dd-MMM-yyyy:hh:mm:ss a z", auditTimestamp, getTimezone(), "dd-MMM-yyyy:hh:mm:ss a z", "EST5EDT"));
 		Set<Long> parentCmqCodes = extractHistoricParent(parentChildAudit);
 		return (parentCmqCodes!=null && parentCmqCodes.size() >0);
     

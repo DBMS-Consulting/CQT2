@@ -2703,7 +2703,7 @@ public class AuditTrailService implements IAuditTrailService{
 			if(null!=result && !result.isEmpty()){
 				retVal = new ArrayList<>();
 				for(String time: result) {
-					retVal.add(CmqUtils.convertimeZone("dd-MMM-yyyy:hh:mm:ss a z", time, "EST", "dd-MMM-yyyy:hh:mm:ss a z", timezone));
+					retVal.add(CmqUtils.convertimeZone("dd-MMM-yyyy:hh:mm:ss a z", time, "EST5EDT", "dd-MMM-yyyy:hh:mm:ss a z", timezone));
 				}
 			}
 		}catch (Exception e) {
@@ -2781,7 +2781,7 @@ public class AuditTrailService implements IAuditTrailService{
 			if(null!=result && !result.isEmpty()){
 				retVal = new ArrayList<>();
 				for(String time: result) {
-					retVal.add(CmqUtils.convertimeZone("dd-MMM-yyyy:hh:mm:ss a z", time, "EST", "dd-MMM-yyyy:hh:mm:ss a z", timezone));
+					retVal.add(CmqUtils.convertimeZone("dd-MMM-yyyy:hh:mm:ss a z", time, "EST5EDT", "dd-MMM-yyyy:hh:mm:ss a z", timezone));
 				}
 			}
 		}catch (Exception e) {
