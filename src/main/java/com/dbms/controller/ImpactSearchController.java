@@ -202,6 +202,8 @@ public class ImpactSearchController implements Serializable {
 	
 	private String formToOpen;
 	private HtmlInputHidden formClicked;
+	
+	private String creationDate;
 
 
 
@@ -3150,4 +3152,16 @@ meddraDictCurrentService, cmqRelationCurrentService,cmqBaseTargetService, smqBas
 	public void setFormClicked(HtmlInputHidden formClicked) {
 		this.formClicked = formClicked;
 	}
+	
+	public String getCreationDate() {
+		if (detailsFormModel.getCreationDate() != null) {
+			creationDate = CmqUtils.getFormattedDate(getTimezone(), detailsFormModel.getCreationDate());
+		}
+		return creationDate;
+	}
+
+	public void setCreationDate(String creationDate) {
+		this.creationDate = creationDate;
+	}
+
 }

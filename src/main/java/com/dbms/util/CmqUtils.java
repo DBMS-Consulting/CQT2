@@ -112,7 +112,6 @@ public class CmqUtils {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss a z");
 		sdf.setTimeZone(TimeZone.getTimeZone(timezone));
 		String formattedDate = sdf.format(dateToFormat);
-
     	return formattedDate;
 	}
 }
