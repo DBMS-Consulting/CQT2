@@ -1840,8 +1840,9 @@ public class CreateController implements Serializable {
         detailDTO.copyDatas(detailsFormModel);
         detailDTO.copyNotes(notesFormModel); 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        
-        this.setCreationDate(CmqUtils.convertimeZone("yyyy-MM-dd HH:mm:ss", sdf.format(selectedData.getCreationDate()), "EST5EDT", "dd-MMM-yyyy:hh:mm:ss a z", getTimezone()));
+        if(selectedData.getCreationDate()!=null) {
+        	this.setCreationDate(CmqUtils.convertimeZone("yyyy-MM-dd HH:mm:ss", sdf.format(selectedData.getCreationDate()), "EST5EDT", "dd-MMM-yyyy:hh:mm:ss a z", getTimezone()));
+        } 
         //creationDate = dateTimeFormat.format(selectedData.getCreationDate());
         //lastActivationDate = dateTimeFormat.format(selectedData.getActivationDate());
 		if(selectedData.getActivationDate()!=null) {
