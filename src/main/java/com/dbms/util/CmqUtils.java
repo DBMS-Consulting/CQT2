@@ -78,11 +78,11 @@ public class CmqUtils {
 		LocalDateTime inputDateTime = LocalDateTime.parse(inputDateString, formatter);
 		
 		// Input date time from UI timezone
-		getDateZoneId(inputTimezone);
-		ZoneId fromTimeZone = getDateZoneId(inputTimezone);    //Source timezone
+		//getDateZoneId(inputTimezone);
+		ZoneId fromTimeZone = ZoneId.of(inputTimezone);    //Source timezone
 		
 		// Output date time is always EST since DB is in EST
-        ZoneId toTimeZone = getDateZoneId(outputTimezone);  //Target timezone
+        ZoneId toTimeZone = ZoneId.of(outputTimezone);  //Target timezone
          
          
         //Zoned date time at source timezone
@@ -112,7 +112,6 @@ public class CmqUtils {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss a z");
 		sdf.setTimeZone(TimeZone.getTimeZone(timezone));
 		String formattedDate = sdf.format(dateToFormat);
-
     	return formattedDate;
 	}
 }

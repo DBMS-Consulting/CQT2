@@ -26,7 +26,9 @@
 							<p:outputLabel value="Serial Number" styleClass="label-right" />
 							<p:spinner style="float: left"
 									   required="true" label="Serial #"
-									   value="#{adminController.newCodelist.serialNum}" min="1" />
+									   value="#{adminController.newCodelist.serialNum}" min="1">
+								<p:ajax update="defaultFlagCode activeFlagCode" />
+							</p:spinner>
 
 							<p:outputLabel value="Codelist Name" styleClass="label-right" />
 							<p:inputText label="Codelist name" maxlength="30" required="true"
@@ -44,14 +46,14 @@
 										 style="width: 100px !important; float: left" />
 
 							<p:outputLabel value="Default flag" styleClass="label-right" />
-							<p:selectOneMenu value="#{adminController.newCodelist.defaultFlag}"
+							<p:selectOneMenu value="#{adminController.newCodelist.defaultFlag}" disabled="#{adminController.newCodelist.serialNum == 1}"
 											 style="float: left" id="defaultFlagCode">
 								<f:selectItem itemValue="Y" itemLabel="Y" />
 								<f:selectItem itemValue="N" itemLabel="N" />
 							</p:selectOneMenu>
 
 							<p:outputLabel value="Active flag" styleClass="label-right" />
-							<p:selectOneMenu value="#{adminController.newCodelist.activeFlag}"
+							<p:selectOneMenu value="#{adminController.newCodelist.activeFlag}" disabled="#{adminController.newCodelist.serialNum == 1}"
 											 style="float: left" id="activeFlagCode">
 								<f:selectItem itemValue="Y" itemLabel="Y" />
 								<f:selectItem itemValue="N" itemLabel="N" />

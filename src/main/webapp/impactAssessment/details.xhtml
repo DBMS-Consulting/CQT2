@@ -91,9 +91,7 @@
 					<p:ajax update="@this" global="false" />
 				</p:selectOneMenu>
 				<p:outputLabel value="Creation Date: " />
-				<h:outputText value="#{impactSearchController.detailsFormModel.creationDate}">
-					<f:convertDateTime pattern="dd-MMM-yyyy HH:mm:ss" />
-				</h:outputText>
+				<h:outputText value="#{impactSearchController.creationDate}"/>
 
 				<p:outputLabel value="Created By: " />
 				<h:outputText value="#{impactSearchController.detailsFormModel.createdBy}" />

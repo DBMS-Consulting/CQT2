@@ -105,10 +105,10 @@ public class AuditTrailController implements Serializable {
 			listCodeSelected = Long.valueOf(listCode);
 		}
 
-		datas = this.auditTrailService.findByCriterias(listCodeSelected, listName, Integer.valueOf(dictionary), CmqUtils.convertimeZone("dd-MMM-yyyy:hh:mm:ss a z", auditTimestamp, getTimezone(), "dd-MMM-yyyy:hh:mm:ss a z", "EST"));
+		datas = this.auditTrailService.findByCriterias(listCodeSelected, listName, Integer.valueOf(dictionary), CmqUtils.convertimeZone("dd-MMM-yyyy:hh:mm:ss a z", auditTimestamp, getTimezone(), "dd-MMM-yyyy:hh:mm:ss a z", "EST5EDT"));
 		if(null!=datas && !datas.isEmpty()){
 			for(AuditTrailDto dto : datas) {
-				dto.setAuditTimestamp(CmqUtils.convertimeZone("dd-MMM-yyyy:hh:mm:ss a", dto.getAuditTimestamp(), "EST", "dd-MMM-yyyy:hh:mm:ss a z",getTimezone()));
+				dto.setAuditTimestamp(CmqUtils.convertimeZone("dd-MMM-yyyy:hh:mm:ss a", dto.getAuditTimestamp(), "EST5EDT", "dd-MMM-yyyy:hh:mm:ss a z",getTimezone()));
 			}
 		}
 		this.filteredValues = datas;
