@@ -90,10 +90,12 @@ public class ReactivateController implements Serializable {
 		List<CmqBase190> parentCmqsOftargets = this.cmqBaseService.findParentCmqsByCodes(targetCmqCodes);
 		int publishedAndActiveParentOrChild = 0;
 		if(null != childCmqsOftargets) {
-			for(CmqBase190 cmqBase190 : parentCmqsOftargets) {
-				if(cmqBase190.getCmqState().equalsIgnoreCase(CmqBase190.CMQ_STATE_VALUE_PUBLISHED) 
-						&& cmqBase190.getCmqStatus().equalsIgnoreCase(CmqBase190.CMQ_STATUS_VALUE_ACTIVE)) {
-					publishedAndActiveParentOrChild++;
+			if(null != parentCmqsOftargets) {
+				for(CmqBase190 cmqBase190 : parentCmqsOftargets) {
+					if(cmqBase190.getCmqState().equalsIgnoreCase(CmqBase190.CMQ_STATE_VALUE_PUBLISHED) 
+							&& cmqBase190.getCmqStatus().equalsIgnoreCase(CmqBase190.CMQ_STATUS_VALUE_ACTIVE)) {
+						publishedAndActiveParentOrChild++;
+					}
 				}
 			}
 			for (CmqBase190 cmqBase190 : childCmqsOftargets) {
@@ -103,12 +105,12 @@ public class ReactivateController implements Serializable {
 				}
 				//if child is not in the target list then check if its reactivated or not
 				if(!targetCmqCodes.contains(cmqBase190.getCmqCode())) {
-					cptChildren++;
 					
 					if(!cmqBase190.getCmqState().equalsIgnoreCase(CmqBase190.CMQ_STATE_VALUE_PUBLISHED)
 							&& cmqBase190.getCmqStatus().equalsIgnoreCase(CmqBase190.CMQ_STATUS_VALUE_INACTIVE) 
 							&& publishedAndActiveParentOrChild != 0) {
 						isListPublishable = false;
+						cptChildren++;
 						faultyCmqs.add(cmqBase190);  
 					}
 				}
