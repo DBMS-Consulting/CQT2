@@ -80,26 +80,19 @@
 				<p:tab title="Update Codelist">
 					<h:panelGrid columns="2">
 						<p:outputLabel value="Codelist Type" />
-						<p:selectOneMenu label="Codelist Type" value="#{adminController.codelist}" id="codelistSelect">
+						<!--<p:selectOneMenu label="Codelist Type" value="#{adminController.codelist}" id="codelistSelect">
 							<f:selectItem itemValue="" itemLabel="" />
 							<f:selectItems value="#{configMB.codelistTypes}" var="cl"
 										   itemLabel="#{cl.codelistConfigType}" itemValue="#{cl.codelistConfigType}" />
-							<!--
-                                <f:selectItem itemLabel="EXTENSION" itemValue="LIST_EXTENSION_TYPES" />
-                                <f:selectItem itemLabel="PROGRAM" itemValue="PROGRAM" />
-                                <f:selectItem itemLabel="PROTOCOL" itemValue="PROTOCOL" />
-                                <f:selectItem itemLabel="PRODUCT" itemValue="PRODUCT" />
-                                <f:selectItem itemLabel="MEDDRA DICTIONARY" itemValue="MEDDRA_VERSIONS" />
-                                <f:selectItem itemLabel="WORKFLOW STATE" itemValue="WORKFLOW_STATES" />
-                                <f:selectItem itemLabel="USER GROUPS" itemValue="USER_GROUPS" />
-                                <f:selectItem itemLabel="SYSTEM CONFIG" itemValue="SYSTEM_CONFIG" />
-                                <f:selectItem itemLabel="CMQ RELATION IMPACT TYPE" itemValue="CMQ_RELATION_IMPACT_TYPE" />
-                                <f:selectItem itemLabel="SMQ RELATION IMPACT TYPE" itemValue="SMQ_RELATION_IMPACT_TYPE" />
-                                <f:selectItem itemLabel="MEDDRA DICTIONARY IMPACT TYPE" itemValue="MEDDRA_DICTIONARY_IMPACT_TYPE" />
-                                <f:selectItem itemLabel="DICTIONARY CMQ LEVELS TYPE" itemValue="DICTIONARY_CMQ_LEVELS" />
-                                <f:selectItem itemLabel="SMQ FILTER LEVELS TYPE" itemValue="SMQ_FILTER_LEVELS" />
-                            -->
 
+
+							<p:ajax update="adminPanel" oncomplete="PF('tblAdmins').filter()" event="change" listener="#{adminController.switchCodelist}" />
+						</p:selectOneMenu>-->
+
+						<p:selectOneMenu filterMatchMode="contains" id="codelistSelect" value="#{adminController.codelist}" filter="true">
+							<f:selectItem itemValue="" itemLabel="" noSelectionOption="true" />
+							<f:selectItems value="#{configMB.codelistTypes}" var="cl"
+										   itemLabel="#{cl.codelistConfigType}" itemValue="#{cl.codelistConfigType}" />
 
 							<p:ajax update="adminPanel" oncomplete="PF('tblAdmins').filter()" event="change" listener="#{adminController.switchCodelist}" />
 						</p:selectOneMenu>
