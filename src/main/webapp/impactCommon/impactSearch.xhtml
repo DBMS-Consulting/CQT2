@@ -51,6 +51,7 @@
 
 			</p:dataTable>
 		</p:tab>
+
 		<p:tab title="Non-Impacted SMQs" id="sdi4">
 			<p:dataTable id="notImpactedSmqList" value="#{impactSearchController.notImpactedSmqBaseLazyDataModel}"
 				widgetVar="notImpactedSmqList" var="smqList" paginator="true" rows="10" resizeMode="expand"
@@ -98,8 +99,9 @@
 				</p:column>
 			</p:dataTable>
 		</p:tab>
+
 		<p:tab title="Impacted Lists" id="sdi2">
-			<p:dataTable id="impactedCmqList" styleClass="ui-datatable-impactedCmqList" 
+			<p:dataTable id="impactedCmqList" styleClass="ui-datatable-data" 
 					value="#{impactSearchController.impactedCmqBaseLazyDataModel}" resizeMode="expand"
 					widgetVar="impactedCmqList" var="cmqList" paginator="true" rows="10" 
                 	selection="#{impactSearchController.selectedImpactedCmqList}" selectionMode="single" lazy="true"
@@ -164,6 +166,7 @@
   				</p:column>
 			</p:dataTable>
 		</p:tab>
+
 		<p:tab title="Non-Impacted Lists" id="sdi6">
 			<p:dataTable id="notImpactedCmqList" value="#{impactSearchController.notImpactedCmqBaseLazyDataModel}"
 				widgetVar="notImpactedCmqList" var="cmqList" paginator="true" rows="10" resizeMode="expand"
