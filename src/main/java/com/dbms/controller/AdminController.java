@@ -137,7 +137,8 @@ public class AdminController implements Serializable {
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			return "";
 		}
-		boolean codelistValue = refCodeListService.existingCodelistByValue(myCodelist.getValue());
+		boolean codelistValue = (refCodeListService.existingCodelistByValue(myCodelist.getValue()) 
+				&& refCodeListService.existingCodelistByConfigType(myCodelist.getCodelistConfigType()));
 		if (codelistValue) {
 			FacesMessage msg = new FacesMessage(
 					FacesMessage.SEVERITY_WARN,
@@ -146,7 +147,8 @@ public class AdminController implements Serializable {
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 			return "";
 		}
-		boolean codelistInternalValue = refCodeListService.existingCodelistByInternalValue(myCodelist.getCodelistInternalValue());
+		boolean codelistInternalValue = (refCodeListService.existingCodelistByInternalValue(myCodelist.getCodelistInternalValue())
+				&& refCodeListService.existingCodelistByConfigType(myCodelist.getCodelistConfigType()));
 		if (codelistInternalValue) {
 			FacesMessage msg = new FacesMessage(
 					FacesMessage.SEVERITY_WARN,
