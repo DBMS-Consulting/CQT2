@@ -322,7 +322,12 @@ public class CmqBaseRelationsTreeHelper {
                 Long ptCode = Long.valueOf(reverseSearchDto.getPtCode());
                 if(relationView) {
                     //fetch children of parent node by code of parent
-					List<MeddraDictHierarchySearchDto> childDtos = this.meddraDictSvc.findChildrenByParentCode("LLT_", "PT_", ptCode);
+                	List<MeddraDictHierarchySearchDto> childDtos = null;
+                	if(hNode.getRelationEntity()!=null) {
+                		childDtos = this.meddraDictSvc.findChildrenByParentCode("LLT_", "PT_", ptCode,((CmqRelation190)hNode.getRelationEntity()).getDictionaryVersion());
+                	}else {
+                		childDtos = this.meddraDictSvc.findChildrenByParentCode("LLT_", "PT_", ptCode);
+                	}
 					for (MeddraDictHierarchySearchDto childDto : childDtos) {
 						HierarchyNode childNode = this.createMeddraNode(childDto, "LLT", null);
 						childNode.markNotEditableInRelationstable();
