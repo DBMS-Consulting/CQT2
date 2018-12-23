@@ -72,10 +72,16 @@ public class CmqBaseRelationsTreeHelper {
 				, null);
 		boolean isInactive = false;
 		CmqBase190 cmqBase190 =  this.cmqBaseSvc.findByCode(cmqCode);
+		String dictionaryVersion = cmqBase190.getDictionaryVersion();
 		if(cmqBase190.getCmqStatus().equalsIgnoreCase("I"))
 			isInactive = true;
-        List<CmqRelation190> cmqRelationList = this.cmqRelationSvc.findByCmqCode(cmqCode);
+        List<CmqRelation190> cmqRelationList = null;
         
+        if(isInactive) {
+        	cmqRelationList = this.cmqRelationSvc.findByCmqCode(cmqCode,dictionaryVersion);
+        } else {
+        	cmqRelationList = this.cmqRelationSvc.findByCmqCode(cmqCode);
+        }
         Map<Long, IEntity> socCodesMap = new HashMap<>();
 		Map<Long, IEntity> hlgtCodesMap = new HashMap<>();
 		Map<Long, IEntity> hltCodesMap = new HashMap<>();
@@ -98,7 +104,7 @@ public class CmqBaseRelationsTreeHelper {
             } else if((cmqRelation.getLltCode() != null) && (cmqRelation.getLltCode() > 0)) {
                 lltCodesMap.put(cmqRelation.getLltCode(), cmqRelation);
             } else if((cmqRelation.getSmqCode() != null) && (cmqRelation.getSmqCode() > 0)) {
-            	TreeNode treeNode = this.populateSmqTreeNode(cmqRelation, rootNode, cmqCode, false);
+            	TreeNode treeNode = this.populateSmqTreeNode(cmqRelation, rootNode, cmqCode, false,dictionaryVersion);
             	smqChildCodeList.add(cmqRelation.getSmqCode());
             	smqChildTreeNodeMap.put(cmqRelation.getSmqCode(), treeNode);
             }
@@ -107,7 +113,7 @@ public class CmqBaseRelationsTreeHelper {
 		if(smqChildCodeList.size() > 0) {
 			//find child smqs for this one and add a C in fornt of name if it has
 			List<Map<String, Object>> smqRelationsCountList = this.smqBaseSvc
-					.findSmqChildRelationsCountForSmqCodes(smqChildCodeList);
+					.findSmqChildRelationsCountForSmqCodes(smqChildCodeList,dictionaryVersion);
 			if ((null != smqRelationsCountList)
 					&& (smqRelationsCountList.size() > 0)) {
 				for (Map<String, Object> map : smqRelationsCountList) {
@@ -198,7 +204,7 @@ public class CmqBaseRelationsTreeHelper {
         }
 		
 		if(requireDrillDown) {
-			this.populateChildCmqsByParent(cmqCode, rootNode);
+			this.populateChildCmqsByParent(cmqCode, rootNode,dictionaryVersion);
 		}
         return rootNode;
     }
@@ -227,7 +233,7 @@ public class CmqBaseRelationsTreeHelper {
             } else if((cmqRelation.getLltCode() != null) && (cmqRelation.getLltCode() > 0)) {
                 lltCodesMap.put(cmqRelation.getLltCode(), cmqRelation);
             } else if((cmqRelation.getSmqCode() != null) && (cmqRelation.getSmqCode() > 0)) {
-                this.populateSmqTreeNode(cmqRelation, expandedTreeNode, cmqCode, true);
+                this.populateSmqTreeNode(cmqRelation, expandedTreeNode, cmqCode, true,dictionaryVersion);
             }
         }
 
@@ -287,7 +293,7 @@ public class CmqBaseRelationsTreeHelper {
         if (entity instanceof CmqBase190) {
             CmqBase190 cmqBase = (CmqBase190) entity;
             Long cmqCode = cmqBase.getCmqCode();
-            this.populateCmqBaseChildren(cmqCode, expandedNode);
+            this.populateCmqBaseChildren(cmqCode, expandedNode,cmqBase.getDictionaryVersion());
             this.populateCmqRelations(cmqCode, expandedNode, entity);
         } else if (entity instanceof SMQReverseHierarchySearchDto){
         	SMQReverseHierarchySearchDto smqBase = (SMQReverseHierarchySearchDto) entity;
@@ -372,16 +378,16 @@ public class CmqBaseRelationsTreeHelper {
 		return null;
 	}
 	
-	public void populateChildCmqsByParent(Long parentCmqCode, TreeNode rootTreeNode) {
+	public void populateChildCmqsByParent(Long parentCmqCode, TreeNode rootTreeNode, String dictionaryVersion) {
 		//now process the cmq parent child relations
-		List<CmqBase190> childCmqs = this.cmqBaseSvc.findChildCmqsByParentCode(parentCmqCode);
+		List<CmqBase190> childCmqs = this.cmqBaseSvc.findChildCmqsByParentCode(parentCmqCode,dictionaryVersion);
 		if((null != childCmqs) && (childCmqs.size() > 0)) {
 			for (CmqBase190 childCmq : childCmqs) {
 				HierarchyNode node = this.createCmqBaseNode(childCmq);
 				node.setEntity(childCmq);
 				TreeNode treeNode = new DefaultTreeNode(node, rootTreeNode);
 			
-				Long childCount = this.cmqRelationSvc.findCountByCmqCode(childCmq.getCmqCode());
+				Long childCount = this.cmqRelationSvc.findCountByCmqCode(childCmq.getCmqCode(),dictionaryVersion);
 				if((null != childCount) && (childCount > 0)) {
 					HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
 					dummyNode.setDummyNode(true);
@@ -391,20 +397,20 @@ public class CmqBaseRelationsTreeHelper {
 		}
 	}
 
-    public TreeNode populateSmqTreeNode(CmqRelation190 cmqRelation, TreeNode expandedTreeNode, Long parentCode, boolean hideDeleteButton) {
+    public TreeNode populateSmqTreeNode(CmqRelation190 cmqRelation, TreeNode expandedTreeNode, Long parentCode, boolean hideDeleteButton,String dictionaryVersion) {
         TreeNode treeNode = null;
 		HierarchyNode node = null;
         
         //check if it is a PT relation of smq or not
         if((cmqRelation.getPtCode() != null) && (cmqRelation.getPtCode().longValue() > 0)) {
-            SmqRelation190 entity2 = this.smqBaseSvc.findSmqRelationBySmqAndPtCode(cmqRelation.getSmqCode(), cmqRelation.getPtCode().intValue());
+            SmqRelation190 entity2 = this.smqBaseSvc.findSmqRelationBySmqAndPtCode(cmqRelation.getSmqCode(), cmqRelation.getPtCode().intValue(),dictionaryVersion);
             node = this.createSmqRelationNode(entity2);
             if(hideDeleteButton) {
             	node.setHideDelete(true);
             }
             treeNode = new DefaultTreeNode(node, expandedTreeNode);
         } else {
-            SmqBase190 entity2 = this.smqBaseSvc.findByCode(cmqRelation.getSmqCode());
+            SmqBase190 entity2 = this.smqBaseSvc.findByCode(cmqRelation.getSmqCode(),dictionaryVersion);
             //Long childSmqCount = this.smqBaseSvc.findSmqChildRelationsCountForSmqCode(cmqRelation.getSmqCode());
             node = this.createSmqBaseNode(entity2, cmqRelation);
             /*if(childSmqCount > 0) {
@@ -419,13 +425,13 @@ public class CmqBaseRelationsTreeHelper {
             if(requireDrillDown) {
                 //add a dummy node for either of the cases, expansion will handle the actuals later
                 Long smqBaseChildrenCount;
-                smqBaseChildrenCount = this.smqBaseSvc.findChildSmqCountByParentSmqCode(((SmqBase190)entity2).getSmqCode());
+                smqBaseChildrenCount = this.smqBaseSvc.findChildSmqCountByParentSmqCode(((SmqBase190)entity2).getSmqCode(),dictionaryVersion);
                 if((null != smqBaseChildrenCount) && (smqBaseChildrenCount > 0)) {
                     // add a dummmy node to show expand arrow
                     createNewDummyNode(treeNode);
                 } else {
                     Long childSmqrelationsCount;
-                    childSmqrelationsCount = this.smqBaseSvc.findSmqRelationsCountForSmqCode(((SmqBase190)entity2).getSmqCode());
+                    childSmqrelationsCount = this.smqBaseSvc.findSmqRelationsCountForSmqCode(((SmqBase190)entity2).getSmqCode(),dictionaryVersion);
                     if((null != childSmqrelationsCount) && (childSmqrelationsCount > 0)) {
                         // add a dummmy node to show expand arrow
                         createNewDummyNode(treeNode);
@@ -602,10 +608,10 @@ public class CmqBaseRelationsTreeHelper {
         }
 	}
     
-    public void populateCmqBaseChildren(Long cmqCode, TreeNode expandedTreeNode) {
+    public void populateCmqBaseChildren(Long cmqCode, TreeNode expandedTreeNode,String dictionaryVersion) {
 		List<? extends IEntity> childCmqBaseList;
 
-        childCmqBaseList = cmqBaseSvc.findChildCmqsByParentCode(cmqCode);
+        childCmqBaseList = cmqBaseSvc.findChildCmqsByParentCode(cmqCode,dictionaryVersion);
 		
 		List<Long> childCmqCodeList = new ArrayList<>();
 		Map<Long, TreeNode> childTreeNodes = new HashMap<>();
@@ -632,7 +638,7 @@ public class CmqBaseRelationsTreeHelper {
 			}
 			
 			List<Map<String, Object>> childrenOfChildCountsList = null;
-            childrenOfChildCountsList = this.cmqBaseSvc.findCmqChildCountForParentCmqCodes(childCmqCodeList);
+            childrenOfChildCountsList = this.cmqBaseSvc.findCmqChildCountForParentCmqCodes(childCmqCodeList,dictionaryVersion);
 			
 			if((null != childrenOfChildCountsList) && (childrenOfChildCountsList.size() > 0)) {
 				//first find and fix child nodes stuff
@@ -650,7 +656,7 @@ public class CmqBaseRelationsTreeHelper {
 			}
 			
 			//now find relations for those who don't have children
-			List<Map<String, Object>> relationsCountsList = this.cmqRelationSvc.findCountByCmqCodes(childCmqCodeList);
+			List<Map<String, Object>> relationsCountsList = this.cmqRelationSvc.findCountByCmqCodes(childCmqCodeList,dictionaryVersion);
 				
 			if((null != relationsCountsList) && (relationsCountsList.size() > 0)) {
 				for(Map<String, Object> map: relationsCountsList) {
