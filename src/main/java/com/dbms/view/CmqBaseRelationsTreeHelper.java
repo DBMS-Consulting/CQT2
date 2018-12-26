@@ -77,11 +77,11 @@ public class CmqBaseRelationsTreeHelper {
 			isInactive = true;
         List<CmqRelation190> cmqRelationList = null;
         
-        if(isInactive) {
-        	cmqRelationList = this.cmqRelationSvc.findByCmqCode(cmqCode,dictionaryVersion);
-        } else {
+        //if(isInactive) {
+        	//cmqRelationList = this.cmqRelationSvc.findByCmqCode(cmqCode,dictionaryVersion);
+        //} else {
         	cmqRelationList = this.cmqRelationSvc.findByCmqCode(cmqCode);
-        }
+        //}
         Map<Long, IEntity> socCodesMap = new HashMap<>();
 		Map<Long, IEntity> hlgtCodesMap = new HashMap<>();
 		Map<Long, IEntity> hltCodesMap = new HashMap<>();
