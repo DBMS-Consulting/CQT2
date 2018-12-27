@@ -118,8 +118,6 @@ public class ReactivateController implements Serializable {
 		if(listsCurrent) {
 			reactivateTargetList();
 		} else {
-			//reactivateNonCurrentMeddraTargetList();
-			// TODO
 			RequestContext context = RequestContext.getCurrentInstance();
 		    context.execute("PF('meddraConfirmButton').jq.click();");
 		}

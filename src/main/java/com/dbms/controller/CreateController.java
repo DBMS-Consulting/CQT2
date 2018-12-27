@@ -2629,7 +2629,7 @@ public class CreateController implements Serializable {
     public boolean disableLevel() {
     	if (detailsFormModel.getExtension().equals("TME") || detailsFormModel.getExtension().equals("CPT") 
     			|| detailsFormModel.getExtension().equals("DME") || detailsFormModel.getExtension().equals("TR1")
-    			|| detailsFormModel.getExtension().equals("PRO"))
+    			|| detailsFormModel.getExtension().equals("PRO") || !detailsFormModel.getExtension().equals("PRO"))
     		return true;
     	return false;
     }
