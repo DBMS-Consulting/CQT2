@@ -27,12 +27,22 @@
 							itemLabel="#{pick.cmqName}" itemValue="#{pick.cmqCode}" />
 							
 							<p:commandButton id="reactivate-btn" value="Reactivate"
- 								action="#{reactivateController.reactivateTargetList}"
+ 								action="#{reactivateController.checkForReactivateList}"
 	 							update="@form">
 	 							<p:confirm header="Confirm Reactivation"
 									message="Are you sure you want to reactivate the selected list(s)?"
 									icon="ui-icon-alert" />
 							</p:commandButton>
+
+							<p:commandButton style="display: none" 
+                 				widgetVar="meddraConfirmButton"  
+                 				action="#{reactivateController.reactivateNonCurrentMeddraTargetList}" 
+                 				update="@form">
+  								<p:confirm header="Confirm Reactivation" 
+  								message="The List's dictionary version will be upgraded to current version and obsolete MedDRA terms will be deleted. Do you want to proceed?" 
+  								icon="ui-icon-alert"/>
+							</p:commandButton>
+
 					</h:panelGrid>
 				</p:tab>
 			</p:tabView>
@@ -43,7 +53,7 @@
 			</p:confirmDialog>
 
 			 <p:remoteCommand name="confirmYes" update="@form" 
-			 actionListener="#{reactivateController.reactivateTargetList}" 
+			 actionListener="#{reactivateController.checkForReactivateList}" 
 				
 				onstart="PF('confirmReactivation').hide()" />
 

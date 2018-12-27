@@ -11,6 +11,7 @@ import com.dbms.entity.cqt.CmqBaseTarget;
 import com.dbms.entity.cqt.CmqRelation190;
 import com.dbms.entity.cqt.SmqBase190;
 import com.dbms.entity.cqt.SmqBaseTarget;
+import com.dbms.entity.cqt.SmqRelation190;
 import com.dbms.entity.cqt.dtos.MeddraDictHierarchySearchDto;
 import com.dbms.entity.cqt.dtos.MeddraDictReverseHierarchySearchDto;
 import com.dbms.entity.cqt.dtos.SMQReverseHierarchySearchDto;
@@ -321,6 +322,10 @@ public class HierarchyNode implements Serializable, Comparable<HierarchyNode> {
 		if (this.relationEntity != null) {
 			if (this.relationEntity instanceof CmqRelation190) {
 				if(((CmqRelation190)this.relationEntity).getRelationImpactType() != null) {
+					return "DTR".equals(((CmqRelation190) this.relationEntity).getRelationImpactType());
+				}
+			} else if(this.relationEntity instanceof SmqRelation190) {
+				if(((SmqRelation190)this.relationEntity).getRelationImpactType() != null) {
 					return "DTR".equals(((CmqRelation190) this.relationEntity).getRelationImpactType());
 				}
 			}
