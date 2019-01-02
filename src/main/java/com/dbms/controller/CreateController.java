@@ -650,9 +650,10 @@ public class CreateController implements Serializable {
 			createWizard.setStep(WIZARD_STEP_DETAILS);
 		} else {
 			cancel();
-            if(copyWizard != null
-                    && COPY_WIZARD_STEP_SEARCH.equals(copyWizardNextStep))
+            if(copyWizard != null) {
                 copyingCmqCode = null;
+                copyWizardNextStep = COPY_WIZARD_STEP_SEARCH;
+            }
             /*copyWizard.setStep(COPY_WIZARD_STEP_SEARCH);
             RequestContext.getCurrentInstance().update("fCopy:wizardNavbar");
             */
@@ -1426,10 +1427,10 @@ public class CreateController implements Serializable {
                 copyWizardNextStep = COPY_WIZARD_STEP_SEARCH;
 			} else {
 				//----Confirmation on unsaved changes: see onUpdateWizardFlowProcess's "details" step
-				if (codeSelected != null)
+				//if (codeSelected != null)
 					copyWizardNextStep = event.getNewStep();
-				else
-					copyWizardNextStep = WIZARD_STEP_DETAILS;
+				//else
+					//copyWizardNextStep = WIZARD_STEP_DETAILS;
             }
             RequestContext.getCurrentInstance().execute("PF('confirmSaveDetailsDlg').show();");
 		} else if(codeSelected != null && WIZARD_STEP_INFONOTES.equalsIgnoreCase(oldStep) && notesFormModel.isModelChanged()) {
