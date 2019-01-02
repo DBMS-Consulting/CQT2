@@ -392,7 +392,7 @@ public class CmqBaseRelationsTreeHelper {
 				node.setEntity(childCmq);
 				TreeNode treeNode = new DefaultTreeNode(node, rootTreeNode);
 			
-				Long childCount = this.cmqRelationSvc.findCountByCmqCode(childCmq.getCmqCode(),dictionaryVersion);
+				Long childCount = this.cmqRelationSvc.findCountByCmqCode(childCmq.getCmqCode());
 				if((null != childCount) && (childCount > 0)) {
 					HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
 					dummyNode.setDummyNode(true);
