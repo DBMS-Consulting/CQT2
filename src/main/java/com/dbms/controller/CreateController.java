@@ -1219,7 +1219,8 @@ public class CreateController implements Serializable {
 	public String onCreateWizardFlowProcess(FlowEvent event) {
 		String oldStep, nextStep;
 		oldStep = nextStep = event.getOldStep();
-		if (notesFormModel.getDescription().equals("") && oldStep.equals(WIZARD_STEP_INFONOTES)) {
+		if (!selectedData.getCmqState().equalsIgnoreCase("APPROVED") && notesFormModel.getDescription().equals("") 
+				&& oldStep.equals(WIZARD_STEP_INFONOTES)) {
 			if (FacesContext.getCurrentInstance() != null) {
 				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Description is required", "");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
