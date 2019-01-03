@@ -101,14 +101,14 @@ public class ReactivateController implements Serializable {
 		for (CmqBase190 cmqBase : targetCmqsSelected) {
 			
 			this.relationsModel.setClickedCmqCode(cmqBase.getCmqCode());
-			List<TreeNode> test = relationsModel.getRelationsRoot().getChildren();
+			/*List<TreeNode> test = relationsModel.getRelationsRoot().getChildren();
 			
 			for(TreeNode child: test) {
 				HierarchyNode c = (HierarchyNode) child.getData();
 				if(c.isDTR()) {
 					relationsModel.deleteRelation(child, c, cmqBase.getCmqCode());
 				}
-			}
+			} */
 			
 			if(Integer.parseInt(cmqBase.getDictionaryVersion()) < Integer.parseInt(refCodeListService.getCurrentMeddraVersion().getValue())) {
 				listsCurrent = false;
@@ -212,9 +212,21 @@ public class ReactivateController implements Serializable {
 				boolean hasParentError = false;
 				String cmqError = "";
 				//success
+				
+				for(CmqBase190 target : targetCmqsSelected) {
+					if (!cmqBaseService.checkIfInactiveFor10Mins(target.getCmqCode())) {
+						FacesContext.getCurrentInstance().addMessage(null, 
+	                            new FacesMessage(FacesMessage.SEVERITY_ERROR,
+	                                    "List(s) can be reactivated only after 10 minutes of list inactivation. Please try again later.", ""));
+						
+						return "";
+					}
+				}
+				
 				for (CmqBase190 cmqBase190 : targetCmqsSelected) {
 					if (cmqBase190.getCmqLevel() == 2 && cmqBase190.getCmqParentCode() == null && cmqBase190.getCmqParentName() == null)
 						hasParentError = true;
+					
 					else {
 						cmqBase190.setCmqState(CmqBase190.CMQ_STATE_VALUE_DRAFT);
 	 					cmqBase190.setCmqStatus(CmqBase190.CMQ_STATUS_VALUE_PENDING); 
@@ -235,15 +247,13 @@ public class ReactivateController implements Serializable {
 	 					//checks each child if DTR and deletes them if they are
  						this.relationsModel.setClickedCmqCode(cmqBase190.getCmqCode());
  						List<TreeNode> children = relationsModel.getRelationsRoot().getChildren();
- 						
- 						for(TreeNode child: children) {
+ 						for(int i = children.size() - 1; i > -1; i--) {
+ 							TreeNode child = children.get(i);
  							HierarchyNode c = (HierarchyNode) child.getData();
  							if(c.isDTR()) {
- 								relationsModel.deleteRelation(child, c, cmqBase190.getCmqCode());
+ 								relationsModel.deleteRelation(relationsModel.getRelationsRoot(), c, cmqBase190.getCmqCode());
  							}
- 						}
-	 						
-	 					
+ 						}	 					
 					}
 
 					if (hasParentError) {
@@ -257,7 +267,7 @@ public class ReactivateController implements Serializable {
                                     "The List '"+ cmqError + "' does not have an associated parent list, hence cannot be reactivated", ""));
 					
 					return "";
-				} else {
+				} /*else {
 					for(CmqBase190 target : targetCmqsSelected) {
 						if (!cmqBaseService.checkIfInactiveFor10Mins(target.getCmqCode())) {
 							FacesContext.getCurrentInstance().addMessage(null, 
@@ -269,7 +279,7 @@ public class ReactivateController implements Serializable {
 					}
 				
 					
-				}
+				} */
 				
 				try {
 					this.cmqBaseService.update(targetCmqsSelected, this.authService.getUserCn()
