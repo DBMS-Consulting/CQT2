@@ -211,8 +211,12 @@ public class CmqBaseRelationsTreeHelper {
     
 
 	public void populateCmqRelations(Long cmqCode, TreeNode expandedTreeNode, IEntity entityExpanded) {
+		
+		boolean isInactive = false;
 		CmqBase190 baseCmq = this.cmqBaseSvc.findByCode(cmqCode);
 		String dictionaryVersion = baseCmq.getDictionaryVersion();
+		if(baseCmq.getCmqStatus().equalsIgnoreCase("I"))
+			isInactive = true;
         List<CmqRelation190> cmqRelationList = this.cmqRelationSvc.findByCmqCode(cmqCode);
         
         Map<Long, IEntity> socCodesMap = new HashMap<>();
@@ -242,35 +246,60 @@ public class CmqBaseRelationsTreeHelper {
             List<MeddraDictHierarchySearchDto> socDtos;
             List<Long> socCodesList = new ArrayList<>(socCodesMap.keySet());
             socDtos = this.meddraDictSvc.findByCodes("SOC_", socCodesList,dictionaryVersion);
-            this.populateCmqRelationTreeNodes(socDtos, expandedTreeNode, "SOC", "HLGT", cmqCode, socCodesMap);
+            if(!isInactive) { 
+            	this.populateCmqRelationTreeNodes(socDtos, expandedTreeNode, "SOC", "HLGT", cmqCode, socCodesMap);
+            } else {
+            	this.populateCmqRelationTreeNodes(socDtos, expandedTreeNode, "SOC", "HLGT", cmqCode, socCodesMap,dictionaryVersion);
+            }
+            
         }
 
         if(hlgtCodesMap.size() > 0) {
             List<MeddraDictHierarchySearchDto> hlgtDtos;
             List<Long> hlgtCodesList = new ArrayList<>(hlgtCodesMap.keySet());
             hlgtDtos = this.meddraDictSvc.findByCodes("HLGT_", hlgtCodesList,dictionaryVersion);
-            this.populateCmqRelationTreeNodes(hlgtDtos, expandedTreeNode, "HLGT", "HLT", cmqCode, hlgtCodesMap);
+            if(!isInactive) { 
+            	this.populateCmqRelationTreeNodes(hlgtDtos, expandedTreeNode, "HLGT", "HLT", cmqCode, hlgtCodesMap);
+            } else {
+            	this.populateCmqRelationTreeNodes(hlgtDtos, expandedTreeNode, "HLGT", "HLT", cmqCode, hlgtCodesMap,dictionaryVersion);
+            }
+            
         }
 
         if(hltCodesMap.size() > 0) {
             List<MeddraDictHierarchySearchDto> hltDtos;
             List<Long> hltCodesList = new ArrayList<>(hltCodesMap.keySet());
             hltDtos = this.meddraDictSvc.findByCodes("HLT_", hltCodesList,dictionaryVersion);
-            this.populateCmqRelationTreeNodes(hltDtos, expandedTreeNode, "HLT", "PT", cmqCode, hltCodesMap);
+            if(!isInactive) { 
+            	this.populateCmqRelationTreeNodes(hltDtos, expandedTreeNode, "HLT", "PT", cmqCode, hltCodesMap);
+            } else {
+            	this.populateCmqRelationTreeNodes(hltDtos, expandedTreeNode, "HLT", "PT", cmqCode, hltCodesMap,dictionaryVersion);
+            }
+            
         }
 
         if(ptCodesMap.size() > 0) {
             List<MeddraDictHierarchySearchDto> ptDtos;
             List<Long> ptCodesList = new ArrayList<>(ptCodesMap.keySet());
             ptDtos = this.meddraDictSvc.findByCodes("PT_", ptCodesList,dictionaryVersion);
-            this.populateCmqRelationTreeNodes(ptDtos, expandedTreeNode, "PT", "LLT", cmqCode, ptCodesMap);
+            if(!isInactive) { 
+            	this.populateCmqRelationTreeNodes(ptDtos, expandedTreeNode, "PT", "LLT", cmqCode, ptCodesMap);
+            } else {
+            	this.populateCmqRelationTreeNodes(ptDtos, expandedTreeNode, "PT", "LLT", cmqCode, ptCodesMap,dictionaryVersion);
+            }
+            
         }
 
         if(lltCodesMap.size() > 0) {
             List<MeddraDictHierarchySearchDto> lltDtos;
             List<Long> lltCodesList = new ArrayList<>(lltCodesMap.keySet());
             lltDtos = this.meddraDictSvc.findByCodes("LLT_", lltCodesList,dictionaryVersion);
-            this.populateCmqRelationTreeNodes(lltDtos, expandedTreeNode, "LLT", null, cmqCode, lltCodesMap);
+            if(!isInactive) { 
+            	this.populateCmqRelationTreeNodes(lltDtos, expandedTreeNode, "LLT", null, cmqCode, lltCodesMap);
+            } else {
+            	this.populateCmqRelationTreeNodes(lltDtos, expandedTreeNode, "LLT", null, cmqCode, lltCodesMap,dictionaryVersion);
+            }
+            
         }
 	}
 	
