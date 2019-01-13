@@ -2613,7 +2613,7 @@ public class CreateController implements Serializable {
         	 
     	
         if(updateWizard != null)
-            return d || (!WIZARD_STEP_DETAILS.equals(getActiveWizard().getStep()) || this.isReadOnlyState() || this.isFormSaved());
+            return d || (!WIZARD_STEP_DETAILS.equals(getActiveWizard().getStep()) || this.isReadOnlyState());
         if(copyWizard != null)
             return d || (copyingCmqCode==null || !WIZARD_STEP_DETAILS.equals(getActiveWizard().getStep()) || this.isReadOnlyState() || this.isFormSaved());
         else
