@@ -1257,6 +1257,12 @@ public class IARelationsTreeHelper {
                                         hn.setEntity(cs);
                                         hn.setRowStyleClass("blue-colored");
                                     }
+                                } else {
+                                	HierarchyNode hn = childSmqNodes.get(cs.getSmqCode());
+                                    if(hn != null) {
+                                        hn.setEntity(cs);
+                                        hn.setHideScope(true);
+                                    }
                                 }
                             }
                         }
@@ -1285,6 +1291,12 @@ public class IARelationsTreeHelper {
                                     if(hn != null) {
                                         hn.setEntity(cs);
                                         hn.setRowStyleClass("blue-colored");
+                                    }
+                                }else {
+                                	HierarchyNode hn = childSmqNodes.get(cs.getSmqCode());
+                                    if(hn != null) {
+                                        hn.setEntity(cs);
+                                        hn.setHideScope(true);
                                     }
                                 }
                             }
