@@ -1408,7 +1408,7 @@ public class IARelationsTreeHelper {
             node.setRelationEntity(cmqRelationsMap.get(c));
 			
             if(!bCurrentList && !isRootListNode && bEventFromTargetTable) {
-                node.markNotEditableInRelationstable();
+                node.markReadOnlyInRelationstable();
             }
 
             TreeNode treeNode = new DefaultTreeNode(node, expandedTreeNode);
