@@ -26,7 +26,7 @@ import com.dbms.entity.BaseEntity;
 @Cacheable
 @Cache(usage=CacheConcurrencyStrategy.READ_WRITE)
 @Table(name="MEDDRA_DICT_191")
-@SequenceGenerator(name = "ID_GENERATOR", sequenceName = "SEQ_MEDDRA_DICT_191")
+@SequenceGenerator(name = "ID_GEN", sequenceName = "SEQ_MEDDRA_DICT_191")
 public class MeddraDict191 extends BaseEntity{
 	private static final long serialVersionUID = 1L;
 	@Id

@@ -23,7 +23,8 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.hibernate.cfg.AvailableSettings;
-import org.hibernate.service.jdbc.connections.internal.C3P0ConnectionProvider;
+//import org.hibernate.service.jdbc.connections.internal.C3P0ConnectionProvider;
+import org.hibernate.c3p0.internal.C3P0ConnectionProvider; //new
 import org.jasypt.encryption.pbe.PBEStringEncryptor;
 import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
 import org.jasypt.encryption.pbe.config.EnvironmentStringPBEConfig;

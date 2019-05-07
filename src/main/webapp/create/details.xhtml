@@ -142,7 +142,7 @@
 			<p:selectOneMenu id="level"
 				value="#{createController.detailsFormModel.level}" label="Level"
 				required="true"
-				disabled="#{createController.detailsFormDisabled || createController.disableLevel()}">
+				disabled="#{createController.detailsFormDisabled}">
 				<f:selectItem itemValue="" itemLabel="" noSelectionOption="true" />
 				<f:selectItem itemValue="1" itemLabel="1" />
 				<f:selectItem itemValue="2" itemLabel="2" />

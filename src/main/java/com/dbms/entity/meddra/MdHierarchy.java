@@ -24,7 +24,7 @@ import javax.persistence.Table;
 		//@Index(name = "IX1_MD_HIER04", columnList = "SOC_CODE"),
 		//@Index(name = "IX1_MD_HIER05", columnList = "PT_SOC_CODE")}
 )
-@SequenceGenerator(name = "ID_GENERATOR", sequenceName = "SEQ_MD_HIERARCHY")
+@SequenceGenerator(name = "ID_GENERATOR2", sequenceName = "SEQ_MD_HIERARCHY")
 public class MdHierarchy implements Serializable {
 
 	private static final long serialVersionUID = -520733295843058594L;
