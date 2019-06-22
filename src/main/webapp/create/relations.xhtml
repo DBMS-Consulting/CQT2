@@ -300,11 +300,11 @@
 
 		<p:spacer height="10"></p:spacer>
 		<h:panelGrid style="float: right" columns="2">
-			<p:commandButton value="Add selected" onclick="PF('search').hide()"
+			<p:commandButton value="Add Term"
 				update="resultRelations @form:m1 levelH levelH2"
 				actionListener="#{createController.relationsModel.addSelectedRelations(createController.relationsModel.hierarchyDlgModel.selectedNodes)}"
 				action="#{createController.notifyRelationsUpdate}" />
-			<p:commandButton value="Cancel" onclick="PF('search').hide()"
+			<p:commandButton value="Exit" onclick="PF('search').hide()"
 				type="button" />
 		</h:panelGrid>
 	</p:dialog>
