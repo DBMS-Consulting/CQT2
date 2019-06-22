@@ -385,7 +385,7 @@ public class ListRelationsVM implements IRelationsChangeListener {
 				} else {
 					FacesContext.getCurrentInstance().addMessage(null, 
                             new FacesMessage(FacesMessage.SEVERITY_INFO,
-                                    "Selected relations added sucessfully.", ""));
+                                    "Selected relations added successfully.", ""));
 				}
 				myHierarchyDlgModel.setFilterLevel(""); 
 			} else {
