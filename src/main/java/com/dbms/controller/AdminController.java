@@ -425,7 +425,7 @@ public class AdminController implements Serializable {
 			if((myFocusRef.getCodelistInternalValue() != null) && (myFocusRef.getCodelistInternalValue().length() > 3)) {
 				FacesMessage msg = new FacesMessage(
 						FacesMessage.SEVERITY_ERROR,
-						"Length of EXTENSION Code cannot exceed 3 characters.",
+						"Extension Code can not be longer than 3 characters.",
 						"");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
 				return "";

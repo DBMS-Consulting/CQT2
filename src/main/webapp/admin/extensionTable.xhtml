@@ -76,7 +76,7 @@
 				<p:outputLabel value="Code" styleClass="label-right" />
 				<p:inputText required="true" label="Code" id="codeTxt" 
 					value="#{adminController.ref.codelistInternalValue}"
-					validatorMessage="Length of the Extension Code can not be more than 3 characters"
+					validatorMessage="Extension Code can not be longer than 3 characters."
 					style="width: 50px !important;  float: left">
 
 					<f:validateLength minimum="1" maximum="3" />
