@@ -14,16 +14,13 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 
+import com.dbms.entity.cqt.CmqBaseTarget;
+import com.dbms.service.*;
 import org.primefaces.model.DualListModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.dbms.entity.cqt.CmqBase190;
-import com.dbms.service.AuthenticationService;
-import com.dbms.service.ICmqBase190Service;
-import com.dbms.service.ICmqParentChild200Service;
-import com.dbms.service.ICmqRelation190Service;
-import com.dbms.service.IRefCodeListService;
 import com.dbms.util.exceptions.CqtServiceException;
 
 /**
@@ -39,6 +36,9 @@ public class ReactivateController implements Serializable {
 
 	@ManagedProperty("#{CmqBase190Service}")
 	private ICmqBase190Service cmqBaseService;
+
+	@ManagedProperty("#{CmqBaseTargetService}")
+	private ICmqBaseTargetService cmqBaseTargetService;
 
 	@ManagedProperty("#{CmqRelation190Service}")
 	private ICmqRelation190Service cmqRelationService;
@@ -80,6 +80,14 @@ public class ReactivateController implements Serializable {
 		List<Long> targetCmqCodes = new ArrayList<>();
 		List<CmqBase190> targetCmqsSelected = new ArrayList<>(reactivateDualListModel.getTarget());
 		for (CmqBase190 cmqBase : targetCmqsSelected) {
+			CmqBaseTarget target = cmqBaseTargetService.findByCode(cmqBase.getCmqCode());
+			if (target != null) {
+				FacesContext.getCurrentInstance().addMessage(null,
+						new FacesMessage(FacesMessage.SEVERITY_WARN,
+								"The List exists in the target view. Please check if Batch Impact job is running successfully.", ""));
+
+				return "";
+			}
 			targetCmqCodes.add(cmqBase.getCmqCode());
 			
 		}
@@ -383,5 +391,13 @@ public class ReactivateController implements Serializable {
 		
 	public void setCmqParentChildService(ICmqParentChild200Service cmqParentChildService) {
 		this.cmqParentChildService = cmqParentChildService;
+	}
+
+	public ICmqBaseTargetService getCmqBaseTargetService() {
+		return cmqBaseTargetService;
+	}
+
+	public void setCmqBaseTargetService(ICmqBaseTargetService cmqBaseTargetService) {
+		this.cmqBaseTargetService = cmqBaseTargetService;
 	}
 }
