@@ -14,6 +14,8 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 
+import com.dbms.entity.cqt.CmqBaseTarget;
+import com.dbms.service.*;
 import org.primefaces.context.RequestContext;
 import org.primefaces.model.DualListModel;
 import org.primefaces.model.TreeNode;
@@ -21,15 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.dbms.csmq.HierarchyNode;
-import com.dbms.entity.IEntity;
 import com.dbms.entity.cqt.CmqBase190;
-import com.dbms.entity.cqt.CmqBaseTarget;
-import com.dbms.service.AuthenticationService;
-import com.dbms.service.ICmqBase190Service;
-import com.dbms.service.ICmqRelation190Service;
-import com.dbms.service.IMeddraDictService;
-import com.dbms.service.IRefCodeListService;
-import com.dbms.service.ISmqBaseService;
 import com.dbms.util.SWJSFRequest;
 import com.dbms.util.exceptions.CqtServiceException;
 import com.dbms.view.ListRelationsVM;
@@ -47,6 +41,9 @@ public class ReactivateController implements Serializable {
 
 	@ManagedProperty("#{CmqBase190Service}")
 	private ICmqBase190Service cmqBaseService;
+
+	@ManagedProperty("#{CmqBaseTargetService}")
+	private ICmqBaseTargetService cmqBaseTargetService;
 
 	@ManagedProperty("#{CmqRelation190Service}")
 	private ICmqRelation190Service cmqRelationService;
@@ -99,22 +96,30 @@ public class ReactivateController implements Serializable {
 		Boolean listsCurrent = true;
 		List<CmqBase190> targetCmqsSelected = new ArrayList<>(reactivateDualListModel.getTarget());
 		for (CmqBase190 cmqBase : targetCmqsSelected) {
-			
+			CmqBaseTarget target = cmqBaseTargetService.findByCode(cmqBase.getCmqCode());
+			if (target != null) {
+				//System.out.println(" Target code, name: " + target.getCmqCode() + ", " + target.getCmqName());
+				FacesContext.getCurrentInstance().addMessage(null,
+						new FacesMessage(FacesMessage.SEVERITY_WARN,
+								"The List exists in the target view. Please check if Batch Impact job is running successfully.", ""));
+
+				return;
+			}
+
 			this.relationsModel.setClickedCmqCode(cmqBase.getCmqCode());
 			/*List<TreeNode> test = relationsModel.getRelationsRoot().getChildren();
-			
 			for(TreeNode child: test) {
 				HierarchyNode c = (HierarchyNode) child.getData();
 				if(c.isDTR()) {
 					relationsModel.deleteRelation(child, c, cmqBase.getCmqCode());
 				}
 			} */
-			
+
 			if(Integer.parseInt(cmqBase.getDictionaryVersion()) < Integer.parseInt(refCodeListService.getCurrentMeddraVersion().getValue())) {
 				listsCurrent = false;
 			}
 		}
-		
+
 		if(listsCurrent) {
 			reactivateTargetList();
 		} else {
@@ -634,5 +639,13 @@ public class ReactivateController implements Serializable {
 
 	public void setAuthService(AuthenticationService authService) {
 		this.authService = authService;
-	} 
+	}
+
+	public ICmqBaseTargetService getCmqBaseTargetService() {
+		return cmqBaseTargetService;
+	}
+
+	public void setCmqBaseTargetService(ICmqBaseTargetService cmqBaseTargetService) {
+		this.cmqBaseTargetService = cmqBaseTargetService;
+	}
 }
