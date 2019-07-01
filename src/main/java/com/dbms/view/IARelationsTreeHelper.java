@@ -1251,7 +1251,7 @@ public class IARelationsTreeHelper {
         				List<Map<String, Object>> smqChildRelationsCountList = smqBaseCurrentService.findSmqChildRelationsCountForSmqCodes(smqChildCodeList);
                         if(childSmqs != null) {
                             for(SmqBase190 cs : childSmqs) {
-                                if(CSMQBean.IMPACT_TYPE_IMPACTED.equals(cs.getImpactType())) {
+                                if(CSMQBean.IMPACT_TYPE_IMPACTED.equals(cs.getImpactType()) || getFilterDTO().isAll()) {
                                     HierarchyNode hn = childSmqNodes.get(cs.getSmqCode());
                                     if(hn != null) {
                                         hn.setEntity(cs);
@@ -1286,7 +1286,7 @@ public class IARelationsTreeHelper {
         				List<Map<String, Object>> smqChildRelationsCountList = smqBaseTargetService.findSmqChildRelationsCountForSmqCodes(smqChildCodeList);
                         if(childSmqs != null) {
                             for(SmqBaseTarget cs : childSmqs) {
-                                if(CSMQBean.IMPACT_TYPE_IMPACTED.equals(cs.getImpactType())) {
+                                if(CSMQBean.IMPACT_TYPE_IMPACTED.equals(cs.getImpactType()) || getFilterDTO().isAll()) {
                                     HierarchyNode hn = childSmqNodes.get(cs.getSmqCode());
                                     if(hn != null) {
                                         hn.setEntity(cs);
