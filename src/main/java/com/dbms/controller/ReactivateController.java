@@ -96,16 +96,6 @@ public class ReactivateController implements Serializable {
 		Boolean listsCurrent = true;
 		List<CmqBase190> targetCmqsSelected = new ArrayList<>(reactivateDualListModel.getTarget());
 		for (CmqBase190 cmqBase : targetCmqsSelected) {
-			CmqBaseTarget target = cmqBaseTargetService.findByCode(cmqBase.getCmqCode());
-			if (target != null) {
-				//System.out.println(" Target code, name: " + target.getCmqCode() + ", " + target.getCmqName());
-				FacesContext.getCurrentInstance().addMessage(null,
-						new FacesMessage(FacesMessage.SEVERITY_WARN,
-								"The List exists in the target view. Please check if Batch Impact job is running successfully.", ""));
-
-				return;
-			}
-
 			this.relationsModel.setClickedCmqCode(cmqBase.getCmqCode());
 			/*List<TreeNode> test = relationsModel.getRelationsRoot().getChildren();
 			for(TreeNode child: test) {
@@ -449,6 +439,16 @@ public class ReactivateController implements Serializable {
 		                            new FacesMessage(FacesMessage.SEVERITY_ERROR,
 		                                    "List(s) can be reactivated only after 10 minutes of list inactivation. Please try again later.", ""));
 							
+							return "";
+						}
+
+						CmqBaseTarget targetList = cmqBaseTargetService.findByCode(target.getCmqCode());
+						if (targetList != null) {
+							//System.out.println(" Target code, name: " + target.getCmqCode() + ", " + target.getCmqName());
+							FacesContext.getCurrentInstance().addMessage(null,
+									new FacesMessage(FacesMessage.SEVERITY_WARN,
+											"The List exists in the target view. Please check if Batch Impact job is running successfully.", ""));
+
 							return "";
 						}
 					}
