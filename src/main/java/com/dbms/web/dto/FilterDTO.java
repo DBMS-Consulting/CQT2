@@ -157,7 +157,10 @@ public class FilterDTO {
 	}
 	
 	
-	
+	public boolean isNoneFilterSeleted() {
+		return !(all||impactedSMQ||lltPromotedToPT||medDraTermNameChanged||mergedHLGT||newSuccessorPT||
+				newTermAdded||nonCurrentLLT||primarySOCChange||ptDemotedToLLT||scopechanged||statusChanged||termDeleted||termMoved);
+	}
 	
 	
 }
