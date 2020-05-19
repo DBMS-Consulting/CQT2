@@ -199,10 +199,10 @@ public class HierarchyNode implements Serializable, Comparable<HierarchyNode> {
 	}
 
 	public void markNotEditableInRelationstable() {
-		//this.hideCategory = true;
+		this.readOnlyCategory = true;
 		this.hideDelete = true;
-		//this.hideScope = true;
-		//this.hideWeight = true;
+		this.readOnlyScope = true;
+		this.readOnlyWeight = true;
 	}
 
 	public void markEditableInRelationstable() {
