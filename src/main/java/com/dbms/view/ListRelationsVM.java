@@ -414,7 +414,7 @@ public class ListRelationsVM implements IRelationsChangeListener {
 						.getData();
 				if (childNode.equals(selectedNode)) {
 					treeNodeIterator.remove(); // remove it from the root node
-					this.deleteRelationFromDb(childNode, ownerCmqCode);
+					this.deleteRelationFromDb(selectedNode, ownerCmqCode);
 					break;
 				} else if (childTreeNode.getChildCount() > 0) {
 					// drill down
@@ -521,13 +521,19 @@ public class ListRelationsVM implements IRelationsChangeListener {
 								}
 							}//end of for (CmqRelation190 cmqRelation190 : existingRelation)
 						} else if (entity instanceof SmqRelation190) {
+							String test;
+							String test1;
+							int test2;
+							int test3;
 							SmqRelation190 smqRelation = (SmqRelation190) entity;
 							for (CmqRelation190 cmqRelation190 : existingRelation) {
 								if((null != cmqRelation190.getSmqCode()) 
 										&& (cmqRelation190.getSmqCode().longValue() == smqRelation.getSmqCode().longValue())){
-									matchFound = true;
-									cmqRelationIdToDelete = cmqRelation190.getId();
-									break;
+									if(cmqRelation190.getPtCode().longValue() == smqRelation.getPtCode()) {
+										matchFound = true;
+										cmqRelationIdToDelete = cmqRelation190.getId();
+										break;
+									}
 								}
 							}//end of for (CmqRelation190 cmqRelation190 : existingRelation)
 						}
