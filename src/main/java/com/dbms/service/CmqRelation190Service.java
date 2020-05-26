@@ -239,31 +239,6 @@ public class CmqRelation190Service extends CqtPersistenceService<CmqRelation190>
 		}
 		return retVal;
 	}
-	
-	public Long findCountByCmqCode(Long cmqCode,String dictionaryVersion) {
-		Long retVal = null;
-		StringBuilder sb = new StringBuilder();
-		sb.append("select count(*) from "+CMQ_RELATIONS_TABLE_PREFIX+dictionaryVersion+" c where c.cmqCode = :cmqCode");
-		
-		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
-		try {
-			Query query = entityManager.createQuery(sb.toString());
-			query.setParameter("cmqCode", cmqCode);
-			query.setHint("org.hibernate.cacheable", true);
-			retVal = (Long)query.getSingleResult();
-		} catch (Exception e) {
-			StringBuilder msg = new StringBuilder();
-			msg
-					.append("An error occurred while findCountByCmqCode ")
-					.append(cmqCode)
-					.append(" Query used was ->")
-					.append(sb.toString());
-			LOG.error(msg.toString(), e);
-		} finally {
-			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
-		}
-		return retVal;
-	}
 
 	@Override
 	public List<CmqRelation190> findByCmqCodeAndImpactTypes(Long cmqCode, List<String> impactTypes) {

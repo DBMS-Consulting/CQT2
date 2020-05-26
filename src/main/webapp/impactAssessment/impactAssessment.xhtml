@@ -228,20 +228,20 @@
 										</p:row>
 									</p:columnGroup>
 
-									<p:column styleClass="wrap" rendered="#{not node.hideScope}">
+									<p:column styleClass="wrap">
 										<h:outputText value="#{node.term}" />
 									</p:column>
-									<p:column rendered="#{not node.hideScope}">
+									<p:column>
 										<h:outputLink value="#"
 											title="#{impactSearchController.getImpactDesc(node, 'current')}">
 											<h:outputText value="#{node.code}" />
 										</h:outputLink>
 									</p:column>
-									<p:column rendered="#{not node.hideScope}">
+									<p:column>
 										<h:outputText value="#{node.level}" />
 									</p:column>
 									<p:column
-										rendered="#{impactSearchController.displayScopeCatWeight and not node.hideScope}">
+										rendered="#{impactSearchController.displayScopeCatWeight}">
 										<h:outputText
 											value="#{appCSMQBean.interpretCqtBaseScope(node.scope)}" />
 									</p:column>
@@ -334,20 +334,20 @@
 
 									</p:columnGroup>
 
-									<p:column styleClass="wrap" rendered="#{not node.hideScope}">
+									<p:column styleClass="wrap">
 										<h:outputText value="#{node.term}" />
 									</p:column>
-									<p:column rendered="#{not node.hideScope}">
+									<p:column>
 										<h:outputLink value="#"
 											title="#{impactSearchController.getImpactDesc(node, 'target')}">
 											<h:outputText value="#{node.code}" />
 										</h:outputLink>
 									</p:column>
-									<p:column rendered="#{not node.hideScope}">
+									<p:column>
 										<h:outputText value="#{node.level}" />
 									</p:column>
 									<p:column
-										rendered="#{impactSearchController.displayScopeCatWeight and not node.hideScope}">
+										rendered="#{impactSearchController.displayScopeCatWeight}">
 										<h:outputText
 											rendered="#{not node.hideScope and node.readOnlyScope}"
 											value="#{appCSMQBean.interpretCqtBaseScope(node.scope)}" />
@@ -368,7 +368,7 @@
 										</p:selectOneMenu>
 									</p:column>
 									<p:column
-										rendered="#{impactSearchController.displayScopeCatWeight and not node.hideScope}">
+										rendered="#{impactSearchController.displayScopeCatWeight}">
 										<h:outputText
 											rendered="#{not node.hideCategory and node.readOnlyCategory}"
 											value="#{appCSMQBean.interpretCqtBaseCategory(node.category)}" />
@@ -385,7 +385,7 @@
                                         -->
 									</p:column>
 									<p:column
-										rendered="#{impactSearchController.displayScopeCatWeight and not node.hideScope}">
+										rendered="#{impactSearchController.displayScopeCatWeight}">
 										<h:outputText
 											rendered="#{not node.hideWeight and node.readOnlyWeight}"
 											value="#{node.weight}" />
@@ -398,7 +398,7 @@
                                         </p:spinner>
                                         -->
 									</p:column>
-									<p:column rendered="#{not node.hideScope}">
+									<p:column>
 										<p:commandLink
 											action="#{impactSearchController.deleteRelation(impactSearchController.targetTableRootTreeNode, node)}"
 											style="color: red" update="futureListsAndSmqs" title="Delete"

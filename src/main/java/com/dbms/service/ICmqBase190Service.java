@@ -73,7 +73,7 @@ public interface ICmqBase190Service extends ICqtPersistenceService<CmqBase190> {
 	
 	Map<Long,String> findAllCmqsCodeAndName();
 
-	List<CmqBase190> findChildCmqsByParentCode(Long cmqCode, String dictionaryVersion);
+	List<? extends IEntity> findChildCmqsByParentCode(Long cmqCode, String dictionaryVersion);
 
 	List<Map<String, Object>> findCmqChildCountForParentCmqCodes(List<Long> cmqCodes, String dictionaryVersion);
 }

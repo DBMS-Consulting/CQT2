@@ -70,18 +70,8 @@ public class CmqBaseRelationsTreeHelper {
 		TreeNode rootNode = new DefaultTreeNode("root"
 				, new HierarchyNode("LEVEL", "NAME", "CODE", "SCOPE", "CATEGORY", "WEIGHT", null)
 				, null);
-		boolean isInactive = false;
-		CmqBase190 cmqBase190 =  this.cmqBaseSvc.findByCode(cmqCode);
-		String dictionaryVersion = cmqBase190.getDictionaryVersion();
-		if(cmqBase190.getCmqStatus().equalsIgnoreCase("I"))
-			isInactive = true;
-        List<CmqRelation190> cmqRelationList = null;
+        List<CmqRelation190> cmqRelationList = this.cmqRelationSvc.findByCmqCode(cmqCode);
         
-        //if(isInactive) {
-        	//cmqRelationList = this.cmqRelationSvc.findByCmqCode(cmqCode,dictionaryVersion);
-        //} else {
-        	cmqRelationList = this.cmqRelationSvc.findByCmqCode(cmqCode);
-        //}
         Map<Long, IEntity> socCodesMap = new HashMap<>();
 		Map<Long, IEntity> hlgtCodesMap = new HashMap<>();
 		Map<Long, IEntity> hltCodesMap = new HashMap<>();
@@ -104,7 +94,7 @@ public class CmqBaseRelationsTreeHelper {
             } else if((cmqRelation.getLltCode() != null) && (cmqRelation.getLltCode() > 0)) {
                 lltCodesMap.put(cmqRelation.getLltCode(), cmqRelation);
             } else if((cmqRelation.getSmqCode() != null) && (cmqRelation.getSmqCode() > 0)) {
-            	TreeNode treeNode = this.populateSmqTreeNode(cmqRelation, rootNode, cmqCode, false,dictionaryVersion);
+            	TreeNode treeNode = this.populateSmqTreeNode(cmqRelation, rootNode, cmqCode, false);
             	smqChildCodeList.add(cmqRelation.getSmqCode());
             	smqChildTreeNodeMap.put(cmqRelation.getSmqCode(), treeNode);
             }
@@ -113,7 +103,7 @@ public class CmqBaseRelationsTreeHelper {
 		if(smqChildCodeList.size() > 0) {
 			//find child smqs for this one and add a C in fornt of name if it has
 			List<Map<String, Object>> smqRelationsCountList = this.smqBaseSvc
-					.findSmqChildRelationsCountForSmqCodes(smqChildCodeList,dictionaryVersion);
+					.findSmqChildRelationsCountForSmqCodes(smqChildCodeList);
 			if ((null != smqRelationsCountList)
 					&& (smqRelationsCountList.size() > 0)) {
 				for (Map<String, Object> map : smqRelationsCountList) {
@@ -136,87 +126,45 @@ public class CmqBaseRelationsTreeHelper {
         if(socCodesMap.size() > 0) {
             List<MeddraDictHierarchySearchDto> socDtos;
             List<Long> socCodesList = new ArrayList<>(socCodesMap.keySet());
-            if(!isInactive) {
-            	socDtos = this.meddraDictSvc.findByCodes("SOC_", socCodesList);
-            	this.populateCmqRelationTreeNodes(socDtos, rootNode, "SOC", "HLGT", cmqCode, socCodesMap);
-            } else {
-            	socDtos = this.meddraDictSvc.findByCodes("SOC_", socCodesList,cmqBase190.getDictionaryVersion());
-            	this.populateCmqRelationTreeNodes(socDtos, rootNode, "SOC", "HLGT", cmqCode, socCodesMap,cmqBase190.getDictionaryVersion());
-            }
-            
-            
+            socDtos = this.meddraDictSvc.findByCodes("SOC_", socCodesList);
+            this.populateCmqRelationTreeNodes(socDtos, rootNode, "SOC", "HLGT", cmqCode, socCodesMap);
         }
 
         if(hlgtCodesMap.size() > 0) {
             List<MeddraDictHierarchySearchDto> hlgtDtos;
             List<Long> hlgtCodesList = new ArrayList<>(hlgtCodesMap.keySet());
-            if(!isInactive) {
-            	 hlgtDtos = this.meddraDictSvc.findByCodes("HLGT_", hlgtCodesList);
-            	 this.populateCmqRelationTreeNodes(hlgtDtos, rootNode, "HLGT", "HLT", cmqCode, hlgtCodesMap);
-            } else {
-            	hlgtDtos = this.meddraDictSvc.findByCodes("HLGT_", hlgtCodesList,cmqBase190.getDictionaryVersion());
-            	this.populateCmqRelationTreeNodes(hlgtDtos, rootNode, "HLGT", "HLT", cmqCode, hlgtCodesMap,cmqBase190.getDictionaryVersion());
-            }
-           
-            
+            hlgtDtos = this.meddraDictSvc.findByCodes("HLGT_", hlgtCodesList);
+            this.populateCmqRelationTreeNodes(hlgtDtos, rootNode, "HLGT", "HLT", cmqCode, hlgtCodesMap);
         }
 
         if(hltCodesMap.size() > 0) {
             List<MeddraDictHierarchySearchDto> hltDtos;
             List<Long> hltCodesList = new ArrayList<>(hltCodesMap.keySet());
-            if(!isInactive) {
-            	hltDtos = this.meddraDictSvc.findByCodes("HLT_", hltCodesList);
-            	this.populateCmqRelationTreeNodes(hltDtos, rootNode, "HLT", "PT", cmqCode, hltCodesMap);
-            } else {
-            	hltDtos = this.meddraDictSvc.findByCodes("HLT_", hltCodesList,cmqBase190.getDictionaryVersion());
-            	this.populateCmqRelationTreeNodes(hltDtos, rootNode, "HLT", "PT", cmqCode, hltCodesMap,cmqBase190.getDictionaryVersion());
-            }
-            
-            
+            hltDtos = this.meddraDictSvc.findByCodes("HLT_", hltCodesList);
+            this.populateCmqRelationTreeNodes(hltDtos, rootNode, "HLT", "PT", cmqCode, hltCodesMap);
         }
 
         if(ptCodesMap.size() > 0) {
             List<MeddraDictReverseHierarchySearchDto> ptDtos;
             List<Long> ptCodesList = new ArrayList<>(ptCodesMap.keySet());
-            if(!isInactive) {
-            	ptDtos = this.meddraDictSvc.findByPtOrLltCodes("PT_", ptCodesList);
-            	this.populateCmqRelationTreeNodes2(ptDtos, rootNode, "PT", "LLT", cmqCode, ptCodesMap);
-            } else {
-            	ptDtos = this.meddraDictSvc.findByPtOrLltCodes("PT_", ptCodesList,cmqBase190.getDictionaryVersion());
-            	this.populateCmqRelationTreeNodes2(ptDtos, rootNode, "PT", "LLT", cmqCode, ptCodesMap,cmqBase190.getDictionaryVersion());
-            }
-            
-            
+            ptDtos = this.meddraDictSvc.findByPtOrLltCodes("PT_", ptCodesList);
+            this.populateCmqRelationTreeNodes2(ptDtos, rootNode, "PT", "LLT", cmqCode, ptCodesMap);
         }
 
         if(lltCodesMap.size() > 0) {
             List<MeddraDictReverseHierarchySearchDto> lltDtos;
             List<Long> lltCodesList = new ArrayList<>(lltCodesMap.keySet());
-            if(!isInactive) {
-            	lltDtos = this.meddraDictSvc.findByPtOrLltCodes("LLT_", lltCodesList);
-            	this.populateCmqRelationTreeNodes2(lltDtos, rootNode, "LLT", null, cmqCode, lltCodesMap);
-            } else {
-            	lltDtos = this.meddraDictSvc.findByPtOrLltCodes("LLT_", lltCodesList,cmqBase190.getDictionaryVersion());
-            	this.populateCmqRelationTreeNodes2(lltDtos, rootNode, "LLT", null, cmqCode, lltCodesMap,cmqBase190.getDictionaryVersion());
-            }
-            
-            
+            lltDtos = this.meddraDictSvc.findByPtOrLltCodes("LLT_", lltCodesList);
+            this.populateCmqRelationTreeNodes2(lltDtos, rootNode, "LLT", null, cmqCode, lltCodesMap);
         }
 		
 		if(requireDrillDown) {
-			this.populateChildCmqsByParent(cmqCode, rootNode,dictionaryVersion);
+			this.populateChildCmqsByParent(cmqCode, rootNode);
 		}
         return rootNode;
     }
     
-
-	public void populateCmqRelations(Long cmqCode, TreeNode expandedTreeNode, IEntity entityExpanded) {
-		
-		boolean isInactive = false;
-		CmqBase190 baseCmq = this.cmqBaseSvc.findByCode(cmqCode);
-		String dictionaryVersion = baseCmq.getDictionaryVersion();
-		if(baseCmq.getCmqStatus().equalsIgnoreCase("I"))
-			isInactive = true;
+    public void populateCmqRelations(Long cmqCode, TreeNode expandedTreeNode, IEntity entityExpanded) {
         List<CmqRelation190> cmqRelationList = this.cmqRelationSvc.findByCmqCode(cmqCode);
         
         Map<Long, IEntity> socCodesMap = new HashMap<>();
@@ -237,7 +185,7 @@ public class CmqBaseRelationsTreeHelper {
             } else if((cmqRelation.getLltCode() != null) && (cmqRelation.getLltCode() > 0)) {
                 lltCodesMap.put(cmqRelation.getLltCode(), cmqRelation);
             } else if((cmqRelation.getSmqCode() != null) && (cmqRelation.getSmqCode() > 0)) {
-                this.populateSmqTreeNode(cmqRelation, expandedTreeNode, cmqCode, true,dictionaryVersion);
+                this.populateSmqTreeNode(cmqRelation, expandedTreeNode, cmqCode, true);
             }
         }
 
@@ -245,61 +193,36 @@ public class CmqBaseRelationsTreeHelper {
         if(socCodesMap.size() > 0) {
             List<MeddraDictHierarchySearchDto> socDtos;
             List<Long> socCodesList = new ArrayList<>(socCodesMap.keySet());
-            socDtos = this.meddraDictSvc.findByCodes("SOC_", socCodesList,dictionaryVersion);
-            if(!isInactive) { 
-            	this.populateCmqRelationTreeNodes(socDtos, expandedTreeNode, "SOC", "HLGT", cmqCode, socCodesMap);
-            } else {
-            	this.populateCmqRelationTreeNodes(socDtos, expandedTreeNode, "SOC", "HLGT", cmqCode, socCodesMap,dictionaryVersion);
-            }
-            
+            socDtos = this.meddraDictSvc.findByCodes("SOC_", socCodesList);
+            this.populateCmqRelationTreeNodes(socDtos, expandedTreeNode, "SOC", "HLGT", cmqCode, socCodesMap);
         }
 
         if(hlgtCodesMap.size() > 0) {
             List<MeddraDictHierarchySearchDto> hlgtDtos;
             List<Long> hlgtCodesList = new ArrayList<>(hlgtCodesMap.keySet());
-            hlgtDtos = this.meddraDictSvc.findByCodes("HLGT_", hlgtCodesList,dictionaryVersion);
-            if(!isInactive) { 
-            	this.populateCmqRelationTreeNodes(hlgtDtos, expandedTreeNode, "HLGT", "HLT", cmqCode, hlgtCodesMap);
-            } else {
-            	this.populateCmqRelationTreeNodes(hlgtDtos, expandedTreeNode, "HLGT", "HLT", cmqCode, hlgtCodesMap,dictionaryVersion);
-            }
-            
+            hlgtDtos = this.meddraDictSvc.findByCodes("HLGT_", hlgtCodesList);
+            this.populateCmqRelationTreeNodes(hlgtDtos, expandedTreeNode, "HLGT", "HLT", cmqCode, hlgtCodesMap);
         }
 
         if(hltCodesMap.size() > 0) {
             List<MeddraDictHierarchySearchDto> hltDtos;
             List<Long> hltCodesList = new ArrayList<>(hltCodesMap.keySet());
-            hltDtos = this.meddraDictSvc.findByCodes("HLT_", hltCodesList,dictionaryVersion);
-            if(!isInactive) { 
-            	this.populateCmqRelationTreeNodes(hltDtos, expandedTreeNode, "HLT", "PT", cmqCode, hltCodesMap);
-            } else {
-            	this.populateCmqRelationTreeNodes(hltDtos, expandedTreeNode, "HLT", "PT", cmqCode, hltCodesMap,dictionaryVersion);
-            }
-            
+            hltDtos = this.meddraDictSvc.findByCodes("HLT_", hltCodesList);
+            this.populateCmqRelationTreeNodes(hltDtos, expandedTreeNode, "HLT", "PT", cmqCode, hltCodesMap);
         }
 
         if(ptCodesMap.size() > 0) {
             List<MeddraDictHierarchySearchDto> ptDtos;
             List<Long> ptCodesList = new ArrayList<>(ptCodesMap.keySet());
-            ptDtos = this.meddraDictSvc.findByCodes("PT_", ptCodesList,dictionaryVersion);
-            if(!isInactive) { 
-            	this.populateCmqRelationTreeNodes(ptDtos, expandedTreeNode, "PT", "LLT", cmqCode, ptCodesMap);
-            } else {
-            	this.populateCmqRelationTreeNodes(ptDtos, expandedTreeNode, "PT", "LLT", cmqCode, ptCodesMap,dictionaryVersion);
-            }
-            
+            ptDtos = this.meddraDictSvc.findByCodes("PT_", ptCodesList);
+            this.populateCmqRelationTreeNodes(ptDtos, expandedTreeNode, "PT", "LLT", cmqCode, ptCodesMap);
         }
 
         if(lltCodesMap.size() > 0) {
             List<MeddraDictHierarchySearchDto> lltDtos;
             List<Long> lltCodesList = new ArrayList<>(lltCodesMap.keySet());
-            lltDtos = this.meddraDictSvc.findByCodes("LLT_", lltCodesList,dictionaryVersion);
-            if(!isInactive) { 
-            	this.populateCmqRelationTreeNodes(lltDtos, expandedTreeNode, "LLT", null, cmqCode, lltCodesMap);
-            } else {
-            	this.populateCmqRelationTreeNodes(lltDtos, expandedTreeNode, "LLT", null, cmqCode, lltCodesMap,dictionaryVersion);
-            }
-            
+            lltDtos = this.meddraDictSvc.findByCodes("LLT_", lltCodesList);
+            this.populateCmqRelationTreeNodes(lltDtos, expandedTreeNode, "LLT", null, cmqCode, lltCodesMap);
         }
 	}
 	
@@ -322,7 +245,7 @@ public class CmqBaseRelationsTreeHelper {
         if (entity instanceof CmqBase190) {
             CmqBase190 cmqBase = (CmqBase190) entity;
             Long cmqCode = cmqBase.getCmqCode();
-            this.populateCmqBaseChildren(cmqCode, expandedNode,cmqBase.getDictionaryVersion());
+            this.populateCmqBaseChildren(cmqCode, expandedNode);
             this.populateCmqRelations(cmqCode, expandedNode, entity);
         } else if (entity instanceof SMQReverseHierarchySearchDto){
         	SMQReverseHierarchySearchDto smqBase = (SMQReverseHierarchySearchDto) entity;
@@ -335,12 +258,7 @@ public class CmqBaseRelationsTreeHelper {
             String parentLevel = hNode.getLevel();
             MeddraDictHierarchySearchDto meddraDictHierarchySearchDto = (MeddraDictHierarchySearchDto)entity;
             Long dtoCode = Long.valueOf(meddraDictHierarchySearchDto.getCode());
-            if(hNode.getRelationEntity()!=null) {
-            	this.populateMeddraDictHierarchySearchDtoChildren(parentLevel, dtoCode, expandedNode,((CmqRelation190)hNode.getRelationEntity()).getDictionaryVersion());
-            } else {
-            	this.populateMeddraDictHierarchySearchDtoChildren(parentLevel, dtoCode, expandedNode,null);
-            }
-            
+            this.populateMeddraDictHierarchySearchDtoChildren(parentLevel, dtoCode, expandedNode);
         }  else if(entity instanceof MeddraDictReverseHierarchySearchDto) {
             MeddraDictReverseHierarchySearchDto reverseSearchDto = (MeddraDictReverseHierarchySearchDto)entity;
             String levelOfExpandedNode = hNode.getLevel();
@@ -351,12 +269,7 @@ public class CmqBaseRelationsTreeHelper {
                 Long ptCode = Long.valueOf(reverseSearchDto.getPtCode());
                 if(relationView) {
                     //fetch children of parent node by code of parent
-                	List<MeddraDictHierarchySearchDto> childDtos = null;
-                	if(hNode.getRelationEntity()!=null) {
-                		childDtos = this.meddraDictSvc.findChildrenByParentCode("LLT_", "PT_", ptCode,((CmqRelation190)hNode.getRelationEntity()).getDictionaryVersion());
-                	}else {
-                		childDtos = this.meddraDictSvc.findChildrenByParentCode("LLT_", "PT_", ptCode);
-                	}
+					List<MeddraDictHierarchySearchDto> childDtos = this.meddraDictSvc.findChildrenByParentCode("LLT_", "PT_", ptCode);
 					for (MeddraDictHierarchySearchDto childDto : childDtos) {
 						HierarchyNode childNode = this.createMeddraNode(childDto, "LLT", null);
 						childNode.markNotEditableInRelationstable();
@@ -412,9 +325,9 @@ public class CmqBaseRelationsTreeHelper {
 		return null;
 	}
 	
-	public void populateChildCmqsByParent(Long parentCmqCode, TreeNode rootTreeNode, String dictionaryVersion) {
+	public void populateChildCmqsByParent(Long parentCmqCode, TreeNode rootTreeNode) {
 		//now process the cmq parent child relations
-		List<CmqBase190> childCmqs = this.cmqBaseSvc.findChildCmqsByParentCode(parentCmqCode,dictionaryVersion);
+		List<CmqBase190> childCmqs = this.cmqBaseSvc.findChildCmqsByParentCode(parentCmqCode);
 		if((null != childCmqs) && (childCmqs.size() > 0)) {
 			for (CmqBase190 childCmq : childCmqs) {
 				HierarchyNode node = this.createCmqBaseNode(childCmq);
@@ -431,20 +344,20 @@ public class CmqBaseRelationsTreeHelper {
 		}
 	}
 
-    public TreeNode populateSmqTreeNode(CmqRelation190 cmqRelation, TreeNode expandedTreeNode, Long parentCode, boolean hideDeleteButton,String dictionaryVersion) {
+    public TreeNode populateSmqTreeNode(CmqRelation190 cmqRelation, TreeNode expandedTreeNode, Long parentCode, boolean hideDeleteButton) {
         TreeNode treeNode = null;
 		HierarchyNode node = null;
         
         //check if it is a PT relation of smq or not
         if((cmqRelation.getPtCode() != null) && (cmqRelation.getPtCode().longValue() > 0)) {
-            SmqRelation190 entity2 = this.smqBaseSvc.findSmqRelationBySmqAndPtCode(cmqRelation.getSmqCode(), cmqRelation.getPtCode().intValue(),dictionaryVersion);
+            SmqRelation190 entity2 = this.smqBaseSvc.findSmqRelationBySmqAndPtCode(cmqRelation.getSmqCode(), cmqRelation.getPtCode().intValue());
             node = this.createSmqRelationNode(entity2);
             if(hideDeleteButton) {
             	node.setHideDelete(true);
             }
             treeNode = new DefaultTreeNode(node, expandedTreeNode);
         } else {
-            SmqBase190 entity2 = this.smqBaseSvc.findByCode(cmqRelation.getSmqCode(),dictionaryVersion);
+            SmqBase190 entity2 = this.smqBaseSvc.findByCode(cmqRelation.getSmqCode());
             //Long childSmqCount = this.smqBaseSvc.findSmqChildRelationsCountForSmqCode(cmqRelation.getSmqCode());
             node = this.createSmqBaseNode(entity2, cmqRelation);
             /*if(childSmqCount > 0) {
@@ -459,13 +372,13 @@ public class CmqBaseRelationsTreeHelper {
             if(requireDrillDown) {
                 //add a dummy node for either of the cases, expansion will handle the actuals later
                 Long smqBaseChildrenCount;
-                smqBaseChildrenCount = this.smqBaseSvc.findChildSmqCountByParentSmqCode(((SmqBase190)entity2).getSmqCode(),dictionaryVersion);
+                smqBaseChildrenCount = this.smqBaseSvc.findChildSmqCountByParentSmqCode(((SmqBase190)entity2).getSmqCode());
                 if((null != smqBaseChildrenCount) && (smqBaseChildrenCount > 0)) {
                     // add a dummmy node to show expand arrow
                     createNewDummyNode(treeNode);
                 } else {
                     Long childSmqrelationsCount;
-                    childSmqrelationsCount = this.smqBaseSvc.findSmqRelationsCountForSmqCode(((SmqBase190)entity2).getSmqCode(),dictionaryVersion);
+                    childSmqrelationsCount = this.smqBaseSvc.findSmqRelationsCountForSmqCode(((SmqBase190)entity2).getSmqCode());
                     if((null != childSmqrelationsCount) && (childSmqrelationsCount > 0)) {
                         // add a dummmy node to show expand arrow
                         createNewDummyNode(treeNode);
@@ -520,50 +433,6 @@ public class CmqBaseRelationsTreeHelper {
         }
 	}
     
-    public void populateCmqRelationTreeNodes(List<MeddraDictHierarchySearchDto> dtos, TreeNode expandedTreeNode
-			, String nodeType, String childNodeType, Long parentCode, Map<Long, IEntity> cmqRelationsMap, String dictionaryVersion
-            ) {
-        Map<Long, TreeNode> addedNodes = new HashMap<>();
-        List<Long> dtoCodes = new ArrayList<>(dtos.size());
-        boolean isRootNodeExpanded = isRootListNode(expandedTreeNode);
-
-        for (MeddraDictHierarchySearchDto m : dtos) {
-            final Long c = Long.valueOf(m.getCode());
-            HierarchyNode node = this.createMeddraNode(m, nodeType, cmqRelationsMap.get(c));
-            if(!isRootNodeExpanded && relationView) {
-                node.markNotEditableInRelationstable();
-            }
-
-            TreeNode treeNode = new DefaultTreeNode(node, expandedTreeNode);
-
-            addedNodes.put(c, treeNode);
-            dtoCodes.add(c);
-        }
-        
-        boolean filterLltsFlag = this.globalController.isFilterLltsFlag();
-        
-        if(requireDrillDown && childNodeType!=null &&
-        		(!nodeType.equalsIgnoreCase("PT") || (nodeType.equalsIgnoreCase("PT") && !filterLltsFlag))) {
-            List<Map<String, Object>> countsOfChildren = this.meddraDictSvc.findChildrenCountByParentCodes(childNodeType + "_"
-                                            , nodeType + "_", dtoCodes,dictionaryVersion);
-
-            if((null != countsOfChildren) && (countsOfChildren.size() > 0)) {
-                //first find and fix child nodes stuff
-                for (Map<String, Object> cc: countsOfChildren) {
-                    if(cc.get("PARENT_CODE") != null && cc.get("COUNT") != null) {
-                        Long pCode = (Long)cc.get("PARENT_CODE");
-                        Long c = (Long)cc.get("COUNT");
-                        TreeNode t = c > 0 ? addedNodes.get(pCode) : null;
-                        if(t!=null) {
-                            // add a dummmy node to show expand arrow
-                            createNewDummyNode(t);
-                        }
-                    }
-                }
-            }
-        }
-	}
-    
     public void populateCmqRelationTreeNodes2(List<MeddraDictReverseHierarchySearchDto> dtos, TreeNode expandedTreeNode
 			, String nodeType, String childNodeType, Long parentCode, Map<Long, IEntity> cmqRelationsMap
             ) {
@@ -603,49 +472,10 @@ public class CmqBaseRelationsTreeHelper {
         }
 	}
     
-    public void populateCmqRelationTreeNodes2(List<MeddraDictReverseHierarchySearchDto> dtos, TreeNode expandedTreeNode
-			, String nodeType, String childNodeType, Long parentCode, Map<Long, IEntity> cmqRelationsMap, String dictionaryVersion
-            ) {
-        Map<Long, TreeNode> addedNodes = new HashMap<>();
-        List<Long> dtoCodes = new ArrayList<>(dtos.size());
-
-        for (MeddraDictReverseHierarchySearchDto m : dtos) {
-            final Long c = Long.valueOf(m.getPtCode());
-            HierarchyNode node = this.createMeddraReverseNode(m, nodeType,false, cmqRelationsMap.get(c));
-            TreeNode treeNode = new DefaultTreeNode(node, expandedTreeNode);
-
-            addedNodes.put(c, treeNode);
-            dtoCodes.add(c);
-        }
-        
-        boolean filterLltsFlag = this.globalController.isFilterLltsFlag();
-        
-        if(requireDrillDown && childNodeType!=null && 
-        		(!nodeType.equalsIgnoreCase("PT") || (nodeType.equalsIgnoreCase("PT") && !filterLltsFlag))) {
-            List<Map<String, Object>> countsOfChildren = this.meddraDictSvc.findChildrenCountByParentCodes(childNodeType + "_"
-                                            , nodeType + "_", dtoCodes,dictionaryVersion);
-
-            if((null != countsOfChildren) && (countsOfChildren.size() > 0)) {
-                //first find and fix child nodes stuff
-                for (Map<String, Object> cc: countsOfChildren) {
-                    if(cc.get("PARENT_CODE") != null && cc.get("COUNT") != null) {
-                        Long pCode = (Long)cc.get("PARENT_CODE");
-                        Long c = (Long)cc.get("COUNT");
-                        TreeNode t = c > 0 ? addedNodes.get(pCode) : null;
-                        if(t!=null) {
-                            // add a dummmy node to show expand arrow
-                            createNewDummyNode(t);
-                        }
-                    }
-                }
-            }
-        }
-	}
-    
-    public void populateCmqBaseChildren(Long cmqCode, TreeNode expandedTreeNode,String dictionaryVersion) {
+    public void populateCmqBaseChildren(Long cmqCode, TreeNode expandedTreeNode) {
 		List<? extends IEntity> childCmqBaseList;
 
-        childCmqBaseList = cmqBaseSvc.findChildCmqsByParentCode(cmqCode,dictionaryVersion);
+        childCmqBaseList = cmqBaseSvc.findChildCmqsByParentCode(cmqCode);
 		
 		List<Long> childCmqCodeList = new ArrayList<>();
 		Map<Long, TreeNode> childTreeNodes = new HashMap<>();
@@ -672,7 +502,7 @@ public class CmqBaseRelationsTreeHelper {
 			}
 			
 			List<Map<String, Object>> childrenOfChildCountsList = null;
-            childrenOfChildCountsList = this.cmqBaseSvc.findCmqChildCountForParentCmqCodes(childCmqCodeList,dictionaryVersion);
+            childrenOfChildCountsList = this.cmqBaseSvc.findCmqChildCountForParentCmqCodes(childCmqCodeList);
 			
 			if((null != childrenOfChildCountsList) && (childrenOfChildCountsList.size() > 0)) {
 				//first find and fix child nodes stuff
@@ -690,7 +520,7 @@ public class CmqBaseRelationsTreeHelper {
 			}
 			
 			//now find relations for those who don't have children
-			List<Map<String, Object>> relationsCountsList = this.cmqRelationSvc.findCountByCmqCodes(childCmqCodeList,dictionaryVersion);
+			List<Map<String, Object>> relationsCountsList = this.cmqRelationSvc.findCountByCmqCodes(childCmqCodeList);
 				
 			if((null != relationsCountsList) && (relationsCountsList.size() > 0)) {
 				for(Map<String, Object> map: relationsCountsList) {
@@ -900,7 +730,7 @@ public class CmqBaseRelationsTreeHelper {
 		}
 	}
     
-    public void populateMeddraDictHierarchySearchDtoChildren(String parentLevel, Long dtoCode, TreeNode expandedTreeNode,String dictionaryVersion) {
+    public void populateMeddraDictHierarchySearchDtoChildren(String parentLevel, Long dtoCode, TreeNode expandedTreeNode) {
 		//child code and term type prefix for the parent i.e: node that was expanded in ui
 		String childLevel = null;
 		String childSearchColumnTypePrefix = null;
@@ -932,12 +762,7 @@ public class CmqBaseRelationsTreeHelper {
 		
 		//fetch children of parent node by code of parent
 		List<MeddraDictHierarchySearchDto> childDtos;
-		if(StringUtils.isNotBlank(dictionaryVersion)) {
-			childDtos = this.meddraDictSvc.findChildrenByParentCode(childSearchColumnTypePrefix, parentCodeColumnPrefix, dtoCode,dictionaryVersion);
-		} else {
-			childDtos = this.meddraDictSvc.findChildrenByParentCode(childSearchColumnTypePrefix, parentCodeColumnPrefix, dtoCode);
-		}
-        
+        childDtos = this.meddraDictSvc.findChildrenByParentCode(childSearchColumnTypePrefix, parentCodeColumnPrefix, dtoCode);
         
         Map<Long, TreeNode> nodesMap = new HashMap<>();
         List<Long> nodesMapKeys = new LinkedList<>();
@@ -972,14 +797,8 @@ public class CmqBaseRelationsTreeHelper {
     
 		if(!childLevel.equalsIgnoreCase("PT") || (childLevel.equalsIgnoreCase("PT") && !filterLltFlag)) {
 	        List<Map<String, Object>> countsOfChildren;
-	        if(StringUtils.isNotBlank(dictionaryVersion)) {
-	        	countsOfChildren = this.meddraDictSvc.findChildrenCountByParentCodes(childchildOfChildSearchColumnTypePrefix,
-		                childSearchColumnTypePrefix, nodesMapKeys,dictionaryVersion);
-	        } else {
-	        	countsOfChildren = this.meddraDictSvc.findChildrenCountByParentCodes(childchildOfChildSearchColumnTypePrefix,
-		                childSearchColumnTypePrefix, nodesMapKeys);
-	        }
-	        
+	        countsOfChildren = this.meddraDictSvc.findChildrenCountByParentCodes(childchildOfChildSearchColumnTypePrefix,
+	                childSearchColumnTypePrefix, nodesMapKeys);
 	
 	        if((null != countsOfChildren) && (countsOfChildren.size() > 0)) {
 	            //first find and fix child nodes stuff
