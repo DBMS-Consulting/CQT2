@@ -1289,28 +1289,44 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 			updateRelationScopeMap(relationScopeMap,childTreeNode);
 		}
 		
+		ArrayList<Boolean> wasAddedFromSmq = new ArrayList<Boolean>();
 		if (relations != null) {
 			for (CmqRelation190 relation : relations) {
 				if(relation.getSmqCode() != null && (relation.getSocCode() != null || relation.getHlgtCode() != null || relation.getHltCode() != null 
 						|| relation.getLltCode() != null || relation.getPtCode() != null)) {
 					relation.setSmqCode(null);
+					wasAddedFromSmq.add(true);
+				} else {
+					wasAddedFromSmq.add(false);
 				}
 				MQReportRelationsWorker task = new MQReportRelationsWorker(workerId++, relation,relationScopeMap,filterLlts);
 				futures.add(executorService.submit(task));
 			}
 		}
+		
+		/*if(wasAddedFromSmq) {
+			for (Future<MQReportRelationsWorkerDTO> future : futures) {
+				future.
+			}
+		} */
+		
 		LOG.info("Submitted all MQReportRelationsWorker for relations.");
 		//now get the futures and process them.
+		int wasAddedFromSmqCounter = 0;
 		for (Future<MQReportRelationsWorkerDTO> future : futures) {
 			try {
 				MQReportRelationsWorkerDTO relationsWorkerDTO = future.get();
 				if(relationsWorkerDTO.isSuccess()) {
 					Map<Integer, ReportLineDataDto> mapReportData = relationsWorkerDTO.getMapReport();
+					if(wasAddedFromSmq.get(wasAddedFromSmqCounter)) {
+						mapReportData.keySet().removeIf(key -> key != 0);
+					}
 					rowCount = fillReport(mapReportData, cell, row, rowCount, worksheet);
 					mapReportData.clear();
 				} else {
 					LOG.info("Got false status for success in worker {}", relationsWorkerDTO.getWorkerName());
 				}
+				wasAddedFromSmqCounter++;
 			} catch (InterruptedException | ExecutionException e) {
 				LOG.error("Exception while reading MQReportRelationsWorkerDTO", e);
 			}
