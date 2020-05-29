@@ -1331,6 +1331,10 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		if (relations != null) {
 			for (CmqRelation190 relation : relations) {
 				MQReportRelationsWorker task = new MQReportRelationsWorker(workerId++, relation,relationScopeMap,filterLlts,cmq.getDictionaryVersion());
+				if(relation.getSmqCode() != null && (relation.getSocCode() != null || relation.getHlgtCode() != null || relation.getHltCode() != null 
+						|| relation.getLltCode() != null || relation.getPtCode() != null)) {
+					relation.setSmqCode(null);
+				}
 				futures.add(executorService.submit(task));
 			}
 		}
