@@ -762,7 +762,8 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 				 * 
 				 * SMQs
 				 */
-				if (relation.getSmqCode() != null) {
+				if (relation.getSmqCode() != null && relation.getPtCode() == null && relation.getHltCode() == null 
+						&& relation.getSocCode() == null && relation.getHlgtCode() == null && relation.getLltCode() == null ) {
 					String selectedScope = relationScopeMap.get(String.valueOf(relation.getSmqCode()));
 					if(StringUtils.isEmpty(selectedScope)) {
 						selectedScope = relation.getTermScope();
@@ -980,13 +981,17 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 				 * PT
 				 */
 				if (relation.getPtCode() != null) {
+					boolean wasAddedFromSmq = false;
 					List<Long> ptCodesList = new ArrayList<>();
 					ptCodesList.add(relation.getPtCode());
 					List<MeddraDictHierarchySearchDto> pts = this.meddraDictService.findByCodes("PT_", ptCodesList);
+					if(relation.getSmqCode() != null) {
+						wasAddedFromSmq = true;
+					}
 					for (MeddraDictHierarchySearchDto pt : pts) {
 						mapReport.put(cpt++, new ReportLineDataDto("PT", pt.getCode() + "", pt.getTerm(), "", pt, getCmqRelationImpactDesc(relation.getRelationImpactType())));
   						
-						if(!filterLltFlag) {
+						if(!filterLltFlag && !wasAddedFromSmq) {
 							/**
 							 * LLT.
 							 */
