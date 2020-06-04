@@ -521,10 +521,6 @@ public class ListRelationsVM implements IRelationsChangeListener {
 								}
 							}//end of for (CmqRelation190 cmqRelation190 : existingRelation)
 						} else if (entity instanceof SmqRelation190) {
-							String test;
-							String test1;
-							int test2;
-							int test3;
 							SmqRelation190 smqRelation = (SmqRelation190) entity;
 							for (CmqRelation190 cmqRelation190 : existingRelation) {
 								if((null != cmqRelation190.getSmqCode()) 
