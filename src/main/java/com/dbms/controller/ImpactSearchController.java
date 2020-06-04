@@ -1820,9 +1820,11 @@ public class ImpactSearchController implements Serializable {
 							for (CmqRelationTarget cmqRelationTarget : existingRelation) {
 								if((null != cmqRelationTarget.getSmqCode()) 
 										&& (cmqRelationTarget.getSmqCode().longValue() == smqRelation.getSmqCode().longValue())){
-									matchFound = true;
-									cmqRelationIdToDelete = cmqRelationTarget.getId();
-									break;
+									if(cmqRelationTarget.getPtCode().longValue() == smqRelation.getPtCode()) {
+										matchFound = true;
+										cmqRelationIdToDelete = cmqRelationTarget.getId();
+										break;
+									}
 								}
 							}//end of for (CmqRelation190 cmqRelation190 : existingRelation)
 						}
