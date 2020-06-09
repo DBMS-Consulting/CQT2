@@ -897,6 +897,15 @@ public class CreateController implements Serializable {
 									//we set both smqcode and llt code to show that this is an smq relation
 									cmqRelation.setSmqCode(smqRelation.getSmqCode());
 									cmqRelation.setLltCode(smqRelation.getPtCode().longValue());
+									if(smqRelation.getPtTermCategory() != null) {
+										cmqRelation.setTermCategory(smqRelation.getPtTermCategory());
+									}
+									if(smqRelation.getPtTermScope() != null) {
+										cmqRelation.setTermScope(smqRelation.getPtTermScope().toString());
+									}
+									if(smqRelation.getPtTermWeight() != null) {
+										cmqRelation.setTermWeight(smqRelation.getPtTermWeight().longValue());
+									}
 								} else {
 									cmqRelation = new CmqRelation190();
 									cmqRelation.setCmqCode(selectedData.getCmqCode());
@@ -925,11 +934,17 @@ public class CreateController implements Serializable {
 						}
 						
 						if(!matchFound || updateNeeded) {
-							cmqRelation.setTermWeight((!StringUtils.isBlank(hierarchyNode.getWeight()) 
-															&& !hierarchyNode.getWeight().equalsIgnoreCase("null"))
-														? Long.parseLong(hierarchyNode.getWeight()) : null);
-							cmqRelation.setTermScope(hierarchyNode.getScope());
-							cmqRelation.setTermCategory(hierarchyNode.getCategory());
+							if(cmqRelation.getTermWeight() == null) {
+								cmqRelation.setTermWeight((!StringUtils.isBlank(hierarchyNode.getWeight()) 
+										&& !hierarchyNode.getWeight().equalsIgnoreCase("null"))
+									? Long.parseLong(hierarchyNode.getWeight()) : null);
+							}
+							if(cmqRelation.getTermScope() == null) {
+								cmqRelation.setTermScope(hierarchyNode.getScope());
+							}
+							if(cmqRelation.getTermCategory() == null) {
+								cmqRelation.setTermCategory(hierarchyNode.getCategory());
+							}
 							cmqRelation.setDictionaryName(cmqBase.getDictionaryName());
 							cmqRelation.setDictionaryVersion(cmqBase.getDictionaryVersion());
 							cmqRelation.setCmqSubversion(cmqBase.getCmqSubversion());
@@ -1959,7 +1974,9 @@ public class CreateController implements Serializable {
 						&& (null != cmqRelation190.getPtCode()) && (cmqRelation190.getPtCode().longValue() == ptCode.longValue())){
 				//its an smqrelation and not an smqbase
 				matchingMap.put("MATCH_FOUND", true);
-			} else if((null != cmqRelation190.getSmqCode()) && (cmqRelation190.getSmqCode().longValue() == smqCode.longValue())){
+			} else if((null != cmqRelation190.getSmqCode()) && (cmqRelation190.getSmqCode().longValue() == smqCode.longValue()) 
+					&& cmqRelation190.getLltCode() == null && cmqRelation190.getHlgtCode() == null & cmqRelation190.getHltCode() == null
+					&& cmqRelation190.getPtCode() == null && cmqRelation190.getSocCode() == null){
 				//its an smqbase
 				matchingMap.put("MATCH_FOUND", true);
 			}
