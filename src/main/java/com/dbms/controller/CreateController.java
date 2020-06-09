@@ -1998,6 +1998,12 @@ public class CreateController implements Serializable {
 					&& cmqRelation190.getPtCode() == null && cmqRelation190.getSocCode() == null){
 				//its an smqbase
 				matchingMap.put("MATCH_FOUND", true);
+			} else if(null != ptCode) {
+				if(cmqRelation190.getPtCode() != null && ptCode.longValue() == cmqRelation190.getPtCode()) {
+					matchingMap.put("MATCH_FOUND", true);
+				} else if(cmqRelation190.getLltCode() != null && ptCode.longValue() == cmqRelation190.getLltCode()) {
+					matchingMap.put("MATCH_FOUND", true);
+				}
 			}
 			
 			Boolean matchFound = (Boolean) matchingMap.get("MATCH_FOUND");
