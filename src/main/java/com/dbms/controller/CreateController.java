@@ -1129,12 +1129,31 @@ public class CreateController implements Serializable {
 							if(updateNeeded) {
 								cmqRelation = (CmqRelation190) matchingMap.get("TARGET_CMQ_RELATION_FOR_UPDATE");
 							} else if(!matchFound) {
-								cmqRelation = new CmqRelation190();
-								cmqRelation.setCmqCode(selectedData.getCmqCode());
-								cmqRelation.setCmqId(cmqBase.getId());
-								//we set both smqcode and pt code to show that this is an smq relation
-								cmqRelation.setSmqCode(smqRelation.getSmqCode());
-								cmqRelation.setPtCode(smqRelation.getPtCode().longValue());
+								HierarchyNode childTreeNodeData = (HierarchyNode) childTreeNode.getData();
+								if(childTreeNodeData.getLevel() == "LLT") {
+									cmqRelation = new CmqRelation190();
+									cmqRelation.setCmqCode(selectedData.getCmqCode());
+									cmqRelation.setCmqId(cmqBase.getId());
+									//we set both smqcode and llt code to show that this is an smq relation
+									cmqRelation.setSmqCode(smqRelation.getSmqCode());
+									cmqRelation.setLltCode(smqRelation.getPtCode().longValue());
+									if(smqRelation.getPtTermCategory() != null) {
+										cmqRelation.setTermCategory(smqRelation.getPtTermCategory());
+									}
+									if(smqRelation.getPtTermScope() != null) {
+										cmqRelation.setTermScope(smqRelation.getPtTermScope().toString());
+									}
+									if(smqRelation.getPtTermWeight() != null) {
+										cmqRelation.setTermWeight(smqRelation.getPtTermWeight().longValue());
+									}
+								} else {
+									cmqRelation = new CmqRelation190();
+									cmqRelation.setCmqCode(selectedData.getCmqCode());
+									cmqRelation.setCmqId(cmqBase.getId());
+									//we set both smqcode and pt code to show that this is an smq relation
+									cmqRelation.setSmqCode(smqRelation.getSmqCode());
+									cmqRelation.setPtCode(smqRelation.getPtCode().longValue());
+								}
 							}
 						} else if (entity instanceof SMQReverseHierarchySearchDto) {
 							SMQReverseHierarchySearchDto smqReverseHierarchySearchDto = (SMQReverseHierarchySearchDto) entity;
