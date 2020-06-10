@@ -525,7 +525,8 @@ public class ListRelationsVM implements IRelationsChangeListener {
 							for (CmqRelation190 cmqRelation190 : existingRelation) {
 								if((null != cmqRelation190.getSmqCode()) 
 										&& (cmqRelation190.getSmqCode().longValue() == smqRelation.getSmqCode().longValue())){
-									if(cmqRelation190.getPtCode().longValue() == smqRelation.getPtCode()) {
+									if((cmqRelation190.getPtCode() != null && cmqRelation190.getPtCode().longValue() == smqRelation.getPtCode()) 
+											|| (cmqRelation190.getLltCode() != null && cmqRelation190.getLltCode().longValue() == smqRelation.getPtCode())) {
 										matchFound = true;
 										cmqRelationIdToDelete = cmqRelation190.getId();
 										break;
