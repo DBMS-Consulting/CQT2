@@ -678,9 +678,9 @@ public class CmqBaseRelationsTreeHelper {
                     childRelationNode.setCategory(null != childRelation.getPtTermCategory() ? childRelation.getPtTermCategory() : "");
                     childRelationNode.setWeight(null != childRelation.getPtTermWeight()? childRelation.getPtTermWeight().toString() : "");
                     //if we need to filter out smq5 then dont add this smq4 node to child dig list.
-                    if(!filterLlt) {
+                    //if(!filterLlt) {
                     	childRelationNode.setEntity(childRelation);
-                    }
+                    //}
                 } else if (!filterLlt && childRelation.getSmqLevel() == 5) {
                     childRelationNode.setLevel("LLT");
                     childRelationNode.setScope(null != childRelation.getPtTermScope() ? childRelation.getPtTermScope().toString() : "");
