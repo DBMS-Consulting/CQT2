@@ -895,6 +895,35 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 //						}
 						codeTerm = childRelation.getPtCode() != null ? childRelation.getPtCode() + "" : "";
 						term = childRelation.getPtName();
+					} else if(relation.getLltCode() != null) {
+						SmqRelation190 childRelation = this.smqBaseService
+								.findSmqRelationBySmqAndPtCode(relation
+										.getSmqCode(), relation.getLltCode()
+										.intValue());
+						if (childRelation.getSmqLevel() == 1) {
+							level = "SMQ1";
+						} else if (childRelation.getSmqLevel() == 2) {
+							level = "SMQ2";
+						} else if (childRelation.getSmqLevel() == 3) {
+							level = "SMQ3";
+							
+						} else if (childRelation.getSmqLevel() == 4) {
+							level = "PT";
+							
+						} else if (childRelation.getSmqLevel() == 5) {
+							level = "LLT";
+							
+						} 
+						else if (childRelation.getSmqLevel() == 0) {
+							level = "Child SMQ";
+						}
+//						} else if ((childRelation.getSmqLevel() == 4)
+//								|| (childRelation.getSmqLevel() == 0)
+//								|| (childRelation.getSmqLevel() == 5)) {
+//							level = "PT";
+//						}
+						codeTerm = childRelation.getPtCode() != null ? childRelation.getPtCode() + "" : "";
+						term = childRelation.getPtName();
 					} else {
 						SmqBase190 smqBase = this.smqBaseService
 								.findByCode(relation.getSmqCode());
