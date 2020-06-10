@@ -1391,18 +1391,39 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 				List<CmqRelation190> relationsPro = cmqRelationService.findByCmqCode(childCmq.getCmqCode());
 				futures.clear();
 				if (relations != null) {
+					ArrayList<Boolean> addedFromSmq = new ArrayList<Boolean>();
 					for (CmqRelation190 relation : relationsPro) {
+						if(relation.getSmqCode() != null && (relation.getSocCode() != null || relation.getHlgtCode() != null || relation.getHltCode() != null 
+								|| relation.getLltCode() != null || relation.getPtCode() != null)) {
+							relation.setSmqCode(null);
+							addedFromSmq.add(true);
+						} else {
+							addedFromSmq.add(false);
+						}
 						MQReportRelationsWorker task = new MQReportRelationsWorker(workerId++, relation,relationScopeMap, filterLlts);
 						futures.add(executorService.submit(task));
 					}
 					
 					LOG.info("Submitted all MQReportRelationsWorker for relations of child {}.", childCmq.getCmqCode());
 					//now get the futures and process them.
+					int addedFromSmqCounter = 0;
 					for (Future<MQReportRelationsWorkerDTO> future : futures) {
 						try {
 							MQReportRelationsWorkerDTO relationsWorkerDTO = future.get();
 							if(relationsWorkerDTO.isSuccess()) {
 								Map<Integer, ReportLineDataDto> mapReportData = relationsWorkerDTO.getMapReport();
+								if(addedFromSmq.get(addedFromSmqCounter)) {
+									mapReportData.keySet().removeIf(key -> key != 0);
+									if(relationsPro.get(wasAddedFromSmqCounter).getTermScope() != null && mapReportData.get(0) != null) {
+										mapReportData.get(0).setScope(relationsPro.get(wasAddedFromSmqCounter).getTermScope());
+									}
+									if(relationsPro.get(wasAddedFromSmqCounter).getTermWeight() != null && mapReportData.get(0) != null) {
+										mapReportData.get(0).setWeight(relationsPro.get(wasAddedFromSmqCounter).getTermWeight().toString());
+									}
+									if(relationsPro.get(wasAddedFromSmqCounter).getTermCategory() != null && mapReportData.get(0) != null){
+										mapReportData.get(0).setCategory(relationsPro.get(wasAddedFromSmqCounter).getTermCategory());
+									}
+								}
 								rowCount = fillReport(mapReportData, cell, row, rowCount, worksheet);
 								mapReportData.clear();
 							} else {
