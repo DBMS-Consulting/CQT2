@@ -934,17 +934,11 @@ public class CreateController implements Serializable {
 						}
 						
 						if(!matchFound || updateNeeded) {
-							if(cmqRelation.getTermWeight() == null) {
-								cmqRelation.setTermWeight((!StringUtils.isBlank(hierarchyNode.getWeight()) 
-										&& !hierarchyNode.getWeight().equalsIgnoreCase("null"))
-									? Long.parseLong(hierarchyNode.getWeight()) : null);
-							}
-							if(cmqRelation.getTermScope() == null) {
-								cmqRelation.setTermScope(hierarchyNode.getScope());
-							}
-							if(cmqRelation.getTermCategory() == null) {
-								cmqRelation.setTermCategory(hierarchyNode.getCategory());
-							}
+							cmqRelation.setTermWeight((!StringUtils.isBlank(hierarchyNode.getWeight()) 
+									&& !hierarchyNode.getWeight().equalsIgnoreCase("null"))
+								? Long.parseLong(hierarchyNode.getWeight()) : null);
+							cmqRelation.setTermScope(hierarchyNode.getScope());
+							cmqRelation.setTermCategory(hierarchyNode.getCategory());
 							cmqRelation.setDictionaryName(cmqBase.getDictionaryName());
 							cmqRelation.setDictionaryVersion(cmqBase.getDictionaryVersion());
 							cmqRelation.setCmqSubversion(cmqBase.getCmqSubversion());
