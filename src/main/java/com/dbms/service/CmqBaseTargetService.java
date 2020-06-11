@@ -862,6 +862,15 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 							if(filterLltFlag && (childSmq.getSmqLevel() == 5)) {
 								continue;
 							}
+							if(childSmq.getPtTermCategory() == null) {
+								childSmq.setPtTermCategory(relation.getTermCategory());
+							}
+							if(childSmq.getPtTermScope() == null) {
+								//childSmq.setPtTermScope(relation.getTermScope());
+							}
+							if(childSmq.getPtTermWeight() == null) {
+								childSmq.setPtTermWeight(relation.getTermWeight().intValue());
+							}
 							mapReport.put(cpt++, new ReportLineDataDto(level, childSmq.getPtCode() + "", childSmq.getPtName(), ".......", childSmq.getPtTermScope() + "", childSmq.getPtTermWeight() + "", childSmq.getPtTermCategory(), childSmq.getRelationImpactType(), childSmq.getPtTermStatus())); 
 							
 							List<Long> codes = new ArrayList<>();
@@ -995,6 +1004,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 						mapReport.put(cpt++, new ReportLineDataDto("PT", pt.getCode() + "", pt.getTerm(), "", pt, getCmqRelationImpactDesc(relation.getRelationImpactType())));
   						
 						if(wasAddedFromSmq) {
+							ptCounter = mapReport.size() - 1;
 							if(relation.getTermScope() != null) {
 								mapReport.get(ptCounter).setScope(relation.getTermScope());
 							}
@@ -1021,7 +1031,6 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 	 							mapReport.put(cpt++, new ReportLineDataDto("LLT", llt.getCode() + "", llt.getTerm(), "......", llt, getImpact(llt, "LLT")));
 							}
 						}
-						ptCounter++;
 					}
 				}
 
@@ -1194,10 +1203,11 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 				 * Other Relations
 				 */
 				List<CmqRelationTarget> relationsPro = cmqRelationTargetService.findByCmqCode(childCmq.getCmqCode());
-
+				
 				if (relations != null) {
 					for (CmqRelationTarget relation : relationsPro) {
- 						if (relation.getSmqCode() != null) {
+						ArrayList<Boolean> addedFromSmq = new ArrayList<Boolean>();
+ 						if (relation.getSmqCode() != null && relation.getPtCode() == null && relation.getLltCode() == null) {
 							List<Long> smqChildCodeList = new ArrayList<>();
 							smqChildCodeList.add(relation.getSmqCode());
 
@@ -1286,6 +1296,11 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 												level = getLevelFromValue(smqC.getSmqLevel());
 												
 												mapReport.put(cpt++, new ReportLineDataDto(level, smqC.getSmqCode() + "", smqC.getPtName(), "..............", smqC.getRelationImpactType(), "", smqC.getPtTermStatus()));
+												
+												ptCounter = mapReport.size() - 1;
+												mapReport.get(ptCounter).setScope(smqC.getPtTermScope().toString());
+												mapReport.get(ptCounter).setWeight(smqC.getPtTermWeight().toString());
+												mapReport.get(ptCounter).setCategory(smqC.getPtTermCategory());
 												
 												System.out.println("************************ STATUS :: " + smqC.getPtTermStatus()); //TODO
 												
@@ -1754,13 +1769,30 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
  						 * PT
  						 */
  						if (relation.getPtCode() != null) {
+ 							boolean wasAddedFromSmq = false;
  							List<Long> ptCodesList = new ArrayList<>();
  							ptCodesList.add(relation.getPtCode());
  							List<MeddraDictHierarchySearchDto> pts = this.meddraDictService.findByCodes("PT_", ptCodesList);
+ 							if(relation.getSmqCode() != null) {
+ 								wasAddedFromSmq = true;
+ 							}
+ 							int ptsCounter = 0;
  							for (MeddraDictHierarchySearchDto pt : pts) {
  								mapReport.put(cpt++, new ReportLineDataDto("PT", pt.getCode() + "", pt.getTerm(), "", pt, getImpact(pt, "PT")));  
-
- 								if(!filterLltFlag) {
+ 								if(wasAddedFromSmq) {
+ 									ptsCounter = mapReport.size() - 1;
+ 									if(relation.getTermScope() != null) {
+ 										mapReport.get(ptsCounter).setScope(relation.getTermScope());
+ 									}
+ 									if(relation.getTermWeight() != null) {
+ 										mapReport.get(ptsCounter).setWeight(relation.getTermWeight().toString());
+ 									}
+ 									if(relation.getTermCategory() != null){
+ 										mapReport.get(ptsCounter).setCategory(relation.getTermCategory());
+ 									}
+ 								}
+ 								
+ 								if(!filterLltFlag && !wasAddedFromSmq) {
  									/**
  	 								 * LLT.
  	 								 */
@@ -1997,13 +2029,31 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 								 * PT
 								 */
 								if (relation.getPtCode() != null) {
+									boolean wasAddedFromSmq = false;
 									List<Long> ptCodesList = new ArrayList<>();
 									ptCodesList.add(relation.getPtCode());
 									List<MeddraDictHierarchySearchDto> pts = this.meddraDictService.findByCodes("PT_", ptCodesList);
+									if(relation.getSmqCode() != null) {
+										wasAddedFromSmq = true;
+									}
+									int ptsCounter = 0;
 									for (MeddraDictHierarchySearchDto pt : pts) {
 										mapReport.put(cpt++, new ReportLineDataDto("PT", pt.getCode() + "", pt.getTerm(), "......", pt, relation.getRelationImpactType()));
 
-										if(!filterLltFlag) {
+										if(wasAddedFromSmq) {
+											ptsCounter = mapReport.size() - 1;
+		 									if(relation.getTermScope() != null) {
+		 										mapReport.get(ptsCounter).setScope(relation.getTermScope());
+		 									}
+		 									if(relation.getTermWeight() != null) {
+		 										mapReport.get(ptsCounter).setWeight(relation.getTermWeight().toString());
+		 									}
+		 									if(relation.getTermCategory() != null){
+		 										mapReport.get(ptsCounter).setCategory(relation.getTermCategory());
+		 									}
+		 								}
+										
+										if(!filterLltFlag && !wasAddedFromSmq) {
 											/**
 											 * LLT.
 											 */
