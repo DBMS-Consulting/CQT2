@@ -1414,18 +1414,19 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 								Map<Integer, ReportLineDataDto> mapReportData = relationsWorkerDTO.getMapReport();
 								if(addedFromSmq.get(addedFromSmqCounter)) {
 									mapReportData.keySet().removeIf(key -> key != 0);
-									if(relationsPro.get(wasAddedFromSmqCounter).getTermScope() != null && mapReportData.get(0) != null) {
-										mapReportData.get(0).setScope(relationsPro.get(wasAddedFromSmqCounter).getTermScope());
+									if(relationsPro.get(addedFromSmqCounter).getTermScope() != null && mapReportData.get(0) != null) {
+										mapReportData.get(0).setScope(relationsPro.get(addedFromSmqCounter).getTermScope());
 									}
-									if(relationsPro.get(wasAddedFromSmqCounter).getTermWeight() != null && mapReportData.get(0) != null) {
-										mapReportData.get(0).setWeight(relationsPro.get(wasAddedFromSmqCounter).getTermWeight().toString());
+									if(relationsPro.get(addedFromSmqCounter).getTermWeight() != null && mapReportData.get(0) != null) {
+										mapReportData.get(0).setWeight(relationsPro.get(addedFromSmqCounter).getTermWeight().toString());
 									}
-									if(relationsPro.get(wasAddedFromSmqCounter).getTermCategory() != null && mapReportData.get(0) != null){
-										mapReportData.get(0).setCategory(relationsPro.get(wasAddedFromSmqCounter).getTermCategory());
+									if(relationsPro.get(addedFromSmqCounter).getTermCategory() != null && mapReportData.get(0) != null){
+										mapReportData.get(0).setCategory(relationsPro.get(addedFromSmqCounter).getTermCategory());
 									}
 								}
 								rowCount = fillReport(mapReportData, cell, row, rowCount, worksheet);
 								mapReportData.clear();
+								addedFromSmqCounter++;
 							} else {
 								LOG.info("Got false status for success in worker {}", relationsWorkerDTO.getWorkerName());
 							}
