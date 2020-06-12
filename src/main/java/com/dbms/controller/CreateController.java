@@ -563,6 +563,7 @@ public class CreateController implements Serializable {
 				node.setDataFetchCompleted(false);
 				this.relationsModel.clearChildrenInTreNode(relationsModel.getRelationsRoot(), node);
 				collapseRelations(node);
+				notifyRelationsUpdate();
 			}
 		}
 		
