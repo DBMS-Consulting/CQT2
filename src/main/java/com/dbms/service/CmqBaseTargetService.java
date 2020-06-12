@@ -1302,8 +1302,10 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 												} else if (smqCScope.equalsIgnoreCase("Broad")) {
 													smqCScope = "1";
 												}
-												if((relation.getTermScope().toString().equalsIgnoreCase("1") || relation.getTermScope().toString().equalsIgnoreCase("2")) && !relation.getTermScope().toString().equalsIgnoreCase(smqCScope)) {
-													continue;
+												if(!level.equalsIgnoreCase("Child Smq")) {
+													if((relation.getTermScope().toString().equalsIgnoreCase("1") || relation.getTermScope().toString().equalsIgnoreCase("2")) && !relation.getTermScope().toString().equalsIgnoreCase(smqCScope)) {
+														continue;
+													}
 												}
 												//end scope filter
 												
