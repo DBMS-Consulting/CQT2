@@ -1490,6 +1490,19 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 																	level = "Child SMQ";
 																} 
 																if((tt.getSmqLevel() != 5) || (!filterLltFlag && (tt.getSmqLevel() == 5))) {
+																	//Scope filter
+																	String ttScope = tt.getRelationType();
+																	if(ttScope.equalsIgnoreCase("Narrow")) {
+																		ttScope = "2";
+																	} else if (ttScope.equalsIgnoreCase("Broad")) {
+																		ttScope = "1";
+																	}
+																	if(!level.equalsIgnoreCase("Child Smq")) {
+																		if((relation.getTermScope().toString().equalsIgnoreCase("1") || relation.getTermScope().toString().equalsIgnoreCase("2")) && !relation.getTermScope().toString().equalsIgnoreCase(ttScope)) {
+																			continue;
+																		}
+																	}
+																	//end scope filter
 																	mapReport.put(cpt++, new ReportLineDataDto(level, tt.getPtCode() + "", tt.getPtName(), "...................", 
 																			tt.getPtTermScope() + "", tt.getPtTermWeight() + "", tt.getPtTermCategory(), tt.getRelationImpactType(), tt.getPtTermStatus())); 
 																	
@@ -1509,6 +1522,19 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 																					} 
 																 					
 																					if((tt2.getSmqLevel() != 5) || (!filterLltFlag && (tt2.getSmqLevel() == 5))) {
+																						//Scope filter
+																						String tt2Scope = tt2.getRelationType();
+																						if(tt2Scope.equalsIgnoreCase("Narrow")) {
+																							tt2Scope = "2";
+																						} else if (tt2Scope.equalsIgnoreCase("Broad")) {
+																							tt2Scope = "1";
+																						}
+																						if(!level.equalsIgnoreCase("Child Smq")) {
+																							if((relation.getTermScope().toString().equalsIgnoreCase("1") || relation.getTermScope().toString().equalsIgnoreCase("2")) && !relation.getTermScope().toString().equalsIgnoreCase(tt2Scope)) {
+																								continue;
+																							}
+																						}
+																						//end scope filter
 																						mapReport.put(cpt++, new ReportLineDataDto(level, tt2.getPtCode() + "", tt2.getPtName(), ".........................", 
 																								tt2.getPtTermScope() + "", tt2.getPtTermWeight() + "", tt2.getPtTermCategory(), tt2.getRelationImpactType(), tt2.getPtTermStatus())); 
 		  
@@ -1527,6 +1553,19 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 																											level = "Child SMQ";
 																										} 
 																										if((tt4.getSmqLevel() != 5) || (!filterLltFlag && (tt4.getSmqLevel() == 5))) {
+																											//Scope filter
+																											String tt4Scope = tt4.getRelationType();
+																											if(tt4Scope.equalsIgnoreCase("Narrow")) {
+																												tt4Scope = "2";
+																											} else if (tt4Scope.equalsIgnoreCase("Broad")) {
+																												tt4Scope = "1";
+																											}
+																											if(!level.equalsIgnoreCase("Child Smq")) {
+																												if((relation.getTermScope().toString().equalsIgnoreCase("1") || relation.getTermScope().toString().equalsIgnoreCase("2")) && !relation.getTermScope().toString().equalsIgnoreCase(tt4Scope)) {
+																													continue;
+																												}
+																											}
+																											//end scope filter
 																											mapReport.put(cpt++, new ReportLineDataDto(level, tt4.getPtCode() + "", tt4.getPtName(), "...............................", 
 																													tt4.getPtTermScope() + "", tt4.getPtTermWeight() + "", tt4.getPtTermCategory(), tt4.getRelationImpactType(), tt4.getPtTermStatus())); 
 																										}
