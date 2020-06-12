@@ -1295,6 +1295,18 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 											for (SmqRelationTarget smqC : smqs) {
 												level = getLevelFromValue(smqC.getSmqLevel());
 												
+												//Scope filter
+												String smqCScope = smqC.getRelationType();
+												if(smqCScope.equalsIgnoreCase("Narrow")) {
+													smqCScope = "2";
+												} else if (smqCScope.equalsIgnoreCase("Broad")) {
+													smqCScope = "1";
+												}
+												if((relation.getTermScope().toString().equalsIgnoreCase("1") || relation.getTermScope().toString().equalsIgnoreCase("2")) && !relation.getTermScope().toString().equalsIgnoreCase(smqCScope)) {
+													continue;
+												}
+												//end scope filter
+												
 												mapReport.put(cpt++, new ReportLineDataDto(level, smqC.getSmqCode() + "", smqC.getPtName(), "..............", smqC.getRelationImpactType(), "", smqC.getPtTermStatus()));
 												
 												ptCounter = mapReport.size() - 1;
