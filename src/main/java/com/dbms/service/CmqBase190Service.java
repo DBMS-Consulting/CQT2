@@ -1360,7 +1360,6 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		ArrayList<Boolean> wasAddedFromSmq = new ArrayList<Boolean>();
 		if (relations != null) {
 			for (CmqRelation190 relation : relations) {
-				MQReportRelationsWorker task = new MQReportRelationsWorker(workerId++, relation,relationScopeMap,filterLlts,cmq.getDictionaryVersion());
 				if(relation.getSmqCode() != null && (relation.getSocCode() != null || relation.getHlgtCode() != null || relation.getHltCode() != null 
 						|| relation.getLltCode() != null || relation.getPtCode() != null)) {
 					relation.setSmqCode(null);
@@ -1368,6 +1367,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 				} else {
 					wasAddedFromSmq.add(false);
 				}
+				MQReportRelationsWorker task = new MQReportRelationsWorker(workerId++, relation,relationScopeMap,filterLlts,cmq.getDictionaryVersion());
 				futures.add(executorService.submit(task));
 			}
 		}
