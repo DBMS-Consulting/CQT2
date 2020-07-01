@@ -246,7 +246,7 @@ public class RetireController implements Serializable {
 				cmqBaseCode.add(cmqBase.getCmqCode());
 				parentCmqOftarget = this.cmqBaseService.findParentCmqsByCodes(cmqBaseCode);
 				if(parentCmqOftarget != null) {
-					cmqBase.setCmqDescription(cmqBase.getCmqDescription() + "\n\n" + "RETIREMENT REASON: " + getRetirementReason());
+					cmqBase.setCmqNote(cmqBase.getCmqNote() + "\n\n" + "RETIREMENT REASON: " + getRetirementReason());
 					cmqBase.setCmqParentCode(null);
 					cmqBase.setCmqParentName(null);
 				}
