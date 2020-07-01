@@ -67,6 +67,10 @@ public class RetireController implements Serializable {
 	
 	private boolean childNotSelected;
 	
+	private boolean parentNotSelected;
+	
+	public String retirementReason;
+	
 	@PostConstruct
 	public void init() {
 		sourceListToRetire = this.cmqBaseService.findCmqsToRetire();
@@ -84,6 +88,7 @@ public class RetireController implements Serializable {
 	 */
 	public void pickList() {
 		childNotSelected = true;
+		parentNotSelected = true;
 		int cpt = 0;
 		int cptChild = 0;
 		List<CmqBase190> targetCmqsSelected = new ArrayList<CmqBase190>(this.retireDualListModel.getTarget());
@@ -100,6 +105,7 @@ public class RetireController implements Serializable {
 			targetCmqCodes.add(cmqBase.getCmqCode());
 		
 		List<CmqBase190> childCmqsOftargets = this.cmqBaseService.findChildCmqsByCodes(targetCmqCodes);
+		List<CmqBase190> parentCmqsOftargets = this.cmqBaseService.findParentCmqsByCodes(targetCmqCodes);
 		
 		if((null != childCmqsOftargets) && (childCmqsOftargets.size() > 0)) {
 			//add them to the selected cmqs list
@@ -116,7 +122,10 @@ public class RetireController implements Serializable {
 			if (cpt == cptChild) //if (cpt == childCmqsOftargets.size())
 				childNotSelected = false;
 		}
-		if (childCmqsOftargets != null && !childCmqsOftargets.isEmpty() && childNotSelected) {
+		if(parentCmqsOftargets != null && !parentCmqsOftargets.isEmpty() && parentNotSelected) {
+			this.confirmMessage = "Do you want to delete the association between Protocol and Program list?";
+			RequestContext.getCurrentInstance().execute("PF('confirmRetirePro').show();");
+		} else if (childCmqsOftargets != null && !childCmqsOftargets.isEmpty() && childNotSelected) {
 			this.confirmMessage = "Not all associate child lists are selected for inactivation.";
 			RequestContext.getCurrentInstance().execute("PF('confirmRetireOK').show();");
 		} else {
@@ -141,6 +150,108 @@ public class RetireController implements Serializable {
 			for (CmqBase190 cmqBase : targetCmqsSelected) {
 				targetCmqCodes.add(cmqBase.getCmqCode());
 			}
+			
+			
+			//now get the children
+			//If a parent is retire, then child must be retire 
+			//(If the child is status in active then show a error 
+			//"The list being retire has an associated active child list hence cannot be retire.”
+			List<CmqBase190> childCmqsOftargets = this.cmqBaseService.findChildCmqsByCodes(targetCmqCodes);
+			if (childNotSelected && childCmqsOftargets != null && childCmqsOftargets.size() > 0)
+				return "";
+			if((null != childCmqsOftargets) && (childCmqsOftargets.size() > 0)) {
+				//add them to the selected cmqs list
+				for (CmqBase190 childCmq : childCmqsOftargets) {
+					if(childCmq.getCmqState().equalsIgnoreCase(CmqBase190.CMQ_STATE_VALUE_PUBLISHED)
+							&& childCmq.getCmqStatus().equalsIgnoreCase(CmqBase190.CMQ_STATUS_VALUE_ACTIVE)) {
+						targetCmqsSelected.add(childCmq);//we need to retire these if selected
+					}
+				}
+ 			}
+			
+			//continue
+ 			for (CmqBase190 cmqBase190 : targetCmqsSelected) {
+ 				cmqBase190.setCmqStatus(CmqBase190.CMQ_STATUS_VALUE_INACTIVE); 
+ 				cmqBase190.setLastModifiedDate(new Date());
+				//cmqBase190.setLastModifiedBy("NONE");
+				cmqBase190.setLastModifiedBy(lastModifiedByString);
+			}
+			try {
+				this.cmqBaseService.update(targetCmqsSelected, this.authService.getUserCn()
+						, this.authService.getUserGivenName(), this.authService.getUserSurName()
+						, this.authService.getCombinedMappedGroupMembershipAsString());
+				
+				//update the dualListModel source and target
+				init();
+				String formatMsg = "The List(s) is retired successfully";
+				
+				if (targetCmqParents != null && !targetCmqParents.isEmpty())
+ 					formatMsg = "The List and retired parent list are retired successfully";
+					
+				//show messages on screen
+				FacesContext.getCurrentInstance().addMessage(null, 
+                        new FacesMessage(FacesMessage.SEVERITY_INFO,
+                                formatMsg, ""));
+				
+			} catch (CqtServiceException e) {
+				LOG.error(e.getMessage(), e);
+
+				//show error message popup for partial success.
+				String codes = "";
+				if (targetCmqsSelected != null) {
+					for (CmqBase190 cmq : targetCmqsSelected) {
+						codes += cmq.getCmqCode() + ";";
+					}
+				}
+				//show error dialog with names of faulty cmqs
+				FacesContext.getCurrentInstance().addMessage(null,
+                        new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                                "The system could not retire the following cmqs :" + codes, ""));
+			} 
+		}
+		
+		return "";
+	}
+	
+	public String saveRetirementReason() {
+		List<CmqBase190> targetCmqsSelected = new ArrayList<CmqBase190>(this.retireDualListModel.getTarget());
+		for (CmqBase190 cmqBase : targetCmqsSelected) {
+			this.confirmMessage = "Why are you retiring " + cmqBase.getCmqName() +"?";
+			RequestContext.getCurrentInstance().execute("PF('RetireDescription').show();");
+		}
+		return"";
+	}
+	
+	public String retireTargetProtocolList() {
+		String lastModifiedByString = this.authService.getLastModifiedByUserAsString();
+		
+		List<Long> targetCmqCodes = new ArrayList<>();
+		List<CmqBase190> targetCmqParents = new ArrayList<CmqBase190>();
+		List<Long> cmqBaseCode = new ArrayList<>();
+		List<CmqBase190> parentCmqOftarget = new ArrayList<CmqBase190>();
+		List<CmqBase190> targetCmqsSelected = new ArrayList<CmqBase190>(this.retireDualListModel.getTarget());
+		
+		
+		
+		if((targetCmqsSelected == null) || (targetCmqsSelected.size() == 0)) {
+			FacesContext.getCurrentInstance().addMessage(null, 
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                            "Please select at least 1 list to retire.", ""));
+		} else {
+			for (CmqBase190 cmqBase : targetCmqsSelected) {
+				targetCmqCodes.add(cmqBase.getCmqCode());
+				if(cmqBaseCode != null) {
+					cmqBaseCode.clear();
+				}
+				cmqBaseCode.add(cmqBase.getCmqCode());
+				parentCmqOftarget = this.cmqBaseService.findParentCmqsByCodes(cmqBaseCode);
+				if(parentCmqOftarget != null) {
+					cmqBase.setCmqDescription(cmqBase.getCmqDescription() + "\n\n" + "RETIREMENT REASON: " + getRetirementReason());
+					cmqBase.setCmqParentCode(null);
+					cmqBase.setCmqParentName(null);
+				}
+			}
+			
 			
 			
 			//now get the children
@@ -232,6 +343,13 @@ public class RetireController implements Serializable {
 		}
 	}
 	
+	public String getRetirementReason() {
+		return retirementReason;
+	}
+	
+	public void setRetirementReason(String retirementReason) {
+		this.retirementReason = retirementReason;
+	}
  
 	public ICmqBase190Service getCmqBaseService() {
 		return cmqBaseService;

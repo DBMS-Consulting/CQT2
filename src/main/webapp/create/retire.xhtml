@@ -40,9 +40,17 @@
 					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
 			</p:confirmDialog>
 
+			<p:remoteCommand name="saveYes" update="@form"
+				actionListener="#{retireController.retireTargetProtocolList}"
+				onstart="PF('confirmRetire').hide()" />
+
 			<p:remoteCommand name="confirmYes" update="@form"
 				actionListener="#{retireController.retireTargetList}"
 				onstart="PF('confirmRetire').hide()" />
+
+			<p:remoteCommand name="confirmProYes" update="@form"
+				actionListener="#{retireController.saveRetirementReason}"
+				onstart="PF('confirmRetirePro').hide()" />
 
 			<p:confirmDialog widgetVar="confirmRetire" showEffect="fade"
 				hideEffect="fade" header="Confirm Inactivation"
@@ -56,6 +64,19 @@
 					onclick="PF('confirmRetire').hide();" update="@form"
 					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
 			</p:confirmDialog>
+
+			<p:confirmDialog widgetVar="confirmRetirePro" showEffect="fade"
+				hideEffect="fade" header="Confirm Inactivation"
+				message="#{retireController.confirmMessage}">
+				<p:commandButton value="Yes" type="button" process="@this"
+					update="@form" styleClass="ui-confirmdialog-yes"
+					icon="ui-icon-check" onclick="confirmProYes()" />
+
+ 
+				<p:commandButton value="No" type="button"
+					onclick="PF('confirmRetirePro').hide();" update="@form"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+			</p:confirmDialog>
 			
 			<p:confirmDialog widgetVar="confirmRetireOK" showEffect="fade"
 				hideEffect="fade" header="Confirm Inactivation"
@@ -63,6 +84,28 @@
 				<p:commandButton value="OK" type="button"
 					onclick="PF('confirmRetireOK').hide();" update="@form"
 					styleClass="ui-confirmdialog-no" />
+			</p:confirmDialog>
+
+			<p:confirmDialog widgetVar="RetireDescription" showEffect="fade"
+				hideEffect="fade" header="Confirm Inactivation"
+				message="#{retireController.confirmMessage}">
+				<p:inputTextarea readonly="false"
+					placeholder="Please enter the retirement reason" id="desc"
+					value="#{retireController.retirementReason}"
+					required="false"
+					label="Description" style="width: 100%; min-height: 250px"
+					autoResize="true">
+
+					<p:ajax global="false" />
+				</p:inputTextarea>
+				<p:commandButton value="Save" type="button" process="@this"
+					update="@form" styleClass="ui-confirmdialog-yes"
+					icon="ui-icon-check" onclick="saveYes()" />
+
+ 
+				<p:commandButton value="Cancel" type="button"
+					onclick="PF('RetireDescription').hide();" update="@form"
+					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
 			</p:confirmDialog>
 		</h:form>
 	</ui:define>
