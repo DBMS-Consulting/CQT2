@@ -49,6 +49,10 @@
 				onstart="PF('confirmRetire').hide()" />
 
 			<p:remoteCommand name="confirmProYes" update="@form"
+				actionListener="#{retireController.saveRetirementReasonAndDeleteRelation}"
+				onstart="PF('confirmRetirePro').hide()" />
+
+			<p:remoteCommand name="SaveProReason" update="@form"
 				actionListener="#{retireController.saveRetirementReason}"
 				onstart="PF('confirmRetirePro').hide()" />
 
@@ -74,7 +78,7 @@
 
  
 				<p:commandButton value="No" type="button"
-					onclick="confirmYes()" update="@form" process="@this"
+					onclick="SaveProReason()" update="@form" process="@this"
 					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
 			</p:confirmDialog>
 			
@@ -86,7 +90,7 @@
 					styleClass="ui-confirmdialog-no" />
 			</p:confirmDialog>
 
-			<p:confirmDialog widgetVar="RetireDescription" showEffect="fade"
+			<p:confirmDialog widgetVar="RetireDescriptionAndDelete" showEffect="fade"
 				hideEffect="fade" header="Confirm Inactivation"
 				message="#{retireController.confirmMessage}">
 				<p:inputTextarea readonly="false"
@@ -104,9 +108,10 @@
 
  
 				<p:commandButton value="Cancel" type="button"
-					onclick="PF('RetireDescription').hide();" update="@form"
+					onclick="PF('RetireDescriptionAndDelete').hide();" update="@form"
 					styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
 			</p:confirmDialog>
+
 		</h:form>
 	</ui:define>
 

@@ -69,6 +69,8 @@ public class RetireController implements Serializable {
 	
 	private boolean parentNotSelected;
 	
+	private boolean deleteRelation;
+	
 	public String retirementReason;
 	
 	@PostConstruct
@@ -91,6 +93,8 @@ public class RetireController implements Serializable {
 		parentNotSelected = true;
 		int cpt = 0;
 		int cptChild = 0;
+		int ppt =0;
+		int pptParent = 0;
 		List<CmqBase190> targetCmqsSelected = new ArrayList<CmqBase190>(this.retireDualListModel.getTarget());
 		if(targetCmqsSelected.isEmpty()) {
 			FacesContext.getCurrentInstance().addMessage(null, 
@@ -101,8 +105,18 @@ public class RetireController implements Serializable {
 		List<Long> targetCmqCodes = new ArrayList<>();
 		LOG.info("\n\n **********************   targetCmqsSelected size " + targetCmqsSelected.size());
 		
-		for (CmqBase190 cmqBase : targetCmqsSelected)
+		boolean tmeOrTier1 = true;
+		boolean isProtocol = true;
+		
+		for (CmqBase190 cmqBase : targetCmqsSelected) {
 			targetCmqCodes.add(cmqBase.getCmqCode());
+			if (!cmqBase.getCmqTypeCd().equalsIgnoreCase("TME") && !cmqBase.getCmqTypeCd().equalsIgnoreCase("TR1")) {
+				tmeOrTier1 = false;
+			}
+			if(!cmqBase.getCmqTypeCd().equalsIgnoreCase("PRO")) {
+				isProtocol = false;
+			}
+		}
 		
 		List<CmqBase190> childCmqsOftargets = this.cmqBaseService.findChildCmqsByCodes(targetCmqCodes);
 		List<CmqBase190> parentCmqsOftargets = this.cmqBaseService.findParentCmqsByCodes(targetCmqCodes);
@@ -119,15 +133,31 @@ public class RetireController implements Serializable {
 							cpt++;
 				}
 			}
+			for (CmqBase190 parentCmq : parentCmqsOftargets) {
+				if (parentCmq.getCmqStatus().equals(CmqBase190.CMQ_STATUS_VALUE_ACTIVE)
+						&& parentCmq.getCmqState().equalsIgnoreCase(CmqBase190.CMQ_STATE_VALUE_PUBLISHED))
+					pptParent++;
+				for (CmqBase190 srcCmq : targetCmqsSelected) {
+					if (!srcCmq.getCmqCode().equals(parentCmq.getCmqParentCode()))
+						if (parentCmq.getCmqCode().equals(srcCmq.getCmqCode())) 
+							ppt++;
+				}
+			}
 			if (cpt == cptChild) //if (cpt == childCmqsOftargets.size())
 				childNotSelected = false;
+			if (ppt == pptParent)
+				parentNotSelected = false;
 		}
-		if(parentCmqsOftargets != null && !parentCmqsOftargets.isEmpty() && parentNotSelected) {
+		if(parentCmqsOftargets != null && !parentCmqsOftargets.isEmpty() && parentNotSelected && isProtocol) {
 			this.confirmMessage = "Do you want to delete the association between Protocol and Program list?";
 			RequestContext.getCurrentInstance().execute("PF('confirmRetirePro').show();");
 		} else if (childCmqsOftargets != null && !childCmqsOftargets.isEmpty() && childNotSelected) {
 			this.confirmMessage = "Not all associate child lists are selected for inactivation.";
 			RequestContext.getCurrentInstance().execute("PF('confirmRetireOK').show();");
+		} else if (childCmqsOftargets != null && !childCmqsOftargets.isEmpty() && !childNotSelected) {
+			saveRetirementReason();
+		} else if (childCmqsOftargets.isEmpty() && tmeOrTier1 == true) {
+			saveRetirementReason();
 		} else {
 			this.confirmMessage = "Are you sure you want to retire this list?";
 			RequestContext.getCurrentInstance().execute("PF('confirmRetire').show();");
@@ -213,12 +243,17 @@ public class RetireController implements Serializable {
 		return "";
 	}
 	
+	public String saveRetirementReasonAndDeleteRelation() {
+		this.confirmMessage = "Please enter the retirement reason.";
+		RequestContext.getCurrentInstance().execute("PF('RetireDescriptionAndDelete').show();");
+		setDeleteRelation(true);
+		return"";
+	}
+	
 	public String saveRetirementReason() {
-		List<CmqBase190> targetCmqsSelected = new ArrayList<CmqBase190>(this.retireDualListModel.getTarget());
-		for (CmqBase190 cmqBase : targetCmqsSelected) {
-			this.confirmMessage = "Why are you retiring " + cmqBase.getCmqName() +"?";
-			RequestContext.getCurrentInstance().execute("PF('RetireDescription').show();");
-		}
+		this.confirmMessage = "Please enter the retirement reason.";
+		RequestContext.getCurrentInstance().execute("PF('RetireDescriptionAndDelete').show();");
+		setDeleteRelation(false);
 		return"";
 	}
 	
@@ -246,10 +281,18 @@ public class RetireController implements Serializable {
 				cmqBaseCode.add(cmqBase.getCmqCode());
 				parentCmqOftarget = this.cmqBaseService.findParentCmqsByCodes(cmqBaseCode);
 				if(parentCmqOftarget != null) {
-					cmqBase.setCmqNote(cmqBase.getCmqNote() + "\n\n" + "RETIREMENT REASON: " + getRetirementReason());
-					cmqBase.setCmqParentCode(null);
-					cmqBase.setCmqParentName(null);
+					if(cmqBase.getCmqNote() == null) {
+						cmqBase.setCmqNote("RETIREMENT REASON: " + getRetirementReason());
+					} else {
+						cmqBase.setCmqNote(cmqBase.getCmqNote() + "\n\n" + "RETIREMENT REASON: " + getRetirementReason());
+					}
+					if(getDeleteRelation()) {
+						cmqBase.setCmqParentCode(null);
+						cmqBase.setCmqParentName(null);
+					}
+					parentCmqOftarget.clear();
 				}
+				
 			}
 			
 			
@@ -266,6 +309,11 @@ public class RetireController implements Serializable {
 				for (CmqBase190 childCmq : childCmqsOftargets) {
 					if(childCmq.getCmqState().equalsIgnoreCase(CmqBase190.CMQ_STATE_VALUE_PUBLISHED)
 							&& childCmq.getCmqStatus().equalsIgnoreCase(CmqBase190.CMQ_STATUS_VALUE_ACTIVE)) {
+						if(childCmq.getCmqNote() == null) {
+							childCmq.setCmqNote("RETIREMENT REASON: " + getRetirementReason());
+						} else {
+							childCmq.setCmqNote(childCmq.getCmqNote() + "\n\n" + "RETIREMENT REASON: " + getRetirementReason());
+						}
 						targetCmqsSelected.add(childCmq);//we need to retire these if selected
 					}
 				}
@@ -341,6 +389,14 @@ public class RetireController implements Serializable {
 				Object value) {
 			return value.toString();
 		}
+	}
+	
+	public boolean getDeleteRelation() {
+		return deleteRelation;
+	}
+	
+	public void setDeleteRelation(boolean deleteRelation) {
+		this.deleteRelation = deleteRelation;
 	}
 	
 	public String getRetirementReason() {
