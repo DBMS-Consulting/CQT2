@@ -76,7 +76,7 @@ public class AdminController implements Serializable {
 
 	private List<RefConfigCodeList> extensions, programs, protocols, products,
 			meddras, workflows, usergroups, sysconfigs, cmqImpactTypes,
-			smqImpactTypes, meddraImpactTypes, levels, smqfilters;
+			smqImpactTypes, meddraImpactTypes, levels, smqfilters, categories;
 
 	private RefConfigCodeList selectedRow, myFocusRef;
 	private StreamedContent excelFile;
@@ -113,6 +113,9 @@ public class AdminController implements Serializable {
 		} else if (codelist.equals(CqtConstants.CODE_LIST_TYPE_PRODUCT)
 				&& products == null) {
 			getProductList();
+		} else if (codelist.equals(CqtConstants.CODE_LIST_TYPE_CATEGORY_TERM)
+				&& categories == null) {
+			getCategoryList();
 		} else if (codelist.equals(CqtConstants.CODE_LIST_TYPE_PROGRAM)
 				&& programs == null) {
 			getProgramList();
@@ -241,6 +244,10 @@ public class AdminController implements Serializable {
 			if (getSmqfilters() != null && !smqfilters.isEmpty())
 				lastSerial = getSmqfilters().get(getSmqfilters().size() - 1)
 						.getSerialNum();
+		} else if (codelist.equals(CqtConstants.CODE_LIST_TYPE_CATEGORY_TERM)) {
+			myFocusRef.setCodelistConfigType(CqtConstants.CODE_LIST_TYPE_CATEGORY_TERM);
+			if(getCategoryTerms() != null && !categories.isEmpty())
+				lastSerial = getCategoryTerms().get(getCategoryTerms().size() - 1).getSerialNum();
 		}
 		myFocusRef.setCreationDate(new Date());
 		myFocusRef.setLastModificationDate(new Date());
@@ -292,6 +299,20 @@ public class AdminController implements Serializable {
 			programs = new ArrayList<RefConfigCodeList>();
 		}
 		return programs;
+	}
+	
+	/**
+	 * Returns category term list.
+	 * 
+	 * @return
+	 */
+	public List<RefConfigCodeList> getCategoryList() {
+		categories = refCodeListService.findAllByConfigType(
+				CqtConstants.CODE_LIST_TYPE_CATEGORY_TERM, OrderBy.ASC);
+		if (categories == null) {
+			categories = new ArrayList<RefConfigCodeList>();
+		}
+		return categories;
 	}
 
 	/**
@@ -1158,6 +1179,14 @@ public class AdminController implements Serializable {
 
 	public void setSmqfilters(List<RefConfigCodeList> smqfilters) {
 		this.smqfilters = smqfilters;
+	}
+	
+	public List<RefConfigCodeList> getCategoryTerms() {
+		return categories;
+	}
+
+	public void setCategoryTerms(List<RefConfigCodeList> categories) {
+		this.categories = categories;
 	}
 
 	public ICqtCacheManager getCqtCacheManager() {

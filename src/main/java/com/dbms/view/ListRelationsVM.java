@@ -301,6 +301,7 @@ public class ListRelationsVM implements IRelationsChangeListener {
 								HierarchyNode relationsHierarchyNode = hierarchyNode.copy();
 								TreeNode relationsTreeNode = new DefaultTreeNode(relationsHierarchyNode, relationsRoot);
 								relationsHierarchyNode. markEditableInRelationstable();
+								relationsHierarchyNode.setJustAdded(true);
 								IEntity entity = relationsHierarchyNode.getEntity();
 								if(entity instanceof MeddraDictReverseHierarchySearchDto) {
 									MeddraDictReverseHierarchySearchDto reverseHierarchySearchDto = (MeddraDictReverseHierarchySearchDto)entity;

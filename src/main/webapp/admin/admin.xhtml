@@ -27,6 +27,7 @@
 							<f:selectItem itemLabel="PROTOCOL" itemValue="PROTOCOL" />
 							<f:selectItem itemLabel="PRODUCT" itemValue="PRODUCT" />
 							<f:selectItem itemLabel="MEDDRA DICTIONARY" itemValue="MEDDRA_VERSIONS" />
+							<f:selectItem itemLabel="TERM CATEGORY" itemValue="TERM_CATEGORY" />
 							<f:selectItem itemLabel="WORKFLOW STATE" itemValue="WORKFLOW_STATES" />
 							<f:selectItem itemLabel="USER GROUPS" itemValue="USER_GROUPS" />
                             <f:selectItem itemLabel="SYSTEM CONFIG" itemValue="SYSTEM_CONFIG" />
@@ -60,6 +61,10 @@
 					
 					<ui:fragment rendered="#{adminController.codelist eq 'MEDDRA_VERSIONS'}">
 						<ui:include src="meddraTable.xhtml"></ui:include>
+					</ui:fragment>
+
+					<ui:fragment rendered="#{adminController.codelist eq 'TERM_CATEGORY'}">
+						<ui:include src="categoryTable.xhtml"></ui:include>
 					</ui:fragment>
 					
 					<ui:fragment rendered="#{adminController.codelist eq 'WORKFLOW_STATES'}">

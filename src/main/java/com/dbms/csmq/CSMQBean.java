@@ -1,5 +1,6 @@
 package com.dbms.csmq;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -11,6 +12,7 @@ import javax.faces.bean.ManagedProperty;
 import com.dbms.entity.cqt.RefConfigCodeList;
 import com.dbms.service.IRefCodeListService;
 import com.dbms.util.CqtConstants;
+import com.dbms.util.OrderBy;
 
 
 
@@ -869,7 +871,7 @@ public class CSMQBean {
         else 
             return SCOPE_FULL;
     }
-    
+    /*
 	public List<String[]> getCqtBaseCategories() {
 		return Arrays.asList(new String[][] {
 			new String[] { CATEGORY_A, "A" },
@@ -882,7 +884,19 @@ public class CSMQBean {
 			new String[] { CATEGORY_G, "G" },
 			new String[] { CATEGORY_H, "H" },
 			new String[] { CATEGORY_I, "I" }
+			
+			RefConfigCodeList categories = getRefCodeListService().findByConfigType(CqtConstants.CODE_LIST_TYPE_CATEGORY_TERM, OrderBy.ASC);
 		});
+	}
+	*/
+	
+	public List<RefConfigCodeList> getCqtBaseCategories() {
+		List<RefConfigCodeList> categories = refCodeListService.findByConfigType(
+				CqtConstants.CODE_LIST_TYPE_CATEGORY_TERM, OrderBy.ASC);
+		if (categories == null) {
+			categories = new ArrayList<>();
+		}
+		return categories;
 	}
     
     public String interpretCqtBaseCategory(String categoryVal) {

@@ -2159,10 +2159,22 @@ public class CreateController implements Serializable {
 	public void changeLevel(AjaxBehaviorEvent event) {
 		if(createWizard != null) {
 			detailsFormModel.setWizardType(WizardType.CreateWizard);
+			if(!detailsFormModel.getExtension().equalsIgnoreCase("TR1")) 
+				detailsFormModel.setAlgorithm("N");
+			else	
+				detailsFormModel.setAlgorithm("Y");
 		} else if(copyWizard != null) {
 			detailsFormModel.setWizardType(WizardType.CopyWizard);
+			if(!detailsFormModel.getExtension().equalsIgnoreCase("TR1"))
+				detailsFormModel.setAlgorithm("N");
+			else	
+				detailsFormModel.setAlgorithm("Y");
 		} else if(updateWizard != null) {
 			detailsFormModel.setWizardType(WizardType.UpdateWizard);
+			if(!detailsFormModel.getExtension().equalsIgnoreCase("TR1"))
+				detailsFormModel.setAlgorithm("N");
+			else	
+				detailsFormModel.setAlgorithm("Y");
 		}
 		detailsFormModel.afterChangeExtension(event);
 	}

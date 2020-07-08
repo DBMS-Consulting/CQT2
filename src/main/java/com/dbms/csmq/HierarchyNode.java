@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.primefaces.event.NodeExpandEvent;
+import org.primefaces.model.TreeNode;
 
 import com.dbms.entity.IEntity;
 import com.dbms.entity.cqt.CmqBase190;
@@ -69,6 +71,8 @@ public class HierarchyNode implements Serializable, Comparable<HierarchyNode> {
 	private int totalRecordsCount;
 	
 	private boolean drilledDown;
+	
+	private boolean justAdded;
 	
 	public HierarchyNode() {
 	}
@@ -382,6 +386,35 @@ public class HierarchyNode implements Serializable, Comparable<HierarchyNode> {
 			return false;
 		}
 	}
+	
+	public boolean isChildNode() {
+		
+		
+		if(this.relationEntity != null || getJustAdded()) { 
+			return false;
+		} else if((this.entity != null) && ((this.entity instanceof SmqBase190) 
+										|| (this.entity instanceof SmqBaseTarget) 
+										|| (this.entity instanceof SMQReverseHierarchySearchDto)))
+			return false;
+		
+		
+		/*if(this.entity != null && this.entity instanceof MeddraDictHierarchySearchDto) {
+			MeddraDictHierarchySearchDto meddraDictHierarchySearchDto = (MeddraDictHierarchySearchDto) entity;
+			if(meddraDictHierarchySearchDto.getSocCode() != null || meddraDictHierarchySearchDto.getHltCode() != null 
+					|| meddraDictHierarchySearchDto.getHlgtCode() != null
+					&& (meddraDictHierarchySearchDto.getPrimaryPathFlag().equalsIgnoreCase("Y")))
+				return false;
+			return true;
+		} else if(this.entity != null && this.entity instanceof MeddraDictReverseHierarchySearchDto) {
+			MeddraDictReverseHierarchySearchDto meddraDictReverseHierarchySearchDto = (MeddraDictReverseHierarchySearchDto) entity;
+			if(meddraDictReverseHierarchySearchDto.getSocCode() != null || meddraDictReverseHierarchySearchDto.getHltCode() != null 
+					|| meddraDictReverseHierarchySearchDto.getHlgtCode() != null
+					&& (meddraDictReverseHierarchySearchDto.getPrimaryPathFlag().equalsIgnoreCase("Y")))
+				return false;
+			return false;
+		} */
+		return true;
+	}
 
 	public boolean isReadOnlyCategory() {
 		return readOnlyCategory;
@@ -413,5 +446,13 @@ public class HierarchyNode implements Serializable, Comparable<HierarchyNode> {
 
 	public void setDrilledDown(boolean drilledDown) {
 		this.drilledDown = drilledDown;
+	}
+	
+	public boolean getJustAdded() {
+		return justAdded;
+	}
+
+	public void setJustAdded(boolean justAdded) {
+		this.justAdded = justAdded;
 	}
 }

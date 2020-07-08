@@ -38,7 +38,7 @@
 					itemValue="#{extension.codelistInternalValue}" />
 
 				<p:ajax listener="#{createController.changeLevel}" global="false"
-					update="level lProtocol protocol drug lDrug product lProduct @this" />
+					update="level lProtocol protocol drug lDrug product lProduct algorithm @this" />
 			</p:selectOneMenu>
 
 			<p:outputLabel value="* Name" />
@@ -154,9 +154,16 @@
 			<!-- <p:inputText rendered="#{createController.disableLevel(createController.detailsFormModel)}" id="levelI" disabled="true" value="#{createController.detailsFormModel.level}"
                  styleClass="uppercase"></p:inputText> -->
 
-			<p:outputLabel value="* Algorithm" />
-			<p:inputText value="#{createController.detailsFormModel.algorithm}"
-				disabled="#{true or createController.readOnlyState}" />
+            <p:outputLabel value="* Algorithm" />
+            <p:selectOneMenu id="algorithm"
+				value="#{createController.detailsFormModel.algorithm}" label="Algorithm"
+				required="true"
+				disabled="#{false}">
+				<f:selectItem itemValue="" itemLabel="" noSelectionOption="false" />
+				<f:selectItem itemValue="Y" itemLabel="Yes" />
+				<f:selectItem itemValue="N" itemLabel="No" />
+				<p:ajax update="@this" global="false" />
+			</p:selectOneMenu>
 
 			<p:outputLabel value="* Status" />
 			<h:outputText value="#{createController.detailsFormModel.status}"

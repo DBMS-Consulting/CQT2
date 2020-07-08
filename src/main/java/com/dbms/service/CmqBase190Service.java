@@ -1345,7 +1345,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 
 		// Retrieval of relations - Loop
 		List<CmqRelation190> relations = cmqRelationService.findByCmqCode(details.getCode());
-
+		int relationSize = relations.size();
 		List<Future<MQReportRelationsWorkerDTO>> futures = new ArrayList<>();
 		int workerId = 1;
 		ExecutorService executorService = Executors.newFixedThreadPool(8);
@@ -1381,6 +1381,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		LOG.info("Submitted all MQReportRelationsWorker for relations.");
 		//now get the futures and process them.
 		int wasAddedFromSmqCounter = 0;
+		int iterator = 0;
 		for (Future<MQReportRelationsWorkerDTO> future : futures) {
 			try {
 				MQReportRelationsWorkerDTO relationsWorkerDTO = future.get();
@@ -1398,12 +1399,16 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 							mapReportData.get(0).setCategory(relations.get(wasAddedFromSmqCounter).getTermCategory());
 						}
 					}
+					if(relations.get(iterator).getTermCategory() != null && mapReportData.get(0) != null) {
+						mapReportData.get(0).setCategory(relations.get(iterator).getTermCategory());
+					}
 					rowCount = fillReport(mapReportData, cell, row, rowCount, worksheet);
 					mapReportData.clear();
 				} else {
 					LOG.info("Got false status for success in worker {}", relationsWorkerDTO.getWorkerName());
 				}
 				wasAddedFromSmqCounter++;
+				iterator++;
 			} catch (InterruptedException | ExecutionException e) {
 				LOG.error("Exception while reading MQReportRelationsWorkerDTO", e);
 			}
