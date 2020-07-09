@@ -392,11 +392,12 @@ public class HierarchyNode implements Serializable, Comparable<HierarchyNode> {
 		
 		if(this.relationEntity != null || getJustAdded()) { 
 			return false;
-		} else if((this.entity != null) && ((this.entity instanceof SmqBase190) 
+		} else if((this.entity != null) && (!this.level.equalsIgnoreCase("Child SMQ")) 
+										&& (!this.level.equalsIgnoreCase("'C' Child SMQ"))
+										&& ((this.entity instanceof SmqBase190) 
 										|| (this.entity instanceof SmqBaseTarget) 
 										|| (this.entity instanceof SMQReverseHierarchySearchDto)))
 			return false;
-		
 		
 		/*if(this.entity != null && this.entity instanceof MeddraDictHierarchySearchDto) {
 			MeddraDictHierarchySearchDto meddraDictHierarchySearchDto = (MeddraDictHierarchySearchDto) entity;
