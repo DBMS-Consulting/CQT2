@@ -399,6 +399,28 @@ public class HierarchyNode implements Serializable, Comparable<HierarchyNode> {
 										|| (this.entity instanceof SMQReverseHierarchySearchDto)))
 			return false;
 		
+		if(this.entity != null && this.entity instanceof MeddraDictHierarchySearchDto) {
+			MeddraDictHierarchySearchDto meddraDictHierarchySearchDto = (MeddraDictHierarchySearchDto) entity;
+			if(meddraDictHierarchySearchDto.getHlgtCode() != null || meddraDictHierarchySearchDto.getHltCode() != null
+					|| meddraDictHierarchySearchDto.getPtCode() != null)
+				return true;
+				
+			if(!(meddraDictHierarchySearchDto.getPtCode() == null && meddraDictHierarchySearchDto.getLltCode() != null)) {
+				return false;
+			}
+			
+		} else if(this.entity != null && this.entity instanceof MeddraDictReverseHierarchySearchDto) {
+			MeddraDictReverseHierarchySearchDto meddraDictReverseHierarchySearchDto = (MeddraDictReverseHierarchySearchDto) entity;
+			/*
+			if(meddraDictReverseHierarchySearchDto.getHlgtCode() != null || meddraDictReverseHierarchySearchDto.getHltCode() != null
+					|| meddraDictReverseHierarchySearchDto.getPtCode() != null)
+				return true;
+				*/
+			if(!(meddraDictReverseHierarchySearchDto.getPtCode() == null && meddraDictReverseHierarchySearchDto.getLltCode() != null)) {
+				return false;
+			}
+		}
+		
 		/*if(this.entity != null && this.entity instanceof MeddraDictHierarchySearchDto) {
 			MeddraDictHierarchySearchDto meddraDictHierarchySearchDto = (MeddraDictHierarchySearchDto) entity;
 			if(meddraDictHierarchySearchDto.getSocCode() != null || meddraDictHierarchySearchDto.getHltCode() != null 
