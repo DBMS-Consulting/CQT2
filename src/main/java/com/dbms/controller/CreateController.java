@@ -575,6 +575,11 @@ public class CreateController implements Serializable {
  
 	}
 	
+	public void notifyCategoryChange() {
+		//detailsFormModel.setModelChanged(true);
+		notifyRelationsUpdate();
+	}
+	
 	//----------------------- Browse Wizard ------------------------
 
 	/**

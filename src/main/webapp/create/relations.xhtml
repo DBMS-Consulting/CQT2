@@ -254,6 +254,8 @@
 					<f:selectItem itemLabel="" itemValue="" noSelectionOption="true"/>
 					<f:selectItems var="s" value="#{appCSMQBean.cqtBaseCategories}"
 						itemValue="#{s.value}" itemLabel="#{s.value}" />
+						<p:ajax event="change"
+						listener="#{createController.notifyCategoryChange()}" />
 				</p:selectOneMenu>
                 
 			</p:column>
