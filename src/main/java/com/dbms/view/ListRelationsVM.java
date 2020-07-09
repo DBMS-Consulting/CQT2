@@ -261,6 +261,10 @@ public class ListRelationsVM implements IRelationsChangeListener {
 		relationsSearchHelper.setRelationView(isRelationView);
         relationsSearchHelper.setParentListView(isParentListView);
 		relationsSearchHelper.getRelationsNodeHierarchy(null, expandedTreeNode);
+		for(TreeNode child: expandedTreeNode.getChildren()) {
+			HierarchyNode hierNode = (HierarchyNode) child.getData();
+			hierNode.setHideCategory(true);
+		}
 	}
 	
 	public void onNodeCollapse(NodeCollapseEvent event) {

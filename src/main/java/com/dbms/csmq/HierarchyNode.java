@@ -400,7 +400,9 @@ public class HierarchyNode implements Serializable, Comparable<HierarchyNode> {
 										|| (this.entity instanceof SmqBaseTarget) 
 										|| (this.entity instanceof SMQReverseHierarchySearchDto)))
 			return false;
-		
+		if(this.entity != null && this.entity instanceof SmqRelation190 && this.hideCategory != true) {
+				return false; 
+		}
 		if(this.entity != null && this.entity instanceof MeddraDictHierarchySearchDto) {
 			MeddraDictHierarchySearchDto meddraDictHierarchySearchDto = (MeddraDictHierarchySearchDto) entity;
 			if(meddraDictHierarchySearchDto.getHlgtCode() != null || meddraDictHierarchySearchDto.getHltCode() != null
@@ -417,7 +419,7 @@ public class HierarchyNode implements Serializable, Comparable<HierarchyNode> {
 			if(meddraDictReverseHierarchySearchDto.getHlgtCode() != null || meddraDictReverseHierarchySearchDto.getHltCode() != null
 					|| meddraDictReverseHierarchySearchDto.getPtCode() != null)
 				return true;
-				*/
+			*/
 			if(!(meddraDictReverseHierarchySearchDto.getPtCode() == null && meddraDictReverseHierarchySearchDto.getLltCode() != null)) {
 				return false;
 			}
