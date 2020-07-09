@@ -696,6 +696,10 @@ public class AdminController implements Serializable {
 				type = "MedDRA Dictionary";
 				getMeddraList();
 			} else if (myFocusRef.getCodelistConfigType().equals(
+					CqtConstants.CODE_LIST_TYPE_CATEGORY_TERM)) {
+				type = "Category Term";
+				getCategoryList();
+			} else if (myFocusRef.getCodelistConfigType().equals(
 					CqtConstants.CODE_LIST_TYPE_PRODUCT)) {
 				type = "Product";
 				getProductList();

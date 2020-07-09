@@ -87,11 +87,8 @@
 
 				<p:outputLabel value="Category Value" styleClass="label-right" />
 				<p:inputText required="true" label="Category Value"
-					value="#{adminController.ref.value}" validatorMessage="Decimal and character values are not allowed in dictionary version number."
+					value="#{adminController.ref.value}"
 					style="width: 300px !important; float: left">
-
-					<f:validateRegex pattern="^[0-9]+$" />
-					<p:ajax update="msgCategory" event="blur"    />
  				</p:inputText>
 
 				<p:outputLabel value="Active flag" styleClass="label-right" />
@@ -113,7 +110,7 @@
 				<p:commandButton value="Save" icon="fa fa-plus"
 					update="tableCategory msgCat"
 					actionListener="#{adminController.addRefCodelist}"
-					oncomplete="handleFormSubmit(xhr, status, args)" />
+					oncomplete="PF('tblCategory').filter()" />
 
 				<p:commandButton value="Cancel" icon="fa fa-close"
 					onclick="PF('categoryT').hide()"
