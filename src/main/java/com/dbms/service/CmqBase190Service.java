@@ -1389,7 +1389,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 					Map<Integer, ReportLineDataDto> mapReportData = relationsWorkerDTO.getMapReport();
 					if(wasAddedFromSmq.get(wasAddedFromSmqCounter)) {
 						mapReportData.keySet().removeIf(key -> key != 0);
-						if(relations.get(wasAddedFromSmqCounter).getTermScope() != null && mapReportData.get(0) != null) {
+						/*if(relations.get(wasAddedFromSmqCounter).getTermScope() != null && mapReportData.get(0) != null) {
 							mapReportData.get(0).setScope(relations.get(wasAddedFromSmqCounter).getTermScope());
 						}
 						if(relations.get(wasAddedFromSmqCounter).getTermWeight() != null && mapReportData.get(0) != null) {
@@ -1397,7 +1397,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 						}
 						if(relations.get(wasAddedFromSmqCounter).getTermCategory() != null && mapReportData.get(0) != null){
 							mapReportData.get(0).setCategory(relations.get(wasAddedFromSmqCounter).getTermCategory());
-						}
+						}*/
 					}
 					if(relations.get(iterator).getTermCategory() != null && mapReportData.get(0) != null) {
 						mapReportData.get(0).setCategory(relations.get(iterator).getTermCategory());
