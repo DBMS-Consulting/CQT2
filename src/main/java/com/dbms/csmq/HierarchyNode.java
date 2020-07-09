@@ -389,7 +389,9 @@ public class HierarchyNode implements Serializable, Comparable<HierarchyNode> {
 	
 	public boolean isChildNode() {
 		
-		
+		if(this.level.equalsIgnoreCase("PRO")) {
+			return true;
+		}
 		if(this.relationEntity != null || getJustAdded()) { 
 			return false;
 		} else if((this.entity != null) && (!this.level.equalsIgnoreCase("Child SMQ")) 
