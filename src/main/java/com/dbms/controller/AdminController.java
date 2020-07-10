@@ -646,6 +646,7 @@ public class AdminController implements Serializable {
 								.getCombinedMappedGroupMembershipAsString());
 				saved = true;
 				RequestContext.getCurrentInstance().execute("PF('extensionD').hide();");
+				RequestContext.getCurrentInstance().execute("PF('categoryT').hide();");
 			} else {
 				//TODO: reset the serial num to 1 + max here if it not so and say that in info msg.
 				
@@ -679,6 +680,7 @@ public class AdminController implements Serializable {
 				savedRefConfigCodeList = refCodeListService.findById(myFocusRef.getId());
 				saved = true;
 				RequestContext.getCurrentInstance().execute("PF('extensionD').hide();");
+				RequestContext.getCurrentInstance().execute("PF('categoryT').hide();");
 			}
 			if(newAddedInMiddle) {
 				updateSerialNumberOfNewAdd(savedRefConfigCodeList.getCodelistConfigType(), savedRefConfigCodeList);
