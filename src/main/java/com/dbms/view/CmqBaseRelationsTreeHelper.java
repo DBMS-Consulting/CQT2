@@ -1140,7 +1140,7 @@ public class CmqBaseRelationsTreeHelper {
 			node.setPrimaryPathFlag(false);
 		}
 		node.setEntity(searchDto);
-		if(category.length() > 1) {
+		if(category != null && category.length() > 1) {
 			node.setCategory(category);
 		}
         node.setRelationEntity(relationEntity);

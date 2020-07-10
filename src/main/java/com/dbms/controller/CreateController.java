@@ -1841,6 +1841,9 @@ public class CreateController implements Serializable {
 			cmqRelation190.setLastModifiedBy(this.authService.getLastModifiedByUserAsString());
 			cmqRelation190.setCreationDate(creationDate);
 			cmqRelation190.setCreatedBy(this.authService.getLastModifiedByUserAsString());
+			if(cmqRelation190.getTermCategory() != null && cmqRelation190.getTermCategory().length() > 1) {
+				cmqRelation190.setTermCategory(null);
+			}
 		}
 		//save relations
 		this.cmqRelationService.update(cmqRelationList, this.authService.getUserCn()

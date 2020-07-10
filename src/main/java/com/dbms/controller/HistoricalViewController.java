@@ -205,6 +205,7 @@ public class HistoricalViewController implements Serializable {
 					Long termCode = historicalViewDbDataDTO.getTermCode();
 					if ((null != termCode) && StringUtils.isNotBlank(term)) {
 						HierarchyNode hierarchyNode = this.createRelationNode(termDictLevel, term, termCode, termScope);
+						//hierarchyNode.setCategory(historicalViewDbDataDTO.getT);
 						if (!addedHierarchyNodes.contains(hierarchyNode)) {
 							new DefaultTreeNode(hierarchyNode, rootNode);
 							addedHierarchyNodes.add(hierarchyNode);
