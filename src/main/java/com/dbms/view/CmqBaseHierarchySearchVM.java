@@ -337,6 +337,9 @@ public class CmqBaseHierarchySearchVM {
 			Map<Long, TreeNode> parentTreeNodes = new HashMap<Long, TreeNode>();
 			
 			for (CmqBase190 cmqBase190 : cmqBaseList) {
+				if (cmqBase190.getCmqStatus().equalsIgnoreCase("I")) {
+					continue;
+				}
 				HierarchyNode node = new HierarchyNode();
 				node.setLevel(myFilterLevel);
 				node.setTerm(cmqBase190.getCmqName());
