@@ -359,6 +359,18 @@ public class ListRelationsVM implements IRelationsChangeListener {
 										dummyNode.setDummyNode(true);
 										new DefaultTreeNode(dummyNode, relationsTreeNode);
 									}
+								} else if(entity instanceof SmqRelation190) {
+									relationsHierarchyNode.setCategory(null);
+									relationsHierarchyNode.setScope(null);
+									relationsHierarchyNode.setWeight(null);
+									
+									List<TreeNode> childTreeNodes = treeNode.getChildren();
+									if(CollectionUtils.isNotEmpty(childTreeNodes)) {
+										relationsHierarchyNode.setDataFetchCompleted(false);
+										HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
+										dummyNode.setDummyNode(true);
+										new DefaultTreeNode(dummyNode, relationsTreeNode);
+									}
 								} else if(!"LLT".equalsIgnoreCase(relationsHierarchyNode.getLevel())) {
 									if(entity instanceof SmqBase190) {
 										relationsHierarchyNode.setScope("2");

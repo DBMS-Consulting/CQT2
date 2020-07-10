@@ -296,22 +296,22 @@ public class CmqBaseHierarchySearchVM {
 						
 						TreeNode ptTreeNode = null;
 						if(isPtSearch) {
-							HierarchyNode ptNode = relationsTreeHelper.createMeddraReverseNode(meddraDictReverseDto, "PT", false, null);
+							HierarchyNode ptNode = relationsTreeHelper.createMeddraReverseNode(meddraDictReverseDto, "PT", false, null, "");
 							ptTreeNode = new DefaultTreeNode(ptNode, this.myHierarchyRoot);
 						} else {
-							HierarchyNode lltNode = relationsTreeHelper.createMeddraReverseNode(meddraDictReverseDto, "LLT", false, null);
+							HierarchyNode lltNode = relationsTreeHelper.createMeddraReverseNode(meddraDictReverseDto, "LLT", false, null, "");
 							TreeNode lltTreeNode = new DefaultTreeNode(lltNode, this.myHierarchyRoot);
-							HierarchyNode ptNode = relationsTreeHelper.createMeddraReverseNode(meddraDictReverseDto, "PT", false, null);
+							HierarchyNode ptNode = relationsTreeHelper.createMeddraReverseNode(meddraDictReverseDto, "PT", false, null, "");
 							ptTreeNode = new DefaultTreeNode(ptNode, lltTreeNode);
 						}
 						
-						HierarchyNode hltNode = relationsTreeHelper.createMeddraReverseNode(meddraDictReverseDto, "HLT", false, null);
+						HierarchyNode hltNode = relationsTreeHelper.createMeddraReverseNode(meddraDictReverseDto, "HLT", false, null, "");
 						TreeNode hltTreeNode = new DefaultTreeNode(hltNode, ptTreeNode);
 						
-						HierarchyNode hlgtNode = relationsTreeHelper.createMeddraReverseNode(meddraDictReverseDto, "HLGT", false, null);
+						HierarchyNode hlgtNode = relationsTreeHelper.createMeddraReverseNode(meddraDictReverseDto, "HLGT", false, null, "");
 						TreeNode hlgtTreeNode = new DefaultTreeNode(hlgtNode, hltTreeNode);
 						
-						HierarchyNode socNode = relationsTreeHelper.createMeddraReverseNode(meddraDictReverseDto, "SOC", false, null);
+						HierarchyNode socNode = relationsTreeHelper.createMeddraReverseNode(meddraDictReverseDto, "SOC", false, null, "");
 						TreeNode socTreeNode = new DefaultTreeNode(socNode, hlgtTreeNode);
 					}
 				}
@@ -321,7 +321,7 @@ public class CmqBaseHierarchySearchVM {
 				this.myHierarchyRoot = new DefaultTreeNode("root", new HierarchyNode("LEVEL", "NAME", "CODE", null), null);
 				
 				for (MeddraDictReverseHierarchySearchDto meddraDictReverseDto : meddraDictDtoList) {
-					HierarchyNode node = relationsTreeHelper.createMeddraReverseNode(meddraDictReverseDto, myFilterLevel, false, null);
+					HierarchyNode node = relationsTreeHelper.createMeddraReverseNode(meddraDictReverseDto, myFilterLevel, false, null, "");
 					TreeNode parentTreeNode = new DefaultTreeNode(node, this.myHierarchyRoot);
 					
 					// add a dummmy node to show expand arrow

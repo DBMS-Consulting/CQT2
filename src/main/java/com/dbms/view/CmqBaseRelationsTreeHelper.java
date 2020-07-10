@@ -438,6 +438,9 @@ public class CmqBaseRelationsTreeHelper {
         //check if it is a PT relation of smq or not
         if((cmqRelation.getPtCode() != null) && (cmqRelation.getPtCode().longValue() > 0)) {
             SmqRelation190 entity2 = this.smqBaseSvc.findSmqRelationBySmqAndPtCode(cmqRelation.getSmqCode(), cmqRelation.getPtCode().intValue(),dictionaryVersion);
+            entity2.setPtTermCategory(cmqRelation.getTermCategory());
+            entity2.setPtTermScope(null);
+            entity2.setPtTermWeight(null);
             node = this.createSmqRelationNode(entity2);
             if(hideDeleteButton) {
             	node.setHideDelete(true);
@@ -572,7 +575,20 @@ public class CmqBaseRelationsTreeHelper {
 
         for (MeddraDictReverseHierarchySearchDto m : dtos) {
             final Long c = Long.valueOf(m.getPtCode());
-            HierarchyNode node = this.createMeddraReverseNode(m, nodeType,false, cmqRelationsMap.get(c));
+            final Long d = Long.valueOf(m.getLltCode());
+            IEntity entity;
+            if(nodeType.equalsIgnoreCase("LLT")) {
+            	 entity = cmqRelationsMap.get(d);
+            } else {
+            	 entity = cmqRelationsMap.get(c);
+            }
+            HierarchyNode node;
+            if(entity instanceof CmqRelation190) {
+            	CmqRelation190 cmqRelation = (CmqRelation190) entity;
+            	node = this.createMeddraReverseNode(m, nodeType,false, cmqRelationsMap.get(c), cmqRelation.getTermCategory());
+            } else {
+            node = this.createMeddraReverseNode(m, nodeType,false, cmqRelationsMap.get(c), "");
+            }
             TreeNode treeNode = new DefaultTreeNode(node, expandedTreeNode);
 
             addedNodes.put(c, treeNode);
@@ -611,7 +627,7 @@ public class CmqBaseRelationsTreeHelper {
 
         for (MeddraDictReverseHierarchySearchDto m : dtos) {
             final Long c = Long.valueOf(m.getPtCode());
-            HierarchyNode node = this.createMeddraReverseNode(m, nodeType,false, cmqRelationsMap.get(c));
+            HierarchyNode node = this.createMeddraReverseNode(m, nodeType,false, cmqRelationsMap.get(c), "");
             TreeNode treeNode = new DefaultTreeNode(node, expandedTreeNode);
 
             addedNodes.put(c, treeNode);
@@ -1017,10 +1033,10 @@ public class CmqBaseRelationsTreeHelper {
 					if("Y".equalsIgnoreCase(childReverseSearchDto.getPrimaryPathFlag())) {
 						isPrimary = true;
 					}
-					childNode = this.createMeddraReverseNode(childReverseSearchDto, partitionColumn, isPrimary, null);
+					childNode = this.createMeddraReverseNode(childReverseSearchDto, partitionColumn, isPrimary, null, "");
 					childNode.setPrimarypathCheckDone(true);
 				} else {
-					childNode = this.createMeddraReverseNode(childReverseSearchDto, partitionColumn, hierarchyNode.isPrimaryPathFlag(), null);
+					childNode = this.createMeddraReverseNode(childReverseSearchDto, partitionColumn, hierarchyNode.isPrimaryPathFlag(), null, "");
 				}
 				
 				if(relationView) {
@@ -1097,7 +1113,7 @@ public class CmqBaseRelationsTreeHelper {
 		return node;
 	}
 	
-	public HierarchyNode createMeddraReverseNode(MeddraDictReverseHierarchySearchDto searchDto, String level, boolean isPrimary, IEntity relationEntity) {
+	public HierarchyNode createMeddraReverseNode(MeddraDictReverseHierarchySearchDto searchDto, String level, boolean isPrimary, IEntity relationEntity, String category) {
 		HierarchyNode node = new HierarchyNode();
 		node.setLevel(level);
 		if("LLT".equalsIgnoreCase(level)) {
@@ -1124,12 +1140,15 @@ public class CmqBaseRelationsTreeHelper {
 			node.setPrimaryPathFlag(false);
 		}
 		node.setEntity(searchDto);
+		if(category.length() > 1) {
+			node.setCategory(category);
+		}
         node.setRelationEntity(relationEntity);
         if(relationEntity!=null && relationEntity instanceof CmqRelation190) {
             CmqRelation190 cmqRelation = (CmqRelation190) relationEntity;
             node.setCategory((cmqRelation.getTermCategory() == null) ? "" : cmqRelation.getTermCategory());
             node.setScope((cmqRelation.getTermScope() == null) ? "" : cmqRelation.getTermScope());
-            node.setWeight((cmqRelation.getTermWeight() == null) ? "" : cmqRelation.getTermWeight() + "");
+            //node.setWeight((cmqRelation.getTermWeight() == null) ? "" : cmqRelation.getTermWeight() + "");
         }
 		return node;
 	}

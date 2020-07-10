@@ -919,9 +919,13 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 							
 						} else if (childRelation.getSmqLevel() == 4) {
 							level = "PT";
+							relation.setTermScope(null);
+							relation.setTermWeight(null);
 							
 						} else if (childRelation.getSmqLevel() == 5) {
 							level = "LLT";
+							relation.setTermScope(null);
+							relation.setTermWeight(null);
 							
 						} 
 						else if (childRelation.getSmqLevel() == 0) {
