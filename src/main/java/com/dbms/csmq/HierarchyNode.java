@@ -2,6 +2,9 @@ package com.dbms.csmq;
 
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
+
+import javax.faces.bean.ManagedProperty;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.primefaces.event.NodeExpandEvent;
@@ -17,11 +20,13 @@ import com.dbms.entity.cqt.SmqRelation190;
 import com.dbms.entity.cqt.dtos.MeddraDictHierarchySearchDto;
 import com.dbms.entity.cqt.dtos.MeddraDictReverseHierarchySearchDto;
 import com.dbms.entity.cqt.dtos.SMQReverseHierarchySearchDto;
+import com.dbms.service.ICmqBase190Service;
+
 
 public class HierarchyNode implements Serializable, Comparable<HierarchyNode> {
 
 	private static final long serialVersionUID = 3824369219641775903L;
-
+	
 	private String level;
 
 	private String term;
@@ -389,7 +394,7 @@ public class HierarchyNode implements Serializable, Comparable<HierarchyNode> {
 	
 	public boolean isChildNode() {
 		
-		if(this.level.equalsIgnoreCase("PRO")) {
+		if(this.level.equalsIgnoreCase("PRO") || this.hideCategory == true) {
 			return true;
 		}
 		if(this.relationEntity != null || getJustAdded()) { 
@@ -415,31 +420,10 @@ public class HierarchyNode implements Serializable, Comparable<HierarchyNode> {
 			
 		} else if(this.entity != null && this.entity instanceof MeddraDictReverseHierarchySearchDto) {
 			MeddraDictReverseHierarchySearchDto meddraDictReverseHierarchySearchDto = (MeddraDictReverseHierarchySearchDto) entity;
-			/*
-			if(meddraDictReverseHierarchySearchDto.getHlgtCode() != null || meddraDictReverseHierarchySearchDto.getHltCode() != null
-					|| meddraDictReverseHierarchySearchDto.getPtCode() != null)
-				return true;
-			*/
 			if(!(meddraDictReverseHierarchySearchDto.getPtCode() == null && meddraDictReverseHierarchySearchDto.getLltCode() != null)) {
 				return false;
 			}
 		}
-		
-		/*if(this.entity != null && this.entity instanceof MeddraDictHierarchySearchDto) {
-			MeddraDictHierarchySearchDto meddraDictHierarchySearchDto = (MeddraDictHierarchySearchDto) entity;
-			if(meddraDictHierarchySearchDto.getSocCode() != null || meddraDictHierarchySearchDto.getHltCode() != null 
-					|| meddraDictHierarchySearchDto.getHlgtCode() != null
-					&& (meddraDictHierarchySearchDto.getPrimaryPathFlag().equalsIgnoreCase("Y")))
-				return false;
-			return true;
-		} else if(this.entity != null && this.entity instanceof MeddraDictReverseHierarchySearchDto) {
-			MeddraDictReverseHierarchySearchDto meddraDictReverseHierarchySearchDto = (MeddraDictReverseHierarchySearchDto) entity;
-			if(meddraDictReverseHierarchySearchDto.getSocCode() != null || meddraDictReverseHierarchySearchDto.getHltCode() != null 
-					|| meddraDictReverseHierarchySearchDto.getHlgtCode() != null
-					&& (meddraDictReverseHierarchySearchDto.getPrimaryPathFlag().equalsIgnoreCase("Y")))
-				return false;
-			return false;
-		} */
 		return true;
 	}
 
