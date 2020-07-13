@@ -52,6 +52,7 @@ import com.dbms.entity.IEntity;
 import com.dbms.entity.cqt.CmqBase190;
 import com.dbms.entity.cqt.CmqBaseTarget;
 import com.dbms.entity.cqt.CmqProductBaseTarget;
+import com.dbms.entity.cqt.CmqRelation190;
 import com.dbms.entity.cqt.CmqRelationTarget;
 import com.dbms.entity.cqt.RefConfigCodeList;
 import com.dbms.entity.cqt.SmqBase190;
@@ -862,6 +863,24 @@ public class ImpactSearchController implements Serializable {
 										if(updateNeeded) {
 											cmqRelation = (CmqRelationTarget) matchingMap.get("TARGET_CMQ_RELATION_FOR_UPDATE");
 										} else if(!matchFound) {
+											HierarchyNode childTreeNodeData = (HierarchyNode) childTreeNode.getData();
+											if(childTreeNodeData.getLevel().equalsIgnoreCase("LLT")) {
+												cmqRelation = new CmqRelationTarget();
+												cmqRelation.setCmqCode(cmqBaseTarget.getCmqCode());
+												cmqRelation.setCmqId(cmqBaseTarget.getId());
+												//we set both smqcode and llt code to show that this is an smq relation
+												cmqRelation.setSmqCode(smqRelation.getSmqCode());
+												cmqRelation.setLltCode(smqRelation.getPtCode().longValue());
+												if(smqRelation.getPtTermCategory() != null) {
+													cmqRelation.setTermCategory(smqRelation.getPtTermCategory());
+												}
+												if(smqRelation.getPtTermScope() != null) {
+													cmqRelation.setTermScope(smqRelation.getPtTermScope().toString());
+												}
+												if(smqRelation.getPtTermWeight() != null) {
+													cmqRelation.setTermWeight(smqRelation.getPtTermWeight().longValue());
+												}
+											}
 											cmqRelation = new CmqRelationTarget();
 											cmqRelation.setCmqCode(cmqBaseTarget.getCmqCode());
 											cmqRelation.setCmqId(cmqBaseTarget.getId());

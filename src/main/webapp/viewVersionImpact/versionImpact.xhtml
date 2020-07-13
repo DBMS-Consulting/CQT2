@@ -252,7 +252,7 @@
                                     </p:column>
 									<p:column rendered="#{not node.hideScope}"><h:outputText value="#{node.level}" /></p:column>
 									<p:column rendered="#{impactSearchController.displayScopeCatWeight and not node.hideScope}"><h:outputText value="#{appCSMQBean.interpretCqtBaseScope(node.scope)}" /></p:column>
-									<p:column rendered="#{impactSearchController.displayScopeCatWeight and not node.hideScope}"><h:outputText value="#{appCSMQBean.interpretCqtBaseCategory(node.category)}" /></p:column>
+									<p:column rendered="#{true}"><h:outputText value="#{appCSMQBean.interpretCqtBaseCategory(node.category)}" /></p:column>
 									<p:column rendered="#{impactSearchController.displayScopeCatWeight and not node.hideScope}"><h:outputText value="#{node.weight}" /></p:column>
 									
 								</p:treeTable>

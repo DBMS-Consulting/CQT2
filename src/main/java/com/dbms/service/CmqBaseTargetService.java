@@ -951,7 +951,10 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 					List<MeddraDictHierarchySearchDto> hlts = this.meddraDictService.findByCodes("HLT_", hltCodesList);
 					for (MeddraDictHierarchySearchDto hlt : hlts) {
 						mapReport.put(cpt++, new ReportLineDataDto("HLT", hlt.getCode(), hlt.getTerm(), "", hlt, getCmqRelationImpactDesc(relation.getRelationImpactType())));  
-
+						if(relation.getTermCategory() != null) {
+							mapReport.get(mapReport.size() - 1).setCategory(relation.getTermCategory());
+						}
+						
 						/**
 						 * PT.
 						 */
@@ -1004,16 +1007,11 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 						mapReport.put(cpt++, new ReportLineDataDto("PT", pt.getCode() + "", pt.getTerm(), "", pt, getCmqRelationImpactDesc(relation.getRelationImpactType())));
   						
 						if(wasAddedFromSmq) {
-							ptCounter = mapReport.size() - 1;
-							if(relation.getTermScope() != null) {
-								mapReport.get(ptCounter).setScope(relation.getTermScope());
-							}
-							if(relation.getTermWeight() != null) {
-								mapReport.get(ptCounter).setWeight(relation.getTermWeight().toString());
-							}
 							if(relation.getTermCategory() != null){
-								mapReport.get(ptCounter).setCategory(relation.getTermCategory());
+								mapReport.get(mapReport.size() - 1).setCategory(relation.getTermCategory());
 							}
+						} else if(relation.getTermCategory() != null) {
+							mapReport.get(mapReport.size() - 1).setCategory(relation.getTermCategory());
 						}
 						
 						if(!filterLltFlag && !wasAddedFromSmq) {
@@ -1044,7 +1042,10 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 					List<MeddraDictHierarchySearchDto> socss = this.meddraDictService.findByCodes("SOC_", socCodesList);
 					for (MeddraDictHierarchySearchDto soc : socss) {
 						mapReport.put(cpt++, new ReportLineDataDto("SOC", soc.getCode() + "", soc.getTerm(), "", soc, getCmqRelationImpactDesc(relation.getRelationImpactType()))); 
-
+						if(relation.getTermCategory() != null) {
+							mapReport.get(mapReport.size() - 1).setCategory(relation.getTermCategory());
+						}
+						
 						/**
 						 * HLGT.
 						 */
@@ -1117,6 +1118,9 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 					List<MeddraDictHierarchySearchDto> socDtos = this.meddraDictService.findByCodes("HLGT_", hlgtCodesList);
 					for (MeddraDictHierarchySearchDto hlgt : socDtos) {
 						mapReport.put(cpt++, new ReportLineDataDto("HLGT", hlgt.getCode() + "", hlgt.getTerm(), "", hlgt, getCmqRelationImpactDesc(relation.getRelationImpactType())));  
+						if(relation.getTermCategory() != null) {
+							mapReport.get(mapReport.size() - 1).setCategory(relation.getTermCategory());
+						}
 						/**
 						 * HLT.
 						 */
@@ -1176,6 +1180,9 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 					List<MeddraDictHierarchySearchDto> llts = meddraDictService.findByCodes("LLT_", lltCodesList);
 					for (MeddraDictHierarchySearchDto llt : llts) {
  						mapReport.put(cpt++, new ReportLineDataDto("LLT", llt.getCode() + "", llt.getTerm(), "", llt, getCmqRelationImpactDesc(relation.getRelationImpactType()))); 
+ 						if(relation.getTermCategory() != null) {
+ 							mapReport.get(mapReport.size() - 1).setCategory(relation.getTermCategory());
+ 						}
 					}
  				}
 			}

@@ -370,8 +370,19 @@
 									<p:column
 										rendered="#{impactSearchController.displayScopeCatWeight and not node.hideScope}">
 										<h:outputText
-											rendered="#{not node.hideCategory and node.readOnlyCategory}"
+											rendered="#{false}"
 											value="#{appCSMQBean.interpretCqtBaseCategory(node.category)}" />
+
+										<p:selectOneMenu id="soc2" value="#{node.category}" 
+										        disabled="#{impactSearchController.readOnlyIA}"
+												rendered="#{not node.isChildNode()}" 
+												autoWidth="false" style="width:75%">
+											<f:selectItem itemLabel="" itemValue="" noSelectionOption="true"/>
+											<f:selectItems var="c" value="#{appCSMQBean.cqtBaseCategories}"
+												itemValue="#{c.value}" itemLabel="#{c.value}" />
+												<p:ajax event="change"
+												listener="#{impactSearchController.setTargetRelationsUpdated()}" />
+										</p:selectOneMenu>
 
 										<!-- Disable selection control, remove comments if we need to reactivate the field
                                         <h:outputText rendered="#{not node.hideCategory and node.readOnlyCategory}" 

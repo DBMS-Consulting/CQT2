@@ -17,6 +17,7 @@ import com.dbms.entity.cqt.CmqRelation190;
 import com.dbms.entity.cqt.SmqBase190;
 import com.dbms.entity.cqt.SmqBaseTarget;
 import com.dbms.entity.cqt.SmqRelation190;
+import com.dbms.entity.cqt.SmqRelationTarget;
 import com.dbms.entity.cqt.dtos.MeddraDictHierarchySearchDto;
 import com.dbms.entity.cqt.dtos.MeddraDictReverseHierarchySearchDto;
 import com.dbms.entity.cqt.dtos.SMQReverseHierarchySearchDto;
@@ -405,7 +406,8 @@ public class HierarchyNode implements Serializable, Comparable<HierarchyNode> {
 										|| (this.entity instanceof SmqBaseTarget) 
 										|| (this.entity instanceof SMQReverseHierarchySearchDto)))
 			return false;
-		if(this.entity != null && this.entity instanceof SmqRelation190 && this.hideCategory != true) {
+		if((this.entity != null && this.entity instanceof SmqRelation190 && this.hideCategory != true) 
+				|| (this.entity != null && this.entity instanceof SmqRelationTarget && this.hideCategory != true)) {
 				return false; 
 		}
 		if(this.entity != null && this.entity instanceof MeddraDictHierarchySearchDto) {

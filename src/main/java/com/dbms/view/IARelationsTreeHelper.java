@@ -1347,6 +1347,10 @@ public class IARelationsTreeHelper {
 			CmqRelationTarget cmqRelation = (CmqRelationTarget) entity;
 			if((cmqRelation.getPtCode() != null) && (cmqRelation.getPtCode().longValue() > 0)) {
 				entity2 = this.smqBaseTargetService.findSmqRelationBySmqAndPtCode(cmqRelation.getSmqCode(), cmqRelation.getPtCode().intValue());
+				SmqRelationTarget smqRelation = (SmqRelationTarget) entity2;
+				smqRelation.setPtTermCategory(cmqRelation.getTermCategory());
+				smqRelation.setPtTermScope(null);
+				smqRelation.setPtTermWeight(null);
 				node = this.createSmqRelationTargetNode((SmqRelationTarget) entity2);
 				isSmqRelation = true;
 			} else {
@@ -1410,9 +1414,13 @@ public class IARelationsTreeHelper {
             if(!bCurrentList && !isRootListNode && bEventFromTargetTable) {
                 node.markReadOnlyInRelationstable();
             }
-
+            
+            if(node.getRelationEntity() instanceof CmqRelationTarget) {
+            	CmqRelationTarget cmqRelation = (CmqRelationTarget) node.getRelationEntity();
+            	node.setCategory(cmqRelation.getTermCategory());
+            }
+            
             TreeNode treeNode = new DefaultTreeNode(node, expandedTreeNode);
-
             addedNodes.put(c, treeNode);
             dtoCodes.add(c);
 		}
@@ -1748,7 +1756,7 @@ public class IARelationsTreeHelper {
 				} else {
 					lltDtos = this.meddraDictTargetService.findByCodes("LLT_", lltCodesList);
 				}
-                this.populateCmqRelationTreeNodes(lltDtos, expandedTreeNode, "LLT", null, cmqType, cmqCode, ptCodesMap, uiSourceOfEvent, entityExpanded);
+                this.populateCmqRelationTreeNodes(lltDtos, expandedTreeNode, "LLT", null, cmqType, cmqCode, lltCodesMap, uiSourceOfEvent, entityExpanded);
 			}
 		}
 	}
