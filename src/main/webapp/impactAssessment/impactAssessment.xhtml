@@ -375,7 +375,7 @@
 
 										<p:selectOneMenu id="soc2" value="#{node.category}" 
 										        disabled="#{impactSearchController.readOnlyIA}"
-												rendered="#{not node.isChildNode() and not impactSearchController.selectedImpactedCmqList.getCmqTypeCd() eq 'PRO' and not impactSearchController.selectedNotImpactedCmqList.getCmqTypeCd() eq 'PRO'}" 
+												rendered="#{not node.isChildNode() and (impactSearchController.selectedImpactedCmqList.getCmqTypeCd() eq 'TR1' or impactSearchController.selectedNotImpactedCmqList.getCmqTypeCd() eq 'TR1')}" 
 												autoWidth="false" style="width:75%">
 											<f:selectItem itemLabel="" itemValue="" noSelectionOption="true"/>
 											<f:selectItems var="c" value="#{appCSMQBean.cqtBaseCategories}"

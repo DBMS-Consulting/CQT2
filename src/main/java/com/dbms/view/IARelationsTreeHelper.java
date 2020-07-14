@@ -233,7 +233,13 @@ public class IARelationsTreeHelper {
 				}
 			}
 			hierarchyNode.setDataFetchCompleted(true);
-			// 
+			for(TreeNode child: expandedTreeNode.getChildren()) {
+				HierarchyNode hierNode =  (HierarchyNode) child.getData();
+				HierarchyNode parentNode = (HierarchyNode) child.getParent().getData();
+				if(!parentNode.getLevel().equalsIgnoreCase("TR1")) {
+					hierNode.setHideCategory(true);
+				}
+			}
 		}
 	}
 	

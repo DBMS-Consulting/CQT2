@@ -790,7 +790,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 								 */
 								List<SmqBaseTarget> smqs = smqBaseTargetService.findChildSmqByParentSmqCodes(smqChildCodeList);
 								
-								if (smqs != null) {
+								if (smqs != null && !smqs.isEmpty()) {
 									for (SmqBaseTarget smqC : smqs) {
 										level = getLevelFromValue(smqC.getSmqLevel());
  										mapReport.put(cpt++, new ReportLineDataDto(level, smqC.getSmqCode() + "", smqC.getSmqName(), "......", smqC.getImpactType(), "", smqC.getSmqStatus())); 
