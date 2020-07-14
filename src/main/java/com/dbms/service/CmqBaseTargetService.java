@@ -783,6 +783,10 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 								System.out.println("____________________________%%%%%%%%%%% STATUS SMQ " + smq.getSmqStatus() + ", smq= " + level);
 								 
 								mapReport.put(cpt++, new ReportLineDataDto(level, smq.getSmqCode() + "", smq.getSmqName(), "", smq.getImpactType(), "", smq.getSmqStatus())); 
+								if(relation.getTermCategory() != null) {
+									mapReport.get(mapReport.size() - 1).setCategory(relation.getTermCategory());
+									mapReport.get(mapReport.size() - 1).setScope(relation.getTermScope());
+								}
  								
 								/**
 								 * Other SMQs
