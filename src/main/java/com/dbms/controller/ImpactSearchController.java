@@ -664,6 +664,9 @@ public class ImpactSearchController implements Serializable {
 											SmqBaseTarget smqBaseTarget = this.smqBaseTargetService.findByCode(ptCode);
 											relationsHierarchyNode.setEntity(smqBaseTarget);
 											relationsHierarchyNode.setCode(smqBaseTarget.getSmqCode().toString());
+											relationsHierarchyNode.setCategory("");
+											relationsHierarchyNode.setScope(null);
+											relationsHierarchyNode.setWeight(null);
 
 											List<TreeNode> childTreeNodes = treeNode.getChildren();
 											
@@ -682,6 +685,15 @@ public class ImpactSearchController implements Serializable {
 												HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
 												dummyNode.setDummyNode(true);
 												new DefaultTreeNode(dummyNode, relationsTreeNode);
+											}
+											
+											if(relationsHierarchyNodeEntity instanceof SmqRelationTarget) {
+												relationsHierarchyNode.setCategory("");
+												relationsHierarchyNode.setScope(null);
+												relationsHierarchyNode.setWeight(null);
+												relationsHierarchyNode.setJustAdded(true);
+												relationsHierarchyNode.setHideCategory(false);
+												relationsHierarchyNode.setHideDelete(false);
 											}
 										}
 										targetRelationsUpdated = true;
@@ -871,23 +883,17 @@ public class ImpactSearchController implements Serializable {
 												//we set both smqcode and llt code to show that this is an smq relation
 												cmqRelation.setSmqCode(smqRelation.getSmqCode());
 												cmqRelation.setLltCode(smqRelation.getPtCode().longValue());
-												if(smqRelation.getPtTermCategory() != null) {
-													cmqRelation.setTermCategory(smqRelation.getPtTermCategory());
-												}
-												if(smqRelation.getPtTermScope() != null) {
-													cmqRelation.setTermScope(smqRelation.getPtTermScope().toString());
-												}
-												if(smqRelation.getPtTermWeight() != null) {
-													cmqRelation.setTermWeight(smqRelation.getPtTermWeight().longValue());
-												}
+												cmqRelation.setRelationImpactType("MQM");
+												
+											} else {
+												cmqRelation = new CmqRelationTarget();
+												cmqRelation.setCmqCode(cmqBaseTarget.getCmqCode());
+												cmqRelation.setCmqId(cmqBaseTarget.getId());
+												//we set both smqcode and pt code to show that this is an smq relation
+												cmqRelation.setSmqCode(smqRelation.getSmqCode());
+												cmqRelation.setPtCode(smqRelation.getPtCode().longValue());
+												cmqRelation.setRelationImpactType("MQM");
 											}
-											cmqRelation = new CmqRelationTarget();
-											cmqRelation.setCmqCode(cmqBaseTarget.getCmqCode());
-											cmqRelation.setCmqId(cmqBaseTarget.getId());
-											//we set both smqcode and pt code to show that this is an smq relation
-											cmqRelation.setSmqCode(smqRelation.getSmqCode());
-											cmqRelation.setPtCode(smqRelation.getPtCode().longValue());
-											cmqRelation.setRelationImpactType("MQM");
 										}
 									} else if (childEntity instanceof SMQReverseHierarchySearchDto) {
 										SMQReverseHierarchySearchDto smqReverseHierarchySearchDto = (SMQReverseHierarchySearchDto) childEntity;
@@ -1108,9 +1114,17 @@ public class ImpactSearchController implements Serializable {
 					&& (null != cmqRelationTarget.getPtCode()) && (cmqRelationTarget.getPtCode().longValue() == ptCode.longValue())){
 				//its an smqrelation and not an smqbase
 				matchingMap.put("MATCH_FOUND", true);
-			} else if((null != cmqRelationTarget.getSmqCode()) && (cmqRelationTarget.getSmqCode().longValue() == smqCode.longValue())){
+			} else if((null != cmqRelationTarget.getSmqCode()) && (cmqRelationTarget.getSmqCode().longValue() == smqCode.longValue())
+					&& cmqRelationTarget.getLltCode() == null && cmqRelationTarget.getHlgtCode() == null & cmqRelationTarget.getHltCode() == null
+					&& cmqRelationTarget.getPtCode() == null && cmqRelationTarget.getSocCode() == null){
 				//its an smqbase
 				matchingMap.put("MATCH_FOUND", true);
+			} else if(null != ptCode) {
+				if(cmqRelationTarget.getPtCode() != null && ptCode.longValue() == cmqRelationTarget.getPtCode()) {
+					matchingMap.put("MATCH_FOUND", true);
+				} else if(cmqRelationTarget.getLltCode() != null && ptCode.longValue() == cmqRelationTarget.getLltCode()) {
+					matchingMap.put("MATCH_FOUND", true);
+				}
 			}
 		
 			Boolean matchFound = (Boolean) matchingMap.get("MATCH_FOUND");
