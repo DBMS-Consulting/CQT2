@@ -278,7 +278,7 @@
 			</p:column>
 
 			<p:column style="width:10%">
-				<p:commandButton disabled="#{createController.readOnlyState}"
+				<p:commandButton id="deleteButton" disabled="#{createController.readOnlyState}"
 					rendered="#{not node.hideDelete}"
 					actionListener="#{createController.relationsModel.deleteRelation(createController.relationsModel.relationsRoot, node, createController.selectedData.cmqCode)}"
 					action="#{createController.notifyRelationsUpdate}"

@@ -657,6 +657,7 @@ public class ImpactSearchController implements Serializable {
 										relationsHierarchyNode.setRowStyleClass("green-colored");//mark this row as green
 										TreeNode relationsTreeNode = new DefaultTreeNode(relationsHierarchyNode, parentTreeNode);
 										relationsHierarchyNode.setDataFetchCompleted(false);
+										relationsHierarchyNode.setHideDelete(true);
 										IEntity relationsHierarchyNodeEntity = relationsHierarchyNode.getEntity();
 										
 										if(relationsHierarchyNodeEntity instanceof SMQReverseHierarchySearchDto) {
@@ -922,6 +923,7 @@ public class ImpactSearchController implements Serializable {
 										cmqRelation.setDictionaryName(cmqBaseTarget.getDictionaryName());
 										cmqRelation.setDictionaryVersion(cmqBaseTarget.getDictionaryVersion());
 										cmqRelation.setCmqSubversion(cmqBaseTarget.getCmqSubversion());
+										hierarchyNode.setHideDelete(false);
 										
 										if(updateNeeded) {
 											cmqRelation.setLastModifiedDate(new Date());
@@ -930,6 +932,7 @@ public class ImpactSearchController implements Serializable {
 											cmqRelation.setCreationDate(new Date());
 											cmqRelation.setCreatedBy("test-user");
 										}
+										hierarchyNode.setHideDelete(false);
 										cmqRelationsList.add(cmqRelation);
 									}
 								}

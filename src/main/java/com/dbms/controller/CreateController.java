@@ -954,6 +954,7 @@ public class CreateController implements Serializable {
 							}
 							cmqRelation.setLastModifiedDate(lastModifiedDate);
 							cmqRelation.setLastModifiedBy(lastModifiedByString);
+							hierarchyNode.setHideDelete(false);
 							cmqRelationsList.add(cmqRelation);
 						}
 					}

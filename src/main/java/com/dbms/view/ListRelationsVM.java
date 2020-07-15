@@ -320,6 +320,7 @@ public class ListRelationsVM implements IRelationsChangeListener {
 										MeddraDictHierarchySearchDto socDictHierarchySearchDto = this.meddraDictService.findByCode("SOC_", socCode);
 										relationsHierarchyNode.setEntity(socDictHierarchySearchDto);
 										relationsHierarchyNode.setDataFetchCompleted(false);
+										relationsHierarchyNode.setHideDelete(true);
 										HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
 										dummyNode.setDummyNode(true);
 										new DefaultTreeNode(dummyNode, relationsTreeNode);
@@ -328,6 +329,7 @@ public class ListRelationsVM implements IRelationsChangeListener {
 										MeddraDictHierarchySearchDto hltDictHierarchySearchDto = this.meddraDictService.findByCode("HLT_", hltCode);
 										relationsHierarchyNode.setEntity(hltDictHierarchySearchDto);
 										relationsHierarchyNode.setDataFetchCompleted(false);
+										relationsHierarchyNode.setHideDelete(true);
 										HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
 										dummyNode.setDummyNode(true);
 										new DefaultTreeNode(dummyNode, relationsTreeNode);
@@ -336,6 +338,7 @@ public class ListRelationsVM implements IRelationsChangeListener {
 										MeddraDictHierarchySearchDto hlgtDictHierarchySearchDto = this.meddraDictService.findByCode("HLGT_", hlgtCode);
 										relationsHierarchyNode.setEntity(hlgtDictHierarchySearchDto);
 										relationsHierarchyNode.setDataFetchCompleted(false);
+										relationsHierarchyNode.setHideDelete(true);
 										HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
 										dummyNode.setDummyNode(true);
 										new DefaultTreeNode(dummyNode, relationsTreeNode);
@@ -344,6 +347,7 @@ public class ListRelationsVM implements IRelationsChangeListener {
 										MeddraDictHierarchySearchDto ptDictHierarchySearchDto = this.meddraDictService.findByCode("PT_", ptCode);
 										relationsHierarchyNode.setEntity(ptDictHierarchySearchDto);
 										relationsHierarchyNode.setDataFetchCompleted(false);
+										relationsHierarchyNode.setHideDelete(true);
 										
 										boolean filterLltFlag = this.globalController.isFilterLltsFlag();
 										if(!filterLltFlag) {
@@ -358,6 +362,7 @@ public class ListRelationsVM implements IRelationsChangeListener {
 									relationsHierarchyNode.setEntity(smqBase190);
 									relationsHierarchyNode.setCode(smqBase190.getSmqCode().toString());
 									relationsHierarchyNode.setScope("2");
+									relationsHierarchyNode.setHideDelete(true);
 									List<TreeNode> childTreeNodes = treeNode.getChildren();
 									if(CollectionUtils.isNotEmpty(childTreeNodes)) {
 										relationsHierarchyNode.setDataFetchCompleted(false);
@@ -369,6 +374,7 @@ public class ListRelationsVM implements IRelationsChangeListener {
 									relationsHierarchyNode.setCategory(null);
 									relationsHierarchyNode.setScope(null);
 									relationsHierarchyNode.setWeight(null);
+									relationsHierarchyNode.setHideDelete(true);
 									
 									List<TreeNode> childTreeNodes = treeNode.getChildren();
 									if(CollectionUtils.isNotEmpty(childTreeNodes)) {
@@ -381,6 +387,7 @@ public class ListRelationsVM implements IRelationsChangeListener {
 									if(entity instanceof SmqBase190) {
 										relationsHierarchyNode.setScope("2");
 									}
+									relationsHierarchyNode.setHideDelete(true);
 									List<TreeNode> childTreeNodes = treeNode.getChildren();
 									if(CollectionUtils.isNotEmpty(childTreeNodes)) {
 										relationsHierarchyNode.setDataFetchCompleted(false);

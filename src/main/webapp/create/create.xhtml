@@ -52,7 +52,7 @@
 						<h:panelGrid columns="2">
 
 							<p:commandButton value="Save" id="cb3" disabled="false" icon="ui-icon-disk"
-								action="#{createController.updateRelations(createController.relationsModel.relationsRoot)}" update="@form:m1">
+								action="#{createController.updateRelations(createController.relationsModel.relationsRoot)}" update="@form:m1 resultRelations">
 								<f:param name="relationsRoot"
 									value="#{createController.relationsModel.relationsRoot}"></f:param>
 							</p:commandButton>
