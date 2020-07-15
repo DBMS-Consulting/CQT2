@@ -1339,6 +1339,10 @@ public class IARelationsTreeHelper {
 			//check if it is a PT relation of smq or not
 			if((cmqRelation.getPtCode() != null) && (cmqRelation.getPtCode().longValue() > 0)) {
 				entity2 = this.smqBaseCurrentService.findSmqRelationBySmqAndPtCode(cmqRelation.getSmqCode(), cmqRelation.getPtCode().intValue());
+				SmqRelation190 smqRelation = (SmqRelation190) entity2;
+				smqRelation.setPtTermCategory(cmqRelation.getTermCategory());
+				smqRelation.setPtTermScope(null);
+				smqRelation.setPtTermWeight(null);
 				node = this.createSmqRelationCurrentNode((SmqRelation190) entity2);
 				isSmqRelation = true;
 			} else {
