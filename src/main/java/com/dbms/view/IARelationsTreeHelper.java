@@ -674,7 +674,7 @@ public class IARelationsTreeHelper {
 			} else if("NCH".equals(cmqRelationTarget.getRelationImpactType())) {
 				node.setRowStyleClass("italic");
 			} else if(StringUtils.equalsAny(cmqRelationTarget.getRelationImpactType(),
-                    "PDL","PDH","HDH","HDS","LDP","LPP","HPP","NTR")) {
+                    "PDL","PDH","HDH","HDS","LDP","LPP","HPP","NTR","SDP")) {
 				node.setRowStyleClass("orange-colored");
 			} else if("LCN".equals(cmqRelationTarget.getRelationImpactType())) {
 				node.setRowStyleClass("mauve-colored");
@@ -1343,6 +1343,9 @@ public class IARelationsTreeHelper {
 				smqRelation.setPtTermCategory(cmqRelation.getTermCategory());
 				smqRelation.setPtTermScope(null);
 				smqRelation.setPtTermWeight(null);
+				if(cmqRelation.getRelationImpactType().equalsIgnoreCase("PDL")) {
+					smqRelation.setRelationImpactType("PT is demoted to LLT");
+				}
 				node = this.createSmqRelationCurrentNode((SmqRelation190) entity2);
 				isSmqRelation = true;
 			} else {
@@ -1361,6 +1364,9 @@ public class IARelationsTreeHelper {
 				smqRelation.setPtTermCategory(cmqRelation.getTermCategory());
 				smqRelation.setPtTermScope(null);
 				smqRelation.setPtTermWeight(null);
+				if(cmqRelation.getRelationImpactType().equalsIgnoreCase("SDP")) {
+					smqRelation.setRelationImpactType("New Successor PT");
+				}
 				node = this.createSmqRelationTargetNode((SmqRelationTarget) entity2);
 				isSmqRelation = true;
 			} else {
