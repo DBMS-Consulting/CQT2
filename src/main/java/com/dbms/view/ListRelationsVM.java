@@ -355,6 +355,8 @@ public class ListRelationsVM implements IRelationsChangeListener {
 											dummyNode.setDummyNode(true);
 											new DefaultTreeNode(dummyNode, relationsTreeNode);
 										}
+									} else if("LLT".equalsIgnoreCase(relationsHierarchyNode.getLevel())){
+										relationsHierarchyNode.setHideDelete(true);
 									}
 								} else if(entity instanceof SMQReverseHierarchySearchDto) {
 									Long ptCode = ((SMQReverseHierarchySearchDto) entity).getSmqCode();
