@@ -83,6 +83,7 @@ public class HistoricalViewService implements IHistoricalViewService {
 				query.addScalar("lastActivationBy", StandardBasicTypes.STRING);
 				query.addScalar("description", StandardBasicTypes.STRING);
 				query.addScalar("term", StandardBasicTypes.STRING);
+				query.addScalar("termCategory", StandardBasicTypes.STRING);
 				query.addScalar("termDictLevel", StandardBasicTypes.STRING);
 				query.addScalar("termCode", StandardBasicTypes.LONG);
 				query.addScalar("termScope", StandardBasicTypes.STRING);
@@ -91,6 +92,7 @@ public class HistoricalViewService implements IHistoricalViewService {
 				query.addScalar("designee2", StandardBasicTypes.STRING);
 				query.addScalar("designee3", StandardBasicTypes.STRING);
 				query.addScalar("medicalConcept", StandardBasicTypes.STRING);
+				
 				
 				// query.setFetchSize(1000);
 				query.setResultTransformer(Transformers.aliasToBean(HistoricalViewDbDataDTO.class));

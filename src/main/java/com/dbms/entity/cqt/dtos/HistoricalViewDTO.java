@@ -36,6 +36,7 @@ public class HistoricalViewDTO implements Serializable {
 	private String designee3;
 	private String medicalConcept;
 	private TreeNode relationsRootTreeNode;	
+	private String termCategory;
 	
 	public Long getCmqCode() {
 		return cmqCode;
@@ -51,6 +52,14 @@ public class HistoricalViewDTO implements Serializable {
 
 	public void setListName(String listName) {
 		this.listName = listName;
+	}
+	
+	public String getTermCategory() {
+		return termCategory;
+	}
+
+	public void setTermCategory(String termCategory) {
+		this.termCategory = termCategory;
 	}
 
 	public String getListType() {

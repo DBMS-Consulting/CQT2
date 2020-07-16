@@ -20,6 +20,7 @@ select distinct
   cmq_relations.term_dict_level as termDictLevel,
   cmq_relations.term_code as termCode,
   cmq_relations.scope as termScope,
+  cmq_relations.category as termCategory,
   cmq_base.dictionary_version as dictionaryVersion,
   cmq_base.designee,
   cmq_base.designee2,
@@ -210,28 +211,29 @@ from
       md.soc_code "TERM_CODE",
       'SOC' "TERM_DICT_LEVEL",
       nvl(cra_delete.term_scope_old,cra_upsert.term_scope_new) "SCOPE",
+      nvl(cra_delete.term_category_old,cra_upsert.term_category_new) "CATEGORY",
       cra_upsert.cmq_code_new "CMQ_CODE",
       cra_upsert.max_audit_timestamp "MAX_UPSERT_AUDIT_TS"
    from 
       (select 
-           cmq_code_new, soc_code_new, term_scope_new, max(audit_timestamp) max_audit_timestamp
+           cmq_code_new, soc_code_new, term_scope_new, term_category_new, max(audit_timestamp) max_audit_timestamp
       from opencqt.cmq_relations_&&MedDRAAuditVersion._audit 
       where 
             cmq_code_new = &&CMQCodeForAudit
         and transaction_type in ('I','U')
         and audit_timestamp <= to_date('&&CMQAuditTimestamp','DD-MON-RRRR:HH24:MI:SS')
-      group by 
-            cmq_code_new, soc_code_new, term_scope_new
+       group by 
+            cmq_code_new, soc_code_new, term_scope_new, term_category_new
       ) cra_upsert,
      (select 
-           cmq_code_old, soc_code_old, term_scope_old, max(audit_timestamp) max_audit_timestamp
+           cmq_code_old, soc_code_old, term_scope_old, term_category_old, max(audit_timestamp) max_audit_timestamp
       from opencqt.cmq_relations_&&MedDRAAuditVersion._audit 
       where 
             cmq_code_old = &&CMQCodeForAudit 
 	and transaction_type in ('D')
         and audit_timestamp <= to_date('&&CMQAuditTimestamp','DD-MON-RRRR:HH24:MI:SS')
-      group by 
-            cmq_code_old, soc_code_old, term_scope_old
+    group by 
+            cmq_code_old, soc_code_old, term_scope_old, term_category_old
       ) cra_delete,
       opencqt.meddra_dict_&&MedDRAAuditVersion md
    where 
@@ -246,28 +248,29 @@ from
       md.hlgt_code "TERM_CODE",
       'HLGT' "TERM_DICT_LEVEL",
       nvl(cra_delete.term_scope_old,cra_upsert.term_scope_new) "SCOPE",
+      nvl(cra_delete.term_category_old,cra_upsert.term_category_new) "CATEGORY",
       cra_upsert.cmq_code_new "CMQ_CODE",
       cra_upsert.max_audit_timestamp "MAX_UPSERT_AUDIT_TS"
    from 
       (select 
-           cmq_code_new, hlgt_code_new, term_scope_new, max(audit_timestamp) max_audit_timestamp
+           cmq_code_new, hlgt_code_new, term_scope_new,term_category_new, max(audit_timestamp) max_audit_timestamp
       from opencqt.cmq_relations_&&MedDRAAuditVersion._audit 
       where 
             cmq_code_new = &&CMQCodeForAudit
         and transaction_type in ('I','U')
         and audit_timestamp <= to_date('&&CMQAuditTimestamp','DD-MON-RRRR:HH24:MI:SS')
       group by 
-            cmq_code_new, hlgt_code_new, term_scope_new
+            cmq_code_new, hlgt_code_new, term_scope_new, term_category_new
       ) cra_upsert,
      (select 
-           cmq_code_old, hlgt_code_old, term_scope_old, max(audit_timestamp) max_audit_timestamp
+           cmq_code_old, hlgt_code_old, term_scope_old, term_category_old, max(audit_timestamp) max_audit_timestamp
       from opencqt.cmq_relations_&&MedDRAAuditVersion._audit 
       where 
             cmq_code_old = &&CMQCodeForAudit 
 	and transaction_type in ('D')
         and audit_timestamp <= to_date('&&CMQAuditTimestamp','DD-MON-RRRR:HH24:MI:SS')
       group by 
-            cmq_code_old, hlgt_code_old, term_scope_old
+            cmq_code_old, hlgt_code_old, term_scope_old, term_category_old
       ) cra_delete,
       opencqt.meddra_dict_&&MedDRAAuditVersion md
    where 
@@ -282,28 +285,29 @@ from
       md.hlt_code "TERM_CODE",
       'HLT' "TERM_DICT_LEVEL",
       nvl(cra_delete.term_scope_old,cra_upsert.term_scope_new) "SCOPE",
+      nvl(cra_delete.term_category_old,cra_upsert.term_category_new) "CATEGORY",
       cra_upsert.cmq_code_new "CMQ_CODE",
       cra_upsert.max_audit_timestamp "MAX_UPSERT_AUDIT_TS"
    from 
       (select 
-           cmq_code_new, hlt_code_new, term_scope_new, max(audit_timestamp) max_audit_timestamp
+           cmq_code_new, hlt_code_new, term_scope_new, term_category_new, max(audit_timestamp) max_audit_timestamp
       from opencqt.cmq_relations_&&MedDRAAuditVersion._audit 
       where 
             cmq_code_new = &&CMQCodeForAudit
         and transaction_type in ('I','U')
         and audit_timestamp <= to_date('&&CMQAuditTimestamp','DD-MON-RRRR:HH24:MI:SS')
       group by 
-            cmq_code_new, hlt_code_new, term_scope_new
+            cmq_code_new, hlt_code_new, term_scope_new, term_category_new
       ) cra_upsert,
      (select 
-           cmq_code_old, hlt_code_old, term_scope_old, max(audit_timestamp) max_audit_timestamp
+           cmq_code_old, hlt_code_old, term_scope_old, term_category_old, max(audit_timestamp) max_audit_timestamp
       from opencqt.cmq_relations_&&MedDRAAuditVersion._audit 
       where 
             cmq_code_old = &&CMQCodeForAudit 
 	and transaction_type in ('D')
         and audit_timestamp <= to_date('&&CMQAuditTimestamp','DD-MON-RRRR:HH24:MI:SS')
       group by 
-            cmq_code_old, hlt_code_old, term_scope_old
+            cmq_code_old, hlt_code_old, term_scope_old, term_category_old
       ) cra_delete,
       opencqt.meddra_dict_&&MedDRAAuditVersion md
    where 
@@ -318,28 +322,29 @@ from
       md.pt_code "TERM_CODE",
       'PT' "TERM_DICT_LEVEL",
       nvl(cra_delete.term_scope_old,cra_upsert.term_scope_new) "SCOPE",
+      nvl(cra_delete.term_category_old,cra_upsert.term_category_new) "CATEGORY",
       cra_upsert.cmq_code_new "CMQ_CODE",
       cra_upsert.max_audit_timestamp "MAX_UPSERT_AUDIT_TS"
    from 
       (select 
-           cmq_code_new, pt_code_new, term_scope_new, max(audit_timestamp) max_audit_timestamp
+           cmq_code_new, pt_code_new, term_scope_new, term_category_new, max(audit_timestamp) max_audit_timestamp
       from opencqt.cmq_relations_&&MedDRAAuditVersion._audit 
       where 
-            cmq_code_new = &&CMQCodeForAudit
+             cmq_code_new = &&CMQCodeForAudit
         and transaction_type in ('I','U')
         and audit_timestamp <= to_date('&&CMQAuditTimestamp','DD-MON-RRRR:HH24:MI:SS')
       group by 
-            cmq_code_new, pt_code_new, term_scope_new
+            cmq_code_new, pt_code_new, term_scope_new, term_category_new
       ) cra_upsert,
      (select 
-           cmq_code_old, pt_code_old, term_scope_old, max(audit_timestamp) max_audit_timestamp
+           cmq_code_old, pt_code_old, term_scope_old, term_category_old, max(audit_timestamp) max_audit_timestamp
       from opencqt.cmq_relations_&&MedDRAAuditVersion._audit 
       where 
             cmq_code_old = &&CMQCodeForAudit 
-	and transaction_type in ('D')
-        and audit_timestamp <= to_date('&&CMQAuditTimestamp','DD-MON-RRRR:HH24:MI:SS')
+	       and transaction_type in ('D')
+            and audit_timestamp <= to_date('&&CMQAuditTimestamp','DD-MON-RRRR:HH24:MI:SS')
       group by 
-            cmq_code_old, pt_code_old, term_scope_old
+            cmq_code_old, pt_code_old, term_scope_old, term_category_old
       ) cra_delete,
       opencqt.meddra_dict_&&MedDRAAuditVersion md
    where 
@@ -348,38 +353,40 @@ from
       and cra_upsert.pt_code_new = cra_delete.pt_code_old (+)
       and cra_upsert.max_audit_timestamp >=
          nvl(cra_delete.max_audit_timestamp,to_date('1-JAN-1900:00:00:00','DD-MON-RRRR:HH24:MI:SS'))
-   UNION ALL
+--
+UNION ALL
   select distinct
       md.llt_term "TERM",
       md.llt_code "TERM_CODE",
       'LLT' "TERM_DICT_LEVEL",
       nvl(cra_delete.term_scope_old,cra_upsert.term_scope_new) "SCOPE",
+      nvl(cra_delete.term_category_old,cra_upsert.term_category_new) "CATEGORY",
       cra_upsert.cmq_code_new "CMQ_CODE",
       cra_upsert.max_audit_timestamp "MAX_UPSERT_AUDIT_TS"
    from 
       (select 
-           cmq_code_new, llt_code_new, term_scope_new, max(audit_timestamp) max_audit_timestamp
+           cmq_code_new, llt_code_new, term_scope_new, term_category_new, max(audit_timestamp) max_audit_timestamp
       from opencqt.cmq_relations_&&MedDRAAuditVersion._audit 
       where 
             cmq_code_new = &&CMQCodeForAudit
         and transaction_type in ('I','U')
         and audit_timestamp <= to_date('&&CMQAuditTimestamp','DD-MON-RRRR:HH24:MI:SS')
       group by 
-            cmq_code_new, llt_code_new, term_scope_new
+            cmq_code_new, llt_code_new, term_scope_new, term_category_new
       ) cra_upsert,
      (select 
-           cmq_code_old, llt_code_old, term_scope_old, max(audit_timestamp) max_audit_timestamp
+           cmq_code_old, llt_code_old, term_scope_old, term_category_old, max(audit_timestamp) max_audit_timestamp
       from opencqt.cmq_relations_&&MedDRAAuditVersion._audit 
       where 
             cmq_code_old = &&CMQCodeForAudit 
-	and transaction_type in ('D')
+        and transaction_type in ('D')
         and audit_timestamp <= to_date('&&CMQAuditTimestamp','DD-MON-RRRR:HH24:MI:SS')
       group by 
-            cmq_code_old, llt_code_old, term_scope_old
+            cmq_code_old, llt_code_old, term_scope_old, term_category_old
       ) cra_delete,
       opencqt.meddra_dict_&&MedDRAAuditVersion md
    where 
-          md.llt_code = cra_upsert.llt_code_new 
+          md.pt_code = cra_upsert.llt_code_new 
       and cra_upsert.cmq_code_new = cra_delete.cmq_code_old (+)
       and cra_upsert.llt_code_new = cra_delete.llt_code_old (+)
       and cra_upsert.max_audit_timestamp >=
@@ -409,28 +416,31 @@ from
               and codelist_internal_value = cra_upsert.term_scope_new
               and active_flag='Y')
        ) "SCOPE",
+      nvl(cra_delete.term_category_old,cra_upsert.term_category_new) "CATEGORY",
       cra_upsert.cmq_code_new "CMQ_CODE",
       cra_upsert.max_audit_timestamp "MAX_UPSERT_AUDIT_TS"
    from 
       (select 
-           cmq_code_new, smq_code_new, term_scope_new, max(audit_timestamp) max_audit_timestamp
+           cmq_code_new, smq_code_new, term_scope_new, term_category_new, max(audit_timestamp) max_audit_timestamp
       from opencqt.cmq_relations_&&MedDRAAuditVersion._audit 
       where 
             cmq_code_new = &&CMQCodeForAudit
         and transaction_type in ('I','U')
         and audit_timestamp <= to_date('&&CMQAuditTimestamp','DD-MON-RRRR:HH24:MI:SS')
+ and pt_code_new is null and llt_code_new is null
       group by 
-            cmq_code_new, smq_code_new, term_scope_new
+            cmq_code_new, smq_code_new, term_scope_new, term_category_new
       ) cra_upsert,
      (select 
-           cmq_code_old, smq_code_old, term_scope_old, max(audit_timestamp) max_audit_timestamp
+           cmq_code_old, smq_code_old, term_scope_old, term_category_old, max(audit_timestamp) max_audit_timestamp
       from opencqt.cmq_relations_&&MedDRAAuditVersion._audit 
       where 
             cmq_code_old = &&CMQCodeForAudit 
-	and transaction_type in ('D')
+        and transaction_type in ('D')
         and audit_timestamp <= to_date('&&CMQAuditTimestamp','DD-MON-RRRR:HH24:MI:SS')
+and pt_code_old is null and llt_code_old is null
       group by 
-            cmq_code_old, smq_code_old, term_scope_old
+            cmq_code_old, smq_code_old, term_scope_old, term_category_old
       ) cra_delete,
       opencqt.smq_base_&&MedDRAAuditVersion md
    where 
@@ -446,6 +456,7 @@ from
      trim(to_char(nvl(cba.cmq_code_old,cba.cmq_code_new))) "TERM_CODE",
       nvl(cba.cmq_type_cd_old,cba.cmq_type_cd_new) "TERM_DICT_LEVEL",
       NULL "SCOPE",
+      NULL "CATEGORY",
       nvl(cba.cmq_parent_code_old,cba.cmq_parent_code_new) "CMQ_CODE",
       cba.audit_timestamp "MAX_UPSERT_AUDIT_TS"
    from 
@@ -490,4 +501,3 @@ from
      ) cmq_relations
   where cmq_base.cmq_code = cmq_relations.cmq_code (+)
   and cmq_base.cmq_code = &&CMQCodeForAudit
-  

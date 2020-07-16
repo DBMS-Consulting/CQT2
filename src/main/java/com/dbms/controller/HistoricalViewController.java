@@ -181,6 +181,7 @@ public class HistoricalViewController implements Serializable {
 					historicalViewDTO.setDesignee2(historicalViewDbDataDTO.getDesignee2());
 					historicalViewDTO.setDesignee3(historicalViewDbDataDTO.getDesignee3());
 					historicalViewDTO.setMedicalConcept(historicalViewDbDataDTO.getMedicalConcept());
+					historicalViewDTO.setTermCategory(historicalViewDbDataDTO.getTermCategory());
 					historicalViewDTOMap.put(cmqCode, historicalViewDTO);
 				}
 				
@@ -207,7 +208,7 @@ public class HistoricalViewController implements Serializable {
 						HierarchyNode hierarchyNode = this.createRelationNode(termDictLevel, term, termCode, termScope);
 						//hierarchyNode.setCategory(historicalViewDbDataDTO.getT);
 						if (!addedHierarchyNodes.contains(hierarchyNode)) {
-							//hierarchyNode.setCategory(historicalViewDbDataDTO.getT);
+							hierarchyNode.setCategory(historicalViewDTO.getTermCategory());
 							new DefaultTreeNode(hierarchyNode, rootNode);
 							addedHierarchyNodes.add(hierarchyNode);
 						}
