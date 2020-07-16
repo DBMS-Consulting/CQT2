@@ -1496,33 +1496,67 @@ public class ImpactSearchController implements Serializable {
 			d = (hn != null ? hn.getEntity() : null); 
 		}
 		
-		try {
-			if(d != null && d instanceof CmqBase190) {
-				((CmqBase190)d).setCmqDesignee(detailsFormModel.getDesignee());
-				((CmqBase190)d).setCmqDesignee2(detailsFormModel.getDesigneeTwo());
-				((CmqBase190)d).setCmqDesignee3(detailsFormModel.getDesigneeThree());
-
-				cmqBaseCurrentService.update((CmqBase190)d, this.authService.getUserCn()
-						, this.authService.getUserGivenName(), this.authService.getUserSurName()
-						, this.authService.getCombinedMappedGroupMembershipAsString());
-			} else if(d != null && d instanceof CmqBaseTarget) {
-
-				((CmqBaseTarget)d).setCmqDesignee(detailsFormModel.getDesignee());
-				((CmqBaseTarget)d).setCmqDesignee2(detailsFormModel.getDesigneeTwo());
-				((CmqBaseTarget)d).setCmqDesignee3(detailsFormModel.getDesigneeThree());
-				cmqBaseTargetService.update((CmqBaseTarget)d, this.authService.getUserCn()
-						, this.authService.getUserGivenName(), this.authService.getUserSurName()
-						, this.authService.getCombinedMappedGroupMembershipAsString());
-				this.setCmqBaseAsImpacted((CmqBaseTarget)d);
+		if(validateDesignees()) {
+			try {
+				if(d != null && d instanceof CmqBase190) {
+					if(validateDesignees()) {
+						((CmqBase190)d).setCmqDesignee(detailsFormModel.getDesignee());
+						((CmqBase190)d).setCmqDesignee2(detailsFormModel.getDesigneeTwo());
+						((CmqBase190)d).setCmqDesignee3(detailsFormModel.getDesigneeThree());
+						
+		
+						cmqBaseCurrentService.update((CmqBase190)d, this.authService.getUserCn()
+								, this.authService.getUserGivenName(), this.authService.getUserSurName()
+								, this.authService.getCombinedMappedGroupMembershipAsString());
+					}
+				} else if(d != null && d instanceof CmqBaseTarget) {
+					if(validateDesignees()) {
+						((CmqBaseTarget)d).setCmqDesignee(detailsFormModel.getDesignee());
+						((CmqBaseTarget)d).setCmqDesignee2(detailsFormModel.getDesigneeTwo());
+						((CmqBaseTarget)d).setCmqDesignee3(detailsFormModel.getDesigneeThree());
+						cmqBaseTargetService.update((CmqBaseTarget)d, this.authService.getUserCn()
+								, this.authService.getUserGivenName(), this.authService.getUserSurName()
+								, this.authService.getCombinedMappedGroupMembershipAsString());
+						this.setCmqBaseAsImpacted((CmqBaseTarget)d);
+					}
+				}
+				detailsFormModel.setModelChanged(false);
+				FacesContext.getCurrentInstance()
+					.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Successfully saved details", ""));
+				
+			} catch(CqtServiceException e) {
+				FacesContext.getCurrentInstance()
+					.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed to save details", "Error: " + e.getMessage()));
 			}
-			detailsFormModel.setModelChanged(false);
-			FacesContext.getCurrentInstance()
-				.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Successfully saved details", ""));
-			
-		} catch(CqtServiceException e) {
-			FacesContext.getCurrentInstance()
-				.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed to save details", "Error: " + e.getMessage()));
 		}
+	}
+	
+	public boolean validateDesignees() {
+		if(!StringUtils.isBlank(detailsFormModel.getDesignee()) && StringUtils.equals(detailsFormModel.getDesignee(), detailsFormModel.getDesigneeTwo())) {
+            if(FacesContext.getCurrentInstance() != null) {
+                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+                        "Designee and Designee 2 can not be the same person", "");
+                FacesContext.getCurrentInstance().addMessage(null, msg);
+            }
+            return false;
+        }
+        if(!StringUtils.isBlank(detailsFormModel.getDesigneeTwo()) && StringUtils.equals(detailsFormModel.getDesigneeTwo(), detailsFormModel.getDesigneeThree())) {
+            if(FacesContext.getCurrentInstance() != null) {
+                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+                        "Designee 2 and Designee 3 can not be the same person", "");
+                FacesContext.getCurrentInstance().addMessage(null, msg);
+            }
+            return false;
+        }
+        if(!StringUtils.isBlank(detailsFormModel.getDesignee()) && StringUtils.equals(detailsFormModel.getDesignee(), detailsFormModel.getDesigneeThree())) {
+            if(FacesContext.getCurrentInstance() != null) {
+                FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+                        "Designee and Designee 3 can not be the same person", "");
+                FacesContext.getCurrentInstance().addMessage(null, msg);
+            }
+            return false;
+        }
+        return true;
 	}
 	
 	public void cancelDetails() {
