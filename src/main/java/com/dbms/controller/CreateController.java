@@ -2127,37 +2127,55 @@ public class CreateController implements Serializable {
 					&& selectedData.getCmqState().equalsIgnoreCase(CmqBase190.CMQ_STATE_VALUE_PUBLISHED)) {
 				selectedData.setCmqStatus(CmqBase190.CMQ_STATUS_VALUE_INACTIVE);
 			}
-		} else {
-			detailsFormModel.setState(state);
-			selectedData.setCmqState(state);
 		}
 		
-		String lastModifiedByString = this.authService.getLastModifiedByUserAsString();
-		selectedData.setLastModifiedBy(lastModifiedByString);
-		selectedData.setLastModifiedDate(new Date());
+		TreeNode relationsRoot = (TreeNode) relationsModel.getRelationsRoot();
+		boolean medDRAadded = false;
+		for(TreeNode child : relationsRoot.getChildren()) {
+			HierarchyNode childNode = (HierarchyNode) child.getData();
+			if(childNode.getLevel().equalsIgnoreCase("PT") || childNode.getLevel().equalsIgnoreCase("HLT")
+					|| childNode.getLevel().equalsIgnoreCase("HLGT") || childNode.getLevel().equalsIgnoreCase("SOC")
+					|| childNode.getLevel().equalsIgnoreCase("LLT") || childNode.getLevel().equalsIgnoreCase("SMQ")
+					|| childNode.getLevel().equalsIgnoreCase("'C' SMQ")) {
+				medDRAadded = true;
+			}
+		}
 		
-		//Adding the due date to be updated
-		workflowFormModel.saveToCmqBase190(selectedData);
-		
-		// Update
-		try {
-			cmqBaseService.update(selectedData, this.authService.getUserCn()
-					, this.authService.getUserGivenName(), this.authService.getUserSurName()
-					, this.authService.getCombinedMappedGroupMembershipAsString());
-			LOG.info("\n NEW STATE :" + selectedData.getCmqState());
-
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                    "Workflow state set to '" + state + "'", "");
-			FacesContext ctx = FacesContext.getCurrentInstance();
-			ctx.addMessage(null, msg);
+		if(medDRAadded == true) {
+			detailsFormModel.setState(state);
+			selectedData.setCmqState(state);
+			String lastModifiedByString = this.authService.getLastModifiedByUserAsString();
+			selectedData.setLastModifiedBy(lastModifiedByString);
+			selectedData.setLastModifiedDate(new Date());
 			
-			//Clearing workflow attributes : due date, reason for request, reason for approval
-			this.workflowFormModel.init();
-
-		} catch (CqtServiceException e) {
-			e.printStackTrace();
-			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
-					"An error occurred while updating the state", "");
+			//Adding the due date to be updated
+			workflowFormModel.saveToCmqBase190(selectedData);
+			
+			// Update
+			try {
+				cmqBaseService.update(selectedData, this.authService.getUserCn()
+						, this.authService.getUserGivenName(), this.authService.getUserSurName()
+						, this.authService.getCombinedMappedGroupMembershipAsString());
+				LOG.info("\n NEW STATE :" + selectedData.getCmqState());
+	
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+	                    "Workflow state set to '" + state + "'", "");
+				FacesContext ctx = FacesContext.getCurrentInstance();
+				ctx.addMessage(null, msg);
+				
+				//Clearing workflow attributes : due date, reason for request, reason for approval
+				this.workflowFormModel.init();
+	
+			} catch (CqtServiceException e) {
+				e.printStackTrace();
+				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+						"An error occurred while updating the state", "");
+				FacesContext ctx = FacesContext.getCurrentInstance();
+				ctx.addMessage(null, msg);
+			}
+		} else { //The List cannot be approved because no MedDRA terms have been added to this List
+			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
+                    "The List cannot be approved because no MedDRA terms have been added to this List", "");
 			FacesContext ctx = FacesContext.getCurrentInstance();
 			ctx.addMessage(null, msg);
 		}
