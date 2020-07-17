@@ -1352,7 +1352,7 @@ public class IARelationsTreeHelper {
 				smqRelation.setPtTermCategory(cmqRelation.getTermCategory());
 				smqRelation.setPtTermScope(null);
 				smqRelation.setPtTermWeight(null);
-				if(cmqRelation.getRelationImpactType().equalsIgnoreCase("PDL")) {
+				if(cmqRelation.getRelationImpactType() != null && cmqRelation.getRelationImpactType().equalsIgnoreCase("PDL")) {
 					smqRelation.setRelationImpactType("PT is demoted to LLT");
 				}
 				node = this.createSmqRelationCurrentNode((SmqRelation190) entity2);
@@ -1373,7 +1373,7 @@ public class IARelationsTreeHelper {
 				smqRelation.setPtTermCategory(cmqRelation.getTermCategory());
 				smqRelation.setPtTermScope(null);
 				smqRelation.setPtTermWeight(null);
-				if(cmqRelation.getRelationImpactType().equalsIgnoreCase("SDP")) {
+				if(cmqRelation.getRelationImpactType() != null && cmqRelation.getRelationImpactType().equalsIgnoreCase("SDP")) {
 					smqRelation.setRelationImpactType("New Successor PT");
 				}
 				node = this.createSmqRelationTargetNode((SmqRelationTarget) entity2);
