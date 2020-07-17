@@ -245,7 +245,7 @@
 
 				
                 <h:outputText value="#{appCSMQBean.interpretCqtBaseCategory(node.category)}"
-                    rendered="#{false}" />
+                    rendered="#{node.readOnlyCategory}" />
                 
 				<p:selectOneMenu id="soc2" value="#{node.category}" 
 				        disabled="#{createController.readOnlyState}"

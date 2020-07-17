@@ -239,6 +239,15 @@ public class IARelationsTreeHelper {
 				if(!parentNode.getLevel().equalsIgnoreCase("TR1")) {
 					hierNode.setHideCategory(true);
 				}
+				if((parentNode.getLevel().equalsIgnoreCase("SMQ") || parentNode.getLevel().equalsIgnoreCase("'C' SMQ")
+						|| parentNode.getLevel().equalsIgnoreCase("SMQ1") || parentNode.getLevel().equalsIgnoreCase("SMQ2")
+						|| parentNode.getLevel().equalsIgnoreCase("SMQ3") || parentNode.getLevel().equalsIgnoreCase("SMQ4")
+						|| parentNode.getLevel().equalsIgnoreCase("SMQ5") || parentNode.getLevel().contains("SMQ"))
+						&& !hierNode.getLevel().contains("SMQ")) {
+					hierNode.setReadOnlyCategory(true);
+				} else {
+					hierNode.setReadOnlyCategory(false);
+				}
 			}
 		}
 	}

@@ -370,7 +370,7 @@
 									<p:column
 										rendered="#{impactSearchController.displayScopeCatWeight and not node.hideScope}">
 										<h:outputText
-											rendered="#{false}"
+											rendered="#{node.readOnlyCategory}"
 											value="#{appCSMQBean.interpretCqtBaseCategory(node.category)}" />
 
 										<p:selectOneMenu id="soc2" value="#{node.category}" 
