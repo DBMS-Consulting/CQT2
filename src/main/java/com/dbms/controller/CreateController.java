@@ -2141,7 +2141,7 @@ public class CreateController implements Serializable {
 			}
 		}
 		
-		if(medDRAadded == true) {
+		if(medDRAadded == true || !state.equalsIgnoreCase("Approved")) {
 			detailsFormModel.setState(state);
 			selectedData.setCmqState(state);
 			String lastModifiedByString = this.authService.getLastModifiedByUserAsString();
