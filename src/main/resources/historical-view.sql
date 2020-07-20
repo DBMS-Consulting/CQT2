@@ -386,7 +386,7 @@ UNION ALL
       ) cra_delete,
       opencqt.meddra_dict_&&MedDRAAuditVersion md
    where 
-          md.pt_code = cra_upsert.llt_code_new 
+          md.llt_code = cra_upsert.llt_code_new 
       and cra_upsert.cmq_code_new = cra_delete.cmq_code_old (+)
       and cra_upsert.llt_code_new = cra_delete.llt_code_old (+)
       and cra_upsert.max_audit_timestamp >=
