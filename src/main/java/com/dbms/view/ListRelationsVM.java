@@ -278,7 +278,6 @@ public class ListRelationsVM implements IRelationsChangeListener {
 			} else {
 				hierNode.setReadOnlyCategory(false);
 			}
-			hierNode.setHideCategory(true);
 			
 		}
 	}
