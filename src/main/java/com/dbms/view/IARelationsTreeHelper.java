@@ -2090,6 +2090,7 @@ public class IARelationsTreeHelper {
 		if(null != smqBaseCurrent) {
 			HierarchyNode node = this.createSmqBaseCurrrentNode(null, smqBaseCurrent);
 			TreeNode cmqBaseTreeNode = new DefaultTreeNode(node, currentTableRootTreeNode);
+			node.setHideCategory(true);
 
 			if (CSMQBean.IMPACT_TYPE_ICS.equals(smqBaseCurrent.getImpactType())
                     || CSMQBean.IMPACT_TYPE_IMPACTED.equals(smqBaseCurrent.getImpactType()))
@@ -2129,6 +2130,7 @@ public class IARelationsTreeHelper {
                 cmqBaseTargetService, smqBaseTargetService, meddraDictTargetService, cmqRelationTargetService, globalController);
 		HierarchyNode node = treeHelper.createSmqBaseTargetNode(selectedSmqList, null);
 		node.markReadOnlyInRelationstable();
+		node.setHideCategory(true);
 		TreeNode cmqBaseTreeNode = new DefaultTreeNode(node, targetTableRootTreeNode);
 
 		if (CSMQBean.IMPACT_TYPE_ICS.equals(selectedSmqList.getImpactType())
