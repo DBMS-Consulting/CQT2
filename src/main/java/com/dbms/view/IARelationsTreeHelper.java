@@ -1301,7 +1301,7 @@ public class IARelationsTreeHelper {
         				List<Map<String, Object>> smqChildRelationsCountList = smqBaseTargetService.findSmqChildRelationsCountForSmqCodes(smqChildCodeList);
                         if(childSmqs != null) {
                             for(SmqBaseTarget cs : childSmqs) {
-                                if(CSMQBean.IMPACT_TYPE_IMPACTED.equals(cs.getImpactType()) || getFilterDTO().isNoneFilterSeleted()) {
+                                if(CSMQBean.IMPACT_TYPE_IMPACTED.equals(cs.getImpactType()) || (getFilterDTO() != null && getFilterDTO().isNoneFilterSeleted())) {
                                     HierarchyNode hn = childSmqNodes.get(cs.getSmqCode());
                                     if(hn != null) {
                                         hn.setEntity(cs);
