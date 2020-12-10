@@ -340,7 +340,30 @@ public class CmqBaseRelationsTreeHelper {
             } else {
             	this.populateMeddraDictHierarchySearchDtoChildren(parentLevel, dtoCode, expandedNode,null);
             }
-            
+        } else if(entity instanceof SmqRelation190) {
+        	SmqRelation190 reverseSearchDto = (SmqRelation190)entity;
+        	String levelOfExpandedNode = hNode.getLevel();
+        	if("PT".equalsIgnoreCase(levelOfExpandedNode)) {
+        		Long ptCode = Long.valueOf(reverseSearchDto.getPtCode());
+        		if(relationView) {
+                    //fetch children of parent node by code of parent
+                	List<MeddraDictHierarchySearchDto> childDtos = null;
+                	if(hNode.getRelationEntity()!=null) {
+                		childDtos = this.meddraDictSvc.findChildrenByParentCode("LLT_", "PT_", ptCode,((CmqRelation190)hNode.getRelationEntity()).getDictionaryVersion());
+                	}else {
+                		childDtos = this.meddraDictSvc.findChildrenByParentCode("LLT_", "PT_", ptCode);
+                	}
+					for (MeddraDictHierarchySearchDto childDto : childDtos) {
+						HierarchyNode childNode = this.createMeddraNode(childDto, "LLT", null);
+						childNode.markNotEditableInRelationstable();
+						new DefaultTreeNode(childNode, expandedNode);
+					}
+                }/* else {
+                    //if its main view tables then show downward hierarchy else its from hierarchySearch so show reverse hierarchy
+                    this.populateMeddraDictReverseHierarchySearchDtoChildren("PT_", "HLT", ptCode, hNode, expandedNode, reverseSearchDto, false);	
+                }*/
+        	}
+        	
         }  else if(entity instanceof MeddraDictReverseHierarchySearchDto) {
             MeddraDictReverseHierarchySearchDto reverseSearchDto = (MeddraDictReverseHierarchySearchDto)entity;
             String levelOfExpandedNode = hNode.getLevel();
@@ -886,7 +909,7 @@ public class CmqBaseRelationsTreeHelper {
 	                }                
 	                
 	                TreeNode treeNode = new DefaultTreeNode(childRelationNode, expandedTreeNode);
-	                if(isChildSmqNode) {
+	                if(isChildSmqNode || childRelationNode.getLevel().equalsIgnoreCase("PT")) {
 	 					this.createNewDummyNode(treeNode);
 	 					//add the child smq to map to fit it in later.
 	 					smqChildTreeNodeMap.put(childRelation.getPtCode().longValue(), treeNode);
