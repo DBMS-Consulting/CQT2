@@ -99,7 +99,7 @@ public class CmqBaseRelationsTreeHelper {
                 hlgtCodesMap.put(cmqRelation.getHlgtCode(), cmqRelation);
             } else if((cmqRelation.getHltCode() != null) && (cmqRelation.getHltCode() > 0)) {
                 hltCodesMap.put(cmqRelation.getHltCode(), cmqRelation);
-            } else if((cmqRelation.getPtCode() != null) && (cmqRelation.getPtCode() > 0) && (cmqRelation.getSmqCode() == null)) {
+            } else if((cmqRelation.getPtCode() != null) && (cmqRelation.getPtCode() > 0)) {
                 ptCodesMap.put(cmqRelation.getPtCode(), cmqRelation);
             } else if((cmqRelation.getLltCode() != null) && (cmqRelation.getLltCode() > 0)) {
                 lltCodesMap.put(cmqRelation.getLltCode(), cmqRelation);
