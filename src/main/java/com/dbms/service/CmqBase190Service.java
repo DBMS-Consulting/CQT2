@@ -1384,6 +1384,15 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 					if(relations.get(iterator).getTermCategory() != null && mapReportData.get(0) != null) {
 						mapReportData.get(0).setCategory(relations.get(iterator).getTermCategory());
 					}
+					
+					if(relations.get(iterator).getTermWeight() != null && mapReportData.get(0) != null) {
+						mapReportData.get(0).setWeight(relations.get(iterator).getTermWeight()+"");
+					}
+					
+					if(relations.get(iterator).getTermScope() != null && mapReportData.get(0) != null) {
+						mapReportData.get(0).setScope(relations.get(iterator).getTermScope());
+					}
+					
 					rowCount = fillReport(mapReportData, cell, row, rowCount, worksheet);
 					mapReportData.clear();
 				} else {

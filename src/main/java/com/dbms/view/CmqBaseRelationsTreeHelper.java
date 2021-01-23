@@ -1171,7 +1171,7 @@ public class CmqBaseRelationsTreeHelper {
             CmqRelation190 cmqRelation = (CmqRelation190) relationEntity;
             node.setCategory((cmqRelation.getTermCategory() == null) ? "" : cmqRelation.getTermCategory());
             node.setScope((cmqRelation.getTermScope() == null) ? "" : cmqRelation.getTermScope());
-            //node.setWeight((cmqRelation.getTermWeight() == null) ? "" : cmqRelation.getTermWeight() + "");
+            node.setWeight((cmqRelation.getTermWeight() == null) ? "" : cmqRelation.getTermWeight() + "");
         }
 		return node;
 	}
