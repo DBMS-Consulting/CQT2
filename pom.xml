@@ -10,17 +10,22 @@
 
 
 	<properties>
-		<java.version>1.7</java.version>
-		<junit.version>4.12</junit.version>
+		<java.version>1.8</java.version>
+		<junit.version>4.13.1</junit.version>
 		<servlet.version>3.1.0</servlet.version>
+		<!-- <mojarra.version>2.2.14</mojarra.version>-->
 		<mojarra.version>2.2.14</mojarra.version>
 		<jetty.version>9.4.0.v20161208</jetty.version>
-		<primefaces.version>6.0</primefaces.version>
+		<primefaces.version>6.1</primefaces.version>
 		<maven.compiler.plugin.version>3.5.1</maven.compiler.plugin.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 		<!-- to be compatible with JBoss EAP 6.4 -->
-		<hibernate.version>4.2.7.Final</hibernate.version>
+		<!--<hibernate.version>4.2.7.Final</hibernate.version>-->
+		
+		<!-- to be compatible with JBoss EAP 7.2 -->
+		<hibernate.version>5.3.7.Final</hibernate.version>
+		<jasypt.version>1.9.2</jasypt.version>
 
 	</properties>
 	<dependencies>
@@ -35,6 +40,18 @@
 			<artifactId>commons-lang3</artifactId>
 			<version>3.5</version>
 		</dependency>
+		
+		<!-- Added on 24-Jan-2020 -->
+		<dependency>
+			<groupId>commons-beanutils</groupId>
+			<artifactId>commons-beanutils</artifactId>
+			<version>1.9.3</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-collections4</artifactId>
+			<version>4.1</version>
+		</dependency>	
 
 		<!-- Mojarra JSF -->
 		<dependency>
@@ -46,6 +63,12 @@
 			<groupId>com.sun.faces</groupId>
 			<artifactId>jsf-impl</artifactId>
 			<version>${mojarra.version}</version>
+		</dependency>
+		<!-- Added on 24-Jan-2020 -->
+		<dependency>
+			<groupId>javax.enterprise</groupId>
+			<artifactId>cdi-api</artifactId>
+			<version>1.2</version>
 		</dependency>
 		<!-- PrimeFaces -->
 		<dependency>
@@ -73,6 +96,12 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-c3p0</artifactId>
+			<version>${hibernate.version}</version>
+		</dependency>
+		<!--Added on 24-Jan-2020 -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-ehcache</artifactId>
 			<version>${hibernate.version}</version>
 		</dependency>
 		<!-- oracle -->
@@ -105,7 +134,7 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.12</version>
+			<version>4.13.1</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
@@ -138,6 +167,13 @@
 						<contextPath>/CQT</contextPath>
 					</webApp>
 				</configuration>
+			</plugin>
+			<!-- Added on 24-Jan-2020 -->
+			<!-- mvn jboss-as:deploy mvn jboss-as:redeploy mvn jboss-as:undeploy -->
+			<plugin>
+				<groupId>org.jboss.as.plugins</groupId>
+				<artifactId>jboss-as-maven-plugin</artifactId>
+				<version>7.5.Final</version>
 			</plugin>
 		</plugins>
 	</build>
