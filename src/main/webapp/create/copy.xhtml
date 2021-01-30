@@ -58,7 +58,7 @@
 
 						<h:panelGrid columns="2">
 							<p:commandButton value="Save" id="cb3" icon="ui-icon-disk"
-								action="#{createController.saveRelations(createController.relationsModel.relationsRoot)}" update="@form:m1" />
+								action="#{createController.saveRelations(createController.relationsModel.relationsRoot)}" update="@form:m1 resultRelations" />
 							<p:commandButton value="Cancel" icon="ui-icon-close"
 								process="@this" update="@form:m1 @form:resultRelations" style="float: right"
 								actionListener="#{createController.relationsModel.resetRelations(createController.selectedData)}">
