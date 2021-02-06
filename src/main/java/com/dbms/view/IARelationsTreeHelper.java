@@ -1202,8 +1202,8 @@ public class IARelationsTreeHelper {
 						childSmq.setSmqCode(childRelation.getPtCode().longValue());
 						childSmq.setSmqName(childRelation.getPtName());
 						childRelationNode.setScope(null != childRelation.getPtTermScope() ? childRelation.getPtTermScope().toString() : "");
-                        childRelationNode.setCategory(null != childRelation.getPtTermCategory() ? childRelation.getPtTermCategory() : "");
-                        childRelationNode.setWeight(null != childRelation.getPtTermWeight()? childRelation.getPtTermWeight().toString() : "");
+                        //childRelationNode.setCategory(null != childRelation.getPtTermCategory() ? childRelation.getPtTermCategory() : "");
+                        //childRelationNode.setWeight(null != childRelation.getPtTermWeight()? childRelation.getPtTermWeight().toString() : "");
 						childRelationNode.setLevel("Child SMQ");
 						childRelationNode.setEntity(childSmq);
 						isChildSmqNode = true;

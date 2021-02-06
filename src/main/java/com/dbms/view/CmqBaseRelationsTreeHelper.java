@@ -858,8 +858,8 @@ public class CmqBaseRelationsTreeHelper {
 					childRelationNode.setLevel("Child SMQ");
 					childRelationNode.setEntity(childSmq);
 					childRelationNode.setScope(null != childRelation.getPtTermScope() ? childRelation.getPtTermScope().toString() : "");
-					childRelationNode.setCategory(null != childRelation.getPtTermCategory() ? childRelation.getPtTermCategory() : "");
-					childRelationNode.setWeight(null != childRelation.getPtTermWeight()? childRelation.getPtTermWeight().toString() : "");
+					//childRelationNode.setCategory(null != childRelation.getPtTermCategory() ? childRelation.getPtTermCategory() : "");
+					//childRelationNode.setWeight(null != childRelation.getPtTermWeight()? childRelation.getPtTermWeight().toString() : "");
 					isChildSmqNode = true;
 					//for finding the child smqs of this one.
 					smqChildCodeList.add(childRelation.getPtCode().longValue());
@@ -867,20 +867,20 @@ public class CmqBaseRelationsTreeHelper {
 					childRelationNode.setLevel("SMQ1");
 					childRelationNode.setEntity(childRelation);
 					childRelationNode.setScope(null != childRelation.getPtTermScope() ? childRelation.getPtTermScope().toString() : "");
-					childRelationNode.setCategory(null != childRelation.getPtTermCategory() ? childRelation.getPtTermCategory() : "");
-					childRelationNode.setWeight(null != childRelation.getPtTermWeight()? childRelation.getPtTermWeight().toString() : "");
+					//childRelationNode.setCategory(null != childRelation.getPtTermCategory() ? childRelation.getPtTermCategory() : "");
+					//childRelationNode.setWeight(null != childRelation.getPtTermWeight()? childRelation.getPtTermWeight().toString() : "");
 				} else if (childRelation.getSmqLevel() == 2) {
 					childRelationNode.setLevel("SMQ2");
 					childRelationNode.setEntity(childRelation);
 					childRelationNode.setScope(null != childRelation.getPtTermScope() ? childRelation.getPtTermScope().toString() : "");
-					childRelationNode.setCategory(null != childRelation.getPtTermCategory() ? childRelation.getPtTermCategory() : "");
-					childRelationNode.setWeight(null != childRelation.getPtTermWeight()? childRelation.getPtTermWeight().toString() : "");
+					//childRelationNode.setCategory(null != childRelation.getPtTermCategory() ? childRelation.getPtTermCategory() : "");
+					//childRelationNode.setWeight(null != childRelation.getPtTermWeight()? childRelation.getPtTermWeight().toString() : "");
 				} else if (childRelation.getSmqLevel() == 3) {
 					childRelationNode.setLevel("SMQ3");
 					childRelationNode.setEntity(childRelation);
 					childRelationNode.setScope(null != childRelation.getPtTermScope() ? childRelation.getPtTermScope().toString() : "");
-					childRelationNode.setCategory(null != childRelation.getPtTermCategory() ? childRelation.getPtTermCategory() : "");
-					childRelationNode.setWeight(null != childRelation.getPtTermWeight()? childRelation.getPtTermWeight().toString() : "");
+					//childRelationNode.setCategory(null != childRelation.getPtTermCategory() ? childRelation.getPtTermCategory() : "");
+					//childRelationNode.setWeight(null != childRelation.getPtTermWeight()? childRelation.getPtTermWeight().toString() : "");
 				} else if (childRelation.getSmqLevel() == 4) {
                     childRelationNode.setLevel("PT");
                     childRelationNode.setScope(null != childRelation.getPtTermScope() ? childRelation.getPtTermScope().toString() : "");
