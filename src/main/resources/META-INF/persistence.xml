@@ -33,10 +33,10 @@
 			<property name="hibernate.transaction.auto_close_session" value="true" />
 			<property name="hibernate.dialect" value="org.hibernate.dialect.Oracle10gDialect" />
 			<property name="hibernate.connection.driver_class" value="oracle.jdbc.driver.OracleDriver" />
-            <property name="hibernate.connection.url" value="jdbc:oracle:thin:@192.196.245.20:8079/ort501" />
+            <property name="hibernate.connection.url" value="jdbc:oracle:thin:@192.168.1.84:1521/opencqt" />
 			<property name="hibernate.connection.username" value="opencqt" />
 
-			<property name="hibernate.connection.password" value="notopencqt123" />
+			<property name="hibernate.connection.password" value="notopencqt" />
 <!-- 
 			<property name="hibernate.connection.password" value="ENC(eUob/NCg3ql+yuAf+IlLuM55Z2tEt11S)" />
  -->			
