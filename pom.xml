@@ -25,7 +25,6 @@
 		<jasypt.version>1.9.2</jasypt.version>
 
 	</properties>
-
 	<dependencies>
 		<dependency>
 			<groupId>javax.servlet</groupId>
@@ -103,20 +102,27 @@
 		<!-- <dependency> <groupId>org.hibernate</groupId> <artifactId>hibernate-search-orm</artifactId> 
 			<version>4.6.0.Final-redhat-2</version> </dependency> -->
 
-<!-- JDBC driver Oracle Database 19c Release -->
+<!-- JDBC driver and UCP from Oracle Database 12c Release 2 (12.2.0.1) -->
+<dependency>
+      <groupId>com.oracle.jdbc</groupId>
+      <artifactId>ojdbc8</artifactId>
+      <version>12.2.0.1</version>
+    </dependency>
 
 <dependency>
-    <groupId>com.oracle.ojdbc</groupId>
-    <artifactId>ojdbc8</artifactId>
-    <version>19.3.0.0</version>
-</dependency>
+      <groupId>com.oracle.jdbc</groupId>
+      <artifactId>ucp</artifactId>
+      <version>12.2.0.1</version>
+    </dependency> 
 
-<!-- <dependency>
-          <groupId>com.oracle.jdbc</groupId>
-          <artifactId>ucp</artifactId>
-          <version>19.3.0.0</version> 
-       </dependency>  -->
- 
+<!--	
+<dependency>
+			<groupId>cn.easyproject</groupId>
+			<artifactId>ojdbc7</artifactId>
+			<version>12.1.0.2.0</version>
+		</dependency>
+-->
+
 		<!-- hsqldb driver -->
 		<dependency>
 			<groupId>hsqldb</groupId>
@@ -239,10 +245,9 @@
 
 		<!-- Repository for ORACLE ojdbc8. -->
 <repository>
-      <id>icmedu</id>
+      <id>mavenxwiki</id>
         <!-- <name>XWiki-Externals-Repo</name> -->
-        <!-- <url>https://maven.xwiki.org/externals/</url> -->
-<url>http://maven.icm.edu.pl/artifactory/repo/</url>
+        <url>https://maven.xwiki.org/externals/</url>
     </repository>
 
 		<repository>
