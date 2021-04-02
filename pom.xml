@@ -11,7 +11,7 @@
 
 	<properties>
 		<java.version>1.8</java.version>
-		<junit.version>4.12</junit.version>
+		<junit.version>4.13.1</junit.version>
 		<servlet.version>3.1.0</servlet.version>
 		<!-- <mojarra.version>2.1.28</mojarra.version> -->
 		<mojarra.version>2.2.14</mojarra.version>
@@ -37,10 +37,12 @@
 			<artifactId>commons-lang3</artifactId>
 			<version>3.5</version>
 		</dependency>
+
+<!-- Upgrade commons-beanutils:commons-beanutils to version 1.9.4 or later. For example: -->
 		<dependency>
 			<groupId>commons-beanutils</groupId>
 			<artifactId>commons-beanutils</artifactId>
-			<version>1.9.3</version>
+			<version>1.9.4</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
@@ -100,19 +102,8 @@
 		<!-- <dependency> <groupId>org.hibernate</groupId> <artifactId>hibernate-search-orm</artifactId> 
 			<version>4.6.0.Final-redhat-2</version> </dependency> -->
 
-		<!-- oracle -->
-	<!-- <dependency>
-		<groupId>com.oracle</groupId>
-		<artifactId>ojdbc7</artifactId>
-		<version>12.1.0.2</version>
-	</dependency>
-	<dependency>
-		<groupId>com.oracle</groupId>
-		<artifactId>ucp</artifactId>
-		<version>12.1.0.2</version>
-	</dependency>  -->
-	
-	<dependency>
+<!-- JDBC driver and UCP from Oracle Database 19c -->
+<dependency>
 		<groupId>com.oracle.ojdbc</groupId>
 		<artifactId>ojdbc8</artifactId>
 		<version>19.3.0.0</version>
@@ -121,13 +112,7 @@
 		<groupId>com.oracle.ojdbc</groupId>
 		<artifactId>ucp</artifactId>
 		<version>19.3.0.0</version>
-	</dependency> 
-
-		<!-- <dependency>
-			<groupId>cn.easyproject</groupId>
-			<artifactId>ojdbc7</artifactId>
-			<version>12.1.0.2.0</version>
-		</dependency> -->
+	</dependency>
 
 		<!-- hsqldb driver -->
 		<dependency>
@@ -147,7 +132,7 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.12</version>
+			<version>4.13.1</version>
 			<scope>test</scope>
 		</dependency>
 		
@@ -243,11 +228,18 @@
 			<layout>default</layout>
 		</repository>
 
-		<!-- Repository for ORACLE ojdbc6. -->
+		<!-- Repository for ORACLE ojdbc6. 
 		<repository>
 			<id>codelds</id>
 			<url>https://code.lds.org/nexus/content/groups/main-repo</url>
-		</repository>
+		</repository> -->
+
+		<!-- Repository for ORACLE ojdbc8. -->
+<repository>
+      <id>mavenxwiki</id>
+        <!-- <name>XWiki-Externals-Repo</name> -->
+        <url>https://maven.xwiki.org/externals/</url>
+    </repository>
 
 		<repository>
 			<id>redhat-ga</id>
