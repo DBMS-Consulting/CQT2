@@ -127,10 +127,10 @@ public class ListRelationsVM implements IRelationsChangeListener {
 				childTreeNode.getChildren().clear();//remove all children
 				HierarchyNode hNode = (HierarchyNode) childTreeNode.getData();
 				hNode.setDataFetchCompleted(false);
-				IEntity entity = (IEntity) hNode.getEntity();
+				//IEntity entity = (IEntity) hNode.getEntity();
 				if((!hNode.getLevel().equalsIgnoreCase("PT") && !hNode.getLevel().equalsIgnoreCase("LLT"))
 						|| ((!filterLltFlag && (hNode.getLevel().equalsIgnoreCase("PT") 
-								|| hNode.getLevel().equalsIgnoreCase("SMQ4"))) && !(entity instanceof SmqRelation190))) {
+								|| hNode.getLevel().equalsIgnoreCase("SMQ4"))))) {
 					//add a dummy node if ther eis no child here
 					if(childTreeNode.getChildCount() == 0) {
 						HierarchyNode dummyNode = new HierarchyNode(null, null, null, null);
