@@ -375,7 +375,7 @@
 
 										<p:selectOneMenu id="soc2" value="#{node.category}" 
 										        disabled="#{impactSearchController.readOnlyIA}"
-												rendered="#{not node.isChildNode() and (impactSearchController.selectedImpactedCmqList.getCmqTypeCd() eq 'TR1' or impactSearchController.selectedNotImpactedCmqList.getCmqTypeCd() eq 'TR1')}" 
+												rendered="#{not node.readOnlyCategory}"
 												autoWidth="false" style="width:75%">
 											<f:selectItem itemLabel="" itemValue="" noSelectionOption="true"/>
 											<f:selectItems var="c" value="#{appCSMQBean.cqtBaseCategories}"
@@ -398,7 +398,7 @@
 									<p:column
 										rendered="#{impactSearchController.displayScopeCatWeight and not node.hideScope}">
 										<h:outputText
-											rendered="#{not node.hideWeight and node.readOnlyWeight}"
+											rendered="#{not node.hideWeight}"
 											value="#{node.weight}" />
 
 										<!-- Disable selection control, remove comments if we need to reactivate the field
