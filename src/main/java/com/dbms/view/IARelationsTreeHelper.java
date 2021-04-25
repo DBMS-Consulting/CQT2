@@ -1276,7 +1276,7 @@ public class IARelationsTreeHelper {
                                 	HierarchyNode hn = childSmqNodes.get(cs.getSmqCode());
                                     if(hn != null) {
                                         hn.setEntity(cs);
-                                        hn.setHideScope(true);
+                                        //hn.setHideScope(true);
                                     }
                                 }
                             }
@@ -1311,7 +1311,7 @@ public class IARelationsTreeHelper {
                                 	HierarchyNode hn = childSmqNodes.get(cs.getSmqCode());
                                     if(hn != null) {
                                         hn.setEntity(cs);
-                                        hn.setHideScope(true);
+                                        //hn.setHideScope(true);
                                     }
                                 }
                             }
