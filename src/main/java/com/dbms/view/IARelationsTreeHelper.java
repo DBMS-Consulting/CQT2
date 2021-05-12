@@ -233,22 +233,50 @@ public class IARelationsTreeHelper {
 				}
 			}
 			hierarchyNode.setDataFetchCompleted(true);
-			for(TreeNode child: expandedTreeNode.getChildren()) {
-				HierarchyNode hierNode =  (HierarchyNode) child.getData();
+			
+			for (TreeNode child : expandedTreeNode.getChildren()) {
+				HierarchyNode hierNode = (HierarchyNode) child.getData();
 				HierarchyNode parentNode = (HierarchyNode) child.getParent().getData();
-				if(!parentNode.getLevel().equalsIgnoreCase("TR1")) {
+				//Do not show category
+				if((parentNode.getLevel().equalsIgnoreCase("TR1") || parentNode.getLevel().equalsIgnoreCase("TME")) && hierNode.getLevel().equalsIgnoreCase("PRO")) {
 					hierNode.setHideCategory(true);
-				}
-				if((parentNode.getLevel().equalsIgnoreCase("SMQ") || parentNode.getLevel().equalsIgnoreCase("'C' SMQ")
-						|| parentNode.getLevel().equalsIgnoreCase("SMQ1") || parentNode.getLevel().equalsIgnoreCase("SMQ2")
-						|| parentNode.getLevel().equalsIgnoreCase("SMQ3") || parentNode.getLevel().equalsIgnoreCase("SMQ4")
-						|| parentNode.getLevel().equalsIgnoreCase("SMQ5") || parentNode.getLevel().contains("SMQ"))
-						&& !hierNode.getLevel().contains("SMQ")) {
-					hierNode.setReadOnlyCategory(true);
 				} else {
-					hierNode.setReadOnlyCategory(false);
+					// show category editable or read only
+					
+					// condition to show readonly
+					if(parentNode.getLevel().contains("SMQ") || parentNode.isAlgorithmN()) {
+						hierNode.setReadOnlyCategory(true);
+					} else {
+						//show editable
+						hierNode.setReadOnlyCategory(false);
+					}
+					
 				}
+				
+				/*
+				 * if (!parentNode.getLevel().equalsIgnoreCase("TR1")) {
+				 * hierNode.setHideCategory(true); }
+				 * 
+				 * if ((parentNode.getLevel().contains("SMQ"))) {
+				 * hierNode.setReadOnlyCategory(true); } else {
+				 * hierNode.setReadOnlyCategory(false); }
+				 * 
+				 * 
+				 * if ((parentNode.getLevel().equalsIgnoreCase("SMQ") ||
+				 * parentNode.getLevel().equalsIgnoreCase("'C' SMQ") ||
+				 * parentNode.getLevel().equalsIgnoreCase("SMQ1") ||
+				 * parentNode.getLevel().equalsIgnoreCase("SMQ2") ||
+				 * parentNode.getLevel().equalsIgnoreCase("SMQ3") ||
+				 * parentNode.getLevel().equalsIgnoreCase("SMQ4") ||
+				 * parentNode.getLevel().equalsIgnoreCase("SMQ5") ||
+				 * parentNode.getLevel().contains("SMQ") || parentNode.isAlgorithmN()) &&
+				 * !hierNode.getLevel().contains("SMQ")) { hierNode.setReadOnlyCategory(true); }
+				 * else { hierNode.setReadOnlyCategory(false); }
+				 */
+				 
+				 
 			}
+			 
 		}
 	}
 	

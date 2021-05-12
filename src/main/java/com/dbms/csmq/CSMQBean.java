@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
@@ -889,6 +890,14 @@ public class CSMQBean {
 		});
 	}
 	*/
+    
+    public boolean categoryInactive(String categoryValue) {
+    	
+    	List<RefConfigCodeList> categories = refCodeListService.findAllByConfigType(
+				CqtConstants.CODE_LIST_TYPE_CATEGORY_TERM, OrderBy.ASC);
+    	return categories.stream().anyMatch(cat-> cat.getCodelistInternalValue().equalsIgnoreCase(categoryValue) && cat.getActiveFlag().equalsIgnoreCase("N"));
+    	
+    }
 	
 	public List<RefConfigCodeList> getCqtBaseCategories() {
 		List<RefConfigCodeList> categories = refCodeListService.findByConfigType(
@@ -897,6 +906,13 @@ public class CSMQBean {
 			categories = new ArrayList<>();
 		}
 		return categories;
+	}
+	
+	public List<RefConfigCodeList> cqtBaseCategoriesWithInactiveSelected(String categoryValue) {
+		List<RefConfigCodeList> categories = refCodeListService.findAllByConfigType(
+				CqtConstants.CODE_LIST_TYPE_CATEGORY_TERM, OrderBy.ASC);
+		return categories.stream()
+				.filter(cat->cat.getActiveFlag().equalsIgnoreCase("Y") || (cat.getValue().equalsIgnoreCase(categoryValue) && cat.getActiveFlag().equalsIgnoreCase("N"))).collect(Collectors.toList());
 	}
     
     public String interpretCqtBaseCategory(String categoryVal) {
