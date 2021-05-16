@@ -2284,7 +2284,7 @@ public class ImpactSearchController implements Serializable {
 						target.setCmqSubversion(new BigDecimal(map.get("cmqSubversion").toString()));
 					}
 					if(null != map.get("creationDate")) {
-						SimpleDateFormat fomrat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+						SimpleDateFormat fomrat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 						try {
 							target.setCreationDate(fomrat.parse(map.get("creationDate").toString()));
 						} catch (ParseException e) {
