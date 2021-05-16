@@ -696,6 +696,14 @@ public class ImpactSearchController implements Serializable {
 												relationsHierarchyNode.setHideCategory(false);
 												//relationsHierarchyNode.setHideDelete(false);
 											}
+											
+											if(relationsHierarchyNodeEntity instanceof SmqBaseTarget) {
+												relationsHierarchyNode.setCategory("");
+												relationsHierarchyNode.setScope(null);
+												relationsHierarchyNode.setWeight(null);
+												relationsHierarchyNode.setJustAdded(true);
+												relationsHierarchyNode.setReadOnlyCategory(false);
+											}
 										}
 										targetRelationsUpdated = true;
 									}

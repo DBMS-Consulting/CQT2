@@ -786,7 +786,10 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 								if(relation.getTermCategory() != null) {
 									mapReport.get(mapReport.size() - 1).setCategory(relation.getTermCategory());
 									mapReport.get(mapReport.size() - 1).setScope(relation.getTermScope());
-									mapReport.get(mapReport.size() - 1).setWeight(relation.getTermWeight()+"");
+									if(null != relation.getTermWeight()) {
+										mapReport.get(mapReport.size() - 1).setWeight(relation.getTermWeight()+"");
+									}
+										
 								}
  								
 								/**
@@ -1017,6 +1020,10 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 							}
 						} else if(relation.getTermCategory() != null) {
 							mapReport.get(mapReport.size() - 1).setCategory(relation.getTermCategory());
+						}
+						
+						if(null != relation.getTermWeight()) {
+							mapReport.get(mapReport.size() - 1).setWeight(relation.getTermWeight()+"");
 						}
 						
 						if(!filterLltFlag) {

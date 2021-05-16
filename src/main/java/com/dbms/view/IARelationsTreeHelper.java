@@ -1471,6 +1471,9 @@ public class IARelationsTreeHelper {
             if(node.getRelationEntity() instanceof CmqRelationTarget) {
             	CmqRelationTarget cmqRelation = (CmqRelationTarget) node.getRelationEntity();
             	node.setCategory(cmqRelation.getTermCategory());
+            	if(null != cmqRelation.getTermWeight()) {
+            		node.setWeight(cmqRelation.getTermWeight()+"");
+            	} 
             }
             
             TreeNode treeNode = new DefaultTreeNode(node, expandedTreeNode);
