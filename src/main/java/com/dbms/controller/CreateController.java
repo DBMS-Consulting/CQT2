@@ -2130,18 +2130,18 @@ public class CreateController implements Serializable {
 		}
 		
 		TreeNode relationsRoot = (TreeNode) relationsModel.getRelationsRoot();
-		boolean medDRAadded = false;
+		boolean medDRAOrChildListAdded = false;
 		for(TreeNode child : relationsRoot.getChildren()) {
 			HierarchyNode childNode = (HierarchyNode) child.getData();
 			if(childNode.getLevel().equalsIgnoreCase("PT") || childNode.getLevel().equalsIgnoreCase("HLT")
 					|| childNode.getLevel().equalsIgnoreCase("HLGT") || childNode.getLevel().equalsIgnoreCase("SOC")
 					|| childNode.getLevel().equalsIgnoreCase("LLT") || childNode.getLevel().equalsIgnoreCase("SMQ")
-					|| childNode.getLevel().equalsIgnoreCase("'C' SMQ")) {
-				medDRAadded = true;
+					|| childNode.getLevel().equalsIgnoreCase("'C' SMQ") || childNode.getLevel().equalsIgnoreCase("PRO")) {
+				medDRAOrChildListAdded = true;
 			}
 		}
 		
-		if(medDRAadded == true || !state.equalsIgnoreCase("Approved")) {
+		if(medDRAOrChildListAdded || !state.equalsIgnoreCase("Approved")) {
 			detailsFormModel.setState(state);
 			selectedData.setCmqState(state);
 			String lastModifiedByString = this.authService.getLastModifiedByUserAsString();
@@ -2175,7 +2175,7 @@ public class CreateController implements Serializable {
 			}
 		} else { //The List cannot be approved because no MedDRA terms have been added to this List
 			FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO,
-                    "The List cannot be approved because no MedDRA terms have been added to this List", "");
+                    "List cannot be approved without relations. Please add either dictionary term(s) or Protocol List as applicable", "");
 			FacesContext ctx = FacesContext.getCurrentInstance();
 			ctx.addMessage(null, msg);
 		}
