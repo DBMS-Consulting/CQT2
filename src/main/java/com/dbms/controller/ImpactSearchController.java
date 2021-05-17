@@ -703,6 +703,7 @@ public class ImpactSearchController implements Serializable {
 												relationsHierarchyNode.setWeight(null);
 												relationsHierarchyNode.setJustAdded(true);
 												relationsHierarchyNode.setReadOnlyCategory(false);
+												relationsHierarchyNode.setReadOnlyScope(false);
 											}
 										}
 										targetRelationsUpdated = true;

@@ -266,6 +266,10 @@ public class ListRelationsVM implements IRelationsChangeListener {
 		for(TreeNode child: expandedTreeNode.getChildren()) {
 			HierarchyNode hierNode = (HierarchyNode) child.getData();
 			HierarchyNode parentNode = (HierarchyNode) child.getParent().getData();
+			if((parentNode.getLevel().equalsIgnoreCase("TR1") || parentNode.getLevel().equalsIgnoreCase("TME")) && hierNode.getLevel().equalsIgnoreCase("PRO")) {
+				hierNode.setHideScope(true);
+			}
+			
 			if(parentNode.getLevel().equalsIgnoreCase("SMQ") || parentNode.getLevel().equalsIgnoreCase("'C' SMQ") 
 					|| parentNode.getLevel().equalsIgnoreCase("PRO")) {
 				hierNode.setHideScope(true);

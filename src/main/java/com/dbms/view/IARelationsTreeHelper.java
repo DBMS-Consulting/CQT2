@@ -237,7 +237,7 @@ public class IARelationsTreeHelper {
 			for (TreeNode child : expandedTreeNode.getChildren()) {
 				HierarchyNode hierNode = (HierarchyNode) child.getData();
 				HierarchyNode parentNode = (HierarchyNode) child.getParent().getData();
-				//Do not show category
+				//Do not show category`
 				if((parentNode.getLevel().equalsIgnoreCase("TR1") || parentNode.getLevel().equalsIgnoreCase("TME")) && hierNode.getLevel().equalsIgnoreCase("PRO")) {
 					hierNode.setHideCategory(true);
 				} else {
@@ -1474,6 +1474,10 @@ public class IARelationsTreeHelper {
             	if(null != cmqRelation.getTermWeight()) {
             		node.setWeight(cmqRelation.getTermWeight()+"");
             	} 
+            	
+            	if(null != cmqRelation.getTermScope()) {
+            		node.setScope(cmqRelation.getTermScope());
+            	}
             }
             
             TreeNode treeNode = new DefaultTreeNode(node, expandedTreeNode);

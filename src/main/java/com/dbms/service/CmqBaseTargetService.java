@@ -1026,6 +1026,10 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 							mapReport.get(mapReport.size() - 1).setWeight(relation.getTermWeight()+"");
 						}
 						
+						if(null != relation.getTermScope()) {
+							mapReport.get(mapReport.size() - 1).setScope(relation.getTermScope());
+						}
+						
 						if(!filterLltFlag) {
 							/**
 							 * LLT.
