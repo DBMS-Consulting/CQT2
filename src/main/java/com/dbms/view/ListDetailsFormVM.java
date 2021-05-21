@@ -876,4 +876,8 @@ public class ListDetailsFormVM implements Serializable {
         }
 		return values;
 	}
+    
+    public boolean isAlgorithmDisable() {
+    	return StringUtils.isNotBlank(this.state) && (StringUtils.equalsIgnoreCase(this.state, "APPROVED")|| StringUtils.equalsIgnoreCase(this.state, "PUBLISHED"));
+    }
 }

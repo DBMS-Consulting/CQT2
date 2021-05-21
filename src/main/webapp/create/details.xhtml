@@ -158,7 +158,7 @@
             <p:selectOneMenu id="algorithm"
 				value="#{createController.detailsFormModel.algorithm}" label="Algorithm"
 				required="true"
-				disabled="#{false}">
+				disabled="#{createController.detailsFormModel.algorithmDisable}">
 				<f:selectItem itemValue="" itemLabel="" noSelectionOption="false" />
 				<f:selectItem itemValue="Y" itemLabel="Yes" />
 				<f:selectItem itemValue="N" itemLabel="No" />
