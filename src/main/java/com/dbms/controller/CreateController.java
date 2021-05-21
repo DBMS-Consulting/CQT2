@@ -808,6 +808,7 @@ public class CreateController implements Serializable {
 							cmqEntity.setCmqParentCode(cmqBase.getCmqCode());
 							cmqEntity.setCmqParentName(cmqBase.getCmqName());
 							cmqBaseChildrenList.add(cmqEntity);
+							hierarchyNode.setHideDelete(false);
 						}
 					} else {
 						CmqRelation190 cmqRelation = null;						
