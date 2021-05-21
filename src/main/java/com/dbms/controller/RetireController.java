@@ -14,6 +14,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 
+import org.apache.commons.lang3.StringUtils;
 import org.primefaces.context.RequestContext;
 import org.primefaces.model.DualListModel;
 import org.slf4j.Logger;
@@ -272,7 +273,15 @@ public class RetireController implements Serializable {
 			FacesContext.getCurrentInstance().addMessage(null, 
                     new FacesMessage(FacesMessage.SEVERITY_ERROR,
                             "Please select at least 1 list to retire.", ""));
+			
 		} else {
+			if(StringUtils.isBlank(getRetirementReason())) {
+				FacesContext.getCurrentInstance().addMessage(null, 
+	                    new FacesMessage(FacesMessage.SEVERITY_ERROR,
+	                            "Please enter the retirement reason", ""));
+				RequestContext.getCurrentInstance().execute("PF('RetireDescriptionAndDelete').show();");
+				return "";
+			}
 			for (CmqBase190 cmqBase : targetCmqsSelected) {
 				targetCmqCodes.add(cmqBase.getCmqCode());
 				if(cmqBaseCode != null) {
