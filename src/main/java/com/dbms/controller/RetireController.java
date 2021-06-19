@@ -108,6 +108,8 @@ public class RetireController implements Serializable {
 		
 		boolean tmeOrTier1 = true;
 		boolean isProtocol = true;
+		boolean isDME = false;
+		boolean isCPT = false;
 		
 		for (CmqBase190 cmqBase : targetCmqsSelected) {
 			targetCmqCodes.add(cmqBase.getCmqCode());
@@ -116,6 +118,11 @@ public class RetireController implements Serializable {
 			}
 			if(!cmqBase.getCmqTypeCd().equalsIgnoreCase("PRO")) {
 				isProtocol = false;
+			}
+			if(cmqBase.getCmqTypeCd().equalsIgnoreCase("DME")) {
+				isDME = true;
+			} else if(cmqBase.getCmqTypeCd().equalsIgnoreCase("CPT")) {
+				isCPT = true;
 			}
 		}
 		
@@ -157,7 +164,7 @@ public class RetireController implements Serializable {
 			RequestContext.getCurrentInstance().execute("PF('confirmRetireOK').show();");
 		} else if (childCmqsOftargets != null && !childCmqsOftargets.isEmpty() && !childNotSelected) {
 			saveRetirementReason();
-		} else if (childCmqsOftargets.isEmpty() && tmeOrTier1 == true) {
+		} else if (childCmqsOftargets.isEmpty() && (tmeOrTier1 || isDME || isCPT)) {
 			saveRetirementReason();
 		} else {
 			this.confirmMessage = "Are you sure you want to retire this list?";
@@ -246,6 +253,7 @@ public class RetireController implements Serializable {
 	
 	public String saveRetirementReasonAndDeleteRelation() {
 		this.confirmMessage = "Please enter the retirement reason.";
+		this.retirementReason = "";
 		RequestContext.getCurrentInstance().execute("PF('RetireDescriptionAndDelete').show();");
 		setDeleteRelation(true);
 		return"";
@@ -253,6 +261,7 @@ public class RetireController implements Serializable {
 	
 	public String saveRetirementReason() {
 		this.confirmMessage = "Please enter the retirement reason.";
+		this.retirementReason = "";
 		RequestContext.getCurrentInstance().execute("PF('RetireDescriptionAndDelete').show();");
 		setDeleteRelation(false);
 		return"";
