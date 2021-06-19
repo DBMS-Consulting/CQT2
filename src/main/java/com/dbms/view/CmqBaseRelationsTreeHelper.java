@@ -909,7 +909,7 @@ public class CmqBaseRelationsTreeHelper {
 	                }                
 	                
 	                TreeNode treeNode = new DefaultTreeNode(childRelationNode, expandedTreeNode);
-	                if(isChildSmqNode || childRelationNode.getLevel().equalsIgnoreCase("PT")) {
+	                if(isChildSmqNode) {
 	 					this.createNewDummyNode(treeNode);
 	 					//add the child smq to map to fit it in later.
 	 					smqChildTreeNodeMap.put(childRelation.getPtCode().longValue(), treeNode);
