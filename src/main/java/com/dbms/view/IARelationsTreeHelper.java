@@ -1279,7 +1279,7 @@ public class IARelationsTreeHelper {
 				//add it only if itslevel is not null
 				if(null != childRelationNode.getLevel()){
 					TreeNode treeNode = new DefaultTreeNode(childRelationNode, expandedTreeNode);
-					if(isChildSmqNode|| childRelationNode.getLevel().equalsIgnoreCase("PT")) {
+					if(isChildSmqNode) {
 						this.createNewDummyNode(treeNode);
 					}
 				}
@@ -1408,9 +1408,9 @@ public class IARelationsTreeHelper {
 				isSmqRelation = true;
 			} else {
 				entity2 = this.smqBaseTargetService.findByCode(cmqRelation.getSmqCode());
-				if((((SmqBaseTarget) entity2).getSmqLevel() != 5) || (!filterLltFlag && ((SmqBaseTarget) entity2).getSmqLevel() == 5)) {
+				//if((((SmqBaseTarget) entity2).getSmqLevel() != 5) || (!filterLltFlag && ((SmqBaseTarget) entity2).getSmqLevel() == 5)) {
 					node = this.createSmqBaseTargetNode((SmqBaseTarget) entity2, cmqRelation);
-				}
+				//}
 			}
 			if(!isRootListNode && "target-table".equalsIgnoreCase(uiSourceOfEvent)) {
 				node.markNotEditableInRelationstable();
