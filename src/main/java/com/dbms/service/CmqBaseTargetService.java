@@ -892,6 +892,9 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 								if (list != null) {
 									for (SmqRelationTarget smq3 : list) {
 										level = getLevelFromValue(smq3.getSmqLevel());
+										if(filterLltFlag && (smq3.getSmqLevel() == 5)) {
+											continue;
+										}
 										mapReport.put(cpt++, new ReportLineDataDto(level, smq3.getPtCode() + "", smq3.getPtName(), ".............", smq3.getPtTermScope() + "", smq3.getPtTermWeight() + "", smq3.getPtTermCategory(), smq3.getRelationImpactType(), smq3.getPtTermStatus())); 
 									
 										 
@@ -2350,9 +2353,9 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 		} else if (smqLevel == 3) {
 			level = "SMQ3";
 		} else if (smqLevel == 4) {
-			level = "PT";
+			level = "SMQ4";
 		} else if (smqLevel == 5) {
-			level = "LLT";
+			level = "SMQ5";
 		}
 		return level;
 	}
