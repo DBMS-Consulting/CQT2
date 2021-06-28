@@ -206,6 +206,26 @@ public class CmqBaseRelationsTreeHelper {
 		if(requireDrillDown) {
 			this.populateChildCmqsByParent(cmqCode, rootNode,dictionaryVersion);
 		}
+		
+		HierarchyNode rootHierarchyNode =  this.createCmqBaseNode(cmqBase190);
+		for(TreeNode child: rootNode.getChildren()) {
+			HierarchyNode hierNode = (HierarchyNode) child.getData();
+			//Category Rules
+			if(rootHierarchyNode.isAlgorithmN()) {
+				hierNode.setHideCategory(true);
+			} else if((rootHierarchyNode.getLevel().equalsIgnoreCase("TR1") || rootHierarchyNode.getLevel().equalsIgnoreCase("TME")) && hierNode.getLevel().equalsIgnoreCase("PRO")) {
+				hierNode.setReadOnlyCategory(true);
+			}
+			
+			//Scope Rules
+			//when to hide
+			if(((rootHierarchyNode.getLevel().equalsIgnoreCase("TR1") || rootHierarchyNode.getLevel().equalsIgnoreCase("TME")) && hierNode.getLevel().equalsIgnoreCase("PRO"))
+					||(!hierNode.isSmqNode() && StringUtils.isBlank(hierNode.getScope()))) {
+				hierNode.setHideScope(true);
+			} else if(!hierNode.isSmqNode() && !StringUtils.isBlank(hierNode.getScope())) {//when to show as text
+				hierNode.setReadOnlyScope(true);
+			} //else it will be displayed with dropdown as enabled
+		}
         return rootNode;
     }
     
@@ -232,7 +252,7 @@ public class CmqBaseRelationsTreeHelper {
                 hlgtCodesMap.put(cmqRelation.getHlgtCode(), cmqRelation);
             } else if((cmqRelation.getHltCode() != null) && (cmqRelation.getHltCode() > 0)) {
                 hltCodesMap.put(cmqRelation.getHltCode(), cmqRelation);
-            } else if((cmqRelation.getPtCode() != null) && (cmqRelation.getPtCode() > 0) && (cmqRelation.getSmqCode() == null)) {
+            } else if((cmqRelation.getPtCode() != null) && (cmqRelation.getPtCode() > 0)) {
                 ptCodesMap.put(cmqRelation.getPtCode(), cmqRelation);
             } else if((cmqRelation.getLltCode() != null) && (cmqRelation.getLltCode() > 0)) {
                 lltCodesMap.put(cmqRelation.getLltCode(), cmqRelation);

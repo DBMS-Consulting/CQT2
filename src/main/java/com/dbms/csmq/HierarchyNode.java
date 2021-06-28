@@ -2,13 +2,8 @@ package com.dbms.csmq;
 
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
-import java.util.List;
-
-import javax.faces.bean.ManagedProperty;
 
 import org.apache.commons.beanutils.BeanUtils;
-import org.primefaces.event.NodeExpandEvent;
-import org.primefaces.model.TreeNode;
 
 import com.dbms.entity.IEntity;
 import com.dbms.entity.cqt.CmqBase190;
@@ -21,7 +16,6 @@ import com.dbms.entity.cqt.SmqRelationTarget;
 import com.dbms.entity.cqt.dtos.MeddraDictHierarchySearchDto;
 import com.dbms.entity.cqt.dtos.MeddraDictReverseHierarchySearchDto;
 import com.dbms.entity.cqt.dtos.SMQReverseHierarchySearchDto;
-import com.dbms.service.ICmqBase190Service;
 
 
 public class HierarchyNode implements Serializable, Comparable<HierarchyNode> {
@@ -384,18 +378,14 @@ public class HierarchyNode implements Serializable, Comparable<HierarchyNode> {
 	}
 	
 	public boolean isSmqNode() {
-		if((this.entity != null) && ((this.entity instanceof SmqBase190) 
+		return ((this.entity instanceof SmqBase190) 
 										|| (this.entity instanceof SmqBaseTarget) 
-										|| (this.entity instanceof SMQReverseHierarchySearchDto))) {
-			return true;
-		} else {
-			return false;
-		}
+										|| (this.entity instanceof SMQReverseHierarchySearchDto)) ;
 	}
 	
 	public boolean isChildNode() {
 		
-		if(this.level.equalsIgnoreCase("PRO") || this.hideCategory == true) {
+		if(this.level.equalsIgnoreCase("PRO") || this.hideCategory) {
 			return true;
 		}
 		if(this.relationEntity != null || getJustAdded()) { 
@@ -406,11 +396,11 @@ public class HierarchyNode implements Serializable, Comparable<HierarchyNode> {
 										|| (this.entity instanceof SmqBaseTarget) 
 										|| (this.entity instanceof SMQReverseHierarchySearchDto)))
 			return false;
-		if((this.entity != null && this.entity instanceof SmqRelation190 && this.hideCategory != true) 
-				|| (this.entity != null && this.entity instanceof SmqRelationTarget && this.hideCategory != true)) {
+		if((this.entity instanceof SmqRelation190 && !this.hideCategory) 
+				|| (this.entity instanceof SmqRelationTarget && !this.hideCategory)) {
 				return false; 
 		}
-		if(this.entity != null && this.entity instanceof MeddraDictHierarchySearchDto) {
+		if(this.entity instanceof MeddraDictHierarchySearchDto) {
 			MeddraDictHierarchySearchDto meddraDictHierarchySearchDto = (MeddraDictHierarchySearchDto) entity;
 			if(meddraDictHierarchySearchDto.getHlgtCode() != null || meddraDictHierarchySearchDto.getHltCode() != null
 					|| meddraDictHierarchySearchDto.getPtCode() != null)
@@ -420,7 +410,7 @@ public class HierarchyNode implements Serializable, Comparable<HierarchyNode> {
 				return false;
 			}
 			
-		} else if(this.entity != null && this.entity instanceof MeddraDictReverseHierarchySearchDto) {
+		} else if(this.entity instanceof MeddraDictReverseHierarchySearchDto) {
 			MeddraDictReverseHierarchySearchDto meddraDictReverseHierarchySearchDto = (MeddraDictReverseHierarchySearchDto) entity;
 			if(!(meddraDictReverseHierarchySearchDto.getPtCode() == null && meddraDictReverseHierarchySearchDto.getLltCode() != null)) {
 				return false;

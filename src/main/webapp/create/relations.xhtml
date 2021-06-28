@@ -220,11 +220,8 @@
 					rendered="#{not node.hideScope and node.readOnlyScope}" />
 
 				<p:selectOneMenu id="soc3" value="#{node.scope}"
-					disabled="#{createController.readOnlyState or not node.isSmqNode()}"
 					rendered="#{not node.hideScope and not node.readOnlyScope}"
 					autoWidth="false" style="width:75%">
-					<!-- <f:selectItems var="s" value="#{appCSMQBean.cqtBaseScopes}"
-						itemValue="#{s[0]}" itemLabel="#{s[1]}" /> -->
 						<f:selectItem itemLabel="" itemValue="" noSelectionOption="true"/>
 					<f:selectItems
 						value="#{createController.detailsFormModel.SMQFilterLevels}"
@@ -240,20 +237,16 @@
 			<p:column
 				rendered="#{createController.relationsModel.displayScopeCatWeight}"
 				style="width:10%">
-				<h:outputText
-					value="#{appCSMQBean.interpretCqtBaseCategory(node.category)}"
-					rendered="#{false}" />
-
-				
+			
                 <h:outputText value="#{appCSMQBean.interpretCqtBaseCategory(node.category)}"
-                    rendered="#{node.readOnlyCategory}" />
+                    rendered="#{node.readOnlyCategory and not node.hideCategory}" />
                 
 				<p:selectOneMenu id="soc2" value="#{node.category}" 
-				        disabled="#{createController.detailsFormModel.algorithm eq 'N' or createController.readOnlyState}"
-						rendered="#{not node.isChildNode()}" 
+				        disabled="#{createController.readOnlyState}"
+						rendered="#{not node.hideCategory and not node.readOnlyCategory}" 
 						autoWidth="false" style="width:75%">
 					<f:selectItem itemLabel="" itemValue="" noSelectionOption="true"/>
-					<f:selectItems var="s" value="#{appCSMQBean.cqtBaseCategories}"
+					<f:selectItems var="s" value="#{appCSMQBean.cqtBaseCategoriesWithInactiveSelected(node.category)}"
 						itemValue="#{s.value}" itemLabel="#{s.value}" />
 						<p:ajax event="change"
 						listener="#{createController.notifyCategoryChange()}" 
