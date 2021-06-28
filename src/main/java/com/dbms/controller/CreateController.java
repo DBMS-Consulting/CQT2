@@ -902,7 +902,7 @@ public class CreateController implements Serializable {
 									cmqRelation.setCmqCode(selectedData.getCmqCode());
 									cmqRelation.setCmqId(cmqBase.getId());
 									//we set both smqcode and llt code to show that this is an smq relation
-									cmqRelation.setSmqCode(smqRelation.getSmqCode());
+									//cmqRelation.setSmqCode(smqRelation.getSmqCode());
 									cmqRelation.setLltCode(smqRelation.getPtCode().longValue());
 									if(smqRelation.getPtTermCategory() != null) {
 										cmqRelation.setTermCategory(smqRelation.getPtTermCategory());
@@ -918,7 +918,7 @@ public class CreateController implements Serializable {
 									cmqRelation.setCmqCode(selectedData.getCmqCode());
 									cmqRelation.setCmqId(cmqBase.getId());
 									//we set both smqcode and pt code to show that this is an smq relation
-									cmqRelation.setSmqCode(smqRelation.getSmqCode());
+									//cmqRelation.setSmqCode(smqRelation.getSmqCode());
 									cmqRelation.setPtCode(smqRelation.getPtCode().longValue());
 								}
 							}
