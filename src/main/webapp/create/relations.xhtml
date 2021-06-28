@@ -215,12 +215,12 @@
 			<p:column
 				rendered="#{createController.relationsModel.displayScopeCatWeight}"
 				style="width:10%">
-				<h:outputText
+				<!-- <h:outputText
 					value="#{appCSMQBean.interpretCqtBaseScope(node.scope)}"
-					rendered="#{not node.hideScope and node.readOnlyScope}" />
+					rendered="#{not node.hideScope and node.readOnlyScope}" /> -->
 
 				<p:selectOneMenu id="soc3" value="#{node.scope}"
-					rendered="#{not node.hideScope and not node.readOnlyScope}"
+					disabled="#{createController.readOnlyState or node.readOnlyScope}"
 					autoWidth="false" style="width:75%">
 						<f:selectItem itemLabel="" itemValue="" noSelectionOption="true"/>
 					<f:selectItems
@@ -238,12 +238,23 @@
 				rendered="#{createController.relationsModel.displayScopeCatWeight}"
 				style="width:10%">
 			
-                <h:outputText value="#{appCSMQBean.interpretCqtBaseCategory(node.category)}"
-                    rendered="#{node.readOnlyCategory and not node.hideCategory}" />
+                <!-- <h:outputText value="#{appCSMQBean.interpretCqtBaseCategory(node.category)}"
+                    rendered="#{node.readOnlyCategory and not node.hideCategory}" /> -->
                 
-				<p:selectOneMenu id="soc2" value="#{node.category}" 
+				<!-- <p:selectOneMenu id="soc2" value="#{node.category}" 
 				        disabled="#{createController.readOnlyState}"
 						rendered="#{not node.hideCategory and not node.readOnlyCategory}" 
+						autoWidth="false" style="width:75%">
+					<f:selectItem itemLabel="" itemValue="" noSelectionOption="true"/>
+					<f:selectItems var="s" value="#{appCSMQBean.cqtBaseCategoriesWithInactiveSelected(node.category)}"
+						itemValue="#{s.value}" itemLabel="#{s.value}" />
+						<p:ajax event="change"
+						listener="#{createController.notifyCategoryChange()}" 
+						update="resultRelations"/>
+				</p:selectOneMenu> -->
+				
+				<p:selectOneMenu id="soc2" value="#{node.category}" 
+				        disabled="#{createController.readOnlyState or node.readOnlyCategory}"
 						autoWidth="false" style="width:75%">
 					<f:selectItem itemLabel="" itemValue="" noSelectionOption="true"/>
 					<f:selectItems var="s" value="#{appCSMQBean.cqtBaseCategoriesWithInactiveSelected(node.category)}"

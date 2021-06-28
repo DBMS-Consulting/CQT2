@@ -211,20 +211,17 @@ public class CmqBaseRelationsTreeHelper {
 		for(TreeNode child: rootNode.getChildren()) {
 			HierarchyNode hierNode = (HierarchyNode) child.getData();
 			//Category Rules
-			if(rootHierarchyNode.isAlgorithmN()) {
-				hierNode.setHideCategory(true);
-			} else if((rootHierarchyNode.getLevel().equalsIgnoreCase("TR1") || rootHierarchyNode.getLevel().equalsIgnoreCase("TME")) && hierNode.getLevel().equalsIgnoreCase("PRO")) {
+			if(rootHierarchyNode.isAlgorithmN()
+					|| (rootHierarchyNode.getLevel().equalsIgnoreCase("TR1") || rootHierarchyNode.getLevel().equalsIgnoreCase("TME")) && hierNode.getLevel().equalsIgnoreCase("PRO")) {
 				hierNode.setReadOnlyCategory(true);
-			}
+			} 
 			
 			//Scope Rules
 			//when to hide
 			if(((rootHierarchyNode.getLevel().equalsIgnoreCase("TR1") || rootHierarchyNode.getLevel().equalsIgnoreCase("TME")) && hierNode.getLevel().equalsIgnoreCase("PRO"))
-					||(!hierNode.isSmqNode() && StringUtils.isBlank(hierNode.getScope()))) {
-				hierNode.setHideScope(true);
-			} else if(!hierNode.isSmqNode() && !StringUtils.isBlank(hierNode.getScope())) {//when to show as text
+					||(!hierNode.isSmqNode())) {
 				hierNode.setReadOnlyScope(true);
-			} //else it will be displayed with dropdown as enabled
+			} 
 		}
         return rootNode;
     }

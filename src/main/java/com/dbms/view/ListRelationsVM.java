@@ -267,21 +267,30 @@ public class ListRelationsVM implements IRelationsChangeListener {
 			HierarchyNode hierNode = (HierarchyNode) child.getData();
 			HierarchyNode parentNode = (HierarchyNode) child.getParent().getData();
 			
+			
+			
 			//Category Rules
-			if(parentNode.isAlgorithmN()) {
-				hierNode.setHideCategory(true);
-			} else if((parentNode.getLevel().equalsIgnoreCase("TR1") || parentNode.getLevel().equalsIgnoreCase("TME")) && hierNode.getLevel().equalsIgnoreCase("PRO")) {
-				hierNode.setReadOnlyCategory(true);
-			}
+			/*
+			 * if(parentNode.isAlgorithmN() ||
+			 * (parentNode.getLevel().equalsIgnoreCase("TR1") ||
+			 * parentNode.getLevel().equalsIgnoreCase("TME")) &&
+			 * hierNode.getLevel().equalsIgnoreCase("PRO")) {
+			 * hierNode.setReadOnlyCategory(true); }
+			 */
+			hierNode.setReadOnlyCategory(true);
 			
 			//Scope Rules
 			//when to hide
-			if(((parentNode.getLevel().equalsIgnoreCase("TR1") || parentNode.getLevel().equalsIgnoreCase("TME")) && hierNode.getLevel().equalsIgnoreCase("PRO"))
-					||(!hierNode.isSmqNode() && StringUtils.isBlank(hierNode.getScope()))) {
-				hierNode.setHideScope(true);
-			} else if(!hierNode.isSmqNode() && !StringUtils.isBlank(hierNode.getScope())) {//when to show as text
-				hierNode.setReadOnlyScope(true);
-			} //else it will be displayed with dropdown as enabled
+			/*
+			 * if(((parentNode.getLevel().equalsIgnoreCase("TR1") ||
+			 * parentNode.getLevel().equalsIgnoreCase("TME")) &&
+			 * hierNode.getLevel().equalsIgnoreCase("PRO")) ||(!hierNode.isSmqNode() &&
+			 * StringUtils.isBlank(hierNode.getScope()))) { hierNode.setHideScope(true); }
+			 * else if(!hierNode.isSmqNode() && !StringUtils.isBlank(hierNode.getScope()))
+			 * {//when to show as text hierNode.setReadOnlyScope(true); }
+			 */ //else it will be displayed with dropdown as enabled
+			
+			hierNode.setReadOnlyScope(true);
 		}
 		
 		System.out.println("Done");
@@ -290,6 +299,18 @@ public class ListRelationsVM implements IRelationsChangeListener {
 	public void onNodeCollapse(NodeCollapseEvent event) {
 		TreeNode expandedTreeNode = event.getTreeNode();
 		expandedTreeNode.setExpanded(false);
+	}
+	
+	private HierarchyNode createCmqBaseNode(CmqBase190 cmq) {
+		HierarchyNode node = new HierarchyNode();
+		node.setLevel(cmq.getCmqTypeCd());
+		node.setTerm(cmq.getCmqName());
+		node.setCode(cmq.getCmqCode().toString());
+		node.setCategory("");
+		node.setWeight("");
+		node.setScope("");
+		node.setEntity(cmq);
+		return node;
 	}
 
 	/**
@@ -301,6 +322,8 @@ public class ListRelationsVM implements IRelationsChangeListener {
 			if (nodes != null && nodes.length > 0) {
 				List<TreeNode> nodesList = Arrays.asList(nodes);
 				List<String> existingNodeTerms = new ArrayList<>();
+				CmqBase190 parent =  this.cmqBaseService.findByCode(this.clickedCmqCode);
+				HierarchyNode parentRootNode = this.createCmqBaseNode(parent);
 				for (TreeNode treeNode : nodesList) {
 					HierarchyNode hierarchyNode = (HierarchyNode) treeNode.getData();
 					if ((null != hierarchyNode) && !hierarchyNode.isDummyNode()) {
@@ -324,7 +347,20 @@ public class ListRelationsVM implements IRelationsChangeListener {
 							if (!nodesList.contains(parentNode)) {
 								HierarchyNode relationsHierarchyNode = hierarchyNode.copy();
 								TreeNode relationsTreeNode = new DefaultTreeNode(relationsHierarchyNode, relationsRoot);
-								relationsHierarchyNode. markEditableInRelationstable();
+								//relationsHierarchyNode.markEditableInRelationstable();
+								//category rule
+								relationsHierarchyNode.setCategory(null);
+								if(parentRootNode.isAlgorithmN()
+										|| (parentRootNode.getLevel().equalsIgnoreCase("TR1") || parentRootNode.getLevel().equalsIgnoreCase("TME")) && relationsHierarchyNode.getLevel().equalsIgnoreCase("PRO")) {
+									relationsHierarchyNode.setReadOnlyCategory(true);
+								}
+								//scope rule
+								
+								if(((parentRootNode.getLevel().equalsIgnoreCase("TR1") || parentRootNode.getLevel().equalsIgnoreCase("TME")) && relationsHierarchyNode.getLevel().equalsIgnoreCase("PRO"))
+										||(!relationsHierarchyNode.isSmqNode())) {
+									relationsHierarchyNode.setReadOnlyScope(true);
+								} 
+								
 								relationsHierarchyNode.setJustAdded(true);
 								IEntity entity = relationsHierarchyNode.getEntity();
 								if(entity instanceof MeddraDictReverseHierarchySearchDto) {
