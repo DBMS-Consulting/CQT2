@@ -233,49 +233,33 @@ public class IARelationsTreeHelper {
 				}
 			}
 			hierarchyNode.setDataFetchCompleted(true);
-			
+			HierarchyNode parentRootNode =  (HierarchyNode) rootNode.getChildren().get(0).getData();
 			for (TreeNode child : expandedTreeNode.getChildren()) {
 				HierarchyNode hierNode = (HierarchyNode) child.getData();
-				HierarchyNode parentNode = (HierarchyNode) child.getParent().getData();
-				//Do not show category`
-				if((parentNode.getLevel().equalsIgnoreCase("TR1") || parentNode.getLevel().equalsIgnoreCase("TME")) && hierNode.getLevel().equalsIgnoreCase("PRO")) {
-					hierNode.setHideCategory(true);
+				HierarchyNode immediateParentNode = (HierarchyNode) child.getParent().getData();
+				
+				//For all child expansions scope and category is readonly
+				if(!immediateParentNode.getCode().equalsIgnoreCase(parentRootNode.getCode())) {
+					hierNode.setReadOnlyCategory(true);
+					hierNode.setReadOnlyScope(true);
 				} else {
-					// show category editable or read only
-					
-					// condition to show readonly
-					if(parentNode.getLevel().contains("SMQ") || parentNode.isAlgorithmN()) {
+					//Category rules`
+					if(immediateParentNode.isAlgorithmN()
+							||(immediateParentNode.getLevel().equalsIgnoreCase("TR1") || immediateParentNode.getLevel().equalsIgnoreCase("TME")) && hierNode.getLevel().equalsIgnoreCase("PRO")) {
 						hierNode.setReadOnlyCategory(true);
-					} else {
-						//show editable
-						hierNode.setReadOnlyCategory(false);
 					}
 					
+					//Scope rules
+					if(((immediateParentNode.getLevel().equalsIgnoreCase("TR1") || immediateParentNode.getLevel().equalsIgnoreCase("TME")) && hierNode.getLevel().equalsIgnoreCase("PRO"))
+							||(!hierNode.isSmqNode())) {
+						hierNode.setReadOnlyScope(true);
+					} 
 				}
 				
-				/*
-				 * if (!parentNode.getLevel().equalsIgnoreCase("TR1")) {
-				 * hierNode.setHideCategory(true); }
-				 * 
-				 * if ((parentNode.getLevel().contains("SMQ"))) {
-				 * hierNode.setReadOnlyCategory(true); } else {
-				 * hierNode.setReadOnlyCategory(false); }
-				 * 
-				 * 
-				 * if ((parentNode.getLevel().equalsIgnoreCase("SMQ") ||
-				 * parentNode.getLevel().equalsIgnoreCase("'C' SMQ") ||
-				 * parentNode.getLevel().equalsIgnoreCase("SMQ1") ||
-				 * parentNode.getLevel().equalsIgnoreCase("SMQ2") ||
-				 * parentNode.getLevel().equalsIgnoreCase("SMQ3") ||
-				 * parentNode.getLevel().equalsIgnoreCase("SMQ4") ||
-				 * parentNode.getLevel().equalsIgnoreCase("SMQ5") ||
-				 * parentNode.getLevel().contains("SMQ") || parentNode.isAlgorithmN()) &&
-				 * !hierNode.getLevel().contains("SMQ")) { hierNode.setReadOnlyCategory(true); }
-				 * else { hierNode.setReadOnlyCategory(false); }
-				 */
-				 
-				 
+				
 			}
+			
+			System.out.println("Done");
 			 
 		}
 	}
