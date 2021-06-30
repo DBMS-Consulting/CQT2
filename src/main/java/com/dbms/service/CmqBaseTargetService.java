@@ -2353,9 +2353,9 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 		} else if (smqLevel == 3) {
 			level = "SMQ3";
 		} else if (smqLevel == 4) {
-			level = "SMQ4";
+			level = "PT";
 		} else if (smqLevel == 5) {
-			level = "SMQ5";
+			level = "LLT";
 		}
 		return level;
 	}
