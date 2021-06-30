@@ -348,8 +348,11 @@
 									</p:column>
 									<p:column
 										rendered="#{impactSearchController.displayScopeCatWeight}">
+										<h:outputText
+											rendered="#{not node.hideScope and node.readOnlyScope}"
+											value="#{appCSMQBean.interpretCqtBaseScope(node.scope)}" />
 										<p:selectOneMenu value="#{node.scope}"
-											disabled="#{node.readOnlyScope}"
+											rendered="#{not node.readOnlyScope}"
 											autoWidth="false" style="width:70%">
 											<f:selectItem itemLabel="" itemValue="" noSelectionOption="true"/>
 											<f:selectItems
@@ -364,8 +367,11 @@
 									</p:column>
 									<p:column
 										rendered="#{impactSearchController.displayScopeCatWeight and not node.hideScope}">
+										<h:outputText
+										rendered="#{not node.hideCategory and node.readOnlyCategory}"
+											value="#{appCSMQBean.interpretCqtBaseCategory(node.category)}" />
 											<p:selectOneMenu id="soc2" value="#{node.category}" 
-										        disabled="#{impactSearchController.readOnlyIA or node.readOnlyCategory}"
+												rendered="#{not node.readOnlyCategory}"
 												autoWidth="false" style="width:75%" >
 											<f:selectItem itemLabel="" itemValue="" noSelectionOption="true" />
 											<f:selectItems var="c" value="#{appCSMQBean.cqtBaseCategoriesWithInactiveSelected(node.category)}"
