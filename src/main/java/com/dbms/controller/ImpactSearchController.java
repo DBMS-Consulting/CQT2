@@ -891,7 +891,7 @@ public class ImpactSearchController implements Serializable {
 												cmqRelation.setCmqCode(cmqBaseTarget.getCmqCode());
 												cmqRelation.setCmqId(cmqBaseTarget.getId());
 												//we set both smqcode and llt code to show that this is an smq relation
-												cmqRelation.setSmqCode(smqRelation.getSmqCode());
+												//cmqRelation.setSmqCode(smqRelation.getSmqCode());
 												cmqRelation.setLltCode(smqRelation.getPtCode().longValue());
 												cmqRelation.setRelationImpactType("MQM");
 												
@@ -900,7 +900,7 @@ public class ImpactSearchController implements Serializable {
 												cmqRelation.setCmqCode(cmqBaseTarget.getCmqCode());
 												cmqRelation.setCmqId(cmqBaseTarget.getId());
 												//we set both smqcode and pt code to show that this is an smq relation
-												cmqRelation.setSmqCode(smqRelation.getSmqCode());
+												//cmqRelation.setSmqCode(smqRelation.getSmqCode());
 												cmqRelation.setPtCode(smqRelation.getPtCode().longValue());
 												cmqRelation.setRelationImpactType("MQM");
 											}
