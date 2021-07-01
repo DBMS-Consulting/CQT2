@@ -2191,10 +2191,10 @@ public class CreateController implements Serializable {
 	public void changeLevel(AjaxBehaviorEvent event) {
 		if(createWizard != null) {
 			detailsFormModel.setWizardType(WizardType.CreateWizard);
-			if(!detailsFormModel.getExtension().equalsIgnoreCase("TR1")) 
-				detailsFormModel.setAlgorithm("N");
-			else	
+			if(detailsFormModel.getExtension().equalsIgnoreCase("TR1") || detailsFormModel.getExtension().equalsIgnoreCase("TME"))
 				detailsFormModel.setAlgorithm("Y");
+			else 
+				detailsFormModel.setAlgorithm("N");
 		} else if(copyWizard != null) {
 			detailsFormModel.setWizardType(WizardType.CopyWizard);
 			if(!detailsFormModel.getExtension().equalsIgnoreCase("TR1"))

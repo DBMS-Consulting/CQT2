@@ -76,7 +76,7 @@ public class ListDetailsFormVM implements Serializable {
 		this.protocol = CqtConstants.CODE_LIST_NO_PROTOCOL_INTERNALCODE;
 		//this.products = new String[0];
 		this.level = 1;
-		this.algorithm = "N";
+		this.algorithm = "Y";
 		this.critical = "No";
 		this.group = "No Group";
 		this.state = CmqBase190.CMQ_STATE_VALUE_DRAFT;
