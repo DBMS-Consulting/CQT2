@@ -234,6 +234,15 @@ public class IARelationsTreeHelper {
 			}
 			hierarchyNode.setDataFetchCompleted(true);
 			HierarchyNode parentRootNode =  (HierarchyNode) rootNode.getChildren().get(0).getData();
+			IEntity parentRootNodeEntity = parentRootNode.getEntity();
+			boolean isListPublishedOrApproved = false;
+			if (parentRootNodeEntity instanceof CmqBaseTarget) {
+				if (StringUtils.equalsAnyIgnoreCase(((CmqBaseTarget)parentRootNodeEntity).getCmqState(), "APPROVED IA","PUBLISHED IA")) {
+					isListPublishedOrApproved = true;
+				}
+			}
+			
+			
 			for (TreeNode child : expandedTreeNode.getChildren()) {
 				HierarchyNode hierNode = (HierarchyNode) child.getData();
 				HierarchyNode immediateParentNode = (HierarchyNode) child.getParent().getData();
@@ -245,13 +254,15 @@ public class IARelationsTreeHelper {
 				} else {
 					//Category rules`
 					if(immediateParentNode.isAlgorithmN()
-							||(immediateParentNode.getLevel().equalsIgnoreCase("TR1") || immediateParentNode.getLevel().equalsIgnoreCase("TME")) && hierNode.getLevel().equalsIgnoreCase("PRO")) {
+							||(immediateParentNode.getLevel().equalsIgnoreCase("TR1") || immediateParentNode.getLevel().equalsIgnoreCase("TME")) && hierNode.getLevel().equalsIgnoreCase("PRO")
+							|| isListPublishedOrApproved) {
 						hierNode.setReadOnlyCategory(true);
 					}
 					
 					//Scope rules
 					if(((immediateParentNode.getLevel().equalsIgnoreCase("TR1") || immediateParentNode.getLevel().equalsIgnoreCase("TME")) && hierNode.getLevel().equalsIgnoreCase("PRO"))
-							||(!hierNode.isSmqNode())) {
+							||(!hierNode.isSmqNode())
+							|| isListPublishedOrApproved) {
 						hierNode.setReadOnlyScope(true);
 					} 
 				}

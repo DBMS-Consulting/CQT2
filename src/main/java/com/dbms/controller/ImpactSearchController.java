@@ -660,6 +660,19 @@ public class ImpactSearchController implements Serializable {
 										relationsHierarchyNode.setHideDelete(true);
 										IEntity relationsHierarchyNodeEntity = relationsHierarchyNode.getEntity();
 										
+										//category rule
+										relationsHierarchyNode.setCategory(null);
+										if(parentHierarchyNode.isAlgorithmN()
+												|| (parentHierarchyNode.getLevel().equalsIgnoreCase("TR1") || parentHierarchyNode.getLevel().equalsIgnoreCase("TME")) && relationsHierarchyNode.getLevel().equalsIgnoreCase("PRO")) {
+											relationsHierarchyNode.setReadOnlyCategory(true);
+										}
+										//scope rule
+
+										if(((parentHierarchyNode.getLevel().equalsIgnoreCase("TR1") || parentHierarchyNode.getLevel().equalsIgnoreCase("TME")) && relationsHierarchyNode.getLevel().equalsIgnoreCase("PRO"))
+												||(!relationsHierarchyNode.isSmqNode())) {
+											relationsHierarchyNode.setReadOnlyScope(true);
+										} 
+										
 										if(relationsHierarchyNodeEntity instanceof SMQReverseHierarchySearchDto) {
 											Long ptCode = ((SMQReverseHierarchySearchDto) relationsHierarchyNodeEntity).getSmqCode();
 											SmqBaseTarget smqBaseTarget = this.smqBaseTargetService.findByCode(ptCode);

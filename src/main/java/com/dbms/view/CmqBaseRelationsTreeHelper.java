@@ -18,6 +18,7 @@ import com.dbms.csmq.CSMQBean;
 import com.dbms.csmq.HierarchyNode;
 import com.dbms.entity.IEntity;
 import com.dbms.entity.cqt.CmqBase190;
+import com.dbms.entity.cqt.CmqBaseTarget;
 import com.dbms.entity.cqt.CmqRelation190;
 import com.dbms.entity.cqt.SmqBase190;
 import com.dbms.entity.cqt.SmqRelation190;
@@ -208,18 +209,24 @@ public class CmqBaseRelationsTreeHelper {
 		}
 		
 		HierarchyNode rootHierarchyNode =  this.createCmqBaseNode(cmqBase190);
+		boolean isListPublishedOrApproved = false;
+			if (StringUtils.equalsAnyIgnoreCase(cmqBase190.getCmqState(), "APPROVED","PUBLISHED")) {
+				isListPublishedOrApproved = true;
+			}
 		for(TreeNode child: rootNode.getChildren()) {
 			HierarchyNode hierNode = (HierarchyNode) child.getData();
 			//Category Rules
 			if(rootHierarchyNode.isAlgorithmN()
-					|| (rootHierarchyNode.getLevel().equalsIgnoreCase("TR1") || rootHierarchyNode.getLevel().equalsIgnoreCase("TME")) && hierNode.getLevel().equalsIgnoreCase("PRO")) {
+					|| (rootHierarchyNode.getLevel().equalsIgnoreCase("TR1") || rootHierarchyNode.getLevel().equalsIgnoreCase("TME")) && hierNode.getLevel().equalsIgnoreCase("PRO")
+					|| isListPublishedOrApproved) {
 				hierNode.setReadOnlyCategory(true);
 			} 
 			
 			//Scope Rules
 			//when to hide
 			if(((rootHierarchyNode.getLevel().equalsIgnoreCase("TR1") || rootHierarchyNode.getLevel().equalsIgnoreCase("TME")) && hierNode.getLevel().equalsIgnoreCase("PRO"))
-					||(!hierNode.isSmqNode())) {
+					||(!hierNode.isSmqNode())
+					|| isListPublishedOrApproved) {
 				hierNode.setReadOnlyScope(true);
 			} 
 		}
