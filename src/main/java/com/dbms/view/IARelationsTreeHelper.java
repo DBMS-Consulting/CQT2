@@ -1462,6 +1462,11 @@ public class IARelationsTreeHelper {
             	if(null != cmqRelation.getTermScope()) {
             		node.setScope(cmqRelation.getTermScope());
             	}
+            } else if(node.getRelationEntity() instanceof CmqRelation190) {
+            	CmqRelation190 cmqRelation = (CmqRelation190) node.getRelationEntity();
+            	if(null != cmqRelation.getTermScope()) {
+            		node.setScope(cmqRelation.getTermScope());
+            	}
             }
             
             TreeNode treeNode = new DefaultTreeNode(node, expandedTreeNode);
