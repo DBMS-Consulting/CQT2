@@ -313,7 +313,9 @@
 
 			<p:dialog widgetVar="target-hierarchy-search" modal="false" header="Hierarchy Search Target"
 				width="680px" minHeight="480">
-				<ui:include src="../impactCommon/targetHierarchySearch.xhtml"></ui:include>
+				<ui:include src="../impactCommon/targetHierarchySearch.xhtml">
+					 <ui:param name="paramDlgCtrlTarget" value="#{impactSearchController.targetHierarchySearchDlgModel}" />
+				</ui:include>
 
 				<p:spacer height="10"></p:spacer>
 				<h:panelGrid style="float: right" columns="2">
