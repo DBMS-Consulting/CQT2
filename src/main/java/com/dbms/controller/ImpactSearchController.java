@@ -1624,6 +1624,9 @@ public class ImpactSearchController implements Serializable {
 		this.newPtSearchLazyDataModel = new NewPtSearchLazyDataModel();
 		//reload the table
 		DataTable dataTable = (DataTable)  FacesContext.getCurrentInstance().getViewRoot().findComponent("impactAssessment:newPtResultList");
+		if (null == dataTable) {
+			dataTable = (DataTable)  FacesContext.getCurrentInstance().getViewRoot().findComponent("impactVersion:newPtResultList");
+		}
 		dataTable.reset();
 		dataTable.loadLazyData();
 	}
