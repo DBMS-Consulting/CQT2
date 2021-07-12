@@ -2141,7 +2141,7 @@ public class CreateController implements Serializable {
 			if(childNode.getLevel().equalsIgnoreCase("PT") || childNode.getLevel().equalsIgnoreCase("HLT")
 					|| childNode.getLevel().equalsIgnoreCase("HLGT") || childNode.getLevel().equalsIgnoreCase("SOC")
 					|| childNode.getLevel().equalsIgnoreCase("LLT") || childNode.getLevel().equalsIgnoreCase("SMQ")
-					|| childNode.getLevel().equalsIgnoreCase("'C' SMQ") || childNode.getLevel().equalsIgnoreCase("PRO")) {
+					|| childNode.getLevel().equalsIgnoreCase("'C' SMQ") || StringUtils.containsIgnoreCase(childNode.getLevel(), "SMQ") || childNode.getLevel().equalsIgnoreCase("PRO")) {
 				medDRAOrChildListAdded = true;
 			}
 		}
