@@ -2886,13 +2886,18 @@ public class ImpactSearchController implements Serializable {
 		if(d instanceof SmqBaseTarget || d instanceof SmqBase190)
 			return true;
 		
-        if (authService.getGroupMembershipHeader() != null && (authService.getGroupMembershipHeader().contains(AuthenticationService.REQUESTER_GROUP)
-                || authService.getGroupMembershipHeader().contains("MQM"))) {   
+		if(authService.getGroupMembershipHeader() != null && (authService.getGroupMembershipHeader().contains("MQM"))) {
+			if (detailsFormModel.getStatus().equals(CmqBaseTarget.CMQ_STATUS_VALUE_ACTIVE)) {
+				return false;
+			}
+		}
+		
+        if (authService.getGroupMembershipHeader() != null && (authService.getGroupMembershipHeader().contains(AuthenticationService.REQUESTER_GROUP))) {   
         	
-	        	if (detailsFormModel.getStatus().equals(CmqBaseTarget.CMQ_STATUS_VALUE_ACTIVE) 
-	        			|| (detailsFormModel.getDesignee() != null && detailsFormModel.getDesignee().equals(authService.getUserCn()))
+	        	if (detailsFormModel.getStatus().equals(CmqBaseTarget.CMQ_STATUS_VALUE_ACTIVE) && (
+	        			(detailsFormModel.getDesignee() != null && detailsFormModel.getDesignee().equals(authService.getUserCn()))
 	        			|| (detailsFormModel.getDesigneeTwo() != null && detailsFormModel.getDesigneeTwo().equals(authService.getUserCn()))
-	        			|| (detailsFormModel.getDesigneeThree() != null && detailsFormModel.getDesigneeThree().equals(authService.getUserCn()))) {
+	        			|| (detailsFormModel.getDesigneeThree() != null && detailsFormModel.getDesigneeThree().equals(authService.getUserCn())))) {
 	        		System.out.println("\n ******************** authService.getUserCn() " + authService.getUserCn());
 	        		return  false;
 	        	}
@@ -2915,14 +2920,19 @@ public class ImpactSearchController implements Serializable {
 		 /**
          * Restrictions on users from  REQUESTOR and ADMIN groups
          */
-		
-        if (authService.getGroupMembershipHeader()!= null && (authService.getGroupMembershipHeader().contains(AuthenticationService.REQUESTER_GROUP) || 
-        		authService.getGroupMembershipHeader().contains(AuthenticationService.ADMIN_GROUP))) {    
+		if (authService.getGroupMembershipHeader()!= null && ( 
+        		authService.getGroupMembershipHeader().contains(AuthenticationService.ADMIN_GROUP))) {
+			if(detailsFormModel.getStatus().equals(CmqBaseTarget.CMQ_STATUS_VALUE_ACTIVE) ){
+				return false;
+			}
+			
+		}
+        if (authService.getGroupMembershipHeader()!= null && (authService.getGroupMembershipHeader().contains(AuthenticationService.REQUESTER_GROUP))) {    
         	
-        	if (detailsFormModel.getStatus().equals(CmqBaseTarget.CMQ_STATUS_VALUE_ACTIVE) 
-        			|| (detailsFormModel.getDesignee() != null && detailsFormModel.getDesignee().equals(authService.getUserCn()))
+        	if (detailsFormModel.getStatus().equals(CmqBaseTarget.CMQ_STATUS_VALUE_ACTIVE) && (
+        			(detailsFormModel.getDesignee() != null && detailsFormModel.getDesignee().equals(authService.getUserCn()))
         			|| (detailsFormModel.getDesigneeTwo() != null && detailsFormModel.getDesigneeTwo().equals(authService.getUserCn()))
-        			|| (detailsFormModel.getDesigneeThree() != null && detailsFormModel.getDesigneeThree().equals(authService.getUserCn()))) {
+        			|| (detailsFormModel.getDesigneeThree() != null && detailsFormModel.getDesigneeThree().equals(authService.getUserCn())))) {
         		System.out.println("\n ******************** authService.getUserCn() " + authService.getUserCn());
         		return  false;
         	}
