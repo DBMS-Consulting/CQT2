@@ -679,7 +679,7 @@ public class ImpactSearchController implements Serializable {
 											relationsHierarchyNode.setEntity(smqBaseTarget);
 											relationsHierarchyNode.setCode(smqBaseTarget.getSmqCode().toString());
 											relationsHierarchyNode.setCategory("");
-											relationsHierarchyNode.setScope(null);
+											relationsHierarchyNode.setScope("2");
 											relationsHierarchyNode.setWeight(null);
 
 											List<TreeNode> childTreeNodes = treeNode.getChildren();
@@ -712,7 +712,7 @@ public class ImpactSearchController implements Serializable {
 											
 											if(relationsHierarchyNodeEntity instanceof SmqBaseTarget) {
 												relationsHierarchyNode.setCategory("");
-												relationsHierarchyNode.setScope(null);
+												relationsHierarchyNode.setScope("2");
 												relationsHierarchyNode.setWeight(null);
 												relationsHierarchyNode.setJustAdded(true);
 												relationsHierarchyNode.setReadOnlyCategory(false);
