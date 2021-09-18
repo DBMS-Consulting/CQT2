@@ -242,33 +242,35 @@ public class IARelationsTreeHelper {
 				}
 			}
 			
-			
-			for (TreeNode child : expandedTreeNode.getChildren()) {
-				HierarchyNode hierNode = (HierarchyNode) child.getData();
-				HierarchyNode immediateParentNode = (HierarchyNode) child.getParent().getData();
-				
-				//For all child expansions scope and category is readonly
-				if(!immediateParentNode.getCode().equalsIgnoreCase(parentRootNode.getCode())) {
-					hierNode.setReadOnlyCategory(true);
-					hierNode.setReadOnlyScope(true);
-				} else {
-					//Category rules`
-					if(immediateParentNode.isAlgorithmN()
-							||(immediateParentNode.getLevel().equalsIgnoreCase("TR1") || immediateParentNode.getLevel().equalsIgnoreCase("TME")) && hierNode.getLevel().equalsIgnoreCase("PRO")
-							|| isListPublishedOrApproved) {
+			if(uiSourceOfEvent!=null) {
+				for (TreeNode child : expandedTreeNode.getChildren()) {
+					HierarchyNode hierNode = (HierarchyNode) child.getData();
+					HierarchyNode immediateParentNode = (HierarchyNode) child.getParent().getData();
+					
+					//For all child expansions scope and category is readonly
+					if(!immediateParentNode.getCode().equalsIgnoreCase(parentRootNode.getCode())) {
 						hierNode.setReadOnlyCategory(true);
+						hierNode.setReadOnlyScope(true);
+					} else {
+						//Category rules`
+						if(immediateParentNode.isAlgorithmN()
+								||(immediateParentNode.getLevel().equalsIgnoreCase("TR1") || immediateParentNode.getLevel().equalsIgnoreCase("TME")) && hierNode.getLevel().equalsIgnoreCase("PRO")
+								|| isListPublishedOrApproved) {
+							hierNode.setReadOnlyCategory(true);
+						}
+						
+						//Scope rules
+						if(((immediateParentNode.getLevel().equalsIgnoreCase("TR1") || immediateParentNode.getLevel().equalsIgnoreCase("TME")) && hierNode.getLevel().equalsIgnoreCase("PRO"))
+								||(!hierNode.isSmqNode())
+								|| isListPublishedOrApproved) {
+							hierNode.setReadOnlyScope(true);
+						} 
 					}
 					
-					//Scope rules
-					if(((immediateParentNode.getLevel().equalsIgnoreCase("TR1") || immediateParentNode.getLevel().equalsIgnoreCase("TME")) && hierNode.getLevel().equalsIgnoreCase("PRO"))
-							||(!hierNode.isSmqNode())
-							|| isListPublishedOrApproved) {
-						hierNode.setReadOnlyScope(true);
-					} 
+					
 				}
-				
-				
 			}
+			
 			
 			System.out.println("Done");
 			 
@@ -1264,7 +1266,7 @@ public class IARelationsTreeHelper {
 						}
 						if(isRootNodeOfSmqType) {
 							childRelationNode.setHideDelete(true);
-							childRelationNode.markReadOnlyInRelationstable();
+							//childRelationNode.markReadOnlyInRelationstable();
 						}
 						//Set Color
 						setSMQTargetNodeStyle(childRelationNode, childRelation);
