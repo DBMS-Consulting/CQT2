@@ -288,6 +288,7 @@ public class CreateController implements Serializable {
 
 				FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, errorMsg, "");
 				FacesContext.getCurrentInstance().addMessage(null, msg);
+				
 
 			} else {
 				prepareDetailsFormSave();
@@ -1323,7 +1324,7 @@ public class CreateController implements Serializable {
 		oldStep = nextStep = event.getOldStep();
 		if (codeSelected != null) {
 			if (notesFormModel.getDescription().equals("") && oldStep.equals(WIZARD_STEP_INFONOTES) 
-					&& !(selectedData.getCmqState().equalsIgnoreCase("APPROVED") || selectedData.getCmqState().equalsIgnoreCase("PUBLISHED"))) {
+					&& !(selectedData.getCmqState().equalsIgnoreCase("APPROVED") || selectedData.getCmqState().equalsIgnoreCase("PUBLISHED")) && isUserCreatorOrDesignee()) {
 				if (FacesContext.getCurrentInstance() != null) {
 					FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Description is required", "");
 					FacesContext.getCurrentInstance().addMessage(null, msg);
@@ -2725,6 +2726,14 @@ public class CreateController implements Serializable {
     			|| detailsFormModel.getExtension().equals("PRO") || !detailsFormModel.getExtension().equals("PRO"))
     		return true;
     	return false;
+    }
+    
+    private boolean isUserCreatorOrDesignee() {
+    	return (((listCreator != null) && (listCreator.startsWith(authService.getUserCn())))
+        					|| ((selectedData.getCmqDesignee() != null && selectedData.getCmqDesignee().equals(authService.getUserCn()))
+        		        			|| (selectedData.getCmqDesignee2() != null && selectedData.getCmqDesignee2().equals(authService.getUserCn()))
+        		        			|| (selectedData.getCmqDesignee3() != null && selectedData.getCmqDesignee3().equals(authService.getUserCn()))));
+    	
     }
     
     /**
