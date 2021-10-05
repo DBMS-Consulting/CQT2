@@ -260,6 +260,10 @@ public class IARelationsTreeHelper {
 						}
 						
 						//Scope rules
+						if(parentRootNode.isSmqNode()) {
+							hierNode.setReadOnlyScope(true);
+						}
+						
 						if(((immediateParentNode.getLevel().equalsIgnoreCase("TR1") || immediateParentNode.getLevel().equalsIgnoreCase("TME")) && hierNode.getLevel().equalsIgnoreCase("PRO"))
 								||(!hierNode.isSmqNode())
 								|| isListPublishedOrApproved) {
