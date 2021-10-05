@@ -1280,9 +1280,15 @@ public class IARelationsTreeHelper {
 				//add it only if itslevel is not null
 				if(null != childRelationNode.getLevel()){
 					TreeNode treeNode = new DefaultTreeNode(childRelationNode, expandedTreeNode);
-					if(isChildSmqNode || childRelationNode.getLevel().equalsIgnoreCase("PT")) {
+					
+					if(isChildSmqNode) {
 						this.createNewDummyNode(treeNode);
 					}
+					
+					/*
+					 * if(isChildSmqNode || childRelationNode.getLevel().equalsIgnoreCase("PT")) {
+					 * this.createNewDummyNode(treeNode); }
+					 */
 				}
 				
 			}

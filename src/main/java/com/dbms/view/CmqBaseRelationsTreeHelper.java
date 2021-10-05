@@ -933,9 +933,9 @@ public class CmqBaseRelationsTreeHelper {
 	                }                
 	                
 	                TreeNode treeNode = new DefaultTreeNode(childRelationNode, expandedTreeNode);
-	                if(childRelation.getSmqLevel() == 4) {
-	                	this.createNewDummyNode(treeNode);
-	                }
+					/*
+					 * if(childRelation.getSmqLevel() == 4) { this.createNewDummyNode(treeNode); }
+					 */
 	                if(isChildSmqNode) {
 	 					this.createNewDummyNode(treeNode);
 	 					//add the child smq to map to fit it in later.
