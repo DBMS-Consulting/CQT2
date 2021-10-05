@@ -221,7 +221,7 @@
 
 				<p:selectOneMenu id="soc3" value="#{node.scope}"
 					rendered="#{not node.readOnlyScope}"
-					autoWidth="false" style="width:75%">
+					autoWidth="false" style="width:75%" disabled="#{createController.readOnlyState}">
 						<f:selectItem itemLabel="" itemValue="" noSelectionOption="true"/>
 					<f:selectItems
 						value="#{createController.detailsFormModel.SMQFilterLevels}"
@@ -256,7 +256,7 @@
                     rendered="#{node.readOnlyCategory and not node.hideCategory}" />
 				<p:selectOneMenu id="soc2" value="#{node.category}" 
 				        rendered="#{not node.readOnlyCategory}"
-						autoWidth="false" style="width:75%">
+						autoWidth="false" style="width:75%" disabled="#{createController.readOnlyState}">
 					<f:selectItem itemLabel="" itemValue="" noSelectionOption="true"/>
 					<f:selectItems var="s" value="#{appCSMQBean.cqtBaseCategoriesWithInactiveSelected(node.category)}"
 						itemValue="#{s.value}" itemLabel="#{s.value}" />
