@@ -1913,14 +1913,24 @@ public class ImpactSearchController implements Serializable {
 						} else if (entity instanceof SmqRelationTarget) {
 							SmqRelationTarget smqRelation = (SmqRelationTarget) entity;
 							for (CmqRelationTarget cmqRelationTarget : existingRelation) {
-								if((null != cmqRelationTarget.getSmqCode()) 
-										&& (cmqRelationTarget.getSmqCode().longValue() == smqRelation.getSmqCode().longValue())){
-									if(cmqRelationTarget.getPtCode().longValue() == smqRelation.getPtCode()) {
-										matchFound = true;
-										cmqRelationIdToDelete = cmqRelationTarget.getId();
-										break;
-									}
+								
+								if(((null != cmqRelationTarget.getSmqCode()) 
+										&& (cmqRelationTarget.getSmqCode().longValue() == smqRelation.getSmqCode().longValue()))
+										||
+										((cmqRelationTarget.getPtCode() != null && cmqRelationTarget.getPtCode().longValue() == smqRelation.getPtCode()))) {
+									matchFound = true;
+									cmqRelationIdToDelete = cmqRelationTarget.getId();
+									break;
 								}
+								
+								/*
+								 * if((null != cmqRelationTarget.getSmqCode()) &&
+								 * (cmqRelationTarget.getSmqCode().longValue() ==
+								 * smqRelation.getSmqCode().longValue())){
+								 * if(cmqRelationTarget.getPtCode().longValue() == smqRelation.getPtCode()) {
+								 * matchFound = true; cmqRelationIdToDelete = cmqRelationTarget.getId(); break;
+								 * } }
+								 */
 							}//end of for (CmqRelation190 cmqRelation190 : existingRelation)
 						}
 						
