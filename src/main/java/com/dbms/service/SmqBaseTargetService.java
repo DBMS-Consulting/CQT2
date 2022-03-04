@@ -854,7 +854,7 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 
 		XSSFCellStyle cellStyle = workbook.createCellStyle();
 		cellStyle.setFillForegroundColor(HSSFColor.BLUE.index);
-		cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+		cellStyle.setFillPattern(XSSFCellStyle.SOLID_FOREGROUND);
 		cellStyle.setBorderBottom(BorderStyle.MEDIUM);
 
 		// Retrieval of relations - Loop
