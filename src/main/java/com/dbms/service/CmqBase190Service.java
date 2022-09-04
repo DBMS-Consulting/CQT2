@@ -20,6 +20,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -39,6 +40,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.ClientAnchor;
+import org.apache.poi.ss.usermodel.ClientAnchor.AnchorType;
 import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.Drawing;
 import org.apache.poi.ss.usermodel.IndexedColors;
@@ -67,6 +69,7 @@ import com.dbms.entity.cqt.CmqBase190;
 import com.dbms.entity.cqt.CmqRelation190;
 import com.dbms.entity.cqt.SmqBase190;
 import com.dbms.entity.cqt.SmqRelation190;
+import com.dbms.entity.cqt.dtos.CmqReportDataDTO;
 import com.dbms.entity.cqt.dtos.MeddraDictHierarchySearchDto;
 import com.dbms.entity.cqt.dtos.MeddraDictReverseHierarchySearchDto;
 import com.dbms.entity.cqt.dtos.ReportLineDataDto;
@@ -902,14 +905,17 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
  		// MeddraDictReverseHierarchySearchDto search = null;
 		String level = "", term = "", codeTerm = "";
 
+		List<CmqReportDataDTO> dtos = new ArrayList<>();
 		if (relations != null) {
 			for (CmqRelation190 relation : relations) {
+				CmqReportDataDTO dto = new CmqReportDataDTO();
 				if (relation.getSmqCode() != null) {
 					if (relation.getPtCode() != null) {
 						SmqRelation190 childRelation = this.smqBaseService
 								.findSmqRelationBySmqAndPtCode(relation
 										.getSmqCode(), relation.getPtCode()
 										.intValue());
+						dto.setLevelNum(childRelation.getSmqLevel() == null ? null : childRelation.getSmqLevel().longValue());
 						if (childRelation.getSmqLevel() == 1) {
 							level = "SMQ1";
 						} else if (childRelation.getSmqLevel() == 2) {
@@ -943,6 +949,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 								.findSmqRelationBySmqAndPtCode(relation
 										.getSmqCode(), relation.getLltCode()
 										.intValue());
+						dto.setLevelNum(childRelation.getSmqLevel() == null ? null : childRelation.getSmqLevel().longValue());
 						if (childRelation.getSmqLevel() == 1) {
 							level = "SMQ1";
 						} else if (childRelation.getSmqLevel() == 2) {
@@ -970,6 +977,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 					} else {
 						SmqBase190 smqBase = this.smqBaseService
 								.findByCode(relation.getSmqCode());
+						dto.setLevelNum(smqBase.getSmqLevel() == null ? null : smqBase.getSmqLevel().longValue());
 						if (null != smqBase) {
 							term = smqBase.getSmqName();
 							codeTerm = smqBase.getSmqCode() != null ? smqBase.getSmqCode() + "" : "";	
@@ -989,6 +997,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 				}
 
 				else if (relation.getPtCode() != null) {
+					dto.setLevelNum(relation.getPtCode());
 					level = "PT";
 					MeddraDictReverseHierarchySearchDto search = this.meddraDictService
 							.findByPtOrLltCode("PT_", relation.getPtCode(),cmqDictionaryVersion);
@@ -1003,6 +1012,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 						term = searchDto.getTerm();
 						codeTerm = relation.getHlgtCode() + "";		
 					}
+					dto.setLevelNum(relation.getHlgtCode());
 					level = "HLGT";
 				} else if (relation.getHltCode() != null) {					
 					MeddraDictHierarchySearchDto searchDto = this.meddraDictService
@@ -1011,6 +1021,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 						term = searchDto.getTerm();
 						codeTerm = relation.getHltCode() + "";			
 					}
+					dto.setLevelNum(relation.getHltCode());
 					level = "HLT";
 				} else if (relation.getSocCode() != null) {
 					MeddraDictHierarchySearchDto searchDto = this.meddraDictService
@@ -1019,6 +1030,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 						term = searchDto.getTerm();
 						codeTerm = relation.getSocCode() + "";
 					}
+					dto.setLevelNum(relation.getSocCode());
 					level = "SOC";
 				} else if (relation.getLltCode() != null) {
 					MeddraDictReverseHierarchySearchDto searchDto = this.meddraDictService
@@ -1027,29 +1039,51 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 						term = searchDto.getLltTerm();
 						codeTerm = relation.getLltCode() + "";				
 					}
+					dto.setLevelNum(relation.getLltCode());
 					level = "LLT";
 				}
-				row = worksheet.createRow(rowCount);
-				
-				buildCells(level, codeTerm, term, relation, cell, row); 
-
-				rowCount++;
+				//row = worksheet.createRow(rowCount);
+				dto.setLevel(level);
+				dto.setTerm(term);
+				dto.setCodeTerm(codeTerm);
+				dto.setTermCategory(relation.getTermCategory() != null ? relation.getTermCategory() : "");
+				dto.setTermScope(relation.getTermScope() != null ? returnScopeValue(relation.getTermScope()) : "");
+				dto.setTermWeight(relation.getTermWeight() != null ? relation.getTermWeight().toString() : "");
+				dtos.add(dto);
 			}
 		}
 		List<CmqBase190> childCmqs = findChildCmqsByParentCode(details.getCode());
 		if((null != childCmqs) && (childCmqs.size() > 0)) {
 			for (CmqBase190 childCmq : childCmqs) {
+				CmqReportDataDTO dto = new CmqReportDataDTO();
 				level = "PRO";
 				term = childCmq.getCmqName();
 				codeTerm = childCmq.getCmqCode() != null ? childCmq.getCmqCode() + "" : "";
 				
-				row = worksheet.createRow(rowCount);
-				buildCells(level, codeTerm, term, cell, row); 
-
-				rowCount++;
+				dto.setLevel("PRO");
+				dto.setTerm(term);
+				dto.setCodeTerm(codeTerm);
+				dtos.add(dto);
 			}
 		}
 
+		dtos.sort((o1, o2) -> {
+			if(o1.getLevelNum().compareTo(o2.getLevelNum()) == 0) {
+				return o1.getTerm().compareTo(o2.getTerm());
+			} else {
+				return o1.getLevelNum().compareTo(o2.getLevelNum());
+			}
+		});
+		
+		for(CmqReportDataDTO dto : dtos) {
+			row = worksheet.createRow(rowCount);
+			if(dto.getTermCategory() == null) {
+				buildShortCells(dto, cell, row);
+			} else {
+				buildCells(dto, cell, row);
+			}
+			rowCount++;
+		}
 //		worksheet.autoSizeColumn(0);
 //		worksheet.autoSizeColumn(1);
 //		worksheet.autoSizeColumn(2);
@@ -1074,18 +1108,18 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		return content;
 	}
 
-	private void buildCells(String level, String codeTerm, String term, XSSFCell cell, XSSFRow row) {
+	private void buildShortCells(CmqReportDataDTO dto, XSSFCell cell, XSSFRow row) {
 		// Cell 0
 		cell = row.createCell(0);
-		cell.setCellValue(term);
+		cell.setCellValue(dto.getTerm());
 
 		// Cell 1
 		cell = row.createCell(1);
-		cell.setCellValue(codeTerm);
+		cell.setCellValue(dto.getCodeTerm());
 
 		// Cell 2
 		cell = row.createCell(2);
-		cell.setCellValue(level);
+		cell.setCellValue(dto.getLevel());
 	}
 	
 	private void buildChildCells(String level, String codeTerm, String term, XSSFCell cell, XSSFRow row, String dots) {
@@ -1103,32 +1137,30 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 	}
 
 
-	private void buildCells(String level, String codeTerm, String term, CmqRelation190 relation, XSSFCell cell, XSSFRow row) {
+	private void buildCells(CmqReportDataDTO dto, XSSFCell cell, XSSFRow row) {
 		// Cell 0
 		cell = row.createCell(0);
-		cell.setCellValue(term);
+		cell.setCellValue(dto.getTerm());
 	
 		// Cell 1
 		cell = row.createCell(1);
-		cell.setCellValue(codeTerm);
+		cell.setCellValue(dto.getCodeTerm());
 
 		// Cell 2
 		cell = row.createCell(2);
-		cell.setCellValue(level);
+		cell.setCellValue(dto.getLevel());
 
 		// Cell 3
 		cell = row.createCell(3);
-		cell.setCellValue(relation.getTermCategory() != null ? relation
-				.getTermCategory() : "");
+		cell.setCellValue(dto.getTermCategory());
 
 		// Cell 4
 		cell = row.createCell(4);
-		cell.setCellValue(relation.getTermWeight() != null ? relation
-				.getTermWeight().toString() : "");
+		cell.setCellValue(dto.getTermWeight());
 
 		// Cell 5
 		cell = row.createCell(5);
-		cell.setCellValue(relation.getTermScope() != null ? returnScopeValue(relation.getTermScope()) : "");
+		cell.setCellValue(dto.getTermScope());
 		
 	}
 
