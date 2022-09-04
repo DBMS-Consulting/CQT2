@@ -1,5 +1,8 @@
 package com.dbms.entity.cqt.dtos;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Dto for Excel purposes.
  * 
@@ -10,6 +13,7 @@ public class ReportLineDataDto {
 
 	private String term;
 	private String code;
+	private Long levelNum;
 	private String level;
 	private String category;
 	private String weight;
@@ -19,11 +23,25 @@ public class ReportLineDataDto {
 	
 	private String impact;
 	private MeddraDictHierarchySearchDto meddra;
+	private List<ReportLineDataDto> children = new ArrayList<>();
+
+	public ReportLineDataDto() {
+		super();
+	}
 
 	public ReportLineDataDto(String level, String code, String term, String dots) {
 		super();
 		this.term = term;
 		this.code = code;
+		this.level = level;
+		this.dots = dots;
+	}
+
+	public ReportLineDataDto(Long levelNum, String level, String code, String term, String dots) {
+		super();
+		this.term = term;
+		this.code = code;
+		this.levelNum = levelNum;
 		this.level = level;
 		this.dots = dots;
 	}
@@ -113,6 +131,14 @@ public class ReportLineDataDto {
 		this.code = code;
 	}
 
+	public Long getLevelNum() {
+		return levelNum;
+	}
+
+	public void setLevelNum(Long levelNum) {
+		this.levelNum = levelNum;
+	}
+
 	public String getLevel() {
 		return level;
 	}
@@ -155,8 +181,9 @@ public class ReportLineDataDto {
 
 	@Override
 	public String toString() {
-		return "ReportLineDataDto [term=" + term + ", code=" + code + ", level=" + level + ", category=" + category
-				+ ", weight=" + weight + ", scope=" + scope + ", dots=" + dots + "]";
+		return "ReportLineDataDto [term=" + term + ", code=" + code + ", levelNum=" + levelNum + ", level=" + level
+				+ ", category=" + category + ", weight=" + weight + ", scope=" + scope + ", dots=" + dots + ", status="
+				+ status + ", impact=" + impact + ", meddra=" + meddra + "]";
 	}
 
 	public String getImpact() {
@@ -181,6 +208,14 @@ public class ReportLineDataDto {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	public List<ReportLineDataDto> getChildren() {
+		return children;
+	}
+
+	public void setChildren(List<ReportLineDataDto> children) {
+		this.children = children;
 	}
 
 }
