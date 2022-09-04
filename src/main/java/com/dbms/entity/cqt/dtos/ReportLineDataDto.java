@@ -181,8 +181,9 @@ public class ReportLineDataDto {
 
 	@Override
 	public String toString() {
-		return "ReportLineDataDto [term=" + term + ", code=" + code + ", level=" + level + ", category=" + category
-				+ ", weight=" + weight + ", scope=" + scope + ", dots=" + dots + "]";
+		return "ReportLineDataDto [term=" + term + ", code=" + code + ", levelNum=" + levelNum + ", level=" + level
+				+ ", category=" + category + ", weight=" + weight + ", scope=" + scope + ", dots=" + dots + ", status="
+				+ status + ", impact=" + impact + ", meddra=" + meddra + "]";
 	}
 
 	public String getImpact() {
