@@ -7,14 +7,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -34,6 +27,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.persistence.TemporalType;
 
+import com.dbms.util.workers.UniquePTReportRelationsWorker;
 import org.apache.commons.codec.Charsets;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -1070,7 +1064,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 
 		dtos.sort((o1, o2) -> {
 			if(o1.getLevelNum().compareTo(o2.getLevelNum()) == 0) {
-				return o1.getTerm().compareTo(o2.getTerm());
+				return o1.getTerm().toLowerCase().compareTo(o2.getTerm().toLowerCase());
 			} else {
 				return o1.getLevelNum().compareTo(o2.getLevelNum());
 			}
@@ -1523,6 +1517,236 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 			e.printStackTrace();
 		}
 		LOG.info("Finished MQ report generation.");
+		return content;
+	}
+
+	/**
+	 * MQ Report.
+	 */
+	@Override
+	public StreamedContent generateUniquePTReport(ListDetailsFormVM details, ListNotesFormVM notes, String dictionaryVersion, TreeNode relationsRoot, boolean filterLlts) {
+		XSSFWorkbook workbook = new XSSFWorkbook();
+
+		DateFormat dateTimeFormat = new SimpleDateFormat("dd-MMM-yyyy:hh:mm:ss a z");
+
+		XSSFSheet worksheet = null;
+
+		worksheet = workbook.createSheet("Unique PT Report");
+		XSSFRow row = null;
+		int rowCount = 6;
+
+		try {
+			insertExporLogoImage(worksheet, workbook);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+
+		Map<Integer, ReportLineDataDto> mapReport = new HashMap<Integer, ReportLineDataDto>();
+		int cpt = 0;
+
+		/**
+		 * Première ligne - entêtes
+		 */
+		row = worksheet.createRow(rowCount);
+		XSSFCell cell = row.createCell(0);
+
+		row = worksheet.createRow(rowCount);
+		cell = row.createCell(0);
+		cell.setCellValue(details.getName());
+		setCellStyleTitre(workbook, cell);
+
+		// Term name
+		rowCount += 2;
+		row = worksheet.createRow(rowCount);
+		cell = row.createCell(0);
+		cell.setCellValue("MedDRA Dictionary Version: " + dictionaryVersion);
+
+		rowCount++;
+		row = worksheet.createRow(rowCount);
+		cell = row.createCell(0);
+		cell.setCellValue("Status: " + details.getStatus());
+		rowCount++;
+		row = worksheet.createRow(rowCount);
+		cell = row.createCell(0);
+		cell.setCellValue("Term: " + details.getName());
+		rowCount++;
+		row = worksheet.createRow(rowCount);
+		cell = row.createCell(0);
+		cell.setCellValue("Code: " + details.getCode());
+		rowCount++;
+		row = worksheet.createRow(rowCount);
+		cell = row.createCell(0);
+		cell.setCellValue("Level Extension: " + details.getExtension());
+		rowCount++;
+		row = worksheet.createRow(rowCount);
+		cell = row.createCell(0);
+
+		cell.setCellValue("Report Date/Time: " + dateTimeFormat.format(new Date()));
+		rowCount += 2;
+		row = worksheet.createRow(rowCount);
+		cell = row.createCell(0);
+		cell.setCellValue("Term");
+		setCellStyleColumn(workbook, cell);
+		cell = row.createCell(1);
+		cell.setCellValue("Code");
+		setCellStyleColumn(workbook, cell);
+		cell = row.createCell(2);
+		cell.setCellValue("Level");
+		setCellStyleColumn(workbook, cell);
+		rowCount++;
+
+		// Retrieval of relations - Loop
+		List<CmqRelation190> relations = cmqRelationService.findByCmqCode(details.getCode());
+		int relationSize = relations.size();
+		List<Future<MQReportRelationsWorkerDTO>> futures = new ArrayList<>();
+		int workerId = 1;
+		ExecutorService executorService = Executors.newFixedThreadPool(8);
+		List<TreeNode> childTreeNodes = relationsRoot.getChildren();
+		Map<String,String> relationScopeMap = new HashMap<>();
+
+		CmqBase190 cmq = findByCode(details.getCode());
+		for(TreeNode childTreeNode: childTreeNodes) {
+			updateRelationScopeMap(relationScopeMap,childTreeNode);
+		}
+
+		if (relations != null) {
+			for (CmqRelation190 relation : relations) {
+				if(relation.getSmqCode() != null && (relation.getSocCode() != null || relation.getHlgtCode() != null || relation.getHltCode() != null
+						|| relation.getLltCode() != null || relation.getPtCode() != null)) {
+					relation.setSmqCode(null);
+				}
+				UniquePTReportRelationsWorker task = new UniquePTReportRelationsWorker(workerId++, relation,relationScopeMap,filterLlts,cmq.getDictionaryVersion(), smqBaseService, meddraDictService);
+				futures.add(executorService.submit(task));
+			}
+		}
+
+		LOG.info("Submitted all UniquePTReportRelationsWorker for relations.");
+		//now get the futures and process them.
+		int iterator = 0;
+		Set<ReportLineDataDto> elements = new TreeSet<>(Comparator.comparing(o -> o.getTerm().toLowerCase()));
+		for (Future<MQReportRelationsWorkerDTO> future : futures) {
+			try {
+				MQReportRelationsWorkerDTO relationsWorkerDTO = future.get();
+				if(relationsWorkerDTO.isSuccess()) {
+					Map<Integer, ReportLineDataDto> mapReportData = relationsWorkerDTO.getMapReport();
+
+					if(relations.get(iterator).getTermCategory() != null && mapReportData.get(0) != null) {
+						mapReportData.get(0).setCategory(relations.get(iterator).getTermCategory());
+					}
+
+					if(relations.get(iterator).getTermWeight() != null && mapReportData.get(0) != null) {
+						mapReportData.get(0).setWeight(relations.get(iterator).getTermWeight()+"");
+					}
+
+					if(relations.get(iterator).getTermScope() != null && mapReportData.get(0) != null) {
+						mapReportData.get(0).setScope(relations.get(iterator).getTermScope());
+					}
+
+					elements.addAll(mapReportData.values());
+					mapReportData.clear();
+				} else {
+					LOG.info("Got false status for success in worker {}", relationsWorkerDTO.getWorkerName());
+				}
+				iterator++;
+			} catch (InterruptedException | ExecutionException e) {
+				LOG.error("Exception while reading MQReportRelationsWorkerDTO", e);
+			}
+
+		}
+		LOG.info("Processing children now.");
+		//now child relations
+		String level = "", term = "", codeTerm = "";
+		List<CmqBase190> childCmqs = findChildCmqsByParentCode(details.getCode());
+		if((null != childCmqs) && (childCmqs.size() > 0)) {
+			LOG.info("Found child cmqs of size " + childCmqs.size());
+			for (CmqBase190 childCmq : childCmqs) {
+				level = childCmq.getCmqTypeCd();
+				term = childCmq.getCmqName();
+				codeTerm = childCmq.getCmqCode() != null ? childCmq.getCmqCode() + "" : "";
+
+				elements.add(new ReportLineDataDto(childCmq.getCmqLevel() == null ? null : (long)childCmq.getCmqLevel(), level, codeTerm, term, ""));
+				mapReport.clear();
+
+				/**
+				 * Other Relations
+				 */
+				List<CmqRelation190> relationsPro = cmqRelationService.findByCmqCode(childCmq.getCmqCode());
+				futures.clear();
+				if (relations != null) {
+					ArrayList<Boolean> addedFromSmq = new ArrayList<Boolean>();
+					for (CmqRelation190 relation : relationsPro) {
+						if(relation.getSmqCode() != null && (relation.getSocCode() != null || relation.getHlgtCode() != null || relation.getHltCode() != null
+								|| relation.getLltCode() != null || relation.getPtCode() != null)) {
+							relation.setSmqCode(null);
+							addedFromSmq.add(true);
+						} else {
+							addedFromSmq.add(false);
+						}
+						MQReportRelationsWorker task = new MQReportRelationsWorker(workerId++, relation,relationScopeMap, filterLlts,childCmq.getDictionaryVersion());
+
+						futures.add(executorService.submit(task));
+					}
+
+					LOG.info("Submitted all MQReportRelationsWorker for relations of child {}.", childCmq.getCmqCode());
+					//now get the futures and process them.
+					int addedFromSmqCounter = 0;
+					for (Future<MQReportRelationsWorkerDTO> future : futures) {
+						try {
+							MQReportRelationsWorkerDTO relationsWorkerDTO = future.get();
+							if(relationsWorkerDTO.isSuccess()) {
+								Map<Integer, ReportLineDataDto> mapReportData = relationsWorkerDTO.getMapReport();
+								if(addedFromSmq.get(addedFromSmqCounter)) {
+									mapReportData.keySet().removeIf(key -> key != 0);
+									if(relationsPro.get(addedFromSmqCounter).getTermScope() != null && mapReportData.get(0) != null) {
+										mapReportData.get(0).setScope(relationsPro.get(addedFromSmqCounter).getTermScope());
+									}
+									if(relationsPro.get(addedFromSmqCounter).getTermWeight() != null && mapReportData.get(0) != null) {
+										mapReportData.get(0).setWeight(relationsPro.get(addedFromSmqCounter).getTermWeight().toString());
+									}
+									if(relationsPro.get(addedFromSmqCounter).getTermCategory() != null && mapReportData.get(0) != null){
+										mapReportData.get(0).setCategory(relationsPro.get(addedFromSmqCounter).getTermCategory());
+									}
+								}
+								elements.addAll(mapReportData.values());
+								mapReportData.clear();
+								addedFromSmqCounter++;
+							} else {
+								LOG.info("Got false status for success in worker {}", relationsWorkerDTO.getWorkerName());
+							}
+						} catch (InterruptedException | ExecutionException e) {
+							LOG.error("Exception while reading MQReportRelationsWorkerDTO", e);
+						}
+					}
+				}
+			}
+		}
+
+		LOG.info("Finished processing all relations and children.");
+		executorService.shutdownNow();
+
+		fillUniquePTReport(elements, cell, row, rowCount, worksheet);
+
+		StreamedContent content = null;
+		try {
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			workbook.write(baos);
+			ByteArrayOutputStream zipBaos = new ByteArrayOutputStream();
+			ZipOutputStream zos = new ZipOutputStream(zipBaos);
+			ZipEntry entry = new ZipEntry("Relations_Unique_PT_Report_" + details.getName() + ".xlsx");
+			zos.putNextEntry(entry);
+			baos.writeTo(zos);
+			zos.flush();
+			zos.close();
+			ByteArrayInputStream bais = new ByteArrayInputStream(zipBaos.toByteArray());
+			content = new DefaultStreamedContent(
+					bais,
+					"application/zip",
+					"Relations_Unique_PT_Report_" + details.getName()
+							+ ".zip", Charsets.UTF_8.name());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		LOG.info("Finished unique PT report generation.");
 		return content;
 	}
 	
@@ -2449,7 +2673,49 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 			cpt++;
 		}
 		return rowCount;
-		
+	}
+
+	private int fillUniquePTReport(Collection<ReportLineDataDto> report, XSSFCell cell, XSSFRow row, int rowCount, XSSFSheet worksheet) {
+		LOG.info("Writing {} ReportLineDataDtos." , report.size());
+		for(ReportLineDataDto line : report) {
+			if(null != line) {
+				row = worksheet.createRow(rowCount);
+
+				CellStyle headerCellStyle = worksheet.getWorkbook().createCellStyle();
+				headerCellStyle.setFillForegroundColor(IndexedColors.PALE_BLUE.index);
+				headerCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
+				// Cell 0
+				cell = row.createCell(0);
+				cell.setCellValue(line.getDots() + line.getTerm());
+				if(!line.getChildren().isEmpty()) {
+					cell.setCellStyle(headerCellStyle);
+				}
+
+				// Cell 1
+				cell = row.createCell(1);
+				cell.setCellValue(line.getCode());
+				if(!line.getChildren().isEmpty()) {
+					cell.setCellStyle(headerCellStyle);
+				}
+
+				// Cell 2
+				cell = row.createCell(2);
+				cell.setCellValue(line.getLevel());
+				if(!line.getChildren().isEmpty()) {
+					cell.setCellStyle(headerCellStyle);
+				}
+
+				rowCount++;
+
+				if(!line.getChildren().isEmpty()) {
+					rowCount = fillUniquePTReport(line.getChildren(), cell, row, rowCount, worksheet);
+				}
+			} else {
+				LOG.info("Got null line in map in fillReport");
+			}
+		}
+		return rowCount;
 	}
 	
 	

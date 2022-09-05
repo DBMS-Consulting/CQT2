@@ -21,6 +21,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.BorderStyle;
+import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
@@ -854,7 +855,7 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 
 		XSSFCellStyle cellStyle = workbook.createCellStyle();
 		cellStyle.setFillForegroundColor(HSSFColor.BLUE.index);
-		cellStyle.setFillPattern(XSSFCellStyle.SOLID_FOREGROUND);
+		cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 		cellStyle.setBorderBottom(BorderStyle.MEDIUM);
 
 		// Retrieval of relations - Loop
@@ -1362,7 +1363,7 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 	private void setCellStyleColumn(XSSFWorkbook wb, XSSFCell cell) {
 		XSSFCellStyle cellStyle = wb.createCellStyle();
 		cellStyle.setFillBackgroundColor(IndexedColors.AQUA.getIndex());
-		cellStyle.setFillPattern(XSSFCellStyle.SOLID_FOREGROUND);
+		cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 		cellStyle.setFillForegroundColor(HSSFColor.GREY_40_PERCENT.index);
 
 		XSSFFont defaultFont = wb.createFont();

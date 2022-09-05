@@ -303,6 +303,18 @@ public class ReportController extends BaseController<CmqBase190> {
 		StreamedContent content = cmqBaseService.generateMQReport(details, notes, (currentMeddraVersionCodeList != null ? currentMeddraVersionCodeList.getValue() : ""),relationsRoot, filterLltFlag);
 		setExcelFile(content); 
 	}
+
+	/**
+	 * Generate MQ unique report on relations tab.
+	 * @param details
+	 * @param notes
+	 */
+	public void generateUniquePTReport(ListDetailsFormVM details, ListNotesFormVM notes, TreeNode relationsRoot) {
+		RefConfigCodeList currentMeddraVersionCodeList = this.refCodeListService.getCurrentMeddraVersion();
+		boolean filterLltFlag = this.globalController.isFilterLltsFlag();
+		StreamedContent content = cmqBaseService.generateUniquePTReport(details, notes, (currentMeddraVersionCodeList != null ? currentMeddraVersionCodeList.getValue() : ""),relationsRoot, filterLltFlag);
+		setExcelFile(content);
+	}
     
     public void downloadMeddraVersioningReport() throws IOException {
         FacesContext fc = FacesContext.getCurrentInstance();

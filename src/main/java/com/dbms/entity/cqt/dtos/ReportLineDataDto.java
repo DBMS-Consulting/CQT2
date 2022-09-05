@@ -2,6 +2,7 @@ package com.dbms.entity.cqt.dtos;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Dto for Excel purposes.
@@ -9,7 +10,7 @@ import java.util.List;
  * @author
  *
  */
-public class ReportLineDataDto {
+public class ReportLineDataDto implements Comparable<ReportLineDataDto>{
 
 	private String term;
 	private String code;
@@ -218,4 +219,21 @@ public class ReportLineDataDto {
 		this.children = children;
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		ReportLineDataDto that = (ReportLineDataDto) o;
+		return Objects.equals(term, that.term) && Objects.equals(code, that.code) && Objects.equals(levelNum, that.levelNum) && Objects.equals(level, that.level) && Objects.equals(category, that.category) && Objects.equals(weight, that.weight) && Objects.equals(scope, that.scope) && Objects.equals(status, that.status) && Objects.equals(impact, that.impact);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(term, code, levelNum, level, category, weight, scope, status, impact);
+	}
+
+	@Override
+	public int compareTo(ReportLineDataDto o) {
+		return 0;
+	}
 }
