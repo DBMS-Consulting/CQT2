@@ -55,6 +55,31 @@
 				</h:commandLink>
 				
 				<p:spacer width="10" />
+
+				<i class="fa fa-file-excel-o"
+				   style="position: absolute; margin-top: 8px; margin-left: 5px"></i>
+
+				<!--Show Confirm Dialog if list has more than 1 children when clicking on "MQ Detailed Report" generation button-->
+				<p:confirmDialog header="Unique PT Report"  widgetVar="confirmUniquePTReport"
+								 message="You are submitting a request to generate the report. Do you want to continue?">
+					<i class="fa fa-check" style="position: absolute; margin-top: 14px; margin-left: 5px"></i>
+					<h:commandLink value="Yes" onclick="PF('confirmUniquePTReport').hide()" styleClass="generate" type="button"
+								   actionListener="#{reportController.generateUniquePTReport(createController.detailsFormModel, createController.notesFormModel,createController.relationsModel.relationsRoot)}" >
+						<p:fileDownload value="#{reportController.excelFile}" />
+					</h:commandLink>
+					<p:spacer width="10" />
+					<p:commandButton value="No" onclick="PF('confirmUniquePTReport').hide()" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>
+				</p:confirmDialog>
+				<h:commandLink rendered="#{createController.relationsModel.relationsRoot.childCount gt 0}" value="Unique PT Report" type="button"
+							   styleClass="generate" onclick="PF('confirmUniquePTReport').show();return false;" />
+
+				<h:commandLink rendered="#{createController.relationsModel.relationsRoot.childCount le 0}" value="Unique PT Report" type="button"
+							   styleClass="generate"
+							   actionListener="#{reportController.generateUniquePTReport(createController.detailsFormModel, createController.notesFormModel,createController.relationsModel.relationsRoot)}">
+					<p:fileDownload value="#{reportController.excelFile}" />
+				</h:commandLink>
+
+				<p:spacer width="10" />
 				 				
 				<p:commandButton value="Parent List" id="ctb15"
                     styleClass="#{createController.parentViewable ? '' : 'btn-disabled'}" update="@form"
