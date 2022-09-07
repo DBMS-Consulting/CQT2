@@ -89,7 +89,18 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 			.getLogger(CmqBase190Service.class);
 
 	private static final String CMQ_BASE_TABLE_PREFIX = "CMQ_BASE_";
-	
+	private static final Comparator<ReportLineDataDto> LEVELNUM_TERM_REPORT_LINE_DTO_COMPARATOR = (o1, o2) -> {
+		if(o1.getLevelNum() == null && o2.getLevelNum() != null) {
+			return 1;
+		} else if (o1.getLevelNum() != null && o2.getLevelNum() == null) {
+			return -1;
+		} else if ((o1.getLevelNum() == null && o2.getLevelNum() == null) || o1.getLevelNum().compareTo(o2.getLevelNum()) == 0) {
+			return o1.getTerm().toLowerCase().compareTo(o2.getTerm().toLowerCase());
+		} else {
+			return o1.getLevelNum().compareTo(o2.getLevelNum());
+		}
+	};
+
 	@ManagedProperty("#{CmqRelation190Service}")
 	private ICmqRelation190Service cmqRelationService;
 
@@ -1062,13 +1073,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 			}
 		}
 
-		dtos.sort((o1, o2) -> {
-			if(o1.getLevelNum().compareTo(o2.getLevelNum()) == 0) {
-				return o1.getTerm().toLowerCase().compareTo(o2.getTerm().toLowerCase());
-			} else {
-				return o1.getLevelNum().compareTo(o2.getLevelNum());
-			}
-		});
+		dtos.sort(LEVELNUM_TERM_REPORT_LINE_DTO_COMPARATOR);
 		
 		for(ReportLineDataDto dto : dtos) {
 			row = worksheet.createRow(rowCount);
@@ -1474,14 +1479,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		LOG.info("Finished processing all relations and children.");
 		executorService.shutdownNow();
 		
-		parents.sort((o1, o2) -> {
-			if(o1.getLevelNum().compareTo(o2.getLevelNum()) == 0) {
-				return o1.getTerm().compareTo(o2.getTerm());
-			} else {
-				return o1.getLevelNum().compareTo(o2.getLevelNum());
-			}
-			
-		});
+		parents.sort(LEVELNUM_TERM_REPORT_LINE_DTO_COMPARATOR);
 		
 		rowCount = fillReport(parents, cell, row, rowCount, worksheet);
 
@@ -2619,42 +2617,42 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 				// Cell 0
 				cell = row.createCell(0);
 				cell.setCellValue(line.getDots() + line.getTerm());
-				if(!line.getChildren().isEmpty()) {
+				if(line.getDots() == null || line.getDots().isEmpty()) {
 					cell.setCellStyle(headerCellStyle);
 				}
 
 				// Cell 1
 				cell = row.createCell(1);
 				cell.setCellValue(line.getCode());
-				if(!line.getChildren().isEmpty()) {
+				if(line.getDots() == null || line.getDots().isEmpty()) {
 					cell.setCellStyle(headerCellStyle);
 				}
 
 				// Cell 2
 				cell = row.createCell(2);
 				cell.setCellValue(line.getLevel());
-				if(!line.getChildren().isEmpty()) {
+				if(line.getDots() == null || line.getDots().isEmpty()) {
 					cell.setCellStyle(headerCellStyle);
 				}
 				
 				// Cell 3
 				cell = row.createCell(3);
 				cell.setCellValue(line.getCategory());
-				if(!line.getChildren().isEmpty()) {
+				if(line.getDots() == null || line.getDots().isEmpty()) {
 					cell.setCellStyle(headerCellStyle);
 				}
 				
 				// Cell 4
 				cell = row.createCell(4);
 				cell.setCellValue(line.getWeight());
-				if(!line.getChildren().isEmpty()) {
+				if(line.getDots() == null || line.getDots().isEmpty()) {
 					cell.setCellStyle(headerCellStyle);
 				}
 				
 				// Cell 5
 				cell = row.createCell(5);
 				cell.setCellValue(returnScopeValue(line.getScope()));
-				if(!line.getChildren().isEmpty()) {
+				if(line.getDots() == null || line.getDots().isEmpty()) {
 					cell.setCellStyle(headerCellStyle);
 				}
 				
