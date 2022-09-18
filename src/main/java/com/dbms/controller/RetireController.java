@@ -164,7 +164,7 @@ public class RetireController implements Serializable {
 			RequestContext.getCurrentInstance().execute("PF('confirmRetireOK').show();");
 		} else if (childCmqsOftargets != null && !childCmqsOftargets.isEmpty() && !childNotSelected) {
 			saveRetirementReason();
-		} else if (childCmqsOftargets.isEmpty() && (tmeOrTier1 || isDME || isCPT)) {
+		} else if (childCmqsOftargets.isEmpty() && (tmeOrTier1 || isDME || isCPT || !isProtocol)) {
 			saveRetirementReason();
 		} else {
 			this.confirmMessage = "Are you sure you want to retire this list?";
