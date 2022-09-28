@@ -2188,6 +2188,32 @@ public class CreateController implements Serializable {
 
 		return state;
 	}
+
+        // KG: emailer
+        public void emailer(String state) {
+            
+            LOG.info("\n READY TO SEND EMAIL,CURRENT STATE :" + selectedData.getCmqState());
+            String smtp_host = "west.exch084.serverdata.net"; //"smtp.gmail.com";
+            String smtp_port = "587";
+            String username = "bitnoncense@clinicalserver.com"; 
+            String password = "Hello1Bye!"; 
+            List<String> recipients = new ArrayList<String>();
+            recipients.add("kapil.gureja@clinicalserver.com");
+            recipients.add("kapilgureja614@gmail.com");
+            this.subject = "Test java email : " + state;
+            this.textMessage = "CQT EMAIL TEST";
+            EmailEntity email = new EmailEntity(smtp_host, smtp_port, username, password, 
+                                            recipients, subject, textMessage);
+            
+            try {
+                email.sendEmail();
+            } catch (Exception ex) {
+		Log.info("\n Email exception generated : " + ex.getMessage());
+		ex.printStackTrace();
+            }
+
+        }
+
 	
 	public void changeLevel(AjaxBehaviorEvent event) {
 		if(createWizard != null) {
