@@ -61,6 +61,7 @@ import com.dbms.view.ListNotesFormVM;
 import com.dbms.view.ListRelationsVM;
 import com.dbms.view.ListWorkflowFormVM;
 import com.dbms.web.dto.DetailDTO;
+import com.dbms.mail.EmailEntity;
 
 /**
  * @author Jay G.(jayshanchn@hotmail.com)
@@ -2168,6 +2169,9 @@ public class CreateController implements Serializable {
 	                    "Workflow state set to '" + state + "'", "");
 				FacesContext ctx = FacesContext.getCurrentInstance();
 				ctx.addMessage(null, msg);
+                                if (state.equalsIgnoreCase("Reviewed") || state.equalsIgnoreCase("Approved")) {
+                                    emailer(state);
+                                }
 				
 				//Clearing workflow attributes : due date, reason for request, reason for approval
 				this.workflowFormModel.init();
@@ -2190,26 +2194,84 @@ public class CreateController implements Serializable {
 	}
 
         // KG: emailer
-        public void emailer(String state) {
+        private void emailer(String state) {
             
             LOG.info("\n READY TO SEND EMAIL,CURRENT STATE :" + selectedData.getCmqState());
-            String smtp_host = "west.exch084.serverdata.net"; //"smtp.gmail.com";
-            String smtp_port = "587";
-            String username = "bitnoncense@clinicalserver.com"; 
-            String password = "Hello1Bye!"; 
-            List<String> recipients = new ArrayList<String>();
-            recipients.add("kapil.gureja@clinicalserver.com");
-            recipients.add("kapilgureja614@gmail.com");
-            this.subject = "Test java email : " + state;
-            this.textMessage = "CQT EMAIL TEST";
+
+            String smtp_host = "";
+            String smtp_port = "";
+            String username = ""; 
+            String password = ""; 
+
+            String adminEmailAddress = "";
+
+
+            List<RefConfigCodeList> smtpConfigCodeList = refCodeListService.findSmtpServerConfig();
+            for (RefConfigCodeList refConfigCodeList : smtpConfigCodeList) {
+			String codeInternalValue = refConfigCodeList.getCodelistInternalValue();
+			if("SERVER_NM".equalsIgnoreCase(codeInternalValue)) {
+				smtp_host = refConfigCodeList.getValue();
+			} else if("SERVER_PORT".equalsIgnoreCase(codeInternalValue)) {
+				smtp_port = refConfigCodeList.getValue();
+			}
+            }
+
+            List<RefConfigCodeList> senderConfigCodeList = refCodeListService.findSenderConfig();
+            for (RefConfigCodeList refConfigCodeList : senderConfigCodeList) {
+			String codeInternalValue = refConfigCodeList.getCodelistInternalValue();
+			if("SMTP_ADDRESS".equalsIgnoreCase(codeInternalValue)) {
+				username = refConfigCodeList.getValue();
+			} else if("USER_PASSWORD".equalsIgnoreCase(codeInternalValue)) {
+				password = refConfigCodeList.getValue();
+			}
+            }
+
+            RefConfigCodeList adminEmailCodeList = refCodeListService.findByCriterias(CqtConstants.CODE_LIST_TYPE_USER_EMAIL_ADDRESS, 
+                                "ADMIN_EMAIL", "Y");
+            adminEmailAddress = adminEmailCodeList.getValue();
+
+            List<String> recipients = new ArrayList<String>();            
+            if (! StringUtils.isEmpty(adminEmailAddress))
+                    recipients.add(adminEmailAddress);
+            
+            String designee = this.detailsFormModel.getEmailAddressFromUsername(selectedData.getCmqDesignee());
+            String designee2 = this.detailsFormModel.getEmailAddressFromUsername(selectedData.getCmqDesignee2());
+            String designee3 = this.detailsFormModel.getEmailAddressFromUsername(selectedData.getCmqDesignee3());
+
+            if (! StringUtils.isEmpty(designee))
+                recipients.add(designee);
+            if (! StringUtils.isEmpty(designee2))
+                recipients.add(designee2);
+            if (! StringUtils.isEmpty(designee3))
+                recipients.add(designee3);
+
+            String newState = "", textMessage = "";
+            if (state.equalsIgnoreCase("Reviewed")) {
+                newState = CmqBase190.CMQ_STATE_VALUE_REVIEWED;
+                textMessage = refCodeListService.findByCriterias(CqtConstants.CODE_LIST_TYPE_EMAIL_NOTIFICATION_MSG, 
+                                "WORLKFLOW_ST1", "Y").getValue();
+            }
+            else {
+                newState = CmqBase190.CMQ_STATE_VALUE_APPROVED;
+                textMessage = refCodeListService.findByCriterias(CqtConstants.CODE_LIST_TYPE_EMAIL_NOTIFICATION_MSG, 
+                                "WORLKFLOW_ST2", "Y").getValue();
+            }
+            String subject = selectedData.getCmqName() + " " + selectedData.getCmqTypeCd() + 
+                            " " + newState;
+
+                       
+
             EmailEntity email = new EmailEntity(smtp_host, smtp_port, username, password, 
                                             recipients, subject, textMessage);
             
             try {
                 email.sendEmail();
-            } catch (Exception ex) {
-		Log.info("\n Email exception generated : " + ex.getMessage());
-		ex.printStackTrace();
+            } catch (Exception e) {
+		e.printStackTrace();
+		FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+						"An error occurred while sending the email", "");
+		FacesContext ctx = FacesContext.getCurrentInstance();
+		ctx.addMessage(null, msg);
             }
 
         }

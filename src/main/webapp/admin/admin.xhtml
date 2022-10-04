@@ -30,13 +30,17 @@
 							<f:selectItem itemLabel="TERM CATEGORY" itemValue="TERM_CATEGORY" />
 							<f:selectItem itemLabel="WORKFLOW STATE" itemValue="WORKFLOW_STATES" />
 							<f:selectItem itemLabel="USER GROUPS" itemValue="USER_GROUPS" />
-                            <f:selectItem itemLabel="SYSTEM CONFIG" itemValue="SYSTEM_CONFIG" />
-                            <f:selectItem itemLabel="CMQ RELATION IMPACT TYPE" itemValue="CMQ_RELATION_IMPACT_TYPE" />
-                            <f:selectItem itemLabel="SMQ RELATION IMPACT TYPE" itemValue="SMQ_RELATION_IMPACT_TYPE" />
-                            <f:selectItem itemLabel="MEDDRA DICTIONARY IMPACT TYPE" itemValue="MEDDRA_DICTIONARY_IMPACT_TYPE" />
-                            <f:selectItem itemLabel="DICTIONARY CMQ LEVELS TYPE" itemValue="DICTIONARY_CMQ_LEVELS" />
-                            <f:selectItem itemLabel="SMQ FILTER LEVELS TYPE" itemValue="SMQ_FILTER_LEVELS" />
-                            
+                                                        <f:selectItem itemLabel="SYSTEM CONFIG" itemValue="SYSTEM_CONFIG" />
+                                                        <f:selectItem itemLabel="CMQ RELATION IMPACT TYPE" itemValue="CMQ_RELATION_IMPACT_TYPE" />
+                                                        <f:selectItem itemLabel="SMQ RELATION IMPACT TYPE" itemValue="SMQ_RELATION_IMPACT_TYPE" />
+                                                        <f:selectItem itemLabel="MEDDRA DICTIONARY IMPACT TYPE" itemValue="MEDDRA_DICTIONARY_IMPACT_TYPE" />
+                                                        <f:selectItem itemLabel="DICTIONARY CMQ LEVELS TYPE" itemValue="DICTIONARY_CMQ_LEVELS" />
+                                                        <f:selectItem itemLabel="SMQ FILTER LEVELS TYPE" itemValue="SMQ_FILTER_LEVELS" />
+                                                        <f:selectItem itemLabel="SMTP SERVER" itemValue="SMTP_SERVER" />
+                                                        <f:selectItem itemLabel="SENDER CONFIG" itemValue="SENDER_CONFIG" />
+                                                        <f:selectItem itemLabel="EMAIL NOTIFICATION MSG" itemValue="EMAIL_NOTIFICATION_MSG" />
+                                                        <f:selectItem itemLabel="USER EMAIL ADDRESS" itemValue="USER_EMAIL_ADDRESS" />
+
 
 							<p:ajax update="@form" event="change" listener="#{adminController.switchCodelist}" />
 						</p:selectOneMenu>
@@ -91,13 +95,30 @@
 						<ui:include src="meddraDictImpTypeTable.xhtml"></ui:include>
 					</ui:fragment>
 					
-					 <ui:fragment rendered="#{adminController.codelist eq 'DICTIONARY_CMQ_LEVELS'}">
+                    <ui:fragment rendered="#{adminController.codelist eq 'DICTIONARY_CMQ_LEVELS'}">
 						<ui:include src="dictionaryLevelTable.xhtml"></ui:include>
 					</ui:fragment>
 					
-					<ui:fragment rendered="#{adminController.codelist eq 'SMQ_FILTER_LEVELS'}">
+                    <ui:fragment rendered="#{adminController.codelist eq 'SMQ_FILTER_LEVELS'}">
 						<ui:include src="smqFilterLevelTable.xhtml"></ui:include> 
 					</ui:fragment>
+                                        
+                    <ui:fragment rendered="#{adminController.codelist eq 'SMTP_SERVER'}">
+						<ui:include src="smtpServerTable.xhtml"></ui:include>
+					</ui:fragment>
+                                        
+                    <ui:fragment rendered="#{adminController.codelist eq 'SENDER_CONFIG'}">
+						<ui:include src="senderConfigTable.xhtml"></ui:include>
+					</ui:fragment>
+                                        
+                    <ui:fragment rendered="#{adminController.codelist eq 'EMAIL_NOTIFICATION_MSG'}">
+						<ui:include src="emailNotificationMsgTable.xhtml"></ui:include>
+					</ui:fragment>
+                                        
+                    <ui:fragment rendered="#{adminController.codelist eq 'USER_EMAIL_ADDRESS'}">
+						<ui:include src="userEmailAddressTable.xhtml"></ui:include>
+					</ui:fragment>
+                                        
 				</p:tab>
 
 				<p:tab title="Mappings">

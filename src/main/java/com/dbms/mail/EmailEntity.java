@@ -46,12 +46,13 @@ public class EmailEntity {
 		properties.put("mail.smtp.host", this.smtp_host);
 		properties.put("mail.smtp.port", this.smtp_port);
 		
-		String password = encryptPassword;
+                String username = this.userId;
+		String password = this.encryptedPassword;
 		
 		Session session = Session.getInstance(properties, new Authenticator() { 
 			@Override
 			protected PasswordAuthentication getPasswordAuthentication() { 
-				return new PasswordAuthentication(this.userId, password);
+				return new PasswordAuthentication(username, password);
 			}
 		});
 		
@@ -68,7 +69,7 @@ public class EmailEntity {
 		System.out.println("Email sent success..");
 	}
 	
-	private static Message prepareMessage(Session session, InternetAddress[] recipientAddress) { 
+	private Message prepareMessage(Session session, InternetAddress[] recipientAddress) { 
 		
 		try { 
 		

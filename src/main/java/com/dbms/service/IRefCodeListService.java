@@ -67,4 +67,9 @@ public interface IRefCodeListService extends ICqtPersistenceService<RefConfigCod
     
     public RefConfigCodeList getDefaultForConfigType(String configType);
 	public RefConfigCodeList findBySerialNumber(double val); 
+        public List<RefConfigCodeList> findSmtpServerConfig();
+        public List<RefConfigCodeList> findSenderConfig();
+        public List<RefConfigCodeList> findEmailNotificationMsgConfig();
+        
+        
 }

@@ -76,7 +76,9 @@ public class AdminController implements Serializable {
 
 	private List<RefConfigCodeList> extensions, programs, protocols, products,
 			meddras, workflows, usergroups, sysconfigs, cmqImpactTypes,
-			smqImpactTypes, meddraImpactTypes, levels, smqfilters, categories;
+			smqImpactTypes, meddraImpactTypes, levels, smqfilters, categories, 
+                        smtpServerConfigs, senderConfigs, emailNotificationMsgs, 
+                        userEmailAddressConfig;
 
 	private RefConfigCodeList selectedRow, myFocusRef;
 	private StreamedContent excelFile;
@@ -151,7 +153,19 @@ public class AdminController implements Serializable {
 				.equals(CqtConstants.CODE_LIST_TYPE_SMQ_FILTER_LEVELS)
 				&& smqfilters == null) {
 			getSMQFilters();
-		}
+		} else if (codelist.equals(CqtConstants.CODE_LIST_TYPE_SMTP_SERVER)
+				&& smtpServerConfigs == null) {
+			getSmtpServerConfigsList();
+		} else if (codelist.equals(CqtConstants.CODE_LIST_TYPE_SENDER_CONFIG)
+				&& senderConfigs == null) {
+			getSenderConfigsList();
+		} else if (codelist.equals(CqtConstants.CODE_LIST_TYPE_EMAIL_NOTIFICATION_MSG)
+				&& emailNotificationMsgs == null) {
+			getEmailNotificationMsgsList();
+		} else if (codelist.equals(CqtConstants.CODE_LIST_TYPE_USER_EMAIL_ADDRESS)
+				&& userEmailAddressConfig == null) {
+			getUserEmailAddressConfigList();
+		} 
 	}
 
 	public List<RefConfigCodeList> getSMQFilters() {
@@ -248,6 +262,22 @@ public class AdminController implements Serializable {
 			myFocusRef.setCodelistConfigType(CqtConstants.CODE_LIST_TYPE_CATEGORY_TERM);
 			if(getCategoryTerms() != null && !categories.isEmpty())
 				lastSerial = getCategoryTerms().get(getCategoryTerms().size() - 1).getSerialNum();
+		} else if (codelist.equals(CqtConstants.CODE_LIST_TYPE_SMTP_SERVER)) {
+			myFocusRef.setCodelistConfigType(CqtConstants.CODE_LIST_TYPE_SMTP_SERVER);
+			if (smtpServerConfigs != null && !smtpServerConfigs.isEmpty())
+				lastSerial = smtpServerConfigs.get(smtpServerConfigs.size() - 1).getSerialNum();
+		} else if (codelist.equals(CqtConstants.CODE_LIST_TYPE_SENDER_CONFIG)) {
+			myFocusRef.setCodelistConfigType(CqtConstants.CODE_LIST_TYPE_SENDER_CONFIG);
+			if (senderConfigs != null && !senderConfigs.isEmpty())
+				lastSerial = senderConfigs.get(senderConfigs.size() - 1).getSerialNum();
+		} else if (codelist.equals(CqtConstants.CODE_LIST_TYPE_EMAIL_NOTIFICATION_MSG)) {
+			myFocusRef.setCodelistConfigType(CqtConstants.CODE_LIST_TYPE_EMAIL_NOTIFICATION_MSG);
+			if (emailNotificationMsgs != null && !emailNotificationMsgs.isEmpty())
+				lastSerial = emailNotificationMsgs.get(emailNotificationMsgs.size() - 1).getSerialNum();
+		} else if (codelist.equals(CqtConstants.CODE_LIST_TYPE_USER_EMAIL_ADDRESS)) {
+			myFocusRef.setCodelistConfigType(CqtConstants.CODE_LIST_TYPE_USER_EMAIL_ADDRESS);
+			if (userEmailAddressConfig != null && !userEmailAddressConfig.isEmpty())
+				lastSerial = userEmailAddressConfig.get(userEmailAddressConfig.size() - 1).getSerialNum();
 		}
 		myFocusRef.setCreationDate(new Date());
 		myFocusRef.setLastModificationDate(new Date());
@@ -456,6 +486,42 @@ public class AdminController implements Serializable {
 			meddraImpactTypes = new ArrayList<RefConfigCodeList>();
 		}
 		return meddraImpactTypes;
+	}
+
+        public List<RefConfigCodeList> getSmtpServerConfigsList() {
+		smtpServerConfigs = refCodeListService.findAllByConfigType(
+				CqtConstants.CODE_LIST_TYPE_SMTP_SERVER, OrderBy.ASC);
+		if (smtpServerConfigs == null) {
+			smtpServerConfigs = new ArrayList<RefConfigCodeList>();
+		}
+		return smtpServerConfigs;
+	}
+
+        public List<RefConfigCodeList> getSenderConfigsList() {
+		senderConfigs = refCodeListService.findAllByConfigType(
+				CqtConstants.CODE_LIST_TYPE_SENDER_CONFIG, OrderBy.ASC);
+		if (senderConfigs == null) {
+			senderConfigs = new ArrayList<RefConfigCodeList>();
+		}
+		return senderConfigs;
+	}
+
+        public List<RefConfigCodeList> getEmailNotificationMsgsList() {
+		emailNotificationMsgs = refCodeListService.findAllByConfigType(
+				CqtConstants.CODE_LIST_TYPE_EMAIL_NOTIFICATION_MSG, OrderBy.ASC);
+		if (emailNotificationMsgs == null) {
+			emailNotificationMsgs = new ArrayList<RefConfigCodeList>();
+		}
+		return emailNotificationMsgs;
+	}
+
+        public List<RefConfigCodeList> getUserEmailAddressConfigList() {
+		userEmailAddressConfig = refCodeListService.findAllByConfigType(
+				CqtConstants.CODE_LIST_TYPE_USER_EMAIL_ADDRESS, OrderBy.ASC);
+		if (userEmailAddressConfig == null) {
+			userEmailAddressConfig = new ArrayList<RefConfigCodeList>();
+		}
+		return userEmailAddressConfig;
 	}
 
 	public void addRefCodelist() {
@@ -749,6 +815,22 @@ public class AdminController implements Serializable {
 					CqtConstants.CODE_LIST_TYPE_SMQ_FILTER_LEVELS)) {
 				type = "SMQ Filter Level Type";
 				getSMQFilters();
+			} else if (myFocusRef.getCodelistConfigType().equals(
+					CqtConstants.CODE_LIST_TYPE_SMTP_SERVER)) {
+				type = "Smtp Server";
+				getSmtpServerConfigsList();
+			} else if (myFocusRef.getCodelistConfigType().equals(
+					CqtConstants.CODE_LIST_TYPE_SENDER_CONFIG)) {
+				type = "Sender Config";
+				getSenderConfigsList();
+			} else if (myFocusRef.getCodelistConfigType().equals(
+					CqtConstants.CODE_LIST_TYPE_EMAIL_NOTIFICATION_MSG)) {
+				type = "Email Notification Msg";
+				getEmailNotificationMsgsList();
+			} else if (myFocusRef.getCodelistConfigType().equals(
+					CqtConstants.CODE_LIST_TYPE_USER_EMAIL_ADDRESS)) {
+				type = "User Email Address";
+				getUserEmailAddressConfigList();
 			}
 			//clear cache
 			this.cqtCacheManager.removeAllFromCache("code-list-cache");
@@ -1189,6 +1271,38 @@ public class AdminController implements Serializable {
 
 	public void setSmqfilters(List<RefConfigCodeList> smqfilters) {
 		this.smqfilters = smqfilters;
+	}
+
+        public List<RefConfigCodeList> getSmtpServerConfigs() {
+		return smtpServerConfigs;
+	} 
+
+	public void setSmtpServerConfigs(List<RefConfigCodeList> smtpServerConfigs) {
+		this.smtpServerConfigs = smtpServerConfigs;
+	}
+
+        public List<RefConfigCodeList> getSenderConfigs() {
+		return senderConfigs;
+	} 
+
+	public void setSenderConfigs(List<RefConfigCodeList> senderConfigs) {
+		this.senderConfigs = senderConfigs;
+	}
+
+        public List<RefConfigCodeList> getEmailNotificationMsgs() {
+		return emailNotificationMsgs;
+	} 
+
+	public void setEmailNotificationMsgs(List<RefConfigCodeList> emailNotificationMsgs) {
+		this.emailNotificationMsgs = emailNotificationMsgs;
+	}
+
+        public List<RefConfigCodeList> getUserEmailAddressConfig() {
+		return userEmailAddressConfig;
+	} 
+
+	public void setUserEmailAddressConfig(List<RefConfigCodeList> userEmailAddressConfig) {
+		this.userEmailAddressConfig = userEmailAddressConfig;
 	}
 	
 	public List<RefConfigCodeList> getCategoryTerms() {

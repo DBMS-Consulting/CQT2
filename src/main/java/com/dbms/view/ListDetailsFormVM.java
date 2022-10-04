@@ -728,6 +728,19 @@ public class ListDetailsFormVM implements Serializable {
         }
         return "";        
     }
+
+    public String getEmailAddressFromUsername(String username) {
+        if("NONE".equalsIgnoreCase(username))
+            return "";
+        
+        if(designeeList != null && username != null) {   
+            for(PXEDUser pu: designeeList) {
+                if(username.equals(pu.getUserName()))
+                    return pu.getEmailAddress();
+            }
+        }
+        return "";        
+    }
     
     public boolean validateForm() {
         if(!StringUtils.isBlank(this.designee) && StringUtils.equals(this.designee, this.designeeTwo)) {

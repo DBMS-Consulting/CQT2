@@ -213,7 +213,92 @@ public class RefCodeListService extends
 		}
 		return retVal;
 	}
+
+
+        @Override
+	@SuppressWarnings({ "unchecked" })
+	public List<RefConfigCodeList> findSmtpServerConfig() {
+		List<RefConfigCodeList> retVal = null;
+
+		EntityManager entityManager = this.cqtEntityManagerFactory
+				.getEntityManager();
+
+		StringBuilder queryString = new StringBuilder(
+				"from RefConfigCodeList a");
+		queryString
+				.append(" where a.codelistConfigType = 'SMTP_SERVER' and a.activeFlag = 'Y' ");
+		try {
+			Query query = entityManager.createQuery(queryString.toString());
+			query.setHint("org.hibernate.cacheable", true);
+			retVal = query.getResultList();
+		} catch (Exception ex) {
+			StringBuilder msg = new StringBuilder();
+			msg.append("findSmtpServerConfig failed '")
+					.append(". Query used was->").append(queryString);
+			LOG.error(msg.toString(), ex);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
+
+
+        @Override
+	@SuppressWarnings({ "unchecked" })
+	public List<RefConfigCodeList> findSenderConfig() {
+		List<RefConfigCodeList> retVal = null;
+
+		EntityManager entityManager = this.cqtEntityManagerFactory
+				.getEntityManager();
+
+		StringBuilder queryString = new StringBuilder(
+				"from RefConfigCodeList a");
+		queryString
+				.append(" where a.codelistConfigType = 'SENDER_CONFIG' and a.activeFlag = 'Y' ");
+		try {
+			Query query = entityManager.createQuery(queryString.toString());
+			query.setHint("org.hibernate.cacheable", true);
+			retVal = query.getResultList();
+		} catch (Exception ex) {
+			StringBuilder msg = new StringBuilder();
+			msg.append("findSenderConfig failed '")
+					.append(". Query used was->").append(queryString);
+			LOG.error(msg.toString(), ex);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
+
 	
+        @Override
+	@SuppressWarnings({ "unchecked" })
+	public List<RefConfigCodeList> findEmailNotificationMsgConfig() {
+		List<RefConfigCodeList> retVal = null;
+
+		EntityManager entityManager = this.cqtEntityManagerFactory
+				.getEntityManager();
+
+		StringBuilder queryString = new StringBuilder(
+				"from RefConfigCodeList a");
+		queryString
+				.append(" where a.codelistConfigType = 'EMAIL_NOTIFICATION_MSG' and a.activeFlag = 'Y' ");
+		try {
+			Query query = entityManager.createQuery(queryString.toString());
+			query.setHint("org.hibernate.cacheable", true);
+			retVal = query.getResultList();
+		} catch (Exception ex) {
+			StringBuilder msg = new StringBuilder();
+			msg.append("findEmailNotificationMsgConfig failed '")
+					.append(". Query used was->").append(queryString);
+			LOG.error(msg.toString(), ex);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
+
+
 	@Override
 	@SuppressWarnings({ "unchecked" })
 	public List<RefConfigCodeList> findUserGroups() {
@@ -611,7 +696,7 @@ public class RefCodeListService extends
 		}
 
 		/**
-		 * Première ligne - entêtes
+		 * Premiere ligne - entetes
 		 */
 		row = worksheet.createRow(rowCount);
 		XSSFCell cell = row.createCell(0);

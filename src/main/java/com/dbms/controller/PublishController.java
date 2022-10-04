@@ -30,6 +30,10 @@ import com.dbms.service.ICmqBaseTargetService;
 import com.dbms.service.ICmqRelation190Service;
 import com.dbms.service.IRefCodeListService;
 import com.dbms.util.exceptions.CqtServiceException;
+import com.dbms.mail.EmailEntity;
+import com.dbms.util.CqtConstants;
+import com.dbms.util.SWJSFRequest;
+import com.dbms.view.ListDetailsFormVM;
 
 /**
  * @author Jay G.(jayshanchn@hotmail.com)
@@ -57,6 +61,11 @@ public class PublishController implements Serializable {
 
 	@ManagedProperty("#{AuthenticationService}")
 	private AuthenticationService authService;
+
+        @ManagedProperty("#{appSWJSFRequest}")
+        private SWJSFRequest appSWJSFRequest;
+
+	private ListDetailsFormVM detailsFormModel;
 	
 	private List<CmqBase190> sourceList;
 	private List<CmqBase190> targetList;
@@ -72,6 +81,7 @@ public class PublishController implements Serializable {
 	
 	@PostConstruct
 	public void init() {
+                this.detailsFormModel  = new ListDetailsFormVM(this.authService, this.refCodeListService, this.appSWJSFRequest);
 		sourceList = this.cmqBaseService.findApprovedCmqs();
 		targetList = new ArrayList<CmqBase190>();
 		sourceIAList = this.cmqBaseTargetService.findApprovedCmqs();
@@ -235,6 +245,7 @@ public class PublishController implements Serializable {
                             new FacesMessage(FacesMessage.SEVERITY_ERROR,
                                     "The system could not publish the following cmqs :" + codes, ""));
 				} else {
+                                        emailer("Published");
 					//update the dualListModel source and target
 					init();
 					
@@ -242,6 +253,7 @@ public class PublishController implements Serializable {
 					FacesContext.getCurrentInstance().addMessage(null, 
                             new FacesMessage(FacesMessage.SEVERITY_INFO,
                                     "The List(s) were successfully Published", ""));
+                                        
 				}
 			}
 		}//end 
@@ -251,6 +263,81 @@ public class PublishController implements Serializable {
 		return "";
 	}
 	
+
+        private void emailer(String state) { 
+        
+            String smtp_host = "";
+            String smtp_port = "";
+            String username = ""; 
+            String password = ""; 
+
+            String adminEmailAddress = "";
+
+
+            List<RefConfigCodeList> smtpConfigCodeList = refCodeListService.findSmtpServerConfig();
+            for (RefConfigCodeList refConfigCodeList : smtpConfigCodeList) {
+			String codeInternalValue = refConfigCodeList.getCodelistInternalValue();
+			if("SERVER_NM".equalsIgnoreCase(codeInternalValue)) {
+				smtp_host = refConfigCodeList.getValue();
+			} else if("SERVER_PORT".equalsIgnoreCase(codeInternalValue)) {
+				smtp_port = refConfigCodeList.getValue();
+			}
+            }
+
+            List<RefConfigCodeList> senderConfigCodeList = refCodeListService.findSenderConfig();
+            for (RefConfigCodeList refConfigCodeList : senderConfigCodeList) {
+			String codeInternalValue = refConfigCodeList.getCodelistInternalValue();
+			if("SMTP_ADDRESS".equalsIgnoreCase(codeInternalValue)) {
+				username = refConfigCodeList.getValue();
+			} else if("USER_PASSWORD".equalsIgnoreCase(codeInternalValue)) {
+				password = refConfigCodeList.getValue();
+			}
+            }
+
+            RefConfigCodeList adminEmailCodeList = refCodeListService.findByCriterias(CqtConstants.CODE_LIST_TYPE_USER_EMAIL_ADDRESS, 
+                                "ADMIN_EMAIL", "Y");
+            adminEmailAddress = adminEmailCodeList.getValue();
+
+
+            List<CmqBase190> targetCmqsSelected = new ArrayList<>(publishCurrentVersionDualListModel.getTarget());
+            for(CmqBase190 cmqBase190 : targetCmqsSelected) {
+                
+                LOG.info("\n READY TO SEND EMAIL,CURRENT STATE :" + cmqBase190.getCmqState());
+                List<String> recipients = new ArrayList<String>();            
+                if (! StringUtils.isEmpty(adminEmailAddress))
+                    recipients.add(adminEmailAddress);
+
+                String designee = this.detailsFormModel.getEmailAddressFromUsername(cmqBase190.getCmqDesignee());
+                String designee2 = this.detailsFormModel.getEmailAddressFromUsername(cmqBase190.getCmqDesignee2());
+                String designee3 = this.detailsFormModel.getEmailAddressFromUsername(cmqBase190.getCmqDesignee3());
+
+                if (! StringUtils.isEmpty(designee))
+                    recipients.add(designee);
+                if (! StringUtils.isEmpty(designee2))
+                    recipients.add(designee2);
+                if (! StringUtils.isEmpty(designee3))
+                    recipients.add(designee3);
+
+                String subject = cmqBase190.getCmqName() + " " + cmqBase190.getCmqTypeCd() + 
+                                " " + CmqBase190.CMQ_STATE_VALUE_PUBLISHED;
+                String textMessage = refCodeListService.findByCriterias(CqtConstants.CODE_LIST_TYPE_EMAIL_NOTIFICATION_MSG, 
+                                    "WORLKFLOW_ST3", "Y").getValue();
+
+                EmailEntity email = new EmailEntity(smtp_host, smtp_port, username, password, 
+                                                recipients, subject, textMessage);
+
+                try {
+                    email.sendEmail();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                                                    "An error occurred while sending the email", "");
+                    FacesContext ctx = FacesContext.getCurrentInstance();
+                    ctx.addMessage(null, msg);
+                }
+            }
+        
+        }
 	
 	/**
 	 * Event when we pick on the source list
@@ -700,5 +787,13 @@ public class PublishController implements Serializable {
 	public void setAuthService(AuthenticationService authService) {
 		this.authService = authService;
 	}
+
+        public SWJSFRequest getAppSWJSFRequest() {
+		return appSWJSFRequest;
+	}
+
+	public void setAppSWJSFRequest(SWJSFRequest appSWJSFRequest) {
+		this.appSWJSFRequest = appSWJSFRequest;
+        }
 
 }

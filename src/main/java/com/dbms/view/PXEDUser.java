@@ -10,6 +10,7 @@ public class PXEDUser implements Serializable {
 	private String userName;
 	private String firstName;
 	private String lastName;
+        private String emailAddress;
 
 	public PXEDUser() {
 	}
@@ -26,6 +27,21 @@ public class PXEDUser implements Serializable {
 		} else {
 			this.lastName = lname;
 		}
+	}
+
+        public PXEDUser(String userName, String fname, String lname, String emailAddress) {
+		this.userName = userName;
+		if (fname == null) {
+			this.firstName = "";
+		} else {
+			this.firstName = fname;
+		}
+		if (lname == null) {
+			this.lastName = "";
+		} else {
+			this.lastName = lname;
+		}
+                this.emailAddress = (emailAddress == null) ? "" : emailAddress;
 	}
 
 	public String getUserName() {
@@ -57,6 +73,18 @@ public class PXEDUser implements Serializable {
 			this.lastName = "";
 		} else {
 			this.lastName = lastName;
+		}
+	}
+
+        public String getEmailAddress() {
+		return emailAddress;
+	}
+
+	public void setEmailAddress(String emailAddress) {
+		if (emailAddress == null) {
+			this.emailAddress = "";
+		} else {
+			this.emailAddress = emailAddress;
 		}
 	}
 

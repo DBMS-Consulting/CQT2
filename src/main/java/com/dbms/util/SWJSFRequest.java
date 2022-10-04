@@ -137,11 +137,11 @@ public class SWJSFRequest
         RefConfigCodeList entAdType = refCodeListService.findEnterpriseAdType();
         if(entAdType != null && entAdType.getValue().endsWith("DUMMY")) {
             // generate some static user list for test
-            userList.add(new PXEDUser("cougha02", "Alexander", "Coughlin"));
-            userList.add(new PXEDUser("dcamarda", "Daniel", "Camarda"));
-            userList.add(new PXEDUser("khosan01", "Neha", "Khosa"));
-            userList.add(new PXEDUser("kaura07", "", ""));
-            userList.add(new PXEDUser("sings162", "Sunil", "Singh"));
+            userList.add(new PXEDUser("cougha02", "Alexander", "Coughlin", "Alexander.Coughlin@clinicalserver.com"));
+            userList.add(new PXEDUser("dcamarda", "Daniel", "Camarda", "Daniel.Camarda@clinicalserver.com"));
+            userList.add(new PXEDUser("khosan01", "Neha", "Khosa", "Neha.Khosa@clinicalserver.com"));
+            userList.add(new PXEDUser("kaura07", "", "", "ashleen.kaur@clinicalserver.com"));
+            userList.add(new PXEDUser("sings162", "Sunil", "Singh", "singh@clinicalserver.com"));
             userList.add(new PXEDUser("tirumn", "", ""));
             userList.add(new PXEDUser("novakm01", "", ""));
             userList.add(new PXEDUser("arcem", "", ""));
@@ -150,9 +150,11 @@ public class SWJSFRequest
             userList.add(new PXEDUser("nipj03", "", ""));
             userList.add(new PXEDUser("santod10", "", ""));
             userList.add(new PXEDUser("tomn", "", ""));
-            userList.add(new PXEDUser("zutshm", "Meenakshi", "Zutshi"));
+            userList.add(new PXEDUser("zutshm", "Meenakshi", "Zutshi", "Meenakshi.Zutshi@clinicalserver.com"));
             userList.add(new PXEDUser("shuklr04", "", ""));
-            userList.add(new PXEDUser("zutshm-dummy", "Meenakshi", "Zutshi(dummy)"));
+            userList.add(new PXEDUser("zutshm-dummy", "Meenakshi", "Zutshi(dummy)", "Meenakshi.Zutshi@clinicalserver.com"));
+            userList.add(new PXEDUser("gurejka1", "Kapil", "Gureja", "Kapil.Gureja@clinicalserver.com"));
+
         } else {
             try {
                 Map<String, List<PXEDUser>> allGrps = findAllGroups();
@@ -337,6 +339,7 @@ public class SWJSFRequest
                     	usr.setUserName(getCN(sr.getNameInNamespace()));
                     	usr.setFirstName(getAttr(mattrs, "sn"));
                     	usr.setLastName(getAttr(mattrs, "givenName"));
+                    	usr.setEmailAddress(getAttr(mattrs, "mail"));
                     	
                     	mlist.add(usr);
                     }
@@ -379,6 +382,8 @@ public class SWJSFRequest
 			    	usr.setUserName(getCN(sr.getNameInNamespace()));
 			    	usr.setFirstName(getAttr(mattrs, "sn"));
 			    	usr.setLastName(getAttr(mattrs, "givenName"));
+			    	usr.setEmailAddress(getAttr(mattrs, "mail"));
+
 			    }  
 	        }
 	        catch (javax.naming.CommunicationException ex) {

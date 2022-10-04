@@ -1,0 +1,117 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<p:growl id="msgUserEmailAddressConfig" life="#{appCSMQBean.defaultGrowlLife}" sticky="true" showDetail="#{appCSMQBean.degugMode}" />
+
+	<h3 style="text-align: center">User Email Address CodeList</h3>
+	<p:dataTable id="userEmailAddressTable" var="val" rows="10" widgetVar="tblUserEmailAddressConfig"
+		value="#{adminController.userEmailAddressConfig}" style="margin-bottom:20px"
+		paginator="true" paginatorPosition="bottom"
+		paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+		rowsPerPageTemplate="5,10,25">
+
+		<p:column headerText="Serial #" style="text-align: center"
+                  sortable="true" sortBy="#{val.serialNum}">
+			<h:outputText value="#{val.serialNum}"/>
+		</p:column>
+
+		<p:column headerText="Code" style="text-align: center"
+                  sortable="true" sortBy="#{val.codelistInternalValue}">
+			<h:outputText value="#{val.codelistInternalValue}" />
+		</p:column>
+
+		<p:column headerText="Value" style="text-align: center"
+                  filterBy="#{val.value}" filterMatchMode="contains"
+                  sortable="true" sortBy="#{val.value}">
+			<h:outputText value="#{val.value}" />
+		</p:column>
+
+		<p:column headerText="Active?" style="text-align: center">
+			<h:outputText value="#{val.activeFlag}" />
+		</p:column>
+
+		<p:column headerText="Default?" style="text-align: center">
+			<h:outputText value="#{val.defaultFlag}" />
+		</p:column>
+
+		<p:column style="width:32px;text-align: center">
+
+			<p:commandButton action="#{adminController.initGetRef}"
+				update="@form" process="@this" oncomplete="PF('userEmailAddressConfigEditDlg').show()"
+				icon="ui-icon-pencil" title="View/Edit">
+				<f:setPropertyActionListener value="#{val}"
+					target="#{adminController.selectedRow}" />
+			</p:commandButton>
+		</p:column>
+	</p:dataTable>
+
+	<h:panelGrid columns="2" cellpadding="5">
+        <i class="fa fa-plus"></i>
+		<p:commandLink type="button" value="Add User Email Address" update="userEmailAddressConfigEditDlg"
+			process="@this" oncomplete="PF('userEmailAddressConfigEditDlg').show()"
+			actionListener="#{adminController.initAddCodelist}" />
+	</h:panelGrid>
+
+	<p:dialog header="User Email Address details" widgetVar="userEmailAddressConfigEditDlg" id="userEmailAddressConfigEditDlg"
+		modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+		<p:outputPanel style="text-align:center;">
+			<h:panelGrid columns="2" columnClasses="label, value">
+
+				<p:outputLabel value="Serial #" styleClass="label-right" />
+				<p:spinner style="float: left"
+					required="true" label="Serial #"
+					value="#{adminController.ref.serialNum}" min="1" />
+
+				<p:outputLabel value="Code" styleClass="label-right" />
+				<p:inputText required="true" label="Code"
+					value="#{adminController.ref.codelistInternalValue}"
+					style="width: 100px !important;  float: left" />
+
+				<p:outputLabel value="Value" styleClass="label-right" />
+				<p:inputText required="true" label="Value" 
+					value="#{adminController.ref.value}"
+					style="width: 300px !important; float: left; " />
+
+				<p:outputLabel value="Active flag" styleClass="label-right" />
+				<p:selectOneMenu value="#{adminController.ref.activeFlag}"
+					style="float: left">
+					<f:selectItem itemValue="Y" itemLabel="Y" />
+					<f:selectItem itemValue="N" itemLabel="N" />
+				</p:selectOneMenu>
+
+				<p:outputLabel value="Default flag" styleClass="label-right" />
+				<p:selectOneMenu value="#{adminController.ref.defaultFlag}"
+					style="float: left">
+					<f:selectItem itemValue="N" itemLabel="N" />
+					<f:selectItem itemValue="Y" itemLabel="Y" />
+				</p:selectOneMenu>
+			</h:panelGrid>
+
+			<h:panelGrid columns="2" cellpadding="5">
+				<p:commandButton value="Save" icon="fa fa-plus" oncomplete="PF('tblUserEmailAddressConfig').filter()"
+					onclick="PF('userEmailAddressConfigEditDlg').hide()" update="userEmailAddressTable msgUserEmailAddressConfig"
+					action="#{adminController.addRefCodelist}" />
+
+				<p:commandButton value="Cancel" icon="fa fa-close"
+					onclick="PF('userEmailAddressConfigEditDlg').hide()"
+					immediate="true" />
+			</h:panelGrid>
+
+		</p:outputPanel>
+	</p:dialog>
+	<style>
+.label-right {
+	float: right;
+	margin-right: 20px;
+	font-size: 14px !important;
+}
+</style>
+
+</ui:composition>
+
+

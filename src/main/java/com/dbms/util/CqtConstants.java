@@ -10,6 +10,10 @@ public class CqtConstants {
 	public static final String CODE_LIST_TYPE_PROTOCOL = "PROTOCOL";
     public static final String CODE_LIST_TYPE_USER_GROUPS = "USER_GROUPS";
     public static final String CODE_LIST_TYPE_SYSTEM_CONFIG = "SYSTEM_CONFIG";
+    public static final String CODE_LIST_TYPE_SMTP_SERVER = "SMTP_SERVER";
+    public static final String CODE_LIST_TYPE_SENDER_CONFIG = "SENDER_CONFIG";
+    public static final String CODE_LIST_TYPE_EMAIL_NOTIFICATION_MSG = "EMAIL_NOTIFICATION_MSG";
+    public static final String CODE_LIST_TYPE_USER_EMAIL_ADDRESS = "USER_EMAIL_ADDRESS";
     public static final String CODE_LIST_TYPE_CMQ_RELATION_IMPACT_TYPE = "CMQ_RELATION_IMPACT_TYPE";
     public static final String CODE_LIST_TYPE_SMQ_RELATION_IMPACT_TYPE = "SMQ_RELATION_IMPACT_TYPE";
     public static final String CODE_LIST_TYPE_MEDDRA_DICT_IMPACT_TYPE = "MEDDRA_DICTIONARY_IMPACT_TYPE";
