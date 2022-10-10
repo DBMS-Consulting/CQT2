@@ -210,7 +210,6 @@ public class UniquePTReportRelationsWorker implements Callable<MQReportRelations
                                         if (level.equals(SMQ3)) {
                                             smqSearched = smqBaseService.findByCode(smqC.getSmqCode());
                                             if (smqSearched != null) {
-                                                //List<SmqRelation190> list = smqBaseService.findSmqRelationsForSmqCode(smqSearched.getSmqCode());
                                                 List<SmqRelation190> list = smqBaseService.findSmqRelationsForSmqCodeAndScope(smqSearched.getSmqCode(), selectedScope);
                                                 if (list != null) {
                                                     for (SmqRelation190 smq3 : list) {

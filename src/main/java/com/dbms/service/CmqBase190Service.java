@@ -1198,8 +1198,6 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		}
 		
 		Map<Integer, ReportLineDataDto> mapReport = new HashMap<Integer, ReportLineDataDto>();
-		int cpt = 0;
-
 		/**
 		 * Première ligne - entêtes
 		 */
@@ -1292,7 +1290,6 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		rowCount++;
 		row = worksheet.createRow(rowCount);
 		cell = row.createCell(0);
-		Calendar cal = Calendar.getInstance();
 		if (details.getCreationDate() != null) {
 			
 			cell.setCellValue("Initial Creation Date: " + dateTimeFormat.format(details.getCreationDate()));
@@ -1351,7 +1348,6 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 
 		// Retrieval of relations - Loop
 		List<CmqRelation190> relations = cmqRelationService.findByCmqCode(details.getCode());
-		int relationSize = relations.size();
 		List<Future<MQReportRelationsWorkerDTO>> futures = new ArrayList<>();
 		int workerId = 1;
 		ExecutorService executorService = Executors.newFixedThreadPool(8);
@@ -1396,6 +1392,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 						mapReportData.get(0).setScope(relations.get(iterator).getTermScope());
 					}
 					
+					mapReportData.values().forEach(dto -> dto.setLevelNum(0L));//Setting levelNum to keep the item top level
 					parents.addAll(mapReportData.values());
 					mapReportData.clear();
 				} else {
@@ -1418,7 +1415,8 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 				term = childCmq.getCmqName();
 				codeTerm = childCmq.getCmqCode() != null ? childCmq.getCmqCode() + "" : "";
 
-				parents.add(new ReportLineDataDto(childCmq.getCmqLevel() == null ? null : (long)childCmq.getCmqLevel(), level, codeTerm, term, ""));
+				ReportLineDataDto parent = new ReportLineDataDto(1L, level, codeTerm, term, "");//LevelNum set to keep the item top level
+				parents.add(parent);
 				mapReport.clear();
 				
 				/**
@@ -1461,7 +1459,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 										mapReportData.get(0).setCategory(relationsPro.get(addedFromSmqCounter).getTermCategory());
 									}
 								}
-								parents.addAll(mapReportData.values());
+								parent.getChildren().addAll(mapReportData.values());
 								mapReportData.clear();
 								addedFromSmqCounter++;
 							} else {
@@ -1480,15 +1478,9 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		executorService.shutdownNow();
 		
 		parents.sort(LEVELNUM_TERM_REPORT_LINE_DTO_COMPARATOR);
+		parents.forEach(parent -> parent.getChildren().sort(LEVELNUM_TERM_REPORT_LINE_DTO_COMPARATOR));
 		
 		rowCount = fillReport(parents, cell, row, rowCount, worksheet);
-
-//		worksheet.autoSizeColumn(0);
-//		worksheet.autoSizeColumn(1);
-//		worksheet.autoSizeColumn(2);
-//		worksheet.autoSizeColumn(3);
-//		worksheet.autoSizeColumn(4);
-//		worksheet.autoSizeColumn(5);
 
 		StreamedContent content = null;
 		try {
@@ -1538,9 +1530,6 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
-
-		Map<Integer, ReportLineDataDto> mapReport = new HashMap<Integer, ReportLineDataDto>();
-		int cpt = 0;
 
 		/**
 		 * Première ligne - entêtes
@@ -1595,7 +1584,6 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 
 		// Retrieval of relations - Loop
 		List<CmqRelation190> relations = cmqRelationService.findByCmqCode(details.getCode());
-		int relationSize = relations.size();
 		List<Future<MQReportRelationsWorkerDTO>> futures = new ArrayList<>();
 		int workerId = 1;
 		ExecutorService executorService = Executors.newFixedThreadPool(8);
@@ -1653,21 +1641,10 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		}
 		LOG.info("Processing children now.");
 		//now child relations
-		String level = "", term = "", codeTerm = "";
 		List<CmqBase190> childCmqs = findChildCmqsByParentCode(details.getCode());
 		if((null != childCmqs) && (childCmqs.size() > 0)) {
 			LOG.info("Found child cmqs of size " + childCmqs.size());
 			for (CmqBase190 childCmq : childCmqs) {
-				level = childCmq.getCmqTypeCd();
-				term = childCmq.getCmqName();
-				codeTerm = childCmq.getCmqCode() != null ? childCmq.getCmqCode() + "" : "";
-
-				elements.add(new ReportLineDataDto(childCmq.getCmqLevel() == null ? null : (long)childCmq.getCmqLevel(), level, codeTerm, term, ""));
-				mapReport.clear();
-
-				/**
-				 * Other Relations
-				 */
 				List<CmqRelation190> relationsPro = cmqRelationService.findByCmqCode(childCmq.getCmqCode());
 				futures.clear();
 				if (relations != null) {
@@ -1680,8 +1657,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 						} else {
 							addedFromSmq.add(false);
 						}
-						MQReportRelationsWorker task = new MQReportRelationsWorker(workerId++, relation,relationScopeMap, filterLlts,childCmq.getDictionaryVersion());
-
+						UniquePTReportRelationsWorker task = new UniquePTReportRelationsWorker(workerId++, relation,relationScopeMap, filterLlts,childCmq.getDictionaryVersion(), smqBaseService, meddraDictService);
 						futures.add(executorService.submit(task));
 					}
 
@@ -2679,30 +2655,15 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 			if(null != line) {
 				row = worksheet.createRow(rowCount);
 
-				CellStyle headerCellStyle = worksheet.getWorkbook().createCellStyle();
-				headerCellStyle.setFillForegroundColor(IndexedColors.PALE_BLUE.index);
-				headerCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-
 				// Cell 0
 				cell = row.createCell(0);
 				cell.setCellValue(line.getDots() + line.getTerm());
-				if(!line.getChildren().isEmpty()) {
-					cell.setCellStyle(headerCellStyle);
-				}
-
 				// Cell 1
 				cell = row.createCell(1);
 				cell.setCellValue(line.getCode());
-				if(!line.getChildren().isEmpty()) {
-					cell.setCellStyle(headerCellStyle);
-				}
-
 				// Cell 2
 				cell = row.createCell(2);
 				cell.setCellValue(line.getLevel());
-				if(!line.getChildren().isEmpty()) {
-					cell.setCellStyle(headerCellStyle);
-				}
 
 				rowCount++;
 
