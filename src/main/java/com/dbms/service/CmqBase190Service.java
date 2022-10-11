@@ -1478,7 +1478,6 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		executorService.shutdownNow();
 		
 		parents.sort(LEVELNUM_TERM_REPORT_LINE_DTO_COMPARATOR);
-		parents.forEach(parent -> parent.getChildren().sort(LEVELNUM_TERM_REPORT_LINE_DTO_COMPARATOR));
 		
 		rowCount = fillReport(parents, cell, row, rowCount, worksheet);
 
