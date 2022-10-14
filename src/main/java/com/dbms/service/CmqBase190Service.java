@@ -100,6 +100,17 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 			return o1.getLevelNum().compareTo(o2.getLevelNum());
 		}
 	};
+	private static final Comparator<ReportLineDataDto> LEVELNUM_REPORT_LINE_DTO_COMPARATOR = (o1, o2) -> {
+		if(o1.getLevelNum() == null && o2.getLevelNum() != null) {
+			return 1;
+		} else if (o1.getLevelNum() != null && o2.getLevelNum() == null) {
+			return -1;
+		} else if ((o1.getLevelNum() == null && o2.getLevelNum() == null) || o1.getLevelNum().compareTo(o2.getLevelNum()) == 0) {
+			return 0;
+		} else {
+			return o1.getLevelNum().compareTo(o2.getLevelNum());
+		}
+	};
 
 	@ManagedProperty("#{CmqRelation190Service}")
 	private ICmqRelation190Service cmqRelationService;
@@ -1478,6 +1489,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		executorService.shutdownNow();
 		
 		parents.sort(LEVELNUM_TERM_REPORT_LINE_DTO_COMPARATOR);
+		parents.forEach(parent -> parent.getChildren().sort(LEVELNUM_REPORT_LINE_DTO_COMPARATOR));
 		
 		rowCount = fillReport(parents, cell, row, rowCount, worksheet);
 
