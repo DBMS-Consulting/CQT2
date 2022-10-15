@@ -1403,7 +1403,6 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 						mapReportData.get(0).setScope(relations.get(iterator).getTermScope());
 					}
 					
-					mapReportData.values().forEach(dto -> dto.setLevelNum(0L));//Setting levelNum to keep the item top level
 					parents.addAll(mapReportData.values());
 					mapReportData.clear();
 				} else {
@@ -1426,7 +1425,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 				term = childCmq.getCmqName();
 				codeTerm = childCmq.getCmqCode() != null ? childCmq.getCmqCode() + "" : "";
 
-				ReportLineDataDto parent = new ReportLineDataDto(1L, level, codeTerm, term, "");//LevelNum set to keep the item top level
+				ReportLineDataDto parent = new ReportLineDataDto((long)childCmq.getCmqLevel(), level, codeTerm, term, "");//LevelNum set to keep the item top level
 				parents.add(parent);
 				mapReport.clear();
 				
