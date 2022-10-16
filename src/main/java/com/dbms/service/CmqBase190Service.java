@@ -1404,6 +1404,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 					}
 					
 					parents.addAll(mapReportData.values());
+					LOG.info("Adding parents from reportData {}", mapReportData.values());
 					mapReportData.clear();
 				} else {
 					LOG.info("Got false status for success in worker {}", relationsWorkerDTO.getWorkerName());
@@ -1425,8 +1426,9 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 				term = childCmq.getCmqName();
 				codeTerm = childCmq.getCmqCode() != null ? childCmq.getCmqCode() + "" : "";
 
-				ReportLineDataDto parent = new ReportLineDataDto((long)childCmq.getCmqLevel(), level, codeTerm, term, "");//LevelNum set to keep the item top level
+				ReportLineDataDto parent = new ReportLineDataDto(getLevelNumFromLevel(level), level, codeTerm, term, "");
 				parents.add(parent);
+				LOG.info("Adding parent from children {}", parent);
 				mapReport.clear();
 				
 				/**
@@ -1470,6 +1472,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 									}
 								}
 								parent.getChildren().addAll(mapReportData.values());
+								//LOG.info("Adding children to parent {}", parent);
 								mapReportData.clear();
 								addedFromSmqCounter++;
 							} else {
@@ -1518,6 +1521,23 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		}
 		LOG.info("Finished MQ report generation.");
 		return content;
+	}
+
+	private Long getLevelNumFromLevel(String level) {
+		switch(level) {
+			case "SMQ1": return 1L;
+			case "SMQ2": return 2L;
+			case "SMQ3": return 3L;
+			case "SMQ4": return 4L;
+			case "SMQ5": return 5L;
+			case "SOC":  return 6L;
+			case "HLGT": return 7L;
+			case "HLT": return 8L;
+			case "PT": return 9L;
+			case "LLT": return 10L; 
+			case "PRO": return 11L;
+			default: return 12L;
+		}
 	}
 
 	/**
