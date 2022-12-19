@@ -51,6 +51,8 @@ public interface IRefCodeListService extends ICqtPersistenceService<RefConfigCod
     public String interpretMeddraImpactTypeDesc(String internalCode, String impactType);
 	public String[] interpretProductCodesToValues(List<CmqProductBaseCurrent> products);
 	public String interpretProductCodesToValuesLabel(String[] productCds);
+	public String interpretDictionaryVersion(String dictionaryVersion);
+
     public String convertProductCodesToValuesLabel(List<CmqProductBaseCurrent> products); 
 
 	public StreamedContent generateReport(String codelistType);

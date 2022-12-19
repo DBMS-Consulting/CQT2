@@ -641,6 +641,13 @@ public class RefCodeListService extends
 		}
 		return StringUtils.join(pv, ", ");
 	}
+
+        @Override
+        public String interpretDictionaryVersion(String dictionaryVersion) {
+                
+                int len = dictionaryVersion.length();
+                return dictionaryVersion.substring(0, len-1) + '.' + dictionaryVersion.substring(len-1);
+        }
 	
 	@Override
 	public void create(RefConfigCodeList e, String userCn, String userFirstName, String userLastName, String userGroups) throws CqtServiceException {

@@ -61,6 +61,9 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 	@ManagedProperty("#{MeddraDictTargetService}")
 	private IMeddraDictTargetService meddraDictService;
 
+        @ManagedProperty("#{RefCodeListService}")
+	private IRefCodeListService refCodeListService;
+
 	@Override
 	@SuppressWarnings("unchecked")
 	public List<SmqBaseTarget> findByLevelAndTerm(Integer level, String searchTerm) {
@@ -810,7 +813,7 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 		rowCount += 2;
 		row = worksheet.createRow(rowCount);
 		cell = row.createCell(0);
-		cell.setCellValue("MedDRA Dictionary Version: " + dictionaryVersion);
+		cell.setCellValue("MedDRA Dictionary Version: " + refCodeListService.interpretDictionaryVersion(dictionaryVersion));
 
 		rowCount++;
 		row = worksheet.createRow(rowCount);
@@ -1595,6 +1598,14 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 
 	public void setMeddraDictService(IMeddraDictTargetService meddraDictService) {
 		this.meddraDictService = meddraDictService;
+	}
+
+        public IRefCodeListService getRefCodeListService() {
+		return refCodeListService;
+	}
+
+	public void setRefCodeListService(IRefCodeListService refCodeListService) {
+		this.refCodeListService = refCodeListService;
 	}
 
 	@Override

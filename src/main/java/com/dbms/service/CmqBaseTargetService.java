@@ -706,7 +706,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 		rowCount += 2;
 		row = worksheet.createRow(rowCount);
 		cell = row.createCell(0);
-		cell.setCellValue("MedDRA Dictionary Version: " + dictionaryVersion);
+		cell.setCellValue("MedDRA Dictionary Version: " + refCodeListService.interpretDictionaryVersion(dictionaryVersion));
 
 		rowCount++;
 		row = worksheet.createRow(rowCount);

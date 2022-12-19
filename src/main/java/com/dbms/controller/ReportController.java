@@ -189,7 +189,7 @@ public class ReportController extends BaseController<CmqBase190> {
 			            getOrCreateHSSFCell(row, 4).setCellValue(refCodeListService.interpretInternalCodeToValue(CqtConstants.CODE_LIST_TYPE_PROTOCOL, dr.getCmqProtocolCd()));
 			            getOrCreateHSSFCell(row, 5).setCellValue(refCodeListService.interpretProductCodesToValuesLabel(dr.getCmqProductCds()));
 			            getOrCreateHSSFCell(row, 6).setCellValue(dr.getCmqLevel());
-			            getOrCreateHSSFCell(row, 7).setCellValue(dr.getDictionaryVersion());
+			            getOrCreateHSSFCell(row, 7).setCellValue(refCodeListService.interpretDictionaryVersion(dr.getDictionaryVersion()));
 			            getOrCreateHSSFCell(row, 8).setCellValue(dr.getCmqStatus());
 			            getOrCreateHSSFCell(row, 9).setCellValue(dr.getCmqAlgorithm());
 			            getOrCreateHSSFCell(row, 10).setCellValue(dr.getCmqGroup());
@@ -220,7 +220,7 @@ public class ReportController extends BaseController<CmqBase190> {
 	    				rowData.put("cmqProtocol", refCodeListService.interpretInternalCodeToValue(CqtConstants.CODE_LIST_TYPE_PROTOCOL, dr.getCmqProtocolCd()));
 	    				rowData.put("cmqProduct", refCodeListService.interpretProductCodesToValuesLabel(dr.getCmqProductCds()));
 	    				rowData.put("cmqLevel", dr.getCmqLevel().toString());
-	    				rowData.put("dictionaryVersion", dr.getDictionaryVersion());
+	    				rowData.put("dictionaryVersion", refCodeListService.interpretDictionaryVersion(dr.getDictionaryVersion()));
 	    				rowData.put("cmqStatus", dr.getCmqStatus());
 	    				rowData.put("cmqAlgorithm", dr.getCmqAlgorithm());
 	    				rowData.put("cmqGroup", dr.getCmqGroup());

@@ -862,7 +862,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		rowCount += 2;
 		row = worksheet.createRow(rowCount);
 		cell = row.createCell(0);
-		cell.setCellValue("MedDRA Dictionary Version: " + dictionaryVersion);
+		cell.setCellValue("MedDRA Dictionary Version: " + refCodeListService.interpretDictionaryVersion(dictionaryVersion));
 
 		rowCount++;
 		row = worksheet.createRow(rowCount);
@@ -1224,7 +1224,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		rowCount += 2;
 		row = worksheet.createRow(rowCount);
 		cell = row.createCell(0);
-		cell.setCellValue("MedDRA Dictionary Version: " + dictionaryVersion);
+		cell.setCellValue("MedDRA Dictionary Version: " + refCodeListService.interpretDictionaryVersion(dictionaryVersion));
 
 		rowCount++;
 		row = worksheet.createRow(rowCount);
@@ -1576,7 +1576,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		rowCount += 2;
 		row = worksheet.createRow(rowCount);
 		cell = row.createCell(0);
-		cell.setCellValue("MedDRA Dictionary Version: " + dictionaryVersion);
+		cell.setCellValue("MedDRA Dictionary Version: " + refCodeListService.interpretDictionaryVersion(dictionaryVersion));
 
 		rowCount++;
 		row = worksheet.createRow(rowCount);
