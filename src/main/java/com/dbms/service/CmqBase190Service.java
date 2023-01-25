@@ -867,12 +867,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		rowCount++;
 		row = worksheet.createRow(rowCount);
 		cell = row.createCell(0);
-		cell.setCellValue("Status: " + details.getStatus());
-
-		rowCount++;
-		row = worksheet.createRow(rowCount);
-		cell = row.createCell(0);
-		cell.setCellValue("Term Name: " + details.getName());
+		cell.setCellValue("List Name: " + details.getName());
 
 		rowCount++;
 		row = worksheet.createRow(rowCount);
@@ -882,7 +877,12 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		rowCount++;
 		row = worksheet.createRow(rowCount);
 		cell = row.createCell(0);
-		cell.setCellValue("Extension: " + details.getExtension());
+		cell.setCellValue("Level Extension: " + details.getExtension());
+
+                rowCount++;
+		row = worksheet.createRow(rowCount);
+		cell = row.createCell(0);
+		cell.setCellValue("Status: " + details.getStatus());
 
 		rowCount++;
 		row = worksheet.createRow(rowCount);
@@ -1229,104 +1229,104 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		rowCount++;
 		row = worksheet.createRow(rowCount);
 		cell = row.createCell(0);
-		cell.setCellValue("Term: " + details.getName());
+		cell.setCellValue("List Name: " + details.getName());
 		rowCount++;
-		row = worksheet.createRow(rowCount);
-		cell = row.createCell(0);
-		cell.setCellValue("Drug Program: " + refCodeListService.findCodeByInternalCode(CqtConstants.CODE_LIST_TYPE_PROGRAM, details.getDrugProgram()));
-		rowCount++;
-		row = worksheet.createRow(rowCount);
-		cell = row.createCell(0);
-		cell.setCellValue("Protocol: " + refCodeListService.findCodeByInternalCode(CqtConstants.CODE_LIST_TYPE_PROTOCOL, details.getProtocol()));
-		rowCount++;
-		row = worksheet.createRow(rowCount);
-		cell = row.createCell(0);
-		cell.setCellValue("Product List: " + refCodeListService.interpretProductCodesToValuesLabel(details.getProducts()));
-		rowCount++;
-		row = worksheet.createRow(rowCount);
-		cell = row.createCell(0);
-		if (details.getDesignee() != null)
-			cell.setCellValue("Designee: " + details.getDesignee());
-		else
-			cell.setCellValue("Designee: ");
-		rowCount++;
-		row = worksheet.createRow(rowCount);
-		cell = row.createCell(0);
-		if (details.getDesigneeTwo() != null)
-			cell.setCellValue("Designee 2: " + details.getDesigneeTwo());
-		else
-			cell.setCellValue("Designee 2: ");
-		rowCount++;
-		row = worksheet.createRow(rowCount);
-		cell = row.createCell(0);
-		if (details.getDesigneeThree() != null)
-			cell.setCellValue("Designee 3: " + details.getDesigneeThree());
-		else
-			cell.setCellValue("Designee 3: ");
-		rowCount++;
-		row = worksheet.createRow(rowCount);
-		cell = row.createCell(0);
-		cell.setCellValue("Level: " + details.getLevel());
-		rowCount++;
+//		row = worksheet.createRow(rowCount);
+//		cell = row.createCell(0);
+//		cell.setCellValue("Drug Program: " + refCodeListService.findCodeByInternalCode(CqtConstants.CODE_LIST_TYPE_PROGRAM, details.getDrugProgram()));
+//		rowCount++;
+//		row = worksheet.createRow(rowCount);
+//		cell = row.createCell(0);
+//		cell.setCellValue("Protocol: " + refCodeListService.findCodeByInternalCode(CqtConstants.CODE_LIST_TYPE_PROTOCOL, details.getProtocol()));
+//		rowCount++;
+//		row = worksheet.createRow(rowCount);
+//		cell = row.createCell(0);
+//		cell.setCellValue("Product List: " + refCodeListService.interpretProductCodesToValuesLabel(details.getProducts()));
+//		rowCount++;
+//		row = worksheet.createRow(rowCount);
+//		cell = row.createCell(0);
+//		if (details.getDesignee() != null)
+//			cell.setCellValue("Designee: " + details.getDesignee());
+//		else
+//			cell.setCellValue("Designee: ");
+//		rowCount++;
+//		row = worksheet.createRow(rowCount);
+//		cell = row.createCell(0);
+//		if (details.getDesigneeTwo() != null)
+//			cell.setCellValue("Designee 2: " + details.getDesigneeTwo());
+//		else
+//			cell.setCellValue("Designee 2: ");
+//		rowCount++;
+//		row = worksheet.createRow(rowCount);
+//		cell = row.createCell(0);
+//		if (details.getDesigneeThree() != null)
+//			cell.setCellValue("Designee 3: " + details.getDesigneeThree());
+//		else
+//			cell.setCellValue("Designee 3: ");
+//		rowCount++;
+//		row = worksheet.createRow(rowCount);
+//		cell = row.createCell(0);
+//		cell.setCellValue("Level: " + details.getLevel());
+//		rowCount++;
 		row = worksheet.createRow(rowCount);
 		cell = row.createCell(0);
 		cell.setCellValue("Code: " + details.getCode());
 		rowCount++;
-		row = worksheet.createRow(rowCount);
-		cell = row.createCell(0);
-		cell.setCellValue("Algorithm: " + details.getAlgorithm());
-		rowCount++;
+//		row = worksheet.createRow(rowCount);
+//		cell = row.createCell(0);
+//		cell.setCellValue("Algorithm: " + details.getAlgorithm());
+//		rowCount++;
 		row = worksheet.createRow(rowCount);
 		cell = row.createCell(0);
 		cell.setCellValue("Level Extension: " + details.getExtension());
 		rowCount++;
-		row = worksheet.createRow(rowCount);
-		cell = row.createCell(0);
-		cell.setCellValue("Group: " + details.getGroup());
-		rowCount++;
+//		row = worksheet.createRow(rowCount);
+//		cell = row.createCell(0);
+//		cell.setCellValue("Group: " + details.getGroup());
+//		rowCount++;
 		row = worksheet.createRow(rowCount);
 		cell = row.createCell(0);
 		cell.setCellValue("Status: " + details.getStatus());
 		rowCount++;
-		row = worksheet.createRow(rowCount);
-		cell = row.createCell(0);
-		cell.setCellValue("State: " + details.getState());
-		rowCount++;
-		row = worksheet.createRow(rowCount);
-		cell = row.createCell(0);
-		String createdBy = "";
-		if (details.getCreatedBy() != null)
-			createdBy = details.getCreatedBy();
-		cell.setCellValue("Initial Creation By: " + createdBy);
-		rowCount++;
-		row = worksheet.createRow(rowCount);
-		cell = row.createCell(0);
-		if (details.getCreationDate() != null) {
-			
-			cell.setCellValue("Initial Creation Date: " + dateTimeFormat.format(details.getCreationDate()));
-		}
-		else
-			cell.setCellValue("Initial Creation Date: ");
-		
- 		
-		rowCount++;
-		row = worksheet.createRow(rowCount);
-		cell = row.createCell(0);
-		String modifiedBy = "";
-		if (details.getLastModifiedBy() != null)
-			modifiedBy = details.getLastModifiedBy();
-		cell.setCellValue("Last Modified By: " + modifiedBy);
-		
-		rowCount++;
-		row = worksheet.createRow(rowCount);
-		cell = row.createCell(0);
-		if (details.getLastModifiedDate() != null) {
-	 		cell.setCellValue("Last Modification Date: " + dateTimeFormat.format(details.getLastModifiedDate()));
-		}
-		else
-			cell.setCellValue("Last Modification Date: ");
-		
-		rowCount++;
+//		row = worksheet.createRow(rowCount);
+//		cell = row.createCell(0);
+//		cell.setCellValue("State: " + details.getState());
+//		rowCount++;
+//		row = worksheet.createRow(rowCount);
+//		cell = row.createCell(0);
+//		String createdBy = "";
+//		if (details.getCreatedBy() != null)
+//			createdBy = details.getCreatedBy();
+//		cell.setCellValue("Initial Creation By: " + createdBy);
+//		rowCount++;
+//		row = worksheet.createRow(rowCount);
+//		cell = row.createCell(0);
+//		if (details.getCreationDate() != null) {
+//			
+//			cell.setCellValue("Initial Creation Date: " + dateTimeFormat.format(details.getCreationDate()));
+//		}
+//		else
+//			cell.setCellValue("Initial Creation Date: ");
+//		
+// 		
+//		rowCount++;
+//		row = worksheet.createRow(rowCount);
+//		cell = row.createCell(0);
+//		String modifiedBy = "";
+//		if (details.getLastModifiedBy() != null)
+//			modifiedBy = details.getLastModifiedBy();
+//		cell.setCellValue("Last Modified By: " + modifiedBy);
+//		
+//		rowCount++;
+//		row = worksheet.createRow(rowCount);
+//		cell = row.createCell(0);
+//		if (details.getLastModifiedDate() != null) {
+//	 		cell.setCellValue("Last Modification Date: " + dateTimeFormat.format(details.getLastModifiedDate()));
+//		}
+//		else
+//			cell.setCellValue("Last Modification Date: ");
+//		
+//		rowCount++;
 		row = worksheet.createRow(rowCount);
 		cell = row.createCell(0);
 		
@@ -1581,11 +1581,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		rowCount++;
 		row = worksheet.createRow(rowCount);
 		cell = row.createCell(0);
-		cell.setCellValue("Status: " + details.getStatus());
-		rowCount++;
-		row = worksheet.createRow(rowCount);
-		cell = row.createCell(0);
-		cell.setCellValue("Term: " + details.getName());
+		cell.setCellValue("List Name: " + details.getName());
 		rowCount++;
 		row = worksheet.createRow(rowCount);
 		cell = row.createCell(0);
@@ -1594,6 +1590,10 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		row = worksheet.createRow(rowCount);
 		cell = row.createCell(0);
 		cell.setCellValue("Level Extension: " + details.getExtension());
+		rowCount++;
+                row = worksheet.createRow(rowCount);
+		cell = row.createCell(0);
+		cell.setCellValue("Status: " + details.getStatus());
 		rowCount++;
 		row = worksheet.createRow(rowCount);
 		cell = row.createCell(0);
