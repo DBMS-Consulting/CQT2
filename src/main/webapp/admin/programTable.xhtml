@@ -1,117 +1,118 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:c="http://java.sun.com/jsp/jstl/core"
-	xmlns:p="http://primefaces.org/ui">
-	
-	<p:growl id="msgPg" life="#{appCSMQBean.defaultGrowlLife}" sticky="true" showDetail="#{appCSMQBean.degugMode}" />
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui">
 
-	<h3 style="text-align: center">Program CodeList</h3>
-	<p:dataTable id="tableProgram" var="val" rows="10" widgetVar="tblPrograms"
-		value="#{adminController.programs}" style="margin-bottom:20px"
-		paginator="true" paginatorPosition="bottom"
-		paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-		rowsPerPageTemplate="5,10,25">
+    <p:growl id="msgPg" life="#{appCSMQBean.defaultGrowlLife}" sticky="true" showDetail="#{appCSMQBean.degugMode}" />
 
-		<p:column headerText="Serial #" style="text-align: center"
+    <h3 style="text-align: center">Program CodeList</h3>
+    <p:dataTable id="tableProgram" var="val" rows="10" widgetVar="tblPrograms"
+                 value="#{adminController.programs}" style="margin-bottom:20px"
+                 paginator="true" paginatorPosition="bottom"
+                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                 rowsPerPageTemplate="5,10,25">
+
+        <p:column headerText="Serial #" style="text-align: center"
                   sortable="true" sortBy="#{val.serialNum}">
-			<h:outputText value="#{val.serialNum}" />
-		</p:column>
+            <h:outputText value="#{val.serialNum}" />
+        </p:column>
 
-		<p:column headerText="Code" style="text-align: center"
+        <p:column headerText="Code" style="text-align: center"
                   sortable="true" sortBy="#{val.codelistInternalValue}">
-			<h:outputText value="#{val.codelistInternalValue}" />
-		</p:column>
+            <h:outputText value="#{val.codelistInternalValue}" />
+        </p:column>
 
-		<p:column headerText="Program Name" style="text-align: center"
+        <p:column headerText="Program Name" style="text-align: center"
                   filterBy="#{val.value}" filterMatchMode="contains"
                   sortable="true" sortBy="#{val.value}">
-			<h:outputText value="#{val.value}" />
-		</p:column>
+            <h:outputText value="#{val.value}" />
+        </p:column>
 
-		<p:column headerText="Active?" style="text-align: center">
-			<h:outputText value="#{val.activeFlag}" />
-		</p:column>
+        <p:column headerText="Active?" style="text-align: center">
+            <h:outputText value="#{val.activeFlag}" />
+        </p:column>
 
-		<p:column headerText="Default?" style="text-align: center">
-			<h:outputText value="#{val.defaultFlag}" />
-		</p:column>
+        <p:column headerText="Default?" style="text-align: center">
+            <h:outputText value="#{val.defaultFlag}" />
+        </p:column>
 
-		<p:column style="width:32px;text-align: center">
-			<p:commandButton action="#{adminController.initGetRef}"
-				update="@form" process="@this"
-				oncomplete="PF('programD').show()" icon="ui-icon-pencil"
-				title="View/Edit">
-				<f:setPropertyActionListener value="#{val}"
-					target="#{adminController.selectedRow}" />
-			</p:commandButton>
-		</p:column>
-	</p:dataTable>
+        <p:column style="width:32px;text-align: center">
+            <p:commandButton action="#{adminController.initGetRef}"
+                             update="@form" process="@this"
+                             oncomplete="PF('programD').show()" icon="ui-icon-pencil"
+                             title="View/Edit">
+                <f:setPropertyActionListener value="#{val}"
+                                             target="#{adminController.selectedRow}" />
+            </p:commandButton>
+        </p:column>
+    </p:dataTable>
 
-	<h:panelGrid columns="2" cellpadding="5">
-		
-		<i class="fa fa-plus"></i>
-		<p:commandLink type="button" value="Add Program"
-			update="dialogProg" process="@this" oncomplete="PF('programD').show()"
-			actionListener="#{adminController.initAddCodelist}" />
-	</h:panelGrid>
+    <h:panelGrid columns="2" cellpadding="5">
 
-	<p:dialog header="Program details" widgetVar="programD" id="dialogProg"
-		modal="true" showEffect="fade" hideEffect="fade" resizable="false">
-		<p:outputPanel style="text-align:center;">
-			<h:panelGrid columns="2" columnClasses="label, value">
+        <i class="fa fa-plus"></i>
+        <p:commandLink type="button" value="Add Program"
+                       update="dialogProg" process="@this" oncomplete="PF('programD').show()"
+                       actionListener="#{adminController.initAddCodelist}" />
+    </h:panelGrid>
 
-				<p:outputLabel value="Serial #" styleClass="label-right" />
-				<p:spinner style="float: left"
-					required="true" label="Serial #"
-					value="#{adminController.ref.serialNum}" min="1" />
+    <p:dialog header="Program details" widgetVar="programD" id="dialogProg"
+              modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+        <p:outputPanel style="text-align:center;">
+            <h:panelGrid columns="2" columnClasses="label, value">
 
-				<p:outputLabel value="Code" styleClass="label-right" />
-				<p:inputText required="true"  label="Code"
-					value="#{adminController.ref.codelistInternalValue}"
-					style="width: 50px !important;  float: left" />
+                <p:outputLabel value="Serial #" styleClass="label-right" />
+                <p:spinner style="float: left"
+                           required="true" label="Serial #"
+                           value="#{adminController.ref.serialNum}" min="1" />
 
-				<p:outputLabel value="Program Name" styleClass="label-right" />
-				<p:inputText required="true" label="Program Name"
-					value="#{adminController.ref.value}"
-					style="width: 300px !important; float: left" />
+                <p:outputLabel value="Code" styleClass="label-right" />
+                <p:inputText required="true"  label="Code"
+                             value="#{adminController.ref.codelistInternalValue}"
+                             style="width: 50px !important;  float: left" />
 
-				<p:outputLabel value="Active flag" styleClass="label-right" />
-				<p:selectOneMenu value="#{adminController.ref.activeFlag}"
-					style="float: left" id="activeFlagPG">
-					<f:selectItem itemValue="Y" itemLabel="Y" />
-					<f:selectItem itemValue="N" itemLabel="N" />
-				</p:selectOneMenu>
+                <p:outputLabel value="Program Name" styleClass="label-right" />
+                <p:inputText required="true" label="Program Name"
+                             value="#{adminController.ref.value}"
+                             maxlength="50" 
+                             style="width: 300px !important; float: left" />
 
-				<p:outputLabel value="Default flag" styleClass="label-right" />
-				<p:selectOneMenu value="#{adminController.ref.defaultFlag}"
-					style="float: left" id="defaultFlagPG">
-					<f:selectItem itemValue="N" itemLabel="N" />
-					<f:selectItem itemValue="Y" itemLabel="Y" />
-				</p:selectOneMenu>
-			</h:panelGrid>
+                <p:outputLabel value="Active flag" styleClass="label-right" />
+                <p:selectOneMenu value="#{adminController.ref.activeFlag}"
+                                 style="float: left" id="activeFlagPG">
+                    <f:selectItem itemValue="Y" itemLabel="Y" />
+                    <f:selectItem itemValue="N" itemLabel="N" />
+                </p:selectOneMenu>
 
-			<h:panelGrid columns="2" cellpadding="5">
-				<p:commandButton value="Save" icon="fa fa-plus"
-					onclick="PF('programD').hide()" update="tableProgram msgPg"
-					action="#{adminController.addRefCodelist}" oncomplete="PF('tblPrograms').filter()"/>
+                <p:outputLabel value="Default flag" styleClass="label-right" />
+                <p:selectOneMenu value="#{adminController.ref.defaultFlag}"
+                                 style="float: left" id="defaultFlagPG">
+                    <f:selectItem itemValue="N" itemLabel="N" />
+                    <f:selectItem itemValue="Y" itemLabel="Y" />
+                </p:selectOneMenu>
+            </h:panelGrid>
 
-				<p:commandButton value="Cancel" icon="fa fa-close"
-					onclick="PF('programD').hide()" update="tableProgram msgPg"
-					immediate="true" />
-			</h:panelGrid>
+            <h:panelGrid columns="2" cellpadding="5">
+                <p:commandButton value="Save" icon="fa fa-plus"
+                                 onclick="PF('programD').hide()" update="tableProgram msgPg"
+                                 action="#{adminController.addRefCodelist}" oncomplete="PF('tblPrograms').filter()"/>
 
-		</p:outputPanel>
-	</p:dialog>
-	<style>
-.label-right {
-	float: right;
-	margin-right: 20px;
-	font-size: 14px !important;
-}
-</style>
+                <p:commandButton value="Cancel" icon="fa fa-close"
+                                 onclick="PF('programD').hide()" update="tableProgram msgPg"
+                                 immediate="true" />
+            </h:panelGrid>
+
+        </p:outputPanel>
+    </p:dialog>
+    <style>
+        .label-right {
+            float: right;
+            margin-right: 20px;
+            font-size: 14px !important;
+        }
+    </style>
 
 </ui:composition>
 

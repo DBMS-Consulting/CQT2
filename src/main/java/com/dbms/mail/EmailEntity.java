@@ -77,7 +77,7 @@ public class EmailEntity {
 			message.setFrom(new InternetAddress(this.userId));
 			message.setRecipients(Message.RecipientType.TO, recipientAddress);
 			message.setSubject(this.subject);
-			message.setText(this.textMessage);
+			message.setContent(this.textMessage, "text/html");
 			return message;
 			
 		} catch (Exception ex) {

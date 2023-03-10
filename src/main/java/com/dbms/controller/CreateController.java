@@ -2169,7 +2169,9 @@ public class CreateController implements Serializable {
 	                    "Workflow state set to '" + state + "'", "");
 				FacesContext ctx = FacesContext.getCurrentInstance();
 				ctx.addMessage(null, msg);
-                                if (state.equalsIgnoreCase("Reviewed") || state.equalsIgnoreCase("Approved")) {
+                                
+                                // EMAIL ONLY IF THE LIST IS OF TYPE TME
+                                if (selectedData.getCmqTypeCd().equalsIgnoreCase("TME") && (state.equalsIgnoreCase("Reviewed") || state.equalsIgnoreCase("Approved"))) {
                                     emailer(state);
                                 }
 				
@@ -2225,6 +2227,23 @@ public class CreateController implements Serializable {
 				password = refConfigCodeList.getValue();
 			}
             }
+            
+            String subject = selectedData.getCmqName() + " " + selectedData.getCmqTypeCd() + " ";
+            String textMessage = "";
+            if (state.equalsIgnoreCase("Reviewed")) {
+                textMessage = refCodeListService.findByCriterias(CqtConstants.CODE_LIST_TYPE_EMAIL_NOTIFICATION_MSG, 
+                                "WORLKFLOW_ST1", "Y").getValue();
+                subject = subject + refCodeListService.findByCriterias(CqtConstants.CODE_LIST_TYPE_EMAIL_SUBJECT, 
+                                "WORLKFLOW_ST1", "Y").getValue();
+            }
+            else {
+                textMessage = refCodeListService.findByCriterias(CqtConstants.CODE_LIST_TYPE_EMAIL_NOTIFICATION_MSG, 
+                                "WORLKFLOW_ST2", "Y").getValue();
+                subject = subject + refCodeListService.findByCriterias(CqtConstants.CODE_LIST_TYPE_EMAIL_SUBJECT, 
+                                "WORLKFLOW_ST2", "Y").getValue();
+            }
+            
+
 
             RefConfigCodeList adminEmailCodeList = refCodeListService.findByCriterias(CqtConstants.CODE_LIST_TYPE_USER_EMAIL_ADDRESS, 
                                 "ADMIN_EMAIL", "Y");
@@ -2233,33 +2252,21 @@ public class CreateController implements Serializable {
             List<String> recipients = new ArrayList<String>();            
             if (! StringUtils.isEmpty(adminEmailAddress))
                     recipients.add(adminEmailAddress);
-            
+                    
             String designee = this.detailsFormModel.getEmailAddressFromUsername(selectedData.getCmqDesignee());
             String designee2 = this.detailsFormModel.getEmailAddressFromUsername(selectedData.getCmqDesignee2());
             String designee3 = this.detailsFormModel.getEmailAddressFromUsername(selectedData.getCmqDesignee3());
 
-            if (! StringUtils.isEmpty(designee))
+            // add designees only if it is reviewed
+            if (state.equalsIgnoreCase("Reviewed")) {
+                if (! StringUtils.isEmpty(designee))
                 recipients.add(designee);
             if (! StringUtils.isEmpty(designee2))
                 recipients.add(designee2);
             if (! StringUtils.isEmpty(designee3))
                 recipients.add(designee3);
-
-            String newState = "", textMessage = "";
-            if (state.equalsIgnoreCase("Reviewed")) {
-                newState = CmqBase190.CMQ_STATE_VALUE_REVIEWED;
-                textMessage = refCodeListService.findByCriterias(CqtConstants.CODE_LIST_TYPE_EMAIL_NOTIFICATION_MSG, 
-                                "WORLKFLOW_ST1", "Y").getValue();
             }
-            else {
-                newState = CmqBase190.CMQ_STATE_VALUE_APPROVED;
-                textMessage = refCodeListService.findByCriterias(CqtConstants.CODE_LIST_TYPE_EMAIL_NOTIFICATION_MSG, 
-                                "WORLKFLOW_ST2", "Y").getValue();
-            }
-            String subject = selectedData.getCmqName() + " " + selectedData.getCmqTypeCd() + 
-                            " " + newState;
-
-                       
+                  
 
             EmailEntity email = new EmailEntity(smtp_host, smtp_port, username, password, 
                                             recipients, subject, textMessage);

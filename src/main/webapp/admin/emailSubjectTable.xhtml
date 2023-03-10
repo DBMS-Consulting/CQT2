@@ -6,28 +6,26 @@
                 xmlns:c="http://java.sun.com/jsp/jstl/core"
                 xmlns:p="http://primefaces.org/ui">
 
-    <!-- <p:growl id="msgExt" life="#{appCSMQBean.defaultGrowlLife}" sticky="true" showDetail="#{appCSMQBean.degugMode}"/> -->
-    <p:growl id="msgExt" life="#{appCSMQBean.defaultGrowlLife}" sticky="true" showDetail="false"/>
-    <p:growl id="msgExtension" life="#{appCSMQBean.defaultGrowlLife}" sticky="true" showDetail="false"/>
+    <p:growl id="msgEmailSubjects" life="#{appCSMQBean.defaultGrowlLife}" sticky="true" showDetail="#{appCSMQBean.degugMode}" />
 
-    <h3 style="text-align: center">Extension CodeList</h3>
-    <p:dataTable id="tableExtension" var="val" rows="10" widgetVar="tblExtensions"
-                 value="#{adminController.extensions}" style="margin-bottom:20px"
+    <h3 style="text-align: center">Email Subjects CodeList</h3>
+    <p:dataTable id="emailSubjectTable" var="val" rows="10" widgetVar="tblEmailSubjects"
+                 value="#{adminController.emailSubjects}" style="margin-bottom:20px"
                  paginator="true" paginatorPosition="bottom"
                  paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                  rowsPerPageTemplate="5,10,25">
 
         <p:column headerText="Serial #" style="text-align: center"
                   sortable="true" sortBy="#{val.serialNum}">
-            <h:outputText value="#{val.serialNum}" />
+            <h:outputText value="#{val.serialNum}"/>
         </p:column>
 
         <p:column headerText="Code" style="text-align: center"
-                  sortable="true" sortBy="#{val.codelistInternalValue}" >
+                  sortable="true" sortBy="#{val.codelistInternalValue}">
             <h:outputText value="#{val.codelistInternalValue}" />
         </p:column>
 
-        <p:column headerText="Extension Name" style="text-align: center"
+        <p:column headerText="Value" style="text-align: center"
                   filterBy="#{val.value}" filterMatchMode="contains"
                   sortable="true" sortBy="#{val.value}">
             <h:outputText value="#{val.value}" />
@@ -42,10 +40,10 @@
         </p:column>
 
         <p:column style="width:32px;text-align: center">
+
             <p:commandButton action="#{adminController.initGetRef}"
-                             update="@form" process="@this"
-                             oncomplete="PF('extensionD').show()" icon="ui-icon-pencil"
-                             title="View/Edit">
+                             update="@form" process="@this" oncomplete="PF('emailSubjectsEditDlg').show()"
+                             icon="ui-icon-pencil" title="View/Edit">
                 <f:setPropertyActionListener value="#{val}"
                                              target="#{adminController.selectedRow}" />
             </p:commandButton>
@@ -54,18 +52,14 @@
 
     <h:panelGrid columns="2" cellpadding="5">
         <i class="fa fa-plus"></i>
-
-        <p:commandLink type="button" value="Add extension"  update="dialog"
-                       oncomplete="PF('extensionD').show()" process="@this"
-                       actionListener="#{adminController.initAddCodelist}">
-
-            <p:ajax update="codeTxt nameTxt" resetValues="true" />
-        </p:commandLink>
+        <p:commandLink type="button" value="Add Email Subject" update="emailSubjectsEditDlg"
+                       process="@this" oncomplete="PF('emailSubjectsEditDlg').show()"
+                       actionListener="#{adminController.initAddCodelist}" />
     </h:panelGrid>
 
-    <p:dialog header="Extension details" widgetVar="extensionD" modal="true" id="dialog"
-              showEffect="fade" hideEffect="fade" resizable="false">
-        <p:outputPanel id="codeDetail" style="text-align:center;">
+    <p:dialog header="Email Subject details" widgetVar="emailSubjectsEditDlg" id="emailSubjectsEditDlg"
+              modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+        <p:outputPanel style="text-align:center;">
             <h:panelGrid columns="2" columnClasses="label, value">
 
                 <p:outputLabel value="Serial #" styleClass="label-right" />
@@ -74,48 +68,41 @@
                            value="#{adminController.ref.serialNum}" min="1" />
 
                 <p:outputLabel value="Code" styleClass="label-right" />
-                <p:inputText required="true" label="Code" id="codeTxt" 
+                <p:inputText required="true" label="Code"
                              value="#{adminController.ref.codelistInternalValue}"
-                             validatorMessage="Extension Code can not be longer than 3 characters."
-                             style="width: 50px !important;  float: left">
+                             style="width: 100px !important;  float: left" />
 
-                    <f:validateLength minimum="1" maximum="3" />
-                    <p:ajax update="msgExtension" event="blur"    />
-
-                </p:inputText>
-
-                <p:outputLabel value="Extension Name" styleClass="label-right" />
-                <p:inputText required="true" label="Extension Name" id="nameTxt"
-                             value="#{adminController.ref.value}" 
+                <p:outputLabel value="Value" styleClass="label-right" />
+                <p:inputText required="true" label="Value" 
+                             value="#{adminController.ref.value}"
                              maxlength="50" 
-                             style="width: 300px !important; float: left">
-
-                </p:inputText>
+                             style="width: 300px !important; float: left; " />
 
                 <p:outputLabel value="Active flag" styleClass="label-right" />
-                <p:selectOneMenu value="#{adminController.ref.activeFlag}" style="float: left"
-                                 id="activeFlagEX">
+                <p:selectOneMenu value="#{adminController.ref.activeFlag}"
+                                 style="float: left">
                     <f:selectItem itemValue="Y" itemLabel="Y" />
                     <f:selectItem itemValue="N" itemLabel="N" />
                 </p:selectOneMenu>
 
                 <p:outputLabel value="Default flag" styleClass="label-right" />
-                <p:selectOneMenu value="#{adminController.ref.defaultFlag}" style="float: left"
-                                 id="defaultFlagEX">
+                <p:selectOneMenu value="#{adminController.ref.defaultFlag}"
+                                 style="float: left">
                     <f:selectItem itemValue="N" itemLabel="N" />
                     <f:selectItem itemValue="Y" itemLabel="Y" />
                 </p:selectOneMenu>
             </h:panelGrid>
 
             <h:panelGrid columns="2" cellpadding="5">
-                <p:commandButton value="Save" icon="fa fa-plus"
-                                 update="tableExtension msgExt"
-                                 action="#{adminController.addRefCodelist}" oncomplete="PF('tblExtensions').filter()" />
+                <p:commandButton value="Save" icon="fa fa-plus" oncomplete="PF('tblEmailSubjects').filter()"
+                                 onclick="PF('emailSubjectsEditDlg').hide()" update="emailSubjectTable msgEmailSubjects"
+                                 action="#{adminController.addRefCodelist}" />
 
                 <p:commandButton value="Cancel" icon="fa fa-close"
-                                 onclick="PF('extensionD').hide()" update="tableExtension msgExt"
+                                 onclick="PF('emailSubjectsEditDlg').hide()"
                                  immediate="true" />
             </h:panelGrid>
+
         </p:outputPanel>
     </p:dialog>
     <style>
@@ -124,11 +111,8 @@
             margin-right: 20px;
             font-size: 14px !important;
         }
-
-        .ui-state-error, .ui-widget-content .ui-state-error, .ui-widget-header .ui-state-error {
-            border : none !important;
-        }
-
     </style>
 
 </ui:composition>
+
+

@@ -1,141 +1,146 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <ui:composition xmlns:jsp="http://java.sun.com/JSP/Page"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:p="http://primefaces.org/ui"
-	xmlns:c="http://java.sun.com/jsp/jstl/core" template="../CSMQ.xhtml">
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:c="http://java.sun.com/jsp/jstl/core" template="../CSMQ.xhtml">
 
-	<ui:define name="page-content">
+    <ui:define name="page-content">
 
-		<h:form id="f1">
-			<!-- Extension for search purposes -->
-			<h:panelGrid columns="2" style="width: 100% !important">
- 					<p:breadCrumb styleClass="breadcrumb">
-						<p:menuitem value="Home" url="/index.xhtml" />
-						<p:menuitem value="Administrator" />
-					</p:breadCrumb>
- 			</h:panelGrid>
- 
-			<p:tabView id="pb1">
-				<p:tab title="Codelist Configurations">
-					<h:panelGrid columns="2">
-						<p:outputLabel value="Codelist Type" />
-						<p:selectOneMenu label="Codelist Type" value="#{adminController.codelist}">
-							<f:selectItem itemLabel="EXTENSION" itemValue="LIST_EXTENSION_TYPES" />
-							<f:selectItem itemLabel="PROGRAM" itemValue="PROGRAM" />
-							<f:selectItem itemLabel="PROTOCOL" itemValue="PROTOCOL" />
-							<f:selectItem itemLabel="PRODUCT" itemValue="PRODUCT" />
-							<f:selectItem itemLabel="MEDDRA DICTIONARY" itemValue="MEDDRA_VERSIONS" />
-							<f:selectItem itemLabel="TERM CATEGORY" itemValue="TERM_CATEGORY" />
-							<f:selectItem itemLabel="WORKFLOW STATE" itemValue="WORKFLOW_STATES" />
-							<f:selectItem itemLabel="USER GROUPS" itemValue="USER_GROUPS" />
-                                                        <f:selectItem itemLabel="SYSTEM CONFIG" itemValue="SYSTEM_CONFIG" />
-                                                        <f:selectItem itemLabel="CMQ RELATION IMPACT TYPE" itemValue="CMQ_RELATION_IMPACT_TYPE" />
-                                                        <f:selectItem itemLabel="SMQ RELATION IMPACT TYPE" itemValue="SMQ_RELATION_IMPACT_TYPE" />
-                                                        <f:selectItem itemLabel="MEDDRA DICTIONARY IMPACT TYPE" itemValue="MEDDRA_DICTIONARY_IMPACT_TYPE" />
-                                                        <f:selectItem itemLabel="DICTIONARY CMQ LEVELS TYPE" itemValue="DICTIONARY_CMQ_LEVELS" />
-                                                        <f:selectItem itemLabel="SMQ FILTER LEVELS TYPE" itemValue="SMQ_FILTER_LEVELS" />
-                                                        <f:selectItem itemLabel="SMTP SERVER" itemValue="SMTP_SERVER" />
-                                                        <f:selectItem itemLabel="SENDER CONFIG" itemValue="SENDER_CONFIG" />
-                                                        <f:selectItem itemLabel="EMAIL NOTIFICATION MSG" itemValue="EMAIL_NOTIFICATION_MSG" />
-                                                        <f:selectItem itemLabel="USER EMAIL ADDRESS" itemValue="USER_EMAIL_ADDRESS" />
+        <h:form id="f1">
+            <!-- Extension for search purposes -->
+            <h:panelGrid columns="2" style="width: 100% !important">
+                <p:breadCrumb styleClass="breadcrumb">
+                    <p:menuitem value="Home" url="/index.xhtml" />
+                    <p:menuitem value="Administrator" />
+                </p:breadCrumb>
+            </h:panelGrid>
+
+            <p:tabView id="pb1">
+                <p:tab title="Codelist Configurations">
+                    <h:panelGrid columns="2">
+                        <p:outputLabel value="Codelist Type" />
+                        <p:selectOneMenu label="Codelist Type" value="#{adminController.codelist}">
+                            <f:selectItem itemLabel="EXTENSION" itemValue="LIST_EXTENSION_TYPES" />
+                            <f:selectItem itemLabel="PROGRAM" itemValue="PROGRAM" />
+                            <f:selectItem itemLabel="PROTOCOL" itemValue="PROTOCOL" />
+                            <f:selectItem itemLabel="PRODUCT" itemValue="PRODUCT" />
+                            <f:selectItem itemLabel="MEDDRA DICTIONARY" itemValue="MEDDRA_VERSIONS" />
+                            <f:selectItem itemLabel="TERM CATEGORY" itemValue="TERM_CATEGORY" />
+                            <f:selectItem itemLabel="WORKFLOW STATE" itemValue="WORKFLOW_STATES" />
+                            <f:selectItem itemLabel="USER GROUPS" itemValue="USER_GROUPS" />
+                            <f:selectItem itemLabel="SYSTEM CONFIG" itemValue="SYSTEM_CONFIG" />
+                            <f:selectItem itemLabel="CMQ RELATION IMPACT TYPE" itemValue="CMQ_RELATION_IMPACT_TYPE" />
+                            <f:selectItem itemLabel="SMQ RELATION IMPACT TYPE" itemValue="SMQ_RELATION_IMPACT_TYPE" />
+                            <f:selectItem itemLabel="MEDDRA DICTIONARY IMPACT TYPE" itemValue="MEDDRA_DICTIONARY_IMPACT_TYPE" />
+                            <f:selectItem itemLabel="DICTIONARY CMQ LEVELS TYPE" itemValue="DICTIONARY_CMQ_LEVELS" />
+                            <f:selectItem itemLabel="SMQ FILTER LEVELS TYPE" itemValue="SMQ_FILTER_LEVELS" />
+                            <f:selectItem itemLabel="SMTP SERVER" itemValue="SMTP_SERVER" />
+                            <f:selectItem itemLabel="SENDER CONFIG" itemValue="SENDER_CONFIG" />
+                            <f:selectItem itemLabel="EMAIL NOTIFICATION MSG" itemValue="EMAIL_NOTIFICATION_MSG" />
+                            <f:selectItem itemLabel="EMAIL SUBJECT" itemValue="EMAIL_SUBJECT" />
+                            <f:selectItem itemLabel="USER EMAIL ADDRESS" itemValue="USER_EMAIL_ADDRESS" />
 
 
-							<p:ajax update="@form" event="change" listener="#{adminController.switchCodelist}" />
-						</p:selectOneMenu>
-					</h:panelGrid>
-					<p:spacer height="10" />
+                            <p:ajax update="@form" event="change" listener="#{adminController.switchCodelist}" />
+                        </p:selectOneMenu>
+                    </h:panelGrid>
+                    <p:spacer height="10" />
 
-					<ui:fragment rendered="#{adminController.codelist eq 'LIST_EXTENSION_TYPES'}">
-						<ui:include src="extensionTable.xhtml"></ui:include>
-					</ui:fragment>
+                    <ui:fragment rendered="#{adminController.codelist eq 'LIST_EXTENSION_TYPES'}">
+                        <ui:include src="extensionTable.xhtml"></ui:include>
+                    </ui:fragment>
 
-					<ui:fragment rendered="#{adminController.codelist eq 'PRODUCT'}">
-						<ui:include src="productTable.xhtml"></ui:include>
-					</ui:fragment>
+                    <ui:fragment rendered="#{adminController.codelist eq 'PRODUCT'}">
+                        <ui:include src="productTable.xhtml"></ui:include>
+                    </ui:fragment>
 
-					<ui:fragment rendered="#{adminController.codelist eq 'PROGRAM'}">
-						<ui:include src="programTable.xhtml"></ui:include>
-					</ui:fragment>
+                    <ui:fragment rendered="#{adminController.codelist eq 'PROGRAM'}">
+                        <ui:include src="programTable.xhtml"></ui:include>
+                    </ui:fragment>
 
-					<ui:fragment rendered="#{adminController.codelist eq 'PROTOCOL'}">
-						<ui:include src="protocolsTable.xhtml"></ui:include>
-					</ui:fragment>
-					
-					<ui:fragment rendered="#{adminController.codelist eq 'MEDDRA_VERSIONS'}">
-						<ui:include src="meddraTable.xhtml"></ui:include>
-					</ui:fragment>
+                    <ui:fragment rendered="#{adminController.codelist eq 'PROTOCOL'}">
+                        <ui:include src="protocolsTable.xhtml"></ui:include>
+                    </ui:fragment>
 
-					<ui:fragment rendered="#{adminController.codelist eq 'TERM_CATEGORY'}">
-						<ui:include src="categoryTable.xhtml"></ui:include>
-					</ui:fragment>
-					
-					<ui:fragment rendered="#{adminController.codelist eq 'WORKFLOW_STATES'}">
-						<ui:include src="workflowStateTable.xhtml"></ui:include>
-					</ui:fragment>
+                    <ui:fragment rendered="#{adminController.codelist eq 'MEDDRA_VERSIONS'}">
+                        <ui:include src="meddraTable.xhtml"></ui:include>
+                    </ui:fragment>
+
+                    <ui:fragment rendered="#{adminController.codelist eq 'TERM_CATEGORY'}">
+                        <ui:include src="categoryTable.xhtml"></ui:include>
+                    </ui:fragment>
+
+                    <ui:fragment rendered="#{adminController.codelist eq 'WORKFLOW_STATES'}">
+                        <ui:include src="workflowStateTable.xhtml"></ui:include>
+                    </ui:fragment>
 
                     <ui:fragment rendered="#{adminController.codelist eq 'USER_GROUPS'}">
-						<ui:include src="usergroupTable.xhtml"></ui:include>
-					</ui:fragment>
-                    
+                        <ui:include src="usergroupTable.xhtml"></ui:include>
+                    </ui:fragment>
+
                     <ui:fragment rendered="#{adminController.codelist eq 'SYSTEM_CONFIG'}">
-						<ui:include src="sysconfigTable.xhtml"></ui:include>
-					</ui:fragment>
-                    
+                        <ui:include src="sysconfigTable.xhtml"></ui:include>
+                    </ui:fragment>
+
                     <ui:fragment rendered="#{adminController.codelist eq 'CMQ_RELATION_IMPACT_TYPE'}">
-						<ui:include src="cmqRelImpTypeTable.xhtml"></ui:include>
-					</ui:fragment>
-                    
+                        <ui:include src="cmqRelImpTypeTable.xhtml"></ui:include>
+                    </ui:fragment>
+
                     <ui:fragment rendered="#{adminController.codelist eq 'SMQ_RELATION_IMPACT_TYPE'}">
-						<ui:include src="smqRelImpTypeTable.xhtml"></ui:include>
-					</ui:fragment>
-                    
+                        <ui:include src="smqRelImpTypeTable.xhtml"></ui:include>
+                    </ui:fragment>
+
                     <ui:fragment rendered="#{adminController.codelist eq 'MEDDRA_DICTIONARY_IMPACT_TYPE'}">
-						<ui:include src="meddraDictImpTypeTable.xhtml"></ui:include>
-					</ui:fragment>
-					
+                        <ui:include src="meddraDictImpTypeTable.xhtml"></ui:include>
+                    </ui:fragment>
+
                     <ui:fragment rendered="#{adminController.codelist eq 'DICTIONARY_CMQ_LEVELS'}">
-						<ui:include src="dictionaryLevelTable.xhtml"></ui:include>
-					</ui:fragment>
-					
+                        <ui:include src="dictionaryLevelTable.xhtml"></ui:include>
+                    </ui:fragment>
+
                     <ui:fragment rendered="#{adminController.codelist eq 'SMQ_FILTER_LEVELS'}">
-						<ui:include src="smqFilterLevelTable.xhtml"></ui:include> 
-					</ui:fragment>
-                                        
+                        <ui:include src="smqFilterLevelTable.xhtml"></ui:include> 
+                    </ui:fragment>
+
                     <ui:fragment rendered="#{adminController.codelist eq 'SMTP_SERVER'}">
-						<ui:include src="smtpServerTable.xhtml"></ui:include>
-					</ui:fragment>
-                                        
+                        <ui:include src="smtpServerTable.xhtml"></ui:include>
+                    </ui:fragment>
+
                     <ui:fragment rendered="#{adminController.codelist eq 'SENDER_CONFIG'}">
-						<ui:include src="senderConfigTable.xhtml"></ui:include>
-					</ui:fragment>
-                                        
+                        <ui:include src="senderConfigTable.xhtml"></ui:include>
+                    </ui:fragment>
+
                     <ui:fragment rendered="#{adminController.codelist eq 'EMAIL_NOTIFICATION_MSG'}">
-						<ui:include src="emailNotificationMsgTable.xhtml"></ui:include>
-					</ui:fragment>
-                                        
+                        <ui:include src="emailNotificationMsgTable.xhtml"></ui:include>
+                    </ui:fragment>
+                    
+                    <ui:fragment rendered="#{adminController.codelist eq 'EMAIL_SUBJECT'}">
+                        <ui:include src="emailSubjectTable.xhtml"></ui:include>
+                    </ui:fragment>
+
                     <ui:fragment rendered="#{adminController.codelist eq 'USER_EMAIL_ADDRESS'}">
-						<ui:include src="userEmailAddressTable.xhtml"></ui:include>
-					</ui:fragment>
-                                        
-				</p:tab>
+                        <ui:include src="userEmailAddressTable.xhtml"></ui:include>
+                    </ui:fragment>
 
-				<p:tab title="Mappings">
-					<p:panel style=" padding:5px;">
-						<h3 style="text-align: center"></h3>
-						<p:spacer height="10" />
-					</p:panel>
-				</p:tab>
-			</p:tabView>
-		</h:form>
+                </p:tab>
 
-		<style>
-.label-right {
-	float: right;
-	margin-right: 20px;
-	font-size: 14px !important;
-}
-</style>
-	</ui:define>
+                <p:tab title="Mappings">
+                    <p:panel style=" padding:5px;">
+                        <h3 style="text-align: center"></h3>
+                        <p:spacer height="10" />
+                    </p:panel>
+                </p:tab>
+            </p:tabView>
+        </h:form>
+
+        <style>
+            .label-right {
+                float: right;
+                margin-right: 20px;
+                font-size: 14px !important;
+            }
+        </style>
+    </ui:define>
 </ui:composition>
