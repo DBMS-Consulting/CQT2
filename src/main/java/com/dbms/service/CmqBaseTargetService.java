@@ -212,7 +212,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 	public Long findImpactedCount() {
 		Long retVal = null;
 		StringBuilder sb = new StringBuilder();
-		sb.append("select count(*) from CmqBaseTarget c where c.impactType = 'IMPACTED' or c.impactType = 'ICC'");
+		sb.append("select count(*) from CmqBaseTarget c where c.impactType = 'IMPACTED' or c.impactType = 'ICC' or c.impactType = 'IPC'");
 		
 		EntityManager entityManager = this.cqtEntityManagerFactory.getEntityManager();
 		try {
@@ -238,7 +238,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 	public BigDecimal findImpactedCount(Map<String, Object> filters) {
 		BigDecimal retVal = null;
 
-		String queryString = "select count(*) from CMQ_BASE_TARGET c where (c.IMPACT_TYPE = 'IMPACTED' or c.IMPACT_TYPE = 'ICC') " + " #1# " ;
+		String queryString = "select count(*) from CMQ_BASE_TARGET c where (c.IMPACT_TYPE = 'IMPACTED' or c.IMPACT_TYPE = 'ICC' or c.IMPACT_TYPE = 'IPC') " + " #1# " ;
 		 
 		String whereClause = "";
 

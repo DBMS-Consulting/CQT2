@@ -45,7 +45,7 @@ public class SWJSFRequest
 	
 	private static LdapContext ctx = null;
 	
-    public static final String MEMBER_OF = "uniquemember";
+    public static String MEMBER_OF;
     public static String LDAP_AD_SERVER;
     public static String LDAP_SEARCH_BASE;
     public static String LDAP_USERNAME;
@@ -68,6 +68,8 @@ public class SWJSFRequest
 				LDAP_PASSWORD = cryptoHandler.decrypt(refConfigCodeList.getValue(), null);
 			} else if("LDAP_SEARCH_BASE".equalsIgnoreCase(codeInternalValue)) {
 				LDAP_SEARCH_BASE = cryptoHandler.decrypt(refConfigCodeList.getValue(), null);
+			} else if("LDAP_ATTR".equalsIgnoreCase(codeInternalValue)) {
+				MEMBER_OF = cryptoHandler.decrypt(refConfigCodeList.getValue(), null);
 			}
 		}
     }
