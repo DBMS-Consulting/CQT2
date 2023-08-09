@@ -116,7 +116,7 @@ public class CreateController implements Serializable {
     
 	private ListDetailsFormVM detailsFormModel;
 	private ListNotesFormVM notesFormModel = new ListNotesFormVM();
-    private ListRelationsVM relationsModel;
+        private ListRelationsVM relationsModel;
 	private ListWorkflowFormVM workflowFormModel;
 	private boolean relationsModified;
 
@@ -948,6 +948,7 @@ public class CreateController implements Serializable {
 								? Long.parseLong(hierarchyNode.getWeight()) : null);
 							cmqRelation.setTermScope(hierarchyNode.getScope());
 							cmqRelation.setTermCategory(hierarchyNode.getCategory());
+                                                        cmqRelation.setTermCategory2(hierarchyNode.getCategory2());
 							cmqRelation.setDictionaryName(cmqBase.getDictionaryName());
 							cmqRelation.setDictionaryVersion(cmqBase.getDictionaryVersion());
 							cmqRelation.setCmqSubversion(cmqBase.getCmqSubversion());
@@ -1183,6 +1184,7 @@ public class CreateController implements Serializable {
 														? Long.parseLong(hierarchyNode.getWeight()) : null);
 							cmqRelation.setTermScope(hierarchyNode.getScope());
 							cmqRelation.setTermCategory(hierarchyNode.getCategory());
+                                                        cmqRelation.setTermCategory2(hierarchyNode.getCategory2());
 							cmqRelation.setDictionaryName(cmqBase.getDictionaryName());
 							cmqRelation.setDictionaryVersion(cmqBase.getDictionaryVersion());
 							cmqRelation.setCmqSubversion(cmqBase.getCmqSubversion());
@@ -2070,6 +2072,16 @@ public class CreateController implements Serializable {
 			needsUpdate = true;
 		} else if(!StringUtils.isBlank(hierarchyNode.getCategory()) && !StringUtils.isBlank(cmqRelation190.getTermCategory())
 				&& !hierarchyNode.getCategory().equals(cmqRelation190.getTermCategory())){
+			needsUpdate = true;
+		}
+                
+                //now category2
+		if(StringUtils.isBlank(hierarchyNode.getCategory2()) && !StringUtils.isBlank(cmqRelation190.getTermCategory2())) {
+			needsUpdate = true;
+		} else if(!StringUtils.isBlank(hierarchyNode.getCategory2()) && StringUtils.isBlank(cmqRelation190.getTermCategory2())) {
+			needsUpdate = true;
+		} else if(!StringUtils.isBlank(hierarchyNode.getCategory2()) && !StringUtils.isBlank(cmqRelation190.getTermCategory2())
+				&& !hierarchyNode.getCategory2().equals(cmqRelation190.getTermCategory2())){
 			needsUpdate = true;
 		}
 		

@@ -34,6 +34,7 @@ public class HistoricalViewDbDataDTO implements Serializable {
 	private String designee3;
 	private String medicalConcept;
 	private String termCategory;
+        private String termCategory2;
 
 	public Long getCmqCode() {
 		return cmqCode;
@@ -58,6 +59,14 @@ public class HistoricalViewDbDataDTO implements Serializable {
 	public void setTermCategory(String termCategory) {
 		this.termCategory = termCategory;
 	}
+
+        public String getTermCategory2() {
+            return termCategory2;
+        }
+
+        public void setTermCategory2(String termCategory2) {
+            this.termCategory2 = termCategory2;
+        }
 
 	public String getListType() {
 		return listType;

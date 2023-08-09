@@ -103,15 +103,16 @@
 				<p:row>
 					<p:column rowspan="2" sortBy="#{node.term}"
 						headerText="#{createController.selectedData.cmqName}"/>
-					<p:column colspan="#{impactSearchController.displayScopeCatWeight eq 'false' ? 2 : 5}" headerText="Hierarchy Details" style="width:50%"/>
+					<p:column colspan="#{createController.relationsModel.getDisplayColumnCount(6)}" headerText="Hierarchy Details" style="width:50%"/>
 				</p:row>
 
 				<p:row>
 					<p:column headerText="Code" style="width:10%" sortBy="#{node.code}" />
 					<p:column headerText="Level" style="width:10%" />
-					<p:column rendered="#{createController.relationsModel.displayScopeCatWeight}" headerText="Scope" style="width:10%" />
-					<p:column rendered="#{createController.relationsModel.displayScopeCatWeight}" headerText="Category" style="width:10%" />
-					<p:column rendered="#{createController.relationsModel.displayScopeCatWeight}" headerText="Weight" style="width:10%" />
+					<p:column rendered="#{createController.relationsModel.displayScope}" headerText="Scope" style="width:10%" />
+					<p:column rendered="#{createController.relationsModel.displayCategory}" headerText="Category" style="width:10%" />
+                                        <p:column rendered="#{createController.relationsModel.displayCategory2}" headerText="Category2" style="width:10%" />
+					<p:column rendered="#{createController.relationsModel.displayWeight}" headerText="Weight" style="width:10%" />
 				</p:row>
 			</p:columnGroup>
 
@@ -128,15 +129,19 @@
 				<h:outputText value="#{node.level}" rendered="true" />
 			</p:column>
 
-			<p:column rendered="#{createController.relationsModel.displayScopeCatWeight}" style="width:10%">
+			<p:column rendered="#{createController.relationsModel.displayScope}" style="width:10%">
 				<h:outputText value="#{appCSMQBean.interpretCqtBaseScope(node.scope)}" />
 			</p:column>
 
-			<p:column rendered="#{createController.relationsModel.displayScopeCatWeight}" style="width:10%">
+			<p:column rendered="#{createController.relationsModel.displayCategory}" style="width:10%">
 				 <h:outputText value="#{appCSMQBean.interpretCqtBaseCategory(node.category)}" />
 			</p:column>
+                        
+                        <p:column rendered="#{createController.relationsModel.displayCategory2}" style="width:10%">
+				 <h:outputText value="#{appCSMQBean.interpretCqtBaseCategory(node.category2)}" />
+			</p:column>
 
-			<p:column rendered="#{createController.relationsModel.displayScopeCatWeight}" style="width:10%">
+			<p:column rendered="#{createController.relationsModel.displayWeight}" style="width:10%">
 				<h:outputText value="#{node.weight}" />
 			</p:column>
 

@@ -211,7 +211,7 @@
 										<p:row>
 											<p:column headerText="Existing Lists/SMQ" style="width:50%" />
 											<p:column
-												colspan="#{impactSearchController.displayScopeCatWeight eq 'false' ? 2 : 3}"
+												colspan="#{impactSearchController.systemConfigProperties.displayScope eq 'false' ? 2 : 3}"
 												headerText="Hierarchy Details" style="width:50%" />
 										</p:row>
 										<p:row>
@@ -221,9 +221,9 @@
 											<p:column headerText="Code" sortBy="#{node.code}"
 												style="width:30%" />
 											<p:column headerText="Level"
-												style="width:#{impactSearchController.displayScopeCatWeight eq 'false' ? '20%' : '10%'}" />
+												style="width:#{impactSearchController.systemConfigProperties.displayScope eq 'false' ? '20%' : '10%'}" />
 											<p:column
-												rendered="#{impactSearchController.displayScopeCatWeight}"
+												rendered="#{impactSearchController.systemConfigProperties.displayScope}"
 												headerText="Scope" style="width:10%" />
 										</p:row>
 									</p:columnGroup>
@@ -241,7 +241,7 @@
 										<h:outputText value="#{node.level}" />
 									</p:column>
 									<p:column
-										rendered="#{impactSearchController.displayScopeCatWeight and not node.hideScope}">
+										rendered="#{impactSearchController.systemConfigProperties.displayScope and not node.hideScope}">
 										<h:outputText
 											value="#{appCSMQBean.interpretCqtBaseScope(node.scope)}" />
 									</p:column>
@@ -309,7 +309,7 @@
 											<p:column id="targetTitle" style="width:35%"
 												headerText="Future Lists/SMQ" />
 											<p:column
-												colspan="#{impactSearchController.displayScopeCatWeight eq 'false' ? 3 : 6}"
+												colspan="#{createController.relationsModel.getDisplayColumnCount(7)}"
 												headerText="Hierarchy Details" />
 										</p:row>
 
@@ -321,13 +321,16 @@
 												sortable="true" style="width:15%" />
 											<p:column headerText="Level" style="width:8%" />
 											<p:column
-												rendered="#{impactSearchController.displayScopeCatWeight}"
+												rendered="#{impactSearchController.systemConfigProperties.displayScope}"
 												headerText="Scope" style="width:15%" />
 											<p:column
-												rendered="#{impactSearchController.displayScopeCatWeight}"
+												rendered="#{impactSearchController.systemConfigProperties.displayCategory}"
 												headerText="Category" style="width:9% " />
+                                                                                        <p:column
+												rendered="#{impactSearchController.systemConfigProperties.displayCategory2}"
+												headerText="Category2" style="width:9% " />
 											<p:column
-												rendered="#{impactSearchController.displayScopeCatWeight}"
+												rendered="#{impactSearchController.systemConfigProperties.displayWeight}"
 												headerText="Weight" style="width:8%" />
 											<p:column headerText="" style="width:5%" />
 										</p:row>
@@ -347,7 +350,7 @@
 										<h:outputText value="#{node.level}" />
 									</p:column>
 									<p:column
-										rendered="#{impactSearchController.displayScopeCatWeight}">
+										rendered="#{impactSearchController.systemConfigProperties.displayScope}">
 										<h:outputText
 											rendered="#{not node.hideScope and node.readOnlyScope}"
 											value="#{appCSMQBean.interpretCqtBaseScope(node.scope)}" />
@@ -366,7 +369,7 @@
 										</p:selectOneMenu>
 									</p:column>
 									<p:column
-										rendered="#{impactSearchController.displayScopeCatWeight and not node.hideScope}">
+										rendered="#{impactSearchController.systemConfigProperties.displayCategory and not node.hideScope}">
 										<h:outputText
 										rendered="#{not node.hideCategory and node.readOnlyCategory}"
 											value="#{appCSMQBean.interpretCqtBaseCategory(node.category)}" />
@@ -382,8 +385,25 @@
 										
 
 									</p:column>
+                                                                        <p:column
+										rendered="#{impactSearchController.systemConfigProperties.displayCategory2 and not node.hideScope}">
+										<h:outputText
+										rendered="#{not node.hideCategory2 and node.readOnlyCategory2}"
+											value="#{appCSMQBean.interpretCqtBaseCategory(node.category2)}" />
+											<p:selectOneMenu id="soc3" value="#{node.category2}" 
+												rendered="#{not node.readOnlyCategory2}"
+												autoWidth="false" style="width:75%" >
+											<f:selectItem itemLabel="" itemValue="" noSelectionOption="true" />
+											<f:selectItems var="c" value="#{appCSMQBean.cqtBaseCategoriesWithInactiveSelected(node.category2)}"
+												itemValue="#{c.value}" itemLabel="#{c.value}" />
+												<p:ajax event="change"
+												listener="#{impactSearchController.setTargetRelationsUpdated()}" />
+												</p:selectOneMenu>
+										
+
+									</p:column>
 									<p:column
-										rendered="#{impactSearchController.displayScopeCatWeight and not node.hideScope}">
+										rendered="#{impactSearchController.systemConfigProperties.displayWeight and not node.hideScope}">
 										<h:outputText
 											rendered="#{not node.hideWeight}"
 											value="#{node.weight}" />
@@ -414,7 +434,8 @@
 						actionListener="#{impactSearchController.saveRelationsAndGoToNextStep}"
 						onstart="PF('confirmSaveImpactsDlg').hide()" />
 					<p:remoteCommand name="resetImpactsAndGoToNextStep"
-						update="@form:messages @form:impact"
+						update="@form:messages @form:impact @form:futureListsAndSmqs"
+                                                actionListener="#{impactSearchController.resetRelationsAndGoToNextStep}"
 						onstart="PF('confirmSaveImpactsDlg').hide()" />
 
 					<!-- Save confirmation dialog -->

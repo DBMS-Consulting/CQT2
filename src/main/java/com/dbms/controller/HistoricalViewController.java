@@ -117,7 +117,10 @@ public class HistoricalViewController implements Serializable {
 	
 	@PostConstruct
 	public void init() {
-		this.displayScopeCatWeight = refCodeListService.getLevelScopeCategorySystemConfig();
+		this.displayScopeCatWeight = refCodeListService.getScopeSystemConfig() && 
+                        refCodeListService.getCategorySystemConfig() && 
+                        refCodeListService.getCategory2SystemConfig() && 
+                        refCodeListService.getWeightSystemConfig();
 	}
 
 	public void search() {
@@ -154,7 +157,7 @@ public class HistoricalViewController implements Serializable {
 		Map<Long, HistoricalViewDTO> historicalViewDTOMap = new HashMap<Long, HistoricalViewDTO>();
 		List<HierarchyNode> addedHierarchyNodes = new ArrayList<>();
 		TreeNode rootNode = new DefaultTreeNode("root",
-				new HierarchyNode("LEVEL", "NAME", "CODE", "SCOPE", "CATEGORY", "WEIGHT", null), null);
+				new HierarchyNode("LEVEL", "NAME", "CODE", "SCOPE", "CATEGORY", "CATEGORY2", "WEIGHT", null), null);
 		if(null != searchResults) {
 			Map<Long, List<String>> productNamesMap = new HashMap<>();
 			for (HistoricalViewDbDataDTO historicalViewDbDataDTO : searchResults) {
@@ -182,6 +185,7 @@ public class HistoricalViewController implements Serializable {
 					historicalViewDTO.setDesignee3(historicalViewDbDataDTO.getDesignee3());
 					historicalViewDTO.setMedicalConcept(historicalViewDbDataDTO.getMedicalConcept());
 					historicalViewDTO.setTermCategory(historicalViewDbDataDTO.getTermCategory());
+                                        historicalViewDTO.setTermCategory2(historicalViewDbDataDTO.getTermCategory2());
 					historicalViewDTOMap.put(cmqCode, historicalViewDTO);
 				}
 				
@@ -198,6 +202,7 @@ public class HistoricalViewController implements Serializable {
 
 				HistoricalViewDTO historicalViewDTO = historicalViewDTOMap.get(cmqCode);
 				historicalViewDTO.setTermCategory(historicalViewDbDataDTO.getTermCategory());
+                                historicalViewDTO.setTermCategory(historicalViewDbDataDTO.getTermCategory2());
 
 				if (null != historicalViewDTO) {
 					// catch relations now.
@@ -210,6 +215,7 @@ public class HistoricalViewController implements Serializable {
 						//hierarchyNode.setCategory(historicalViewDbDataDTO.getT);
 						if (!addedHierarchyNodes.contains(hierarchyNode)) {
 							hierarchyNode.setCategory(historicalViewDTO.getTermCategory());
+                                                        hierarchyNode.setCategory2(historicalViewDTO.getTermCategory2());
 							new DefaultTreeNode(hierarchyNode, rootNode);
 							addedHierarchyNodes.add(hierarchyNode);
 						}
@@ -857,6 +863,7 @@ public class HistoricalViewController implements Serializable {
 		node.setEntity(smqBase);
         if(cmqRelation != null) {
             node.setCategory((cmqRelation.getTermCategory() == null) ? "" : cmqRelation.getTermCategory());
+            node.setCategory2((cmqRelation.getTermCategory2() == null) ? "" : cmqRelation.getTermCategory2());
             node.setScope((cmqRelation.getTermScope() == null) ? "" : cmqRelation.getTermScope());
             node.setWeight((cmqRelation.getTermWeight() == null) ? "" : cmqRelation.getTermWeight() + "");
         }
@@ -878,6 +885,7 @@ public class HistoricalViewController implements Serializable {
         if(relationEntity != null && relationEntity instanceof CmqRelation190) {
             CmqRelation190 cmqRelation = (CmqRelation190)relationEntity;
             node.setCategory((cmqRelation.getTermCategory() == null) ? "" : cmqRelation.getTermCategory());
+            node.setCategory2((cmqRelation.getTermCategory2() == null) ? "" : cmqRelation.getTermCategory2());
             node.setScope((cmqRelation.getTermScope() == null) ? "" : cmqRelation.getTermScope());
             node.setWeight((cmqRelation.getTermWeight() == null) ? "" : cmqRelation.getTermWeight() + "");
         }

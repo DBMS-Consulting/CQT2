@@ -220,7 +220,7 @@
 					<p:column rowspan="2" sortBy="#{node.term}"
 						headerText="#{createController.selectedData.cmqName}" />
 					<p:column
-						colspan="#{createController.relationsModel.displayScopeCatWeight eq 'false' ? 3 : 6}"
+						colspan="#{createController.relationsModel.getDisplayColumnCount(7)}"
 						headerText="Hierarchy Details" style="width:50%" />
 				</p:row>
 
@@ -229,13 +229,16 @@
 						style="width:10%" />
 					<p:column headerText="Level" style="width:5%" />
 					<p:column
-						rendered="#{createController.relationsModel.displayScopeCatWeight}"
+						rendered="#{createController.relationsModel.displayScope}"
 						headerText="Scope" style="width:10%" />
 					<p:column
-						rendered="#{createController.relationsModel.displayScopeCatWeight}"
+						rendered="#{createController.relationsModel.displayCategory}"
 						headerText="Category" style="width:5%" />
+                                        <p:column
+						rendered="#{createController.relationsModel.displayCategory2}"
+						headerText="Category2" style="width:5%" />
 					<p:column
-						rendered="#{createController.relationsModel.displayScopeCatWeight}"
+						rendered="#{createController.relationsModel.displayWeight}"
 						headerText="Weight" style="width:10%" />
 					<p:column headerText="Delete" style="width:10%" />
 				</p:row>
@@ -256,7 +259,7 @@
 			</p:column>
 
 			<p:column
-				rendered="#{createController.relationsModel.displayScopeCatWeight}"
+				rendered="#{createController.relationsModel.displayScope}"
 				style="width:10%">
 				<h:outputText
 					value="#{appCSMQBean.interpretCqtBaseScope(node.scope)}"
@@ -278,7 +281,7 @@
 			</p:column>
 
 			<p:column
-				rendered="#{createController.relationsModel.displayScopeCatWeight}"
+				rendered="#{createController.relationsModel.displayCategory}"
 				style="width:10%">
 			
                 <!-- <h:outputText value="#{appCSMQBean.interpretCqtBaseCategory(node.category)}"
@@ -309,9 +312,28 @@
 				</p:selectOneMenu>
                 
 			</p:column>
+                        
+                        <p:column
+				rendered="#{createController.relationsModel.displayCategory2}"
+				style="width:10%">
+		
+				<h:outputText value="#{appCSMQBean.interpretCqtBaseCategory(node.category2)}"
+                    rendered="#{node.readOnlyCategory2 and not node.hideCategory2}" />
+				<p:selectOneMenu id="soc4" value="#{node.category2}" 
+				        rendered="#{not node.readOnlyCategory2}"
+						autoWidth="false" style="width:75%" disabled="#{createController.readOnlyState}">
+					<f:selectItem itemLabel="" itemValue="" noSelectionOption="true"/>
+					<f:selectItems var="s" value="#{appCSMQBean.cqtBaseCategoriesWithInactiveSelected(node.category2)}"
+						itemValue="#{s.value}" itemLabel="#{s.value}" />
+						<p:ajax event="change"
+						listener="#{createController.notifyCategoryChange()}" 
+						update="resultRelations"/>
+				</p:selectOneMenu>
+                
+			</p:column>
 
 			<p:column
-				rendered="#{createController.relationsModel.displayScopeCatWeight}"
+				rendered="#{createController.relationsModel.displayWeight}"
 				style="width:5%">
 				<h:outputText value="#{node.weight}"
 					rendered="#{not node.isHideWeight()}" />

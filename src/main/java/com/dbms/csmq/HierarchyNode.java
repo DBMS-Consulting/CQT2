@@ -17,445 +17,489 @@ import com.dbms.entity.cqt.dtos.MeddraDictHierarchySearchDto;
 import com.dbms.entity.cqt.dtos.MeddraDictReverseHierarchySearchDto;
 import com.dbms.entity.cqt.dtos.SMQReverseHierarchySearchDto;
 
-
 public class HierarchyNode implements Serializable, Comparable<HierarchyNode> {
 
-	private static final long serialVersionUID = 3824369219641775903L;
-	
-	private String level;
+    private static final long serialVersionUID = 3824369219641775903L;
 
-	private String term;
+    private String level;
 
-	private String code;
+    private String term;
 
-	private IEntity entity;
-	private IEntity relationEntity;
+    private String code;
 
-	private boolean isDataFetchCompleted;
+    private IEntity entity;
+    private IEntity relationEntity;
 
-	private boolean isDummyNode;
+    private boolean isDataFetchCompleted;
 
-	private boolean hideCategory;
-	
-	private boolean readOnlyCategory;
+    private boolean isDummyNode;
 
-	private String category;
+    private boolean hideCategory;
 
-	private boolean hideWeight;
-	
-	private boolean readOnlyWeight;
+    private boolean readOnlyCategory;
 
-	private String weight;
+    private String category;
+    
+    private boolean hideCategory2;
 
-	private boolean hideScope;
-	
-	private boolean readOnlyScope;
+    private boolean readOnlyCategory2;
 
-	private String scope;
+    private String category2;
 
-	private boolean hideDelete;
+    private boolean hideWeight;
 
-	private boolean primaryPathFlag;
-	
-	private boolean primarypathCheckDone;
+    private boolean readOnlyWeight;
 
-	// for green colored primary rows
-	private String rowStyleClass;
+    private String weight;
 
-	private boolean paginationNode;
+    private boolean hideScope;
 
-	private int pageNumber;
-
-	private int currentShowingCount;
-
-	private int totalRecordsCount;
-	
-	private boolean drilledDown;
-	
-	private boolean justAdded;
-	
-	public HierarchyNode() {
-	}
-
-	public HierarchyNode(String level, String term, String code, IEntity entity) {
-		this.level = level;
-		this.term = term;
-		this.code = code;
-		this.entity = entity;
-	}
-
-	public HierarchyNode(String level, String term, String code, String category, String weight, String scope,
-			IEntity entity) {
-		this.level = level;
-		this.term = term;
-		this.code = code;
-		this.scope = scope;
-		this.weight = weight;
-		this.category = category;
-		this.entity = entity;
-	}
-
-	public String getLevel() {
-		return level;
-	}
-
-	public void setLevel(String level) {
-		this.level = level;
-	}
-
-	public String getTerm() {
-		return term;
-	}
-
-	public void setTerm(String term) {
-		this.term = term;
-	}
-
-	public String getCode() {
-		return code;
-	}
-
-	public void setCode(String code) {
-		this.code = code;
-	}
-
-	public int compareTo(HierarchyNode document) {
-		int retVal = this.getLevel().compareTo(document.getLevel());
-		if (retVal == 0) {
-			retVal = this.getTerm().compareTo(document.getTerm());
-		}
-		return retVal;
-	}
-
-	public IEntity getEntity() {
-		return entity;
-	}
-
-	public void setEntity(IEntity entity) {
-		this.entity = entity;
-	}
-
-	public IEntity getRelationEntity() {
-		return relationEntity;
-	}
-
-	public void setRelationEntity(IEntity entity) {
-		this.relationEntity = entity;
-	}
-
-	public boolean isDataFetchCompleted() {
-		return isDataFetchCompleted;
-	}
-
-	public void setDataFetchCompleted(boolean isDataFetchCompleted) {
-		this.isDataFetchCompleted = isDataFetchCompleted;
-	}
-
-	public boolean isDummyNode() {
-		return isDummyNode;
-	}
-
-	public void setDummyNode(boolean isDummyNode) {
-		this.isDummyNode = isDummyNode;
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((code == null) ? 0 : code.hashCode());
-		result = prime * result + ((level == null) ? 0 : level.hashCode());
-		result = prime * result + ((term == null) ? 0 : term.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		HierarchyNode other = (HierarchyNode) obj;
-		if (code == null) {
-			if (other.code != null)
-				return false;
-		} else if (!code.equals(other.code))
-			return false;
-		if (level == null) {
-			if (other.level != null)
-				return false;
-		} else if (!level.equals(other.level))
-			return false;
-		if (term == null) {
-			if (other.term != null)
-				return false;
-		} else if (!term.equals(other.term))
-			return false;
-		return true;
-	}
-
-	public HierarchyNode copy() throws IllegalAccessException, InvocationTargetException {
-		HierarchyNode target = new HierarchyNode();
-		BeanUtils.copyProperties(target, this);
-		return target;
-	}
-
-	public void markNotEditableInRelationstable() {
-		this.readOnlyCategory = true;
-		this.hideDelete = true;
-		this.readOnlyScope = true;
-		this.readOnlyWeight = true;
-	}
-
-	public void markEditableInRelationstable() {
-		this.hideCategory = false;
-		this.hideDelete = false;
-		this.hideScope = false;
-		this.hideWeight = false;
-	}
-	
-	public void markReadOnlyInRelationstable() {
-		this.readOnlyCategory = true;
-		this.hideDelete = true;
-		this.readOnlyScope = true;
-		this.readOnlyWeight = true;
-	}
-
-	@Override
-	public String toString() {
-		return term;
-	}
-
-	public String getCategory() {
-		return category;
-	}
-
-	public void setCategory(String category) {
-		this.category = category;
-	}
-
-	public String getWeight() {
-		return weight == null ? "" : weight;
-	}
-
-	public void setWeight(String weight) {
-		this.weight = weight;
-	}
-
-	public String getScope() {
-		return scope;
-	}
-
-	public void setScope(String scope) {
-		this.scope = scope;
-	}
-
-	public boolean isPrimaryPathFlag() {
-		return primaryPathFlag;
-	}
-
-	public void setPrimaryPathFlag(boolean primaryPathFlag) {
-		this.primaryPathFlag = primaryPathFlag;
-	}
-
-	public boolean isHideCategory() {
-		return hideCategory;
-	}
-
-	public void setHideCategory(boolean hideCategory) {
-		this.hideCategory = hideCategory;
-	}
-
-	public boolean isHideWeight() {
-		return hideWeight;
-	}
-
-	public void setHideWeight(boolean hideWeight) {
-		this.hideWeight = hideWeight;
-	}
-
-	public boolean isHideScope() {
-		return hideScope;
-	}
-
-	public void setHideScope(boolean hideScope) {
-		this.hideScope = hideScope;
-	}
-
-	public boolean isHideDelete() {
-		return hideDelete;
-	}
-
-	public void setHideDelete(boolean hideDelete) {
-		this.hideDelete = hideDelete;
-	}
-
-	public String getRowStyleClass() {
-		return rowStyleClass;
-	}
-
-	public void setRowStyleClass(String rowStyleClass) {
-		this.rowStyleClass = rowStyleClass;
-	}
-
-	public boolean isAlgorithmN() {
-		if (this.entity != null) {
-			if (this.entity instanceof CmqBase190) {
-				return "N".equalsIgnoreCase(((CmqBase190) this.entity).getCmqAlgorithm());
-			} else if (this.entity instanceof CmqBaseTarget) {
-				return "N".equalsIgnoreCase(((CmqBaseTarget) this.entity).getCmqAlgorithm());
-			}
-		}
-		return true;
-	}
-
-	public boolean isInactiveList() {
-		if (this.entity != null) {
-			if (this.entity instanceof CmqBase190) {
-				return CmqBase190.CMQ_STATUS_VALUE_INACTIVE.equals(((CmqBase190) this.entity).getCmqStatus());
-			} else if (this.entity instanceof CmqBaseTarget) {
-				return CmqBase190.CMQ_STATUS_VALUE_INACTIVE.equals(((CmqBaseTarget) this.entity).getCmqStatus());
-			}
-		}
-		return false;
-	}
-
-	public boolean isDTR() {
-		if (this.relationEntity != null) {
-			if (this.relationEntity instanceof CmqRelation190) {
-				if(((CmqRelation190)this.relationEntity).getRelationImpactType() != null) {
-					return "DTR".equals(((CmqRelation190) this.relationEntity).getRelationImpactType());
-				}
-			} else if(this.relationEntity instanceof SmqRelation190) {
-				if(((SmqRelation190)this.relationEntity).getRelationImpactType() != null) {
-					return "DTR".equals(((CmqRelation190) this.relationEntity).getRelationImpactType());
-				}
-			}
-		}
-		return false;
-	}
-	
-	public boolean isPaginationNode() {
-		return paginationNode;
-	}
-
-	public void setPaginationNode(boolean paginationNode) {
-		this.paginationNode = paginationNode;
-	}
-
-	public int getCurrentShowingCount() {
-		return currentShowingCount;
-	}
-
-	public void setCurrentShowingCount(int currentShowingCount) {
-		this.currentShowingCount = currentShowingCount;
-	}
-
-	public int getPageNumber() {
-		return pageNumber;
-	}
-
-	public void setPageNumber(int pageNumber) {
-		this.pageNumber = pageNumber;
-	}
-
-	public int getTotalRecordsCount() {
-		return totalRecordsCount;
-	}
-
-	public void setTotalRecordsCount(int totalRecordsCount) {
-		this.totalRecordsCount = totalRecordsCount;
-	}
-
-	public boolean isPrimarypathCheckDone() {
-		return primarypathCheckDone;
-	}
-
-	public void setPrimarypathCheckDone(boolean primarypathCheckDone) {
-		this.primarypathCheckDone = primarypathCheckDone;
-	}
-	
-	public boolean isSmqNode() {
-		return ((this.entity instanceof SmqBase190) 
-										|| (this.entity instanceof SmqBaseTarget) 
-										|| (this.entity instanceof SMQReverseHierarchySearchDto)) ;
-	}
-	
-	public boolean isChildNode() {
-		
-		if(this.level.equalsIgnoreCase("PRO") || this.hideCategory) {
-			return true;
-		}
-		if(this.relationEntity != null || getJustAdded()) { 
-			return false;
-		} else if((this.entity != null) && (!this.level.equalsIgnoreCase("Child SMQ")) 
-										&& (!this.level.equalsIgnoreCase("'C' Child SMQ"))
-										&& ((this.entity instanceof SmqBase190) 
-										|| (this.entity instanceof SmqBaseTarget) 
-										|| (this.entity instanceof SMQReverseHierarchySearchDto)))
-			return false;
-		if((this.entity instanceof SmqRelation190 && !this.hideCategory) 
-				|| (this.entity instanceof SmqRelationTarget && !this.hideCategory)) {
-				return false; 
-		}
-		if(this.entity instanceof MeddraDictHierarchySearchDto) {
-			MeddraDictHierarchySearchDto meddraDictHierarchySearchDto = (MeddraDictHierarchySearchDto) entity;
-			if(meddraDictHierarchySearchDto.getHlgtCode() != null || meddraDictHierarchySearchDto.getHltCode() != null
-					|| meddraDictHierarchySearchDto.getPtCode() != null)
-				return true;
-				
-			if(!(meddraDictHierarchySearchDto.getPtCode() == null && meddraDictHierarchySearchDto.getLltCode() != null)) {
-				return false;
-			}
-			
-		} else if(this.entity instanceof MeddraDictReverseHierarchySearchDto) {
-			MeddraDictReverseHierarchySearchDto meddraDictReverseHierarchySearchDto = (MeddraDictReverseHierarchySearchDto) entity;
-			if(!(meddraDictReverseHierarchySearchDto.getPtCode() == null && meddraDictReverseHierarchySearchDto.getLltCode() != null)) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	public boolean isReadOnlyCategory() {
-		return readOnlyCategory;
-	}
-
-	public void setReadOnlyCategory(boolean readOnlyCategory) {
-		this.readOnlyCategory = readOnlyCategory;
-	}
-
-	public boolean isReadOnlyWeight() {
-		return readOnlyWeight;
-	}
-
-	public void setReadOnlyWeight(boolean readOnlyWeight) {
-		this.readOnlyWeight = readOnlyWeight;
-	}
-
-	public boolean isReadOnlyScope() {
-		return readOnlyScope;
-	}
-
-	public void setReadOnlyScope(boolean readOnlyScope) {
-		this.readOnlyScope = readOnlyScope;
-	}
-
-	public boolean isDrilledDown() {
-		return drilledDown;
-	}
-
-	public void setDrilledDown(boolean drilledDown) {
-		this.drilledDown = drilledDown;
-	}
-	
-	public boolean getJustAdded() {
-		return justAdded;
-	}
-
-	public void setJustAdded(boolean justAdded) {
-		this.justAdded = justAdded;
-	}
+    private boolean readOnlyScope;
+
+    private String scope;
+
+    private boolean hideDelete;
+
+    private boolean primaryPathFlag;
+
+    private boolean primarypathCheckDone;
+
+    // for green colored primary rows
+    private String rowStyleClass;
+
+    private boolean paginationNode;
+
+    private int pageNumber;
+
+    private int currentShowingCount;
+
+    private int totalRecordsCount;
+
+    private boolean drilledDown;
+
+    private boolean justAdded;
+
+    public HierarchyNode() {
+    }
+
+    public HierarchyNode(String level, String term, String code, IEntity entity) {
+        this.level = level;
+        this.term = term;
+        this.code = code;
+        this.entity = entity;
+    }
+
+    public HierarchyNode(String level, String term, String code, String category, String category2, String weight, String scope,
+            IEntity entity) {
+        this.level = level;
+        this.term = term;
+        this.code = code;
+        this.scope = scope;
+        this.weight = weight;
+        this.category = category;
+        this.category2 = category2;
+        this.entity = entity;
+    }
+
+    public String getLevel() {
+        return level;
+    }
+
+    public void setLevel(String level) {
+        this.level = level;
+    }
+
+    public String getTerm() {
+        return term;
+    }
+
+    public void setTerm(String term) {
+        this.term = term;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public int compareTo(HierarchyNode document) {
+        int retVal = this.getLevel().compareTo(document.getLevel());
+        if (retVal == 0) {
+            retVal = this.getTerm().compareTo(document.getTerm());
+        }
+        return retVal;
+    }
+
+    public IEntity getEntity() {
+        return entity;
+    }
+
+    public void setEntity(IEntity entity) {
+        this.entity = entity;
+    }
+
+    public IEntity getRelationEntity() {
+        return relationEntity;
+    }
+
+    public void setRelationEntity(IEntity entity) {
+        this.relationEntity = entity;
+    }
+
+    public boolean isDataFetchCompleted() {
+        return isDataFetchCompleted;
+    }
+
+    public void setDataFetchCompleted(boolean isDataFetchCompleted) {
+        this.isDataFetchCompleted = isDataFetchCompleted;
+    }
+
+    public boolean isDummyNode() {
+        return isDummyNode;
+    }
+
+    public void setDummyNode(boolean isDummyNode) {
+        this.isDummyNode = isDummyNode;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((code == null) ? 0 : code.hashCode());
+        result = prime * result + ((level == null) ? 0 : level.hashCode());
+        result = prime * result + ((term == null) ? 0 : term.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        HierarchyNode other = (HierarchyNode) obj;
+        if (code == null) {
+            if (other.code != null) {
+                return false;
+            }
+        } else if (!code.equals(other.code)) {
+            return false;
+        }
+        if (level == null) {
+            if (other.level != null) {
+                return false;
+            }
+        } else if (!level.equals(other.level)) {
+            return false;
+        }
+        if (term == null) {
+            if (other.term != null) {
+                return false;
+            }
+        } else if (!term.equals(other.term)) {
+            return false;
+        }
+        return true;
+    }
+
+    public HierarchyNode copy() throws IllegalAccessException, InvocationTargetException {
+        HierarchyNode target = new HierarchyNode();
+        BeanUtils.copyProperties(target, this);
+        return target;
+    }
+
+    public void markNotEditableInRelationstable() {
+        this.readOnlyCategory = true;
+        this.readOnlyCategory2 = true;
+        this.hideDelete = true;
+        this.readOnlyScope = true;
+        this.readOnlyWeight = true;
+    }
+
+    public void markEditableInRelationstable() {
+        this.hideCategory = false;
+        this.hideCategory2 = false;
+        this.hideDelete = false;
+        this.hideScope = false;
+        this.hideWeight = false;
+    }
+
+    public void markReadOnlyInRelationstable() {
+        this.readOnlyCategory = true;
+        this.readOnlyCategory2 = true;
+        this.hideDelete = true;
+        this.readOnlyScope = true;
+        this.readOnlyWeight = true;
+    }
+
+    @Override
+    public String toString() {
+        return term;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+    
+    public String getCategory2() {
+        return category2;
+    }
+
+    public void setCategory2(String category2) {
+        this.category2 = category2;
+    }
+
+    public String getWeight() {
+        return weight == null ? "" : weight;
+    }
+
+    public void setWeight(String weight) {
+        this.weight = weight;
+    }
+
+    public String getScope() {
+        return scope;
+    }
+
+    public void setScope(String scope) {
+        this.scope = scope;
+    }
+
+    public boolean isPrimaryPathFlag() {
+        return primaryPathFlag;
+    }
+
+    public void setPrimaryPathFlag(boolean primaryPathFlag) {
+        this.primaryPathFlag = primaryPathFlag;
+    }
+
+    public boolean isHideCategory() {
+        return hideCategory;
+    }
+
+    public void setHideCategory(boolean hideCategory) {
+        this.hideCategory = hideCategory;
+    }
+
+    public boolean isHideCategory2() {
+        return hideCategory2;
+    }
+
+    public void setHideCategory2(boolean hideCategory2) {
+        this.hideCategory2 = hideCategory2;
+    }
+
+    public boolean isReadOnlyCategory2() {
+        return readOnlyCategory2;
+    }
+
+    public void setReadOnlyCategory2(boolean readOnlyCategory2) {
+        this.readOnlyCategory2 = readOnlyCategory2;
+    }
+
+    public boolean isHideWeight() {
+        return hideWeight;
+    }
+
+    public void setHideWeight(boolean hideWeight) {
+        this.hideWeight = hideWeight;
+    }
+
+    public boolean isHideScope() {
+        return hideScope;
+    }
+
+    public void setHideScope(boolean hideScope) {
+        this.hideScope = hideScope;
+    }
+
+    public boolean isHideDelete() {
+        return hideDelete;
+    }
+
+    public void setHideDelete(boolean hideDelete) {
+        this.hideDelete = hideDelete;
+    }
+
+    public String getRowStyleClass() {
+        return rowStyleClass;
+    }
+
+    public void setRowStyleClass(String rowStyleClass) {
+        this.rowStyleClass = rowStyleClass;
+    }
+
+    public boolean isAlgorithmN() {
+        if (this.entity != null) {
+            if (this.entity instanceof CmqBase190) {
+                return "N".equalsIgnoreCase(((CmqBase190) this.entity).getCmqAlgorithm());
+            } else if (this.entity instanceof CmqBaseTarget) {
+                return "N".equalsIgnoreCase(((CmqBaseTarget) this.entity).getCmqAlgorithm());
+            }
+        }
+        return true;
+    }
+
+    public boolean isInactiveList() {
+        if (this.entity != null) {
+            if (this.entity instanceof CmqBase190) {
+                return CmqBase190.CMQ_STATUS_VALUE_INACTIVE.equals(((CmqBase190) this.entity).getCmqStatus());
+            } else if (this.entity instanceof CmqBaseTarget) {
+                return CmqBase190.CMQ_STATUS_VALUE_INACTIVE.equals(((CmqBaseTarget) this.entity).getCmqStatus());
+            }
+        }
+        return false;
+    }
+
+    public boolean isDTR() {
+        if (this.relationEntity != null) {
+            if (this.relationEntity instanceof CmqRelation190) {
+                if (((CmqRelation190) this.relationEntity).getRelationImpactType() != null) {
+                    return "DTR".equals(((CmqRelation190) this.relationEntity).getRelationImpactType());
+                }
+            } else if (this.relationEntity instanceof SmqRelation190) {
+                if (((SmqRelation190) this.relationEntity).getRelationImpactType() != null) {
+                    return "DTR".equals(((CmqRelation190) this.relationEntity).getRelationImpactType());
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean isPaginationNode() {
+        return paginationNode;
+    }
+
+    public void setPaginationNode(boolean paginationNode) {
+        this.paginationNode = paginationNode;
+    }
+
+    public int getCurrentShowingCount() {
+        return currentShowingCount;
+    }
+
+    public void setCurrentShowingCount(int currentShowingCount) {
+        this.currentShowingCount = currentShowingCount;
+    }
+
+    public int getPageNumber() {
+        return pageNumber;
+    }
+
+    public void setPageNumber(int pageNumber) {
+        this.pageNumber = pageNumber;
+    }
+
+    public int getTotalRecordsCount() {
+        return totalRecordsCount;
+    }
+
+    public void setTotalRecordsCount(int totalRecordsCount) {
+        this.totalRecordsCount = totalRecordsCount;
+    }
+
+    public boolean isPrimarypathCheckDone() {
+        return primarypathCheckDone;
+    }
+
+    public void setPrimarypathCheckDone(boolean primarypathCheckDone) {
+        this.primarypathCheckDone = primarypathCheckDone;
+    }
+
+    public boolean isSmqNode() {
+        return ((this.entity instanceof SmqBase190)
+                || (this.entity instanceof SmqBaseTarget)
+                || (this.entity instanceof SMQReverseHierarchySearchDto));
+    }
+
+    public boolean isChildNode() {
+
+        if (this.level.equalsIgnoreCase("PRO") || this.hideCategory) {
+            return true;
+        }
+        if (this.relationEntity != null || getJustAdded()) {
+            return false;
+        } else if ((this.entity != null) && (!this.level.equalsIgnoreCase("Child SMQ"))
+                && (!this.level.equalsIgnoreCase("'C' Child SMQ"))
+                && ((this.entity instanceof SmqBase190)
+                || (this.entity instanceof SmqBaseTarget)
+                || (this.entity instanceof SMQReverseHierarchySearchDto))) {
+            return false;
+        }
+        if ((this.entity instanceof SmqRelation190 && !this.hideCategory)
+                || (this.entity instanceof SmqRelationTarget && !this.hideCategory)) {
+            return false;
+        }
+        if (this.entity instanceof MeddraDictHierarchySearchDto) {
+            MeddraDictHierarchySearchDto meddraDictHierarchySearchDto = (MeddraDictHierarchySearchDto) entity;
+            if (meddraDictHierarchySearchDto.getHlgtCode() != null || meddraDictHierarchySearchDto.getHltCode() != null
+                    || meddraDictHierarchySearchDto.getPtCode() != null) {
+                return true;
+            }
+
+            if (!(meddraDictHierarchySearchDto.getPtCode() == null && meddraDictHierarchySearchDto.getLltCode() != null)) {
+                return false;
+            }
+
+        } else if (this.entity instanceof MeddraDictReverseHierarchySearchDto) {
+            MeddraDictReverseHierarchySearchDto meddraDictReverseHierarchySearchDto = (MeddraDictReverseHierarchySearchDto) entity;
+            if (!(meddraDictReverseHierarchySearchDto.getPtCode() == null && meddraDictReverseHierarchySearchDto.getLltCode() != null)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean isReadOnlyCategory() {
+        return readOnlyCategory;
+    }
+
+    public void setReadOnlyCategory(boolean readOnlyCategory) {
+        this.readOnlyCategory = readOnlyCategory;
+    }
+
+    public boolean isReadOnlyWeight() {
+        return readOnlyWeight;
+    }
+
+    public void setReadOnlyWeight(boolean readOnlyWeight) {
+        this.readOnlyWeight = readOnlyWeight;
+    }
+
+    public boolean isReadOnlyScope() {
+        return readOnlyScope;
+    }
+
+    public void setReadOnlyScope(boolean readOnlyScope) {
+        this.readOnlyScope = readOnlyScope;
+    }
+
+    public boolean isDrilledDown() {
+        return drilledDown;
+    }
+
+    public void setDrilledDown(boolean drilledDown) {
+        this.drilledDown = drilledDown;
+    }
+
+    public boolean getJustAdded() {
+        return justAdded;
+    }
+
+    public void setJustAdded(boolean justAdded) {
+        this.justAdded = justAdded;
+    }
 }

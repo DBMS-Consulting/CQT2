@@ -1,5 +1,6 @@
 package com.dbms.service;
 
+import com.dbms.controller.CreateController;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
@@ -74,7 +75,9 @@ import com.dbms.util.CqtConstants;
 import com.dbms.util.exceptions.CqtServiceException;
 import com.dbms.view.ListDetailsFormVM;
 import com.dbms.view.ListNotesFormVM;
+import com.dbms.view.SystemConfigProperties;
 import com.dbms.web.dto.MQReportRelationsWorkerDTO;
+import javax.annotation.PostConstruct;
 
 /**
  * @author Jay G.(jayshanchn@hotmail.com)
@@ -123,7 +126,8 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 	
 	@ManagedProperty("#{RefCodeListService}")
 	private IRefCodeListService refCodeListService;
-	
+        
+
 	private StringBuilder appendClause(StringBuilder sb, boolean first) {
 		if (first) {
 			sb.append(" where");
@@ -832,7 +836,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 	 */
 	@Override
 	public StreamedContent generateExcelReport(ListDetailsFormVM details,
-			String dictionaryVersion) {
+			String dictionaryVersion, SystemConfigProperties systemConfigProperties) {
 		XSSFWorkbook workbook = new XSSFWorkbook();
 		XSSFSheet worksheet = null;
 		DateFormat dateTimeFormat = new SimpleDateFormat("dd-MMM-yyyy:hh:mm:ss a z");
@@ -848,7 +852,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		}
 
 		/**
-		 * Première ligne - entêtes
+		 * 
 		 */
 		row = worksheet.createRow(rowCount);
 		XSSFCell cell = row.createCell(0);
@@ -892,24 +896,50 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 
 		rowCount += 2;
 		row = worksheet.createRow(rowCount);
-		cell = row.createCell(0);
+                
+                int cellCount = 0;
+
+		cell = row.createCell(cellCount);
 		cell.setCellValue("Term");
 		setCellStyleColumn(workbook, cell);
-		cell = row.createCell(1);
+                
+                cellCount++;
+		cell = row.createCell(cellCount);
 		cell.setCellValue("Code");
 		setCellStyleColumn(workbook, cell);
-		cell = row.createCell(2);
+                
+		cellCount++;
+		cell = row.createCell(cellCount);
 		cell.setCellValue("Level");
 		setCellStyleColumn(workbook, cell);
-		cell = row.createCell(3);
-		cell.setCellValue("Category");
-		setCellStyleColumn(workbook, cell);
-		cell = row.createCell(4);
-		cell.setCellValue("Weight");
-		setCellStyleColumn(workbook, cell);
-		cell = row.createCell(5);
-		cell.setCellValue("Scope");
-		setCellStyleColumn(workbook, cell);
+                
+                if(systemConfigProperties.isDisplayCategory()) {
+                    cellCount++;
+                    cell = row.createCell(cellCount);
+                    cell.setCellValue("Category");
+                    setCellStyleColumn(workbook, cell);
+                }
+                
+		if(systemConfigProperties.isDisplayCategory2()) {
+                    cellCount++;
+                    cell = row.createCell(cellCount);
+                    cell.setCellValue("Category2");
+                    setCellStyleColumn(workbook, cell);
+                }
+                
+		if(systemConfigProperties.isDisplayWeight()) {
+                    cellCount++;
+                    cell = row.createCell(cellCount);
+                    cell.setCellValue("Weight");
+                    setCellStyleColumn(workbook, cell);
+                }
+                
+		if(systemConfigProperties.isDisplayScope()) {
+                    cellCount++;
+                    cell = row.createCell(cellCount);
+                    cell.setCellValue("Scope");
+                    setCellStyleColumn(workbook, cell);
+                }
 		rowCount++;
 
 		// Retrieval of relations - Loop
@@ -1064,6 +1094,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 				dto.setTerm(term);
 				dto.setCode(codeTerm);
 				dto.setCategory(relation.getTermCategory() != null ? relation.getTermCategory() : "");
+                                dto.setCategory2(relation.getTermCategory2() != null ? relation.getTermCategory2() : "");
 				dto.setScope(relation.getTermScope() != null ? returnScopeValue(relation.getTermScope()) : "");
 				dto.setWeight(relation.getTermWeight() != null ? relation.getTermWeight().toString() : "");
 				dtos.add(dto);
@@ -1088,10 +1119,10 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		
 		for(ReportLineDataDto dto : dtos) {
 			row = worksheet.createRow(rowCount);
-			if(dto.getCategory() == null) {
+			if(dto.getCategory() == null && dto.getCategory2() == null) {
 				buildShortCells(dto, cell, row);
 			} else {
-				buildCells(dto, cell, row);
+				buildCells(dto, cell, row, systemConfigProperties);
 			}
 			rowCount++;
 		}
@@ -1148,30 +1179,50 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 	}
 
 
-	private void buildCells(ReportLineDataDto dto, XSSFCell cell, XSSFRow row) {
+	private void buildCells(ReportLineDataDto dto, XSSFCell cell, XSSFRow row, SystemConfigProperties systemConfigProperties) {
+                
+            int cellCount = 0;
 		// Cell 0
-		cell = row.createCell(0);
+		cell = row.createCell(cellCount);
 		cell.setCellValue(dto.getTerm());
 	
 		// Cell 1
-		cell = row.createCell(1);
+                cellCount++;
+		cell = row.createCell(cellCount);
 		cell.setCellValue(dto.getCode());
 
 		// Cell 2
-		cell = row.createCell(2);
+                cellCount++;
+		cell = row.createCell(cellCount);
 		cell.setCellValue(dto.getLevel());
 
 		// Cell 3
-		cell = row.createCell(3);
-		cell.setCellValue(dto.getCategory());
-
-		// Cell 4
-		cell = row.createCell(4);
-		cell.setCellValue(dto.getWeight());
+                if(systemConfigProperties.isDisplayCategory()) {
+                    cellCount++;
+                    cell = row.createCell(cellCount);
+                    cell.setCellValue(dto.getCategory());
+                }
+                
+                // Cell 4
+                if(systemConfigProperties.isDisplayCategory2()) {
+                    cellCount++;
+                    cell = row.createCell(cellCount);
+                    cell.setCellValue(dto.getCategory2());
+                }
 
 		// Cell 5
-		cell = row.createCell(5);
-		cell.setCellValue(dto.getScope());
+                if(systemConfigProperties.isDisplayWeight()) {
+                    cellCount++;
+                    cell = row.createCell(cellCount);
+                    cell.setCellValue(dto.getWeight());
+                }
+
+		// Cell 6
+                if(systemConfigProperties.isDisplayScope()) {
+                    cellCount++;
+                    cell = row.createCell(cellCount);
+                    cell.setCellValue(dto.getScope());
+                }
 		
 	}
 
@@ -1191,7 +1242,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 	 * MQ Report.
 	 */
 	@Override
-	public StreamedContent generateMQReport(ListDetailsFormVM details, ListNotesFormVM notes, String dictionaryVersion, TreeNode relationsRoot, boolean filterLlts) {
+	public StreamedContent generateMQReport(ListDetailsFormVM details, ListNotesFormVM notes, String dictionaryVersion, TreeNode relationsRoot, boolean filterLlts, SystemConfigProperties systemConfigProperties) {
 		XSSFWorkbook workbook = new XSSFWorkbook();
 		
 		DateFormat dateTimeFormat = new SimpleDateFormat("dd-MMM-yyyy:hh:mm:ss a z");
@@ -1210,7 +1261,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		
 		Map<Integer, ReportLineDataDto> mapReport = new HashMap<Integer, ReportLineDataDto>();
 		/**
-		 * Première ligne - entêtes
+		 * 
 		 */
 		row = worksheet.createRow(rowCount);
 		XSSFCell cell = row.createCell(0);
@@ -1334,25 +1385,51 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		
 		rowCount += 2;
 		row = worksheet.createRow(rowCount);
-		cell = row.createCell(0);
+                
+                int cellCount=0;
+		cell = row.createCell(cellCount);
 		cell.setCellValue("Term");
 		setCellStyleColumn(workbook, cell);
-		cell = row.createCell(1);
+                
+                cellCount++;
+		cell = row.createCell(cellCount);
 		cell.setCellValue("Code");
 		setCellStyleColumn(workbook, cell);
-		cell = row.createCell(2);
+                
+                cellCount++;
+		cell = row.createCell(cellCount);
 		cell.setCellValue("Level");
 		setCellStyleColumn(workbook, cell);
-		cell = row.createCell(3);
-		cell.setCellValue("Category");
-		setCellStyleColumn(workbook, cell);
-		cell = row.createCell(4);
-		cell.setCellValue("Weight");
-		setCellStyleColumn(workbook, cell);
-		cell = row.createCell(5);
-		cell.setCellValue("Scope");
-		setCellStyleColumn(workbook, cell);
-		cell = row.createCell(6);
+                
+                if(systemConfigProperties.isDisplayCategory()) {
+                    cellCount++;
+                    cell = row.createCell(cellCount);
+                    cell.setCellValue("Category");
+                    setCellStyleColumn(workbook, cell);
+                }
+                
+                if(systemConfigProperties.isDisplayCategory2()) {
+                    cellCount++;
+                    cell = row.createCell(cellCount);
+                    cell.setCellValue("Category2");
+                    setCellStyleColumn(workbook, cell);
+                }
+                
+                if(systemConfigProperties.isDisplayWeight()) {
+                    cellCount++;
+                    cell = row.createCell(cellCount);
+                    cell.setCellValue("Weight");
+                    setCellStyleColumn(workbook, cell);
+                }
+                
+                if(systemConfigProperties.isDisplayScope()) {
+                    cellCount++;
+                    cell = row.createCell(cellCount);
+                    cell.setCellValue("Scope");
+                    setCellStyleColumn(workbook, cell);
+                }
+                
+		cell = row.createCell(cellCount + 1);
 		//cell.setCellValue("PT Status");
 		//setCellStyleColumn(workbook, cell);
 		rowCount++;
@@ -1393,6 +1470,10 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 					
 					if(relations.get(iterator).getTermCategory() != null && mapReportData.get(0) != null) {
 						mapReportData.get(0).setCategory(relations.get(iterator).getTermCategory());
+					}
+                                        
+                                        if(relations.get(iterator).getTermCategory2() != null && mapReportData.get(0) != null) {
+						mapReportData.get(0).setCategory2(relations.get(iterator).getTermCategory2());
 					}
 					
 					if(relations.get(iterator).getTermWeight() != null && mapReportData.get(0) != null) {
@@ -1470,6 +1551,9 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 									if(relationsPro.get(addedFromSmqCounter).getTermCategory() != null && mapReportData.get(0) != null){
 										mapReportData.get(0).setCategory(relationsPro.get(addedFromSmqCounter).getTermCategory());
 									}
+                                                                        if(relationsPro.get(addedFromSmqCounter).getTermCategory2() != null && mapReportData.get(0) != null){
+										mapReportData.get(0).setCategory2(relationsPro.get(addedFromSmqCounter).getTermCategory2());
+									}
 								}
 								parent.getChildren().addAll(mapReportData.values());
 								//LOG.info("Adding children to parent {}", parent);
@@ -1493,7 +1577,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		parents.sort(LEVELNUM_TERM_REPORT_LINE_DTO_COMPARATOR);
 		parents.forEach(parent -> parent.getChildren().sort(LEVELNUM_REPORT_LINE_DTO_COMPARATOR));
 		
-		rowCount = fillReport(parents, cell, row, rowCount, worksheet);
+		rowCount = fillReport(parents, cell, row, rowCount, worksheet, systemConfigProperties);
 
 		StreamedContent content = null;
 		try {
@@ -1562,7 +1646,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		}
 
 		/**
-		 * Première ligne - entêtes
+		 * 
 		 */
 		row = worksheet.createRow(rowCount);
 		XSSFCell cell = row.createCell(0);
@@ -1649,6 +1733,10 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 					if(relations.get(iterator).getTermCategory() != null && mapReportData.get(0) != null) {
 						mapReportData.get(0).setCategory(relations.get(iterator).getTermCategory());
 					}
+                                        
+                                        if(relations.get(iterator).getTermCategory2() != null && mapReportData.get(0) != null) {
+						mapReportData.get(0).setCategory2(relations.get(iterator).getTermCategory2());
+					}
 
 					if(relations.get(iterator).getTermWeight() != null && mapReportData.get(0) != null) {
 						mapReportData.get(0).setWeight(relations.get(iterator).getTermWeight()+"");
@@ -1709,6 +1797,9 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 									}
 									if(relationsPro.get(addedFromSmqCounter).getTermCategory() != null && mapReportData.get(0) != null){
 										mapReportData.get(0).setCategory(relationsPro.get(addedFromSmqCounter).getTermCategory());
+									}
+                                                                        if(relationsPro.get(addedFromSmqCounter).getTermCategory2() != null && mapReportData.get(0) != null){
+										mapReportData.get(0).setCategory2(relationsPro.get(addedFromSmqCounter).getTermCategory2());
 									}
 								}
 								elements.addAll(mapReportData.values());
@@ -1774,7 +1865,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		}
 
 		/**
-		 * Première ligne - entêtes
+		 * 
 		 */
 		row = worksheet.createRow(rowCount);
 		XSSFCell cell = row.createCell(0);
@@ -1992,6 +2083,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 									parent.setScope(selectedScope);
 									parent.setWeight((relation.getTermWeight() != null ? relation.getTermWeight() + "" : ""));
 									parent.setCategory(relation.getTermCategory());
+                                                                        parent.setCategory2(relation.getTermCategory2());
 									parent.setImpact("");
 									parent.setStatus("");
 									relationsWorkerDTO.addToMapReport(cpt++, parent);
@@ -2609,7 +2701,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		return "";
 	}
 	
-	private int fillReport(List<ReportLineDataDto> report, XSSFCell cell, XSSFRow row, int rowCount, XSSFSheet worksheet) {
+	private int fillReport(List<ReportLineDataDto> report, XSSFCell cell, XSSFRow row, int rowCount, XSSFSheet worksheet,SystemConfigProperties systemConfigProperties) {
 		int cpt = 0;
 		LOG.info("Writing {} ReportLineDataDtos." , report.size());
 		for(ReportLineDataDto line : report) {
@@ -2620,47 +2712,70 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 				headerCellStyle.setFillForegroundColor(IndexedColors.PALE_BLUE.index);
 				headerCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 
+                                int cellCount = 0;
+                                
 				// Cell 0
-				cell = row.createCell(0);
+				cell = row.createCell(cellCount);
 				cell.setCellValue(line.getDots() + line.getTerm());
 				if(line.getDots() == null || line.getDots().isEmpty()) {
 					cell.setCellStyle(headerCellStyle);
 				}
 
 				// Cell 1
-				cell = row.createCell(1);
+                                cellCount++;
+				cell = row.createCell(cellCount);
 				cell.setCellValue(line.getCode());
 				if(line.getDots() == null || line.getDots().isEmpty()) {
 					cell.setCellStyle(headerCellStyle);
 				}
 
 				// Cell 2
-				cell = row.createCell(2);
+                                cellCount++;
+				cell = row.createCell(cellCount);
 				cell.setCellValue(line.getLevel());
 				if(line.getDots() == null || line.getDots().isEmpty()) {
 					cell.setCellStyle(headerCellStyle);
 				}
 				
 				// Cell 3
-				cell = row.createCell(3);
-				cell.setCellValue(line.getCategory());
-				if(line.getDots() == null || line.getDots().isEmpty()) {
-					cell.setCellStyle(headerCellStyle);
-				}
-				
-				// Cell 4
-				cell = row.createCell(4);
-				cell.setCellValue(line.getWeight());
-				if(line.getDots() == null || line.getDots().isEmpty()) {
-					cell.setCellStyle(headerCellStyle);
-				}
+                                if(systemConfigProperties.isDisplayCategory()) {
+                                    cellCount++;
+                                    cell = row.createCell(cellCount);
+                                    cell.setCellValue(line.getCategory());
+                                    if(line.getDots() == null || line.getDots().isEmpty()) {
+                                            cell.setCellStyle(headerCellStyle);
+                                    }
+                                }
+                                
+                                // Cell 4
+                                if(systemConfigProperties.isDisplayCategory2()) {
+                                    cellCount++;
+                                    cell = row.createCell(cellCount);
+                                    cell.setCellValue(line.getCategory2());
+                                    if(line.getDots() == null || line.getDots().isEmpty()) {
+                                            cell.setCellStyle(headerCellStyle);
+                                    }
+                                }
 				
 				// Cell 5
-				cell = row.createCell(5);
-				cell.setCellValue(returnScopeValue(line.getScope()));
-				if(line.getDots() == null || line.getDots().isEmpty()) {
-					cell.setCellStyle(headerCellStyle);
-				}
+                                if(systemConfigProperties.isDisplayWeight()) {
+                                    cellCount++;
+                                    cell = row.createCell(cellCount);
+                                    cell.setCellValue(line.getWeight());
+                                    if(line.getDots() == null || line.getDots().isEmpty()) {
+                                            cell.setCellStyle(headerCellStyle);
+                                    }
+                                }
+				
+				// Cell 6
+                                if(systemConfigProperties.isDisplayScope()) {
+                                    cellCount++;
+                                    cell = row.createCell(cellCount);
+                                    cell.setCellValue(returnScopeValue(line.getScope()));
+                                    if(line.getDots() == null || line.getDots().isEmpty()) {
+                                            cell.setCellStyle(headerCellStyle);
+                                    }
+                                }
 				
 				// Cell 6
 				//cell = row.createCell(5);
@@ -2669,7 +2784,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 				rowCount++;
 				
 				if(!line.getChildren().isEmpty()) {
-					rowCount = fillReport(line.getChildren(), cell, row, rowCount, worksheet);
+					rowCount = fillReport(line.getChildren(), cell, row, rowCount, worksheet, systemConfigProperties);
 				}
 			} else {
 				LOG.info("Got null line in map in fillReport");

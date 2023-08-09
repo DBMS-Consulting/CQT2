@@ -43,6 +43,7 @@ import com.dbms.util.CqtConstants;
 import com.dbms.util.exceptions.ReportGenerationException;
 import com.dbms.view.ListDetailsFormVM;
 import com.dbms.view.ListNotesFormVM;
+import com.dbms.view.SystemConfigProperties;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -88,6 +89,8 @@ public class ReportController extends BaseController<CmqBase190> {
 	
 	@ManagedProperty("#{globalController}")
     private GlobalController globalController;
+        
+        private SystemConfigProperties systemConfigProperties;
 	
 	// Search & Filters
 	private Date reportStartDate = null;
@@ -103,6 +106,7 @@ public class ReportController extends BaseController<CmqBase190> {
 
 	@PostConstruct
 	public void init() {
+            this.systemConfigProperties = new SystemConfigProperties(refCodeListService);
 	}
 	
 	@Override
@@ -288,7 +292,7 @@ public class ReportController extends BaseController<CmqBase190> {
 	 */
 	public void generateExcelReport(ListDetailsFormVM details) {
 		RefConfigCodeList currentMeddraVersionCodeList = this.refCodeListService.getCurrentMeddraVersion();
-		StreamedContent content = cmqBaseService.generateExcelReport(details, (currentMeddraVersionCodeList != null ? currentMeddraVersionCodeList.getValue() : ""));
+		StreamedContent content = cmqBaseService.generateExcelReport(details, (currentMeddraVersionCodeList != null ? currentMeddraVersionCodeList.getValue() : ""), this.systemConfigProperties);
 		setExcelFile(content); 
 	}
 	
@@ -300,7 +304,7 @@ public class ReportController extends BaseController<CmqBase190> {
 	public void generateMQReport(ListDetailsFormVM details, ListNotesFormVM notes, TreeNode relationsRoot) {
 		RefConfigCodeList currentMeddraVersionCodeList = this.refCodeListService.getCurrentMeddraVersion();
 		boolean filterLltFlag = this.globalController.isFilterLltsFlag();
-		StreamedContent content = cmqBaseService.generateMQReport(details, notes, (currentMeddraVersionCodeList != null ? currentMeddraVersionCodeList.getValue() : ""),relationsRoot, filterLltFlag);
+		StreamedContent content = cmqBaseService.generateMQReport(details, notes, (currentMeddraVersionCodeList != null ? currentMeddraVersionCodeList.getValue() : ""),relationsRoot, filterLltFlag, this.systemConfigProperties);
 		setExcelFile(content); 
 	}
 

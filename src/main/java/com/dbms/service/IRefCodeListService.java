@@ -75,7 +75,13 @@ public interface IRefCodeListService extends ICqtPersistenceService<RefConfigCod
 
     List<RefConfigCodeList> findLdapConfig();
 
-    boolean getLevelScopeCategorySystemConfig();
+    boolean getScopeSystemConfig();
+    
+    boolean getCategorySystemConfig();
+
+    boolean getCategory2SystemConfig();
+
+    boolean getWeightSystemConfig();
 
     public RefConfigCodeList getDefaultForConfigType(String configType);
 

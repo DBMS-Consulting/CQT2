@@ -69,7 +69,7 @@ public class CmqBaseRelationsTreeHelper {
 	 */
 	public TreeNode getCmqBaseRelationsRootHierarchy(Long cmqCode) {
 		TreeNode rootNode = new DefaultTreeNode("root"
-				, new HierarchyNode("LEVEL", "NAME", "CODE", "SCOPE", "CATEGORY", "WEIGHT", null)
+				, new HierarchyNode("LEVEL", "NAME", "CODE", "SCOPE", "CATEGORY", "CATEGORY2", "WEIGHT", null)
 				, null);
 		boolean isInactive = false;
 		CmqBase190 cmqBase190 =  this.cmqBaseSvc.findByCode(cmqCode);
@@ -220,7 +220,11 @@ public class CmqBaseRelationsTreeHelper {
 					|| (rootHierarchyNode.getLevel().equalsIgnoreCase("TR1") || rootHierarchyNode.getLevel().equalsIgnoreCase("TME")) && hierNode.getLevel().equalsIgnoreCase("PRO")
 					|| isListPublishedOrApproved) {
 				hierNode.setReadOnlyCategory(true);
+                                //hierNode.setReadOnlyCategory2(true); not required for category2
 			} 
+                        if(hierNode.getLevel().equalsIgnoreCase("PRO")) {
+                            hierNode.setReadOnlyCategory2(true);
+                        }
 			
 			//Scope Rules
 			//when to hide
@@ -1112,6 +1116,7 @@ public class CmqBaseRelationsTreeHelper {
 		node.setTerm(childCmq.getCmqName());
 		node.setCode(childCmq.getCmqCode().toString());
 		node.setCategory("");
+                node.setCategory2("");
 		node.setWeight("");
 		node.setScope("");
 		node.setEntity(childCmq);
@@ -1127,6 +1132,7 @@ public class CmqBaseRelationsTreeHelper {
 		node.setEntity(smqBase);
         if(cmqRelation != null) {
             node.setCategory((cmqRelation.getTermCategory() == null) ? "" : cmqRelation.getTermCategory());
+            node.setCategory2((cmqRelation.getTermCategory2() == null) ? "" : cmqRelation.getTermCategory2());
             node.setScope((cmqRelation.getTermScope() == null) ? "" : cmqRelation.getTermScope());
             node.setWeight((cmqRelation.getTermWeight() == null) ? "" : cmqRelation.getTermWeight() + "");
         }
@@ -1139,6 +1145,7 @@ public class CmqBaseRelationsTreeHelper {
 		node.setTerm(smqBase.getSmqName());
 		node.setCode(smqBase.getSmqCode().toString());
 		node.setCategory("");
+                node.setCategory2("");
 		node.setScope("");
 		node.setWeight("0");
 		node.setEntity(smqBase);
@@ -1157,6 +1164,7 @@ public class CmqBaseRelationsTreeHelper {
         if(relationEntity != null && relationEntity instanceof CmqRelation190) {
             CmqRelation190 cmqRelation = (CmqRelation190)relationEntity;
             node.setCategory((cmqRelation.getTermCategory() == null) ? "" : cmqRelation.getTermCategory());
+            node.setCategory2((cmqRelation.getTermCategory2() == null) ? "" : cmqRelation.getTermCategory2());
             node.setScope((cmqRelation.getTermScope() == null) ? "" : cmqRelation.getTermScope());
             node.setWeight((cmqRelation.getTermWeight() == null) ? "" : cmqRelation.getTermWeight() + "");
         }
@@ -1197,6 +1205,7 @@ public class CmqBaseRelationsTreeHelper {
         if(relationEntity!=null && relationEntity instanceof CmqRelation190) {
             CmqRelation190 cmqRelation = (CmqRelation190) relationEntity;
             node.setCategory((cmqRelation.getTermCategory() == null) ? "" : cmqRelation.getTermCategory());
+            node.setCategory2((cmqRelation.getTermCategory2() == null) ? "" : cmqRelation.getTermCategory2());
             node.setScope((cmqRelation.getTermScope() == null) ? "" : cmqRelation.getTermScope());
             node.setWeight((cmqRelation.getTermWeight() == null) ? "" : cmqRelation.getTermWeight() + "");
         }

@@ -17,6 +17,7 @@ public class ReportLineDataDto implements Comparable<ReportLineDataDto>{
 	private Long levelNum;
 	private String level;
 	private String category;
+        private String category2;
 	private String weight;
 	private String scope;
 	private String dots;
@@ -63,6 +64,19 @@ public class ReportLineDataDto implements Comparable<ReportLineDataDto>{
 		this.weight = weight;
 		this.scope = scope;
 		this.category = categ;
+		this.impact = impact;
+	}
+        
+        public ReportLineDataDto(String level, String code, String term, String dots, String scope, String weight, String categ, String categ2, String impact, String status) {
+		super();
+		this.term = term;
+		this.code = code;
+		this.level = level;
+		this.dots = dots;
+		this.weight = weight;
+		this.scope = scope;
+		this.category = categ;
+                this.category2 = categ2;
 		this.impact = impact;
 	}
 	
@@ -155,6 +169,14 @@ public class ReportLineDataDto implements Comparable<ReportLineDataDto>{
 	public void setCategory(String category) {
 		this.category = category;
 	}
+        
+        public String getCategory2() {
+		return category2;
+	}
+
+	public void setCategory2(String category2) {
+		this.category2 = category2;
+	}
 
 	public String getWeight() {
 		return weight;
@@ -183,7 +205,7 @@ public class ReportLineDataDto implements Comparable<ReportLineDataDto>{
 	@Override
 	public String toString() {
 		return "ReportLineDataDto [term=" + term + ", code=" + code + ", levelNum=" + levelNum + ", level=" + level
-				+ ", category=" + category + ", weight=" + weight + ", scope=" + scope + ", dots=" + dots + ", status="
+				+ ", category=" + category + ", category2=" + category2 + ", weight=" + weight + ", scope=" + scope + ", dots=" + dots + ", status="
 				+ status + ", impact=" + impact + ", meddra=" + meddra + "]";
 	}
 
@@ -224,12 +246,12 @@ public class ReportLineDataDto implements Comparable<ReportLineDataDto>{
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		ReportLineDataDto that = (ReportLineDataDto) o;
-		return Objects.equals(term, that.term) && Objects.equals(code, that.code) && Objects.equals(levelNum, that.levelNum) && Objects.equals(level, that.level) && Objects.equals(category, that.category) && Objects.equals(weight, that.weight) && Objects.equals(scope, that.scope) && Objects.equals(status, that.status) && Objects.equals(impact, that.impact);
+		return Objects.equals(term, that.term) && Objects.equals(code, that.code) && Objects.equals(levelNum, that.levelNum) && Objects.equals(level, that.level) && Objects.equals(category, that.category) && Objects.equals(category2, that.category2) && Objects.equals(weight, that.weight) && Objects.equals(scope, that.scope) && Objects.equals(status, that.status) && Objects.equals(impact, that.impact);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(term, code, levelNum, level, category, weight, scope, status, impact);
+		return Objects.hash(term, code, levelNum, level, category, category2, weight, scope, status, impact);
 	}
 
 	@Override

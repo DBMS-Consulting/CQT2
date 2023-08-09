@@ -250,6 +250,7 @@ public class IARelationsTreeHelper {
 					//For all child expansions scope and category is readonly
 					if(!immediateParentNode.getCode().equalsIgnoreCase(parentRootNode.getCode())) {
 						hierNode.setReadOnlyCategory(true);
+                                                hierNode.setReadOnlyCategory2(true);
 						hierNode.setReadOnlyScope(true);
 					} else {
 						//Category rules`
@@ -257,7 +258,11 @@ public class IARelationsTreeHelper {
 								||(immediateParentNode.getLevel().equalsIgnoreCase("TR1") || immediateParentNode.getLevel().equalsIgnoreCase("TME")) && hierNode.getLevel().equalsIgnoreCase("PRO")
 								|| isListPublishedOrApproved) {
 							hierNode.setReadOnlyCategory(true);
+                                                        //hierNode.setReadOnlyCategory2(true); not required
 						}
+                                                if(hierNode.getLevel().equalsIgnoreCase("PRO")) {
+                                                    hierNode.setReadOnlyCategory2(true);
+                                                }
 						
 						//Scope rules
 						if(parentRootNode.isSmqNode()) {
@@ -535,6 +540,7 @@ public class IARelationsTreeHelper {
 		node.setTerm(cmqBaseCurrent.getCmqName());
 		node.setCode(cmqBaseCurrent.getCmqCode().toString());
 		node.setCategory("");
+                node.setCategory2("");
 		node.setWeight("");
 		node.setScope("");
 		node.setEntity(cmqBaseCurrent);
@@ -547,6 +553,7 @@ public class IARelationsTreeHelper {
 		node.setTerm(cmqBaseTarget.getCmqName());
 		node.setCode(cmqBaseTarget.getCmqCode().toString());
 		node.setCategory("");
+                node.setCategory2("");
 		node.setWeight("");
 		node.setScope("");
 		node.setEntity(cmqBaseTarget);
@@ -564,6 +571,7 @@ public class IARelationsTreeHelper {
 			node.setEntity(smqBase);
             if(cmqRelation != null) {
                 node.setCategory((cmqRelation.getTermCategory() == null) ? "" : cmqRelation.getTermCategory());
+                node.setCategory2((cmqRelation.getTermCategory2() == null) ? "" : cmqRelation.getTermCategory2());
                 node.setScope((cmqRelation.getTermScope() == null) ? "" : cmqRelation.getTermScope());
                 node.setWeight((cmqRelation.getTermWeight() == null) ? "" : cmqRelation.getTermWeight() + "");
             }
@@ -583,6 +591,7 @@ public class IARelationsTreeHelper {
             node.setRelationEntity(cmqRelation);
             if(cmqRelation != null) {
                 node.setCategory((cmqRelation.getTermCategory() == null) ? "" : cmqRelation.getTermCategory());
+                node.setCategory2((cmqRelation.getTermCategory2() == null) ? "" : cmqRelation.getTermCategory2());
                 node.setScope((cmqRelation.getTermScope() == null) ? "" : cmqRelation.getTermScope());
                 node.setWeight((cmqRelation.getTermWeight() == null) ? "" : cmqRelation.getTermWeight() + "");
             }
@@ -1478,6 +1487,7 @@ public class IARelationsTreeHelper {
             if(node.getRelationEntity() instanceof CmqRelationTarget) {
             	CmqRelationTarget cmqRelation = (CmqRelationTarget) node.getRelationEntity();
             	node.setCategory(cmqRelation.getTermCategory());
+                node.setCategory2(cmqRelation.getTermCategory2());
             	if(null != cmqRelation.getTermWeight()) {
             		node.setWeight(cmqRelation.getTermWeight()+"");
             	} 
@@ -2138,7 +2148,7 @@ public class IARelationsTreeHelper {
 			HierarchyNode node = this.createSmqBaseCurrrentNode(null, smqBaseCurrent);
 			TreeNode cmqBaseTreeNode = new DefaultTreeNode(node, currentTableRootTreeNode);
 			node.setHideCategory(true);
-
+			node.setHideCategory2(true);
 			if (CSMQBean.IMPACT_TYPE_ICS.equals(smqBaseCurrent.getImpactType())
                     || CSMQBean.IMPACT_TYPE_IMPACTED.equals(smqBaseCurrent.getImpactType()))
 				node.setRowStyleClass("blue-colored");
@@ -2178,6 +2188,7 @@ public class IARelationsTreeHelper {
 		HierarchyNode node = treeHelper.createSmqBaseTargetNode(selectedSmqList, null);
 		node.markReadOnlyInRelationstable();
 		node.setHideCategory(true);
+                node.setHideCategory2(true);
 		TreeNode cmqBaseTreeNode = new DefaultTreeNode(node, targetTableRootTreeNode);
 
 		if (CSMQBean.IMPACT_TYPE_ICS.equals(selectedSmqList.getImpactType())

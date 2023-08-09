@@ -827,9 +827,42 @@ public class RefCodeListService extends
 	}
 	
 	@Override
-	public boolean getLevelScopeCategorySystemConfig() {
+	public boolean getScopeSystemConfig() {
 		RefConfigCodeList retVal = null;
-		retVal = findByConfigTypeAndInternalCode(CqtConstants.CODE_LIST_TYPE_SYSTEM_CONFIG, CqtConstants.CODE_LIST_TYPE_DISPLAY_TERM_WEIGHT_SCOPE);
+		retVal = findByConfigTypeAndInternalCode(CqtConstants.CODE_LIST_TYPE_SYSTEM_CONFIG, CqtConstants.CODE_LIST_TYPE_DISPLAY_TERM_SCOPE);
+		if (retVal != null)
+			if (retVal.getValue().equals("Y"))
+				return true;
+		
+		return false;
+	}
+        
+        @Override
+	public boolean getCategorySystemConfig() {
+		RefConfigCodeList retVal = null;
+		retVal = findByConfigTypeAndInternalCode(CqtConstants.CODE_LIST_TYPE_SYSTEM_CONFIG, CqtConstants.CODE_LIST_TYPE_DISPLAY_TERM_CATEGORY);
+		if (retVal != null)
+			if (retVal.getValue().equals("Y"))
+				return true;
+		
+		return false;
+	}
+        
+        @Override
+	public boolean getCategory2SystemConfig() {
+		RefConfigCodeList retVal = null;
+		retVal = findByConfigTypeAndInternalCode(CqtConstants.CODE_LIST_TYPE_SYSTEM_CONFIG, CqtConstants.CODE_LIST_TYPE_DISPLAY_TERM_CATEGORY2);
+		if (retVal != null)
+			if (retVal.getValue().equals("Y"))
+				return true;
+		
+		return false;
+	}
+        
+        @Override
+	public boolean getWeightSystemConfig() {
+		RefConfigCodeList retVal = null;
+		retVal = findByConfigTypeAndInternalCode(CqtConstants.CODE_LIST_TYPE_SYSTEM_CONFIG, CqtConstants.CODE_LIST_TYPE_DISPLAY_TERM_WEIGHT);
 		if (retVal != null)
 			if (retVal.getValue().equals("Y"))
 				return true;

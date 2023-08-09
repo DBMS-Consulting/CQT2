@@ -14,6 +14,7 @@ import com.dbms.service.base.ICqtPersistenceService;
 import com.dbms.util.exceptions.CqtServiceException;
 import com.dbms.view.ListDetailsFormVM;
 import com.dbms.view.ListNotesFormVM;
+import com.dbms.view.SystemConfigProperties;
 
 public interface ICmqBase190Service extends ICqtPersistenceService<CmqBase190> {
 
@@ -54,9 +55,9 @@ public interface ICmqBase190Service extends ICqtPersistenceService<CmqBase190> {
 	 */
 	List<CmqBase190> getPublishedListsReportData(Date filterPublishedBetweenFrom, Date filterPublishedBetweenTo);
 
-	StreamedContent generateExcelReport(ListDetailsFormVM details, String dictionaryVersion);
+	StreamedContent generateExcelReport(ListDetailsFormVM details, String dictionaryVersion, SystemConfigProperties systemConfigProperties);
 
-	StreamedContent generateMQReport(ListDetailsFormVM details, ListNotesFormVM notes, String dictionaryVersion, TreeNode relationsRoot, boolean filterLlts);
+	StreamedContent generateMQReport(ListDetailsFormVM details, ListNotesFormVM notes, String dictionaryVersion, TreeNode relationsRoot, boolean filterLlts, SystemConfigProperties systemConfigProperties);
 
 	StreamedContent generateUniquePTReport(ListDetailsFormVM details, ListNotesFormVM notes, String dictionaryVersion, TreeNode relationsRoot, boolean filterLlts);
 

@@ -11,6 +11,7 @@ import org.primefaces.model.TreeNode;
 import com.dbms.entity.cqt.CmqBaseTarget;
 import com.dbms.entity.cqt.CmqProductBaseTarget;
 import com.dbms.service.base.ICqtPersistenceService;
+import com.dbms.view.SystemConfigProperties;
 
 public interface ICmqBaseTargetService  extends ICqtPersistenceService<CmqBaseTarget>{
 
@@ -34,9 +35,9 @@ public interface ICmqBaseTargetService  extends ICqtPersistenceService<CmqBaseTa
 
 	List<CmqBaseTarget> findByLevelAndTerm(Integer level, String searchTerm);
 
-	StreamedContent generateCMQExcel(CmqBaseTarget selectedImpactedCmqList, String dictionaryVersion,TreeNode selectedNode, boolean filterLltFlag);
+	StreamedContent generateCMQExcel(CmqBaseTarget selectedImpactedCmqList, String dictionaryVersion,TreeNode selectedNode, boolean filterLltFlag, SystemConfigProperties systemConfigProperties);
 
-	List<CmqBaseTarget> findApprovedCmqs();
+        List<CmqBaseTarget> findApprovedCmqs();
 
 	List<CmqBaseTarget> findChildCmqsByCodes(List<Long> targetCmqCodes);
 

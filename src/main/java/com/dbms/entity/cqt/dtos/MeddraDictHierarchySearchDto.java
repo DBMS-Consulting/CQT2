@@ -322,6 +322,11 @@ public class MeddraDictHierarchySearchDto implements IEntity {
 	public void setNewSuccessorPt(String newSuccessorPt) {
 		this.newSuccessorPt = newSuccessorPt;
 	}
+        
+        @Override
+        public String toString() {
+            return term;
+        }
 
 	
 }

@@ -65,6 +65,9 @@ public class CmqRelationTarget extends BaseEntity {
 
 	@Column(name = "TERM_CATEGORY", length = 1)
 	private String termCategory;
+        
+        @Column(name = "TERM_CATEGORY2", length = 1)
+	private String termCategory2;
 
 	@Column(name = "TERM_SCOPE", length = 15)
 	private String termScope;
@@ -184,6 +187,14 @@ public class CmqRelationTarget extends BaseEntity {
 
 	public void setTermCategory(String termCategory) {
 		this.termCategory = termCategory;
+	}
+        
+        public String getTermCategory2() {
+		return termCategory2;
+	}
+
+	public void setTermCategory2(String termCategory2) {
+		this.termCategory2 = termCategory2;
 	}
 
 	public String getTermScope() {
