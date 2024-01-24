@@ -299,7 +299,7 @@
 						update="resultRelations"/>
 				</p:selectOneMenu> -->
 				<h:outputText value="#{appCSMQBean.interpretCqtBaseCategory(node.category)}"
-                    rendered="#{node.readOnlyCategory and not node.hideCategory}" />
+                    rendered="#{node.readOnlyCategory and not node.hideCategory}" style="word-wrap: break-word;" />
 				<p:selectOneMenu id="soc2" value="#{node.category}" 
 				        rendered="#{not node.readOnlyCategory}"
 						autoWidth="false" style="width:75%" disabled="#{createController.readOnlyState}">
@@ -307,8 +307,7 @@
 					<f:selectItems var="s" value="#{appCSMQBean.cqtBaseCategoriesWithInactiveSelected(node.category)}"
 						itemValue="#{s.value}" itemLabel="#{s.value}" />
 						<p:ajax event="change"
-						listener="#{createController.notifyCategoryChange()}" 
-						update="resultRelations"/>
+						listener="#{createController.notifyCategoryChange()}"/>
 				</p:selectOneMenu>
                 
 			</p:column>
@@ -318,7 +317,7 @@
 				style="width:10%">
 		
 				<h:outputText value="#{appCSMQBean.interpretCqtBaseCategory(node.category2)}"
-                    rendered="#{node.readOnlyCategory2 and not node.hideCategory2}" />
+                    rendered="#{node.readOnlyCategory2 and not node.hideCategory2}" style="word-wrap: break-word;" />
 				<p:selectOneMenu id="soc4" value="#{node.category2}" 
 				        rendered="#{not node.readOnlyCategory2}"
 						autoWidth="false" style="width:75%" disabled="#{createController.readOnlyState}">
@@ -326,8 +325,7 @@
 					<f:selectItems var="s" value="#{appCSMQBean.cqtBaseCategoriesWithInactiveSelected(node.category2)}"
 						itemValue="#{s.value}" itemLabel="#{s.value}" />
 						<p:ajax event="change"
-						listener="#{createController.notifyCategoryChange()}" 
-						update="resultRelations"/>
+						listener="#{createController.notifyCategoryChange()}"/>
 				</p:selectOneMenu>
                 
 			</p:column>

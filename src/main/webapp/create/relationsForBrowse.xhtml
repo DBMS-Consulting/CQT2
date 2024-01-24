@@ -133,11 +133,11 @@
 				<h:outputText value="#{appCSMQBean.interpretCqtBaseScope(node.scope)}" />
 			</p:column>
 
-			<p:column rendered="#{createController.relationsModel.displayCategory}" style="width:10%">
+			<p:column rendered="#{createController.relationsModel.displayCategory}" styleClass="wrap">
 				 <h:outputText value="#{appCSMQBean.interpretCqtBaseCategory(node.category)}" />
 			</p:column>
                         
-                        <p:column rendered="#{createController.relationsModel.displayCategory2}" style="width:10%">
+                        <p:column rendered="#{createController.relationsModel.displayCategory2}" styleClass="wrap">
 				 <h:outputText value="#{appCSMQBean.interpretCqtBaseCategory(node.category2)}" />
 			</p:column>
 
