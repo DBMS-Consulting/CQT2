@@ -741,6 +741,13 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 		cell.setCellValue("Level");
 		setCellStyleColumn(workbook, cell);
                 
+                if(systemConfigProperties.isDisplayScope()) {
+                    cellCount++;
+                    cell = row.createCell(cellCount);
+                    cell.setCellValue("Scope");
+                    setCellStyleColumn(workbook, cell);
+                }
+                
                 if(systemConfigProperties.isDisplayCategory()) {
                     cellCount++;
                     cell = row.createCell(cellCount);
@@ -762,14 +769,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
                     setCellStyleColumn(workbook, cell);
                 }
                 
-                if(systemConfigProperties.isDisplayScope()) {
-                    cellCount++;
-                    cell = row.createCell(cellCount);
-                    cell.setCellValue("Scope");
-                    setCellStyleColumn(workbook, cell);
-                }
-                
-                
+                  
                 cellCount++;
 		cell = row.createCell(cellCount);
 		cell.setCellValue("Impact Relation Type");
@@ -817,15 +817,16 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 								mapReport.put(cpt++, new ReportLineDataDto(level, smq.getSmqCode() + "", smq.getSmqName(), "", smq.getImpactType(), "", smq.getSmqStatus())); 
 								if(relation.getTermCategory() != null) {
 									mapReport.get(mapReport.size() - 1).setCategory(relation.getTermCategory());
-                                                                        if(relation.getTermCategory2() != null) {
-                                                                            mapReport.get(mapReport.size() - 1).setCategory2(relation.getTermCategory2());
-                                                                        }
+                                                                       
 									mapReport.get(mapReport.size() - 1).setScope(relation.getTermScope());
 									if(null != relation.getTermWeight()) {
 										mapReport.get(mapReport.size() - 1).setWeight(relation.getTermWeight()+"");
 									}
 										
 								}
+                                                                if(relation.getTermCategory2() != null) {
+                                                                            mapReport.get(mapReport.size() - 1).setCategory2(relation.getTermCategory2());
+                                                                }
  								
 								/**
 								 * Other SMQs
@@ -2410,9 +2411,9 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 		} else if (smqLevel == 3) {
 			level = "SMQ3";
 		} else if (smqLevel == 4) {
-			level = "PT";
+			level = "SMQ4";
 		} else if (smqLevel == 5) {
-			level = "LLT";
+			level = "SMQ5";
 		}
 		return level;
 	}
@@ -2454,34 +2455,33 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 			cell.setCellValue(line.getLevel());	
 			
                         // Cell 3
+                        if(systemConfigProperties.isDisplayScope()) {
+                            cellCount++;
+                            cell = row.createCell(cellCount);
+                            cell.setCellValue(line.getScope() != null ? interpretCqtBaseScope(line.getScope()) : "");
+                        }
+                        
+                        // Cell 4
                         if(systemConfigProperties.isDisplayCategory()) {
                             cellCount++;
                             cell = row.createCell(cellCount);
                             cell.setCellValue(line.getCategory());
                         }
                         
-                        // Cell 4
+                        // Cell 5
                         if(systemConfigProperties.isDisplayCategory2()) {
                             cellCount++;
                             cell = row.createCell(cellCount);
                             cell.setCellValue(line.getCategory2());
                         }
                         
-                        // Cell 5
+                        // Cell 6
                         if(systemConfigProperties.isDisplayWeight()) {
                             cellCount++;
                             cell = row.createCell(cellCount);
                             cell.setCellValue(line.getWeight());
                         }
-                        
-			// Cell 6
-                        if(systemConfigProperties.isDisplayScope()) {
-                            cellCount++;
-                            cell = row.createCell(cellCount);
-                            cell.setCellValue(line.getScope() != null ? interpretCqtBaseScope(line.getScope()) : "");
-                        }
-                        	
-			
+                          				
 			// Cell 7
                         cellCount++;
 			cell = row.createCell(cellCount);
@@ -2640,8 +2640,16 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
                 cellCount++;
 		cell = row.createCell(cellCount);
 		cell.setCellValue(level);
+                
+                // Cell 3
+                if(systemConfigProperties.isDisplayScope()) {
+                    cellCount++;
+                    cell = row.createCell(cellCount);
+                    cell.setCellValue(relation.getTermScope() != null ? relation
+                                    .getTermScope() : "");
+                }
 
-		// Cell 3
+		// Cell 4
                 if(systemConfigProperties.isDisplayCategory()) {
                     cellCount++;
                     cell = row.createCell(cellCount);
@@ -2650,7 +2658,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
                 }
                 
                 
-                // Cell 4
+                // Cell 5
                 if(systemConfigProperties.isDisplayCategory2()) {
                     cellCount++;
                     cell = row.createCell(cellCount);
@@ -2659,21 +2667,12 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
                 }
                 
 
-		// Cell 5
+		// Cell 6
                 if(systemConfigProperties.isDisplayWeight()) {
                     cellCount++;
                     cell = row.createCell(cellCount);
                     cell.setCellValue(relation.getTermWeight() != null ? relation
                                     .getTermWeight().toString() : "");
-                }
-                
-
-		// Cell 6
-                if(systemConfigProperties.isDisplayScope()) {
-                    cellCount++;
-                    cell = row.createCell(cellCount);
-                    cell.setCellValue(relation.getTermScope() != null ? relation
-                                    .getTermScope() : "");
                 }
                 
 		

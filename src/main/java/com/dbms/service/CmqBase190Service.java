@@ -913,6 +913,13 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		cell.setCellValue("Level");
 		setCellStyleColumn(workbook, cell);
                 
+                if(systemConfigProperties.isDisplayScope()) {
+                    cellCount++;
+                    cell = row.createCell(cellCount);
+                    cell.setCellValue("Scope");
+                    setCellStyleColumn(workbook, cell);
+                }
+                
                 if(systemConfigProperties.isDisplayCategory()) {
                     cellCount++;
                     cell = row.createCell(cellCount);
@@ -934,12 +941,6 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
                     setCellStyleColumn(workbook, cell);
                 }
                 
-		if(systemConfigProperties.isDisplayScope()) {
-                    cellCount++;
-                    cell = row.createCell(cellCount);
-                    cell.setCellValue("Scope");
-                    setCellStyleColumn(workbook, cell);
-                }
 		rowCount++;
 
 		// Retrieval of relations - Loop
@@ -1195,33 +1196,33 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
                 cellCount++;
 		cell = row.createCell(cellCount);
 		cell.setCellValue(dto.getLevel());
+                
+                // Cell 3
+                if(systemConfigProperties.isDisplayScope()) {
+                    cellCount++;
+                    cell = row.createCell(cellCount);
+                    cell.setCellValue(dto.getScope());
+                }
 
-		// Cell 3
+		// Cell 4
                 if(systemConfigProperties.isDisplayCategory()) {
                     cellCount++;
                     cell = row.createCell(cellCount);
                     cell.setCellValue(dto.getCategory());
                 }
                 
-                // Cell 4
+                // Cell 5
                 if(systemConfigProperties.isDisplayCategory2()) {
                     cellCount++;
                     cell = row.createCell(cellCount);
                     cell.setCellValue(dto.getCategory2());
                 }
 
-		// Cell 5
+		// Cell 6
                 if(systemConfigProperties.isDisplayWeight()) {
                     cellCount++;
                     cell = row.createCell(cellCount);
                     cell.setCellValue(dto.getWeight());
-                }
-
-		// Cell 6
-                if(systemConfigProperties.isDisplayScope()) {
-                    cellCount++;
-                    cell = row.createCell(cellCount);
-                    cell.setCellValue(dto.getScope());
                 }
 		
 	}
@@ -1401,6 +1402,13 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		cell.setCellValue("Level");
 		setCellStyleColumn(workbook, cell);
                 
+                if(systemConfigProperties.isDisplayScope()) {
+                    cellCount++;
+                    cell = row.createCell(cellCount);
+                    cell.setCellValue("Scope");
+                    setCellStyleColumn(workbook, cell);
+                }
+                
                 if(systemConfigProperties.isDisplayCategory()) {
                     cellCount++;
                     cell = row.createCell(cellCount);
@@ -1421,13 +1429,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
                     cell.setCellValue("Weight");
                     setCellStyleColumn(workbook, cell);
                 }
-                
-                if(systemConfigProperties.isDisplayScope()) {
-                    cellCount++;
-                    cell = row.createCell(cellCount);
-                    cell.setCellValue("Scope");
-                    setCellStyleColumn(workbook, cell);
-                }
+           
                 
 		cell = row.createCell(cellCount + 1);
 		//cell.setCellValue("PT Status");
@@ -2736,8 +2738,18 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 				if(line.getDots() == null || line.getDots().isEmpty()) {
 					cell.setCellStyle(headerCellStyle);
 				}
+                                
+                                // Cell 3
+                                if(systemConfigProperties.isDisplayScope()) {
+                                    cellCount++;
+                                    cell = row.createCell(cellCount);
+                                    cell.setCellValue(returnScopeValue(line.getScope()));
+                                    if(line.getDots() == null || line.getDots().isEmpty()) {
+                                            cell.setCellStyle(headerCellStyle);
+                                    }
+                                }
 				
-				// Cell 3
+				// Cell 4
                                 if(systemConfigProperties.isDisplayCategory()) {
                                     cellCount++;
                                     cell = row.createCell(cellCount);
@@ -2747,7 +2759,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
                                     }
                                 }
                                 
-                                // Cell 4
+                                // Cell 5
                                 if(systemConfigProperties.isDisplayCategory2()) {
                                     cellCount++;
                                     cell = row.createCell(cellCount);
@@ -2757,7 +2769,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
                                     }
                                 }
 				
-				// Cell 5
+				// Cell 6
                                 if(systemConfigProperties.isDisplayWeight()) {
                                     cellCount++;
                                     cell = row.createCell(cellCount);
@@ -2767,15 +2779,6 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
                                     }
                                 }
 				
-				// Cell 6
-                                if(systemConfigProperties.isDisplayScope()) {
-                                    cellCount++;
-                                    cell = row.createCell(cellCount);
-                                    cell.setCellValue(returnScopeValue(line.getScope()));
-                                    if(line.getDots() == null || line.getDots().isEmpty()) {
-                                            cell.setCellStyle(headerCellStyle);
-                                    }
-                                }
 				
 				// Cell 6
 				//cell = row.createCell(5);

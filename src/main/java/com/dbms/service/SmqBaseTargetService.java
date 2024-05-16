@@ -837,13 +837,13 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 		cell.setCellValue("Level");
 		setCellStyleColumn(workbook, cell);
 		cell = row.createCell(3);
-		cell.setCellValue("Category");
+                cell.setCellValue("Scope");		
 		setCellStyleColumn(workbook, cell);
 		cell = row.createCell(4);
-		cell.setCellValue("Weight");
+                cell.setCellValue("Category");
 		setCellStyleColumn(workbook, cell);
 		cell = row.createCell(5);
-		cell.setCellValue("Scope");
+		cell.setCellValue("Weight");
 		setCellStyleColumn(workbook, cell);
 		cell = row.createCell(6);
 		cell.setCellValue("Impact Type");
@@ -891,14 +891,10 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 						level = "SMQ2";
 					} else if (relation.getSmqLevel() == 3) {
 						level = "SMQ3";
-					} else if (relation.getSmqLevel() == 3) {
-						level = "SMQ4";
-					} else if (relation.getSmqLevel() == 3) {
-						level = "SMQ5";
 					} else if (relation.getSmqLevel() == 4) {
-						level = "PT";
+						level = "SMQ4";
 					} else if (relation.getSmqLevel() == 5) {
-						level = "LLT";
+						level = "SMQ5";
 					} else if (relation.getSmqLevel() == 0) {
 						level = "Child SMQ";
 					}
@@ -925,14 +921,10 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 										level = "SMQ2";
 									} else if (smq3.getSmqLevel() == 3) {
 										level = "SMQ3";
-									} else if (smq3.getSmqLevel() == 3) {
-										level = "SMQ4";
-									} else if (smq3.getSmqLevel() == 3) {
-										level = "SMQ5";
 									} else if (smq3.getSmqLevel() == 4) {
-										level = "PT";
+										level = "SMQ4";
 									} else if (smq3.getSmqLevel() == 5) {
-										level = "LLT";
+										level = "SMQ5";
 									} else if (smq3.getSmqLevel() == 0) {
 										level = "Child SMQ";
 									}
@@ -1442,19 +1434,19 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 		cell = row.createCell(2);
 		cell.setCellValue(level);
 
-		// Cell 3
+                // Cell 3
 		cell = row.createCell(3);
-		cell.setCellValue(category);
-
+		cell.setCellValue(interpretCqtBaseScope(scope + ""));
+                
 		// Cell 4
 		cell = row.createCell(4);
-		cell.setCellValue(weight);
+		cell.setCellValue(category);
 
 		// Cell 5
 		cell = row.createCell(5);
-		cell.setCellValue(interpretCqtBaseScope(scope + ""));
+		cell.setCellValue(weight);
 
-		// Cell
+		// Cell 6
 		cell = row.createCell(6);
 		cell.setCellValue(impactStr);
 
