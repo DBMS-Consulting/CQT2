@@ -15,7 +15,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 
 import org.apache.commons.lang3.StringUtils;
-import org.primefaces.context.RequestContext;
+import org.primefaces.PrimeFaces;
 import org.primefaces.model.DualListModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -158,17 +158,17 @@ public class RetireController implements Serializable {
 		}
 		if(parentCmqsOftargets != null && !parentCmqsOftargets.isEmpty() && parentNotSelected && isProtocol) {
 			this.confirmMessage = "Do you want to delete the association between Protocol and Program list?";
-			RequestContext.getCurrentInstance().execute("PF('confirmRetirePro').show();");
+			PrimeFaces.current().executeScript("PF('confirmRetirePro').show();");
 		} else if (childCmqsOftargets != null && !childCmqsOftargets.isEmpty() && childNotSelected) {
 			this.confirmMessage = "Not all associate child lists are selected for inactivation.";
-			RequestContext.getCurrentInstance().execute("PF('confirmRetireOK').show();");
+			PrimeFaces.current().executeScript("PF('confirmRetireOK').show();");
 		} else if (childCmqsOftargets != null && !childCmqsOftargets.isEmpty() && !childNotSelected) {
 			saveRetirementReason();
 		} else if (childCmqsOftargets.isEmpty() && (tmeOrTier1 || isDME || isCPT || !isProtocol)) {
 			saveRetirementReason();
 		} else {
 			this.confirmMessage = "Are you sure you want to retire this list?";
-			RequestContext.getCurrentInstance().execute("PF('confirmRetire').show();");
+			PrimeFaces.current().executeScript("PF('confirmRetire').show();");
 		}
 	}
 	 
@@ -254,7 +254,7 @@ public class RetireController implements Serializable {
 	public String saveRetirementReasonAndDeleteRelation() {
 		this.confirmMessage = "Please enter the retirement reason.";
 		this.retirementReason = "";
-		RequestContext.getCurrentInstance().execute("PF('RetireDescriptionAndDelete').show();");
+		PrimeFaces.current().executeScript("PF('RetireDescriptionAndDelete').show();");
 		setDeleteRelation(true);
 		return"";
 	}
@@ -262,7 +262,7 @@ public class RetireController implements Serializable {
 	public String saveRetirementReason() {
 		this.confirmMessage = "Please enter the retirement reason.";
 		this.retirementReason = "";
-		RequestContext.getCurrentInstance().execute("PF('RetireDescriptionAndDelete').show();");
+		PrimeFaces.current().executeScript("PF('RetireDescriptionAndDelete').show();");
 		setDeleteRelation(false);
 		return"";
 	}
@@ -288,7 +288,7 @@ public class RetireController implements Serializable {
 				FacesContext.getCurrentInstance().addMessage(null, 
 	                    new FacesMessage(FacesMessage.SEVERITY_ERROR,
 	                            "Please enter the retirement reason", ""));
-				RequestContext.getCurrentInstance().execute("PF('RetireDescriptionAndDelete').show();");
+				PrimeFaces.current().executeScript("PF('RetireDescriptionAndDelete').show();");
 				return "";
 			}
 			for (CmqBase190 cmqBase : targetCmqsSelected) {

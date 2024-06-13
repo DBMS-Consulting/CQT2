@@ -67,7 +67,8 @@
 		<h:panelGroup id="pc3"
 			style="display:block;position: absolute;height:80%;height: calc(100% - 155px);width: 100%;margin-left: -16px;padding: 0 10px;box-sizing: border-box;overflow: auto;">
 			 
-			<p:treeTable value="#{paramDlgCtrl.hierarchyRoot}" var="node"
+			<p:treeTable value="#{paramDlgCtrl.hierarchyRoot}" var="node" 
+                                paginator="true" rows="8" 
 				resizableColumns="true" id="resultHier" selectionMode="multiple"
 				selection="#{paramDlgCtrl.selectedNodes}"
 				styleClass="ui-treetable-resultHier hide-sel-chkbox full-width"

@@ -13,7 +13,7 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 
-import org.primefaces.context.RequestContext;
+import org.primefaces.PrimeFaces;
 import org.primefaces.model.DualListModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -90,7 +90,7 @@ public class DemoteToDraftController implements Serializable {
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 		}
 		else
-			RequestContext.getCurrentInstance().execute("PF('confirmDemote').show();");
+			PrimeFaces.current().executeScript("PF('confirmDemote').show();");
 	}
 
 	public void demote() {

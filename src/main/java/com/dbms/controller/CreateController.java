@@ -23,7 +23,7 @@ import javax.faces.event.AjaxBehaviorEvent;
 
 import org.apache.commons.lang3.StringUtils;
 import org.primefaces.component.wizard.Wizard;
-import org.primefaces.context.RequestContext;
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.FlowEvent;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.TreeNode;
@@ -191,7 +191,7 @@ public class CreateController implements Serializable {
 		boolean detailChanged = detailsFormModel.isModelChanged();
 		boolean notesChanged = notesFormModel.isModelChanged();
 		
-		//RequestContext.getCurrentInstance().execute("PF('wizard').next();");
+		//PrimeFaces.current().executeScript("PF('wizard').next();");
 		
 		if (createWizard != null 
 				|| (copyWizard != null && copyingCmqCode != null && (detailChanged || notesChanged || relationsModified))
@@ -214,13 +214,13 @@ public class CreateController implements Serializable {
 				detailsFormModel.setModelChanged(true);
 			 
 			if (detailsFormModel.isModelChanged()) {
-				RequestContext.getCurrentInstance().execute("PF('confirmSaveDetailsAll').show();");
+				PrimeFaces.current().executeScript("PF('confirmSaveDetailsAll').show();");
 				return "";
 			} else if (notesFormModel.isModelChanged()) {
-				RequestContext.getCurrentInstance().execute("PF('confirmSaveNotes').show();");
+				PrimeFaces.current().executeScript("PF('confirmSaveNotes').show();");
 				return "";
 			} else if (relationsModified) {
-				RequestContext.getCurrentInstance().execute("PF('confirmSaveRelations').show();");
+				PrimeFaces.current().executeScript("PF('confirmSaveRelations').show();");
 				return "";
 			}
 		}
@@ -234,8 +234,8 @@ public class CreateController implements Serializable {
 	}*/
 	
 	public String openForm() {
-		RequestContext.getCurrentInstance().execute("PF('confirmSaveNotes').hide();");
-		RequestContext.getCurrentInstance().execute("PF('confirmSaveRelations').hide();");
+		PrimeFaces.current().executeScript("PF('confirmSaveNotes').hide();");
+		PrimeFaces.current().executeScript("PF('confirmSaveRelations').hide();");
 		return formToOpen;
 	}
 	
@@ -594,7 +594,7 @@ public class CreateController implements Serializable {
 		if (codeSelected != null) {
 			nextStep = event.getNewStep();
 		}
-		RequestContext.getCurrentInstance().update("fBrowse:wizardNavbar");
+		PrimeFaces.current().ajax().update("fBrowse:wizardNavbar");
 		
 		/** JUST FOR TESTS **/
 		if (this.globalController.isFilterLltsFlag()) {
@@ -630,7 +630,7 @@ public class CreateController implements Serializable {
 				createWizard.setStep(WIZARD_STEP_CONFIRM);
 			// LOG.error(createWizard.getStep());
 
-            RequestContext.getCurrentInstance().update("fCreate:wizardNavbar");
+            PrimeFaces.current().ajax().update("fCreate:wizardNavbar");
         } else if(copyWizard != null) {
 			//copyWizard.setStep(copyWizardNextStep);
 	        	if(copyWizardNextStep.equals(WIZARD_STEP_DETAILS) && copyWizard.getStep().equals(WIZARD_STEP_DETAILS))
@@ -646,10 +646,10 @@ public class CreateController implements Serializable {
 			else if (copyWizardNextStep.equals(WIZARD_STEP_CONFIRM))
 				copyWizard.setStep(WIZARD_STEP_CONFIRM);
    
-            RequestContext.getCurrentInstance().update("fCopy:wizardNavbar");
+            PrimeFaces.current().ajax().update("fCopy:wizardNavbar");
         } else if(updateWizard != null) {
 			updateWizard.setStep(updateWizardNextStep);
-            RequestContext.getCurrentInstance().update("fUpdate:wizardNavbar");
+            PrimeFaces.current().ajax().update("fUpdate:wizardNavbar");
         }
 	}
 
@@ -663,7 +663,7 @@ public class CreateController implements Serializable {
                 copyWizardNextStep = COPY_WIZARD_STEP_SEARCH;
             }
             /*copyWizard.setStep(COPY_WIZARD_STEP_SEARCH);
-            RequestContext.getCurrentInstance().update("fCopy:wizardNavbar");
+            PrimeFaces.current().ajax().update("fCopy:wizardNavbar");
             */
             goToWizardNextStep();
 		}
@@ -725,7 +725,7 @@ public class CreateController implements Serializable {
 		cancelNotes();
 		if(copyWizard != null) {
 			copyWizard.setStep(COPY_WIZARD_STEP_SEARCH);
-            RequestContext.getCurrentInstance().update("fCopy:wizardNavbar");
+            PrimeFaces.current().ajax().update("fCopy:wizardNavbar");
 		} else {
 			goToWizardNextStep();
 		}
@@ -1254,7 +1254,7 @@ public class CreateController implements Serializable {
 		relationsModified = false;
 		if(copyWizard != null) {
 			copyWizard.setStep(COPY_WIZARD_STEP_SEARCH);
-            RequestContext.getCurrentInstance().update("fCopy:wizardNavbar");
+            PrimeFaces.current().ajax().update("fCopy:wizardNavbar");
 		} else {
 			goToWizardNextStep();
 		}
@@ -1287,22 +1287,22 @@ public class CreateController implements Serializable {
 			/*else
 				createWizardNextStep = WIZARD_STEP_DETAILS;
 			*/
-			RequestContext.getCurrentInstance().execute("PF('confirmSaveDetailsDlg').show();");
+			PrimeFaces.current().executeScript("PF('confirmSaveDetailsDlg').show();");
 		} else if(codeSelected != null && WIZARD_STEP_INFONOTES.equalsIgnoreCase(oldStep) && notesFormModel.isModelChanged()) {
 			// current step is "Informative Notes" and the form has some unsaved changes			
 			//----Confirmation on unsaved changes: see onUpdateWizardFlowProcess's "notes" step
 			createWizardNextStep = event.getNewStep();
-			RequestContext.getCurrentInstance().execute("PF('confirmSaveNotesDlg').show();");
+			PrimeFaces.current().executeScript("PF('confirmSaveNotesDlg').show();");
 		} else if(codeSelected != null && WIZARD_STEP_RELATIONS.equalsIgnoreCase(oldStep) && relationsModified) {
 			// current step is "Relations" and the form has some unsaved changes
 			createWizardNextStep = event.getNewStep();
-			RequestContext.getCurrentInstance().execute("PF('confirmSaveRelationsDlg').show();");
+			PrimeFaces.current().executeScript("PF('confirmSaveRelationsDlg').show();");
 		} else if(codeSelected != null){
 			nextStep = event.getNewStep();
 		} else {
 			nextStep = WIZARD_STEP_DETAILS;
 		}
-		RequestContext.getCurrentInstance().update("fCreate:wizardNavbar");
+		PrimeFaces.current().ajax().update("fCreate:wizardNavbar");
 		return nextStep;
 	}
 	public boolean isCreateWizardNavbarShown() {
@@ -1342,7 +1342,7 @@ public class CreateController implements Serializable {
 				
 				// 2. if modified, execute the client side javascript that will show the confirmation dialog
 				updateWizardNextStep = event.getNewStep();
-				RequestContext.getCurrentInstance().execute("PF('confirmSaveDetailsDlg').show();");
+				PrimeFaces.current().executeScript("PF('confirmSaveDetailsDlg').show();");
 				
 				// 3. if client clicks on yes, it will call PF:RemoteCommand - updateDetailsAndGoToNextStep(), which will
 				//	further call server side CreateController.updateDetailsAndNextStep()
@@ -1357,7 +1357,7 @@ public class CreateController implements Serializable {
 				
 				// 2. if modified, execute the client side javascript that will show the confirmation dialog
 				updateWizardNextStep = event.getNewStep();
-				RequestContext.getCurrentInstance().execute("PF('confirmSaveNotesDlg').show();");
+				PrimeFaces.current().executeScript("PF('confirmSaveNotesDlg').show();");
 				
 				// 3. if client clicks on yes, it will call PF:RemoteCommand - saveNotesAndGoToNextStep(), which will
 				//	further call server side CreateController.saveNotesAndNextStep()
@@ -1367,7 +1367,7 @@ public class CreateController implements Serializable {
 			} else if(WIZARD_STEP_RELATIONS.equalsIgnoreCase(oldStep) && relationsModified) {
 				// current step is "Relations" and the form has some unsaved changes
 				updateWizardNextStep = event.getNewStep();
-				RequestContext.getCurrentInstance().execute("PF('confirmSaveRelationsDlg').show();");
+				PrimeFaces.current().executeScript("PF('confirmSaveRelationsDlg').show();");
 			} else {
 				nextStep = event.getNewStep();
 //				if(WIZARD_STEP_DETAILS.equalsIgnoreCase(oldStep) && UPDATE_WIZARD_STEP_SEARCH.equalsIgnoreCase(nextStep) && !updateWizard.isBackRequest(FacesContext.getCurrentInstance())) {
@@ -1378,7 +1378,7 @@ public class CreateController implements Serializable {
 		} else {
 			nextStep = UPDATE_WIZARD_STEP_SEARCH;
 		}
-		RequestContext.getCurrentInstance().update("fUpdate:wizardNavbar");
+		PrimeFaces.current().ajax().update("fUpdate:wizardNavbar");
 		return nextStep;
 	}
 
@@ -1482,16 +1482,16 @@ public class CreateController implements Serializable {
 				//else
 					//copyWizardNextStep = WIZARD_STEP_DETAILS;
             }
-            RequestContext.getCurrentInstance().execute("PF('confirmSaveDetailsDlg').show();");
+            PrimeFaces.current().executeScript("PF('confirmSaveDetailsDlg').show();");
 		} else if(codeSelected != null && WIZARD_STEP_INFONOTES.equalsIgnoreCase(oldStep) && notesFormModel.isModelChanged()) {
 			// current step is "Informative Notes" and the form has some unsaved changes
 			//----Confirmation on unsaved changes: see onUpdateWizardFlowProcess's "notes" step
 			copyWizardNextStep = event.getNewStep();
-			RequestContext.getCurrentInstance().execute("PF('confirmSaveNotesDlg').show();");
+			PrimeFaces.current().executeScript("PF('confirmSaveNotesDlg').show();");
 		} else if(codeSelected != null && WIZARD_STEP_RELATIONS.equalsIgnoreCase(oldStep) && relationsModified) {
 			// current step is "Relations" and the form has some unsaved changes
 			copyWizardNextStep = event.getNewStep();
-			RequestContext.getCurrentInstance().execute("PF('confirmSaveRelationsDlg').show();");
+			PrimeFaces.current().executeScript("PF('confirmSaveRelationsDlg').show();");
 		} else {
 			if(codeSelected == null)
 				nextStep = COPY_WIZARD_STEP_SEARCH;
@@ -1499,7 +1499,7 @@ public class CreateController implements Serializable {
 				nextStep = event.getNewStep();
 		}
         
-		RequestContext.getCurrentInstance().update("fCopy:wizardNavbar");
+		PrimeFaces.current().ajax().update("fCopy:wizardNavbar");
 		return nextStep;
 	}
 
@@ -1816,9 +1816,9 @@ public class CreateController implements Serializable {
         getActiveWizard().setStep(WIZARD_STEP_DETAILS);
         setFormSaved(false);
         if(updateWizard != null)
-            RequestContext.getCurrentInstance().update("fUpdate:detailsPanel");
+            PrimeFaces.current().ajax().update("fUpdate:detailsPanel");
         else if(copyWizard != null)
-            RequestContext.getCurrentInstance().update("fCopy:detailsPanel");
+            PrimeFaces.current().ajax().update("fCopy:detailsPanel");
         
         // if CMQ_BASE_TARGET.Status != 'PENDING IA' on update wizard
         if(updateWizard!=null && isTargetMovedToHigherIAStatus(selectedData)) {

@@ -60,7 +60,7 @@
 
 						<h:panelGrid columns="2">
 							<p:commandButton value="Save" id="cb3" disabled="#{createController.readOnlyState}"  icon="ui-icon-disk"
-								action="#{createController.updateRelations(createController.relationsModel.relationsRoot)}" update="@form:m1"/>
+								action="#{createController.updateRelations(createController.relationsModel.relationsRoot)}" update="@form:m1 resultRelations"/>
 
 							<p:commandButton value="Cancel" icon="ui-icon-close" disabled="#{createController.readOnlyState}"
 								process="@this" update="@form:m1 @form:resultRelations" style="float: right"

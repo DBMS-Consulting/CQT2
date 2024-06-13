@@ -16,7 +16,7 @@ import javax.faces.convert.Converter;
 
 import com.dbms.entity.cqt.CmqBaseTarget;
 import com.dbms.service.*;
-import org.primefaces.context.RequestContext;
+import org.primefaces.PrimeFaces;
 import org.primefaces.model.DualListModel;
 import org.primefaces.model.TreeNode;
 import org.slf4j.Logger;
@@ -113,8 +113,7 @@ public class ReactivateController implements Serializable {
 		if(listsCurrent) {
 			reactivateTargetList();
 		} else {
-			RequestContext context = RequestContext.getCurrentInstance();
-		    context.execute("PF('meddraConfirmButton').jq.click();");
+		    PrimeFaces.current().executeScript("PF('meddraConfirmButton').jq.click();");
 		}
 	}
 	

@@ -636,7 +636,7 @@ public class CmqBaseRelationsTreeHelper {
             HierarchyNode node;
             if(entity instanceof CmqRelation190) {
             	CmqRelation190 cmqRelation = (CmqRelation190) entity;
-            	node = this.createMeddraReverseNode(m, nodeType,false, cmqRelationsMap.get(c), cmqRelation.getTermCategory());
+            	node = this.createMeddraReverseNode(m, nodeType,false, cmqRelationsMap.get(c), cmqRelation.getTermCategory(), cmqRelation.getTermCategory2());
             } else {
             node = this.createMeddraReverseNode(m, nodeType,false, cmqRelationsMap.get(c), "");
             }
@@ -1200,6 +1200,50 @@ public class CmqBaseRelationsTreeHelper {
 		node.setEntity(searchDto);
 		if(category != null && category.length() > 1) {
 			node.setCategory(category);
+		}
+        node.setRelationEntity(relationEntity);
+        if(relationEntity!=null && relationEntity instanceof CmqRelation190) {
+            CmqRelation190 cmqRelation = (CmqRelation190) relationEntity;
+            node.setCategory((cmqRelation.getTermCategory() == null) ? "" : cmqRelation.getTermCategory());
+            node.setCategory2((cmqRelation.getTermCategory2() == null) ? "" : cmqRelation.getTermCategory2());
+            node.setScope((cmqRelation.getTermScope() == null) ? "" : cmqRelation.getTermScope());
+            node.setWeight((cmqRelation.getTermWeight() == null) ? "" : cmqRelation.getTermWeight() + "");
+        }
+		return node;
+	}
+        
+        public HierarchyNode createMeddraReverseNode(MeddraDictReverseHierarchySearchDto searchDto, String level, boolean isPrimary, IEntity relationEntity, String category, String category2) {
+		HierarchyNode node = new HierarchyNode();
+		node.setLevel(level);
+		if("LLT".equalsIgnoreCase(level)) {
+			node.setTerm(searchDto.getLltTerm());
+			node.setCode(searchDto.getLltCode());	
+		} else if ("PT".equalsIgnoreCase(level)) {
+			node.setTerm(searchDto.getPtTerm());
+			node.setCode(searchDto.getPtCode());
+		} else if ("HLT".equalsIgnoreCase(level)) {
+			node.setTerm(searchDto.getHltTerm());
+			node.setCode(searchDto.getHltCode());
+		} else if ("HLGT".equalsIgnoreCase(level)) {
+			node.setTerm(searchDto.getHlgtTerm());
+			node.setCode(searchDto.getHlgtCode());
+		} else if ("SOC".equalsIgnoreCase(level)) {
+			node.setTerm(searchDto.getSocTerm());
+			node.setCode(searchDto.getSocCode());
+		}
+		
+		if(isPrimary) {
+			node.setPrimaryPathFlag(true);
+			node.setRowStyleClass("green-colored");
+		} else {
+			node.setPrimaryPathFlag(false);
+		}
+		node.setEntity(searchDto);
+		if(category != null && category.length() > 1) {
+			node.setCategory(category);
+		}
+                if(category2 != null && category2.length() > 1) {
+			node.setCategory2(category2);
 		}
         node.setRelationEntity(relationEntity);
         if(relationEntity!=null && relationEntity instanceof CmqRelation190) {

@@ -30,7 +30,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.primefaces.component.datatable.DataTable;
 import org.primefaces.component.wizard.Wizard;
-import org.primefaces.context.RequestContext;
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.FlowEvent;
 import org.primefaces.event.NodeCollapseEvent;
 import org.primefaces.event.NodeExpandEvent;
@@ -213,7 +213,7 @@ public class ImpactSearchController implements Serializable {
 
         if (iaWizard != null) {
             System.out.println("\n ***********   show DIALOG: " + showConfirmDialog());
-            RequestContext.getCurrentInstance().execute("PF('confirmIASaveDetails').show();");
+            PrimeFaces.current().executeScript("PF('confirmIASaveDetails').show();");
         }
     }
 
@@ -250,8 +250,8 @@ public class ImpactSearchController implements Serializable {
     }
 
     public String openForm() {
-        RequestContext.getCurrentInstance().execute("PF('confirmIASaveDetails').hide();");
-        RequestContext.getCurrentInstance().execute("PF('confirmIASaveNotes').hide();");
+        PrimeFaces.current().executeScript("PF('confirmIASaveDetails').hide();");
+        PrimeFaces.current().executeScript("PF('confirmIASaveNotes').hide();");
         return formToOpen;
     }
 
@@ -276,13 +276,13 @@ public class ImpactSearchController implements Serializable {
             return form;
         } else {
             if (targetRelationsUpdated) {
-                RequestContext.getCurrentInstance().execute("PF('confirmIASaveRelations').show();");
+                PrimeFaces.current().executeScript("PF('confirmIASaveRelations').show();");
                 return "";
             } else if (notesFormModel.isModelChanged()) {
-                RequestContext.getCurrentInstance().execute("PF('confirmIASaveNotes').show();");
+                PrimeFaces.current().executeScript("PF('confirmIASaveNotes').show();");
                 return "";
             } else if (detailsFormModel.isModelChanged()) {
-                RequestContext.getCurrentInstance().execute("PF('confirmIASaveDetails').show();");
+                PrimeFaces.current().executeScript("PF('confirmIASaveDetails').show();");
                 return "";
             }
 
@@ -291,19 +291,19 @@ public class ImpactSearchController implements Serializable {
     }
 
     public String saveDetailsAndClose() {
-        RequestContext.getCurrentInstance().execute("PF('confirmIASaveDetails').hide();");
+        PrimeFaces.current().executeScript("PF('confirmIASaveDetails').hide();");
         saveDetails();
         return formToOpen;
     }
 
     public String saveNotesAndClose() {
-        RequestContext.getCurrentInstance().execute("PF('confirmIASaveNotes').hide();");
+        PrimeFaces.current().executeScript("PF('confirmIASaveNotes').hide();");
         saveInformativeNotes();
         return formToOpen;
     }
 
     public String saveRelationsAndClose() {
-        RequestContext.getCurrentInstance().execute("PF('confirmIASaveRelations').hide();");
+        PrimeFaces.current().executeScript("PF('confirmIASaveRelations').hide();");
         updateTargetRelations();
         return formToOpen;
     }
@@ -332,7 +332,7 @@ public class ImpactSearchController implements Serializable {
         if (currentOrTarget == SELECTED_NO_LIST) {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Select the List/SMQ to export", "");
             FacesContext.getCurrentInstance().addMessage(null, msg);
-            RequestContext.getCurrentInstance().update("impactAssessment:messages");
+            PrimeFaces.current().ajax().update("impactAssessment:messages");
         } else {
 
             if (currentMeddraVersionCodeList != null) {
@@ -527,7 +527,7 @@ public class ImpactSearchController implements Serializable {
         treeHelper.onNodeExpandTargetTableScope(targetTableRootTreeNode, null,
                 scopeFilter);
 
-        RequestContext.getCurrentInstance().update("impactAssessment:futureListsAndSmqs");
+        PrimeFaces.current().ajax().update("impactAssessment:futureListsAndSmqs");
 
     }
 
@@ -1242,7 +1242,7 @@ public class ImpactSearchController implements Serializable {
             //	this.confirmMessage = "Select a List/SMQ to proceed";
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Select a List/SMQ to proceed", "");
             FacesContext.getCurrentInstance().addMessage(null, msg);
-            RequestContext.getCurrentInstance().update("impactAssessment:messages");
+            PrimeFaces.current().ajax().update("impactAssessment:messages");
             return "impact";
         }
 
@@ -1253,15 +1253,15 @@ public class ImpactSearchController implements Serializable {
             // currently opened tab is "Impact" and it contains unsaved changes;
             iaWizardNextStep = nextStep;
             nextStep = event.getOldStep();
-            RequestContext.getCurrentInstance().execute("PF('confirmSaveImpactsDlg').show();");
+            PrimeFaces.current().executeScript("PF('confirmSaveImpactsDlg').show();");
         } else if ("notes".equalsIgnoreCase(event.getOldStep()) && notesFormModel.isModelChanged()) {
             iaWizardNextStep = nextStep;
             nextStep = event.getOldStep();
-            RequestContext.getCurrentInstance().execute("PF('confirmSaveNotesDlg').show();");
+            PrimeFaces.current().executeScript("PF('confirmSaveNotesDlg').show();");
         } else if ("details".equalsIgnoreCase(event.getOldStep()) && detailsFormModel.isModelChanged()) {
             iaWizardNextStep = nextStep;
             nextStep = event.getOldStep();
-            RequestContext.getCurrentInstance().execute("PF('confirmSaveDetailsDlg').show();");
+            PrimeFaces.current().executeScript("PF('confirmSaveDetailsDlg').show();");
         } else {
             unsavedRedirect = false;
         }
@@ -1336,14 +1336,14 @@ public class ImpactSearchController implements Serializable {
         } else if (d instanceof SmqBase190) {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Details tab is not accessible for SMQs", "");
             FacesContext.getCurrentInstance().addMessage(null, msg);
-            RequestContext.getCurrentInstance().update("impactAssessment:messages");
+            PrimeFaces.current().ajax().update("impactAssessment:messages");
             //if (event.)
             return "notes";
 
         } else if (d instanceof SmqBaseTarget) {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Details tab is not accessible for SMQs", "");
             FacesContext.getCurrentInstance().addMessage(null, msg);
-            RequestContext.getCurrentInstance().update("impactAssessment:messages");
+            PrimeFaces.current().ajax().update("impactAssessment:messages");
             return "notes";
 
         } else {
@@ -1373,7 +1373,7 @@ public class ImpactSearchController implements Serializable {
         if (!selected) {
             FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Select a List/SMQ to proceed", "");
             FacesContext.getCurrentInstance().addMessage(null, msg);
-            RequestContext.getCurrentInstance().update("impactAssessment:messages");
+            PrimeFaces.current().ajax().update("impactAssessment:messages");
             return "impact";
         }
 
@@ -1426,7 +1426,7 @@ public class ImpactSearchController implements Serializable {
             } else if (d instanceof SmqBase190) {
                 FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Details tab is not accessible for SMQs", "");
                 FacesContext.getCurrentInstance().addMessage(null, msg);
-                RequestContext.getCurrentInstance().update("impactAssessment:messages");
+                PrimeFaces.current().ajax().update("impactAssessment:messages");
                 //if (event.)
                 notesFormModel.loadFromSmqBase190((SmqBase190) d);
                 return "notes";
@@ -1434,13 +1434,13 @@ public class ImpactSearchController implements Serializable {
             } else if (d instanceof SmqBaseTarget) {
                 FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_WARN, "Details tab is not accessible for SMQs", "");
                 FacesContext.getCurrentInstance().addMessage(null, msg);
-                RequestContext.getCurrentInstance().update("impactAssessment:messages");
+                PrimeFaces.current().ajax().update("impactAssessment:messages");
                 notesFormModel.loadFromSmqBaseTarget((SmqBaseTarget) d);
                 return "notes";
 
             }
         }
-        RequestContext.getCurrentInstance().update("impactAssessment");
+        PrimeFaces.current().ajax().update("impactAssessment");
 
         return nextStep;
     }
@@ -1448,7 +1448,7 @@ public class ImpactSearchController implements Serializable {
     public void saveNotesAndGoToNextStep() {
         saveInformativeNotes();
         iaWizard.setStep(iaWizardNextStep);
-        RequestContext.getCurrentInstance().update("impactAssessment");
+        PrimeFaces.current().ajax().update("impactAssessment");
     }
 
     public boolean isIAWizardNavbarShown() {
@@ -1466,7 +1466,7 @@ public class ImpactSearchController implements Serializable {
     public void cancelNotesAndGoToNextStep() {
         cancelNotes();
         iaWizard.setStep(iaWizardNextStep);
-        RequestContext.getCurrentInstance().update("impactAssessment");
+        PrimeFaces.current().ajax().update("impactAssessment");
     }
 
     public void saveInformativeNotes() {
@@ -1627,25 +1627,25 @@ public class ImpactSearchController implements Serializable {
     public void saveDetailsAndGoToNextStep() {
         saveDetails();
         iaWizard.setStep(iaWizardNextStep);
-        RequestContext.getCurrentInstance().update("impactAssessment");
+        PrimeFaces.current().ajax().update("impactAssessment");
     }
 
     public void cancelDetailsAndGoToNextStep() {
         cancelDetails();
         iaWizard.setStep(iaWizardNextStep);
-        RequestContext.getCurrentInstance().update("impactAssessment");
+        PrimeFaces.current().ajax().update("impactAssessment");
     }
 
     public void saveRelationsAndGoToNextStep() {
         updateTargetRelations();
         iaWizard.setStep(iaWizardNextStep);
-        RequestContext.getCurrentInstance().update("impactAssessment");
+        PrimeFaces.current().ajax().update("impactAssessment");
     }
 
     public void resetRelationsAndGoToNextStep() {
         removeSelectedNodesToTargetRelation();
         iaWizard.setStep(iaWizardNextStep);
-        RequestContext.getCurrentInstance().update("impactAssessment");
+        PrimeFaces.current().ajax().update("impactAssessment");
     }
 
     public void loadNewPts() {
@@ -1685,7 +1685,7 @@ public class ImpactSearchController implements Serializable {
 
                 if (null != currentListsAndSmqsComponent) {
                     //update has to be on currentListsAndSmqsComponent.getClientId() and not on the xhtml id
-                    RequestContext.getCurrentInstance().update(currentListsAndSmqsComponent.getClientId());
+                    PrimeFaces.current().ajax().update(currentListsAndSmqsComponent.getClientId());
                 }
             }
         }
@@ -1714,7 +1714,7 @@ public class ImpactSearchController implements Serializable {
 
                 if (null != targetListsAndSmqsComponent) {
                     //update has to be on targetListsAndSmqsComponent.getClientId() and not on the xhtml id
-                    RequestContext.getCurrentInstance().update(targetListsAndSmqsComponent.getClientId());
+                    PrimeFaces.current().ajax().update(targetListsAndSmqsComponent.getClientId());
                 }
             }
         }

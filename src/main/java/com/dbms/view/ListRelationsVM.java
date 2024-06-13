@@ -12,7 +12,7 @@ import javax.faces.context.FacesContext;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.primefaces.context.RequestContext;
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.NodeCollapseEvent;
 import org.primefaces.event.NodeExpandEvent;
 import org.primefaces.model.DefaultTreeNode;
@@ -152,19 +152,19 @@ public class ListRelationsVM implements IRelationsChangeListener {
                 UIComponent relationTreeTableComponent = CmqUtils.findComponent(viewRoot, "resultRelations");
                 if (null != relationTreeTableComponent) {
                     //update has to be on relationTreeTableComponent.getClientId() and not on the xhtml id
-                    RequestContext.getCurrentInstance().update(relationTreeTableComponent.getClientId());
+                    PrimeFaces.current().ajax().update(relationTreeTableComponent.getClientId());
                 }
                 //in b&s
                 UIComponent relationTreeTableForBrowseComponent = CmqUtils.findComponent(viewRoot, "relations-tree-table");
                 if (null != relationTreeTableForBrowseComponent) {
                     //update has to be on relationTreeTableForBrowseComponent.getClientId() and not on the xhtml id
-                    RequestContext.getCurrentInstance().update(relationTreeTableForBrowseComponent.getClientId());
+                    PrimeFaces.current().ajax().update(relationTreeTableForBrowseComponent.getClientId());
                 }
                 //in ia left side
                 UIComponent currentListsAndSmqsComponent = CmqUtils.findComponent(viewRoot, "currentListsAndSmqs");
                 if (null != currentListsAndSmqsComponent) {
                     //update has to be on currentListsAndSmqsComponent.getClientId() and not on the xhtml id
-                    RequestContext.getCurrentInstance().update(currentListsAndSmqsComponent.getClientId());
+                    PrimeFaces.current().ajax().update(currentListsAndSmqsComponent.getClientId());
                 }
             }
         }

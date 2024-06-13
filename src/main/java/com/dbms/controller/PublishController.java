@@ -16,7 +16,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 
 import org.apache.commons.lang3.StringUtils;
-import org.primefaces.context.RequestContext;
+import org.primefaces.PrimeFaces;
 import org.primefaces.model.DualListModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -358,7 +358,7 @@ public class PublishController implements Serializable {
             FacesContext.getCurrentInstance().addMessage(null, msg);
 
         } else {
-            RequestContext.getCurrentInstance().execute("PF('confirmPromote').show();");
+            PrimeFaces.current().executeScript("PF('confirmPromote').show();");
         }
     }
 

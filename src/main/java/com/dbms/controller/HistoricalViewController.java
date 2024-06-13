@@ -21,7 +21,7 @@ import javax.faces.event.AjaxBehaviorEvent;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.primefaces.component.wizard.Wizard;
-import org.primefaces.context.RequestContext;
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.FlowEvent;
 import org.primefaces.event.NodeCollapseEvent;
 import org.primefaces.event.NodeExpandEvent;
@@ -1062,7 +1062,7 @@ public class HistoricalViewController implements Serializable {
             this.addCountDummyNodeToMeddranodes(countsOfChildren, ptCodesMap);
         }
 		
-		RequestContext.getCurrentInstance().execute("PF('wizard').next()");
+		PrimeFaces.current().executeScript("PF('wizard').next()");
 	}
 
 	private void addCountDummyNodeToMeddranodes( List<Map<String, Object>> countsOfChildren
@@ -1108,7 +1108,7 @@ public class HistoricalViewController implements Serializable {
 		if (this.selectedCmqCode != null) {
 			historicalViewWizardNextStep = event.getNewStep();
 		}
-		RequestContext.getCurrentInstance().update("HistoricalView:wizardNavbar");
+		PrimeFaces.current().ajax().update("HistoricalView:wizardNavbar");
 		return historicalViewWizardNextStep;
 	}
 

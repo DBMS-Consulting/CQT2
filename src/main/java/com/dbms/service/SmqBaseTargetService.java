@@ -892,9 +892,9 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 					} else if (relation.getSmqLevel() == 3) {
 						level = "SMQ3";
 					} else if (relation.getSmqLevel() == 4) {
-						level = "SMQ4";
+						level = "PT";
 					} else if (relation.getSmqLevel() == 5) {
-						level = "SMQ5";
+						level = "LLT";
 					} else if (relation.getSmqLevel() == 0) {
 						level = "Child SMQ";
 					}

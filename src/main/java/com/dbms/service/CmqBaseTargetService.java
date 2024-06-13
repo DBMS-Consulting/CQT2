@@ -817,16 +817,16 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 								mapReport.put(cpt++, new ReportLineDataDto(level, smq.getSmqCode() + "", smq.getSmqName(), "", smq.getImpactType(), "", smq.getSmqStatus())); 
 								if(relation.getTermCategory() != null) {
 									mapReport.get(mapReport.size() - 1).setCategory(relation.getTermCategory());
-                                                                       
+								} 
+                                                                if(null != relation.getTermScope()) {
 									mapReport.get(mapReport.size() - 1).setScope(relation.getTermScope());
-									if(null != relation.getTermWeight()) {
-										mapReport.get(mapReport.size() - 1).setWeight(relation.getTermWeight()+"");
-									}
-										
+								}
+                                                                if(null != relation.getTermWeight()) {
+									mapReport.get(mapReport.size() - 1).setWeight(relation.getTermWeight()+"");
 								}
                                                                 if(relation.getTermCategory2() != null) {
-                                                                            mapReport.get(mapReport.size() - 1).setCategory2(relation.getTermCategory2());
-                                                                }
+                                                                        mapReport.get(mapReport.size() - 1).setCategory2(relation.getTermCategory2());
+                                                                }                                                      
  								
 								/**
 								 * Other SMQs
@@ -2411,9 +2411,9 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 		} else if (smqLevel == 3) {
 			level = "SMQ3";
 		} else if (smqLevel == 4) {
-			level = "SMQ4";
+			level = "PT";
 		} else if (smqLevel == 5) {
-			level = "SMQ5";
+			level = "LLT";
 		}
 		return level;
 	}

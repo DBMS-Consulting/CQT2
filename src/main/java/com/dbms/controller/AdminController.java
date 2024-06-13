@@ -18,7 +18,7 @@ import javax.faces.event.AjaxBehaviorEvent;
 import javax.faces.validator.ValidatorException;
 
 import org.apache.commons.lang3.StringUtils;
-import org.primefaces.context.RequestContext;
+import org.primefaces.PrimeFaces;
 import org.primefaces.model.StreamedContent;
 
 import com.dbms.entity.cqt.RefConfigCodeList;
@@ -576,19 +576,17 @@ public class AdminController implements Serializable {
                 try {
                     Integer.parseInt(myFocusRef.getValue());
                 } catch (NumberFormatException e) {
-                    RequestContext context = RequestContext.getCurrentInstance();
                     FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Decimal is not allowed in the version number.", "");
                     FacesContext.getCurrentInstance().addMessage(null, msg);
-                    context.addCallbackParam("validationFailed", true);
+                    PrimeFaces.current().ajax().addCallbackParam("validationFailed", true);
                     return;
                 } catch (NullPointerException e) {
-                    RequestContext context = RequestContext.getCurrentInstance();
                     FacesMessage msg = new FacesMessage(
                             FacesMessage.SEVERITY_ERROR,
                             "MedDRA Value is requried.",
                             "");
                     FacesContext.getCurrentInstance().addMessage(null, msg);
-                    context.addCallbackParam("validationFailed", true);
+                    PrimeFaces.current().ajax().addCallbackParam("validationFailed", true);
                     return;
                 }
             }
@@ -746,9 +744,9 @@ public class AdminController implements Serializable {
                         this.authService.getUserSurName(), this.authService
                         .getCombinedMappedGroupMembershipAsString());
                 saved = true;
-                RequestContext.getCurrentInstance().execute("PF('extensionD').hide();");
+                PrimeFaces.current().executeScript("PF('extensionD').hide();");
                 if (myFocusRef.getCodelistConfigType().equals(CqtConstants.CODE_LIST_TYPE_CATEGORY_TERM)) {
-                    RequestContext.getCurrentInstance().execute("PF('categoryT').hide();");
+                    PrimeFaces.current().executeScript("PF('categoryT').hide();");
                 }
             } else {
                 //TODO: reset the serial num to 1 + max here if it not so and say that in info msg.
@@ -782,9 +780,9 @@ public class AdminController implements Serializable {
 								.getCodelistInternalValue());*/
                 savedRefConfigCodeList = refCodeListService.findById(myFocusRef.getId());
                 saved = true;
-                RequestContext.getCurrentInstance().execute("PF('extensionD').hide();");
+                PrimeFaces.current().executeScript("PF('extensionD').hide();");
                 if (myFocusRef.getCodelistConfigType().equals(CqtConstants.CODE_LIST_TYPE_CATEGORY_TERM)) {
-                    RequestContext.getCurrentInstance().execute("PF('categoryT').hide();");
+                    PrimeFaces.current().executeScript("PF('categoryT').hide();");
                 }
             }
             if (newAddedInMiddle) {

@@ -198,7 +198,8 @@
 			oncomplete="initRelationDND()" />
 
 		<p:treeTable value="#{createController.relationsModel.relationsRoot}"
-			var="node" selectionMode="checkbox" id="resultRelations"
+			var="node" paginator="true" rows="10" editable="true" editMode="cell"
+                        selectionMode="checkbox" id="resultRelations" 
 			styleClass="ui-treetable-resultRelations hide-sel-chkbox"
 			selection="#{createController.relationsModel.relationSelectedInRelationsTable}"
 			resizableColumns="true">
@@ -214,6 +215,8 @@
 			<p:ajax event="collapse"
 				listener="#{createController.relationsModel.onNodeCollapse}"
 				update="resultRelations" />
+                        <p:ajax event="page"  
+                                update="resultRelations" />
 
 			<p:columnGroup type="header">
 				<p:row>
@@ -264,11 +267,12 @@
 				<h:outputText
 					value="#{appCSMQBean.interpretCqtBaseScope(node.scope)}"
 					rendered="#{not node.hideScope and node.readOnlyScope}" />
-
-				<p:selectOneMenu id="soc3" value="#{node.scope}"
+                                <p:cellEditor style="width:75%">
+                                <f:facet name="output" >
+                                    <p:selectOneMenu id="soc3" value="#{node.scope}"
 					rendered="#{not node.readOnlyScope}"
 					autoWidth="false" style="width:75%" disabled="#{createController.readOnlyState}">
-						<f:selectItem itemLabel="" itemValue="" noSelectionOption="true"/>
+					<f:selectItem itemLabel="" itemValue="#{null}" noSelectionOption="true"/>
 					<f:selectItems
 						value="#{createController.detailsFormModel.SMQFilterLevels}"
 						var="s" itemLabel="#{s.value}"
@@ -278,56 +282,85 @@
 						listener="#{createController.filterRelationsByScope(node)}"
 						update="resultRelations" />
 				</p:selectOneMenu>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:selectOneMenu id="soc32" value="#{node.scope}"
+					rendered="#{not node.readOnlyScope}"
+					autoWidth="false" style="width:75%" disabled="#{createController.readOnlyState}">
+					<f:selectItem itemLabel="" itemValue="#{null}" noSelectionOption="true"/>
+					<f:selectItems
+						value="#{createController.detailsFormModel.SMQFilterLevels}"
+						var="s" itemLabel="#{s.value}"
+						itemValue="#{s.codelistInternalValue}" />
+
+					<p:ajax event="change"
+						listener="#{createController.filterRelationsByScope(node)}"
+						update="resultRelations" />
+				</p:selectOneMenu>
+                                </f:facet>
+                            </p:cellEditor>
 			</p:column>
 
 			<p:column
 				rendered="#{createController.relationsModel.displayCategory}"
 				style="width:10%">
-			
-                <!-- <h:outputText value="#{appCSMQBean.interpretCqtBaseCategory(node.category)}"
-                    rendered="#{node.readOnlyCategory and not node.hideCategory}" /> -->
-                
-				<!-- <p:selectOneMenu id="soc2" value="#{node.category}" 
-				        disabled="#{createController.readOnlyState}"
-						rendered="#{not node.hideCategory and not node.readOnlyCategory}" 
-						autoWidth="false" style="width:75%">
-					<f:selectItem itemLabel="" itemValue="" noSelectionOption="true"/>
+                            <h:outputText value="#{appCSMQBean.interpretCqtBaseCategory(node.category)}"
+                                rendered="#{node.readOnlyCategory and not node.hideCategory}" style="word-wrap: break-word;" />
+                            <p:cellEditor style="width:75%">
+                                <f:facet name="output" >
+                                    <p:selectOneMenu id="soc25" value="#{node.category}" 
+				        rendered="#{not node.readOnlyCategory}"
+						autoWidth="false" style="width:50%" disabled="#{createController.readOnlyState}">
+                                        <f:selectItem itemLabel="" itemValue="#{null}" noSelectionOption="true"/>
 					<f:selectItems var="s" value="#{appCSMQBean.cqtBaseCategoriesWithInactiveSelected(node.category)}"
 						itemValue="#{s.value}" itemLabel="#{s.value}" />
-						<p:ajax event="change"
-						listener="#{createController.notifyCategoryChange()}" 
-						update="resultRelations"/>
-				</p:selectOneMenu> -->
-				<h:outputText value="#{appCSMQBean.interpretCqtBaseCategory(node.category)}"
-                    rendered="#{node.readOnlyCategory and not node.hideCategory}" style="word-wrap: break-word;" />
-				<p:selectOneMenu id="soc2" value="#{node.category}" 
+                                        <p:ajax event="change"
+						listener="#{createController.notifyCategoryChange()}"/>
+                                    </p:selectOneMenu>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:selectOneMenu id="soc2" value="#{node.category}" 
 				        rendered="#{not node.readOnlyCategory}"
-						autoWidth="false" style="width:75%" disabled="#{createController.readOnlyState}">
-					<f:selectItem itemLabel="" itemValue="" noSelectionOption="true"/>
+						autoWidth="false" style="width:50%" disabled="#{createController.readOnlyState}">
+					<f:selectItem itemLabel="" itemValue="#{null}" noSelectionOption="true"/>
 					<f:selectItems var="s" value="#{appCSMQBean.cqtBaseCategoriesWithInactiveSelected(node.category)}"
 						itemValue="#{s.value}" itemLabel="#{s.value}" />
 						<p:ajax event="change"
 						listener="#{createController.notifyCategoryChange()}"/>
-				</p:selectOneMenu>
-                
+                                    </p:selectOneMenu>
+                                </f:facet>
+                            </p:cellEditor>
 			</p:column>
                         
                         <p:column
 				rendered="#{createController.relationsModel.displayCategory2}"
 				style="width:10%">
-		
-				<h:outputText value="#{appCSMQBean.interpretCqtBaseCategory(node.category2)}"
-                    rendered="#{node.readOnlyCategory2 and not node.hideCategory2}" style="word-wrap: break-word;" />
-				<p:selectOneMenu id="soc4" value="#{node.category2}" 
+                            <h:outputText value="#{appCSMQBean.interpretCqtBaseCategory(node.category2)}"
+                                rendered="#{node.readOnlyCategory2 and not node.hideCategory2}" style="word-wrap: break-word;" />
+                            <p:cellEditor style="width:75%">
+                                <f:facet name="output" >
+                                    <p:selectOneMenu id="soc24" value="#{node.category2}" 
 				        rendered="#{not node.readOnlyCategory2}"
-						autoWidth="false" style="width:75%" disabled="#{createController.readOnlyState}">
-					<f:selectItem itemLabel="" itemValue="" noSelectionOption="true"/>
+						autoWidth="false" style="width:50%" disabled="#{createController.readOnlyState}">
+                                        <f:selectItem itemLabel="" itemValue="#{null}" noSelectionOption="true"/>
+					<f:selectItems var="s" value="#{appCSMQBean.cqtBaseCategoriesWithInactiveSelected(node.category2)}"
+						itemValue="#{s.value}" itemLabel="#{s.value}" />
+                                        <p:ajax event="change"
+						listener="#{createController.notifyCategoryChange()}"/>
+                                    </p:selectOneMenu>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:selectOneMenu id="soc4" value="#{node.category2}" 
+				        rendered="#{not node.readOnlyCategory2}"
+						autoWidth="false" style="width:50%" disabled="#{createController.readOnlyState}">
+					<f:selectItem itemLabel="" itemValue="#{null}" noSelectionOption="true"/>
 					<f:selectItems var="s" value="#{appCSMQBean.cqtBaseCategoriesWithInactiveSelected(node.category2)}"
 						itemValue="#{s.value}" itemLabel="#{s.value}" />
 						<p:ajax event="change"
 						listener="#{createController.notifyCategoryChange()}"/>
-				</p:selectOneMenu>
-                
+                                    </p:selectOneMenu>
+                                </f:facet>
+                            </p:cellEditor>
 			</p:column>
 
 			<p:column
