@@ -698,6 +698,8 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 		 */
 		row = worksheet.createRow(rowCount);
 		XSSFCell cell = row.createCell(0);
+                
+                XSSFCellStyle cellStyle = setCellStyleColumn(workbook);
 
 		row = worksheet.createRow(rowCount);
 		cell = row.createCell(0);
@@ -729,51 +731,51 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
                 
 		cell = row.createCell(cellCount);
 		cell.setCellValue("Term");
-		setCellStyleColumn(workbook, cell);
+		cell.setCellStyle(cellStyle);
                 
                 cellCount++;
 		cell = row.createCell(cellCount);
 		cell.setCellValue("Code");
-		setCellStyleColumn(workbook, cell);
+		cell.setCellStyle(cellStyle);
                 
                 cellCount++;
 		cell = row.createCell(cellCount);
 		cell.setCellValue("Level");
-		setCellStyleColumn(workbook, cell);
+		cell.setCellStyle(cellStyle);
                 
                 if(systemConfigProperties.isDisplayScope()) {
                     cellCount++;
                     cell = row.createCell(cellCount);
                     cell.setCellValue("Scope");
-                    setCellStyleColumn(workbook, cell);
+                    cell.setCellStyle(cellStyle);
                 }
                 
                 if(systemConfigProperties.isDisplayCategory()) {
                     cellCount++;
                     cell = row.createCell(cellCount);
                     cell.setCellValue("Category");
-                    setCellStyleColumn(workbook, cell);
+                    cell.setCellStyle(cellStyle);
                 }
                 
                 if(systemConfigProperties.isDisplayCategory2()) {
                     cellCount++;
                     cell = row.createCell(cellCount);
                     cell.setCellValue("Category2");
-                    setCellStyleColumn(workbook, cell);
+                    cell.setCellStyle(cellStyle);
                 }
                 
                 if(systemConfigProperties.isDisplayWeight()) {
                     cellCount++;
                     cell = row.createCell(cellCount);
                     cell.setCellValue("Weight");
-                    setCellStyleColumn(workbook, cell);
+                    cell.setCellStyle(cellStyle);
                 }
                 
                   
                 cellCount++;
 		cell = row.createCell(cellCount);
 		cell.setCellValue("Impact Relation Type");
-		setCellStyleColumn(workbook, cell);
+		cell.setCellStyle(cellStyle);
 		
 		/*cell = row.createCell(7);
 		cell.setCellValue("PT Status");
@@ -2215,12 +2217,12 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 		}
 		
  		
-		XSSFCellStyle cellStyle = workbook.createCellStyle();
-		cellStyle.setFillForegroundColor(HSSFColor.BLUE.index);
-		cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-		cellStyle.setBorderBottom(BorderStyle.MEDIUM);
+		XSSFCellStyle cellStyle2 = workbook.createCellStyle();
+		cellStyle2.setFillForegroundColor(HSSFColor.BLUE.index);
+		cellStyle2.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+		cellStyle2.setBorderBottom(BorderStyle.MEDIUM);
 		
-		fillReport(mapReport, cell, row, rowCount, worksheet, cellStyle, systemConfigProperties);
+		fillReport(mapReport, cell, row, rowCount, worksheet, cellStyle2, systemConfigProperties);
 		
 		worksheet.autoSizeColumn(0);
 		worksheet.autoSizeColumn(1);
@@ -2726,6 +2728,23 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 
 		cellStyle.setFont(defaultFont);
 		cell.setCellStyle(cellStyle);
+	}
+        
+        private XSSFCellStyle setCellStyleColumn(XSSFWorkbook wb) {
+		XSSFCellStyle cellStyle = wb.createCellStyle();
+		cellStyle.setFillBackgroundColor(IndexedColors.AQUA.getIndex());
+		cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+		cellStyle.setFillForegroundColor(HSSFColor.GREY_40_PERCENT.index);
+
+		XSSFFont defaultFont = wb.createFont();
+		defaultFont.setFontHeightInPoints((short) 12);
+		defaultFont.setFontName("Arial");
+		defaultFont.setColor(IndexedColors.BLACK.getIndex());
+		defaultFont.setBold(true);
+		defaultFont.setItalic(false);
+
+		cellStyle.setFont(defaultFont);
+		return cellStyle;
 	}
 	
 	/**

@@ -804,6 +804,8 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 		row = worksheet.createRow(rowCount);
 		XSSFCell cell = row.createCell(0);
 
+                XSSFCellStyle cellStyle = setCellStyleColumn(workbook);
+                
 		row = worksheet.createRow(rowCount);
 		cell = row.createCell(0);
 		cell.setCellValue(selectedImpactedSmqList.getSmqName());
@@ -829,25 +831,25 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 		row = worksheet.createRow(rowCount);
 		cell = row.createCell(0);
 		cell.setCellValue("Term");
-		setCellStyleColumn(workbook, cell);
+		cell.setCellStyle(cellStyle);
 		cell = row.createCell(1);
 		cell.setCellValue("Code");
-		setCellStyleColumn(workbook, cell);
+		cell.setCellStyle(cellStyle);
 		cell = row.createCell(2);
 		cell.setCellValue("Level");
-		setCellStyleColumn(workbook, cell);
+		cell.setCellStyle(cellStyle);
 		cell = row.createCell(3);
                 cell.setCellValue("Scope");		
-		setCellStyleColumn(workbook, cell);
+		cell.setCellStyle(cellStyle);
 		cell = row.createCell(4);
                 cell.setCellValue("Category");
-		setCellStyleColumn(workbook, cell);
+		cell.setCellStyle(cellStyle);
 		cell = row.createCell(5);
 		cell.setCellValue("Weight");
-		setCellStyleColumn(workbook, cell);
+		cell.setCellStyle(cellStyle);
 		cell = row.createCell(6);
 		cell.setCellValue("Impact Type");
-		setCellStyleColumn(workbook, cell);
+		cell.setCellStyle(cellStyle);
 
 		/*
 		 * cell = row.createCell(7); cell.setCellValue("PT Status");
@@ -856,10 +858,10 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 
 		rowCount++;
 
-		XSSFCellStyle cellStyle = workbook.createCellStyle();
-		cellStyle.setFillForegroundColor(HSSFColor.BLUE.index);
-		cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-		cellStyle.setBorderBottom(BorderStyle.MEDIUM);
+		XSSFCellStyle cellStyle2 = workbook.createCellStyle();
+		cellStyle2.setFillForegroundColor(HSSFColor.BLUE.index);
+		cellStyle2.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+		cellStyle2.setBorderBottom(BorderStyle.MEDIUM);
 
 		// Retrieval of relations - Loop
 		List<SmqRelationTarget> relations = findSmqRelationsForSmqCode(selectedImpactedSmqList.getSmqCode());
@@ -867,8 +869,8 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 		row = worksheet.createRow(rowCount);
 		buildChildCellsSMQ(getLevelFromValue(selectedImpactedSmqList.getSmqLevel()),
 				selectedImpactedSmqList.getSmqCode() + "", selectedImpactedSmqList.getSmqName(), "", "", "", cell, row,
-				"", "", "", cellStyle);
-		setCellStyleColumn(workbook, cell);
+				"", "", "", cellStyle2);
+		//setCellStyleColumn(workbook, cell);
 		rowCount++;
 
 		String level = "", term = "", codeTerm = "";
@@ -903,8 +905,8 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 					buildChildCellsSMQ(level, relation.getPtCode() + "", relation.getPtName(),
 							relation.getPtTermCategory(), relation.getPtTermWeight() + "",
 							relation.getPtTermScope() + "", cell, row, ".....", relation.getRelationImpactType(),
-							relation.getPtTermStatus(), cellStyle);
-					setCellStyleColumn(workbook, cell);
+							relation.getPtTermStatus(), cellStyle2);
+					//setCellStyleColumn(workbook, cell);
 					rowCount++;
 
 					if (level.equals("SMQ1")) {
@@ -922,9 +924,9 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 									} else if (smq3.getSmqLevel() == 3) {
 										level = "SMQ3";
 									} else if (smq3.getSmqLevel() == 4) {
-										level = "SMQ4";
+										level = "PT";
 									} else if (smq3.getSmqLevel() == 5) {
-										level = "SMQ5";
+										level = "LLT";
 									} else if (smq3.getSmqLevel() == 0) {
 										level = "Child SMQ";
 									}
@@ -932,8 +934,8 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 									buildChildCellsSMQ(level, smq3.getSmqCode() + "", smq3.getPtName(),
 											smq3.getPtTermCategory(), smq3.getPtTermWeight() + "",
 											smq3.getPtTermScope() + "", cell, row, "...........",
-											smq3.getRelationImpactType(), smq3.getPtTermStatus(), cellStyle);
-									setCellStyleColumn(workbook, cell);
+											smq3.getRelationImpactType(), smq3.getPtTermStatus(), cellStyle2);
+									//setCellStyleColumn(workbook, cell);
 									rowCount++;
 
 									if (level.equals("Child SMQ") && smq3.getPtCode() != null) {
@@ -956,8 +958,8 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 														smqChild.getPtTermWeight() + "", smqChild.getPtTermScope() + "",
 														cell, row, "..................",
 														smqChild.getRelationImpactType(), smqChild.getPtTermStatus(),
-														cellStyle);
-												setCellStyleColumn(workbook, cell);
+														cellStyle2);
+												//setCellStyleColumn(workbook, cell);
 												rowCount++;
 
 												if (level.equals("Child SMQ") && smqChild.getPtCode() != null) {
@@ -981,8 +983,8 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 																	smqChildBis.getSmqCode() + "",
 																	smqChildBis.getSmqName(), "?", "" + "", "" + "",
 																	cell, row, ".........................", "", "",
-																	cellStyle);
-															setCellStyleColumn(workbook, cell);
+																	cellStyle2);
+															//setCellStyleColumn(workbook, cell);
 															rowCount++;
 														}
 												}
@@ -1014,8 +1016,8 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 									buildChildCellsSMQ(level, smq3.getPtCode() + "", smq3.getPtName(),
 											smq3.getPtTermCategory(), smq3.getPtTermWeight() + "",
 											smq3.getPtTermScope() + "", cell, row, "...........",
-											smq3.getRelationImpactType(), smq3.getPtTermStatus(), cellStyle);
-									setCellStyleColumn(workbook, cell);
+											smq3.getRelationImpactType(), smq3.getPtTermStatus(), cellStyle2);
+									//setCellStyleColumn(workbook, cell);
 									rowCount++;
 
 									if (getLevelFromValue(smq3.getSmqLevel()).equals("Child SMQ")) {
@@ -1040,8 +1042,8 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 														smqChildBis.getPtTermWeight() + "",
 														smqChildBis.getPtTermScope() + "", cell, row,
 														"....................", smqChildBis.getRelationImpactType(),
-														smqChildBis.getPtTermStatus(), cellStyle);
-												setCellStyleColumn(workbook, cell);
+														smqChildBis.getPtTermStatus(), cellStyle2);
+												//setCellStyleColumn(workbook, cell);
 												rowCount++;
 
 												if (getLevelFromValue(smqChildBis.getSmqLevel()).equals("Child SMQ")) {
@@ -1068,8 +1070,8 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 																	smqChildTer.getPtTermScope() + "", cell, row,
 																	".............................",
 																	smqChildTer.getRelationImpactType(),
-																	smqChildTer.getPtTermStatus(), cellStyle);
-															setCellStyleColumn(workbook, cell);
+																	smqChildTer.getPtTermStatus(), cellStyle2);
+															//setCellStyleColumn(workbook, cell);
 															rowCount++;
 
 															if (getLevelFromValue(smqChildTer.getSmqLevel())
@@ -1100,8 +1102,8 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 																				"..................................",
 																				smqChildQu.getRelationImpactType(),
 																				smqChildQu.getPtTermStatus(),
-																				cellStyle);
-																		setCellStyleColumn(workbook, cell);
+																				cellStyle2);
+																		//setCellStyleColumn(workbook, cell);
 																		rowCount++;
 
 																		if (getLevelFromValue(smqChildQu.getSmqLevel())
@@ -1139,8 +1141,8 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 																									.getRelationImpactType(),
 																							smqChildCq
 																									.getPtTermStatus(),
-																							cellStyle);
-																					setCellStyleColumn(workbook, cell);
+																							cellStyle2);
+																					//setCellStyleColumn(workbook, cell);
 																					rowCount++;
 																				}
 																		}
@@ -1170,8 +1172,8 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 									buildChildCellsSMQ("PT", smq3.getPtCode() + "", smq3.getPtName(),
 											smq3.getPtTermCategory(), smq3.getPtTermWeight() + "",
 											smq3.getPtTermScope() + "", cell, row, "............",
-											smq3.getRelationImpactType(), smq3.getPtTermStatus(), cellStyle);
-									setCellStyleColumn(workbook, cell);
+											smq3.getRelationImpactType(), smq3.getPtTermStatus(), cellStyle2);
+									//setCellStyleColumn(workbook, cell);
 									rowCount++;
 								}
 						}
@@ -1190,8 +1192,8 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 									buildChildCellsSMQ("PT", smq3.getPtCode() + "", smq3.getPtName(),
 											smq3.getPtTermCategory(), smq3.getPtTermWeight() + "",
 											smq3.getPtTermScope() + "", cell, row, "...............",
-											smq3.getRelationImpactType(), smq3.getPtTermStatus(), cellStyle);
-									setCellStyleColumn(workbook, cell);
+											smq3.getRelationImpactType(), smq3.getPtTermStatus(), cellStyle2);
+									//setCellStyleColumn(workbook, cell);
 									rowCount++;
 								}
 						}
@@ -1209,8 +1211,8 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 									buildChildCellsSMQ("PT", smq3.getPtCode() + "", smq3.getPtName(),
 											smq3.getPtTermCategory(), smq3.getPtTermWeight() + "",
 											smq3.getPtTermScope() + "", cell, row, "...............",
-											smq3.getRelationImpactType(), smq3.getPtTermStatus(), cellStyle);
-									setCellStyleColumn(workbook, cell);
+											smq3.getRelationImpactType(), smq3.getPtTermStatus(), cellStyle2);
+									//setCellStyleColumn(workbook, cell);
 									rowCount++;
 								}
 						}
@@ -1227,9 +1229,9 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 								lltCodesList);
 						for (MeddraDictHierarchySearchDto llt : llts) {
 							row = worksheet.createRow(rowCount);
-							buildCells("LLT", llt.getCode() + "", llt.getTerm(), cell, row, "..........", cellStyle,
+							buildCells("LLT", llt.getCode() + "", llt.getTerm(), cell, row, "..........", cellStyle2,
 									relation.getPtTermStatus());
-							setCellStyleColumn(workbook, cell);
+							//setCellStyleColumn(workbook, cell);
 							rowCount++;
 						}
 					}
@@ -1241,8 +1243,8 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 					if (relation.getPtCode() != null && relation.getSmqCode() == null) {
 						row = worksheet.createRow(rowCount);
 						buildCells("PT", relation.getPtCode() + "", relation.getPtName(), cell, row, "........",
-								cellStyle, relation.getPtTermStatus());
-						setCellStyleColumn(workbook, cell);
+								cellStyle2, relation.getPtTermStatus());
+						//setCellStyleColumn(workbook, cell);
 						rowCount++;
 						if(!filterLltFalg) {
 							/**
@@ -1261,7 +1263,7 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 								for (MeddraDictHierarchySearchDto llt : llts) {
 									row = worksheet.createRow(rowCount);
 									buildChildCells("LLT", llt.getCode(), llt.getTerm(), cell, row, "...............", "",
-											cellStyle);
+											cellStyle2);
 									rowCount++;
 								}
 						}
@@ -1370,6 +1372,23 @@ public class SmqBaseTargetService extends CqtPersistenceService<SmqBaseTarget> i
 
 		cellStyle.setFont(defaultFont);
 		cell.setCellStyle(cellStyle);
+	}
+        
+        private XSSFCellStyle setCellStyleColumn(XSSFWorkbook wb) {
+		XSSFCellStyle cellStyle = wb.createCellStyle();
+		cellStyle.setFillBackgroundColor(IndexedColors.AQUA.getIndex());
+		cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+		cellStyle.setFillForegroundColor(HSSFColor.GREY_40_PERCENT.index);
+
+		XSSFFont defaultFont = wb.createFont();
+		defaultFont.setFontHeightInPoints((short) 12);
+		defaultFont.setFontName("Arial");
+		defaultFont.setColor(IndexedColors.BLACK.getIndex());
+		defaultFont.setBold(true);
+		defaultFont.setItalic(false);
+
+		cellStyle.setFont(defaultFont);
+		return cellStyle;
 	}
 
 	private void buildCells(String level, String codeTerm, String term, XSSFCell cell, XSSFRow row, String impact,

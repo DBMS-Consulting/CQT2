@@ -1388,46 +1388,47 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		row = worksheet.createRow(rowCount);
                 
                 int cellCount=0;
+                XSSFCellStyle cellStyle = setCellStyleColumn(workbook);
 		cell = row.createCell(cellCount);
 		cell.setCellValue("Term");
-		setCellStyleColumn(workbook, cell);
+                cell.setCellStyle(cellStyle);
                 
                 cellCount++;
 		cell = row.createCell(cellCount);
 		cell.setCellValue("Code");
-		setCellStyleColumn(workbook, cell);
+		cell.setCellStyle(cellStyle);
                 
                 cellCount++;
 		cell = row.createCell(cellCount);
 		cell.setCellValue("Level");
-		setCellStyleColumn(workbook, cell);
+		cell.setCellStyle(cellStyle);
                 
                 if(systemConfigProperties.isDisplayScope()) {
                     cellCount++;
                     cell = row.createCell(cellCount);
                     cell.setCellValue("Scope");
-                    setCellStyleColumn(workbook, cell);
+                    cell.setCellStyle(cellStyle);
                 }
                 
                 if(systemConfigProperties.isDisplayCategory()) {
                     cellCount++;
                     cell = row.createCell(cellCount);
                     cell.setCellValue("Category");
-                    setCellStyleColumn(workbook, cell);
+                    cell.setCellStyle(cellStyle);
                 }
                 
                 if(systemConfigProperties.isDisplayCategory2()) {
                     cellCount++;
                     cell = row.createCell(cellCount);
                     cell.setCellValue("Category2");
-                    setCellStyleColumn(workbook, cell);
+                    cell.setCellStyle(cellStyle);
                 }
                 
                 if(systemConfigProperties.isDisplayWeight()) {
                     cellCount++;
                     cell = row.createCell(cellCount);
                     cell.setCellValue("Weight");
-                    setCellStyleColumn(workbook, cell);
+                    cell.setCellStyle(cellStyle);
                 }
            
                 
@@ -1652,6 +1653,8 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		 */
 		row = worksheet.createRow(rowCount);
 		XSSFCell cell = row.createCell(0);
+                
+                XSSFCellStyle cellStyle = setCellStyleColumn(workbook);
 
 		row = worksheet.createRow(rowCount);
 		cell = row.createCell(0);
@@ -1689,13 +1692,13 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		row = worksheet.createRow(rowCount);
 		cell = row.createCell(0);
 		cell.setCellValue("Term");
-		setCellStyleColumn(workbook, cell);
+		cell.setCellStyle(cellStyle);
 		cell = row.createCell(1);
 		cell.setCellValue("Code");
-		setCellStyleColumn(workbook, cell);
+		cell.setCellStyle(cellStyle);
 		cell = row.createCell(2);
 		cell.setCellValue("Level");
-		setCellStyleColumn(workbook, cell);
+		cell.setCellStyle(cellStyle);
 		rowCount++;
 
 		// Retrieval of relations - Loop
@@ -1871,6 +1874,8 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		 */
 		row = worksheet.createRow(rowCount);
 		XSSFCell cell = row.createCell(0);
+                
+                XSSFCellStyle cellStyle = setCellStyleColumn(workbook);
 
 		// User name
 		rowCount += 2;
@@ -1901,37 +1906,37 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 		
 		cell = row.createCell(0);
 		cell.setCellValue("List Name");
-		setCellStyleColumn(workbook, cell);
+		cell.setCellStyle(cellStyle);
 		cell = row.createCell(1);
 		cell.setCellValue("Extension");
-		setCellStyleColumn(workbook, cell);
+		cell.setCellStyle(cellStyle);
 		cell = row.createCell(2);
 		cell.setCellValue("Level");
-		setCellStyleColumn(workbook, cell);
+		cell.setCellStyle(cellStyle);
 		cell = row.createCell(3);
 		cell.setCellValue("Status");
-		setCellStyleColumn(workbook, cell);
+		cell.setCellStyle(cellStyle);
 		cell = row.createCell(4);
 		cell.setCellValue("State");
-		setCellStyleColumn(workbook, cell);
+		cell.setCellStyle(cellStyle);
 		cell = row.createCell(5);
 		cell.setCellValue("Code");
-		setCellStyleColumn(workbook, cell);
+		cell.setCellStyle(cellStyle);
 		cell = row.createCell(6);
 		cell.setCellValue("Drug Program");
-		setCellStyleColumn(workbook, cell);
+		cell.setCellStyle(cellStyle);
 		cell = row.createCell(7);
 		cell.setCellValue("Protocol");
-		setCellStyleColumn(workbook, cell);
+		cell.setCellStyle(cellStyle);
 		cell = row.createCell(8);
 		cell.setCellValue("Product");
-		setCellStyleColumn(workbook, cell);
+		cell.setCellStyle(cellStyle);
 		cell = row.createCell(9);
 		cell.setCellValue("Group");
-		setCellStyleColumn(workbook, cell);
+		cell.setCellStyle(cellStyle);
 		cell = row.createCell(10);
 		cell.setCellValue("Created By");
-		setCellStyleColumn(workbook, cell);
+		cell.setCellStyle(cellStyle);
 		
 		
 		rowCount++;
@@ -2706,16 +2711,16 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 	private int fillReport(List<ReportLineDataDto> report, XSSFCell cell, XSSFRow row, int rowCount, XSSFSheet worksheet,SystemConfigProperties systemConfigProperties) {
 		int cpt = 0;
 		LOG.info("Writing {} ReportLineDataDtos." , report.size());
+                
+                CellStyle headerCellStyle = worksheet.getWorkbook().createCellStyle();
+		headerCellStyle.setFillForegroundColor(IndexedColors.PALE_BLUE.index);
+		headerCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+                                
 		for(ReportLineDataDto line : report) {
 			if(null != line) {
+                            int cellCount = 0;
 				row = worksheet.createRow(rowCount);
 
-				CellStyle headerCellStyle = worksheet.getWorkbook().createCellStyle();
-				headerCellStyle.setFillForegroundColor(IndexedColors.PALE_BLUE.index);
-				headerCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-
-                                int cellCount = 0;
-                                
 				// Cell 0
 				cell = row.createCell(cellCount);
 				cell.setCellValue(line.getDots() + line.getTerm());
@@ -2856,6 +2861,23 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 
 		cellStyle.setFont(defaultFont);
 		cell.setCellStyle(cellStyle);
+	}
+        
+        private XSSFCellStyle setCellStyleColumn(XSSFWorkbook wb) {
+		XSSFCellStyle cellStyle = wb.createCellStyle();
+		cellStyle.setFillBackgroundColor(IndexedColors.AQUA.getIndex());
+		cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+		cellStyle.setFillForegroundColor(HSSFColor.GREY_40_PERCENT.index);
+
+		XSSFFont defaultFont = wb.createFont();
+		defaultFont.setFontHeightInPoints((short) 12);
+		defaultFont.setFontName("Arial");
+		defaultFont.setColor(IndexedColors.BLACK.getIndex());
+		defaultFont.setBold(true);
+		defaultFont.setItalic(false);
+
+		cellStyle.setFont(defaultFont);
+		return cellStyle;
 	}
 
 	private void insertExporLogoImage(XSSFSheet sheet, XSSFWorkbook wb)
