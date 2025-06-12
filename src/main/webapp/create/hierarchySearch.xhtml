@@ -68,7 +68,7 @@
 			style="display:block;position: absolute;height:80%;height: calc(100% - 155px);width: 100%;margin-left: -16px;padding: 0 10px;box-sizing: border-box;overflow: auto;">
 			 
 			<p:treeTable value="#{paramDlgCtrl.hierarchyRoot}" var="node" 
-                                paginator="true" rows="8" 
+                                paginator="true" rows="15" 
 				resizableColumns="true" id="resultHier" selectionMode="multiple"
 				selection="#{paramDlgCtrl.selectedNodes}"
 				styleClass="ui-treetable-resultHier hide-sel-chkbox full-width"
@@ -83,7 +83,7 @@
 					<h:outputText value="#{node.level}" />
 				</p:column>
 
-				<p:column headerText="Term" width="auto !important" styleClass="wrap">
+				<p:column headerText="Term" sortBy="#{node.term}" width="auto !important" styleClass="wrap" filterBy="#{node.term}">
 					<h:outputText value="#{node.term}" />
 				</p:column>
 
@@ -118,6 +118,9 @@
 
 .green-colored:HOVER {
 	color: #009912;
+}
+.ui-treetable .ui-column-filter {
+    height: 20px !important;
 }
 </style>
 

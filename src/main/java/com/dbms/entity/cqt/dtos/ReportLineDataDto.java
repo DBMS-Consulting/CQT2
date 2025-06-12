@@ -20,6 +20,7 @@ public class ReportLineDataDto implements Comparable<ReportLineDataDto>{
         private String category2;
 	private String weight;
 	private String scope;
+        private String path;
 	private String dots;
 	private String status;
 	
@@ -194,6 +195,16 @@ public class ReportLineDataDto implements Comparable<ReportLineDataDto>{
 		this.scope = scope;
 	}
 
+        public String getPath() {
+            if (path == null || path.isEmpty())
+                return "";
+            return path;
+        }
+
+        public void setPath(String path) {
+            this.path = path;
+        }
+
 	public String getDots() {
 		return dots;
 	}
@@ -251,7 +262,7 @@ public class ReportLineDataDto implements Comparable<ReportLineDataDto>{
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(term, code, levelNum, level, category, category2, weight, scope, status, impact);
+		return Objects.hash(term, code, levelNum, level, category, category2, weight, scope, path, status, impact);
 	}
 
 	@Override

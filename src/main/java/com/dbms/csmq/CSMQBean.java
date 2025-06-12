@@ -199,6 +199,11 @@ public class CSMQBean {
     public static final String SCOPE_NARROW = "2";
     public static final String SCOPE_CHILD_NARROW = "3";
     public static final String SCOPE_FULL = "4";
+    
+    // Paths
+    public static final String PATH_PRIMARY = "0";
+    public static final String PATH_SECONDRY = "1";
+    public static final String PATH_ALL = "2";
 
     // Categories
     public static final String CATEGORY_A = "A";
@@ -272,7 +277,8 @@ public class CSMQBean {
 //    private String configFileName;
 //    private static Hashtable properties;
     
-    
+    private List<String[]> termPaths;
+            
     @ManagedProperty("#{RefCodeListService}")
 	private IRefCodeListService refCodeListService;
 
@@ -872,6 +878,38 @@ public class CSMQBean {
         else 
             return SCOPE_FULL;
     }
+    
+    
+    public List<String[]> getTermPaths() {
+		termPaths = Arrays.asList(new String[][] {
+			new String[] { PATH_PRIMARY, "Primary" },
+			new String[] { PATH_SECONDRY, "Secondry" },
+                        new String[] { PATH_ALL, "All Paths" }
+		});
+                return termPaths;
+	}
+    
+    public String interpretTermPath (String pathVal) {
+        if(PATH_ALL.equals(pathVal))
+            return "All Paths";
+        else if(PATH_PRIMARY.equals(pathVal))
+            return "Primary";
+        else if(PATH_SECONDRY.equals(pathVal))
+            return "Secondry";
+        return "";
+    }
+	
+    public static String getTermPathByName(String pathName) {
+        if("All Paths".equalsIgnoreCase(pathName))
+            return PATH_ALL;
+        else if("Primary".equalsIgnoreCase(pathName))
+            return PATH_PRIMARY;
+        else if("Secondry".equalsIgnoreCase(pathName))
+            return PATH_SECONDRY;
+        return "";
+    }
+    
+    
     /*
 	public List<String[]> getCqtBaseCategories() {
 		return Arrays.asList(new String[][] {

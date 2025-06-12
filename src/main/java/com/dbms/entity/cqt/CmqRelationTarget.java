@@ -100,6 +100,9 @@ public class CmqRelationTarget extends BaseEntity {
 
 	@Column(name = "CMQ_SUBVERSION", nullable = false, precision = 10)
 	private BigDecimal cmqSubversion;
+        
+        @Column(name = "TERM_PATH", length = 11)
+	private String termPath;
 
 	public Long getId() {
 		return cmqRelationId;
@@ -276,5 +279,13 @@ public class CmqRelationTarget extends BaseEntity {
 	public void setCmqSubversion(BigDecimal cmqSubversion) {
 		this.cmqSubversion = cmqSubversion;
 	}
+        
+        public String getTermPath() {
+            return termPath;
+        }
+
+        public void setTermPath(String termPath) {
+            this.termPath = termPath;
+        }
 
 }

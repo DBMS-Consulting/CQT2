@@ -96,10 +96,13 @@ public class CmqBaseRelationsTreeHelper {
 		for (CmqRelation190 cmqRelation : cmqRelationList) {
             if((cmqRelation.getSocCode() != null) && (cmqRelation.getSocCode() > 0)) {
                 socCodesMap.put(cmqRelation.getSocCode(), cmqRelation);
+                //cmqRelation.setTermPath(CSMQBean.PATH_PRIMARY);
             } else if((cmqRelation.getHlgtCode() != null) && (cmqRelation.getHlgtCode() > 0)) {
                 hlgtCodesMap.put(cmqRelation.getHlgtCode(), cmqRelation);
+                //cmqRelation.setTermPath(CSMQBean.PATH_PRIMARY);
             } else if((cmqRelation.getHltCode() != null) && (cmqRelation.getHltCode() > 0)) {
                 hltCodesMap.put(cmqRelation.getHltCode(), cmqRelation);
+                //cmqRelation.setTermPath(CSMQBean.PATH_PRIMARY);
             } else if((cmqRelation.getPtCode() != null) && (cmqRelation.getPtCode() > 0)) {
                 ptCodesMap.put(cmqRelation.getPtCode(), cmqRelation);
             } else if((cmqRelation.getLltCode() != null) && (cmqRelation.getLltCode() > 0)) {
@@ -233,6 +236,24 @@ public class CmqBaseRelationsTreeHelper {
 					|| isListPublishedOrApproved) {
 				hierNode.setReadOnlyScope(true);
 			} 
+                        
+                        // Path rules
+                        if (hierNode.getLevel().equalsIgnoreCase("SOC") || 
+                                hierNode.getLevel().equalsIgnoreCase("HLGT") || 
+                                hierNode.getLevel().equalsIgnoreCase("HLT")) {
+                            hierNode.setHidePath(false);
+                            hierNode.setReadOnlyPath(false);
+                            
+                        //    hierNode.setPrimaryPathString(CSMQBean.PATH_PRIMARY); // default value
+                        } else if (hierNode.getLevel().equalsIgnoreCase("PT") || 
+                                hierNode.getLevel().equalsIgnoreCase("LLT")) {
+                            hierNode.setHidePath(false);
+                            hierNode.setReadOnlyPath(true);
+                        } else {
+                            hierNode.setHidePath(true);
+                            hierNode.setReadOnlyPath(true);
+                        }
+                            
 		}
         return rootNode;
     }
@@ -361,12 +382,13 @@ public class CmqBaseRelationsTreeHelper {
             this.populateSmqRelations(smqBase.getSmqCode(), expandedNode, scopeFromParent);
         } else if(entity instanceof MeddraDictHierarchySearchDto) {
             String parentLevel = hNode.getLevel();
+            String primaryPathString = hNode.getPrimaryPathString();
             MeddraDictHierarchySearchDto meddraDictHierarchySearchDto = (MeddraDictHierarchySearchDto)entity;
             Long dtoCode = Long.valueOf(meddraDictHierarchySearchDto.getCode());
             if(hNode.getRelationEntity()!=null) {
-            	this.populateMeddraDictHierarchySearchDtoChildren(parentLevel, dtoCode, expandedNode,((CmqRelation190)hNode.getRelationEntity()).getDictionaryVersion());
+            	this.populateMeddraDictHierarchySearchDtoChildren(parentLevel, primaryPathString, dtoCode, expandedNode,((CmqRelation190)hNode.getRelationEntity()).getDictionaryVersion());
             } else {
-            	this.populateMeddraDictHierarchySearchDtoChildren(parentLevel, dtoCode, expandedNode,null);
+            	this.populateMeddraDictHierarchySearchDtoChildren(parentLevel, primaryPathString, dtoCode, expandedNode,null);
             }
         } else if(entity instanceof SmqRelation190) {
         	SmqRelation190 reverseSearchDto = (SmqRelation190)entity;
@@ -470,6 +492,7 @@ public class CmqBaseRelationsTreeHelper {
 			for (CmqBase190 childCmq : childCmqs) {
 				HierarchyNode node = this.createCmqBaseNode(childCmq);
 				node.setEntity(childCmq);
+                                node.setHidePath(true);
 				TreeNode treeNode = new DefaultTreeNode(node, rootTreeNode);
 			
 				Long childCount = this.cmqRelationSvc.findCountByCmqCode(childCmq.getCmqCode());
@@ -508,6 +531,10 @@ public class CmqBaseRelationsTreeHelper {
             if(hideDeleteButton) {
             	node.setHideDelete(true);
             }
+            
+            // Hide Path if SMQ
+            node.setHidePath(true);
+            
             treeNode = new DefaultTreeNode(node, expandedTreeNode);
             
             if(requireDrillDown) {
@@ -970,7 +997,7 @@ public class CmqBaseRelationsTreeHelper {
 		}
 	}
     
-    public void populateMeddraDictHierarchySearchDtoChildren(String parentLevel, Long dtoCode, TreeNode expandedTreeNode,String dictionaryVersion) {
+    public void populateMeddraDictHierarchySearchDtoChildren(String parentLevel, String parentPrimaryPathString, Long dtoCode, TreeNode expandedTreeNode,String dictionaryVersion) {
 		//child code and term type prefix for the parent i.e: node that was expanded in ui
 		String childLevel = null;
 		String childSearchColumnTypePrefix = null;
@@ -978,6 +1005,13 @@ public class CmqBaseRelationsTreeHelper {
 		//child of the above child
 		String childOfChildLevel = null;
 		String childchildOfChildSearchColumnTypePrefix = null;
+                
+                String isParentPrimary = "";
+                if (parentPrimaryPathString.equalsIgnoreCase(CSMQBean.PATH_PRIMARY)) {
+                    isParentPrimary = "Y";
+                } else if (parentPrimaryPathString.equalsIgnoreCase(CSMQBean.PATH_SECONDRY)) {
+                    isParentPrimary = "N";
+                }
 		
 		String parentCodeColumnPrefix = parentLevel + "_";
 		if ("SOC".equalsIgnoreCase(parentLevel)) {
@@ -1003,10 +1037,16 @@ public class CmqBaseRelationsTreeHelper {
 		//fetch children of parent node by code of parent
 		List<MeddraDictHierarchySearchDto> childDtos;
 		if(StringUtils.isNotBlank(dictionaryVersion)) {
+                    if(StringUtils.isEmpty(isParentPrimary))
 			childDtos = this.meddraDictSvc.findChildrenByParentCode(childSearchColumnTypePrefix, parentCodeColumnPrefix, dtoCode,dictionaryVersion);
+                    else 
+                        childDtos = this.meddraDictSvc.findChildrenByParentCode(isParentPrimary, childSearchColumnTypePrefix, parentCodeColumnPrefix, dtoCode,dictionaryVersion);
 		} else {
+                    if(StringUtils.isEmpty(isParentPrimary))
 			childDtos = this.meddraDictSvc.findChildrenByParentCode(childSearchColumnTypePrefix, parentCodeColumnPrefix, dtoCode);
-		}
+                    else  
+                        childDtos = this.meddraDictSvc.findChildrenByParentCode(isParentPrimary, childSearchColumnTypePrefix, parentCodeColumnPrefix, dtoCode);
+                }
         
         
         Map<Long, TreeNode> nodesMap = new HashMap<>();
@@ -1020,9 +1060,10 @@ public class CmqBaseRelationsTreeHelper {
 				} else {
 					childNode.setPrimaryPathFlag(false);
 				}
-			} else {
-				childNode.setPrimaryPathFlag(false);
-			}
+			} 
+//                        else {
+//				childNode.setPrimaryPathFlag(false);
+//			}
 			
 			if(relationView) {
 				childNode.markNotEditableInRelationstable();
@@ -1159,6 +1200,8 @@ public class CmqBaseRelationsTreeHelper {
 		node.setLevel(level);
 		node.setTerm(searchDto.getTerm());
 		node.setCode(searchDto.getCode());
+                node.setPrimaryPathFlag(searchDto.getPrimaryPathFlag().equalsIgnoreCase("Y") ? true : false);
+                node.setPrimaryPathString(searchDto.getPrimaryPathFlagString());
 		node.setEntity(searchDto);
         node.setRelationEntity(relationEntity);
         if(relationEntity != null && relationEntity instanceof CmqRelation190) {
@@ -1166,6 +1209,8 @@ public class CmqBaseRelationsTreeHelper {
             node.setCategory((cmqRelation.getTermCategory() == null) ? "" : cmqRelation.getTermCategory());
             node.setCategory2((cmqRelation.getTermCategory2() == null) ? "" : cmqRelation.getTermCategory2());
             node.setScope((cmqRelation.getTermScope() == null) ? "" : cmqRelation.getTermScope());
+            node.setPrimaryPathFlag((cmqRelation.getTermPath() != null && cmqRelation.getTermPath().equalsIgnoreCase(CSMQBean.PATH_PRIMARY)) ? true : false);
+            node.setPrimaryPathString((cmqRelation.getTermPath() == null) ? "" : cmqRelation.getTermPath());
             node.setWeight((cmqRelation.getTermWeight() == null) ? "" : cmqRelation.getTermWeight() + "");
         }
 		return node;

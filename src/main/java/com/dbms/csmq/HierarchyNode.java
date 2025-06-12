@@ -61,6 +61,12 @@ public class HierarchyNode implements Serializable, Comparable<HierarchyNode> {
     private boolean hideDelete;
 
     private boolean primaryPathFlag;
+    
+    private boolean hidePath;
+
+    private boolean readOnlyPath;
+    
+    private String primaryPathString;
 
     private boolean primarypathCheckDone;
 
@@ -222,6 +228,7 @@ public class HierarchyNode implements Serializable, Comparable<HierarchyNode> {
         this.readOnlyCategory2 = true;
         this.hideDelete = true;
         this.readOnlyScope = true;
+        this.readOnlyPath = true;
         this.readOnlyWeight = true;
     }
 
@@ -230,6 +237,7 @@ public class HierarchyNode implements Serializable, Comparable<HierarchyNode> {
         this.hideCategory2 = false;
         this.hideDelete = false;
         this.hideScope = false;
+        this.hidePath = false;
         this.hideWeight = false;
     }
 
@@ -238,6 +246,7 @@ public class HierarchyNode implements Serializable, Comparable<HierarchyNode> {
         this.readOnlyCategory2 = true;
         this.hideDelete = true;
         this.readOnlyScope = true;
+        this.readOnlyPath = true;
         this.readOnlyWeight = true;
     }
 
@@ -502,4 +511,30 @@ public class HierarchyNode implements Serializable, Comparable<HierarchyNode> {
     public void setJustAdded(boolean justAdded) {
         this.justAdded = justAdded;
     }
+
+    public String getPrimaryPathString() {
+        return primaryPathString;
+    }
+
+    public void setPrimaryPathString(String primaryPathString) {
+        this.primaryPathString = primaryPathString;
+    }
+
+    public boolean isHidePath() {
+        return hidePath;
+    }
+
+    public void setHidePath(boolean hidePath) {
+        this.hidePath = hidePath;
+    }
+
+    public boolean isReadOnlyPath() {
+        return readOnlyPath;
+    }
+
+    public void setReadOnlyPath(boolean readOnlyPath) {
+        this.readOnlyPath = readOnlyPath;
+    }
+    
+    
 }

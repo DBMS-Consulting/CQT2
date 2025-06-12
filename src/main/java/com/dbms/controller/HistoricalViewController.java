@@ -202,7 +202,7 @@ public class HistoricalViewController implements Serializable {
 
 				HistoricalViewDTO historicalViewDTO = historicalViewDTOMap.get(cmqCode);
 				historicalViewDTO.setTermCategory(historicalViewDbDataDTO.getTermCategory());
-                                historicalViewDTO.setTermCategory(historicalViewDbDataDTO.getTermCategory2());
+                                historicalViewDTO.setTermCategory2(historicalViewDbDataDTO.getTermCategory2());
 
 				if (null != historicalViewDTO) {
 					// catch relations now.

@@ -77,7 +77,7 @@ public class AdminController implements Serializable {
 
     private List<RefConfigCodeList> extensions, programs, protocols, products,
             meddras, workflows, usergroups, sysconfigs, cmqImpactTypes,
-            smqImpactTypes, meddraImpactTypes, levels, smqfilters, categories,
+            smqImpactTypes, meddraImpactTypes, levels, smqfilters, pathFilters, categories,
             smtpServerConfigs, senderConfigs, emailNotificationMsgs, emailSubjects,
             userEmailAddressConfig;
 
@@ -154,6 +154,10 @@ public class AdminController implements Serializable {
                 .equals(CqtConstants.CODE_LIST_TYPE_SMQ_FILTER_LEVELS)
                 && smqfilters == null) {
             getSMQFilters();
+        } else if (codelist
+                .equals(CqtConstants.CODE_LIST_TYPE_PATH_FILTER_LEVELS)
+                && pathFilters == null) {
+            getPATHFilters();
         } else if (codelist.equals(CqtConstants.CODE_LIST_TYPE_SMTP_SERVER)
                 && smtpServerConfigs == null) {
             getSmtpServerConfigsList();
@@ -179,6 +183,15 @@ public class AdminController implements Serializable {
             smqfilters = new ArrayList<>();
         }
         return smqfilters;
+    }
+    
+    public List<RefConfigCodeList> getPATHFilters() {
+        pathFilters = refCodeListService.findAllByConfigType(
+                CqtConstants.CODE_LIST_TYPE_PATH_FILTER_LEVELS, OrderBy.ASC);
+        if (pathFilters == null) {
+            pathFilters = new ArrayList<>();
+        }
+        return pathFilters;
     }
 
     public String initAddCodelist() {
@@ -273,6 +286,14 @@ public class AdminController implements Serializable {
                     .setCodelistConfigType(CqtConstants.CODE_LIST_TYPE_SMQ_FILTER_LEVELS);
             if (getSmqfilters() != null && !smqfilters.isEmpty()) {
                 lastSerial = getSmqfilters().get(getSmqfilters().size() - 1)
+                        .getSerialNum();
+            }
+        } else if (codelist
+                .equals(CqtConstants.CODE_LIST_TYPE_PATH_FILTER_LEVELS)) {
+            myFocusRef
+                    .setCodelistConfigType(CqtConstants.CODE_LIST_TYPE_PATH_FILTER_LEVELS);
+            if (getPathFilters() != null && !pathFilters.isEmpty()) {
+                lastSerial = getPathFilters().get(getPathFilters().size() - 1)
                         .getSerialNum();
             }
         } else if (codelist.equals(CqtConstants.CODE_LIST_TYPE_CATEGORY_TERM)) {
@@ -849,6 +870,10 @@ public class AdminController implements Serializable {
                 type = "SMQ Filter Level Type";
                 getSMQFilters();
             } else if (myFocusRef.getCodelistConfigType().equals(
+                    CqtConstants.CODE_LIST_TYPE_PATH_FILTER_LEVELS)) {
+                type = "Path Filter Level Type";
+                getPATHFilters();
+            } else if (myFocusRef.getCodelistConfigType().equals(
                     CqtConstants.CODE_LIST_TYPE_SMTP_SERVER)) {
                 type = "Smtp Server";
                 getSmtpServerConfigsList();
@@ -1307,6 +1332,14 @@ public class AdminController implements Serializable {
 
     public void setSmqfilters(List<RefConfigCodeList> smqfilters) {
         this.smqfilters = smqfilters;
+    }
+    
+    public List<RefConfigCodeList> getPathFilters() {
+        return pathFilters;
+    }
+
+    public void setPathFilters(List<RefConfigCodeList> pathFilters) {
+        this.pathFilters = pathFilters;
     }
 
     public List<RefConfigCodeList> getSmtpServerConfigs() {

@@ -23,13 +23,19 @@ public interface IMeddraDictTargetService {
     List<MeddraDictReverseHierarchySearchDto> findByPtOrLltCodes(String searchColumnTypePrefix, List<Long> codes);
 
 	List<MeddraDictHierarchySearchDto> findByCodes(String searchColumnTypePrefix, List<Long> codes);
-
-	Long findChildrenCountByParentCode(String searchColumnTypePrefix, String parentCodeColumnPrefix, Long parentCode);
+        
+        List<MeddraDictHierarchySearchDto> findByCodes(String isParentPrimary, String searchColumnTypePrefix, List<Long> codes);        
+	
+        Long findChildrenCountByParentCode(String searchColumnTypePrefix, String parentCodeColumnPrefix, Long parentCode);
     List<Map<String, Object>> findChildrenCountByParentCodes(String searchColumnTypePrefix, String parentCodeColumnPrefix, List<Long> parentCodes);
 
 	List<MeddraDictHierarchySearchDto> findChildrenByParentCode(String searchColumnTypePrefix,
 			String parentCodeColumnPrefix, Long parentCode);
-    List<MeddraDictHierarchySearchDto> findChildrenByParentCodes(String searchColumnTypePrefix,
+    
+        List<MeddraDictHierarchySearchDto> findChildrenByParentCode(String isParentPrimary, String searchColumnTypePrefix,
+			String parentCodeColumnPrefix, Long parentCode);
+        
+        List<MeddraDictHierarchySearchDto> findChildrenByParentCodes(String searchColumnTypePrefix,
 			String parentCodeColumnPrefix, List<Long> parentCodes);
 
 	List<MeddraDictHierarchySearchDto> findNewPtTerm(String socSearchTerm, int firstResult, int fetchSize);

@@ -1,5 +1,6 @@
 package com.dbms.entity.cqt.dtos;
 
+import com.dbms.csmq.CSMQBean;
 import com.dbms.entity.IEntity;
 
 public class MeddraDictHierarchySearchDto implements IEntity {
@@ -85,6 +86,10 @@ public class MeddraDictHierarchySearchDto implements IEntity {
 
 	public String getPrimaryPathFlag() {
 		return primaryPathFlag;
+	}
+        
+        public String getPrimaryPathFlagString() {
+            return primaryPathFlag.equalsIgnoreCase("Y") ? CSMQBean.PATH_PRIMARY : CSMQBean.PATH_SECONDRY;
 	}
 
 	public void setPrimaryPathFlag(String primaryPathFlag) {

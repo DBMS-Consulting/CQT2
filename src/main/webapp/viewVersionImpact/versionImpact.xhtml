@@ -229,33 +229,35 @@
 
 									<p:columnGroup type="header">
 										<p:row>
-											<p:column id="targetTitle" style="width:40%"
+											<p:column id="targetTitle" style="width:25%"
 												headerText="Future Lists/SMQ" />
-											<p:column colspan="#{createController.relationsModel.getDisplayColumnCount(6)}" headerText="Hierarchy Details" />
+											<p:column style="width:75%" colspan="#{createController.relationsModel.getDisplayColumnCount(8)}" headerText="Hierarchy Details" />
 										</p:row>
 
 										<p:row>
-											<p:column styleClass="listName" headerText="#{impactSearchController.listName}" sortBy="#{node.term}" />
-											<p:column headerText="Code" sortBy="#{node.code}" style="width:15%" />
-											<p:column headerText="Level" style="width:8%" />
-											<p:column rendered="#{impactSearchController.systemConfigProperties.displayScope}" headerText="Scope" style="width:15%" />
-											<p:column rendered="#{impactSearchController.systemConfigProperties.displayCategory}" headerText="Category" style="width:9% " />
-											<p:column rendered="#{impactSearchController.systemConfigProperties.displayCategory2}" headerText="Category2" style="width:9% " />
-                                                                                        <p:column rendered="#{impactSearchController.systemConfigProperties.displayWeight}" headerText="Weight" style="width:8%" />
+											<p:column style="width:25%" styleClass="listName" headerText="#{impactSearchController.listName}" sortBy="#{node.term}" />
+											<p:column headerText="Code" sortBy="#{node.code}" style="width:22%" />
+											<p:column headerText="Level" style="width:6%" />
+											<p:column rendered="#{impactSearchController.systemConfigProperties.displayScope}" headerText="Scope" style="width:8%" />
+											<p:column headerText="Path" style="width:15%" />
+                                                                                        <p:column rendered="#{impactSearchController.systemConfigProperties.displayCategory}" headerText="Category" style="width:11% " />
+											<p:column rendered="#{impactSearchController.systemConfigProperties.displayCategory2}" headerText="Category2" style="width:11% " />
+                                                                                        <p:column rendered="#{impactSearchController.systemConfigProperties.displayWeight}" headerText="Weight" style="width:4%" />
 										</p:row>
 									</p:columnGroup>
 
-									<p:column rendered="#{not node.hideScope}"><h:outputText value="#{node.term}" /></p:column>
-									<p:column rendered="#{not node.hideScope}">
+									<p:column styleClass="wrap" style="width:25%" rendered="#{not node.hideScope}"><h:outputText value="#{node.term}" /></p:column>
+									<p:column style="width:22%" rendered="#{not node.hideScope}">
                                         <h:outputLink value="#" title="#{impactSearchController.getImpactDesc(node, 'target')}" >
                                             <h:outputText value="#{node.code}" />
                                         </h:outputLink>
                                     </p:column>
-									<p:column rendered="#{not node.hideScope}"><h:outputText value="#{node.level}" /></p:column>
-									<p:column rendered="#{impactSearchController.systemConfigProperties.displayScope and not node.hideScope}"><h:outputText value="#{appCSMQBean.interpretCqtBaseScope(node.scope)}" /></p:column>
-									<p:column rendered="#{true}"><h:outputText value="#{appCSMQBean.interpretCqtBaseCategory(node.category)}" /></p:column>
-									<p:column rendered="#{true}"><h:outputText value="#{appCSMQBean.interpretCqtBaseCategory(node.category2)}" /></p:column>
-                                                                        <p:column rendered="#{impactSearchController.systemConfigProperties.displayWeight and not node.hideScope}"><h:outputText value="#{node.weight}" /></p:column>
+									<p:column style="width:6%" rendered="#{not node.hideScope}"><h:outputText value="#{node.level}" /></p:column>
+									<p:column style="width:8%" rendered="#{impactSearchController.systemConfigProperties.displayScope and not node.hideScope}"><h:outputText value="#{appCSMQBean.interpretCqtBaseScope(node.scope)}" /></p:column>
+                                                                        <p:column style="width:15%" rendered="#{true}"><h:outputText value="#{appCSMQBean.interpretTermPath(node.primaryPathString)}" /></p:column>
+									<p:column style="width:11%" rendered="#{true}"><h:outputText value="#{appCSMQBean.interpretCqtBaseCategory(node.category)}" /></p:column>
+									<p:column style="width:11%" rendered="#{true}"><h:outputText value="#{appCSMQBean.interpretCqtBaseCategory(node.category2)}" /></p:column>
+                                                                        <p:column style="width:4%" rendered="#{impactSearchController.systemConfigProperties.displayWeight and not node.hideScope}"><h:outputText value="#{node.weight}" /></p:column>
 									
 								</p:treeTable>
 							</p:panel>

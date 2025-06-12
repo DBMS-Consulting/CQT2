@@ -103,13 +103,14 @@
 				<p:row>
 					<p:column rowspan="2" sortBy="#{node.term}"
 						headerText="#{createController.selectedData.cmqName}"/>
-					<p:column colspan="#{createController.relationsModel.getDisplayColumnCount(6)}" headerText="Hierarchy Details" style="width:50%"/>
+					<p:column colspan="#{createController.relationsModel.getDisplayColumnCount(7)}" headerText="Hierarchy Details" style="width:60%"/>
 				</p:row>
 
 				<p:row>
 					<p:column headerText="Code" style="width:10%" sortBy="#{node.code}" />
 					<p:column headerText="Level" style="width:10%" />
 					<p:column rendered="#{createController.relationsModel.displayScope}" headerText="Scope" style="width:10%" />
+                                        <p:column headerText="Path" style="width:10%" />
 					<p:column rendered="#{createController.relationsModel.displayCategory}" headerText="Category" style="width:10%" />
                                         <p:column rendered="#{createController.relationsModel.displayCategory2}" headerText="Category2" style="width:10%" />
 					<p:column rendered="#{createController.relationsModel.displayWeight}" headerText="Weight" style="width:10%" />
@@ -131,6 +132,10 @@
 
 			<p:column rendered="#{createController.relationsModel.displayScope}" style="width:10%">
 				<h:outputText value="#{appCSMQBean.interpretCqtBaseScope(node.scope)}" />
+			</p:column>
+                        
+                        <p:column style="width:10%">
+				<h:outputText value="#{appCSMQBean.interpretTermPath(node.primaryPathString)}" />
 			</p:column>
 
 			<p:column rendered="#{createController.relationsModel.displayCategory}" styleClass="wrap">

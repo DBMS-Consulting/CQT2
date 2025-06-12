@@ -952,6 +952,7 @@ public class ImpactSearchController implements Serializable {
                                                 && !hierarchyNode.getWeight().equalsIgnoreCase("null"))
                                                 ? Long.parseLong(hierarchyNode.getWeight()) : null);
                                         cmqRelation.setTermScope(hierarchyNode.getScope());
+                                        cmqRelation.setTermPath(hierarchyNode.getPrimaryPathString());
                                         cmqRelation.setTermCategory(hierarchyNode.getCategory());
                                         cmqRelation.setTermCategory2(hierarchyNode.getCategory2());
                                         cmqRelation.setDictionaryName(cmqBaseTarget.getDictionaryName());
@@ -1186,6 +1187,16 @@ public class ImpactSearchController implements Serializable {
             needsUpdate = true;
         }
 
+         // match path
+		if(StringUtils.isBlank(hierarchyNode.getPrimaryPathString()) && !StringUtils.isBlank(cmqRelationTarget.getTermPath())) {
+			needsUpdate = true;
+		} else if(!StringUtils.isBlank(hierarchyNode.getPrimaryPathString()) && StringUtils.isBlank(cmqRelationTarget.getTermPath())) {
+			needsUpdate = true;
+		} else if(!StringUtils.isBlank(hierarchyNode.getPrimaryPathString()) && !StringUtils.isBlank(cmqRelationTarget.getTermPath())
+				&& !hierarchyNode.getPrimaryPathString().equals(cmqRelationTarget.getTermPath())){
+			needsUpdate = true;
+		}
+                
         //now so category
         if (StringUtils.isBlank(hierarchyNode.getCategory()) && !StringUtils.isBlank(cmqRelationTarget.getTermCategory())) {
             needsUpdate = true;
@@ -3258,6 +3269,18 @@ public class ImpactSearchController implements Serializable {
     public void filterRelationsByScopeInTargetTable(HierarchyNode node) {
         IEntity entity = node.getEntity();
         if ((entity instanceof SmqBaseTarget) || (entity instanceof SMQReverseHierarchySearchDto)) {
+            node.setDataFetchCompleted(false);
+            TreeNode treeNode = this.clearChildrenInTargetTableTreNode(targetTableRootTreeNode, node);
+            if (null != treeNode) {
+                collapseRelationsInTargetTable(treeNode);
+            }
+        }
+        this.setTargetRelationsUpdated();
+    }
+    
+    public void filterRelationsByPathInTargetTable(HierarchyNode node) {
+        IEntity entity = node.getEntity();
+        if ((entity instanceof CmqRelationTarget) || (entity instanceof MeddraDictHierarchySearchDto)) {
             node.setDataFetchCompleted(false);
             TreeNode treeNode = this.clearChildrenInTargetTableTreNode(targetTableRootTreeNode, node);
             if (null != treeNode) {

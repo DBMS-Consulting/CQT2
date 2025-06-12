@@ -39,6 +39,7 @@ import com.dbms.entity.cqt.CmqRelation190;
 import com.dbms.entity.cqt.RefConfigCodeList;
 import com.dbms.entity.cqt.SmqBase190;
 import com.dbms.entity.cqt.SmqRelation190;
+import com.dbms.entity.cqt.MeddraDict190;
 import com.dbms.entity.cqt.dtos.MeddraDictHierarchySearchDto;
 import com.dbms.entity.cqt.dtos.MeddraDictReverseHierarchySearchDto;
 import com.dbms.entity.cqt.dtos.SMQReverseHierarchySearchDto;
@@ -576,6 +577,28 @@ public class CreateController implements Serializable {
 		 
  
 	}
+        
+        
+        public void filterRelationsByPath(HierarchyNode node) {
+		
+		//For relations.xhtml
+		if (updateWizard != null || copyWizard != null || createWizard != null) {
+			IEntity entity = node.getEntity();
+			if((entity instanceof CmqRelation190) || (entity instanceof MeddraDictHierarchySearchDto)) {
+				node.setDataFetchCompleted(false);
+				this.relationsModel.clearChildrenInTreNode(relationsModel.getRelationsRoot(), node);
+				collapseRelations(node);
+				notifyRelationsUpdate();
+			}
+		}
+		
+		//For relationsForBrowse.xhtml
+		if (browseWizard != null) {
+			
+		}
+		 
+ 
+	}
 	
 	public void notifyCategoryChange() {
 		//detailsFormModel.setModelChanged(true);
@@ -947,6 +970,7 @@ public class CreateController implements Serializable {
 									&& !hierarchyNode.getWeight().equalsIgnoreCase("null"))
 								? Long.parseLong(hierarchyNode.getWeight()) : null);
 							cmqRelation.setTermScope(hierarchyNode.getScope());
+                                                        cmqRelation.setTermPath(hierarchyNode.getPrimaryPathString());
 							cmqRelation.setTermCategory(hierarchyNode.getCategory());
                                                         cmqRelation.setTermCategory2(hierarchyNode.getCategory2());
 							cmqRelation.setDictionaryName(cmqBase.getDictionaryName());
@@ -1183,6 +1207,7 @@ public class CreateController implements Serializable {
 															&& !hierarchyNode.getWeight().equalsIgnoreCase("null"))
 														? Long.parseLong(hierarchyNode.getWeight()) : null);
 							cmqRelation.setTermScope(hierarchyNode.getScope());
+                                                        cmqRelation.setTermPath(hierarchyNode.getPrimaryPathString());
 							cmqRelation.setTermCategory(hierarchyNode.getCategory());
                                                         cmqRelation.setTermCategory2(hierarchyNode.getCategory2());
 							cmqRelation.setDictionaryName(cmqBase.getDictionaryName());
@@ -1270,6 +1295,7 @@ public class CreateController implements Serializable {
 	public String onCreateWizardFlowProcess(FlowEvent event) {
 		String oldStep, nextStep;
 		oldStep = nextStep = event.getOldStep();
+               
 		if (!selectedData.getCmqState().equalsIgnoreCase("APPROVED") && notesFormModel.getDescription().equals("") 
 				&& oldStep.equals(WIZARD_STEP_INFONOTES)) {
 			if (FacesContext.getCurrentInstance() != null) {
@@ -1283,6 +1309,7 @@ public class CreateController implements Serializable {
 			
 			//----Confirmation on unsaved changes: see onUpdateWizardFlowProcess's "details" step
 			//if(codeSelected != null)
+                        
 				createWizardNextStep = event.getNewStep();
 			/*else
 				createWizardNextStep = WIZARD_STEP_DETAILS;
@@ -2062,6 +2089,16 @@ public class CreateController implements Serializable {
 			needsUpdate = true;
 		} else if(!StringUtils.isBlank(hierarchyNode.getScope()) && !StringUtils.isBlank(cmqRelation190.getTermScope())
 				&& !hierarchyNode.getScope().equals(cmqRelation190.getTermScope())){
+			needsUpdate = true;
+		}
+                
+                // match path
+		if(StringUtils.isBlank(hierarchyNode.getPrimaryPathString()) && !StringUtils.isBlank(cmqRelation190.getTermPath())) {
+			needsUpdate = true;
+		} else if(!StringUtils.isBlank(hierarchyNode.getPrimaryPathString()) && StringUtils.isBlank(cmqRelation190.getTermPath())) {
+			needsUpdate = true;
+		} else if(!StringUtils.isBlank(hierarchyNode.getPrimaryPathString()) && !StringUtils.isBlank(cmqRelation190.getTermPath())
+				&& !hierarchyNode.getPrimaryPathString().equals(cmqRelation190.getTermPath())){
 			needsUpdate = true;
 		}
 		

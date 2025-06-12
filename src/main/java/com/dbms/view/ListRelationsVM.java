@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 
 import com.dbms.controller.GlobalController;
 import com.dbms.controller.beans.HierarchySearchResultBean;
+import com.dbms.csmq.CSMQBean;
 import com.dbms.csmq.HierarchyNode;
 import com.dbms.entity.IEntity;
 import com.dbms.entity.cqt.CmqBase190;
@@ -296,6 +297,7 @@ public class ListRelationsVM implements IRelationsChangeListener {
 			 * {//when to show as text hierNode.setReadOnlyScope(true); }
              */ //else it will be displayed with dropdown as enabled
             hierNode.setReadOnlyScope(true);
+            hierNode.setReadOnlyPath(true);
         }
 
         System.out.println("Done");
@@ -372,6 +374,25 @@ public class ListRelationsVM implements IRelationsChangeListener {
                                 if (((parentRootNode.getLevel().equalsIgnoreCase("TR1") || parentRootNode.getLevel().equalsIgnoreCase("TME")) && relationsHierarchyNode.getLevel().equalsIgnoreCase("PRO"))
                                         || (!relationsHierarchyNode.isSmqNode())) {
                                     relationsHierarchyNode.setReadOnlyScope(true);
+                                }
+                                
+                                 // Path rules
+                                if (relationsHierarchyNode.getLevel().equalsIgnoreCase("SOC") || 
+                                        relationsHierarchyNode.getLevel().equalsIgnoreCase("HLGT") || 
+                                        relationsHierarchyNode.getLevel().equalsIgnoreCase("HLT")) {
+                                    relationsHierarchyNode.setHidePath(false);
+                                    relationsHierarchyNode.setReadOnlyPath(false);
+                                    relationsHierarchyNode.setPrimaryPathString(CSMQBean.PATH_PRIMARY);
+                                    relationsHierarchyNode.setPrimaryPathFlag(true);
+
+                                //    hierNode.setPrimaryPathString(CSMQBean.PATH_PRIMARY); // default value
+                                } else if (relationsHierarchyNode.getLevel().equalsIgnoreCase("PT") || 
+                                        relationsHierarchyNode.getLevel().equalsIgnoreCase("LLT")) {
+                                    relationsHierarchyNode.setHidePath(false);
+                                    relationsHierarchyNode.setReadOnlyPath(true);
+                                } else {
+                                    relationsHierarchyNode.setHidePath(true);
+                                    relationsHierarchyNode.setReadOnlyPath(true);
                                 }
 
                                 relationsHierarchyNode.setJustAdded(true);

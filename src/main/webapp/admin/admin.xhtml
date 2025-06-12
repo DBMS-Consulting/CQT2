@@ -36,6 +36,7 @@
                             <f:selectItem itemLabel="MEDDRA DICTIONARY IMPACT TYPE" itemValue="MEDDRA_DICTIONARY_IMPACT_TYPE" />
                             <f:selectItem itemLabel="DICTIONARY CMQ LEVELS TYPE" itemValue="DICTIONARY_CMQ_LEVELS" />
                             <f:selectItem itemLabel="SMQ FILTER LEVELS TYPE" itemValue="SMQ_FILTER_LEVELS" />
+                            <f:selectItem itemLabel="PATH FILTER LEVELS TYPE" itemValue="PATH_FILTER_LEVELS" />
                             <f:selectItem itemLabel="SMTP SERVER" itemValue="SMTP_SERVER" />
                             <f:selectItem itemLabel="SENDER CONFIG" itemValue="SENDER_CONFIG" />
                             <f:selectItem itemLabel="EMAIL NOTIFICATION MSG" itemValue="EMAIL_NOTIFICATION_MSG" />
@@ -102,6 +103,10 @@
 
                     <ui:fragment rendered="#{adminController.codelist eq 'SMQ_FILTER_LEVELS'}">
                         <ui:include src="smqFilterLevelTable.xhtml"></ui:include> 
+                    </ui:fragment>
+                    
+                    <ui:fragment rendered="#{adminController.codelist eq 'PATH_FILTER_LEVELS'}">
+                        <ui:include src="pathFilterLevelTable.xhtml"></ui:include> 
                     </ui:fragment>
 
                     <ui:fragment rendered="#{adminController.codelist eq 'SMTP_SERVER'}">

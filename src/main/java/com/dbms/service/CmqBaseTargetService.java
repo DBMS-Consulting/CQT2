@@ -668,6 +668,17 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 		}
 		return retVal;
 	}
+        
+        private String interpretTermPathFlag (CmqRelationTarget relation) {
+                    String pathVal = relation.getTermPath();
+                    if(CSMQBean.PATH_ALL.equals(pathVal))
+                        return "";
+                    else if(CSMQBean.PATH_PRIMARY.equals(pathVal))
+                        return "Y";
+                    else if(CSMQBean.PATH_SECONDRY.equals(pathVal))
+                        return "N";
+                    return "";
+        }
 
 	@Override
 	public StreamedContent generateCMQExcel(CmqBaseTarget selectedImpactedCmqList, String dictionaryVersion, TreeNode selectedNode, boolean filterLltFlag, SystemConfigProperties systemConfigProperties) {
@@ -747,6 +758,13 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
                     cellCount++;
                     cell = row.createCell(cellCount);
                     cell.setCellValue("Scope");
+                    cell.setCellStyle(cellStyle);
+                }
+                
+                if(true) {
+                    cellCount++;
+                    cell = row.createCell(cellCount);
+                    cell.setCellValue("Path");
                     cell.setCellStyle(cellStyle);
                 }
                 
@@ -989,7 +1007,10 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
  						}
 					}
    				}
-  
+                                
+                                
+                                String isParentPrimary = interpretTermPathFlag(relation);
+                                
 				/**
 				 * 
 				 * HLT.
@@ -997,44 +1018,80 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 				if (relation.getHltCode() != null) {
 					List<Long> hltCodesList = new ArrayList<>();
 					hltCodesList.add(relation.getHltCode());
-					List<MeddraDictHierarchySearchDto> hlts = this.meddraDictService.findByCodes("HLT_", hltCodesList);
+                                        List<MeddraDictHierarchySearchDto> hlts;
+                                        
+                                        if(StringUtils.isEmpty(isParentPrimary)) 
+                                            hlts = this.meddraDictService.findByCodes("HLT_", hltCodesList);
+                                        else
+                                            hlts = this.meddraDictService.findByCodes(isParentPrimary, "HLT_", hltCodesList);
+                                        
 					for (MeddraDictHierarchySearchDto hlt : hlts) {
-						mapReport.put(cpt++, new ReportLineDataDto("HLT", hlt.getCode(), hlt.getTerm(), "", hlt, getCmqRelationImpactDesc(relation.getRelationImpactType())));  
+                                            ReportLineDataDto parent = new ReportLineDataDto("HLT", hlt.getCode(), hlt.getTerm(), "", hlt, getCmqRelationImpactDesc(relation.getRelationImpactType()));  
+                                            parent.setPath(hlt.getPrimaryPathFlagString());
+                                            mapReport.put(cpt++, parent);
 						if(relation.getTermCategory() != null) {
 							mapReport.get(mapReport.size() - 1).setCategory(relation.getTermCategory());
 						}
                                                 if(relation.getTermCategory2() != null) {
 							mapReport.get(mapReport.size() - 1).setCategory2(relation.getTermCategory2());
 						}
+                                                if(relation.getTermPath() != null) {
+							mapReport.get(mapReport.size() - 1).setPath(relation.getTermPath());
+						}
 						
 						/**
 						 * PT.
 						 */
-						List<MeddraDictHierarchySearchDto> listPT =  meddraDictService.findChildrenByParentCode("PT_", "HLT_", Long.valueOf(hlt.getCode()));
-						List<Long> ptCodesList = new ArrayList<>();
+						List<MeddraDictHierarchySearchDto> listPT;
+                                                if(StringUtils.isEmpty(isParentPrimary))
+                                                   listPT =  meddraDictService.findChildrenByParentCode("PT_", "HLT_", Long.valueOf(hlt.getCode()));
+                                                else
+                                                    listPT =  meddraDictService.findChildrenByParentCode(isParentPrimary, "PT_", "HLT_", Long.valueOf(hlt.getCode()));
+						
+                                                List<Long> ptCodesList = new ArrayList<>();
 						for (MeddraDictHierarchySearchDto meddra : listPT) {
 							ptCodesList.add(Long.parseLong(meddra.getCode())); 
 						}
 
-						List<MeddraDictHierarchySearchDto> llts = this.meddraDictService.findByCodes("PT_", ptCodesList);
-						if (llts != null) {
+						List<MeddraDictHierarchySearchDto> llts;
+                                                if(StringUtils.isEmpty(isParentPrimary))
+                                                    llts = this.meddraDictService.findByCodes("PT_", ptCodesList);
+                                                else
+                                                    llts = this.meddraDictService.findByCodes(isParentPrimary, "PT_", ptCodesList);
+						
+                                                if (llts != null) {
 							for (MeddraDictHierarchySearchDto pt : llts) {
-								mapReport.put(cpt++, new ReportLineDataDto("PT", pt.getCode() + "", pt.getTerm(), "......", pt, getImpact(pt, "PT"))); 
+                                                            ReportLineDataDto child;
+                                                            child = new ReportLineDataDto("PT", pt.getCode() + "", pt.getTerm(), "......", pt, getImpact(pt, "PT"));
+                                                            child.setPath(pt.getPrimaryPathFlagString());
+                                                            mapReport.put(cpt++, child); 
 							
 								if(!filterLltFlag) {
 									/**
 									 * LLT.
 									 */
-									List<MeddraDictHierarchySearchDto> listLLT =  meddraDictService.findChildrenByParentCode("LLT_", "PT_", Long.valueOf(pt.getCode()));
-									List<Long> lltCodesList = new ArrayList<>();
+									List<MeddraDictHierarchySearchDto> listLLT;
+                                                                        if(StringUtils.isEmpty(isParentPrimary)) 
+                                                                            listLLT =  meddraDictService.findChildrenByParentCode("LLT_", "PT_", Long.valueOf(pt.getCode()));
+									else
+                                                                            listLLT =  meddraDictService.findChildrenByParentCode(isParentPrimary, "LLT_", "PT_", Long.valueOf(pt.getCode()));
+                                                                        
+                                                                        List<Long> lltCodesList = new ArrayList<>();
 									for (MeddraDictHierarchySearchDto meddra : listLLT) {
 										lltCodesList.add(Long.parseLong(meddra.getCode())); 
 									}
 
-									List<MeddraDictHierarchySearchDto> list = this.meddraDictService.findByCodes("LLT_", lltCodesList);
+									List<MeddraDictHierarchySearchDto> list;
+                                                                        if(StringUtils.isEmpty(isParentPrimary))
+                                                                            list = this.meddraDictService.findByCodes("LLT_", lltCodesList);
+                                                                        else
+                                                                            list = this.meddraDictService.findByCodes(isParentPrimary, "LLT_", lltCodesList);
+                                                                        
 									if (list != null)
 										for (MeddraDictHierarchySearchDto llt : list) {
-											mapReport.put(cpt++, new ReportLineDataDto("LLT", llt.getCode() + "", llt.getTerm(), ".............", llt, getImpact(llt, "LLT"))); 
+                                                                                    child= new ReportLineDataDto("LLT", llt.getCode() + "", llt.getTerm(), ".............", llt, getImpact(llt, "LLT"));
+                                                                                    child.setPath(llt.getPrimaryPathFlagString());
+											mapReport.put(cpt++, child); 
 										}
 								}
  							}
@@ -1103,69 +1160,131 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 				if (relation.getSocCode() != null) {
 					List<Long> socCodesList = new ArrayList<>();
 					socCodesList.add(relation.getSocCode());
-					List<MeddraDictHierarchySearchDto> socss = this.meddraDictService.findByCodes("SOC_", socCodesList);
-					for (MeddraDictHierarchySearchDto soc : socss) {
-						mapReport.put(cpt++, new ReportLineDataDto("SOC", soc.getCode() + "", soc.getTerm(), "", soc, getCmqRelationImpactDesc(relation.getRelationImpactType()))); 
+					List<MeddraDictHierarchySearchDto> socss; 
+                                        
+                                        if(StringUtils.isEmpty(isParentPrimary)) 
+                                            socss = this.meddraDictService.findByCodes("SOC_", socCodesList);
+                                        else
+                                            socss = this.meddraDictService.findByCodes(isParentPrimary, "SOC_", socCodesList);
+					
+                                        for (MeddraDictHierarchySearchDto soc : socss) {
+                                            ReportLineDataDto parent = new ReportLineDataDto("SOC", soc.getCode() + "", soc.getTerm(), "", soc, getCmqRelationImpactDesc(relation.getRelationImpactType()));
+                                            parent.setPath(soc.getPrimaryPathFlagString());
+                                            mapReport.put(cpt++, parent); 
 						if(relation.getTermCategory() != null) {
 							mapReport.get(mapReport.size() - 1).setCategory(relation.getTermCategory());
 						}
                                                 if(relation.getTermCategory2() != null) {
 							mapReport.get(mapReport.size() - 1).setCategory2(relation.getTermCategory2());
 						}
+                                                if(relation.getTermPath() != null) {
+							mapReport.get(mapReport.size() - 1).setPath(relation.getTermPath());
+						}
 						
 						/**
 						 * HLGT.
 						 */
-						List<MeddraDictHierarchySearchDto> listHLGT =  meddraDictService.findChildrenByParentCode("HLGT_", "SOC_", Long.valueOf(soc.getCode()));
-						List<Long> hlgtCodesList = new ArrayList<>();
+						List<MeddraDictHierarchySearchDto> listHLGT;
+                                                
+                                                if(StringUtils.isEmpty(isParentPrimary)) 
+                                                    listHLGT =  meddraDictService.findChildrenByParentCode("HLGT_", "SOC_", Long.valueOf(soc.getCode()));
+						else
+                                                    listHLGT =  meddraDictService.findChildrenByParentCode(isParentPrimary, "HLGT_", "SOC_", Long.valueOf(soc.getCode()));
+                                                
+                                                List<Long> hlgtCodesList = new ArrayList<>();
 						for (MeddraDictHierarchySearchDto meddra : listHLGT) {
 							hlgtCodesList.add(Long.parseLong(meddra.getCode())); 
 						}
 
-						List<MeddraDictHierarchySearchDto> hlgts = this.meddraDictService.findByCodes("HLGT_", hlgtCodesList);
+						List<MeddraDictHierarchySearchDto> hlgts;
+                                                if(StringUtils.isEmpty(isParentPrimary)) 
+                                                    hlgts = this.meddraDictService.findByCodes("HLGT_", hlgtCodesList);
+                                                else
+                                                    hlgts = this.meddraDictService.findByCodes(isParentPrimary, "HLGT_", hlgtCodesList);
+                                                
 						if (hlgts != null)
 							for (MeddraDictHierarchySearchDto hlgt : hlgts) {
-								mapReport.put(cpt++, new ReportLineDataDto("HLGT", hlgt.getCode() + "", hlgt.getTerm(), "......", hlgt, getImpact(hlgt, "HLGT")));
+                                                             ReportLineDataDto child;
+                                                             child = new ReportLineDataDto("HLGT", hlgt.getCode() + "", hlgt.getTerm(), "......", hlgt, getImpact(hlgt, "HLGT"));
+                                                             child.setPath(hlgt.getPrimaryPathFlagString());
+                                                             mapReport.put(cpt++, child);
 								/**
 								 * HLT.
 								 */
-								List<MeddraDictHierarchySearchDto> listHLT =  meddraDictService.findChildrenByParentCode("HLT_", "HLGT_", Long.valueOf(hlgt.getCode()));
-								List<Long> hltCodesList = new ArrayList<>();
+								List<MeddraDictHierarchySearchDto> listHLT;
+                                                                if(StringUtils.isEmpty(isParentPrimary))    
+                                                                    listHLT =  meddraDictService.findChildrenByParentCode("HLT_", "HLGT_", Long.valueOf(hlgt.getCode()));
+								else
+                                                                    listHLT =  meddraDictService.findChildrenByParentCode(isParentPrimary, "HLT_", "HLGT_", Long.valueOf(hlgt.getCode()));
+                                                                
+                                                                List<Long> hltCodesList = new ArrayList<>();
 								for (MeddraDictHierarchySearchDto meddra : listHLT) {
 									hltCodesList.add(Long.parseLong(meddra.getCode())); 
 								}
-
-								List<MeddraDictHierarchySearchDto> hlts = this.meddraDictService.findByCodes("HLT_", hltCodesList);
+                                                                
+                                                                List<MeddraDictHierarchySearchDto> hlts;
+                                                                if(StringUtils.isEmpty(isParentPrimary))    
+                                                                    hlts = this.meddraDictService.findByCodes("HLT_", hltCodesList);
+								else
+                                                                    hlts = this.meddraDictService.findByCodes(isParentPrimary, "HLT_", hltCodesList);
+                                                                
+							
 								if (hlts != null)
 									for (MeddraDictHierarchySearchDto hlt : hlts) {
-										mapReport.put(cpt++, new ReportLineDataDto("HLT", hlt.getCode() + "", hlt.getTerm(), "...............", hlt, getImpact(hlt, "HLT"))); 
+                                                                            child = new ReportLineDataDto("HLT", hlt.getCode() + "", hlt.getTerm(), "...............", hlt, getImpact(hlt, "HLT"));
+                                                                            child.setPath(hlt.getPrimaryPathFlagString());
+										mapReport.put(cpt++, child); 
 										/**
 										 * PT.
 										 */
-										List<MeddraDictHierarchySearchDto> listHT =  meddraDictService.findChildrenByParentCode("PT_", "HLT_", Long.valueOf(hlt.getCode()));
-										List<Long> ptCodesList = new ArrayList<>();
+										List<MeddraDictHierarchySearchDto> listHT;
+                                                                                if(StringUtils.isEmpty(isParentPrimary)) 
+                                                                                    listHT =  meddraDictService.findChildrenByParentCode("PT_", "HLT_", Long.valueOf(hlt.getCode()));
+										else
+                                                                                    listHT = meddraDictService.findChildrenByParentCode(isParentPrimary, "PT_", "HLT_", Long.valueOf(hlt.getCode()));
+                                                                                
+                                                                                List<Long> ptCodesList = new ArrayList<>();
 										for (MeddraDictHierarchySearchDto meddra : listHT) {
 											ptCodesList.add(Long.parseLong(meddra.getCode())); 
 										}
 
-										List<MeddraDictHierarchySearchDto> pts = this.meddraDictService.findByCodes("PT_", ptCodesList);
+										List<MeddraDictHierarchySearchDto> pts;
+                                                                                if(StringUtils.isEmpty(isParentPrimary))    
+                                                                                    pts = this.meddraDictService.findByCodes("PT_", ptCodesList);
+                                                                                else
+                                                                                    pts = this.meddraDictService.findByCodes(isParentPrimary, "PT_", ptCodesList);
+                                                                                
 										if (pts != null)
-											for (MeddraDictHierarchySearchDto pt : pts) {
-												mapReport.put(cpt++, new ReportLineDataDto("PT", pt.getCode() + "", pt.getTerm(), "....................", pt, getImpact(pt, "PT"))); 
+											for (MeddraDictHierarchySearchDto pt : pts) { 
+                                                                                            child = new ReportLineDataDto("PT", pt.getCode() + "", pt.getTerm(), "....................", pt, getImpact(pt, "PT"));
+                                                                                            child.setPath(pt.getPrimaryPathFlagString());
+												mapReport.put(cpt++, child); 
 												
 												if(!filterLltFlag) {
 													/**
 													 * LLT.
 													 */
-													List<MeddraDictHierarchySearchDto> listPT =  meddraDictService.findChildrenByParentCode("LLT_", "PT_", Long.valueOf(pt.getCode()));
-													List<Long> lltCodes = new ArrayList<>();
+													List<MeddraDictHierarchySearchDto> listPT;
+                                                                                                        if(StringUtils.isEmpty(isParentPrimary)) 
+                                                                                                            listPT =  meddraDictService.findChildrenByParentCode("LLT_", "PT_", Long.valueOf(pt.getCode()));
+													else
+                                                                                                            listPT =  meddraDictService.findChildrenByParentCode(isParentPrimary, "LLT_", "PT_", Long.valueOf(pt.getCode()));
+                                                                                                        
+                                                                                                        List<Long> lltCodes = new ArrayList<>();
 													for (MeddraDictHierarchySearchDto meddra : listPT) {
 														lltCodes.add(Long.parseLong(meddra.getCode())); 
 													}
-	 												List<MeddraDictHierarchySearchDto> llts = this.meddraDictService.findByCodes("LLT_", lltCodes);
+	 												List<MeddraDictHierarchySearchDto> llts;
+                                                                                                        if(StringUtils.isEmpty(isParentPrimary)) 
+                                                                                                            llts = this.meddraDictService.findByCodes("LLT_", lltCodes);
+                                                                                                        else
+                                                                                                            llts = this.meddraDictService.findByCodes(isParentPrimary, "LLT_", lltCodes);
+                                                                                                        
 													if (llts != null)
 														for (MeddraDictHierarchySearchDto llt : llts) {
-															mapReport.put(cpt++, new ReportLineDataDto("LLT", llt.getCode() + "", llt.getTerm(), "..........................", llt, getImpact(llt, "LLT"))); 
+                                                                                                                    child = new ReportLineDataDto("LLT", llt.getCode() + "", llt.getTerm(), "..........................", llt, getImpact(llt, "LLT"));
+                                                                                                                    child.setPath(llt.getPrimaryPathFlagString());
+                                                                                                                    mapReport.put(cpt++, child); 
 														}
 													
 												}
@@ -1182,55 +1301,106 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 				if (relation.getHlgtCode() != null) {
 					List<Long> hlgtCodesList = new ArrayList<>();
 					hlgtCodesList.add(relation.getHlgtCode());
-					List<MeddraDictHierarchySearchDto> socDtos = this.meddraDictService.findByCodes("HLGT_", hlgtCodesList);
-					for (MeddraDictHierarchySearchDto hlgt : socDtos) {
-						mapReport.put(cpt++, new ReportLineDataDto("HLGT", hlgt.getCode() + "", hlgt.getTerm(), "", hlgt, getCmqRelationImpactDesc(relation.getRelationImpactType())));  
+					List<MeddraDictHierarchySearchDto> socDtos;
+                                        if(StringUtils.isEmpty(isParentPrimary))
+                                            socDtos = this.meddraDictService.findByCodes("HLGT_", hlgtCodesList);
+                                        else
+                                            socDtos = this.meddraDictService.findByCodes(isParentPrimary, "HLGT_", hlgtCodesList);
+					
+                                        for (MeddraDictHierarchySearchDto hlgt : socDtos) {
+                                            ReportLineDataDto parent = new ReportLineDataDto("HLGT", hlgt.getCode() + "", hlgt.getTerm(), "", hlgt, getCmqRelationImpactDesc(relation.getRelationImpactType()));
+                                            parent.setPath(hlgt.getPrimaryPathFlagString());
+						mapReport.put(cpt++, parent);  
 						if(relation.getTermCategory() != null) {
 							mapReport.get(mapReport.size() - 1).setCategory(relation.getTermCategory());
 						}
                                                 if(relation.getTermCategory2() != null) {
 							mapReport.get(mapReport.size() - 1).setCategory2(relation.getTermCategory2());
 						}
+                                                if(relation.getTermPath() != null) {
+							mapReport.get(mapReport.size() - 1).setPath(relation.getTermPath());
+						}
 						/**
 						 * HLT.
 						 */
-						List<MeddraDictHierarchySearchDto> listHLGT =  meddraDictService.findChildrenByParentCode("HLT_", "HLGT_", Long.valueOf(hlgt.getCode()));
-						List<Long> hltCodesList = new ArrayList<>();
+						List<MeddraDictHierarchySearchDto> listHLGT;
+                                                if(StringUtils.isEmpty(isParentPrimary))        
+                                                    listHLGT =  meddraDictService.findChildrenByParentCode("HLT_", "HLGT_", Long.valueOf(hlgt.getCode()));
+						else
+                                                    listHLGT =  meddraDictService.findChildrenByParentCode(isParentPrimary, "HLT_", "HLGT_", Long.valueOf(hlgt.getCode()));
+                                                    
+                                                List<Long> hltCodesList = new ArrayList<>();
 						for (MeddraDictHierarchySearchDto meddra : listHLGT) {
 							hltCodesList.add(Long.parseLong(meddra.getCode())); 
 						}
 
-						List<MeddraDictHierarchySearchDto> hlts = this.meddraDictService.findByCodes("HLT_", hltCodesList);
+						List<MeddraDictHierarchySearchDto> hlts;
+                                                if(StringUtils.isEmpty(isParentPrimary))        
+                                                    hlts = this.meddraDictService.findByCodes("HLT_", hltCodesList);
+						else
+                                                    hlts = this.meddraDictService.findByCodes(isParentPrimary, "HLT_", hltCodesList);
+                                                    
+                                                
 						if (hlts != null)
 							for (MeddraDictHierarchySearchDto hlt : hlts) {
-								mapReport.put(cpt++, new ReportLineDataDto("HLT", hlt.getCode() + "", hlt.getTerm(), "......", hlt, getImpact(hlt, "HLT"))); 
+                                                            ReportLineDataDto child;
+                                                            child = new ReportLineDataDto("HLT", hlt.getCode() + "", hlt.getTerm(), "......", hlt, getImpact(hlt, "HLT"));
+                                                            child.setPath(hlt.getPrimaryPathFlagString());
+								mapReport.put(cpt++, child); 
 								/**
 								 * PT.
 								 */
-								List<MeddraDictHierarchySearchDto> listHT =  meddraDictService.findChildrenByParentCode("PT_", "HLT_", Long.valueOf(hlt.getCode()));
+                                                                
+                                                                List<MeddraDictHierarchySearchDto> listHT;
+                                                                if(StringUtils.isEmpty(isParentPrimary))        
+                                                                    listHT =  meddraDictService.findChildrenByParentCode("PT_", "HLT_", Long.valueOf(hlt.getCode()));
+                                                                else
+                                                                    listHT =  meddraDictService.findChildrenByParentCode(isParentPrimary, "PT_", "HLT_", Long.valueOf(hlt.getCode()));
+								
 								List<Long> ptCodesList = new ArrayList<>();
 								for (MeddraDictHierarchySearchDto meddra : listHT) {
 									ptCodesList.add(Long.parseLong(meddra.getCode())); 
 								}
-
-								List<MeddraDictHierarchySearchDto> pts = this.meddraDictService.findByCodes("PT_", ptCodesList);
+                                                                
+                                                                List<MeddraDictHierarchySearchDto> pts;
+                                                                if(StringUtils.isEmpty(isParentPrimary))        
+                                                                    pts = this.meddraDictService.findByCodes("PT_", ptCodesList);
+                                                                else
+                                                                    pts = this.meddraDictService.findByCodes(isParentPrimary, "PT_", ptCodesList);
+								
 								if (pts != null)
 									for (MeddraDictHierarchySearchDto pt : pts) {
-										mapReport.put(cpt++, new ReportLineDataDto("PT", pt.getCode() + "", pt.getTerm(), "...............", pt, getImpact(pt, "PT"))); 
+                                                                            child = new ReportLineDataDto("PT", pt.getCode() + "", pt.getTerm(), "...............", pt, getImpact(pt, "PT"));
+                                                                            child.setPath(pt.getPrimaryPathFlagString());
+										mapReport.put(cpt++, child); 
 										
 										if(!filterLltFlag) {
 											/**
 											 * LLT.
 											 */
-											List<MeddraDictHierarchySearchDto> listPT =  meddraDictService.findChildrenByParentCode("LLT_", "PT_", Long.valueOf(pt.getCode()));
+											
+                                                                                        List<MeddraDictHierarchySearchDto> listPT;
+                                                                                        if(StringUtils.isEmpty(isParentPrimary))        
+                                                                                            listPT =  meddraDictService.findChildrenByParentCode("LLT_", "PT_", Long.valueOf(pt.getCode()));
+                                                                                        else
+                                                                                            listPT =  meddraDictService.findChildrenByParentCode(isParentPrimary, "LLT_", "PT_", Long.valueOf(pt.getCode()));
+
+                                                                                 
 											List<Long> lltCodes = new ArrayList<>();
 											for (MeddraDictHierarchySearchDto meddra : listPT) {
 												lltCodes.add(Long.parseLong(meddra.getCode())); 
 											}
-
-											List<MeddraDictHierarchySearchDto> llts = this.meddraDictService.findByCodes("LLT_", lltCodes);
+                                                                                        
+                                                                                        List<MeddraDictHierarchySearchDto> llts;
+                                                                                        if(StringUtils.isEmpty(isParentPrimary))        
+                                                                                            llts = this.meddraDictService.findByCodes("LLT_", lltCodes);
+                                                                                        else
+                                                                                            llts = this.meddraDictService.findByCodes(isParentPrimary, "LLT_", lltCodes);
+                                                                                        
 					 						for (MeddraDictHierarchySearchDto llt : llts) {
-					 							mapReport.put(cpt++, new ReportLineDataDto("LLT", llt.getCode() + "", llt.getTerm(), ".......................", llt, getImpact(llt, "LLT")));
+                                                                                            child = new ReportLineDataDto("LLT", llt.getCode() + "", llt.getTerm(), ".......................", llt, getImpact(llt, "LLT"));
+                                                                                            child.setPath(llt.getPrimaryPathFlagString());
+                                                                                            mapReport.put(cpt++, child);
 											}
 										}
 										
@@ -2464,27 +2634,33 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
                         }
                         
                         // Cell 4
+                        cellCount++;
+                        cell = row.createCell(cellCount);
+                        if (line.getPath() != null && !line.getPath().isEmpty())
+                            cell.setCellValue(returnPathValue(line.getPath()));
+                            
+                        // Cell 5
                         if(systemConfigProperties.isDisplayCategory()) {
                             cellCount++;
                             cell = row.createCell(cellCount);
                             cell.setCellValue(line.getCategory());
                         }
                         
-                        // Cell 5
+                        // Cell 6
                         if(systemConfigProperties.isDisplayCategory2()) {
                             cellCount++;
                             cell = row.createCell(cellCount);
                             cell.setCellValue(line.getCategory2());
                         }
                         
-                        // Cell 6
+                        // Cell 7
                         if(systemConfigProperties.isDisplayWeight()) {
                             cellCount++;
                             cell = row.createCell(cellCount);
                             cell.setCellValue(line.getWeight());
                         }
                           				
-			// Cell 7
+			// Cell 8
                         cellCount++;
 			cell = row.createCell(cellCount);
 			cell.setCellValue(impact);
@@ -2501,6 +2677,15 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
 		
 		
 	}
+        
+        private String returnPathValue(String pathVal) {
+            if(CSMQBean.PATH_PRIMARY.equals(pathVal))
+                return "Primary";
+            else if(CSMQBean.PATH_SECONDRY.equals(pathVal))
+                return "Secondry";
+            return "All Paths";
+ 	}
+        
 	 public String interpretCqtBaseScope(String scopeVal) {
 	        if("2".equals(scopeVal))
 	            return "Narrow";

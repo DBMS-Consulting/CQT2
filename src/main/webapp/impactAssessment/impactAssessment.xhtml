@@ -306,50 +306,51 @@
 
 									<p:columnGroup type="header">
 										<p:row>
-											<p:column id="targetTitle" style="width:35%"
+											<p:column id="targetTitle" style="width:25%"
 												headerText="Future Lists/SMQ" />
-											<p:column
-												colspan="#{createController.relationsModel.getDisplayColumnCount(7)}"
+											<p:column style="width:75%"
+												colspan="#{createController.relationsModel.getDisplayColumnCount(8)}"
 												headerText="Hierarchy Details" />
 										</p:row>
 
 										<p:row>
 											<p:column styleClass="listName"
 												headerText="#{impactSearchController.listName}"
-												sortBy="#{node.term}" sortable="true" style="width:35%" />
+												sortBy="#{node.term}" sortable="true" style="width:25%" />
 											<p:column headerText="Code" sortBy="#{node.code}"
-												sortable="true" style="width:15%" />
-											<p:column headerText="Level" style="width:8%" />
+												sortable="true" style="width:18%" />
+											<p:column headerText="Level" style="width:6%" />
 											<p:column
 												rendered="#{impactSearchController.systemConfigProperties.displayScope}"
-												headerText="Scope" style="width:15%" />
+												headerText="Scope" style="width:8%" />
+                                                                                        <p:column headerText="Path" style="width:11%" />
 											<p:column
 												rendered="#{impactSearchController.systemConfigProperties.displayCategory}"
-												headerText="Category" style="width:9% " />
+												headerText="Category" style="width:11% " />
                                                                                         <p:column
 												rendered="#{impactSearchController.systemConfigProperties.displayCategory2}"
-												headerText="Category2" style="width:10% " />
+												headerText="Category2" style="width:11% " />
 											<p:column
 												rendered="#{impactSearchController.systemConfigProperties.displayWeight}"
-												headerText="Weight" style="width:8%" />
+												headerText="Weight" style="width:6%" />
 											<p:column headerText="" style="width:4%" />
 										</p:row>
 
 									</p:columnGroup>
 
-									<p:column styleClass="wrap" rendered="#{not node.hideScope}">
+									<p:column styleClass="wrap" style="width:25%" rendered="#{not node.hideScope}">
 										<h:outputText value="#{node.term}" />
 									</p:column>
-									<p:column rendered="#{not node.hideScope}">
+									<p:column  style="width:18%" rendered="#{not node.hideScope}">
 										<h:outputLink value="#"
 											title="#{impactSearchController.getImpactDesc(node, 'target')}">
 											<h:outputText value="#{node.code}" />
 										</h:outputLink>
 									</p:column>
-									<p:column rendered="#{not node.hideScope}">
+									<p:column style="width:6%" rendered="#{not node.hideScope}">
 										<h:outputText value="#{node.level}" />
 									</p:column>
-									<p:column
+									<p:column style="width:8%"
 										rendered="#{impactSearchController.systemConfigProperties.displayScope}">
 										<h:outputText
 											rendered="#{not node.hideScope and node.readOnlyScope}"
@@ -368,7 +369,28 @@
 												update="futureListsAndSmqs" />
 										</p:selectOneMenu>
 									</p:column>
-									<p:column
+                                                                        
+                                                                        <p:column style="width:11%"
+										rendered="true">
+										<h:outputText
+											rendered="#{not node.hidePath and node.readOnlyPath}"
+											value="#{appCSMQBean.interpretTermPath(node.primaryPathString)}" />
+										<p:selectOneMenu value="#{node.primaryPathString}"
+											rendered="#{not node.readOnlyPath}"
+											autoWidth="false" style="width:70%">
+											
+											<f:selectItems
+                                                                                            value="#{appCSMQBean.getTermPaths()}"
+                                                                                            var="paths" itemLabel="#{paths[1]}"
+                                                                                            itemValue="#{paths[0]}" />
+											<p:ajax event="change"
+												listener="#{impactSearchController.filterRelationsByPathInTargetTable(node)}"
+												update="futureListsAndSmqs" />
+										</p:selectOneMenu>
+									</p:column>
+			
+                                                                        
+									<p:column style="width:11%"
 										rendered="#{impactSearchController.systemConfigProperties.displayCategory and not node.hideScope}">
 										<h:outputText
 										rendered="#{not node.hideCategory and node.readOnlyCategory}"
@@ -385,7 +407,7 @@
 										
 
 									</p:column>
-                                                                        <p:column
+                                                                        <p:column style="width:11%"
 										rendered="#{impactSearchController.systemConfigProperties.displayCategory2 and not node.hideScope}">
 										<h:outputText
 										rendered="#{not node.hideCategory2 and node.readOnlyCategory2}"
@@ -402,13 +424,13 @@
 										
 
 									</p:column>
-									<p:column
+									<p:column style="width:6%"
 										rendered="#{impactSearchController.systemConfigProperties.displayWeight and not node.hideScope}">
 										<h:outputText
 											rendered="#{not node.hideWeight}"
 											value="#{node.weight}" />
 									</p:column>
-									<p:column rendered="#{not node.hideScope}">
+									<p:column style="width:4%" rendered="#{not node.hideScope}">
 										<p:commandLink
 											action="#{impactSearchController.deleteRelation(impactSearchController.targetTableRootTreeNode, node)}"
 											style="color: red" update="futureListsAndSmqs" title="Delete"

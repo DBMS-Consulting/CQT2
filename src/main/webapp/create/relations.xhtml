@@ -223,8 +223,8 @@
 					<p:column rowspan="2" sortBy="#{node.term}"
 						headerText="#{createController.selectedData.cmqName}" />
 					<p:column
-						colspan="#{createController.relationsModel.getDisplayColumnCount(7)}"
-						headerText="Hierarchy Details" style="width:50%" />
+						colspan="#{createController.relationsModel.getDisplayColumnCount(8)}"
+						headerText="Hierarchy Details" style="width:60%" />
 				</p:row>
 
 				<p:row>
@@ -234,6 +234,7 @@
 					<p:column
 						rendered="#{createController.relationsModel.displayScope}"
 						headerText="Scope" style="width:10%" />
+                                        <p:column headerText="Path" style="width:10%" />
 					<p:column
 						rendered="#{createController.relationsModel.displayCategory}"
 						headerText="Category" style="width:5%" />
@@ -301,6 +302,47 @@
                             </p:cellEditor>
 			</p:column>
 
+                        <p:column
+				rendered="true"
+				style="width:10%">
+				<h:outputText
+					value="#{appCSMQBean.interpretTermPath(node.primaryPathString)}"
+					rendered="#{not node.hidePath and node.readOnlyPath}" />
+                                <p:cellEditor style="width:75%">
+                                <f:facet name="output" >
+                                    <p:selectOneMenu id="path3" value="#{node.primaryPathString}"
+					rendered="#{not node.readOnlyPath}"
+					autoWidth="false" style="width:75%" disabled="#{createController.readOnlyState}">
+	
+					<f:selectItems
+						value="#{appCSMQBean.getTermPaths()}"
+						var="s" itemLabel="#{s[1]}"
+						itemValue="#{s[0]}" />
+
+					<p:ajax event="change"
+						listener="#{createController.filterRelationsByPath(node)}"
+						update="resultRelations" />
+				</p:selectOneMenu>
+                                </f:facet>
+                                <f:facet name="input">
+                                    <p:selectOneMenu id="path32" value="#{node.primaryPathString}"
+					rendered="#{not node.readOnlyPath}"
+					autoWidth="false" style="width:75%" disabled="#{createController.readOnlyState}">
+					
+					<f:selectItems
+						value="#{appCSMQBean.getTermPaths()}"
+						var="s" itemLabel="#{s[1]}"
+						itemValue="#{s[0]}" />
+
+					<p:ajax event="change"
+						listener="#{createController.filterRelationsByPath(node)}"
+						update="resultRelations" />
+				</p:selectOneMenu>
+                                </f:facet>
+                            </p:cellEditor>
+			</p:column>
+
+                      
 			<p:column
 				rendered="#{createController.relationsModel.displayCategory}"
 				style="width:10%">

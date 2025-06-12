@@ -1,5 +1,6 @@
 package com.dbms.entity.cqt;
 
+import com.dbms.csmq.CSMQBean;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -100,6 +101,9 @@ public class CmqRelation190 extends BaseEntity {
 
 	@Column(name = "CMQ_SUBVERSION", nullable = false, precision = 10)
 	private BigDecimal cmqSubversion;
+        
+        @Column(name = "TERM_PATH", length = 11)
+	private String termPath;
 
 	public Long getId() {
 		return cmqRelationId;
@@ -276,5 +280,13 @@ public class CmqRelation190 extends BaseEntity {
 	public void setCmqSubversion(BigDecimal cmqSubversion) {
 		this.cmqSubversion = cmqSubversion;
 	}
+
+        public String getTermPath() {
+            return termPath;
+        }
+
+        public void setTermPath(String termPath) {
+            this.termPath = termPath;
+        }
 
 }

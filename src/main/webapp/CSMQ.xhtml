@@ -39,7 +39,7 @@
 				<h:panelGroup style="float:right;">
 					<ul class="nav nav-right">
 						<li><h:outputText value="Version: " rendered="true" /> <h:outputText
-								value="1.0.50" style="font-weight:bold;" rendered="true" /></li>
+								value="1.0.51" style="font-weight:bold;" rendered="true" /></li>
 						<li><h:outputText value="Logged in as: " id="pt_ot1"
 								rendered="true" /> <h:outputText
 								value="${AuthenticationService.userSurName}, ${AuthenticationService.userGivenName}"
@@ -261,7 +261,7 @@
 						<p:ajax update="@form"
 							listener="#{impactSearchController.reloadRelationsOnFilterLltFlagToggle}" /> -->
 					</h:selectBooleanCheckbox>
-					<h:outputText style="font-weight: bold" value="Filter out LLT" />
+					<h:outputText style="font-weight: bold" value="Exclude LLT" />
 				</f:facet>
 			</p:menubar>
 			
@@ -393,7 +393,7 @@
 						<p:ajax update="@form"
 							listener="#{impactSearchController.reloadRelationsOnFilterLltFlagToggle}" /> -->
 					</h:selectBooleanCheckbox>
-					<h:outputText style="font-weight: bold" value="Filter out LLT" />
+					<h:outputText style="font-weight: bold" value="Exclude LLT" />
 				</f:facet>
 			</p:menubar>
 
