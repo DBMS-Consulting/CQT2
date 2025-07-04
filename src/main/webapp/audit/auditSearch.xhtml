@@ -120,30 +120,30 @@
 						filteredValue="#{auditTrailController.filteredValues}">
 
 						<p:column headerText="Change Type"
-							filterBy="#{value.transactionType}" filterStyle="height:32px;" filterMatchMode="contains"
+							filterBy="#{value.transactionType}" filterMatchMode="contains"
 							filterable="true">
 							<h:outputText value="#{value.transactionType}" styleClass="wrap" />
 						</p:column>
 
 						<p:column headerText="Field Name" width="100"
-							filterBy="#{value.columnName}" filterStyle="height:32px;" filterMatchMode="contains"
+							filterBy="#{value.columnName}" filterMatchMode="contains"
 							styleClass="wrap">
 							<h:outputText value="#{value.columnName}" />
 						</p:column>
 						<p:column headerText="Old Value" width="150"
-							filterBy="#{value.oldValue}" filterStyle="height:32px;" filterMatchMode="contains">
+							filterBy="#{value.oldValue}" filterMatchMode="contains">
 							<h:outputText value="#{value.oldValue}" styleClass="wrap" />
 						</p:column>
 						<p:column headerText="New Value" width="150"
-							filterBy="#{value.newValue}" filterStyle="height:32px;" filterMatchMode="contains">
+							filterBy="#{value.newValue}" filterMatchMode="contains">
 							<h:outputText value="#{value.newValue}" styleClass="wrap" />
 						</p:column>
 						<p:column headerText="User Name" width="150"
-							filterBy="#{value.userId}" filterStyle="height:32px;" filterMatchMode="contains">
+							filterBy="#{value.userId}" filterMatchMode="contains">
 							<h:outputText value="#{value.userId}" styleClass="wrap" />
 						</p:column>
 						<p:column headerText="User Group" width="150"
-							filterBy="#{value.groupName}" filterStyle="height:32px;" filterMatchMode="contains">
+							filterBy="#{value.groupName}" filterMatchMode="contains">
 							<h:outputText value="#{value.groupName}" />
 						</p:column>
 						<p:column headerText="Audit Timestamp"
@@ -165,6 +165,7 @@
         <style>
             .ui-datatable .ui-column-filter {
                 height: 20px !important;
+                width: 120px !important;
             }
         </style>
 
