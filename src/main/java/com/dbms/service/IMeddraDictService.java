@@ -27,8 +27,14 @@ public interface IMeddraDictService {
         
         List<MeddraDictHierarchySearchDto> findChildrenByParentCode(String isParentPrimary, String searchColumnTypePrefix,
 			String parentCodeColumnPrefix, Long parentCode);
+        
+        List<MeddraDictHierarchySearchDto> findPTByParentCode(String searchColumnTypePrefix,
+			String parentCodeColumnPrefix, Long parentHltCode, Long parentHlgtCode, Long parentSocCode );
+        
+        List<MeddraDictHierarchySearchDto> findPTByParentCode(String isParentPrimary, String searchColumnTypePrefix,
+			String parentCodeColumnPrefix, Long parentHltCode, Long parentHlgtCode, Long parentSocCode);
     
-    List<MeddraDictHierarchySearchDto> findChildrenByParentCodes(String searchColumnTypePrefix,
+        List<MeddraDictHierarchySearchDto> findChildrenByParentCodes(String searchColumnTypePrefix,
 			String parentCodeColumnPrefix, List<Long> parentCodes);
 
 	List<MeddraDictReverseHierarchySearchDto> findFullReverseHierarchyByLevelAndTerm(String searchColumnPrefix
@@ -41,6 +47,13 @@ public interface IMeddraDictService {
         
         List<MeddraDictHierarchySearchDto> findChildrenByParentCode(String isParentPrimary, String searchColumnTypePrefix,
 			String parentCodeColumnPrefix, Long parentCode, String dictionaryVersion);
+        
+        List<MeddraDictHierarchySearchDto> findPTByParentCode(String searchColumnTypePrefix,
+			String parentCodeColumnPrefix, Long parentHltCode, Long parentHlgtCode, Long parentSocCode, String dictionaryVersion);
+        
+        List<MeddraDictHierarchySearchDto> findPTByParentCode(String isParentPrimary, String searchColumnTypePrefix,
+			String parentCodeColumnPrefix, Long parentHltCode, Long parentHlgtCode, Long parentSocCode, String dictionaryVersion);
+
 
 	List<Map<String, Object>> findChildrenCountByParentCodes(String searchColumnTypePrefix,
 			String parentCodeColumnPrefix, List<Long> parentCodes, String dictionaryVersion);

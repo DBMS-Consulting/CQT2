@@ -1036,23 +1036,87 @@ public class CmqBaseRelationsTreeHelper {
 		
 		//fetch children of parent node by code of parent
 		List<MeddraDictHierarchySearchDto> childDtos;
-		if(StringUtils.isNotBlank(dictionaryVersion)) {
-                    if(StringUtils.isEmpty(isParentPrimary))
-			childDtos = this.meddraDictSvc.findChildrenByParentCode(childSearchColumnTypePrefix, parentCodeColumnPrefix, dtoCode,dictionaryVersion);
-                    else 
-                        childDtos = this.meddraDictSvc.findChildrenByParentCode(isParentPrimary, childSearchColumnTypePrefix, parentCodeColumnPrefix, dtoCode,dictionaryVersion);
-		} else {
-                    if(StringUtils.isEmpty(isParentPrimary))
-			childDtos = this.meddraDictSvc.findChildrenByParentCode(childSearchColumnTypePrefix, parentCodeColumnPrefix, dtoCode);
-                    else  
-                        childDtos = this.meddraDictSvc.findChildrenByParentCode(isParentPrimary, childSearchColumnTypePrefix, parentCodeColumnPrefix, dtoCode);
+                boolean checkAllParent = false;
+                Long socCode = null, hlgtCode = null;
+                
+                if(parentLevel.equalsIgnoreCase("HLT") && childLevel.equalsIgnoreCase("PT")) {
+                    
+                    
+                    TreeNode parentHlgtTreeNode = expandedTreeNode.getParent();
+                    if (parentHlgtTreeNode != null) {
+                        HierarchyNode parentHlgtHierNode = (HierarchyNode) parentHlgtTreeNode.getData();
+                        
+                        MeddraDictHierarchySearchDto parentHlgtMeddraNode = null;
+                        if (parentHlgtHierNode.getEntity() instanceof MeddraDictHierarchySearchDto) 
+                            parentHlgtMeddraNode = (MeddraDictHierarchySearchDto) (parentHlgtHierNode.getEntity());
+                        
+                        if (parentHlgtMeddraNode != null) {
+                            hlgtCode = Long.valueOf(parentHlgtMeddraNode.getCode());
+                            //System.out.println("HLGT: " + hlgtCode);
+                        }
+                        
+                    }
+                    
+                    TreeNode parentSocTreeNode = parentHlgtTreeNode.getParent();
+                    if (parentSocTreeNode != null) {
+                       HierarchyNode parentSocHierNode = (HierarchyNode) parentSocTreeNode.getData();
+                       
+                        MeddraDictHierarchySearchDto parentSocMeddraNode = null;
+                        if (parentSocHierNode.getEntity() instanceof MeddraDictHierarchySearchDto)        
+                                parentSocMeddraNode = (MeddraDictHierarchySearchDto) (parentSocHierNode.getEntity());
+                        
+                        if (parentSocMeddraNode != null) {
+                            socCode = Long.valueOf(parentSocMeddraNode.getCode());
+                            //System.out.println("SOC: " + socCode); 
+                        }
+                        
+                    } 
+                    
+                    if (socCode != null && hlgtCode != null) {
+                        checkAllParent = true;
+                    }
+                    
+                } 
+                if (checkAllParent) {
+                    if(StringUtils.isNotBlank(dictionaryVersion)) {
+                        if(StringUtils.isEmpty(isParentPrimary))
+                            childDtos = this.meddraDictSvc.findPTByParentCode(childSearchColumnTypePrefix, parentCodeColumnPrefix, dtoCode, hlgtCode, socCode, dictionaryVersion);
+                        else 
+                            childDtos = this.meddraDictSvc.findPTByParentCode(isParentPrimary, childSearchColumnTypePrefix, parentCodeColumnPrefix, dtoCode, hlgtCode, socCode, dictionaryVersion);
+                    } else {
+                        if(StringUtils.isEmpty(isParentPrimary))
+                            childDtos = this.meddraDictSvc.findPTByParentCode(childSearchColumnTypePrefix, parentCodeColumnPrefix, dtoCode, hlgtCode, socCode);
+                        else  
+                            childDtos = this.meddraDictSvc.findPTByParentCode(isParentPrimary, childSearchColumnTypePrefix, parentCodeColumnPrefix, dtoCode,  hlgtCode, socCode);
+                        }
+                } else {
+                    if(StringUtils.isNotBlank(dictionaryVersion)) {
+                        if(StringUtils.isEmpty(isParentPrimary))
+                            childDtos = this.meddraDictSvc.findChildrenByParentCode(childSearchColumnTypePrefix, parentCodeColumnPrefix, dtoCode,dictionaryVersion);
+                        else 
+                            childDtos = this.meddraDictSvc.findChildrenByParentCode(isParentPrimary, childSearchColumnTypePrefix, parentCodeColumnPrefix, dtoCode,dictionaryVersion);
+                    } else {
+                        if(StringUtils.isEmpty(isParentPrimary))
+                            childDtos = this.meddraDictSvc.findChildrenByParentCode(childSearchColumnTypePrefix, parentCodeColumnPrefix, dtoCode);
+                        else  
+                            childDtos = this.meddraDictSvc.findChildrenByParentCode(isParentPrimary, childSearchColumnTypePrefix, parentCodeColumnPrefix, dtoCode);
+                        }
                 }
+		
         
         
         Map<Long, TreeNode> nodesMap = new HashMap<>();
         List<Long> nodesMapKeys = new LinkedList<>();
 		for (MeddraDictHierarchySearchDto childDto : childDtos) {
 			HierarchyNode childNode = this.createMeddraNode(childDto, childLevel, null);
+                        
+                        // set parent primary path string for child nodes
+                        if ((parentLevel.equalsIgnoreCase("SOC") || parentLevel.equalsIgnoreCase("HLGT")) && 
+                                (childLevel.equalsIgnoreCase("HLGT") || childLevel.equalsIgnoreCase("HLT"))) {
+                            childNode.setPrimaryPathString(parentPrimaryPathString);
+                            childNode.setPrimaryPathFlag(false);
+                        }
+                        
 			if("PT".equalsIgnoreCase(childLevel)){//add in only PT children
 				if(!StringUtils.isBlank(childDto.getPrimaryPathFlag()) 
 						&& (childDto.getPrimaryPathFlag().equalsIgnoreCase("Y"))){

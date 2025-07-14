@@ -270,7 +270,10 @@ public class ListRelationsVM implements IRelationsChangeListener {
 
         relationsSearchHelper.setRelationView(isRelationView);
         relationsSearchHelper.setParentListView(isParentListView);
+        
+        // fill the expanded treenode with the children
         relationsSearchHelper.getRelationsNodeHierarchy(null, expandedTreeNode);
+        
         for (TreeNode child : expandedTreeNode.getChildren()) {
             HierarchyNode hierNode = (HierarchyNode) child.getData();
             HierarchyNode parentNode = (HierarchyNode) child.getParent().getData();
@@ -386,11 +389,13 @@ public class ListRelationsVM implements IRelationsChangeListener {
                                     relationsHierarchyNode.setPrimaryPathFlag(true);
 
                                 //    hierNode.setPrimaryPathString(CSMQBean.PATH_PRIMARY); // default value
-                                } else if (relationsHierarchyNode.getLevel().equalsIgnoreCase("PT") || 
-                                        relationsHierarchyNode.getLevel().equalsIgnoreCase("LLT")) {
-                                    relationsHierarchyNode.setHidePath(false);
-                                    relationsHierarchyNode.setReadOnlyPath(true);
-                                } else {
+                                } 
+//                                else if (relationsHierarchyNode.getLevel().equalsIgnoreCase("PT") || 
+//                                        relationsHierarchyNode.getLevel().equalsIgnoreCase("LLT")) {
+//                                    relationsHierarchyNode.setHidePath(false);
+//                                    relationsHierarchyNode.setReadOnlyPath(true);
+//                                } 
+                                else {
                                     relationsHierarchyNode.setHidePath(true);
                                     relationsHierarchyNode.setReadOnlyPath(true);
                                 }

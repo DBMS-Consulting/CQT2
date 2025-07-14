@@ -35,6 +35,12 @@ public interface IMeddraDictTargetService {
         List<MeddraDictHierarchySearchDto> findChildrenByParentCode(String isParentPrimary, String searchColumnTypePrefix,
 			String parentCodeColumnPrefix, Long parentCode);
         
+        List<MeddraDictHierarchySearchDto> findPTByParentCode(String searchColumnTypePrefix,
+			String parentCodeColumnPrefix, Long parentHltCode, Long parentHlgtCode, Long parentSocCode);
+    
+        List<MeddraDictHierarchySearchDto> findPTByParentCode(String isParentPrimary, String searchColumnTypePrefix,
+			String parentCodeColumnPrefix, Long parentHltCode, Long parentHlgtCode, Long parentSocCode);
+        
         List<MeddraDictHierarchySearchDto> findChildrenByParentCodes(String searchColumnTypePrefix,
 			String parentCodeColumnPrefix, List<Long> parentCodes);
 

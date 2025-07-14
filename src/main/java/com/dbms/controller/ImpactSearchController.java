@@ -680,6 +680,28 @@ public class ImpactSearchController implements Serializable {
                                                 || (!relationsHierarchyNode.isSmqNode())) {
                                             relationsHierarchyNode.setReadOnlyScope(true);
                                         }
+                                        
+                                                // Path rules
+                                        if (relationsHierarchyNode.getLevel().equalsIgnoreCase("SOC") || 
+                                                relationsHierarchyNode.getLevel().equalsIgnoreCase("HLGT") || 
+                                                relationsHierarchyNode.getLevel().equalsIgnoreCase("HLT")) {
+                                            relationsHierarchyNode.setHidePath(false);
+                                            relationsHierarchyNode.setReadOnlyPath(false);
+                                            relationsHierarchyNode.setPrimaryPathString(CSMQBean.PATH_PRIMARY);
+                                            relationsHierarchyNode.setPrimaryPathFlag(true);
+
+                                        //    hierNode.setPrimaryPathString(CSMQBean.PATH_PRIMARY); // default value
+                                        } 
+        //                                else if (relationsHierarchyNode.getLevel().equalsIgnoreCase("PT") || 
+        //                                        relationsHierarchyNode.getLevel().equalsIgnoreCase("LLT")) {
+        //                                    relationsHierarchyNode.setHidePath(false);
+        //                                    relationsHierarchyNode.setReadOnlyPath(true);
+        //                                } 
+                                        else {
+                                            relationsHierarchyNode.setHidePath(true);
+                                            relationsHierarchyNode.setReadOnlyPath(true);
+                                        }
+
 
                                         if (relationsHierarchyNodeEntity instanceof SMQReverseHierarchySearchDto) {
                                             Long ptCode = ((SMQReverseHierarchySearchDto) relationsHierarchyNodeEntity).getSmqCode();
