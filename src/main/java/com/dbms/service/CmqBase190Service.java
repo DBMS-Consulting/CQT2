@@ -63,7 +63,7 @@ import com.dbms.controller.GlobalController;
 import com.dbms.csmq.CSMQBean;
 import static com.dbms.csmq.CSMQBean.PATH_ALL;
 import static com.dbms.csmq.CSMQBean.PATH_PRIMARY;
-import static com.dbms.csmq.CSMQBean.PATH_SECONDRY;
+import static com.dbms.csmq.CSMQBean.PATH_SECONDARY;
 import com.dbms.csmq.HierarchyNode;
 import com.dbms.entity.cqt.CmqBase190;
 import com.dbms.entity.cqt.CmqRelation190;
@@ -1260,8 +1260,8 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
         private String returnPathValue(String pathVal) {
             if(CSMQBean.PATH_PRIMARY.equals(pathVal))
                 return "Primary";
-            else if(CSMQBean.PATH_SECONDRY.equals(pathVal))
-                return "Secondry";
+            else if(CSMQBean.PATH_SECONDARY.equals(pathVal))
+                return "Secondary";
             else if(CSMQBean.PATH_ALL.equals(pathVal))
                 return "All Paths";
             return " ";
@@ -2095,7 +2095,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
                         return "";
                     else if(PATH_PRIMARY.equals(pathVal))
                         return "Y";
-                    else if(PATH_SECONDRY.equals(pathVal))
+                    else if(PATH_SECONDARY.equals(pathVal))
                         return "N";
                     return "";
                 }

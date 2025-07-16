@@ -89,7 +89,7 @@ public class MeddraDictHierarchySearchDto implements IEntity {
 	}
         
         public String getPrimaryPathFlagString() {
-            return primaryPathFlag.equalsIgnoreCase("Y") ? CSMQBean.PATH_PRIMARY : CSMQBean.PATH_SECONDRY;
+            return primaryPathFlag.equalsIgnoreCase("Y") ? CSMQBean.PATH_PRIMARY : CSMQBean.PATH_SECONDARY;
 	}
 
 	public void setPrimaryPathFlag(String primaryPathFlag) {

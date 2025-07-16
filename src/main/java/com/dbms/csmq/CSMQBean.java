@@ -202,7 +202,7 @@ public class CSMQBean {
     
     // Paths
     public static final String PATH_PRIMARY = "0";
-    public static final String PATH_SECONDRY = "1";
+    public static final String PATH_SECONDARY = "1";
     public static final String PATH_ALL = "2";
 
     // Categories
@@ -883,7 +883,7 @@ public class CSMQBean {
     public List<String[]> getTermPaths() {
 		termPaths = Arrays.asList(new String[][] {
 			new String[] { PATH_PRIMARY, "Primary" },
-			new String[] { PATH_SECONDRY, "Secondry" },
+			new String[] { PATH_SECONDARY, "Secondary" },
                         new String[] { PATH_ALL, "All Paths" }
 		});
                 return termPaths;
@@ -894,8 +894,8 @@ public class CSMQBean {
             return "All Paths";
         else if(PATH_PRIMARY.equals(pathVal))
             return "Primary";
-        else if(PATH_SECONDRY.equals(pathVal))
-            return "Secondry";
+        else if(PATH_SECONDARY.equals(pathVal))
+            return "Secondary";
         return "";
     }
 	
@@ -904,8 +904,8 @@ public class CSMQBean {
             return PATH_ALL;
         else if("Primary".equalsIgnoreCase(pathName))
             return PATH_PRIMARY;
-        else if("Secondry".equalsIgnoreCase(pathName))
-            return PATH_SECONDRY;
+        else if("Secondary".equalsIgnoreCase(pathName))
+            return PATH_SECONDARY;
         return "";
     }
     

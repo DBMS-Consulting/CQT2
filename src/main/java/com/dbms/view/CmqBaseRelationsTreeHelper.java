@@ -1009,7 +1009,7 @@ public class CmqBaseRelationsTreeHelper {
                 String isParentPrimary = "";
                 if (parentPrimaryPathString.equalsIgnoreCase(CSMQBean.PATH_PRIMARY)) {
                     isParentPrimary = "Y";
-                } else if (parentPrimaryPathString.equalsIgnoreCase(CSMQBean.PATH_SECONDRY)) {
+                } else if (parentPrimaryPathString.equalsIgnoreCase(CSMQBean.PATH_SECONDARY)) {
                     isParentPrimary = "N";
                 }
 		

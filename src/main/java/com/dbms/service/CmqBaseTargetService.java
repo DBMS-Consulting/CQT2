@@ -675,7 +675,7 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
                         return "";
                     else if(CSMQBean.PATH_PRIMARY.equals(pathVal))
                         return "Y";
-                    else if(CSMQBean.PATH_SECONDRY.equals(pathVal))
+                    else if(CSMQBean.PATH_SECONDARY.equals(pathVal))
                         return "N";
                     return "";
         }
@@ -2874,8 +2874,8 @@ public class CmqBaseTargetService extends CqtPersistenceService<CmqBaseTarget> i
         private String returnPathValue(String pathVal) {
             if(CSMQBean.PATH_PRIMARY.equals(pathVal))
                 return "Primary";
-            else if(CSMQBean.PATH_SECONDRY.equals(pathVal))
-                return "Secondry";
+            else if(CSMQBean.PATH_SECONDARY.equals(pathVal))
+                return "Secondary";
             return "All Paths";
  	}
         
