@@ -388,43 +388,48 @@
 												update="futureListsAndSmqs" />
 										</p:selectOneMenu>
 									</p:column>
-			
                                                                         
-									<p:column style="width:11%"
+                                                                        <p:column style="width:8%"
 										rendered="#{impactSearchController.systemConfigProperties.displayCategory and not node.hideScope}">
 										<h:outputText
 										rendered="#{not node.hideCategory and node.readOnlyCategory}"
 											value="#{appCSMQBean.interpretCqtBaseCategory(node.category)}" />
-											<p:selectOneMenu id="soc2" value="#{node.category}" 
+											<p:autoComplete id="soc2" 
+											value="#{node.category}" 
 												rendered="#{not node.readOnlyCategory}"
-												autoWidth="false" style="width:75%" >
-											<f:selectItem itemLabel="" itemValue="" noSelectionOption="true" />
-											<f:selectItems var="c" value="#{appCSMQBean.cqtBaseCategoriesWithInactiveSelected(node.category)}"
-												itemValue="#{c.value}" itemLabel="#{c.value}" />
-												<p:ajax event="change"
+												completeMethod="#{appCSMQBean.filterCategories}" 
+												dropdown="true"
+												forceSelection="true"
+												minQueryLength="0"
+												scrollHeight="200"
+												autoWidth="false" style="width:70%" >
+											
+												<p:ajax event="itemSelect"
 												listener="#{impactSearchController.setTargetRelationsUpdated()}" />
-												</p:selectOneMenu>
-										
-
+												</p:autoComplete>
 									</p:column>
-                                                                        <p:column style="width:11%"
+                                    
+									<p:column style="width:8%"
 										rendered="#{impactSearchController.systemConfigProperties.displayCategory2 and not node.hideScope}">
 										<h:outputText
 										rendered="#{not node.hideCategory2 and node.readOnlyCategory2}"
 											value="#{appCSMQBean.interpretCqtBaseCategory(node.category2)}" />
-											<p:selectOneMenu id="soc3" value="#{node.category2}" 
+											<p:autoComplete id="soc3" value="#{node.category2}" 
 												rendered="#{not node.readOnlyCategory2}"
-												autoWidth="false" style="width:75%" >
-											<f:selectItem itemLabel="" itemValue="" noSelectionOption="true" />
-											<f:selectItems var="c" value="#{appCSMQBean.cqtBaseCategoriesWithInactiveSelected(node.category2)}"
-												itemValue="#{c.value}" itemLabel="#{c.value}" />
-												<p:ajax event="change"
+												completeMethod="#{appCSMQBean.filterCategories}" 
+												dropdown="true"
+												forceSelection="true"
+												minQueryLength="0"
+												scrollHeight="200"
+                                                                                                autoWidth="false" style="width:70%" >
+                                                                                            
+												<p:ajax event="itemSelect"
 												listener="#{impactSearchController.setTargetRelationsUpdated()}" />
-												</p:selectOneMenu>
-										
-
+												</p:autoComplete>
 									</p:column>
-									<p:column style="width:6%"
+							
+                                                                        
+											<p:column style="width:6%"
 										rendered="#{impactSearchController.systemConfigProperties.displayWeight and not node.hideScope}">
 										<h:outputText
 											rendered="#{not node.hideWeight}"

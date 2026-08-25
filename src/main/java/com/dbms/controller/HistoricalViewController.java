@@ -79,7 +79,10 @@ public class HistoricalViewController implements Serializable {
 	private HistoricalViewDTO selectedHistoricalViewDTO;
 	private ListRelationsVM relationsModel;
 	private TreeNode relationsRoot;
-	private boolean displayScopeCatWeight;
+	private boolean displayScope;
+        private boolean displayCategory;
+        private boolean displayCategory2;
+        private boolean displayWeight;
 
 	@ManagedProperty("#{HistoricalViewService}")
 	private IHistoricalViewService historicalViewService;
@@ -117,10 +120,10 @@ public class HistoricalViewController implements Serializable {
 	
 	@PostConstruct
 	public void init() {
-		this.displayScopeCatWeight = refCodeListService.getScopeSystemConfig() && 
-                        refCodeListService.getCategorySystemConfig() && 
-                        refCodeListService.getCategory2SystemConfig() && 
-                        refCodeListService.getWeightSystemConfig();
+		this.displayScope = refCodeListService.getScopeSystemConfig(); 
+                this.displayCategory = refCodeListService.getCategorySystemConfig();
+                this.displayCategory2 = refCodeListService.getCategory2SystemConfig();
+                this.displayWeight = refCodeListService.getWeightSystemConfig();
 	}
 
 	public void search() {
@@ -1349,12 +1352,12 @@ public class HistoricalViewController implements Serializable {
 		this.relationsRoot = relationsRoot;
 	}
 
-	public boolean isDisplayScopeCatWeight() {
-		return displayScopeCatWeight;
+	public boolean isDisplayScope() {
+		return displayScope;
 	}
 
-	public void setDisplayScopeCatWeight(boolean displayScopeCatWeight) {
-		this.displayScopeCatWeight = displayScopeCatWeight;
+	public void setDisplayScope(boolean displayScope) {
+		this.displayScope = displayScope;
 	}
 
 	public IAuditTrailService getAuditTrailService() {
@@ -1388,5 +1391,29 @@ public class HistoricalViewController implements Serializable {
 	public void setCmqBaseDTOSelectListForCode(List<CmqBaseDTO> cmqBaseDTOSelectListForCode) {
 		this.cmqBaseDTOSelectListForCode = cmqBaseDTOSelectListForCode;
 	}
+
+    public boolean isDisplayCategory() {
+        return displayCategory;
+    }
+
+    public void setDisplayCategory(boolean displayCategory) {
+        this.displayCategory = displayCategory;
+    }
+
+    public boolean isDisplayCategory2() {
+        return displayCategory2;
+    }
+
+    public void setDisplayCategory2(boolean displayCategory2) {
+        this.displayCategory2 = displayCategory2;
+    }
+
+    public boolean isDisplayWeight() {
+        return displayWeight;
+    }
+
+    public void setDisplayWeight(boolean displayWeight) {
+        this.displayWeight = displayWeight;
+    }
 
 }

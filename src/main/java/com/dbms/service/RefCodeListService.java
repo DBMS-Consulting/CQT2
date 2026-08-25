@@ -922,4 +922,30 @@ public class RefCodeListService extends
         }
 		return null;
 	}
+        
+        @Override
+	public List<RefConfigCodeList> findMeddraAllVersions() {
+		List<RefConfigCodeList> retVal = null;
+
+		EntityManager entityManager = this.cqtEntityManagerFactory
+				.getEntityManager();
+
+		StringBuilder queryString = new StringBuilder(
+				"from RefConfigCodeList a");
+		queryString
+				.append(" where a.codelistConfigType = 'MEDDRA_VERSIONS' and a.codelistInternalValue like 'MEDDRA%' and a.activeFlag = 'Y' ORDER BY a.codelistInternalValue ASC");
+		try {
+			Query query = entityManager.createQuery(queryString.toString());
+			query.setHint("org.hibernate.cacheable", true);
+			retVal = query.getResultList();
+		} catch (Exception ex) {
+			StringBuilder msg = new StringBuilder();
+			msg.append("findMeddraAllVersions failed '")
+					.append(". Query used was->").append(queryString);
+			LOG.error(msg.toString(), ex);
+		} finally {
+			this.cqtEntityManagerFactory.closeEntityManager(entityManager);
+		}
+		return retVal;
+	}
 }

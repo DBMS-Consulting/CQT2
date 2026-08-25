@@ -14,6 +14,7 @@ import com.dbms.entity.cqt.RefConfigCodeList;
 import com.dbms.service.IRefCodeListService;
 import com.dbms.util.CqtConstants;
 import com.dbms.util.OrderBy;
+import java.util.Comparator;
 
 
 
@@ -949,12 +950,42 @@ public class CSMQBean {
 	public List<RefConfigCodeList> cqtBaseCategoriesWithInactiveSelected(String categoryValue) {
 		List<RefConfigCodeList> categories = refCodeListService.findAllByConfigType(
 				CqtConstants.CODE_LIST_TYPE_CATEGORY_TERM, OrderBy.ASC);
-		return categories.stream()
-				.filter(cat->cat.getActiveFlag().equalsIgnoreCase("Y") || (cat.getValue().equalsIgnoreCase(categoryValue) && cat.getActiveFlag().equalsIgnoreCase("N"))).collect(Collectors.toList());
-	}
+//		return categories.stream()
+//				.filter(cat->cat.getActiveFlag().equalsIgnoreCase("Y") || (cat.getValue().equalsIgnoreCase(categoryValue) && cat.getActiveFlag().equalsIgnoreCase("N"))).collect(Collectors.toList());
+                return categories.stream()
+            .filter(cat -> cat.getActiveFlag().equalsIgnoreCase("Y") 
+                    || (cat.getValue().equalsIgnoreCase(categoryValue) 
+                        && cat.getActiveFlag().equalsIgnoreCase("N")))
+            .sorted(Comparator.comparing(RefConfigCodeList::getValue, String.CASE_INSENSITIVE_ORDER))
+            .collect(Collectors.toList());
+        
+        }
     
     public String interpretCqtBaseCategory(String categoryVal) {
         return categoryVal;
+    }
+    
+    public List<String> filterCategories(String query) {
+    // Get your full category list
+    List<RefConfigCodeList> allCategories = cqtBaseCategoriesWithInactiveSelected(null);
+    
+    // If query is empty (dropdown clicked), return all sorted
+    if (query == null || query.trim().isEmpty()) {
+        return allCategories.stream()
+                .map(item -> (String) item.getValue())
+                .filter(value -> value != null)
+                .sorted(String.CASE_INSENSITIVE_ORDER)
+                .collect(Collectors.toList());
+    }
+    
+    // Filter based on query - startsWith, case insensitive, sorted ascending
+    String lowerQuery = query.toLowerCase();
+    return allCategories.stream()
+            .map(item -> (String) item.getValue())
+            .filter(value -> value != null && value.toLowerCase().startsWith(lowerQuery))
+            .sorted(String.CASE_INSENSITIVE_ORDER)
+            .collect(Collectors.toList());
+    
     }
     
     public String getSupportURL() {

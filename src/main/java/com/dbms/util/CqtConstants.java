@@ -27,6 +27,7 @@ public class CqtConstants {
     public static final String CODE_LIST_TYPE_SMQ_FILTER_LEVELS = "SMQ_FILTER_LEVELS";
     public static final String CODE_LIST_TYPE_PATH_FILTER_LEVELS = "PATH_FILTER_LEVELS";
 
+    public static final String MEDDRA_VERSION = "MEDDRA";
     public static final String CURRENT_MEDDRA_VERSION = "CURRENT_MEDDRA_VERSION";
     public static final String TARGET_MEDDRA_VERSION = "TARGET_MEDDRA_VERSION";
 

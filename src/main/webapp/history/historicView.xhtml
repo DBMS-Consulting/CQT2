@@ -64,7 +64,8 @@
                                     id="dict" filter="true" filterMatchMode="contains">
                                     <f:selectItem itemValue="" itemLabel="" />
                                     <f:selectItems value="#{configMB.allMeddraVersion}" var="d"
-                                        itemLabel="#{d.value}" itemValue="#{d.value}" />
+                                        itemLabel="#{d.value.substring(0, d.value.length()-1)}.#{d.value.substring(d.value.length()-1)}"
+                                        itemValue="#{d.value}" />
 
                                     <p:ajax update="time" />
                                 </p:selectOneMenu>

@@ -72,16 +72,19 @@
 				<p:row>
 					<p:column rowspan="2" sortBy="#{node.term}"
 						headerText="#{historicalViewController.selectedHistoricalViewDTO.listName}"/>
-					<p:column colspan="5" headerText="Hierarchy Details" style="width:50%"/>
+					<p:column colspan="#{createController.relationsModel.getDisplayColumnCount(7)}" headerText="Hierarchy Details" style="width:60%"/>
 					<!-- Notes -->	
  				</p:row>
 
 				<p:row>
 					<p:column headerText="Code" style="width:10%" sortBy="#{node.code}" />
 					<p:column headerText="Level" style="width:10%" />
-					<p:column rendered="#{historicalViewController.displayScopeCatWeight}" headerText="Scope" style="width:10%" />
-					<p:column rendered="#{historicalViewController.displayScopeCatWeight}" headerText="Category" style="width:10%" />
-					<p:column rendered="#{historicalViewController.displayScopeCatWeight}" headerText="Weight" style="width:10%" />
+					<p:column rendered="#{historicalViewController.displayScope}" headerText="Scope" style="width:10%" />
+                                        <p:column headerText="Path" style="width:10%" />
+					<p:column rendered="#{historicalViewController.displayCategory}" headerText="Category" style="width:10%" />
+					<p:column rendered="#{historicalViewController.displayCategory2}" headerText="Category2" style="width:10%" />
+                                        <p:column rendered="#{historicalViewController.displayWeight}" headerText="Weight" style="width:10%" />
+                                        
 				</p:row>
 			</p:columnGroup>
 
@@ -97,15 +100,23 @@
 				<h:outputText value="#{node.level}" rendered="true" />
 			</p:column>
 
-			<p:column style="width:10%">
+			<p:column rendered="#{historicalViewController.displayScope}" style="width:10%">
 				<h:outputText value="#{node.scope}" />
 			</p:column>
-
-			<p:column style="width:10%">
-				 <h:outputText value="#{node.category}" />
+            
+                        <p:column style="width:10%">
+				<h:outputText value="" rendered="true" />
 			</p:column>
 
-			<p:column style="width:10%">
+			<p:column rendered="#{historicalViewController.displayCategory}" style="width:10%">
+				 <h:outputText value="#{node.category}" />
+			</p:column>
+            
+                        <p:column rendered="#{historicalViewController.displayCategory2}" style="width:10%">
+				 <h:outputText value="#{node.category2}" />
+			</p:column>
+
+			<p:column rendered="#{historicalViewController.displayWeight}" style="width:10%">
 				<h:outputText value="#{node.weight}" />
 			</p:column>
 			

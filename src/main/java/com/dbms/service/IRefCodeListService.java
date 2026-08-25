@@ -94,5 +94,7 @@ public interface IRefCodeListService extends ICqtPersistenceService<RefConfigCod
     public List<RefConfigCodeList> findEmailNotificationMsgConfig();
 
     public List<RefConfigCodeList> findEmailSubjectConfig();
+    
+    public List<RefConfigCodeList> findMeddraAllVersions();
 
 }
