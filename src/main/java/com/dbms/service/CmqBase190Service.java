@@ -2923,12 +2923,18 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 	}
 	
 	private int fillReport(List<ReportLineDataDto> report, XSSFCell cell, XSSFRow row, int rowCount, XSSFSheet worksheet,SystemConfigProperties systemConfigProperties) {
-		int cpt = 0;
-		LOG.info("Writing {} ReportLineDataDtos." , report.size());
-                
-                CellStyle headerCellStyle = worksheet.getWorkbook().createCellStyle();
+		// Create the highlight style once per report: a workbook holds at most 64000 cell styles,
+		// so creating one per recursive call fails on large lists.
+		CellStyle headerCellStyle = worksheet.getWorkbook().createCellStyle();
 		headerCellStyle.setFillForegroundColor(IndexedColors.PALE_BLUE.index);
 		headerCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
+		return fillReport(report, cell, row, rowCount, worksheet, systemConfigProperties, headerCellStyle);
+	}
+
+	private int fillReport(List<ReportLineDataDto> report, XSSFCell cell, XSSFRow row, int rowCount, XSSFSheet worksheet,SystemConfigProperties systemConfigProperties, CellStyle headerCellStyle) {
+		int cpt = 0;
+		LOG.info("Writing {} ReportLineDataDtos." , report.size());
                                 
 		for(ReportLineDataDto line : report) {
 			if(null != line) {
@@ -3015,7 +3021,7 @@ public class CmqBase190Service extends CqtPersistenceService<CmqBase190>
 				rowCount++;
 				
 				if(!line.getChildren().isEmpty()) {
-					rowCount = fillReport(line.getChildren(), cell, row, rowCount, worksheet, systemConfigProperties);
+					rowCount = fillReport(line.getChildren(), cell, row, rowCount, worksheet, systemConfigProperties, headerCellStyle);
 				}
 			} else {
 				LOG.info("Got null line in map in fillReport");
